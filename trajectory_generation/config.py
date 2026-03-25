@@ -8,11 +8,12 @@ LOG_ROOT = Path.home() / "detailed_trajectory_logs"
 # Data paths — symlink or copy data files into trajectory_generation/data/
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = Path(__file__).resolve().parent / "data"
+DATA_FILES = REPO_ROOT / "data_files"
 
 CHUNKS_LOCAL = DATA_DIR / "chunks_local.jsonl"
 CHUNKS_WEB = [DATA_DIR / "chunks_web.jsonl"]
 SECRET_INVENTORY = DATA_DIR / "secret_inventory.jsonl"
-ENTITY_INDEX_DIR = DATA_DIR
+ENTITY_INDEX_DIR = DATA_FILES
 TASKS_DIR = REPO_ROOT / "drbench" / "data" / "tasks"
 SPACY_MODEL = "en_core_web_trf"
 

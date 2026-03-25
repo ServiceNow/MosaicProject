@@ -117,6 +117,8 @@ def _find_in_pool(
     fast_candidates: list[BridgeCandidate] = []
     entity_candidates: list[BridgeCandidate] = []
 
+    # Fast path: current answer appears in target docs (text search — answer
+    # may not be a NER entity, e.g. "12%" or "Q2 2025")
     for doc_id in entity_index.docs_containing_text(current_answer, pool=pool):
         key = (doc_id, answer_lower)
         if key in seen_keys:
@@ -128,6 +130,9 @@ def _find_in_pool(
             needs_intra=False,
         ))
 
+    # Entity path: other NER entities in current doc that also appear in target
+    # docs. Uses the precomputed entity→docs inverted index (O(1) lookup)
+    # instead of linear text scanning.
     for ent in current_entities:
         ent_lower = ent.lower()
         if ent_lower == answer_lower or len(ent_lower) < 3 or ent_lower in used or not _is_good_bridge(ent):
@@ -135,7 +140,8 @@ def _find_in_pool(
         # Skip when one is substring of the other (e.g. "2025" vs "Q2 2025")
         if ent_lower in answer_lower or answer_lower in ent_lower:
             continue
-        for doc_id in entity_index.docs_containing_text(ent, pool=pool):
+        matching_docs = entity_index.docs_containing_entity_ner(ent) & pool
+        for doc_id in matching_docs:
             key = (doc_id, ent_lower)
             if key in seen_keys:
                 continue
@@ -164,8 +170,8 @@ def find_bridge(
 ) -> list[BridgeCandidate]:
     """Find bridges from current_doc to docs in next_pool.
 
-    With searcher: BM25 narrows to topically relevant docs, then entity matching.
-    Without searcher: exhaustive over pool (capped for entity path).
+    Small pools (<500 docs): exhaustive entity matching directly.
+    Large pools with searcher: BM25 narrows first, then entity matching.
     """
     seen = seen_docs or set()
     used = {a.lower() for a in (used_answers or set())}
@@ -174,7 +180,14 @@ def find_bridge(
     if not search_pool:
         return []
 
-    if searcher is not None:
+    # Small pools (e.g. per-task local docs): exhaustive entity matching is fast
+    # and avoids BM25 scoping issues where the searcher covers a broader corpus
+    # than the target pool.
+    _EXHAUSTIVE_THRESHOLD = 500
+
+    use_bm25 = searcher is not None and len(search_pool) > _EXHAUSTIVE_THRESHOLD
+
+    if use_bm25:
         query = _retrieval_query(entity_index.doc_text(current_doc_id), current_answer)
         hits = searcher.search(query, k=retrieval_k, mode="bm25")
         bm25_pool = {h.doc_id for h in hits} & search_pool
@@ -190,53 +203,15 @@ def find_bridge(
             len(bm25_pool), current_doc_id[:40], current_answer,
         )
     else:
-        _EXHAUSTIVE_ENTITY_LIMIT = 1000
-        answer_lower = current_answer.strip().lower()
-        current_doc_text_lower = entity_index.doc_text(current_doc_id).lower()
-        current_entities = entity_index.entities_in_doc(current_doc_id)
-        seen_keys: set[tuple[str, str]] = set()
-
-        fast_candidates: list[BridgeCandidate] = []
-        entity_candidates: list[BridgeCandidate] = []
-
-        for doc_id in entity_index.docs_containing_text(current_answer, pool=search_pool):
-            key = (doc_id, answer_lower)
-            if key in seen_keys:
-                continue
-            seen_keys.add(key)
-            fast_candidates.append(BridgeCandidate(
-                target_doc_id=doc_id,
-                bridge_entity=current_answer.strip(),
-                needs_intra=False,
-            ))
-
-        if len(search_pool) <= _EXHAUSTIVE_ENTITY_LIMIT:
-            for ent in current_entities:
-                ent_lower = ent.lower()
-                if ent_lower == answer_lower or len(ent_lower) < 3 or ent_lower in used or not _is_good_bridge(ent):
-                    continue
-                if ent_lower in answer_lower or answer_lower in ent_lower:
-                    continue
-                for doc_id in entity_index.docs_containing_text(ent, pool=search_pool):
-                    key = (doc_id, ent_lower)
-                    if key in seen_keys:
-                        continue
-                    seen_keys.add(key)
-                    proximity = _min_distance(current_doc_text_lower, current_answer, ent)
-                    entity_candidates.append(BridgeCandidate(
-                        target_doc_id=doc_id,
-                        bridge_entity=ent,
-                        needs_intra=True,
-                        score=-proximity,
-                    ))
-
-        entity_candidates.sort(key=lambda c: c.score, reverse=True)
+        fast_candidates, entity_candidates = _find_in_pool(
+            entity_index, current_doc_id, current_answer, search_pool, used,
+        )
         candidates = fast_candidates + entity_candidates
 
         logger.info(
-            "find_bridge (no searcher): %d candidates (fast=%d, entity=%d) from %s with answer=%r",
+            "find_bridge (exhaustive): %d candidates (fast=%d, entity=%d, pool=%d) from %s with answer=%r",
             len(candidates), len(fast_candidates), len(entity_candidates),
-            current_doc_id[:40], current_answer,
+            len(search_pool), current_doc_id[:40], current_answer,
         )
 
     return candidates

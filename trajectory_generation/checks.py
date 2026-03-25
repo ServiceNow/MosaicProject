@@ -221,16 +221,9 @@ def check_question(
         return "answer same as required phrase"
     if len(a) >= 2 and al in rp_lower and al != rp_lower:
         return f"answer {a!r} is contained in required phrase {rp!r}"
-    if quote and doc_text:
-        norm_doc = ' '.join(doc_text.lower().split())
-        parts = [p.strip() for p in quote.split("|") if p.strip()]
-        parts = parts if len(parts) > 1 else [quote]
-        for part in parts:
-            norm_part = ' '.join(part.lower().split())
-            if norm_part not in norm_doc:
-                return f"quote not found in document: {part[:100]!r}"
-        if a.lower() not in norm_doc:
-            return f"answer {a!r} not found in document"
+    # Quote validation removed — quotes are kept for human review but not
+    # used as a rejection gate (LLM often paraphrases or includes reasoning
+    # in the QUOTE field, and the "|" separator conflicts with doc content).
     return None
 
 

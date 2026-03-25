@@ -3,24 +3,19 @@
 PROMPT_CONSTRAINED = '''\
 You are writing one question in a multi-hop QA chain.
 
-PREVIOUS ANSWER (must appear in your question): "{prev_answer}"
+PREVIOUS ANSWER (must appear VERBATIM in your question): "{prev_answer}"
 TARGET ANSWER (the correct answer to your question): "{target_answer}"
 
 Rules for the question:
-- The PREVIOUS ANSWER must appear VERBATIM in your question — copy it exactly, do not paraphrase or abbreviate (e.g. do not use "2025" if the answer is "Q2 2025").
-- The PREVIOUS ANSWER must drive the question — it must not be ancillary. Using [PREV] to identify the subject is fine.
-  BAD: "Who stars in The Wolf of Wall Street and was born in [PREV]?" ([PREV] in a side clause — answer is Leo regardless)
-  GOOD: "In the company that created the iPhone that came out in year [PREV], what was their revenue?" ([PREV] identifies the subject)
+- The PREVIOUS ANSWER text "{prev_answer}" must appear word-for-word in your question. Do not paraphrase, abbreviate, or use a placeholder. For example if the previous answer is "Q2 2025", write "Q2 2025" in the question, not just "2025".
+- The PREVIOUS ANSWER must be central to the question — changing it should change the answer.
+  BAD (previous answer "1984"): "Who stars in The Wolf of Wall Street and Good Will Hunting and was born in 1984?" (answer is Leo regardless of the year)
+  GOOD (previous answer "1984"): "What Orwell novel is set in the year 1984?" (answer depends on the year)
 - The answer must be 1-3 words, the entity alone (never "the X" — use "Health Cloud" not "the Health Cloud").
-- CRITICAL: The answer must NOT be determinable without knowing the PREVIOUS ANSWER.
-  The PREVIOUS ANSWER must discriminate between multiple possible answers — changing its value should change the answer. If only one entity could ever be the answer regardless of the PREVIOUS ANSWER, the question is bad.
-  BAD: "Who stars in The Wolf of Wall Street and was born in [PREV]?" (answer is Leo regardless)
-  GOOD: "What film starring [PREV] was released in 2013?" (answer depends on [PREV])
-- The question must be SPECIFIC enough to have exactly one correct answer.
-- The question must be SELF-CONTAINED and make sense out of context.
-- Write concrete, searchable questions that require the agent to search — avoid document-centric phrasing ("this paper", "according to the document") that obscures what to look up.
-- Use concrete wording. Avoid vague terms like "implementations" or "aligned with" unless they have clear meaning.
-- Without knowing the PREVIOUS ANSWER, the question should be unanswerable.
+- The question must be SPECIFIC enough to have exactly one correct answer, but not so specific that it can be answerable without the previous answer.
+- The question must be SELF-CONTAINED and sound natural — like something a curious person would actually ask. It's often helpful to imagine you are a forgetful person who remembers tangentially related information (e.g. the previous answer, and some other information), and is trying to answer a new question based on that information.
+- Write concrete, searchable questions — avoid document-centric phrasing ("this paper", "according to the document"). It is okay to say "In the paper that found X, what was Y?" where X is the previous answer and Y is the target answer, but only because X guides the search for Y. A question like "In the document, X found Y" is not a good question because 'the document' is too vague to search for.
+- Without knowing the PREVIOUS ANSWER, the question should be unanswerable AND a research agent should have a hard time knowing what to even search for to answer it.
 
 Find evidence in the document that connects "{prev_answer}" to "{target_answer}". Quote the relevant excerpt(s) — one or more sentences, possibly disjoint. Use " | " to separate multiple excerpts if needed. Then write the question based on that evidence.
 
@@ -48,54 +43,46 @@ ANSWER: {target_answer}
 PROMPT_PICK = '''\
 You are writing one question in a multi-hop QA chain.
 
-The PREVIOUS ANSWER is a private enterprise value. Write a question about a PUBLIC web document that requires the PREVIOUS ANSWER in a web search query to find the answer.
+The PREVIOUS ANSWER is a private enterprise value. Write a question about the PUBLIC document below where the PREVIOUS ANSWER plays a meaningful role — as a quantity, threshold, date, identifier, or parameter that naturally appears in the question.
 
-PREVIOUS ANSWER (must appear in your question): "{prev_answer}"
+PREVIOUS ANSWER (must appear VERBATIM in your question): "{prev_answer}"
 
-Search the document below for sentences that connect the PREVIOUS ANSWER to one of the ENTITIES. Your chosen entity must appear in the document and have a clear factual link to the PREVIOUS ANSWER. Pick the answer from the ENTITIES list below — it must be one of those exact strings.
+Search the document for a context where "{prev_answer}" plays a natural, functional role — for example as a sample size, a percentage threshold, a year something happened, a dollar amount, etc. Then write a question where knowing "{prev_answer}" is essential to identifying the answer.
 
-Rules for the question:
-- The PREVIOUS ANSWER must drive the question — it must not be ancillary. Using [PREV] to identify the subject is fine.
-  BAD: "Who stars in The Wolf of Wall Street and was born in [PREV]?" ([PREV] in a side clause — answer is Leo regardless)
-  GOOD: "In the company that created the iPhone that came out in year [PREV], what was their revenue?" ([PREV] identifies the subject)
-- The answer must be one of the entities below (match exactly), the entity alone (never "the X"). Maximum 3 words.
-- Pick the entity with the strongest factual link to the PREVIOUS ANSWER in the document. The entity must appear in the document text.
-- CRITICAL: The answer must NOT be determinable without knowing the PREVIOUS ANSWER.
-  The PREVIOUS ANSWER must discriminate between multiple possible answers — changing its value should change the answer.
-  BAD: "Who stars in The Wolf of Wall Street and was born in [PREV]?" (answer is Leo regardless)
-  BAD: "What firm reported [PREV] of companies published ESG reports?" (only one firm does this study)
-  BAD: If someone could search for other distinctive phrases in the question (e.g. "The Loyal Subjects Jem and the Holograms") and find the answer without the PREVIOUS ANSWER, the question is bad.
-  GOOD: "What regulation does [PREV] comply with?" (answer depends on [PREV])
-- The question must be SPECIFIC enough to have exactly one correct answer.
-- The PREVIOUS ANSWER should be the key identifying detail that pins down the answer.
-- The question must be SELF-CONTAINED and make sense out of context.
-- Write concrete, searchable questions that require the agent to search — avoid document-centric phrasing that obscures what to look up.
-- Use concrete wording. Avoid vague terms. Without knowing the PREVIOUS ANSWER, the question should be unanswerable.
-
-ENTITIES:
+The answer MUST be one of the ENTITIES below — pick exactly one of these strings:
 {entity_list}
 
-Find evidence in the document that connects "{prev_answer}" to your chosen entity. Quote the relevant excerpt(s) — one or more sentences, possibly disjoint. Use " | " to separate multiple excerpts if needed. Then write the question based on that evidence.
+Rules:
+- The text "{prev_answer}" must appear word-for-word in your question. Do not paraphrase, abbreviate, or use a placeholder.
+- The PREVIOUS ANSWER must be central to the question — changing it should change the answer.
+  BAD (previous answer "12%"): "What organization publishes an annual obesity report that mentions 12%?" (answer is the same org regardless of the percentage)
+  GOOD (previous answer "12%"): "In the study that found a 12% decrease in obesity rates in Tamale, what year was the data collected?" (changing the percentage points to a different study)
+  GOOD (previous answer "3"): "In the clinical trial with 3 participants, what drug was tested for efficacy?" (the number identifies a specific trial)
+- Your answer must EXACTLY match one of the ENTITIES listed above. Do not combine entities, modify their spelling, or invent new answers.
+- The question should sound natural — like something a researcher or analyst would genuinely ask. Find a context in the document where the previous answer fits organically.
+- The question must be SPECIFIC enough to have exactly one correct answer.
+- The question must be SELF-CONTAINED — avoid document-centric phrasing ("this report", "the document").
+- Without knowing the PREVIOUS ANSWER, the question should be unanswerable.
 
-Format: QUOTE may span multiple sentences (use " | " for disjoint excerpts). QUESTION must be a single line — one complete question, no line breaks.
+Find evidence in the document that connects "{prev_answer}" to your chosen entity. Quote the relevant excerpt(s). Then write the question.
 
 Example:
-Previous answer: "Health Cloud"
-Entities: FDA, HIPAA, CMS
-QUOTE: Protecting sensitive patient data through HIPAA-compliant features in Health Cloud is essential for maintaining privacy.
-REASONING: The excerpt says Health Cloud must be HIPAA-compliant. HIPAA has the strongest link.
-QUESTION: What regulation must Health Cloud comply with to maintain privacy?
-ANSWER: HIPAA
+Previous answer: "80%"
+Entities: FDA, HIPAA, 112
+QUOTE: In the study that achieved 80% sensitivity for predicting bladder cancer recurrence, 112 patient specimens were analyzed.
+REASONING: "80%" identifies a specific study whose sample size is 112. The percentage is central — a different sensitivity level would point to a different study.
+QUESTION: How many patient specimens were analyzed in the study that achieved 80% sensitivity for predicting bladder cancer recurrence?
+ANSWER: 112
 
 <document>
 {doc_text}
 </document>
 
 <answer>
-QUOTE: <excerpt(s) from document — one or more sentences, use " | " to separate disjoint excerpts>
+QUOTE: <excerpt(s) from document>
 REASONING: ...
 QUESTION: <single line, one complete question, must contain "{prev_answer}">
-ANSWER: ...
+ANSWER: <must be one of the ENTITIES above>
 </answer>'''
 
 PROMPT_RANK = '''\
