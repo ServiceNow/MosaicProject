@@ -1,0 +1,11 @@
+Data directory for trajectory generation.
+
+Symlink or copy the following files here before running the pipeline:
+
+  chunks_local.jsonl     - Local document chunks (from making_dataset pipeline)
+  chunks_web.jsonl       - Web document chunks
+  secret_inventory.jsonl - Secret inventory with doc_only_check annotations
+
+The entity index cache will also be stored here.
+
+See config.py for the full list of expected paths.
