@@ -24,7 +24,13 @@ class Candidate:
 
 
 class HybridSearcher:
-    def __init__(self, *, chunks_path: Path, dense_index_path: Path | None = None) -> None:
+    def __init__(
+        self,
+        *,
+        chunks_path: Path,
+        dense_index_path: Path | None = None,
+        doc_ids: set[str] | None = None,
+    ) -> None:
         self.chunks_path = chunks_path
         self._chunk_ids: list[str] = []
         self._doc_ids: list[str] = []
@@ -36,6 +42,8 @@ class HybridSearcher:
             cid = rec.get("chunk_id")
             did = rec.get("doc_id")
             if not text or not cid or not did:
+                continue
+            if doc_ids is not None and str(did) not in doc_ids:
                 continue
             self._chunk_ids.append(str(cid))
             self._doc_ids.append(str(did))
@@ -54,9 +62,15 @@ class HybridSearcher:
             self.dense = DenseIndex.load_npz(dense_index_path)
 
     @classmethod
-    def from_paths(cls, paths: list[Path], **kwargs) -> "HybridSearcher":
+    def from_paths(
+        cls,
+        paths: list[Path],
+        *,
+        doc_ids: set[str] | None = None,
+        **kwargs,
+    ) -> "HybridSearcher":
         if len(paths) == 1:
-            return cls(chunks_path=paths[0], **kwargs)
+            return cls(chunks_path=paths[0], doc_ids=doc_ids, **kwargs)
         obj = cls.__new__(cls)
         obj._chunk_ids = []
         obj._doc_ids = []
@@ -68,6 +82,8 @@ class HybridSearcher:
                 cid = rec.get("chunk_id")
                 did = rec.get("doc_id")
                 if not text or not cid or not did:
+                    continue
+                if doc_ids is not None and str(did) not in doc_ids:
                     continue
                 obj._chunk_ids.append(str(cid))
                 obj._doc_ids.append(str(did))

@@ -6,7 +6,7 @@ chain_id, hops, verification, posthoc, metadata.trace.
 
 Usage:
   python -m trajectory_generation.scripts.view_generation \
-    ~/detailed_trajectory_logs/run_50chains/chains_filtered.jsonl
+    ~/trajectory_generation_runs/example_run/chains_filtered.jsonl
   python -m trajectory_generation.scripts.view_generation chains.jsonl -o chains.html --open
 """
 

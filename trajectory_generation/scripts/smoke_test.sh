@@ -11,13 +11,24 @@ PYTHON="${PYTHON:-/home/toolkit/.mamba/envs/vllm013/bin/python}"
 REPO="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$REPO"
 
-# Extract seeds from bad chains (Jem/Hasbro example + similar)
-SEEDS_FILE="${SEEDS_FILE:-$HOME/detailed_trajectory_logs/bad_seeds.jsonl}"
+# Extract seeds from an existing run when a seeds file is not already present.
+SEEDS_FILE="${SEEDS_FILE:-$HOME/trajectory_generation_runs/bad_seeds.jsonl}"
+INPUT_CHAINS="${INPUT_CHAINS:-}"
+CHAIN_IDS="${CHAIN_IDS:-}"
+SEED_MAX="${SEED_MAX:-5}"
 if [ ! -f "$SEEDS_FILE" ]; then
+    if [ -z "$INPUT_CHAINS" ]; then
+        echo "Set INPUT_CHAINS to an existing chains.jsonl file before running this script."
+        exit 1
+    fi
     echo "Extracting seeds from bad chains..."
+    EXTRA_ARGS=(--max "$SEED_MAX")
+    if [ -n "$CHAIN_IDS" ]; then
+        EXTRA_ARGS=(--chain-ids $CHAIN_IDS)
+    fi
     "$PYTHON" -m trajectory_generation.scripts.extract_bad_seeds \
-        --input making_dataset_2/outputs/chains_all.jsonl \
-        --chain-ids 17453ea8 b0d08ed6 \
+        --input "$INPUT_CHAINS" \
+        "${EXTRA_ARGS[@]}" \
         --output "$SEEDS_FILE"
 fi
 

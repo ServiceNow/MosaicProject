@@ -2,9 +2,12 @@ Data directory for trajectory generation.
 
 Symlink or copy the following files here before running the pipeline:
 
-  chunks_local.jsonl     - Local document chunks (from making_dataset pipeline)
-  chunks_web.jsonl       - Web document chunks
-  secret_inventory.jsonl - Secret inventory with doc_only_check annotations
+  chunks_local.jsonl        - Local document chunks
+  chunks_web.jsonl          - Primary fixed-corpus web chunks
+  secret_inventory.jsonl    - Secret inventory with doc_only_check annotations
+  chunks_curated_web.jsonl  - Optional curated web chunks
+  docs_curated_web.jsonl    - Optional curated web metadata for allowlisting
+  tasks/                    - Optional task configs used by curated URL refresh tools
 
 The entity index cache will also be stored here.
 

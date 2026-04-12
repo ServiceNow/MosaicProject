@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Run the trajectory generation pipeline.
+"""Run the standalone trajectory generation pipeline.
 
 Stages: 0 load → 1 build → 2 verify → 3 filter → 4 reword
 
-Logs go to ~/detailed_trajectory_logs/<run_id>/
+Logs go to ~/trajectory_generation_runs/<run_id>/
 Resume with --from-stage N.
 """
 
@@ -44,27 +44,32 @@ def setup_logging(run_dir: Path, verbose: bool) -> None:
 
 def main() -> int:
     p = argparse.ArgumentParser(
-        description="Trajectory generation pipeline. Use PYTHON=/path/to/vllm013/python for correct env."
+        description="Build, verify, filter, and reword multi-hop chains."
     )
-    p.add_argument("--from-stage", type=int, default=0, help="Start from stage N (0-4)")
-    p.add_argument("--output-dir", type=Path, default=None, help="Run directory (default: ~/detailed_trajectory_logs/run_<ts>)")
+    p.add_argument("--from-stage", type=int, default=0, help="Start from stage N (0-4).")
+    p.add_argument("--output-dir", type=Path, default=None, help="Run directory (default: ~/trajectory_generation_runs/run_<ts>).")
     p.add_argument("--model", default=config.DEFAULT_MODEL)
     p.add_argument("--base-url", default=config.DEFAULT_BASE_URL)
     p.add_argument("--api-key", default=None)
 
-    p.add_argument("--spacy-model", default=config.SPACY_MODEL, help="spaCy NER model (e.g. en_core_web_sm if trf unavailable)")
+    p.add_argument("--spacy-model", default=config.SPACY_MODEL, help="spaCy NER model.")
     p.add_argument("--chunks-local", type=Path, default=config.CHUNKS_LOCAL)
-    p.add_argument("--chunks-web", nargs="+", type=Path, default=config.CHUNKS_WEB)
+    p.add_argument("--chunks-web", nargs="+", type=Path, default=[config.BROWSECOMP_WEB_CHUNKS])
+    p.add_argument("--curated-web-chunks", nargs="+", type=Path, default=[config.CURATED_WEB_CHUNKS])
     p.add_argument("--secrets", type=Path, default=config.SECRET_INVENTORY)
-    p.add_argument("--task", default=None, help="Filter by task ID")
-    p.add_argument("--company", default=None, help="Filter by company")
+    p.add_argument("--curated-web-docs", type=Path, default=config.CURATED_WEB_DOCS)
+    p.add_argument("--task", default=None, help="Only run one task ID.")
+    p.add_argument("--company", default=None, help="Only run tasks that match this company name.")
 
     p.add_argument("--patterns", nargs="+", default=config.DEFAULT_PATTERNS)
     p.add_argument("--per-task", type=int, default=None)
     p.add_argument("--max-chains", type=int, default=config.MAX_CHAINS_DEFAULT)
-    p.add_argument("--seeds-from", type=Path, default=None, help="Load chain specs from JSONL (smoke test)")
+    p.add_argument("--seeds-from", type=Path, default=None, help="Load seed records from JSONL.")
     p.add_argument("--seed", type=int, default=None)
     p.add_argument("--workers", type=int, default=1)
+    p.add_argument("--seed-schedule", choices=["round_robin", "grouped"], default=config.DEFAULT_SEED_SCHEDULE)
+    p.add_argument("--num-shards", type=int, default=config.DEFAULT_NUM_SHARDS)
+    p.add_argument("--shard-index", type=int, default=0)
     p.add_argument("--resume", action="store_true", default=True)
     p.add_argument("--no-resume", action="store_false", dest="resume")
     p.add_argument("--verbose", action="store_true")
@@ -72,11 +77,18 @@ def main() -> int:
         "--max-tokens",
         type=int,
         default=config.DEFAULT_MAX_TOKENS,
-        help="Max output tokens per LLM call (default: %(default)s). Use 8192 with 32k-context models so prompt+completion fits.",
+        help="Max output tokens per LLM call (default: %(default)s).",
+    )
+    p.add_argument(
+        "--prompt-reasoning-mode",
+        choices=["step_by_step", "brief_options"],
+        default=config.PROMPT_REASONING_MODE,
+        help="How much deliberation wording to include in generation prompts.",
     )
     args = p.parse_args()
 
     config.DEFAULT_MAX_TOKENS = args.max_tokens
+    config.PROMPT_REASONING_MODE = args.prompt_reasoning_mode
 
     run_dir = args.output_dir
     if run_dir is None:
@@ -94,9 +106,11 @@ def main() -> int:
         loaded = run_load(
             chunks_local=args.chunks_local,
             chunks_web=args.chunks_web,
+            curated_web_chunks=args.curated_web_chunks,
             secret_inventory=args.secrets,
             entity_index_dir=config.ENTITY_INDEX_DIR,
             spacy_model=args.spacy_model,
+            curated_web_docs=args.curated_web_docs,
             task_id=args.task,
             company=args.company,
         )
@@ -120,6 +134,9 @@ def main() -> int:
             api_key=args.api_key,
             workers=args.workers,
             resume=args.resume,
+            seed_schedule=args.seed_schedule,
+            num_shards=args.num_shards,
+            shard_index=args.shard_index,
         )
         logger.info("Stage 1 done")
 

@@ -11,7 +11,9 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
-_SPACY_CHAR_LIMIT = 100_000
+_ENTITY_INDEX_VERSION = 2
+_SPACY_WINDOW_CHARS = 20_000
+_SPACY_WINDOW_OVERLAP = 1_000
 _MIN_ENTITY_LEN = 2
 
 
@@ -29,19 +31,38 @@ def is_entity(ans: str) -> bool:
     return True
 
 
+def _iter_text_windows(text: str) -> list[str]:
+    if len(text) <= _SPACY_WINDOW_CHARS:
+        return [text]
+
+    windows: list[str] = []
+    step = max(1, _SPACY_WINDOW_CHARS - _SPACY_WINDOW_OVERLAP)
+    start = 0
+    while start < len(text):
+        end = min(len(text), start + _SPACY_WINDOW_CHARS)
+        windows.append(text[start:end])
+        if end >= len(text):
+            break
+        start += step
+    return windows
+
+
 def _extract_entities(nlp, text: str) -> list[str]:
-    doc = nlp(text[:_SPACY_CHAR_LIMIT])
+    windows = _iter_text_windows(text)
     seen: set[str] = set()
     entities: list[str] = []
-    for ent in doc.ents:
-        clean = ent.text.strip()
-        if "\n" in clean or "\r" in clean:
-            continue
-        key = clean.lower()
-        if len(key) < _MIN_ENTITY_LEN or key in seen:
-            continue
-        seen.add(key)
-        entities.append(clean)
+
+    docs = nlp.pipe(windows, batch_size=4) if len(windows) > 1 else [nlp(windows[0])]
+    for doc in docs:
+        for ent in doc.ents:
+            clean = ent.text.strip()
+            if "\n" in clean or "\r" in clean:
+                continue
+            key = clean.lower()
+            if len(key) < _MIN_ENTITY_LEN or key in seen:
+                continue
+            seen.add(key)
+            entities.append(clean)
     return entities
 
 
@@ -52,6 +73,8 @@ class EntityIndex:
         t0 = time.time()
         self._nlp = nlp
         self._lazy_lock = threading.Lock()
+        self._cache_version = _ENTITY_INDEX_VERSION
+        self._stale_docs: set[str] = set()
 
         self._entity_to_docs: dict[str, set[str]] = {}
         self._doc_entities: dict[str, list[str]] = {}
@@ -79,19 +102,32 @@ class EntityIndex:
     def doc_ids(self) -> set[str]:
         return set(self._doc_texts.keys())
 
+    def extract_entities(self, text: str) -> list[str]:
+        if self._nlp is None:
+            return []
+        return _extract_entities(self._nlp, text)
+
     def entities_in_doc(self, doc_id: str) -> list[str]:
-        if doc_id in self._doc_entities:
+        if doc_id in self._doc_entities and doc_id not in self._stale_docs:
             return self._doc_entities[doc_id]
         text = self._doc_texts.get(doc_id)
         if text is None or self._nlp is None:
-            return []
+            return self._doc_entities.get(doc_id, [])
         with self._lazy_lock:
-            if doc_id in self._doc_entities:
+            if doc_id in self._doc_entities and doc_id not in self._stale_docs:
                 return self._doc_entities[doc_id]
+            old_entities = self._doc_entities.get(doc_id, [])
+            for ent in old_entities:
+                docs = self._entity_to_docs.get(ent.lower())
+                if docs is not None:
+                    docs.discard(doc_id)
+                    if not docs:
+                        self._entity_to_docs.pop(ent.lower(), None)
             entities = _extract_entities(self._nlp, text)
             self._doc_entities[doc_id] = entities
             for ent in entities:
                 self._entity_to_docs.setdefault(ent.lower(), set()).add(doc_id)
+            self._stale_docs.discard(doc_id)
         return entities
 
     def docs_containing_entity_ner(self, entity: str) -> set[str]:
@@ -128,6 +164,7 @@ class EntityIndex:
 
     def save(self, path: str | Path) -> None:
         data = {
+            "version": _ENTITY_INDEX_VERSION,
             "doc_entities": self._doc_entities,
         }
         Path(path).write_text(json.dumps(data, ensure_ascii=False))
@@ -140,6 +177,8 @@ class EntityIndex:
         obj._nlp = nlp
         obj._lazy_lock = threading.Lock()
         obj._doc_entities = data["doc_entities"]
+        obj._cache_version = data.get("version", 1)
+        obj._stale_docs = set(docs.keys()) if (obj._cache_version < _ENTITY_INDEX_VERSION and nlp is not None) else set()
         obj._doc_texts = {}
         obj._doc_texts_lower = {}
         obj._entity_to_docs = {}

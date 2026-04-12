@@ -1,45 +1,25 @@
-# Trajectory Generation Data Prep
+# Curated Web Prep
 
-## Chunking
+These utilities preserve the workflow used to refresh the curated task-URL web corpus that supplements the main fixed web corpus.
 
-### How it works
+## Defaults
 
-**Local chunks** (`chunks_local_all.jsonl`): Produced by the making_dataset pipeline using `ContentProcessor.chunk_content()` — character-based with sentence/paragraph boundaries, default 1000 chars, 200 overlap. Local chunking uses `chunk_local.py` (target ~450 words, 50 overlap, min 300 words) on DrBench task files.
+The scripts now take their defaults from `trajectory_generation.config`:
 
-**Web chunks** (`chunks_web_drbench_urls.jsonl`): Produced by `chunk_web_drbench.py` — paragraph/heading-aware:
+- tasks root: `MOSAIC_TRAJ_TASKS_DIR` or `trajectory_generation/data/tasks`
+- docs output: `trajectory_generation/data/docs_curated_web.jsonl`
+- chunk output: `trajectory_generation/data/chunks_curated_web.jsonl`
 
-- Parses markdown-style headings (# ## ###) for context
-- Splits at paragraph boundaries
-- target_words ~260, overlap ~50, min ~140
-- Adds heading prefix to each chunk (Title > H2 > H3) for retrieval
+## Typical Flow
 
-**BrowseComp-Plus** (`chunks_web.jsonl`): Doc-level chunks from Tevatron corpus; each line is a full document.
-
-### Chunk sizes (observed)
-
-| Source | Chars (min–max) | Avg chars |
-|--------|-----------------|-----------|
-| DrBench URL chunks | 784–10,783 | ~2,230 |
-| Local chunks | 174–9,439 | ~2,670 |
-
-## DrBench URLs
-
-**Source:** Each task's `context.json` has a `url` block:
-
-```json
-"url": {
-  "url": "https://example.com/article",
-  "industry": "retail",
-  "domain": "compliance",
-  "date": "2024-08-05"
-}
+```bash
+python -m trajectory_generation.data_prep.fetch_drbench_urls
 ```
 
-`build_url_to_task_ids(tasks_root)` scans `drbench/data/tasks/*/context.json` and maps URL → [task_ids]. Tasks without `context.json` or without a `url` field are skipped.
+That command:
 
-**Current coverage:** `chunks_web_drbench_urls.jsonl` was built from tasks DR0001–DR0015 (15 tasks). Tasks DR0016+ may have context.json with URLs but haven't been fetched/chunked yet.
+1. reads task `context.json` files
+2. refreshes the curated URL corpus JSONL
+3. optionally emits chunk JSONL for retrieval
 
-## Pipeline
-
-1. **Fetch** (external): Fetch URLs → `docs_web_drbench_urls.jsonl` (requires requests, BeautifulSoup, etc.)
-2. **Chunk**: `python -m trajectory_generation.data_prep.chunk_web_drbench --docs docs.jsonl --output chunks.jsonl`
+The underlying module names still reference `drbench_urls` because the current curated corpus originated from that task set, but the package no longer assumes the original neighboring repos are present.

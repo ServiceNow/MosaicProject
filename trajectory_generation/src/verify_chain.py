@@ -10,12 +10,14 @@ import concurrent.futures
 import time
 
 from trajectory_generation.src.llm import LLMClient
-from trajectory_generation.src.parsing import parse_verification
+from trajectory_generation.src.parsing import normalize_answer_text, parse_verification
 from trajectory_generation.prompts import build_verification_prompt
 from trajectory_generation.src.types import ChainState, HopRecord, VerificationResult
+from trajectory_generation import config
 
 _VERIFY_DOC_LIMIT = 6_000
 _QUOTE_CONTEXT = 20_000
+_VERIFY_MAX_TOKENS = 512
 
 
 def _context_around_quote(hop: HopRecord) -> str:
@@ -59,7 +61,8 @@ def _verify_condition(
     raw = llm.chat(
         [{"role": "user", "content": prompt}],
         temperature=0.1,
-        max_tokens=4096,
+        max_tokens=_VERIFY_MAX_TOKENS,
+        use_min_max_tokens=False,
     )
     duration = round(time.time() - t0, 2)
     result = parse_verification(raw)
@@ -109,12 +112,18 @@ def verify_chain(state: ChainState, llm: LLMClient) -> tuple[VerificationResult,
     first_answerable, _ = results["first_only"]
     last_answerable, _ = results["last_only"]
     all_answerable, all_answer = results["all_docs"]
+    answer_match = (
+        normalize_answer_text(all_answer) == normalize_answer_text(state.global_answer)
+        if config.STRICT_VERIFY_ANSWER_MATCH and all_answerable
+        else all_answerable
+    )
 
     is_valid = (
         not no_docs_answerable
         and not first_answerable
         and not last_answerable
         and all_answerable
+        and answer_match
     )
 
     verification = VerificationResult(
@@ -127,6 +136,9 @@ def verify_chain(state: ChainState, llm: LLMClient) -> tuple[VerificationResult,
         details={
             name: {"answerable": ans, "content": content}
             for name, (ans, content) in results.items()
+        } | {
+            "answer_match": answer_match,
+            "expected_answer": state.global_answer,
         },
     )
     return verification, traces

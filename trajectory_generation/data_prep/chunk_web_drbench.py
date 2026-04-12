@@ -189,6 +189,16 @@ def emit_chunk_records(
     return records
 
 
+def _is_chunkable_doc(obj: dict[str, Any]) -> bool:
+    """Keep only successful direct-fetch docs in the curated retrieval sidecar."""
+    if obj.get("extractor") == "insights_fallback":
+        return False
+    text = (obj.get("text") or "").strip()
+    err = obj.get("error")
+    status = obj.get("http_status")
+    return bool(text) and not err and isinstance(status, int) and 200 <= status < 300
+
+
 def load_docs_jsonl(path: Path) -> list[dict[str, Any]]:
     """Load docs JSONL, keeping latest success per doc_id."""
     by_id: dict[str, dict[str, Any]] = {}
@@ -207,10 +217,7 @@ def load_docs_jsonl(path: Path) -> list[dict[str, Any]]:
                 continue
             if doc_id not in by_id:
                 order.append(doc_id)
-            text = (obj.get("text") or "").strip()
-            err = obj.get("error")
-            status = obj.get("http_status")
-            if text and not err and isinstance(status, int) and 200 <= status < 300:
+            if _is_chunkable_doc(obj):
                 by_id[doc_id] = obj
     return [by_id[d] for d in order if d in by_id]
 

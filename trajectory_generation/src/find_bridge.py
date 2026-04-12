@@ -16,6 +16,35 @@ from trajectory_generation.src.entity_index import EntityIndex, is_entity
 
 logger = logging.getLogger(__name__)
 
+
+def _canonical_local_doc_family(doc_id: str, family_map: dict[str, str] | None = None) -> str | None:
+    """Collapse local doc variants like .md/.docx/.xlsx/.txt/.jsonl to one family."""
+    if not isinstance(doc_id, str) or not doc_id.startswith("local/"):
+        return None
+    if family_map is not None and doc_id in family_map:
+        return family_map[doc_id]
+    parts = doc_id.split("/")
+    if not parts:
+        return None
+    last = parts[-1]
+    if "." in last:
+        last = last.rsplit(".", 1)[0]
+    parts[-1] = last
+    return "/".join(parts)
+
+
+def _filter_seen_doc_families(pool: set[str], seen: set[str], family_map: dict[str, str] | None = None) -> set[str]:
+    seen_local_families = {fam for fam in (_canonical_local_doc_family(d, family_map) for d in seen) if fam}
+    if not seen_local_families:
+        return set(pool)
+    filtered = set()
+    for doc_id in pool:
+        fam = _canonical_local_doc_family(doc_id, family_map)
+        if fam and fam in seen_local_families:
+            continue
+        filtered.add(doc_id)
+    return filtered
+
 # spaCy NER artifacts that are useless as bridges
 _BRIDGE_BLOCKLIST = frozenset({
     "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
@@ -102,37 +131,48 @@ def _retrieval_query(doc_text: str, answer: str, window: int = 400) -> str:
     return doc_text[start:end]
 
 
+def _source_entity_context(doc_text: str, answer: str, window: int = 4000) -> str:
+    idx = doc_text.lower().find(answer.lower())
+    if idx == -1:
+        return doc_text[:window]
+    half = window // 2
+    start = max(0, idx - half)
+    end = min(len(doc_text), idx + len(answer) + half)
+    return doc_text[start:end]
+
+
 def _find_in_pool(
     entity_index: EntityIndex,
     current_doc_id: str,
     current_answer: str,
     pool: set[str],
     used: set[str],
+    *,
+    allow_fast_path: bool,
 ) -> tuple[list[BridgeCandidate], list[BridgeCandidate]]:
     answer_lower = current_answer.strip().lower()
-    current_doc_text_lower = entity_index.doc_text(current_doc_id).lower()
-    current_entities = entity_index.entities_in_doc(current_doc_id)
+    current_doc_text = entity_index.doc_text(current_doc_id)
+    current_doc_text_lower = current_doc_text.lower()
+    current_entities = entity_index.extract_entities(
+        _source_entity_context(current_doc_text, current_answer)
+    ) or entity_index.entities_in_doc(current_doc_id)
     seen_keys: set[tuple[str, str]] = set()
 
     fast_candidates: list[BridgeCandidate] = []
     entity_candidates: list[BridgeCandidate] = []
 
-    # Fast path: current answer appears in target docs (text search — answer
-    # may not be a NER entity, e.g. "12%" or "Q2 2025")
-    for doc_id in entity_index.docs_containing_text(current_answer, pool=pool):
-        key = (doc_id, answer_lower)
-        if key in seen_keys:
-            continue
-        seen_keys.add(key)
-        fast_candidates.append(BridgeCandidate(
-            target_doc_id=doc_id,
-            bridge_entity=current_answer.strip(),
-            needs_intra=False,
-        ))
+    if allow_fast_path:
+        for doc_id in entity_index.docs_containing_text(current_answer, pool=pool):
+            key = (doc_id, answer_lower)
+            if key in seen_keys:
+                continue
+            seen_keys.add(key)
+            fast_candidates.append(BridgeCandidate(
+                target_doc_id=doc_id,
+                bridge_entity=current_answer.strip(),
+                needs_intra=False,
+            ))
 
-    # Entity path: other NER entities in current doc that also appear in target
-    # docs. Uses the precomputed entity→docs inverted index (O(1) lookup)
-    # instead of linear text scanning.
     for ent in current_entities:
         ent_lower = ent.lower()
         if ent_lower == answer_lower or len(ent_lower) < 3 or ent_lower in used or not _is_good_bridge(ent):
@@ -140,8 +180,7 @@ def _find_in_pool(
         # Skip when one is substring of the other (e.g. "2025" vs "Q2 2025")
         if ent_lower in answer_lower or answer_lower in ent_lower:
             continue
-        matching_docs = entity_index.docs_containing_entity_ner(ent) & pool
-        for doc_id in matching_docs:
+        for doc_id in entity_index.docs_containing_text(ent, pool=pool):
             key = (doc_id, ent_lower)
             if key in seen_keys:
                 continue
@@ -167,33 +206,29 @@ def find_bridge(
     used_answers: set[str] | None = None,
     searcher: Any = None,
     retrieval_k: int = 50,
+    allow_fast_path: bool = True,
+    local_doc_family_map: dict[str, str] | None = None,
 ) -> list[BridgeCandidate]:
     """Find bridges from current_doc to docs in next_pool.
 
-    Small pools (<500 docs): exhaustive entity matching directly.
-    Large pools with searcher: BM25 narrows first, then entity matching.
+    With searcher: BM25 narrows to topically relevant docs, then entity matching.
+    Without searcher: exhaustive over pool (capped for entity path).
     """
     seen = seen_docs or set()
     used = {a.lower() for a in (used_answers or set())}
-    search_pool = next_pool - seen
+    search_pool = _filter_seen_doc_families(next_pool - seen, seen, local_doc_family_map)
 
     if not search_pool:
         return []
 
-    # Small pools (e.g. per-task local docs): exhaustive entity matching is fast
-    # and avoids BM25 scoping issues where the searcher covers a broader corpus
-    # than the target pool.
-    _EXHAUSTIVE_THRESHOLD = 500
-
-    use_bm25 = searcher is not None and len(search_pool) > _EXHAUSTIVE_THRESHOLD
-
-    if use_bm25:
+    if searcher is not None:
         query = _retrieval_query(entity_index.doc_text(current_doc_id), current_answer)
         hits = searcher.search(query, k=retrieval_k, mode="bm25")
         bm25_pool = {h.doc_id for h in hits} & search_pool
 
         fast_candidates, entity_candidates = _find_in_pool(
             entity_index, current_doc_id, current_answer, bm25_pool, used,
+            allow_fast_path=allow_fast_path,
         )
         candidates = fast_candidates + entity_candidates
 
@@ -203,15 +238,57 @@ def find_bridge(
             len(bm25_pool), current_doc_id[:40], current_answer,
         )
     else:
-        fast_candidates, entity_candidates = _find_in_pool(
-            entity_index, current_doc_id, current_answer, search_pool, used,
-        )
+        _EXHAUSTIVE_ENTITY_LIMIT = 1000
+        answer_lower = current_answer.strip().lower()
+        current_doc_text = entity_index.doc_text(current_doc_id)
+        current_doc_text_lower = current_doc_text.lower()
+        current_entities = entity_index.extract_entities(
+            _source_entity_context(current_doc_text, current_answer)
+        ) or entity_index.entities_in_doc(current_doc_id)
+        seen_keys: set[tuple[str, str]] = set()
+
+        fast_candidates: list[BridgeCandidate] = []
+        entity_candidates: list[BridgeCandidate] = []
+
+        if allow_fast_path:
+            for doc_id in entity_index.docs_containing_text(current_answer, pool=search_pool):
+                key = (doc_id, answer_lower)
+                if key in seen_keys:
+                    continue
+                seen_keys.add(key)
+                fast_candidates.append(BridgeCandidate(
+                    target_doc_id=doc_id,
+                    bridge_entity=current_answer.strip(),
+                    needs_intra=False,
+                ))
+
+        if len(search_pool) <= _EXHAUSTIVE_ENTITY_LIMIT:
+            for ent in current_entities:
+                ent_lower = ent.lower()
+                if ent_lower == answer_lower or len(ent_lower) < 3 or ent_lower in used or not _is_good_bridge(ent):
+                    continue
+                if ent_lower in answer_lower or answer_lower in ent_lower:
+                    continue
+                for doc_id in entity_index.docs_containing_text(ent, pool=search_pool):
+                    key = (doc_id, ent_lower)
+                    if key in seen_keys:
+                        continue
+                    seen_keys.add(key)
+                    proximity = _min_distance(current_doc_text_lower, current_answer, ent)
+                    entity_candidates.append(BridgeCandidate(
+                        target_doc_id=doc_id,
+                        bridge_entity=ent,
+                        needs_intra=True,
+                        score=-proximity,
+                    ))
+
+        entity_candidates.sort(key=lambda c: c.score, reverse=True)
         candidates = fast_candidates + entity_candidates
 
         logger.info(
-            "find_bridge (exhaustive): %d candidates (fast=%d, entity=%d, pool=%d) from %s with answer=%r",
+            "find_bridge (no searcher): %d candidates (fast=%d, entity=%d) from %s with answer=%r",
             len(candidates), len(fast_candidates), len(entity_candidates),
-            len(search_pool), current_doc_id[:40], current_answer,
+            current_doc_id[:40], current_answer,
         )
 
     return candidates

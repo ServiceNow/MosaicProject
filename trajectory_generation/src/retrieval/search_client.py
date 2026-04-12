@@ -18,6 +18,16 @@ class SearchClient:
         self.base_url = base_url.rstrip("/")
         self.pool = pool
         self._client = httpx.Client(base_url=self.base_url, timeout=timeout)
+        self._size: int | None = None
+
+    @property
+    def size(self) -> int:
+        if self._size is None:
+            try:
+                self._size = int(self.health().get("size", 0))
+            except Exception:
+                self._size = 0
+        return self._size
 
     def search(
         self,

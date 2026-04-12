@@ -26,6 +26,15 @@ def _strip_think(text: str) -> str:
     return _THINK_RE.sub("", text).strip()
 
 
+def normalize_answer_text(text: str) -> str:
+    """Light normalization for answer equality checks."""
+    cleaned = _strip_think(text or "")
+    cleaned = re.sub(r"\s+", " ", cleaned).strip().strip("\"'`")
+    cleaned = re.sub(r"^[\s\.,;:!?\-\(\)\[\]\{\}]+", "", cleaned)
+    cleaned = re.sub(r"[\s\.,;:!?\-\(\)\[\]\{\}]+$", "", cleaned)
+    return cleaned.lower()
+
+
 # Keys that start new fields (order matters for multiline capture)
 _QA_KEYS = ["QUOTE", "REASONING", "QUESTION", "ANSWER"]
 
@@ -104,7 +113,7 @@ def parse_verification(text: str) -> VerificationOutput:
     """Parse verification output."""
     ans = extract_answer(text)
     if ans is None:
-        ans = text
+        ans = _strip_think(text)
 
     upper = ans.upper().strip()
     if upper.startswith("ANSWERABLE"):
@@ -116,4 +125,7 @@ def parse_verification(text: str) -> VerificationOutput:
 
     if "NOT_ANSWERABLE" in upper or "NOT ANSWERABLE" in upper:
         return VerificationOutput(answerable=False, content=ans)
-    return VerificationOutput(answerable=True, content=ans)
+    if "ANSWERABLE" in upper:
+        content = ans.split(":", 1)[1].strip() if ":" in ans else ans.strip()
+        return VerificationOutput(answerable=True, content=content)
+    return VerificationOutput(answerable=False, content="unparseable verification response")

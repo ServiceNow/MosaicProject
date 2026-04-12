@@ -22,9 +22,11 @@ logger = logging.getLogger(__name__)
 def run_load(
     chunks_local: Path,
     chunks_web: list[Path],
+    curated_web_chunks: list[Path],
     secret_inventory: Path,
     entity_index_dir: Path,
     spacy_model: str,
+    curated_web_docs: Path,
     task_id: str | None = None,
     company: str | None = None,
 ) -> dict:
@@ -67,9 +69,11 @@ def run_load(
     manifest = {
         "chunks_local": str(chunks_local),
         "chunks_web": [str(p) for p in chunks_web],
+        "curated_web_chunks": [str(p) for p in curated_web_chunks],
         "secret_inventory": str(secret_inventory),
         "entity_index_dir": str(entity_index_dir),
         "spacy_model": spacy_model,
+        "curated_web_docs": str(curated_web_docs),
         "n_local_docs": len(local_doc_ids),
         "n_secrets_eligible": len(eligible),
         "n_tasks": len(task_local_doc_ids),

@@ -3,13 +3,13 @@
 
 Usage:
     python -m trajectory_generation.scripts.extract_bad_seeds \
-        --input making_dataset_2/outputs/chains_all.jsonl \
-        --chain-ids 17453ea8 b0d08ed6 \
-        --output ~/detailed_trajectory_logs/bad_seeds.jsonl
+        --input ~/trajectory_generation_runs/reference_run/chains.jsonl \
+        --chain-ids <chain_id_1> <chain_id_2> \
+        --output ~/trajectory_generation_runs/bad_seeds.jsonl
 
 Or extract from all filtered chains that scored high (to test same seeds with new pipeline):
     python -m trajectory_generation.scripts.extract_bad_seeds \
-        --input making_dataset_2/outputs/chains_all_filtered.jsonl \
+        --input ~/trajectory_generation_runs/reference_run/chains_filtered.jsonl \
         --output bad_seeds_sample.jsonl \
         --max 10
 """
