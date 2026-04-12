@@ -14,7 +14,7 @@ The current package shape is meant to be readable and presentation-ready:
 pip install -e .
 ```
 
-Place or symlink the required inputs into `trajectory_generation/data/`, or point the package at your own locations with `MOSAIC_TRAJ_*` environment variables:
+Place or symlink the required inputs into `trajectory_generation/data/`, or pass explicit paths on the command line:
 
 - `chunks_local.jsonl`
 - `chunks_web.jsonl`
@@ -22,10 +22,16 @@ Place or symlink the required inputs into `trajectory_generation/data/`, or poin
 - optional `chunks_curated_web.jsonl`
 - optional `docs_curated_web.jsonl`
 
-Run the full pipeline:
+Historical rerun defaults are captured in the repo-level scripts:
 
 ```bash
-python -m trajectory_generation.run \
+./scripts/run_generation_local_qwen.sh \
+  --output-dir ~/trajectory_generation_runs/example_run
+```
+
+```bash
+./scripts/run_generation_step.sh \
+  --base-url http://your-step-endpoint:8000/v1 \
   --output-dir ~/trajectory_generation_runs/example_run
 ```
 
@@ -48,4 +54,5 @@ python -m trajectory_generation.scripts.view_generation \
 - [`trajectory_generation/`](./trajectory_generation) main package
 - [`trajectory_generation/data/`](./trajectory_generation/data) default location for local inputs
 - [`trajectory_generation/src/retrieval/`](./trajectory_generation/src/retrieval) local and web retrieval code
+- [`scripts/`](./scripts) explicit run wrappers for the local Qwen path, the Step path, and the reusable web retriever
 - [`docs/`](./docs) advisor-facing overview notes

@@ -36,7 +36,7 @@ class FilteredSearcher:
 
 
 class WeightedRRFSearcher:
-    """Fuse multiple retrieval sources with weighted reciprocal-rank fusion."""
+    """Blend ranked lists from multiple retrieval sources."""
 
     def __init__(
         self,

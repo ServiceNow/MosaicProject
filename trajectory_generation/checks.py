@@ -5,6 +5,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
+from trajectory_generation import config
 from trajectory_generation.normalization import canonical_match, canonical_tokens, canonicalize_surface
 
 ANSWER_WITHOUT_DOC_PROMPT = """Is the answer to this question obvious or common knowledge?
@@ -95,7 +96,8 @@ def check_answerable_without_doc(
     raw = llm.chat(
         [{"role": "user", "content": ANSWER_WITHOUT_DOC_PROMPT.format(question=question)}],
         temperature=0.0,
-        max_tokens=150,
+        max_tokens=config.SHORT_CALL_MAX_TOKENS,
+        use_min_max_tokens=False,
     )
     answer_line, justification = _parse_answer_justification(raw)
 
@@ -125,7 +127,8 @@ def check_answer_needs_backref(question: str, prev_answer: str, llm) -> BackrefC
             placeholder=placeholder,
         )}],
         temperature=0.0,
-        max_tokens=150,
+        max_tokens=config.SHORT_CALL_MAX_TOKENS,
+        use_min_max_tokens=False,
     )
     answer_line, justification = _parse_answer_justification(raw)
     if answer_line.upper() == "NOT_ANSWERABLE":
@@ -137,7 +140,8 @@ def check_search_leaks_bridge(question: str, bridge_value: str, llm) -> SearchLe
     raw = llm.chat(
         [{"role": "user", "content": SEARCH_LEAK_PROMPT.format(question=question)}],
         temperature=0.0,
-        max_tokens=300,
+        max_tokens=config.SHORT_CALL_MAX_TOKENS,
+        use_min_max_tokens=False,
     )
     cleaned = _strip_think_tags(raw)
     queries = [m.group(1).strip() for m in re.finditer(r"^\d+\.\s*(.+)$", cleaned, re.MULTILINE)]

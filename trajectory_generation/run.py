@@ -58,6 +58,7 @@ def main() -> int:
     p.add_argument("--curated-web-chunks", nargs="+", type=Path, default=[config.CURATED_WEB_CHUNKS])
     p.add_argument("--secrets", type=Path, default=config.SECRET_INVENTORY)
     p.add_argument("--curated-web-docs", type=Path, default=config.CURATED_WEB_DOCS)
+    p.add_argument("--browsecomp-search-url", default=config.BROWSECOMP_SEARCH_URL, help="Optional shared web retriever endpoint.")
     p.add_argument("--task", default=None, help="Only run one task ID.")
     p.add_argument("--company", default=None, help="Only run tasks that match this company name.")
 
@@ -77,7 +78,13 @@ def main() -> int:
         "--max-tokens",
         type=int,
         default=config.DEFAULT_MAX_TOKENS,
-        help="Max output tokens per LLM call (default: %(default)s).",
+        help="Max output tokens for long generation calls (default: %(default)s).",
+    )
+    p.add_argument(
+        "--short-max-tokens",
+        type=int,
+        default=config.SHORT_CALL_MAX_TOKENS,
+        help="Max output tokens for ranking, checking, verification, and rewording calls (default: %(default)s).",
     )
     p.add_argument(
         "--prompt-reasoning-mode",
@@ -88,6 +95,9 @@ def main() -> int:
     args = p.parse_args()
 
     config.DEFAULT_MAX_TOKENS = args.max_tokens
+    config.SHORT_CALL_MAX_TOKENS = args.short_max_tokens
+    config.SEMANTIC_JUDGE_MAX_TOKENS = args.short_max_tokens
+    config.BROWSECOMP_SEARCH_URL = args.browsecomp_search_url
     config.PROMPT_REASONING_MODE = args.prompt_reasoning_mode
 
     run_dir = args.output_dir

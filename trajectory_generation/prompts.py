@@ -1,4 +1,4 @@
-"""Prompt templates for chain generation, verification, and legacy experiments."""
+"""Prompt templates for chain generation and verification."""
 
 LEGACY_PROMPT_CONSTRAINED = '''\
 You are writing one question in a multi-hop QA chain.
@@ -66,7 +66,7 @@ Rules for the question:
   The PREVIOUS ANSWER must discriminate between multiple possible answers — changing its value should change the answer.
   BAD: "Who stars in The Wolf of Wall Street and was born in [PREV]?" (answer is Leo regardless)
   BAD: "What firm reported [PREV] of companies published ESG reports?" (only one firm does this study)
-  BAD: If someone could search for other distinctive phrases in the question (e.g. "The Loyal Subjects Jem and the Holograms") and find the answer without the PREVIOUS ANSWER, the question is bad.
+  BAD: If someone could search for another unique phrase already in the question and find the answer without the PREVIOUS ANSWER, the question is bad.
   GOOD: "What regulation does [PREV] comply with?" (answer depends on [PREV])
 - The question must be SPECIFIC enough to have exactly one correct answer.
 - The PREVIOUS ANSWER should be the key identifying detail that pins down the answer.

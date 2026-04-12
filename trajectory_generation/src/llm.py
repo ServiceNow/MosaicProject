@@ -37,8 +37,6 @@ class LLMClient:
         self._local = threading.local()
         self.model = model
         self.min_max_tokens = min_max_tokens
-        model_l = model.lower()
-        self._force_large_max_tokens = model_l.startswith("step-") or "step-3.5" in model_l
 
     def _get_client(self):
         client = getattr(self._local, "client", None)
@@ -59,9 +57,10 @@ class LLMClient:
     ) -> str:
         """Send chat completion, return assistant text."""
         effective_max = max_tokens
-        if self._force_large_max_tokens and self.min_max_tokens:
-            effective_max = max(max_tokens, self.min_max_tokens)
-        elif use_min_max_tokens and self.min_max_tokens:
+        # Build/filter/reword attach a long-form floor through min_max_tokens.
+        # Short ranking/checking calls pass use_min_max_tokens=False so the
+        # visible per-call limit is the real one.
+        if use_min_max_tokens and self.min_max_tokens:
             effective_max = max(max_tokens, self.min_max_tokens)
         kwargs = {
             "model": self.model,

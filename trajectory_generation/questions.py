@@ -341,9 +341,10 @@ def rank_questions(
     raw = llm.chat(
         [{"role": "user", "content": prompt}],
         temperature=0.0,
-        max_tokens=256,
+        max_tokens=config.SHORT_CALL_MAX_TOKENS,
         top_p=config.DEFAULT_TOP_P,
         top_k=config.DEFAULT_TOP_K,
+        use_min_max_tokens=False,
     )
 
     numbers = [int(x) for x in re.findall(r"\d+", raw)]

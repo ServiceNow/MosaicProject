@@ -5,6 +5,7 @@ Multi-hop chain generation lives inside `trajectory_generation`.
 ## Runtime Shape
 
 - `run.py` is the main pipeline entrypoint.
+- `scripts/` holds explicit wrappers for the local Qwen run path, the Step run path, and the reusable web retriever.
 - `stages/` holds the resumable pipeline stages: load, build, verify, filter, reword.
 - `chain_builder.py`, `questions.py`, `checks.py`, and `normalization.py` implement the active chain-construction logic.
 - `src/retrieval/` contains local search, web search, and the code that combines search results.
@@ -21,4 +22,4 @@ The build stage combines:
 
 ## Package Boundary
 
-The package includes its own runtime configuration, retrieval adapters, data-loading utilities, and pipeline entrypoints. The expected input files live under `trajectory_generation/data/` by default, with environment-variable overrides if you want the data somewhere else.
+The package includes its own runtime configuration, retrieval adapters, data-loading utilities, and pipeline entrypoints. The expected input files live under `trajectory_generation/data/` by default, but the preferred way to vary experiments is to pass explicit CLI arguments through `trajectory_generation.run` or the repo-level shell wrappers.

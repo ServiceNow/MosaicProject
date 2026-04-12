@@ -82,18 +82,23 @@ LOOKAHEAD_MODE = "beam"  # off | score_only | beam
 LOOKAHEAD_DEPTH = 1
 BEAM_WIDTH = 3
 
-# Semantic transition judge.
-SEMANTIC_JUDGE_TEMPERATURE = 0.0
-SEMANTIC_JUDGE_MAX_TOKENS = 512
-
 # Verification strictness.
 STRICT_VERIFY_ANSWER_MATCH = True
 
-# LLM output limit.
-# 8k is a better default for the current 32k-context hosted models: it gives
-# the generative steps room to think without causing the verifier/client to ask
-# for 16k completions on long prompts.
+# Long-form generation budget.
+# Historical Step-based runs typically used 16k here; local Qwen runs usually
+# used 8k. Keep the local-friendly default in code and let the run scripts raise
+# it when they target the Step endpoint.
 DEFAULT_MAX_TOKENS = 8192
+
+# Short structured calls use a separate explicit cap so the visible values are
+# honest instead of tiny placeholders like 150 or 300 that later get inflated
+# by the client floor.
+SHORT_CALL_MAX_TOKENS = 8192
+
+# Semantic transition judge.
+SEMANTIC_JUDGE_TEMPERATURE = 0.0
+SEMANTIC_JUDGE_MAX_TOKENS = SHORT_CALL_MAX_TOKENS
 
 # Concurrent prompt batch size for generation-heavy stages.
 GENERATION_BATCH_SIZE = 16

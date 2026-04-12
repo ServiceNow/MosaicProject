@@ -37,9 +37,10 @@ def _reword_question(question: str, prev_hops: list[dict], llm: LLMClient) -> st
     raw = llm.chat(
         [{"role": "user", "content": prompt}],
         temperature=config.DEFAULT_TEMPERATURE,
-        max_tokens=config.DEFAULT_MAX_TOKENS,
+        max_tokens=config.SHORT_CALL_MAX_TOKENS,
         top_p=config.DEFAULT_TOP_P,
         top_k=config.DEFAULT_TOP_K,
+        use_min_max_tokens=False,
     )
     return raw.strip().strip('"').strip()
 

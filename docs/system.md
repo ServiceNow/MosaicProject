@@ -32,8 +32,8 @@ What it does:
 - writes a manifest such as `state_0_load.json`
 
 Toy example:
-- local chunk says a customer survey happened in `September 2024`
-- web chunk says The Loyal Subjects made a deal with `Hasbro` in `September 2024`
+- local chunk says a factory audit finished in `Q2 2024`
+- web chunk says `Northwind Robotics` expanded a plant in `Q2 2024`
 - the saved manifest records where those files came from and which tasks are available
 
 ### 2. `build`
@@ -46,10 +46,10 @@ What it does:
 - ranks the surviving candidates
 
 Toy example:
-- hop 1 question: `When was the customer survey conducted?`
-- hop 1 answer: `September 2024`
-- hop 2 question: `Which company inked a deal with The Loyal Subjects in September 2024?`
-- hop 2 answer: `Hasbro`
+- hop 1 question: `When did the factory audit finish?`
+- hop 1 answer: `Q2 2024`
+- hop 2 question: `Which company expanded a plant in Q2 2024?`
+- hop 2 answer: `Northwind Robotics`
 
 ### 3. `verify`
 
@@ -58,7 +58,7 @@ What it does:
 - helps catch chains that only look good because too much context was handed to the verifier
 
 Toy example:
-- with both documents present, the final answer is `Hasbro`
+- with both documents present, the final answer is `Northwind Robotics`
 - with only the local document present, hop 2 should fail
 - with only the web document present, hop 1 should fail
 
@@ -69,7 +69,7 @@ What it does:
 - removes chains that are technically valid but weak, vague, or low-value
 
 Toy example:
-- keep the chain if `September 2024` is actually needed to find the Hasbro fact
+- keep the chain if `Q2 2024` is actually needed to find the `Northwind Robotics` fact
 - drop it if the second question is too obvious even without the first answer
 
 ### 5. `reword`
@@ -80,7 +80,7 @@ What it does:
 
 Toy example:
 - change `According to the document, which company...` to `Which company...`
-- keep the answer `Hasbro` unchanged
+- keep the answer `Northwind Robotics` unchanged
 
 ## Retrieval
 

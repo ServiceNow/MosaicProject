@@ -17,7 +17,6 @@ from trajectory_generation import config
 
 _VERIFY_DOC_LIMIT = 6_000
 _QUOTE_CONTEXT = 20_000
-_VERIFY_MAX_TOKENS = 512
 
 
 def _context_around_quote(hop: HopRecord) -> str:
@@ -61,7 +60,7 @@ def _verify_condition(
     raw = llm.chat(
         [{"role": "user", "content": prompt}],
         temperature=0.1,
-        max_tokens=_VERIFY_MAX_TOKENS,
+        max_tokens=config.SHORT_CALL_MAX_TOKENS,
         use_min_max_tokens=False,
     )
     duration = round(time.time() - t0, 2)

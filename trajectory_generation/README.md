@@ -21,7 +21,7 @@ The package defaults to `trajectory_generation/data/`:
 - optional `docs_curated_web.jsonl`
 - optional `tasks/` for curated URL refresh utilities
 
-You can override these with `MOSAIC_TRAJ_*` environment variables.
+For experiments, prefer passing explicit CLI arguments or using the repo-level shell wrappers instead of relying on shell-wide defaults.
 
 ## Entry Points
 
@@ -31,4 +31,4 @@ python -m trajectory_generation.src.retrieval.browsecomp_hybrid_server
 python -m trajectory_generation.scripts.view_generation path/to/chains.jsonl
 ```
 
-See the repo-level [examples](../docs/examples.md) and [architecture notes](../docs/architecture.md) for the intended workflow.
+See the repo-level [examples](../docs/examples.md), [architecture notes](../docs/architecture.md), and [run scripts](../scripts) for the intended workflow.

@@ -6,6 +6,7 @@ import logging
 import random
 from typing import Sequence
 
+from trajectory_generation import config
 from trajectory_generation.src.data_loading import LocalDoc, Secret
 from trajectory_generation.src.llm import LLMClient
 from trajectory_generation.src.parsing import parse_qa_with_quote
@@ -115,7 +116,8 @@ def select_web_seed(
             raw = llm.chat(
                 [{"role": "user", "content": prompt}],
                 temperature=0.7,
-                max_tokens=1024,
+                max_tokens=config.SHORT_CALL_MAX_TOKENS,
+                use_min_max_tokens=False,
             )
         except Exception as e:
             logger.debug("Web seed LLM call failed: %s", e)
