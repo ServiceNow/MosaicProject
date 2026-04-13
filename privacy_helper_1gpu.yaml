@@ -26,9 +26,9 @@ command:
   - Qwen/Qwen3-Embedding-4B
 data:
   - 'snow.home.alex_gurung:/home/toolkit'
-  - 'snow.research.tapes.transformers_cache:/transformers_cache:ro'
+  - 'snow.home.alex_gurung:/transformers_cache:ro'
   - 'snow.research.tapes.data:/mnt/llmd/data:ro'
-  - 'snow.research.tapes.results:/mnt/llmd/results:ro'
+  - 'snow.research.rlar.results:/mnt/llmd/results:ro'
   - 'snow.research.tapes.base_models:/mnt/llmd/base_models:ro'
 environmentVars:
   - HOME=/home/toolkit

@@ -1,42 +1,22 @@
 #!/usr/bin/env bash
 
-TIMESTAMP=$(date +%s)
-JOB_NAME=${JOB_NAME:-privacy_helper}
-LOCAL_INDEX_ROOT=${LOCAL_INDEX_ROOT:-/mnt/llmd/results/exps/alexg/privacy_agent/local_indices}
+set -euo pipefail
 
-CONDA_ENV=${CONDA_ENV:-pipeline-rl}
-CONDA_EXE=${CONDA_EXE:-/opt/conda/bin/conda}
-SNAPSHOT=${SNAPSHOT:-0}
-BID=${BID:-7}
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+JOB_SPEC=${JOB_SPEC:-"${SCRIPT_DIR}/privacy_helper_1gpu.yaml"}
 
-HOME_DATA_NAME=${HOME_DATA_NAME:-snow.home.alex_gurung}
-TRANSFORMERS_CACHE_DATA=${TRANSFORMERS_CACHE_DATA:-snow.home.alex_gurung}
-DATA_OBJ=${DATA_OBJ:-snow.research.tapes.data}
-RESULTS_OBJ=${RESULTS_OBJ:-snow.research.rlar.results}
-BASE_MODELS_OBJ=${BASE_MODELS_OBJ:-snow.research.tapes.base_models}
+if [[ ! -f "${JOB_SPEC}" ]]; then
+    echo "Job spec not found: ${JOB_SPEC}" >&2
+    exit 1
+fi
 
-COMMAND="python -m trajectory_generation.src.retrieval.privacy_helper_stack \
---host 0.0.0.0 \
---port 8012 \
---local-index-root ${LOCAL_INDEX_ROOT} \
---browsecomp-index-glob /home/toolkit/BrowseComp-Plus/indexes/qwen3-embedding-4b/corpus.shard*_of_*.pkl \
---browsecomp-corpus Tevatron/browsecomp-plus-corpus \
---browsecomp-index-device cpu \
---embedding-model Qwen/Qwen3-Embedding-4B"
+# The checked-in YAML is the source of truth for the helper job. This wrapper
+# only gives us one stable submit command plus a readable dry-run path.
+if [[ "${DRY_RUN:-0}" == "1" ]]; then
+    echo "eai job submit -f ${JOB_SPEC}"
+    echo
+    cat "${JOB_SPEC}"
+    exit 0
+fi
 
-make job \
-    ENV="${CONDA_ENV}" \
-    CONDA_EXE="${CONDA_EXE}" \
-    SNAPSHOT="${SNAPSHOT}" \
-    BID="${BID}" \
-    CPU=32 \
-    CPU_MEM=512 \
-    GPU=1 \
-    GPU_MEM=80 \
-    JOB_NAME="${JOB_NAME}_${TIMESTAMP}" \
-    HOME_DATA_NAME="${HOME_DATA_NAME}" \
-    TRANSFORMERS_CACHE_DATA="${TRANSFORMERS_CACHE_DATA}" \
-    DATA_OBJ="${DATA_OBJ}" \
-    RESULTS_OBJ="${RESULTS_OBJ}" \
-    BASE_MODELS_OBJ="${BASE_MODELS_OBJ}" \
-    COMMAND="${COMMAND}"
+exec eai job submit -f "${JOB_SPEC}"
