@@ -13,6 +13,9 @@ dependencies = [
     "httpx>=0.27.0",
     "numpy>=1.26.0",
     "openai>=1.0.0",
+    "openpyxl>=3.1.0",
+    "pypdf>=4.2.0",
+    "python-docx>=1.1.0",
     "requests>=2.31.0",
     "spacy>=3.7.0",
 ]
@@ -35,6 +38,9 @@ dev = [
 trajectory-generate = "trajectory_generation.run:main"
 trajectory-browsecomp-server = "trajectory_generation.src.retrieval.browsecomp_hybrid_server:main"
 trajectory-fetch-curated-urls = "trajectory_generation.data_prep.fetch_drbench_urls:main"
+trajectory-chunk-local = "trajectory_generation.data_prep.chunk_local_tasks:main"
+trajectory-extract-secrets = "trajectory_generation.data_prep.extract_local_secrets:main"
+trajectory-filter-secrets = "trajectory_generation.data_prep.filter_local_secrets:main"
 trajectory-view-generation = "trajectory_generation.scripts.view_generation:main"
 trajectory-view-chains = "trajectory_generation.scripts.view_chains:main"
 

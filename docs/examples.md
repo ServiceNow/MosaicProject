@@ -8,6 +8,14 @@ These were the main settings for the late-March 2026 reruns:
 - Local Qwen path: `Qwen/Qwen3-30B-A3B-Instruct-2507` with `--max-tokens 8192`
 - In the older split code, some short calls were written as `150`, `300`, or `1024`, but the shared client often inflated them to the stage floor. In this standalone repo, those short calls now use an explicit `8192` cap so the visible settings match reality better.
 
+## Build Local Inputs
+
+```bash
+./scripts/build_local_chunks.sh
+./scripts/extract_local_secrets_step.sh
+./scripts/filter_local_secrets_step.sh
+```
+
 ## Full Pipeline With Local Qwen
 
 ```bash

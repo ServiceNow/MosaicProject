@@ -35,6 +35,14 @@ Historical rerun defaults are captured in the repo-level scripts:
   --output-dir ~/trajectory_generation_runs/example_run
 ```
 
+To rebuild the local inputs on this machine:
+
+```bash
+./scripts/build_local_chunks.sh
+./scripts/extract_local_secrets_step.sh
+./scripts/filter_local_secrets_step.sh
+```
+
 Render a generated JSONL file to HTML:
 
 ```bash
@@ -54,5 +62,5 @@ python -m trajectory_generation.scripts.view_generation \
 - [`trajectory_generation/`](./trajectory_generation) main package
 - [`trajectory_generation/data/`](./trajectory_generation/data) default location for local inputs
 - [`trajectory_generation/src/retrieval/`](./trajectory_generation/src/retrieval) local and web retrieval code
-- [`scripts/`](./scripts) explicit run wrappers for the local Qwen path, the Step path, and the reusable web retriever
+- [`scripts/`](./scripts) explicit run wrappers for chain generation, local input prep, and the reusable web retriever
 - [`docs/`](./docs) advisor-facing overview notes

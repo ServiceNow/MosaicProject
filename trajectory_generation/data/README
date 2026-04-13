@@ -11,4 +11,11 @@ Symlink or copy the following files here before running the pipeline:
 
 The entity index cache will also be stored here.
 
-See config.py for the full list of expected paths.
+On this machine, the repo-level scripts can rebuild or refresh the local inputs:
+
+  ./scripts/build_local_chunks.sh
+  ./scripts/extract_local_secrets_step.sh
+  ./scripts/filter_local_secrets_step.sh
+
+These files are gitignored on purpose so you can keep large local artifacts here
+without staging them.
