@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mosaicproject"
+version = "0.1.0"
+description = "Standalone trajectory generation package for multi-hop research chains"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "beautifulsoup4>=4.12.0",
+    "httpx>=0.27.0",
+    "numpy>=1.26.0",
+    "openai>=1.0.0",
+    "openpyxl>=3.1.0",
+    "pypdf>=4.2.0",
+    "python-docx>=1.1.0",
+    "requests>=2.31.0",
+    "spacy>=3.7.0",
+]
+
+[project.optional-dependencies]
+search = [
+    "datasets>=2.18.0",
+    "torch>=2.1.0",
+    "transformers>=4.41.0",
+    "tevatron>=0.1.0",
+]
+dense = [
+    "sentence-transformers>=3.0.0",
+]
+dev = [
+    "pytest>=8.0.0",
+]
+
+[project.scripts]
+trajectory-generate = "trajectory_generation.run:main"
+trajectory-browsecomp-server = "trajectory_generation.src.retrieval.browsecomp_hybrid_server:main"
+trajectory-privacy-helper = "trajectory_generation.src.retrieval.privacy_helper_server:main"
+trajectory-fetch-curated-urls = "trajectory_generation.data_prep.fetch_drbench_urls:main"
+trajectory-chunk-local = "trajectory_generation.data_prep.chunk_local_tasks:main"
+trajectory-extract-secrets = "trajectory_generation.data_prep.extract_local_secrets:main"
+trajectory-filter-secrets = "trajectory_generation.data_prep.filter_local_secrets:main"
+trajectory-view-generation = "trajectory_generation.scripts.view_generation:main"
+trajectory-view-chains = "trajectory_generation.scripts.view_chains:main"
+
+[tool.setuptools.packages.find]
+include = ["trajectory_generation*"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
