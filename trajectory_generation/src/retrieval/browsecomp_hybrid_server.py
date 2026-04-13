@@ -14,6 +14,7 @@ from typing import Any
 
 from trajectory_generation import config
 from trajectory_generation.src.retrieval.browsecomp import BrowseCompHybridSearcher
+from trajectory_generation.src.retrieval.dense import OpenAICompatibleBackend
 
 logger = logging.getLogger(__name__)
 
@@ -85,9 +86,9 @@ def main() -> int:
     p.add_argument('--host', default='127.0.0.1', help='Host to bind to.')
     p.add_argument('--port', type=int, default=8011, help='Port to bind to.')
     p.add_argument('--index-glob', default=config.BROWSECOMP_EMBEDDING_INDEX_GLOB, help='Path glob for embedding index shards.')
+    p.add_argument('--embedding-base-url', default=config.BROWSECOMP_EMBEDDING_BASE_URL, help='OpenAI-compatible embedding endpoint.')
     p.add_argument('--model-name', default=config.BROWSECOMP_EMBEDDING_MODEL, help='Embedding model name.')
     p.add_argument('--dataset-name', default=config.BROWSECOMP_DATASET_NAME, help='BrowseComp dataset name or local path.')
-    p.add_argument('--device', default=config.BROWSECOMP_EMBEDDING_DEVICE, help='Device for the embedding model.')
     p.add_argument('--bm25-recall-k', type=int, default=config.BROWSECOMP_BM25_RECALL_K, help='How many BM25 candidates to pull before reranking.')
     p.add_argument('--dense-recall-k', type=int, default=config.BROWSECOMP_DENSE_RECALL_K, help='How many dense candidates to pull before reranking.')
     p.add_argument('--max-chars', type=int, default=8000, help='Maximum text length returned per document.')
@@ -100,11 +101,14 @@ def main() -> int:
     )
 
     logger.info('Loading web retriever...')
+    embedder = OpenAICompatibleBackend(
+        model=args.model_name,
+        base_url=args.embedding_base_url,
+    )
     backend = BrowseCompHybridSearcher(
         index_glob=args.index_glob,
-        model_name=args.model_name,
         dataset_name=args.dataset_name,
-        device=args.device,
+        embedder=embedder,
         bm25_recall_k=args.bm25_recall_k,
         dense_recall_k=args.dense_recall_k,
         max_chars=args.max_chars,

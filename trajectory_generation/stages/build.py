@@ -23,8 +23,12 @@ from trajectory_generation.src.data_loading import (
     load_chunks_local,
     load_secrets,
 )
-from trajectory_generation.src.retrieval.browsecomp import BrowseCompBM25Searcher, BrowseCompHybridSearcher
+from trajectory_generation.src.retrieval.browsecomp import (
+    BrowseCompBM25Searcher,
+    BrowseCompHybridSearcher,
+)
 from trajectory_generation.src.retrieval.composite import FilteredSearcher, WeightedRRFSearcher
+from trajectory_generation.src.retrieval.dense import OpenAICompatibleBackend
 from trajectory_generation.src.retrieval.search_client import SearchClient
 from trajectory_generation.src.retrieval.hybrid import HybridSearcher
 from trajectory_generation.src.format_questions import format_numbered_questions
@@ -577,19 +581,21 @@ def run_build(
                 )
         if browsecomp_searcher is None:
             try:
+                browsecomp_embedder = OpenAICompatibleBackend(
+                    model=config.BROWSECOMP_EMBEDDING_MODEL,
+                    base_url=config.BROWSECOMP_EMBEDDING_BASE_URL,
+                )
                 browsecomp_searcher = BrowseCompHybridSearcher(
                     index_glob=config.BROWSECOMP_EMBEDDING_INDEX_GLOB,
-                    model_name=config.BROWSECOMP_EMBEDDING_MODEL,
                     dataset_name=config.BROWSECOMP_DATASET_NAME,
-                    device=config.BROWSECOMP_EMBEDDING_DEVICE,
+                    embedder=browsecomp_embedder,
                     bm25_recall_k=config.BROWSECOMP_BM25_RECALL_K,
                     dense_recall_k=config.BROWSECOMP_DENSE_RECALL_K,
                 )
                 logger.info(
-                    "BrowseComp local hybrid searcher: %d docs via local Qwen rerank (%s on %s)",
+                    "BrowseComp local hybrid searcher: %d docs via %s",
                     browsecomp_searcher.size,
-                    config.BROWSECOMP_EMBEDDING_MODEL,
-                    config.BROWSECOMP_EMBEDDING_DEVICE,
+                    config.BROWSECOMP_EMBEDDING_BASE_URL,
                 )
             except Exception as e:
                 logger.warning(
