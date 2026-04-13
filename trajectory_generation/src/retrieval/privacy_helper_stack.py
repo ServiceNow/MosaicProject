@@ -4,6 +4,7 @@
 import argparse
 import logging
 import os
+from pathlib import Path
 import signal
 import subprocess
 import sys
@@ -13,6 +14,32 @@ import urllib.request
 from trajectory_generation.src.retrieval.privacy_helper_server import add_helper_arguments
 
 logger = logging.getLogger(__name__)
+
+
+def repo_id_to_cache_dir(model_name: str) -> str:
+    return f"models--{model_name.replace('/', '--')}"
+
+
+def resolve_cached_snapshot(model_name: str, cache_root: str | None) -> str | None:
+    if cache_root is None or Path(model_name).exists():
+        return None
+
+    repo_root = Path(cache_root) / repo_id_to_cache_dir(model_name)
+    snapshots_dir = repo_root / "snapshots"
+    if not snapshots_dir.is_dir():
+        return None
+
+    refs_main = repo_root / "refs" / "main"
+    if refs_main.is_file():
+        revision = refs_main.read_text().strip()
+        snapshot = snapshots_dir / revision
+        if snapshot.is_dir():
+            return str(snapshot)
+
+    snapshots = sorted(path for path in snapshots_dir.iterdir() if path.is_dir())
+    if snapshots:
+        return str(snapshots[0])
+    return None
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
@@ -37,6 +64,11 @@ def build_arg_parser() -> argparse.ArgumentParser:
         "--served-model-name",
         default=os.getenv("PRIVACY_HELPER_SERVED_MODEL_NAME", "qwen3-embedding-4b"),
         help="Optional alias exposed by the colocated vLLM embedding server.",
+    )
+    stack_args.add_argument(
+        "--embedding-model-cache-root",
+        default=os.getenv("PRIVACY_HELPER_MODEL_CACHE_ROOT", "/transformers_cache/hub"),
+        help="Read-only Hugging Face hub cache used to resolve a local embedding model snapshot.",
     )
     stack_args.add_argument(
         "--vllm-dtype",
@@ -93,6 +125,12 @@ def wait_for_http_ok(url: str, timeout_seconds: float) -> None:
 
 
 def build_vllm_command(args: argparse.Namespace) -> list[str]:
+    model_source = resolve_cached_snapshot(args.embedding_model, args.embedding_model_cache_root)
+    if model_source is None:
+        model_source = args.embedding_model
+    else:
+        logger.info("Using cached embedding model snapshot at %s", model_source)
+
     command = [
         sys.executable,
         "-m",
@@ -102,7 +140,7 @@ def build_vllm_command(args: argparse.Namespace) -> list[str]:
         "--port",
         str(args.embed_port),
         "--model",
-        args.embedding_model,
+        model_source,
         "--task",
         "embed",
         "--trust-remote-code",
