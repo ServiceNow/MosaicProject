@@ -39,6 +39,23 @@ To rebuild the local inputs on this machine:
 ./scripts/filter_local_secrets_step.sh
 ```
 
+Start the reusable privacy-agent helper service:
+
+```bash
+./scripts/start_privacy_helper.sh \
+  --host 0.0.0.0 \
+  --port 8012 \
+  --local-index-root /mnt/llmd/results/exps/alexg/privacy_agent/local_indices
+```
+
+This service is designed to sit behind an internal DNS name for PipelineRL
+actor jobs. It serves:
+
+- `/embed` for local/overlay embeddings
+- `/local/search` for task-local private document retrieval
+- `/browsecomp/search` for BrowseComp-Plus hybrid retrieval
+- `/health` for startup checks
+
 Render a generated JSONL file to HTML:
 
 ```bash
@@ -59,4 +76,5 @@ python -m trajectory_generation.scripts.view_generation \
 - [`trajectory_generation/data/`](./trajectory_generation/data) default location for local inputs
 - [`trajectory_generation/src/retrieval/`](./trajectory_generation/src/retrieval) local and web retrieval code
 - [`scripts/`](./scripts) explicit run wrappers for chain generation, local input prep, and the reusable web retriever
+- [`scripts/start_privacy_helper.sh`](./scripts/start_privacy_helper.sh) reusable helper for privacy-agent retrieval workloads
 - [`docs/`](./docs) advisor-facing overview notes

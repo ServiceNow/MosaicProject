@@ -1,7 +1,5 @@
 """Stage 4: Filter chains with LLM judge scoring."""
 
-from __future__ import annotations
-
 import json
 import logging
 import re

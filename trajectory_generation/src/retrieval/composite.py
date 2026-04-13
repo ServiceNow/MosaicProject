@@ -1,7 +1,5 @@
 """Composable retrieval adapters for trajectory generation."""
 
-from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import Any, Iterable
 

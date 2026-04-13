@@ -4,8 +4,6 @@ Runs in parallel: no_docs, first_only, last_only, all_docs. Valid when
 first three are NOT_ANSWERABLE and all_docs is ANSWERABLE with correct answer.
 """
 
-from __future__ import annotations
-
 import concurrent.futures
 import time
 

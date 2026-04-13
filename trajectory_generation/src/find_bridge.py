@@ -6,8 +6,6 @@ narrows to topically relevant docs first. Skips bridge entities where one
 is a substring of the other (e.g. "2025" vs "Q2 2025").
 """
 
-from __future__ import annotations
-
 import logging
 from dataclasses import dataclass
 from typing import Any

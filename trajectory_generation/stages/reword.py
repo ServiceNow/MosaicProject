@@ -1,7 +1,5 @@
 """Stage 5: Reword questions to fix doc references and vague phrasing."""
 
-from __future__ import annotations
-
 import json
 import logging
 from pathlib import Path

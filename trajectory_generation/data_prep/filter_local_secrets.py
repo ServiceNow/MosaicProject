@@ -1,7 +1,5 @@
 """Score and filter an extracted secret inventory."""
 
-from __future__ import annotations
-
 import argparse
 import json
 import re

@@ -6,8 +6,6 @@ successful pages when possible, and only hits the network for missing or failed
 entries unless ``--force-refetch`` is set.
 """
 
-from __future__ import annotations
-
 import argparse
 import json
 import logging

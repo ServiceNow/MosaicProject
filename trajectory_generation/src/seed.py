@@ -1,7 +1,5 @@
 """Step 1: Select seed for chain. L-seeds from inventory, W-seeds via LLM."""
 
-from __future__ import annotations
-
 import logging
 import random
 from typing import Sequence

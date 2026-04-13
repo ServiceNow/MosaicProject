@@ -4,8 +4,6 @@ This module contains the small amount of BrowseComp code needed by the
 generator so the package can run without importing the larger neighboring repos.
 """
 
-from __future__ import annotations
-
 import glob
 import logging
 import pickle
@@ -31,6 +29,34 @@ def _load_dataset(dataset_name: str):
     else:
         dataset = load_dataset(dataset_name, split="train")
 
+    first_row = dataset[0] if len(dataset) > 0 else {}
+    if isinstance(first_row, dict) and "docid" not in first_row:
+        flattened_docs: list[dict[str, str]] = []
+        seen_docids: set[str] = set()
+        for row in dataset:
+            for field_name in ("gold_docs", "negative_docs", "evidence_docs"):
+                docs = row.get(field_name) or []
+                if not isinstance(docs, list):
+                    continue
+                for doc in docs:
+                    if not isinstance(doc, dict):
+                        continue
+                    docid = doc.get("docid")
+                    if docid is None:
+                        continue
+                    docid_str = str(docid)
+                    if docid_str in seen_docids:
+                        continue
+                    seen_docids.add(docid_str)
+                    flattened_docs.append(
+                        {
+                            "docid": docid_str,
+                            "url": doc.get("url") or "",
+                            "text": doc.get("text") or "",
+                        }
+                    )
+        dataset = flattened_docs
+
     docid_to_idx: dict[str, int] = {}
     docid_to_url: dict[str, str] = {}
     for idx, row in enumerate(dataset):
@@ -39,7 +65,9 @@ def _load_dataset(dataset_name: str):
             continue
         docid_str = str(docid)
         docid_to_idx[docid_str] = idx
+        docid_to_idx[f"web/{docid_str}"] = idx
         docid_to_url[docid_str] = row.get("url") or ""
+        docid_to_url[f"web/{docid_str}"] = row.get("url") or ""
     return dataset, docid_to_idx, docid_to_url
 
 
@@ -58,6 +86,13 @@ def _load_cached_bm25(cache_path: Path):
     with cache_path.open("rb") as f:
         data = pickle.load(f)
 
+    mapping = data.get("mapping")
+    if mapping is None:
+        mapping = data.get("idx_to_lookup")
+    if mapping is None:
+        logger.warning("Ignoring incompatible BM25 cache at %s", cache_path)
+        return None
+
     bm25 = BM25Index.__new__(BM25Index)
     bm25._docs = []
     bm25._k1 = data["k1"]
@@ -67,7 +102,7 @@ def _load_cached_bm25(cache_path: Path):
     bm25._avgdl = data["avgdl"]
     bm25._df = data["df"]
     bm25._inv = data["inv"]
-    return bm25, data["mapping"]
+    return bm25, mapping
 
 
 def _save_cached_bm25(cache_path: Path, bm25: BM25Index, mapping: Any) -> None:
@@ -283,8 +318,8 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
         candidate_lookup_idxs: set[int] = set()
 
         if self.bm25 is not None and self._bm25_idx_to_lookup_idx is not None:
-            for bm25_idx, _score in self.bm25.search(query, k=self.bm25_recall_k):
-                lookup_i = self._bm25_idx_to_lookup_idx.get(int(bm25_idx))
+            for bm25_hit in self.bm25.search(query, k=self.bm25_recall_k):
+                lookup_i = self._bm25_idx_to_lookup_idx.get(int(bm25_hit.doc_idx))
                 if lookup_i is not None:
                     candidate_lookup_idxs.add(int(lookup_i))
 

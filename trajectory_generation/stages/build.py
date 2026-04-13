@@ -4,8 +4,6 @@ Accepts patterns, max_chains/per_task, and optional seeds_from file.
 Output: chains.jsonl, append-only with resume by chain index.
 """
 
-from __future__ import annotations
-
 import gc
 import json
 import logging

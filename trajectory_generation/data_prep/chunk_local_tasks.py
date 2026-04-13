@@ -1,27 +1,17 @@
 """Build local document chunks from a DrBench-style task directory."""
 
-from __future__ import annotations
-
 import argparse
 import json
+import logging
 import re
 from dataclasses import dataclass
 from pathlib import Path
 
-try:
-    import docx
-except ImportError:  # pragma: no cover - optional dependency
-    docx = None
+import docx
+import openpyxl
+import pypdf
 
-try:
-    import openpyxl
-except ImportError:  # pragma: no cover - optional dependency
-    openpyxl = None
-
-try:
-    import pypdf
-except ImportError:  # pragma: no cover - optional dependency
-    pypdf = None
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -91,56 +81,73 @@ def _prefer_markdown(path: Path) -> bool:
     return path.suffix.lower() == ".pdf" and path.with_suffix(".md").exists()
 
 
-def _read_pdf(path: Path) -> str:
-    if pypdf is None:
-        return ""
+def _read_pdf(path: Path) -> str | None:
     try:
         reader = pypdf.PdfReader(str(path))
-    except Exception:
-        return ""
+    except Exception as exc:
+        logger.warning("Failed to open PDF %s: %s", path, exc)
+        return None
     parts: list[str] = []
-    for page in reader.pages:
+    page_failures: list[int] = []
+    first_error: Exception | None = None
+    for page_number, page in enumerate(reader.pages, start=1):
         try:
             text = page.extract_text() or ""
-        except Exception:
+        except Exception as exc:
+            if first_error is None:
+                first_error = exc
+            page_failures.append(page_number)
             text = ""
         if text.strip():
             parts.append(text)
+    if page_failures:
+        logger.warning(
+            "Failed to extract text from %d page(s) in %s; first failure on page %d: %s",
+            len(page_failures),
+            path,
+            page_failures[0],
+            first_error,
+        )
     return "\n\n".join(parts).strip()
 
 
-def _read_docx(path: Path) -> str:
-    if docx is None:
-        return ""
+def _read_docx(path: Path) -> str | None:
     try:
         document = docx.Document(str(path))
-    except Exception:
-        return ""
+    except Exception as exc:
+        logger.warning("Failed to open DOCX %s: %s", path, exc)
+        return None
     return "\n".join(p.text for p in document.paragraphs if p.text.strip()).strip()
 
 
-def _read_xlsx(path: Path) -> str:
-    if openpyxl is None:
-        return ""
+def _read_xlsx(path: Path) -> str | None:
     try:
         workbook = openpyxl.load_workbook(path, read_only=True, data_only=True)
-    except Exception:
-        return ""
+    except Exception as exc:
+        logger.warning("Failed to open spreadsheet %s: %s", path, exc)
+        return None
     lines: list[str] = []
-    for sheet in workbook.worksheets:
-        for row in sheet.iter_rows(values_only=True):
-            line = " | ".join("" if cell is None else str(cell) for cell in row).strip()
-            if line and line.replace("|", "").strip():
-                lines.append(line)
+    try:
+        for sheet in workbook.worksheets:
+            for row in sheet.iter_rows(values_only=True):
+                line = " | ".join("" if cell is None else str(cell) for cell in row).strip()
+                if line and line.replace("|", "").strip():
+                    lines.append(line)
+    finally:
+        workbook.close()
     return "\n".join(lines).strip()
 
 
-def _read_jsonl(path: Path) -> str:
+def _read_jsonl(path: Path) -> str | None:
     lines: list[str] = []
     try:
         raw_lines = path.read_text(encoding="utf-8").splitlines()
-    except UnicodeDecodeError:
-        return ""
+    except UnicodeDecodeError as exc:
+        logger.warning("Failed to decode JSONL %s as UTF-8: %s", path, exc)
+        return None
+    except OSError as exc:
+        logger.warning("Failed to read JSONL %s: %s", path, exc)
+        return None
     for raw in raw_lines:
         raw = raw.strip()
         if not raw:
@@ -164,19 +171,24 @@ def _read_jsonl(path: Path) -> str:
     return "\n".join(lines).strip()
 
 
-def _read_text_file(path: Path) -> str:
+def _read_text_file(path: Path) -> str | None:
     try:
         return path.read_text(encoding="utf-8").strip()
     except UnicodeDecodeError:
         try:
             return path.read_text(encoding="latin-1").strip()
-        except Exception:
-            return ""
-    except Exception:
-        return ""
+        except OSError as exc:
+            logger.warning("Failed to read text file %s: %s", path, exc)
+            return None
+        except UnicodeDecodeError as exc:
+            logger.warning("Failed to decode text file %s as UTF-8 or latin-1: %s", path, exc)
+            return None
+    except OSError as exc:
+        logger.warning("Failed to read text file %s: %s", path, exc)
+        return None
 
 
-def _read_file(path: Path) -> str:
+def _read_file(path: Path) -> str | None:
     ext = path.suffix.lower()
     if ext in {".md", ".txt", ".csv"}:
         return _read_text_file(path)
@@ -336,6 +348,7 @@ def _emit_doc_chunks(
 
 def main() -> int:
     args = _parse_args()
+    logging.basicConfig(level=logging.WARNING, format="%(levelname)s %(message)s")
     cfg = ChunkConfig(
         target_words=args.target_words,
         overlap_words=args.overlap_words,
@@ -357,6 +370,8 @@ def main() -> int:
                 if args.prefer_md and _prefer_markdown(file_path):
                     continue
                 text = _read_file(file_path)
+                if text is None:
+                    continue
                 if len(text.strip()) < 50:
                     continue
                 relative_path = file_path.relative_to(files_dir)

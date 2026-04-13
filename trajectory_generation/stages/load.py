@@ -3,8 +3,6 @@
 Outputs a JSON manifest with paths and metadata for downstream stages.
 """
 
-from __future__ import annotations
-
 import json
 import logging
 from pathlib import Path

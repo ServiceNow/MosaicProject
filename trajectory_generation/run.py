@@ -7,8 +7,6 @@ Logs go to ~/trajectory_generation_runs/<run_id>/
 Resume with --from-stage N.
 """
 
-from __future__ import annotations
-
 import argparse
 import logging
 import sys

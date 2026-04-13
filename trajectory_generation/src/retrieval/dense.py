@@ -1,7 +1,5 @@
 """Dense (embedding) index and embedding backends for retrieval."""
 
-from __future__ import annotations
-
 import hashlib
 import os
 from dataclasses import dataclass

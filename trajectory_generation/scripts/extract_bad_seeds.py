@@ -14,8 +14,6 @@ Or extract from all filtered chains that scored high (to test same seeds with ne
         --max 10
 """
 
-from __future__ import annotations
-
 import argparse
 import json
 from pathlib import Path

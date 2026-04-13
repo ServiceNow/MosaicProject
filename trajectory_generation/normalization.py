@@ -7,8 +7,6 @@ These helpers intentionally keep a simple, human-readable canonical form:
 - punctuation and spacing are simplified
 """
 
-from __future__ import annotations
-
 import re
 
 _MODIFIERS = {

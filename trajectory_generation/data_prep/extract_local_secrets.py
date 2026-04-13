@@ -1,7 +1,5 @@
 """Extract a secret inventory from local chunks."""
 
-from __future__ import annotations
-
 import argparse
 import json
 import re

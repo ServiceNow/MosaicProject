@@ -1,7 +1,5 @@
 """Convert chain hops to numbered question format with (N) back-references."""
 
-from __future__ import annotations
-
 import re
 
 

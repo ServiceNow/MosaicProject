@@ -10,8 +10,6 @@ Usage:
   python -m trajectory_generation.scripts.view_generation chains.jsonl -o chains.html --open
 """
 
-from __future__ import annotations
-
 import argparse
 import html
 import json

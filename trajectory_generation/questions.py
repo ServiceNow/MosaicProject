@@ -1,7 +1,5 @@
 """Question generation helpers for the current trajectory generator."""
 
-from __future__ import annotations
-
 import logging
 import re
 import time

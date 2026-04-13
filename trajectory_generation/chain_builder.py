@@ -10,8 +10,6 @@ returns to a simpler original-style loop:
 5. verify only after the chain is complete
 """
 
-from __future__ import annotations
-
 import logging
 import time
 import uuid

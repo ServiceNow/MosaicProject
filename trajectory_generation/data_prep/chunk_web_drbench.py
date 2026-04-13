@@ -8,8 +8,6 @@ Chunking is paragraph/heading aware:
 - Splits at paragraph boundaries, adds heading prefix (Title > H2 > H3)
 """
 
-from __future__ import annotations
-
 import argparse
 import json
 from dataclasses import dataclass

@@ -5,8 +5,6 @@ This lets you load the heavier web retrieval stack once and reuse it across
 multiple generation runs.
 """
 
-from __future__ import annotations
-
 import argparse
 import json
 import logging

@@ -1,7 +1,5 @@
 """Load secret inventory, eval.json seeds, local chunks, and build full-document lookups."""
 
-from __future__ import annotations
-
 import json
 from collections import defaultdict
 from dataclasses import dataclass

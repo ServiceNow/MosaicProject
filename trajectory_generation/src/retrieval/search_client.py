@@ -1,7 +1,5 @@
 """HTTP client for the BM25 search server."""
 
-from __future__ import annotations
-
 import logging
 
 import httpx

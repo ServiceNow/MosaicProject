@@ -1,7 +1,5 @@
 """In-memory BM25 index. Zero external dependencies."""
 
-from __future__ import annotations
-
 import heapq
 import math
 import re

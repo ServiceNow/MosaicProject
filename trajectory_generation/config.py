@@ -1,7 +1,5 @@
 """Configuration and default paths for trajectory generation."""
 
-from __future__ import annotations
-
 import os
 from pathlib import Path
 

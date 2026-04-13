@@ -1,7 +1,5 @@
 """Thin LLM client wrapper over any OpenAI-compatible API."""
 
-from __future__ import annotations
-
 from concurrent.futures import ThreadPoolExecutor
 import logging
 import os

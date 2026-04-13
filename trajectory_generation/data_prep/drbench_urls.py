@@ -1,7 +1,5 @@
 """Extract DrBench seed URLs from task context.json files."""
 
-from __future__ import annotations
-
 import hashlib
 import json
 from collections import defaultdict
