@@ -1,0 +1,29 @@
+image: registry.toolkit-sp.yul201.service-now.com/snow.research.tapes/interactive-toolkit:throughput
+name: privacy_helper_probe
+workdir: /home/toolkit/my_code/MosaicProject
+command:
+  - /opt/conda/bin/conda
+  - run
+  - -n
+  - pipeline-rl
+  - --no-capture-output
+  - python
+  - -c
+  - |
+      import json
+      import urllib.request
+
+      url = "http://dns-privacy-helper:8012/health"
+      with urllib.request.urlopen(url, timeout=30) as response:
+          print(json.dumps(json.loads(response.read().decode()), indent=2, sort_keys=True))
+data:
+  - 'snow.home.alex_gurung:/home/toolkit'
+environmentVars:
+  - HOME=/home/toolkit
+  - PYTHONNOUSERSITE=1
+  - PYTHONPATH=/home/toolkit/my_code/MosaicProject
+resources:
+  cpu: 2
+  mem: 8
+preemptable: true
+restartable: false
