@@ -1,12 +1,8 @@
 # MosaicProject
 
-MosaicProject is a standalone package for generating multi-hop research chains from local documents and a fixed set of web documents. The repo exposes one main Python package, [`trajectory_generation`](./trajectory_generation).
+Repo for our privacy-aware dataset creation (and eventually agent training)
 
-The current package shape is meant to be readable and presentation-ready:
-- one generator package
-- no runtime dependency on the neighboring `drbench` or `making_dataset` repos
-- default data/config paths under `trajectory_generation/data/`
-- concise documentation for architecture, system behavior, and representative commands
+[`trajectory_generation`](./trajectory_generation) shows how we generate multi-hop research questions that rely on both private (enterprise) documents and external web documents (from browsecomp-plus).
 
 ## Quick Start
 
