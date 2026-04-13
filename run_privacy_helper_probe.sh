@@ -18,4 +18,4 @@ if [[ "${DRY_RUN:-0}" == "1" ]]; then
     exit 0
 fi
 
-exec eai job submit --account "${ACCOUNT}" -f "${JOB_SPEC}"
+exec eai job submit --account "${ACCOUNT}" --format json -f "${JOB_SPEC}"

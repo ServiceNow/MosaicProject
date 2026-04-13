@@ -6,9 +6,17 @@ SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 JOB_SPEC=${JOB_SPEC:-"${SCRIPT_DIR}/privacy_helper_1gpu.yaml"}
 DEFAULT_SUFFIX=$(date +%s)
 JOB_NAME=${JOB_NAME:-"privacy_helper_1gpu_${DEFAULT_SUFFIX}"}
-DNS_NAME=${DNS_NAME:-"dns-privacy-helper"}
 ACCOUNT=${ACCOUNT:-"snow.research.rlar"}
 TMP_JOB_SPEC=""
+
+DEFAULT_DNS_NAME=$(
+python - <<'PY'
+import uuid
+
+print(f"dns-{uuid.uuid4()}-privacy-helper")
+PY
+)
+DNS_NAME=${DNS_NAME:-"${DEFAULT_DNS_NAME}"}
 
 if [[ ! -f "${JOB_SPEC}" ]]; then
     echo "Job spec not found: ${JOB_SPEC}" >&2
@@ -80,12 +88,30 @@ helper_url="http://${DNS_NAME}:8012"
 # only fills in the runtime name so repeated submits do not collide.
 if [[ "${DRY_RUN:-0}" == "1" ]]; then
     echo "eai job submit --account ${ACCOUNT} -f ${TMP_JOB_SPEC}"
-    echo "helper_url=${helper_url}"
+    echo "requested_internal_url=${helper_url}"
     echo
     cat "${TMP_JOB_SPEC}"
     exit 0
 fi
 
-eai job submit --account "${ACCOUNT}" -f "${TMP_JOB_SPEC}"
+submit_output=$(eai job submit --account "${ACCOUNT}" --format json -f "${TMP_JOB_SPEC}")
+echo "${submit_output}"
+
+python - <<'PY' "${submit_output}" "${helper_url}"
+import json
+import sys
+
+payload = json.loads(sys.argv[1])
+if isinstance(payload, list):
+    payload = payload[0]
+
+access_url = payload.get("accessUrl") or ""
+requested_internal_url = sys.argv[2]
+
+print()
+if access_url:
+    print(f"access_url={access_url}")
+    print(f"health_url={access_url.rstrip('/')}/health")
+print(f"requested_internal_url={requested_internal_url}")
+PY
 echo
-echo "helper_url=${helper_url}"
