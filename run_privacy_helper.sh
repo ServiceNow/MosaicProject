@@ -22,22 +22,55 @@ cleanup() {
 
 trap cleanup EXIT
 
-TMP_JOB_SPEC=$(mktemp)
+TMP_JOB_SPEC=$(mktemp /tmp/privacy_helper_job.XXXXXX.yaml)
 
 python - "${JOB_SPEC}" "${TMP_JOB_SPEC}" "${JOB_NAME}" "${DNS_NAME}" <<'PY'
 import sys
 
-import yaml
-
 src_path, dst_path, job_name, dns_name = sys.argv[1:5]
-with open(src_path) as f:
-    spec = yaml.safe_load(f)
 
-spec["name"] = job_name
-spec.setdefault("options", {}).setdefault("internal-dns", {})["name"] = dns_name
+with open(src_path) as f:
+    lines = f.readlines()
+
+rewritten = []
+replaced_job_name = False
+in_internal_dns = False
+replaced_dns_name = False
+
+for line in lines:
+    if not replaced_job_name and line.startswith("name: "):
+        rewritten.append(f"name: {job_name}\n")
+        replaced_job_name = True
+        continue
+
+    if line.startswith("options:"):
+        in_internal_dns = False
+        rewritten.append(line)
+        continue
+
+    if line.startswith("  internal-dns:"):
+        in_internal_dns = True
+        rewritten.append(line)
+        continue
+
+    if in_internal_dns and not replaced_dns_name and line.startswith("    name: "):
+        rewritten.append(f"    name: {dns_name}\n")
+        replaced_dns_name = True
+        continue
+
+    if in_internal_dns and line.startswith("    ports:"):
+        in_internal_dns = False
+
+    rewritten.append(line)
+
+if not replaced_job_name:
+    raise SystemExit("Could not find top-level job name in helper spec")
+
+if not replaced_dns_name:
+    raise SystemExit("Could not find internal DNS name in helper spec")
 
 with open(dst_path, "w") as f:
-    yaml.safe_dump(spec, f, sort_keys=False)
+    f.writelines(rewritten)
 PY
 
 helper_url="http://${DNS_NAME}:8012"
