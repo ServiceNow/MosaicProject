@@ -13,7 +13,7 @@ DEFAULT_DNS_NAME=$(
 python - <<'PY'
 import uuid
 
-print(f"dns-{uuid.uuid4()}-privacy-helper")
+print(f"privacy-helper-{uuid.uuid4().hex[:8]}")
 PY
 )
 DNS_NAME=${DNS_NAME:-"${DEFAULT_DNS_NAME}"}
