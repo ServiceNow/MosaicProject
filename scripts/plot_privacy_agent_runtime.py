@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import ast
 import csv
+import html
 import json
 import math
 import re
@@ -336,7 +337,18 @@ def plot_hist_and_ecdf(
 def plot_bar(counter: Counter[str], path: Path, *, title: str, xlabel: str, ylabel: str) -> None:
     if not counter:
         return
-    labels, values = zip(*counter.most_common())
+    def _numeric_key(value: str) -> tuple[int, str]:
+        try:
+            return (0, f"{int(value):08d}")
+        except ValueError:
+            return (1, value)
+
+    labels_and_values = list(counter.items())
+    if xlabel.lower().startswith("final iteration"):
+        labels_and_values.sort(key=lambda item: _numeric_key(str(item[0])))
+    else:
+        labels_and_values.sort(key=lambda item: item[1], reverse=True)
+    labels, values = zip(*labels_and_values)
     fig, ax = plt.subplots(figsize=(max(8, len(labels) * 0.7), 5))
     ax.bar(range(len(labels)), values, color="#4c78a8")
     ax.set_xticks(range(len(labels)))
@@ -356,6 +368,7 @@ def plot_grouped_boxplot(
     *,
     title: str,
     xlabel: str,
+    ylabel: str,
     top_n: int = 10,
     use_log_scale: bool = False,
 ) -> None:
@@ -371,6 +384,7 @@ def plot_grouped_boxplot(
     ax.boxplot(data, vert=False, tick_labels=labels, showfliers=False)
     ax.set_title(title)
     ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
     if use_log_scale:
         ax.set_xscale("log")
     ax.grid(axis="x", alpha=0.25)
@@ -391,8 +405,9 @@ def plot_rollout_duration_by_iterations(rollouts: list[dict[str, Any]], path: Pa
         path,
         title="Rollout Duration by Final Iteration Count",
         xlabel="Rollout duration (seconds)",
+        ylabel="Final iteration count",
         top_n=12,
-        use_log_scale=True,
+        use_log_scale=False,
     )
 
 
@@ -449,11 +464,13 @@ def plot_prompt_token_breakdown(prompt_records: list[dict[str, Any]], path: Path
     axes[0].boxplot([grouped[label] for label in labels], vert=False, tick_labels=labels, showfliers=False)
     axes[0].set_title("Prompt Tokens by LLM Call Type")
     axes[0].set_xlabel("Prompt tokens")
+    axes[0].set_ylabel("LLM call type")
     axes[0].grid(axis="x", alpha=0.25)
 
     axes[1].barh(labels, median_share, color="#e45756")
     axes[1].set_title("Median Latest Findings Share")
     axes[1].set_xlabel("Fraction of prompt tokens")
+    axes[1].set_ylabel("LLM call type")
     axes[1].set_xlim(0, 1.0)
     axes[1].grid(axis="x", alpha=0.25)
 
@@ -509,6 +526,515 @@ def write_summary_markdown(
     path.write_text("\n".join(lines))
 
 
+def format_scalar(value: Any) -> str:
+    if value in ("", None):
+        return ""
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    if isinstance(value, int):
+        return f"{value:,}"
+    if isinstance(value, float):
+        if math.isfinite(value):
+            if abs(value) >= 1000:
+                return f"{value:,.2f}"
+            if abs(value) >= 10:
+                return f"{value:.2f}"
+            return f"{value:.3f}"
+        return str(value)
+    return str(value)
+
+
+def html_table(headers: list[str], rows: list[list[Any]], *, table_class: str = "data-table") -> str:
+    header_html = "".join(f"<th>{html.escape(str(header))}</th>" for header in headers)
+    body_rows = []
+    for row in rows:
+        cells = "".join(f"<td>{html.escape(format_scalar(cell))}</td>" for cell in row)
+        body_rows.append(f"<tr>{cells}</tr>")
+    body_html = "\n".join(body_rows) if body_rows else f"<tr><td colspan='{len(headers)}'>No data</td></tr>"
+    return (
+        f"<table class='{table_class}'>"
+        f"<thead><tr>{header_html}</tr></thead>"
+        f"<tbody>{body_html}</tbody>"
+        "</table>"
+    )
+
+
+def mapping_table(mapping: dict[str, Any], *, key_name: str, value_name: str) -> str:
+    rows = [[key, value] for key, value in mapping.items()]
+    return html_table([key_name, value_name], rows)
+
+
+def stats_mapping_table(mapping: dict[str, dict[str, Any]], *, key_name: str) -> str:
+    headers = [key_name, "count", "mean", "median", "p90", "p95", "p99", "max"]
+    rows = []
+    for key, stats in mapping.items():
+        rows.append(
+            [
+                key,
+                stats.get("count", 0),
+                stats.get("mean"),
+                stats.get("median"),
+                stats.get("p90"),
+                stats.get("p95"),
+                stats.get("p99"),
+                stats.get("max"),
+            ]
+        )
+    return html_table(headers, rows)
+
+
+def preview_table(records: list[dict[str, Any]], *, limit: int = 15) -> str:
+    rows = records[:limit]
+    if not rows:
+        return "<p>No rows.</p>"
+    headers = list(rows[0].keys())
+    body = [[row.get(header, "") for header in headers] for row in rows]
+    return html_table(headers, body, table_class="data-table preview-table")
+
+
+def plot_card(title: str, filename: str, *, blurb: str = "") -> str:
+    return f"""
+    <section class="plot-card">
+      <h3>{html.escape(title)}</h3>
+      <p class="blurb">{html.escape(blurb)}</p>
+      <a href="{html.escape(filename)}"><img src="{html.escape(filename)}" alt="{html.escape(title)}"></a>
+    </section>
+    """
+
+
+def write_html_viewer(
+    path: Path,
+    *,
+    run_dir: Path,
+    summary: dict[str, Any],
+    llm_requests: list[dict[str, Any]],
+    prompt_records: list[dict[str, Any]],
+    rollouts: list[dict[str, Any]],
+    actions: list[dict[str, Any]],
+    iterations: list[dict[str, Any]],
+) -> None:
+    counts = summary["counts"]
+    llm_stats = summary["llm_request_latency_s"]
+    prompt_stats = summary["logged_prompt_tokens"]
+    rollout_stats = summary["completed_rollout_duration_s"]
+    action_stats = summary["completed_action_execution_s"]
+
+    latest_findings_share = summary.get("median_latest_findings_share", 0.0)
+    top_prompt_counts = dict(list(summary["prompt_count_by_log_name"].items())[:12])
+    top_action_stats = dict(
+        sorted(
+            summary["action_execution_s_by_type"].items(),
+            key=lambda item: item[1].get("count", 0),
+            reverse=True,
+        )[:12]
+    )
+    top_backend_stats = dict(
+        sorted(
+            summary["action_execution_s_by_backend"].items(),
+            key=lambda item: item[1].get("count", 0),
+            reverse=True,
+        )[:12]
+    )
+
+    cards = [
+        ("Completed rollouts", counts["rollouts_completed_with_report"]),
+        ("Completed tool actions", counts["actions_completed_with_report"]),
+        ("LLM requests", counts["llm_requests"]),
+        ("Prompt summaries", counts["prompt_records"]),
+        ("Median LLM latency", f"{format_scalar(llm_stats.get('median'))} s"),
+        ("Median rollout duration", f"{format_scalar(rollout_stats.get('median'))} s"),
+        ("Median tool execution", f"{format_scalar(action_stats.get('median'))} s"),
+        ("Median findings share", f"{latest_findings_share * 100:.1f}%"),
+    ]
+    card_html = "\n".join(
+        f"<div class='stat-card'><div class='stat-label'>{html.escape(label)}</div><div class='stat-value'>{html.escape(format_scalar(value))}</div></div>"
+        for label, value in cards
+    )
+
+    overview_plots = "\n".join(
+        [
+            plot_card(
+                "LLM Latency Distribution",
+                "llm_latency_distribution.png",
+                blurb="Overall LLM request latency. Exact latency by log_name is not recoverable from the concurrent actor logs.",
+            ),
+            plot_card(
+                "Rollout Duration Distribution",
+                "rollout_duration_distribution.png",
+                blurb="Completed rollout wall-clock durations, filtered to rollouts with a final report artifact.",
+            ),
+            plot_card(
+                "Iteration Count Distribution",
+                "iteration_count_distribution.png",
+                blurb="Final iteration counts across completed rollouts.",
+            ),
+            plot_card(
+                "Actions Per Rollout",
+                "actions_per_rollout_distribution.png",
+                blurb="How many tool actions each completed rollout executed before producing a report.",
+            ),
+        ]
+    )
+    context_plots = "\n".join(
+        [
+            plot_card(
+                "Prompt Tokens by LLM Call Type",
+                "prompt_tokens_by_log_name.png",
+                blurb="Large adaptive prompts dominate; the second panel shows how much of each prompt is Latest Findings.",
+            ),
+            plot_card(
+                "Rollout Duration by Final Iteration",
+                "rollout_duration_by_iteration.png",
+                blurb="Completed rollout time split by how many iterations the agent ended up using.",
+            ),
+            plot_card(
+                "Median Time per Iteration",
+                "iteration_time_breakdown.png",
+                blurb="Median wall time per iteration, split into tool execution versus residual LLM and orchestration time.",
+            ),
+        ]
+    )
+    tool_plots = "\n".join(
+        [
+            plot_card(
+                "Tool Latency by Action Type",
+                "tool_latency_by_action_type.png",
+                blurb="Distribution of per-action execution time using action categories from the final action plan.",
+            ),
+            plot_card(
+                "Tool Latency by Backend",
+                "tool_latency_by_backend.png",
+                blurb="Distribution of execution time grouped by the backend tool actually used.",
+            ),
+            plot_card(
+                "Tool Counts by Action Type",
+                "tool_counts_by_action_type.png",
+                blurb="Volume of completed tool calls by action type.",
+            ),
+            plot_card(
+                "Tool Counts by Backend",
+                "tool_counts_by_backend.png",
+                blurb="Volume of completed tool calls by backend tool.",
+            ),
+        ]
+    )
+
+    raw_links = [
+        "summary.json",
+        "README.md",
+        "rollouts.csv",
+        "actions.csv",
+        "iterations.csv",
+        "llm_requests.csv",
+        "prompt_records.csv",
+    ]
+    raw_links_html = "\n".join(
+        f"<li><a href='{html.escape(name)}'>{html.escape(name)}</a></li>" for name in raw_links
+    )
+
+    html_doc = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Runtime Analysis - {html.escape(run_dir.name)}</title>
+  <style>
+    :root {{
+      --bg: #f5f4ef;
+      --panel: #ffffff;
+      --ink: #1e2430;
+      --muted: #5f6b7a;
+      --line: #d7dbe2;
+      --accent: #1f5da8;
+      --accent-soft: #e7f0fb;
+    }}
+    * {{ box-sizing: border-box; }}
+    body {{
+      margin: 0;
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #f8f7f2 0%, #eef3f8 100%);
+      color: var(--ink);
+    }}
+    a {{ color: var(--accent); }}
+    .page {{
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 28px;
+    }}
+    .hero {{
+      background: radial-gradient(circle at top left, #ffffff 0%, #eef4fb 45%, #f8f7f2 100%);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 28px 30px;
+      margin-bottom: 22px;
+      box-shadow: 0 18px 50px rgba(30, 36, 48, 0.06);
+    }}
+    .hero h1 {{ margin: 0 0 8px; font-size: 30px; }}
+    .hero p {{ margin: 6px 0; color: var(--muted); max-width: 1000px; }}
+    .topnav {{
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }}
+    .topnav a {{
+      text-decoration: none;
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid #cfe0f6;
+      font-size: 14px;
+    }}
+    .stat-grid {{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin: 22px 0;
+    }}
+    .stat-card {{
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px 18px;
+      box-shadow: 0 8px 24px rgba(30, 36, 48, 0.04);
+    }}
+    .stat-label {{
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }}
+    .stat-value {{
+      font-size: 28px;
+      font-weight: 700;
+    }}
+    .section {{
+      margin: 28px 0;
+    }}
+    .section h2 {{
+      margin: 0 0 12px;
+      font-size: 22px;
+    }}
+    .section p.section-note {{
+      margin: 0 0 14px;
+      color: var(--muted);
+    }}
+    .plot-grid {{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 18px;
+    }}
+    .plot-card {{
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: 0 12px 32px rgba(30, 36, 48, 0.05);
+    }}
+    .plot-card h3 {{
+      margin: 4px 0 8px;
+      font-size: 18px;
+    }}
+    .plot-card .blurb {{
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 14px;
+      min-height: 40px;
+    }}
+    .plot-card img {{
+      width: 100%;
+      display: block;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }}
+    .table-grid {{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+      gap: 18px;
+    }}
+    .table-card {{
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 10px 28px rgba(30, 36, 48, 0.05);
+      overflow: auto;
+    }}
+    .table-card h3 {{
+      margin: 0 0 10px;
+      font-size: 18px;
+    }}
+    .data-table {{
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }}
+    .data-table th, .data-table td {{
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }}
+    .data-table th {{
+      position: sticky;
+      top: 0;
+      background: #f7f9fc;
+      z-index: 1;
+    }}
+    .preview-table {{
+      font-size: 12px;
+    }}
+    details {{
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-top: 12px;
+    }}
+    summary {{
+      cursor: pointer;
+      font-weight: 600;
+    }}
+    ul.raw-links {{
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }}
+    .limitations li {{ margin-bottom: 8px; }}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <h1>Runtime Analysis Viewer</h1>
+      <p><strong>Run:</strong> {html.escape(run_dir.name)}</p>
+      <p>This viewer is generated from the saved actor logs and per-rollout session artifacts. Tool timings are exact at the action level; LLM timings are exact overall but only prompt sizes are attributable to specific call types because the actor logs request durations without request IDs under concurrency.</p>
+      <div class="topnav">
+        <a href="#overview">Overview</a>
+        <a href="#context">Context + Iterations</a>
+        <a href="#tools">Tools</a>
+        <a href="#tables">Tables</a>
+        <a href="#raw">Raw Files</a>
+      </div>
+      <div class="stat-grid">
+        {card_html}
+      </div>
+    </section>
+
+    <section class="section" id="overview">
+      <h2>Overview Plots</h2>
+      <p class="section-note">These are the quickest plots to check for overall throughput shape, rollout duration, and how often the agent keeps iterating.</p>
+      <div class="plot-grid">
+        {overview_plots}
+      </div>
+    </section>
+
+    <section class="section" id="context">
+      <h2>Context + Iteration Behavior</h2>
+      <p class="section-note">This section is usually the most useful for explaining why the run feels slow. It focuses on prompt size and how each extra iteration adds wall time.</p>
+      <div class="plot-grid">
+        {context_plots}
+      </div>
+    </section>
+
+    <section class="section" id="tools">
+      <h2>Tool Timing</h2>
+      <p class="section-note">These plots use per-action execution times stored in each rollout&apos;s final action plan, so this breakdown is much more precise than the text logs alone.</p>
+      <div class="plot-grid">
+        {tool_plots}
+      </div>
+    </section>
+
+    <section class="section" id="tables">
+      <h2>Summary Tables</h2>
+      <div class="table-grid">
+        <section class="table-card">
+          <h3>Counts</h3>
+          {mapping_table(counts, key_name="Metric", value_name="Value")}
+        </section>
+        <section class="table-card">
+          <h3>LLM Request Latency</h3>
+          {mapping_table(llm_stats, key_name="Statistic", value_name="Seconds")}
+        </section>
+        <section class="table-card">
+          <h3>Logged Prompt Tokens</h3>
+          {mapping_table(prompt_stats, key_name="Statistic", value_name="Tokens")}
+        </section>
+        <section class="table-card">
+          <h3>Completed Rollout Duration</h3>
+          {mapping_table(rollout_stats, key_name="Statistic", value_name="Seconds")}
+        </section>
+        <section class="table-card">
+          <h3>Completed Action Execution</h3>
+          {mapping_table(action_stats, key_name="Statistic", value_name="Seconds")}
+        </section>
+        <section class="table-card">
+          <h3>Iteration Count Distribution</h3>
+          {mapping_table(summary["iteration_count_distribution"], key_name="Final iteration", value_name="Rollouts")}
+        </section>
+        <section class="table-card">
+          <h3>Prompt Count by Log Name</h3>
+          {mapping_table(top_prompt_counts, key_name="Log name", value_name="Prompt summaries")}
+        </section>
+        <section class="table-card">
+          <h3>Action Timing by Type</h3>
+          {stats_mapping_table(top_action_stats, key_name="Action type")}
+        </section>
+        <section class="table-card">
+          <h3>Action Timing by Backend Tool</h3>
+          {stats_mapping_table(top_backend_stats, key_name="Backend")}
+        </section>
+      </div>
+
+      <details>
+        <summary>Preview: rollouts.csv</summary>
+        {preview_table(rollouts)}
+      </details>
+      <details>
+        <summary>Preview: actions.csv</summary>
+        {preview_table(actions)}
+      </details>
+      <details>
+        <summary>Preview: iterations.csv</summary>
+        {preview_table(iterations)}
+      </details>
+      <details>
+        <summary>Preview: prompt_records.csv</summary>
+        {preview_table(prompt_records)}
+      </details>
+      <details>
+        <summary>Preview: llm_requests.csv</summary>
+        {preview_table(llm_requests)}
+      </details>
+    </section>
+
+    <section class="section" id="raw">
+      <h2>Raw Files + Caveats</h2>
+      <div class="table-grid">
+        <section class="table-card">
+          <h3>Raw Outputs</h3>
+          <ul class="raw-links">
+            {raw_links_html}
+          </ul>
+        </section>
+        <section class="table-card">
+          <h3>Limitations</h3>
+          <ul class="limitations">
+            {''.join(f"<li>{html.escape(item)}</li>" for item in summary.get("limitations", []))}
+          </ul>
+        </section>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
+"""
+    path.write_text(html_doc)
+
+
 def main() -> None:
     args = parse_args()
     run_dir = Path(args.run_dir).resolve()
@@ -541,6 +1067,11 @@ def main() -> None:
     tool_exec_values = [float(row["execution_time_s"]) for row in completed_actions if row.get("execution_time_s") not in ("", None)]
     tool_by_type: dict[str, list[float]] = defaultdict(list)
     tool_by_backend: dict[str, list[float]] = defaultdict(list)
+    findings_shares = [
+        int(record["latest_findings_tokens"]) / int(record["prompt_tokens"])
+        for record in prompt_records
+        if int(record["prompt_tokens"]) > 0
+    ]
     for row in completed_actions:
         value = row.get("execution_time_s")
         if value in ("", None):
@@ -569,6 +1100,7 @@ def main() -> None:
         "logged_prompt_tokens": numeric_stats(prompt_tokens),
         "completed_rollout_duration_s": numeric_stats(completed_rollout_durations),
         "completed_action_execution_s": numeric_stats(tool_exec_values),
+        "median_latest_findings_share": median(findings_shares) if findings_shares else 0.0,
         "prompt_count_by_log_name": dict(prompt_counter.most_common()),
         "iteration_count_distribution": dict(sorted(iteration_counts.items())),
         "prompt_tokens_by_log_name": prompt_stats_by_log_name,
@@ -626,16 +1158,18 @@ def main() -> None:
         output_dir / "tool_latency_by_action_type.png",
         title="Tool Execution Latency by Action Type",
         xlabel="Execution time (seconds)",
+        ylabel="Action type",
         top_n=10,
-        use_log_scale=True,
+        use_log_scale=False,
     )
     plot_grouped_boxplot(
         tool_by_backend,
         output_dir / "tool_latency_by_backend.png",
         title="Tool Execution Latency by Backend Tool",
         xlabel="Execution time (seconds)",
+        ylabel="Backend tool",
         top_n=10,
-        use_log_scale=True,
+        use_log_scale=False,
     )
     plot_bar(
         Counter(row["action_type"] for row in completed_actions),
@@ -650,6 +1184,16 @@ def main() -> None:
         title="Completed Tool Calls by Backend Tool",
         xlabel="Backend tool",
         ylabel="Completed tool calls",
+    )
+    write_html_viewer(
+        output_dir / "index.html",
+        run_dir=run_dir,
+        summary=summary,
+        llm_requests=llm_requests,
+        prompt_records=prompt_records,
+        rollouts=rollouts,
+        actions=actions,
+        iterations=iterations,
     )
 
     print(f"Wrote runtime analysis to {output_dir}")

@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Runtime Analysis - privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_v1</title>
+  <style>
+    :root {
+      --bg: #f5f4ef;
+      --panel: #ffffff;
+      --ink: #1e2430;
+      --muted: #5f6b7a;
+      --line: #d7dbe2;
+      --accent: #1f5da8;
+      --accent-soft: #e7f0fb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #f8f7f2 0%, #eef3f8 100%);
+      color: var(--ink);
+    }
+    a { color: var(--accent); }
+    .page {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+    .hero {
+      background: radial-gradient(circle at top left, #ffffff 0%, #eef4fb 45%, #f8f7f2 100%);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 28px 30px;
+      margin-bottom: 22px;
+      box-shadow: 0 18px 50px rgba(30, 36, 48, 0.06);
+    }
+    .hero h1 { margin: 0 0 8px; font-size: 30px; }
+    .hero p { margin: 6px 0; color: var(--muted); max-width: 1000px; }
+    .topnav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+    .topnav a {
+      text-decoration: none;
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid #cfe0f6;
+      font-size: 14px;
+    }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin: 22px 0;
+    }
+    .stat-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px 18px;
+      box-shadow: 0 8px 24px rgba(30, 36, 48, 0.04);
+    }
+    .stat-label {
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .section {
+      margin: 28px 0;
+    }
+    .section h2 {
+      margin: 0 0 12px;
+      font-size: 22px;
+    }
+    .section p.section-note {
+      margin: 0 0 14px;
+      color: var(--muted);
+    }
+    .plot-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 18px;
+    }
+    .plot-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: 0 12px 32px rgba(30, 36, 48, 0.05);
+    }
+    .plot-card h3 {
+      margin: 4px 0 8px;
+      font-size: 18px;
+    }
+    .plot-card .blurb {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 14px;
+      min-height: 40px;
+    }
+    .plot-card img {
+      width: 100%;
+      display: block;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+    .table-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+      gap: 18px;
+    }
+    .table-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 10px 28px rgba(30, 36, 48, 0.05);
+      overflow: auto;
+    }
+    .table-card h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .data-table th, .data-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    .data-table th {
+      position: sticky;
+      top: 0;
+      background: #f7f9fc;
+      z-index: 1;
+    }
+    .preview-table {
+      font-size: 12px;
+    }
+    details {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-top: 12px;
+    }
+    summary {
+      cursor: pointer;
+      font-weight: 600;
+    }
+    ul.raw-links {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+    .limitations li { margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <h1>Runtime Analysis Viewer</h1>
+      <p><strong>Run:</strong> privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_v1</p>
+      <p>This viewer is generated from the saved actor logs and per-rollout session artifacts. Tool timings are exact at the action level; LLM timings are exact overall but only prompt sizes are attributable to specific call types because the actor logs request durations without request IDs under concurrency.</p>
+      <div class="topnav">
+        <a href="#overview">Overview</a>
+        <a href="#context">Context + Iterations</a>
+        <a href="#tools">Tools</a>
+        <a href="#tables">Tables</a>
+        <a href="#raw">Raw Files</a>
+      </div>
+      <div class="stat-grid">
+        <div class='stat-card'><div class='stat-label'>Completed rollouts</div><div class='stat-value'>3,202</div></div>
+<div class='stat-card'><div class='stat-label'>Completed tool actions</div><div class='stat-value'>16,228</div></div>
+<div class='stat-card'><div class='stat-label'>LLM requests</div><div class='stat-value'>21,481</div></div>
+<div class='stat-card'><div class='stat-label'>Prompt summaries</div><div class='stat-value'>8,248</div></div>
+<div class='stat-card'><div class='stat-label'>Median LLM latency</div><div class='stat-value'>13.22 s</div></div>
+<div class='stat-card'><div class='stat-label'>Median rollout duration</div><div class='stat-value'>52.35 s</div></div>
+<div class='stat-card'><div class='stat-label'>Median tool execution</div><div class='stat-value'>0.479 s</div></div>
+<div class='stat-card'><div class='stat-label'>Median findings share</div><div class='stat-value'>98.3%</div></div>
+      </div>
+    </section>
+
+    <section class="section" id="overview">
+      <h2>Overview Plots</h2>
+      <p class="section-note">These are the quickest plots to check for overall throughput shape, rollout duration, and how often the agent keeps iterating.</p>
+      <div class="plot-grid">
+        
+    <section class="plot-card">
+      <h3>LLM Latency Distribution</h3>
+      <p class="blurb">Overall LLM request latency. Exact latency by log_name is not recoverable from the concurrent actor logs.</p>
+      <a href="llm_latency_distribution.png"><img src="llm_latency_distribution.png" alt="LLM Latency Distribution"></a>
+    </section>
+    
+
+    <section class="plot-card">
+      <h3>Rollout Duration Distribution</h3>
+      <p class="blurb">Completed rollout wall-clock durations, filtered to rollouts with a final report artifact.</p>
+      <a href="rollout_duration_distribution.png"><img src="rollout_duration_distribution.png" alt="Rollout Duration Distribution"></a>
+    </section>
+    
+
+    <section class="plot-card">
+      <h3>Iteration Count Distribution</h3>
+      <p class="blurb">Final iteration counts across completed rollouts.</p>
+      <a href="iteration_count_distribution.png"><img src="iteration_count_distribution.png" alt="Iteration Count Distribution"></a>
+    </section>
+    
+
+    <section class="plot-card">
+      <h3>Actions Per Rollout</h3>
+      <p class="blurb">How many tool actions each completed rollout executed before producing a report.</p>
+      <a href="actions_per_rollout_distribution.png"><img src="actions_per_rollout_distribution.png" alt="Actions Per Rollout"></a>
+    </section>
+    
+      </div>
+    </section>
+
+    <section class="section" id="context">
+      <h2>Context + Iteration Behavior</h2>
+      <p class="section-note">This section is usually the most useful for explaining why the run feels slow. It focuses on prompt size and how each extra iteration adds wall time.</p>
+      <div class="plot-grid">
+        
+    <section class="plot-card">
+      <h3>Prompt Tokens by LLM Call Type</h3>
+      <p class="blurb">Large adaptive prompts dominate; the second panel shows how much of each prompt is Latest Findings.</p>
+      <a href="prompt_tokens_by_log_name.png"><img src="prompt_tokens_by_log_name.png" alt="Prompt Tokens by LLM Call Type"></a>
+    </section>
+    
+
+    <section class="plot-card">
+      <h3>Rollout Duration by Final Iteration</h3>
+      <p class="blurb">Completed rollout time split by how many iterations the agent ended up using.</p>
+      <a href="rollout_duration_by_iteration.png"><img src="rollout_duration_by_iteration.png" alt="Rollout Duration by Final Iteration"></a>
+    </section>
+    
+
+    <section class="plot-card">
+      <h3>Median Time per Iteration</h3>
+      <p class="blurb">Median wall time per iteration, split into tool execution versus residual LLM and orchestration time.</p>
+      <a href="iteration_time_breakdown.png"><img src="iteration_time_breakdown.png" alt="Median Time per Iteration"></a>
+    </section>
+    
+      </div>
+    </section>
+
+    <section class="section" id="tools">
+      <h2>Tool Timing</h2>
+      <p class="section-note">These plots use per-action execution times stored in each rollout&apos;s final action plan, so this breakdown is much more precise than the text logs alone.</p>
+      <div class="plot-grid">
+        
+    <section class="plot-card">
+      <h3>Tool Latency by Action Type</h3>
+      <p class="blurb">Distribution of per-action execution time using action categories from the final action plan.</p>
+      <a href="tool_latency_by_action_type.png"><img src="tool_latency_by_action_type.png" alt="Tool Latency by Action Type"></a>
+    </section>
+    
+
+    <section class="plot-card">
+      <h3>Tool Latency by Backend</h3>
+      <p class="blurb">Distribution of execution time grouped by the backend tool actually used.</p>
+      <a href="tool_latency_by_backend.png"><img src="tool_latency_by_backend.png" alt="Tool Latency by Backend"></a>
+    </section>
+    
+
+    <section class="plot-card">
+      <h3>Tool Counts by Action Type</h3>
+      <p class="blurb">Volume of completed tool calls by action type.</p>
+      <a href="tool_counts_by_action_type.png"><img src="tool_counts_by_action_type.png" alt="Tool Counts by Action Type"></a>
+    </section>
+    
+
+    <section class="plot-card">
+      <h3>Tool Counts by Backend</h3>
+      <p class="blurb">Volume of completed tool calls by backend tool.</p>
+      <a href="tool_counts_by_backend.png"><img src="tool_counts_by_backend.png" alt="Tool Counts by Backend"></a>
+    </section>
+    
+      </div>
+    </section>
+
+    <section class="section" id="tables">
+      <h2>Summary Tables</h2>
+      <div class="table-grid">
+        <section class="table-card">
+          <h3>Counts</h3>
+          <table class='data-table'><thead><tr><th>Metric</th><th>Value</th></tr></thead><tbody><tr><td>llm_requests</td><td>21,481</td></tr>
+<tr><td>prompt_records</td><td>8,248</td></tr>
+<tr><td>rollouts_all</td><td>3,222</td></tr>
+<tr><td>rollouts_completed_with_report</td><td>3,202</td></tr>
+<tr><td>actions_completed_with_report</td><td>16,228</td></tr>
+<tr><td>iteration_records_completed_with_report</td><td>9,932</td></tr></tbody></table>
+        </section>
+        <section class="table-card">
+          <h3>LLM Request Latency</h3>
+          <table class='data-table'><thead><tr><th>Statistic</th><th>Seconds</th></tr></thead><tbody><tr><td>count</td><td>21,481</td></tr>
+<tr><td>mean</td><td>14.56</td></tr>
+<tr><td>median</td><td>13.22</td></tr>
+<tr><td>min</td><td>0.200</td></tr>
+<tr><td>p90</td><td>24.02</td></tr>
+<tr><td>p95</td><td>29.06</td></tr>
+<tr><td>p99</td><td>40.95</td></tr>
+<tr><td>max</td><td>71.03</td></tr></tbody></table>
+        </section>
+        <section class="table-card">
+          <h3>Logged Prompt Tokens</h3>
+          <table class='data-table'><thead><tr><th>Statistic</th><th>Tokens</th></tr></thead><tbody><tr><td>count</td><td>8,248</td></tr>
+<tr><td>mean</td><td>14,314.71</td></tr>
+<tr><td>median</td><td>13,109.00</td></tr>
+<tr><td>min</td><td>4,096</td></tr>
+<tr><td>p90</td><td>24,737.00</td></tr>
+<tr><td>p95</td><td>27,319.85</td></tr>
+<tr><td>p99</td><td>31,360.21</td></tr>
+<tr><td>max</td><td>38,779</td></tr></tbody></table>
+        </section>
+        <section class="table-card">
+          <h3>Completed Rollout Duration</h3>
+          <table class='data-table'><thead><tr><th>Statistic</th><th>Seconds</th></tr></thead><tbody><tr><td>count</td><td>3,202</td></tr>
+<tr><td>mean</td><td>80.59</td></tr>
+<tr><td>median</td><td>52.35</td></tr>
+<tr><td>min</td><td>7.096</td></tr>
+<tr><td>p90</td><td>191.46</td></tr>
+<tr><td>p95</td><td>242.65</td></tr>
+<tr><td>p99</td><td>323.56</td></tr>
+<tr><td>max</td><td>436.60</td></tr></tbody></table>
+        </section>
+        <section class="table-card">
+          <h3>Completed Action Execution</h3>
+          <table class='data-table'><thead><tr><th>Statistic</th><th>Seconds</th></tr></thead><tbody><tr><td>count</td><td>16,228</td></tr>
+<tr><td>mean</td><td>5.411</td></tr>
+<tr><td>median</td><td>0.479</td></tr>
+<tr><td>min</td><td>0.003</td></tr>
+<tr><td>p90</td><td>18.60</td></tr>
+<tr><td>p95</td><td>22.50</td></tr>
+<tr><td>p99</td><td>32.88</td></tr>
+<tr><td>max</td><td>75.39</td></tr></tbody></table>
+        </section>
+        <section class="table-card">
+          <h3>Iteration Count Distribution</h3>
+          <table class='data-table'><thead><tr><th>Final iteration</th><th>Rollouts</th></tr></thead><tbody><tr><td>1</td><td>929</td></tr>
+<tr><td>2</td><td>860</td></tr>
+<tr><td>3</td><td>455</td></tr>
+<tr><td>4</td><td>295</td></tr>
+<tr><td>5</td><td>181</td></tr>
+<tr><td>6</td><td>131</td></tr>
+<tr><td>7</td><td>87</td></tr>
+<tr><td>8</td><td>75</td></tr>
+<tr><td>9</td><td>52</td></tr>
+<tr><td>10</td><td>137</td></tr></tbody></table>
+        </section>
+        <section class="table-card">
+          <h3>Prompt Count by Log Name</h3>
+          <table class='data-table'><thead><tr><th>Log name</th><th>Prompt summaries</th></tr></thead><tbody><tr><td>adaptive_iter0</td><td>3,215</td></tr>
+<tr><td>adaptive_iter1</td><td>2,005</td></tr>
+<tr><td>adaptive_iter2</td><td>1,024</td></tr>
+<tr><td>adaptive_iter3</td><td>641</td></tr>
+<tr><td>adaptive_iter4</td><td>442</td></tr>
+<tr><td>adaptive_iter5</td><td>311</td></tr>
+<tr><td>adaptive_iter6</td><td>227</td></tr>
+<tr><td>adaptive_iter7</td><td>166</td></tr>
+<tr><td>adaptive_iter8</td><td>125</td></tr>
+<tr><td>adaptive_iter9</td><td>90</td></tr>
+<tr><td>analysis_synthesis</td><td>2</td></tr></tbody></table>
+        </section>
+        <section class="table-card">
+          <h3>Action Timing by Type</h3>
+          <table class='data-table'><thead><tr><th>Action type</th><th>count</th><th>mean</th><th>median</th><th>p90</th><th>p95</th><th>p99</th><th>max</th></tr></thead><tbody><tr><td>web_search</td><td>10,171</td><td>0.699</td><td>0.433</td><td>0.599</td><td>0.699</td><td>14.46</td><td>58.76</td></tr>
+<tr><td>local_document_search</td><td>2,681</td><td>16.15</td><td>16.41</td><td>25.57</td><td>29.83</td><td>39.21</td><td>63.52</td></tr>
+<tr><td>context_synthesis</td><td>1,229</td><td>6.991</td><td>0.504</td><td>18.39</td><td>21.51</td><td>30.62</td><td>74.87</td></tr>
+<tr><td>data_analysis</td><td>965</td><td>13.68</td><td>13.92</td><td>23.15</td><td>28.14</td><td>42.31</td><td>75.39</td></tr>
+<tr><td>local_file_analysis</td><td>722</td><td>15.55</td><td>15.52</td><td>26.99</td><td>31.88</td><td>39.79</td><td>65.89</td></tr>
+<tr><td>file_download</td><td>373</td><td>9.872</td><td>0.870</td><td>23.70</td><td>30.89</td><td>41.82</td><td>52.96</td></tr>
+<tr><td>enterprise_api</td><td>59</td><td>9.747</td><td>9.339</td><td>20.54</td><td>21.24</td><td>23.01</td><td>23.43</td></tr>
+<tr><td>url_fetch</td><td>20</td><td>2.762</td><td>0.416</td><td>15.02</td><td>16.60</td><td>17.27</td><td>17.44</td></tr>
+<tr><td>mcp_query</td><td>8</td><td>6.468</td><td>0.441</td><td>16.91</td><td>19.18</td><td>21.00</td><td>21.45</td></tr></tbody></table>
+        </section>
+        <section class="table-card">
+          <h3>Action Timing by Backend Tool</h3>
+          <table class='data-table'><thead><tr><th>Backend</th><th>count</th><th>mean</th><th>median</th><th>p90</th><th>p95</th><th>p99</th><th>max</th></tr></thead><tbody><tr><td>browsecomp_search</td><td>11,562</td><td>0.431</td><td>0.429</td><td>0.580</td><td>0.649</td><td>0.961</td><td>3.766</td></tr>
+<tr><td>local_document_search</td><td>2,801</td><td>18.20</td><td>17.19</td><td>26.63</td><td>30.73</td><td>40.68</td><td>65.89</td></tr>
+<tr><td>smart_analysis</td><td>1,865</td><td>17.07</td><td>15.47</td><td>24.99</td><td>30.05</td><td>42.61</td><td>75.39</td></tr></tbody></table>
+        </section>
+      </div>
+
+      <details>
+        <summary>Preview: rollouts.csv</summary>
+        <table class='data-table preview-table'><thead><tr><th>rollout_id</th><th>has_report</th><th>start_timestamp</th><th>end_timestamp</th><th>duration_s</th><th>current_iteration</th><th>max_iterations</th><th>total_actions</th><th>completed_actions</th><th>failed_actions</th><th>pending_actions</th><th>tool_exec_time_s</th><th>non_tool_time_s</th></tr></thead><tbody><tr><td>DR0001_06a7f3db_00515dd3</td><td>true</td><td>2026-04-14T20:23:05.366031</td><td>2026-04-14T20:23:54</td><td>48.63</td><td>3</td><td>10</td><td>4</td><td>4</td><td>0</td><td>0</td><td>1.420</td><td>47.21</td></tr>
+<tr><td>DR0001_06a7f3db_03c42d65</td><td>true</td><td>2026-04-14T19:57:39.594670</td><td>2026-04-14T19:58:11</td><td>31.41</td><td>1</td><td>10</td><td>2</td><td>2</td><td>0</td><td>0</td><td>1.025</td><td>30.38</td></tr>
+<tr><td>DR0001_06a7f3db_03ff20b0</td><td>true</td><td>2026-04-14T21:41:42.390175</td><td>2026-04-14T21:41:58</td><td>15.61</td><td>1</td><td>10</td><td>2</td><td>2</td><td>0</td><td>0</td><td>1.214</td><td>14.40</td></tr>
+<tr><td>DR0001_06a7f3db_085ed3de</td><td>true</td><td>2026-04-14T19:52:43.592159</td><td>2026-04-14T19:53:17</td><td>33.41</td><td>1</td><td>10</td><td>2</td><td>2</td><td>0</td><td>0</td><td>15.51</td><td>17.90</td></tr>
+<tr><td>DR0001_06a7f3db_08b86319</td><td>true</td><td>2026-04-14T20:28:18.584588</td><td>2026-04-14T20:31:58</td><td>219.42</td><td>10</td><td>10</td><td>17</td><td>15</td><td>0</td><td>2</td><td>87.74</td><td>131.68</td></tr>
+<tr><td>DR0001_06a7f3db_0d7456c5</td><td>true</td><td>2026-04-14T20:04:47.023216</td><td>2026-04-14T20:06:06</td><td>78.98</td><td>3</td><td>10</td><td>4</td><td>4</td><td>0</td><td>0</td><td>38.75</td><td>40.22</td></tr>
+<tr><td>DR0001_06a7f3db_0de1c9e3</td><td>true</td><td>2026-04-14T20:27:57.564575</td><td>2026-04-14T20:28:11</td><td>13.44</td><td>1</td><td>10</td><td>2</td><td>2</td><td>0</td><td>0</td><td>0.909</td><td>12.53</td></tr>
+<tr><td>DR0001_06a7f3db_160daa89</td><td>true</td><td>2026-04-14T20:54:32.293085</td><td>2026-04-14T20:55:32</td><td>59.71</td><td>2</td><td>10</td><td>4</td><td>4</td><td>0</td><td>0</td><td>31.55</td><td>28.16</td></tr>
+<tr><td>DR0001_06a7f3db_1876e880</td><td>true</td><td>2026-04-14T20:28:25.185514</td><td>2026-04-14T20:28:43</td><td>17.81</td><td>1</td><td>10</td><td>2</td><td>2</td><td>0</td><td>0</td><td>1.018</td><td>16.80</td></tr>
+<tr><td>DR0001_06a7f3db_19062d39</td><td>true</td><td>2026-04-14T19:52:55.856675</td><td>2026-04-14T19:54:01</td><td>65.14</td><td>3</td><td>10</td><td>4</td><td>4</td><td>0</td><td>0</td><td>33.42</td><td>31.72</td></tr>
+<tr><td>DR0001_06a7f3db_1b73c629</td><td>true</td><td>2026-04-14T20:54:36.462928</td><td>2026-04-14T21:01:44</td><td>427.54</td><td>10</td><td>10</td><td>17</td><td>15</td><td>0</td><td>2</td><td>256.19</td><td>171.35</td></tr>
+<tr><td>DR0001_06a7f3db_1caee9e3</td><td>true</td><td>2026-04-14T21:28:39.371775</td><td>2026-04-14T21:29:07</td><td>27.63</td><td>2</td><td>10</td><td>3</td><td>3</td><td>0</td><td>0</td><td>1.173</td><td>26.45</td></tr>
+<tr><td>DR0001_06a7f3db_1dd02b00</td><td>true</td><td>2026-04-14T21:29:09.731906</td><td>2026-04-14T21:30:39</td><td>89.27</td><td>2</td><td>10</td><td>4</td><td>4</td><td>0</td><td>0</td><td>58.55</td><td>30.71</td></tr>
+<tr><td>DR0001_06a7f3db_1ddbb6ed</td><td>true</td><td>2026-04-14T20:28:44.213627</td><td>2026-04-14T20:29:04</td><td>19.79</td><td>1</td><td>10</td><td>2</td><td>2</td><td>0</td><td>0</td><td>0.720</td><td>19.07</td></tr>
+<tr><td>DR0001_06a7f3db_20e5a314</td><td>true</td><td>2026-04-14T21:41:42.023577</td><td>2026-04-14T21:43:03</td><td>80.98</td><td>3</td><td>10</td><td>5</td><td>5</td><td>0</td><td>0</td><td>35.65</td><td>45.33</td></tr></tbody></table>
+      </details>
+      <details>
+        <summary>Preview: actions.csv</summary>
+        <table class='data-table preview-table'><thead><tr><th>rollout_id</th><th>has_report</th><th>action_id</th><th>action_type</th><th>backend_tool</th><th>status</th><th>execution_time_s</th><th>iteration_completed</th><th>completion_time</th><th>created_from_research_step</th><th>preferred_tool</th></tr></thead><tbody><tr><td>DR0001_06a7f3db_00515dd3</td><td>true</td><td>fallback_action_0</td><td>web_search</td><td>browsecomp_search</td><td>completed</td><td>0.498</td><td>0</td><td>2026-04-14T20:23:05.865895</td><td>fallback_generation</td><td>BrowseCompSearchTool</td></tr>
+<tr><td>DR0001_06a7f3db_00515dd3</td><td>true</td><td>fallback_action_1</td><td>web_search</td><td>browsecomp_search</td><td>completed</td><td>0.444</td><td>0</td><td>2026-04-14T20:23:06.310560</td><td>fallback_generation</td><td>BrowseCompSearchTool</td></tr>
+<tr><td>DR0001_06a7f3db_00515dd3</td><td>true</td><td>adaptive_0_web_search_search_for_lee&#x27;_0</td><td>web_search</td><td>browsecomp_search</td><td>completed</td><td>0.164</td><td>1</td><td>2026-04-14T20:23:17.333660</td><td></td><td>BrowseCompSearchTool</td></tr>
+<tr><td>DR0001_06a7f3db_00515dd3</td><td>true</td><td>adaptive_1_web_search_search_for_lee&#x27;_0</td><td>web_search</td><td>browsecomp_search</td><td>completed</td><td>0.313</td><td>2</td><td>2026-04-14T20:23:32.841272</td><td></td><td>browsecomp_search</td></tr>
+<tr><td>DR0001_06a7f3db_03c42d65</td><td>true</td><td>fallback_action_0</td><td>web_search</td><td>browsecomp_search</td><td>completed</td><td>0.500</td><td>0</td><td>2026-04-14T19:57:40.097669</td><td>fallback_generation</td><td>BrowseCompSearchTool</td></tr>
+<tr><td>DR0001_06a7f3db_03c42d65</td><td>true</td><td>fallback_action_1</td><td>web_search</td><td>browsecomp_search</td><td>completed</td><td>0.525</td><td>0</td><td>2026-04-14T19:57:40.622678</td><td>fallback_generation</td><td>BrowseCompSearchTool</td></tr>
+<tr><td>DR0001_06a7f3db_03ff20b0</td><td>true</td><td>fallback_action_0</td><td>web_search</td><td>browsecomp_search</td><td>completed</td><td>0.664</td><td>0</td><td>2026-04-14T21:41:43.055794</td><td>fallback_generation</td><td>BrowseCompSearchTool</td></tr>
+<tr><td>DR0001_06a7f3db_03ff20b0</td><td>true</td><td>fallback_action_1</td><td>web_search</td><td>browsecomp_search</td><td>completed</td><td>0.550</td><td>0</td><td>2026-04-14T21:41:43.606040</td><td>fallback_generation</td><td>BrowseCompSearchTool</td></tr>
+<tr><td>DR0001_06a7f3db_085ed3de</td><td>true</td><td>fallback_action_0</td><td>local_document_search</td><td>local_document_search</td><td>completed</td><td>15.11</td><td>0</td><td>2026-04-14T19:52:58.718373</td><td>fallback_generation</td><td>LocalFileSearchTool</td></tr>
+<tr><td>DR0001_06a7f3db_085ed3de</td><td>true</td><td>fallback_action_1</td><td>web_search</td><td>browsecomp_search</td><td>completed</td><td>0.402</td><td>0</td><td>2026-04-14T19:52:59.120501</td><td>fallback_generation</td><td>BrowseCompSearchTool</td></tr>
+<tr><td>DR0001_06a7f3db_08b86319</td><td>true</td><td>fallback_action_0</td><td>web_search</td><td>browsecomp_search</td><td>completed</td><td>0.458</td><td>0</td><td>2026-04-14T20:28:19.062875</td><td>fallback_generation</td><td>BrowseCompSearchTool</td></tr>
+<tr><td>DR0001_06a7f3db_08b86319</td><td>true</td><td>fallback_action_1</td><td>web_search</td><td>browsecomp_search</td><td>completed</td><td>0.492</td><td>0</td><td>2026-04-14T20:28:19.555374</td><td>fallback_generation</td><td>BrowseCompSearchTool</td></tr>
+<tr><td>DR0001_06a7f3db_08b86319</td><td>true</td><td>adaptive_0_web_search_find_lee&#x27;s_mark_0</td><td>web_search</td><td>browsecomp_search</td><td>completed</td><td>0.305</td><td>1</td><td>2026-04-14T20:28:30.392228</td><td></td><td>BrowseCompSearchTool</td></tr>
+<tr><td>DR0001_06a7f3db_08b86319</td><td>true</td><td>adaptive_0_web_search_identify_fsma_2_1</td><td>web_search</td><td>browsecomp_search</td><td>completed</td><td>0.436</td><td>1</td><td>2026-04-14T20:28:30.086874</td><td></td><td>BrowseCompSearchTool</td></tr>
+<tr><td>DR0001_06a7f3db_08b86319</td><td>true</td><td>adaptive_1_web_search_search_for_lee&#x27;_0</td><td>web_search</td><td>browsecomp_search</td><td>completed</td><td>0.299</td><td>2</td><td>2026-04-14T20:28:42.499965</td><td></td><td>browsecomp_search</td></tr></tbody></table>
+      </details>
+      <details>
+        <summary>Preview: iterations.csv</summary>
+        <table class='data-table preview-table'><thead><tr><th>rollout_id</th><th>has_report</th><th>iteration</th><th>action_count</th><th>wall_time_s</th><th>tool_time_s</th><th>non_tool_time_s</th></tr></thead><tbody><tr><td>DR0001_06a7f3db_00515dd3</td><td>true</td><td>0</td><td>2</td><td>0.945</td><td>0.942</td><td>0.002</td></tr>
+<tr><td>DR0001_06a7f3db_00515dd3</td><td>true</td><td>1</td><td>1</td><td>11.02</td><td>0.164</td><td>10.86</td></tr>
+<tr><td>DR0001_06a7f3db_00515dd3</td><td>true</td><td>2</td><td>1</td><td>15.51</td><td>0.313</td><td>15.19</td></tr>
+<tr><td>DR0001_06a7f3db_03c42d65</td><td>true</td><td>0</td><td>2</td><td>1.028</td><td>1.025</td><td>0.003</td></tr>
+<tr><td>DR0001_06a7f3db_03ff20b0</td><td>true</td><td>0</td><td>2</td><td>1.216</td><td>1.214</td><td>0.002</td></tr>
+<tr><td>DR0001_06a7f3db_085ed3de</td><td>true</td><td>0</td><td>2</td><td>15.53</td><td>15.51</td><td>0.020</td></tr>
+<tr><td>DR0001_06a7f3db_08b86319</td><td>true</td><td>0</td><td>2</td><td>0.971</td><td>0.950</td><td>0.021</td></tr>
+<tr><td>DR0001_06a7f3db_08b86319</td><td>true</td><td>1</td><td>2</td><td>10.84</td><td>0.741</td><td>10.10</td></tr>
+<tr><td>DR0001_06a7f3db_08b86319</td><td>true</td><td>2</td><td>2</td><td>12.11</td><td>0.603</td><td>11.51</td></tr>
+<tr><td>DR0001_06a7f3db_08b86319</td><td>true</td><td>3</td><td>2</td><td>24.73</td><td>13.75</td><td>10.97</td></tr>
+<tr><td>DR0001_06a7f3db_08b86319</td><td>true</td><td>4</td><td>2</td><td>38.78</td><td>24.04</td><td>14.73</td></tr>
+<tr><td>DR0001_06a7f3db_08b86319</td><td>true</td><td>5</td><td>1</td><td>10.06</td><td>0.158</td><td>9.906</td></tr>
+<tr><td>DR0001_06a7f3db_08b86319</td><td>true</td><td>6</td><td>1</td><td>32.85</td><td>22.08</td><td>10.78</td></tr>
+<tr><td>DR0001_06a7f3db_08b86319</td><td>true</td><td>7</td><td>1</td><td>15.31</td><td>0.377</td><td>14.93</td></tr>
+<tr><td>DR0001_06a7f3db_08b86319</td><td>true</td><td>8</td><td>1</td><td>10.83</td><td>0.130</td><td>10.70</td></tr></tbody></table>
+      </details>
+      <details>
+        <summary>Preview: prompt_records.csv</summary>
+        <table class='data-table preview-table'><thead><tr><th>timestamp</th><th>log_name</th><th>prompt_tokens</th><th>prompt_chars</th><th>latest_findings_tokens</th><th>latest_findings_chars</th><th>instructions_tokens</th><th>planning_context_tokens</th><th>task_definition_tokens</th><th>documents_or_evidence_tokens</th><th>reporting_context_tokens</th><th>other_tokens</th></tr></thead><tbody><tr><td>2026-04-14T19:35:22.720000</td><td>adaptive_iter0</td><td>24,757</td><td>107,329</td><td>24,526</td><td>106,231</td><td>0</td><td>17</td><td>69</td><td>0</td><td>0</td><td>118</td></tr>
+<tr><td>2026-04-14T19:35:23.363000</td><td>adaptive_iter0</td><td>17,872</td><td>64,182</td><td>17,661</td><td>63,221</td><td>0</td><td>17</td><td>44</td><td>0</td><td>0</td><td>123</td></tr>
+<tr><td>2026-04-14T19:35:24.396000</td><td>adaptive_iter0</td><td>18,501</td><td>79,955</td><td>18,289</td><td>78,962</td><td>0</td><td>17</td><td>45</td><td>0</td><td>0</td><td>123</td></tr>
+<tr><td>2026-04-14T19:35:24.623000</td><td>adaptive_iter0</td><td>27,053</td><td>115,017</td><td>26,810</td><td>113,877</td><td>0</td><td>17</td><td>76</td><td>0</td><td>0</td><td>123</td></tr>
+<tr><td>2026-04-14T19:35:24.827000</td><td>adaptive_iter0</td><td>19,023</td><td>68,010</td><td>18,844</td><td>67,290</td><td>0</td><td>17</td><td>31</td><td>0</td><td>0</td><td>104</td></tr>
+<tr><td>2026-04-14T19:35:25.123000</td><td>adaptive_iter0</td><td>15,693</td><td>63,459</td><td>15,481</td><td>62,503</td><td>0</td><td>17</td><td>44</td><td>0</td><td>0</td><td>123</td></tr>
+<tr><td>2026-04-14T19:35:25.520000</td><td>adaptive_iter0</td><td>19,764</td><td>70,086</td><td>19,551</td><td>69,125</td><td>0</td><td>17</td><td>51</td><td>0</td><td>0</td><td>118</td></tr>
+<tr><td>2026-04-14T19:35:25.541000</td><td>adaptive_iter0</td><td>17,318</td><td>49,229</td><td>17,107</td><td>48,238</td><td>0</td><td>17</td><td>44</td><td>0</td><td>0</td><td>123</td></tr>
+<tr><td>2026-04-14T19:35:26.760000</td><td>adaptive_iter0</td><td>25,092</td><td>100,690</td><td>24,841</td><td>99,465</td><td>0</td><td>17</td><td>92</td><td>0</td><td>0</td><td>117</td></tr>
+<tr><td>2026-04-14T19:35:27.493000</td><td>adaptive_iter0</td><td>23,564</td><td>101,093</td><td>23,310</td><td>99,837</td><td>0</td><td>17</td><td>95</td><td>0</td><td>0</td><td>117</td></tr>
+<tr><td>2026-04-14T19:35:28.254000</td><td>adaptive_iter0</td><td>29,683</td><td>113,594</td><td>29,471</td><td>112,598</td><td>0</td><td>17</td><td>53</td><td>0</td><td>0</td><td>117</td></tr>
+<tr><td>2026-04-14T19:35:32.723000</td><td>adaptive_iter0</td><td>14,532</td><td>53,941</td><td>14,320</td><td>52,957</td><td>0</td><td>17</td><td>44</td><td>0</td><td>0</td><td>124</td></tr>
+<tr><td>2026-04-14T19:35:35.080000</td><td>adaptive_iter0</td><td>24,483</td><td>77,467</td><td>24,253</td><td>76,421</td><td>0</td><td>17</td><td>63</td><td>0</td><td>0</td><td>123</td></tr>
+<tr><td>2026-04-14T19:35:36.184000</td><td>adaptive_iter0</td><td>29,591</td><td>104,753</td><td>29,349</td><td>103,633</td><td>0</td><td>17</td><td>75</td><td>0</td><td>0</td><td>123</td></tr>
+<tr><td>2026-04-14T19:35:37.571000</td><td>adaptive_iter0</td><td>21,209</td><td>78,963</td><td>20,994</td><td>77,969</td><td>0</td><td>17</td><td>48</td><td>0</td><td>0</td><td>123</td></tr></tbody></table>
+      </details>
+      <details>
+        <summary>Preview: llm_requests.csv</summary>
+        <table class='data-table preview-table'><thead><tr><th>timestamp</th><th>duration_s</th></tr></thead><tbody><tr><td>2026-04-14T19:35:20.960000</td><td>6.410</td></tr>
+<tr><td>2026-04-14T19:35:21.087000</td><td>6.550</td></tr>
+<tr><td>2026-04-14T19:35:22.068000</td><td>8.190</td></tr>
+<tr><td>2026-04-14T19:35:22.129000</td><td>9.830</td></tr>
+<tr><td>2026-04-14T19:35:22.515000</td><td>8.620</td></tr>
+<tr><td>2026-04-14T19:35:22.812000</td><td>8.320</td></tr>
+<tr><td>2026-04-14T19:35:22.949000</td><td>8.750</td></tr>
+<tr><td>2026-04-14T19:35:23.209000</td><td>8.980</td></tr>
+<tr><td>2026-04-14T19:35:23.789000</td><td>9.260</td></tr>
+<tr><td>2026-04-14T19:35:23.830000</td><td>9.940</td></tr>
+<tr><td>2026-04-14T19:35:24.473000</td><td>9.960</td></tr>
+<tr><td>2026-04-14T19:35:24.821000</td><td>10.23</td></tr>
+<tr><td>2026-04-14T19:35:25.707000</td><td>11.83</td></tr>
+<tr><td>2026-04-14T19:35:26.891000</td><td>12.97</td></tr>
+<tr><td>2026-04-14T19:35:29.227000</td><td>15.30</td></tr></tbody></table>
+      </details>
+    </section>
+
+    <section class="section" id="raw">
+      <h2>Raw Files + Caveats</h2>
+      <div class="table-grid">
+        <section class="table-card">
+          <h3>Raw Outputs</h3>
+          <ul class="raw-links">
+            <li><a href='summary.json'>summary.json</a></li>
+<li><a href='README.md'>README.md</a></li>
+<li><a href='rollouts.csv'>rollouts.csv</a></li>
+<li><a href='actions.csv'>actions.csv</a></li>
+<li><a href='iterations.csv'>iterations.csv</a></li>
+<li><a href='llm_requests.csv'>llm_requests.csv</a></li>
+<li><a href='prompt_records.csv'>prompt_records.csv</a></li>
+          </ul>
+        </section>
+        <section class="table-card">
+          <h3>Limitations</h3>
+          <ul class="limitations">
+            <li>LLM duration logs do not include request IDs, so exact latency attribution to log_name is not possible under concurrency.</li><li>Prompt summaries cover large prompts (&gt;= 4096 tokens) or overflow cases, not every single LLM call.</li><li>Rollout timing analysis is filtered to runs with a saved report to avoid in-progress session artifacts.</li>
+          </ul>
+        </section>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
