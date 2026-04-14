@@ -50,6 +50,7 @@ finetune.rl.epsilon_low=3e-4 \
 finetune.rl.epsilon_high=4e-4 \
 actor.llm_max_rollouts=16 \
 actor.shared_memory_entry_size=50000000 \
+preprocess.chunk_n_groups=1 \
 finetune.seq_parallel=8 \
 finetune.seq_length=40960 \
 vllm_config.vllm_kwargs.max_model_len=40960 \
