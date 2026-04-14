@@ -14,8 +14,7 @@ MODEL_PATH=${MODEL_PATH:-/mnt/llmd/base_models/Qwen3-8B}
 ANNOTATIONS_PATH=${ANNOTATIONS_PATH:-/home/toolkit/nice_code/drbench/chain_review/annotations_2026-04-06.json}
 CURATED_PATH=${CURATED_PATH:-/home/toolkit/nice_code/drbench/chain_review/curated_chains.jsonl}
 TASK_DATA_ROOT=${TASK_DATA_ROOT:-/home/toolkit/nice_code/drbench/drbench/data/tasks}
-DATASET_PATH=${DATASET_PATH:-}
-DEFAULT_DATASET_PATH=/mnt/llmd/results/exps/alexg/privacy_agent/datasets/seed20.jsonl
+DATASET_PATH=${DATASET_PATH:-/mnt/llmd/results/exps/alexg/privacy_agent/datasets/seed20.jsonl}
 
 PRIVACY_AGENT_HELPER_URL=${PRIVACY_AGENT_HELPER_URL:-}
 CONDA_ENV=${CONDA_ENV:-pipeline-rl}
@@ -27,29 +26,9 @@ if [[ -z "${PRIVACY_AGENT_HELPER_URL}" ]]; then
     exit 1
 fi
 
-if [[ -z "${DATASET_PATH}" && -f "${DEFAULT_DATASET_PATH}" ]]; then
-    DATASET_PATH="${DEFAULT_DATASET_PATH}"
-fi
-
 if [[ -n "${DATASET_PATH}" ]]; then
-    if [[ ! -f "${DATASET_PATH}" ]]; then
-        echo "DATASET_PATH does not exist: ${DATASET_PATH}" >&2
-        exit 1
-    fi
     DATASET_OVERRIDES="train_dataset_names=${DATASET_PATH} test_dataset_names=${DATASET_PATH}"
 else
-    if [[ ! -f "${ANNOTATIONS_PATH}" ]]; then
-        echo "Missing annotations file: ${ANNOTATIONS_PATH}" >&2
-        exit 1
-    fi
-    if [[ ! -f "${CURATED_PATH}" ]]; then
-        echo "Missing curated chains file: ${CURATED_PATH}" >&2
-        exit 1
-    fi
-    if [[ ! -d "${TASK_DATA_ROOT}" ]]; then
-        echo "Missing DRBench task data root: ${TASK_DATA_ROOT}" >&2
-        exit 1
-    fi
     DATASET_OVERRIDES=""
 fi
 
