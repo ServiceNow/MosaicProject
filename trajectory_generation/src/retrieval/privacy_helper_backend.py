@@ -13,7 +13,11 @@ import numpy as np
 
 from trajectory_generation import config
 from trajectory_generation.src.retrieval.browsecomp import BrowseCompHybridSearcher
-from trajectory_generation.src.retrieval.composite import FilteredSearcher, WeightedRRFSearcher
+from trajectory_generation.src.retrieval.composite import (
+    FilteredSearcher,
+    FixedKwargSearcher,
+    WeightedRRFSearcher,
+)
 from trajectory_generation.src.retrieval.dense import OpenAICompatibleBackend
 from trajectory_generation.src.retrieval.hybrid import HybridSearcher
 
@@ -370,7 +374,10 @@ class PrivacyHelperBackend:
             if self.curated.searcher is not None and curated_ids:
                 searchers.append(
                     (
-                        FilteredSearcher(self.curated.searcher, allowed_doc_ids=curated_ids),
+                        FixedKwargSearcher(
+                            FilteredSearcher(self.curated.searcher, allowed_doc_ids=curated_ids),
+                            mode="bm25",
+                        ),
                         config.CURATED_WEB_WEIGHT,
                     )
                 )

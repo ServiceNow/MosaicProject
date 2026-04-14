@@ -1,10 +1,12 @@
 """Composable retrieval adapters for trajectory generation."""
 
 from dataclasses import dataclass
+import logging
 from typing import Any, Iterable
 
 from .types import RetrievalHit
 
+logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class _RankedHit:
@@ -33,6 +35,23 @@ class FilteredSearcher:
         return filtered[:k]
 
 
+class FixedKwargSearcher:
+    """Force selected search kwargs for an underlying searcher."""
+
+    def __init__(self, base_searcher: Any, **fixed_kwargs: Any) -> None:
+        self.base_searcher = base_searcher
+        self.fixed_kwargs = dict(fixed_kwargs)
+
+    @property
+    def size(self) -> int:
+        return int(getattr(self.base_searcher, "size", 0))
+
+    def search(self, query: str, *, k: int = 10, **kwargs) -> list[RetrievalHit]:
+        merged_kwargs = dict(kwargs)
+        merged_kwargs.update(self.fixed_kwargs)
+        return self.base_searcher.search(query, k=k, **merged_kwargs)
+
+
 class WeightedRRFSearcher:
     """Blend ranked lists from multiple retrieval sources."""
 
@@ -57,7 +76,11 @@ class WeightedRRFSearcher:
         best_hit_by_doc: dict[str, RetrievalHit] = {}
 
         for searcher, weight in self._searchers:
-            hits = searcher.search(query, k=k, **kwargs)
+            try:
+                hits = searcher.search(query, k=k, **kwargs)
+            except Exception as exc:
+                logger.warning("Skipping failing searcher %s: %s", type(searcher).__name__, exc)
+                continue
             for rank, hit in enumerate(hits, start=1):
                 ranked_by_doc.setdefault(hit.doc_id, []).append(_RankedHit(hit=hit, rank=rank, weight=weight))
                 prev = best_hit_by_doc.get(hit.doc_id)
