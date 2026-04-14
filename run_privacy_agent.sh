@@ -11,6 +11,11 @@ JOB_NAME=${JOB_NAME:-privacy_agent_qwen3_8b}
 WANDB_PROJECT=${WANDB_PROJECT:-privacy_agent_qwen3_8b}
 LOCAL_INDEX_ROOT=${LOCAL_INDEX_ROOT:-/mnt/llmd/results/exps/alexg/privacy_agent/local_indices}
 MODEL_PATH=${MODEL_PATH:-/mnt/llmd/base_models/Qwen3-8B}
+ANNOTATIONS_PATH=${ANNOTATIONS_PATH:-/home/toolkit/nice_code/drbench/chain_review/annotations_2026-04-06.json}
+CURATED_PATH=${CURATED_PATH:-/home/toolkit/nice_code/drbench/chain_review/curated_chains.jsonl}
+TASK_DATA_ROOT=${TASK_DATA_ROOT:-/home/toolkit/nice_code/drbench/drbench/data/tasks}
+DATASET_PATH=${DATASET_PATH:-}
+DEFAULT_DATASET_PATH=/mnt/llmd/results/exps/alexg/privacy_agent/datasets/seed20.jsonl
 
 PRIVACY_AGENT_HELPER_URL=${PRIVACY_AGENT_HELPER_URL:-}
 CONDA_ENV=${CONDA_ENV:-pipeline-rl}
@@ -22,12 +27,40 @@ if [[ -z "${PRIVACY_AGENT_HELPER_URL}" ]]; then
     exit 1
 fi
 
-COMMAND="export PYTHONPATH=${PIPELINERL_ROOT}:\$PYTHONPATH && \
-python -m pipelinerl.launch \
+if [[ -z "${DATASET_PATH}" && -f "${DEFAULT_DATASET_PATH}" ]]; then
+    DATASET_PATH="${DEFAULT_DATASET_PATH}"
+fi
+
+if [[ -n "${DATASET_PATH}" ]]; then
+    if [[ ! -f "${DATASET_PATH}" ]]; then
+        echo "DATASET_PATH does not exist: ${DATASET_PATH}" >&2
+        exit 1
+    fi
+    DATASET_OVERRIDES="train_dataset_names=${DATASET_PATH} test_dataset_names=${DATASET_PATH}"
+else
+    if [[ ! -f "${ANNOTATIONS_PATH}" ]]; then
+        echo "Missing annotations file: ${ANNOTATIONS_PATH}" >&2
+        exit 1
+    fi
+    if [[ ! -f "${CURATED_PATH}" ]]; then
+        echo "Missing curated chains file: ${CURATED_PATH}" >&2
+        exit 1
+    fi
+    if [[ ! -d "${TASK_DATA_ROOT}" ]]; then
+        echo "Missing DRBench task data root: ${TASK_DATA_ROOT}" >&2
+        exit 1
+    fi
+    DATASET_OVERRIDES=""
+fi
+
+COMMAND="PYTHONPATH=${PIPELINERL_ROOT} python -m pipelinerl.launch \
 output_dir=${OUTPUT_DIR_BASE}/${JOB_NAME} \
 model_path=${MODEL_PATH} \
 wandb.wandb_workspace_root=/mnt/llmd/results/exps/alexg \
 wandb.wandb_project_name=${WANDB_PROJECT} \
+privacy_agent.annotations_path=${ANNOTATIONS_PATH} \
+privacy_agent.curated_path=${CURATED_PATH} \
+privacy_agent.task_data_root=${TASK_DATA_ROOT} \
 privacy_agent.local_index_root=${LOCAL_INDEX_ROOT} \
 privacy_agent.helper_service_url=${PRIVACY_AGENT_HELPER_URL} \
 privacy_agent.embedding_provider=huggingface \
@@ -45,6 +78,7 @@ world.actor_fraction=4 \
 world.preprocessor_fraction=0 \
 world.finetune_fraction=4 \
 streams=redis \
+${DATASET_OVERRIDES} \
 --config-name privacy_agent \
 --config-dir ${PIPELINERL_ROOT}/conf"
 
