@@ -1,0 +1,719 @@
+[
+  {
+    "stage": "error",
+    "lane": "error:hop_plan",
+    "label": "hop_plan parse_error",
+    "start_s": 12.013482,
+    "end_s": 12.014482,
+    "meta": {
+      "stage": "hop_plan",
+      "kind": "parse_error",
+      "hop_number": 1,
+      "iteration": 0,
+      "message": "No valid JSON found in response: line 1 column 1 (char 0)"
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 6e-05,
+    "end_s": 12.013487,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_local_fallback",
+    "label": "local_document_search: What was the percentage of users who found the w...",
+    "start_s": 12.013645,
+    "end_s": 12.34096,
+    "meta": {
+      "hop_number": 1,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_fallback",
+    "label": "web_search: What was the percentage of users who found the w...",
+    "start_s": 12.013539,
+    "end_s": 12.958924,
+    "meta": {
+      "hop_number": 1,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs",
+    "start_s": 12.959105,
+    "end_s": 26.631584,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_e19eb24c_1776278554",
+    "label": "Competitor-Pricing-Analysis.pdf",
+    "start_s": 26.631725,
+    "end_s": 30.461936,
+    "meta": {
+      "hop_number": 1,
+      "doc_id": "doc_e19eb24c_1776278554"
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_3ae26523_1776278555",
+    "label": "MediConn_Website_Navigation_Insights_Data.xlsx",
+    "start_s": 26.635286,
+    "end_s": 50.872039,
+    "meta": {
+      "hop_number": 1,
+      "doc_id": "doc_3ae26523_1776278555"
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 50.872199,
+    "end_s": 56.78592,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 56.785978,
+    "end_s": 70.367199,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_0",
+    "label": "web_search: lymphoscintigraphy sensitivity 92% lymphedema di...",
+    "start_s": 70.367257,
+    "end_s": 70.62594,
+    "meta": {
+      "hop_number": 2,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_2",
+    "label": "web_search: lymphoscintigraphy lymphedema sensitivity resear...",
+    "start_s": 70.367416,
+    "end_s": 70.675515,
+    "meta": {
+      "hop_number": 2,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_1",
+    "label": "web_search: 92% lymphoscintigraphy lymphedema diagnostic acc...",
+    "start_s": 70.36736,
+    "end_s": 70.684253,
+    "meta": {
+      "hop_number": 2,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs",
+    "start_s": 70.684446,
+    "end_s": 88.249016,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/85007",
+    "label": "https://intersocietal.org/value-added-services/i...",
+    "start_s": 88.249378,
+    "end_s": 97.614753,
+    "meta": {
+      "hop_number": 2,
+      "doc_id": "web/85007"
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/43218",
+    "label": "https://medicine.utah.edu/radiology/research/202...",
+    "start_s": 88.252222,
+    "end_s": 98.102119,
+    "meta": {
+      "hop_number": 2,
+      "doc_id": "web/43218"
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 98.10228,
+    "end_s": 108.728942,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 108.729052,
+    "end_s": 122.050383,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_3",
+    "label": "web_search: history lymphoscintigraphy diagnostic accuracy 9...",
+    "start_s": 122.05069,
+    "end_s": 122.225726,
+    "meta": {
+      "hop_number": 2,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_2",
+    "label": "web_search: clinical guidelines lymphoscintigraphy lymphedem...",
+    "start_s": 122.050636,
+    "end_s": 122.26905,
+    "meta": {
+      "hop_number": 2,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_0",
+    "label": "web_search: lymphoscintigraphy lymphedema sensitivity 92% ye...",
+    "start_s": 122.050458,
+    "end_s": 122.309759,
+    "meta": {
+      "hop_number": 2,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_1",
+    "label": "web_search: lymphoscintigraphy diagnostic accuracy 92% lymph...",
+    "start_s": 122.050575,
+    "end_s": 122.310422,
+    "meta": {
+      "hop_number": 2,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs",
+    "start_s": 122.310622,
+    "end_s": 143.455418,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/98672",
+    "label": "https://www.cancer.gov/about-cancer/diagnosis-st...",
+    "start_s": 143.455539,
+    "end_s": 151.179873,
+    "meta": {
+      "hop_number": 2,
+      "doc_id": "web/98672"
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/23262",
+    "label": "https://tech.snmjournals.org/content/48/Suppleme...",
+    "start_s": 143.4587,
+    "end_s": 151.684832,
+    "meta": {
+      "hop_number": 2,
+      "doc_id": "web/23262"
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 151.72069,
+    "end_s": 159.093161,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 159.093342,
+    "end_s": 177.568662,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_web_search_1",
+    "label": "web_search: 92% lymphoscintigraphy lymphedema sensitivity cl...",
+    "start_s": 177.568965,
+    "end_s": 177.719942,
+    "meta": {
+      "hop_number": 2,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_web_search_3",
+    "label": "web_search: lymphedema lymphoscintigraphy diagnostic accurac...",
+    "start_s": 177.569077,
+    "end_s": 177.770717,
+    "meta": {
+      "hop_number": 2,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_web_search_2",
+    "label": "web_search: lymphoscintigraphy lymphedema 92% sensitivity pu...",
+    "start_s": 177.569024,
+    "end_s": 177.798496,
+    "meta": {
+      "hop_number": 2,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_web_search_0",
+    "label": "web_search: lymphoscintigraphy lymphedema diagnostic accurac...",
+    "start_s": 177.568864,
+    "end_s": 177.798718,
+    "meta": {
+      "hop_number": 2,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs",
+    "start_s": 177.798867,
+    "end_s": 192.107631,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/87396",
+    "label": "https://www.oaepublish.com/articles/ais.2024.50",
+    "start_s": 192.107752,
+    "end_s": 198.904864,
+    "meta": {
+      "hop_number": 2,
+      "doc_id": "web/87396"
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/92463",
+    "label": "https://pmc.ncbi.nlm.nih.gov/articles/PMC1018343...",
+    "start_s": 192.110582,
+    "end_s": 199.427725,
+    "meta": {
+      "hop_number": 2,
+      "doc_id": "web/92463"
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 199.428092,
+    "end_s": 207.437585,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 207.437816,
+    "end_s": 221.69752,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter4_web_search_0",
+    "label": "web_search: lymphoscintigraphy lymphedema 92% sensitivity st...",
+    "start_s": 221.701104,
+    "end_s": 221.949445,
+    "meta": {
+      "hop_number": 2,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter4_web_search_1",
+    "label": "web_search: clinical guidelines lymphoscintigraphy lymphedem...",
+    "start_s": 221.70127,
+    "end_s": 221.990146,
+    "meta": {
+      "hop_number": 2,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter4_web_search_3",
+    "label": "web_search: 92% lymphoscintigraphy sensitivity lymphedema me...",
+    "start_s": 221.701384,
+    "end_s": 222.033447,
+    "meta": {
+      "hop_number": 2,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter4_web_search_2",
+    "label": "web_search: meta-analysis lymphoscintigraphy lymphedema diag...",
+    "start_s": 221.701331,
+    "end_s": 222.080059,
+    "meta": {
+      "hop_number": 2,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs",
+    "start_s": 222.080235,
+    "end_s": 243.371616,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/drbench_urls/drbench_urls_09992779000bc1fb",
+    "label": "https://chghealthcare.com/blog/telehealth-the-fu...",
+    "start_s": 243.371871,
+    "end_s": 249.229709,
+    "meta": {
+      "hop_number": 2,
+      "doc_id": "web/drbench_urls/drbench_urls_09992779000bc1fb"
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/33205",
+    "label": "https://www.aetna.com/cpb/medical/data/100_199/0...",
+    "start_s": 243.374554,
+    "end_s": 249.405258,
+    "meta": {
+      "hop_number": 2,
+      "doc_id": "web/33205"
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/100009",
+    "label": "https://ashpublications.org/blood/article/131/25...",
+    "start_s": 243.377774,
+    "end_s": 250.287099,
+    "meta": {
+      "hop_number": 2,
+      "doc_id": "web/100009"
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 250.287365,
+    "end_s": 257.111037,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 257.111325,
+    "end_s": 272.223912,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter5_web_search_3",
+    "label": "web_search: lymphoscintigraphy lymphedema diagnostic guideli...",
+    "start_s": 272.224161,
+    "end_s": 272.456055,
+    "meta": {
+      "hop_number": 2,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter5_web_search_1",
+    "label": "web_search: meta-analysis lymphoscintigraphy lymphedema 92%...",
+    "start_s": 272.223993,
+    "end_s": 272.456182,
+    "meta": {
+      "hop_number": 2,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter5_web_search_2",
+    "label": "web_search: clinical trial lymphoscintigraphy lymphedema 92%...",
+    "start_s": 272.224099,
+    "end_s": 272.48261,
+    "meta": {
+      "hop_number": 2,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs",
+    "start_s": 272.482724,
+    "end_s": 293.916615,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/85880",
+    "label": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2223836...",
+    "start_s": 293.916714,
+    "end_s": 302.847089,
+    "meta": {
+      "hop_number": 2,
+      "doc_id": "web/85880"
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 302.84729,
+    "end_s": 310.226753,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 310.227043,
+    "end_s": 329.62635,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 6
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter6_web_search_0",
+    "label": "web_search: lymphoscintigraphy lymphedema 92% sensitivity di...",
+    "start_s": 329.626456,
+    "end_s": 329.820216,
+    "meta": {
+      "hop_number": 2,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter6_web_search_3",
+    "label": "web_search: lymphoscintigraphy diagnostic accuracy milestone...",
+    "start_s": 329.626735,
+    "end_s": 329.903802,
+    "meta": {
+      "hop_number": 2,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter6_web_search_2",
+    "label": "web_search: lymphoscintigraphy lymphedema 92% sensitivity co...",
+    "start_s": 329.62669,
+    "end_s": 329.903958,
+    "meta": {
+      "hop_number": 2,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter6_web_search_1",
+    "label": "web_search: lymphoscintigraphy lymphedema diagnostic accurac...",
+    "start_s": 329.626629,
+    "end_s": 329.904077,
+    "meta": {
+      "hop_number": 2,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs",
+    "start_s": 329.904185,
+    "end_s": 342.192689,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 6
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/72424",
+    "label": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8604036...",
+    "start_s": 342.192772,
+    "end_s": 347.492305,
+    "meta": {
+      "hop_number": 2,
+      "doc_id": "web/72424"
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 347.492482,
+    "end_s": 355.330415,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 6
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 355.330675,
+    "end_s": 372.562682,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 7
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter7_web_search_1",
+    "label": "web_search: lymphoscintigraphy lymphedema 92% sensitivity cl...",
+    "start_s": 372.56276,
+    "end_s": 373.004151,
+    "meta": {
+      "hop_number": 2,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter7_web_search_2",
+    "label": "web_search: lymphoscintigraphy lymphedema diagnostic accurac...",
+    "start_s": 372.562866,
+    "end_s": 373.016895,
+    "meta": {
+      "hop_number": 2,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter7_web_search_3",
+    "label": "web_search: lymphoscintigraphy lymphedema 92% sensitivity ad...",
+    "start_s": 372.562933,
+    "end_s": 373.033076,
+    "meta": {
+      "hop_number": 2,
+      "result_count": 5
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 373.033248,
+    "end_s": 381.293856,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 7
+    }
+  },
+  {
+    "stage": "report",
+    "lane": "report",
+    "label": "Final report",
+    "start_s": 381.293866,
+    "end_s": 381.294432,
+    "meta": {
+      "resolved_hops": 1
+    }
+  }
+]

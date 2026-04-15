@@ -6,28 +6,28 @@
 - LLM plots therefore show overall latency plus prompt-size distributions by `log_name`.
 
 ## Headline Stats
-- Completed rollouts analyzed: `17069`
-- Total completed tool actions analyzed: `95098`
-- Total LLM request duration samples: `124462`
+- Completed rollouts analyzed: `20372`
+- Total completed tool actions analyzed: `124227`
+- Total LLM request duration samples: `165111`
 - Total LLM call summaries: `0`
-- Evaluated reports with rewards: `17069`
-- Median LLM request latency: `13.73s`
+- Evaluated reports with rewards: `20372`
+- Median LLM request latency: `13.85s`
 - Median LLM response tokens: n/a
 - Median LLM total tokens: n/a
-- Mean rollout reward: `0.044`
+- Mean rollout reward: `0.047`
 - Median rollout reward: `0.000`
-- Median completed rollout duration: `63.50s`
-- Median tool execution time: `0.53s`
-- Median Latest Findings share of logged prompts: `98.3%`
+- Median completed rollout duration: `71.18s`
+- Median tool execution time: `0.56s`
+- Median Latest Findings share of logged prompts: `98.2%`
 
 ## Top LLM Call Types
 
 ## Top Action Types
-- `web_search`: `57395`
-- `local_document_search`: `16191`
-- `context_synthesis`: `7521`
-- `data_analysis`: `6690`
-- `local_file_analysis`: `4761`
-- `file_download`: `1825`
-- `enterprise_api`: `410`
-- `url_fetch`: `157`
+- `web_search`: `70457`
+- `local_document_search`: `22036`
+- `data_analysis`: `10399`
+- `context_synthesis`: `9416`
+- `local_file_analysis`: `7591`
+- `file_download`: `2784`
+- `enterprise_api`: `980`
+- `mcp_query`: `321`

@@ -13,6 +13,7 @@ import random
 import re
 import shutil
 from collections import Counter, defaultdict
+from datetime import datetime
 from pathlib import Path
 from statistics import mean, median
 from typing import Any
@@ -26,6 +27,8 @@ from matplotlib.ticker import FuncFormatter
 
 ANSWER_RE = re.compile(r"^ANSWER_(\w+):\s*(.+)$")
 JUSTIFICATION_RE = re.compile(r"^JUSTIFICATION_(\w+):\s*(.+)$")
+ACTOR_TS_RE = re.compile(r"\[actor\]: (\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3})")
+ROLLOUT_FINISHED_RE = re.compile(r"rollouts finished so far: (\d+)")
 
 STAGE_COLORS = {
     "start": "#6b7280",
@@ -66,6 +69,58 @@ def parse_args() -> argparse.Namespace:
         help="Directory to write plots and HTML into. Defaults to MosaicProject/runtime_analysis/<run_name>",
     )
     return parser.parse_args()
+
+
+def parse_actor_timestamp(line: str) -> datetime | None:
+    match = ACTOR_TS_RE.search(line)
+    if not match:
+        return None
+    return datetime.strptime(match.group(1), "%Y-%m-%d %H:%M:%S,%f")
+
+
+def compute_completed_rollout_rate(actor_info_path: Path) -> dict[str, float | int | None]:
+    if not actor_info_path.exists():
+        return {
+            "first_finished": None,
+            "last_finished": None,
+            "elapsed_s": None,
+            "completed_rollouts_per_s": None,
+            "seconds_per_completed_rollout": None,
+        }
+    samples: list[tuple[datetime, int]] = []
+    with actor_info_path.open("r", encoding="utf-8", errors="ignore") as handle:
+        for raw_line in handle:
+            timestamp = parse_actor_timestamp(raw_line)
+            if not timestamp:
+                continue
+            match = ROLLOUT_FINISHED_RE.search(raw_line)
+            if not match:
+                continue
+            finished = int(match.group(1))
+            if not samples or samples[-1][1] != finished:
+                samples.append((timestamp, finished))
+    if len(samples) < 2:
+        finished = samples[-1][1] if samples else None
+        return {
+            "first_finished": finished,
+            "last_finished": finished,
+            "elapsed_s": None,
+            "completed_rollouts_per_s": None,
+            "seconds_per_completed_rollout": None,
+        }
+    first_ts, first_finished = samples[0]
+    last_ts, last_finished = samples[-1]
+    elapsed_s = max(0.0, (last_ts - first_ts).total_seconds())
+    finished_delta = max(0, last_finished - first_finished)
+    completed_rollouts_per_s = (finished_delta / elapsed_s) if elapsed_s > 0 else None
+    seconds_per_completed_rollout = (elapsed_s / finished_delta) if finished_delta > 0 else None
+    return {
+        "first_finished": first_finished,
+        "last_finished": last_finished,
+        "elapsed_s": elapsed_s,
+        "completed_rollouts_per_s": completed_rollouts_per_s,
+        "seconds_per_completed_rollout": seconds_per_completed_rollout,
+    }
 
 
 def percentile(values: list[float], p: float) -> float | None:
@@ -987,7 +1042,13 @@ def render_index_html(
         ("Rollouts", str(overview.get("rollout_count", 0))),
         ("Mean Reward", f"{float(overview.get('mean_reward') or 0.0):.3f}"),
         ("Solved Rate", f"{100.0 * float(overview.get('solved_fraction') or 0.0):.1f}%"),
-        ("Median Duration", f"{float(overview.get('median_duration_s') or 0.0):.1f}s"),
+        ("Median Rollout Duration", f"{float(overview.get('median_duration_s') or 0.0):.1f}s"),
+        (
+            "Completed Rollouts / s",
+            format_decimal(overview.get("completed_rollouts_per_s"), decimals=3)
+            if overview.get("completed_rollouts_per_s") is not None
+            else "n/a",
+        ),
         ("Median Iterations", f"{float(overview.get('median_iterations') or 0.0):.1f}"),
         ("Median LLM Calls", f"{float(overview.get('median_llm_calls') or 0.0):.1f}"),
         ("Parse Errors", str(int(overview.get("parse_errors_total") or 0))),
@@ -1178,6 +1239,7 @@ def render_index_html(
         sampled_table_rows,
         ["Rollout", "Task", "Chain", "Pattern", "Hops", "Reward", "Predicted Final", "Gold Final", "Artifacts"],
     )
+    sampled_by_rollout_id = {str(row.get("rollout_id") or ""): row for row in sampled_rows}
 
     rollout_rows_sorted = sorted(
         rollout_rows,
@@ -1186,12 +1248,19 @@ def render_index_html(
     )
     rollout_table_rows: list[list[str]] = []
     for row in rollout_rows_sorted[:120]:
+        sample_row = sampled_by_rollout_id.get(str(row.get("rollout_id") or ""))
         links = []
-        if row.get("report_uri"):
+        if sample_row and sample_row.get("report_path_sample_rel"):
+            links.append(f"<a href='{html.escape(str(sample_row['report_path_sample_rel']))}'>report</a>")
+        elif row.get("report_uri"):
             links.append(f"<a href='{html.escape(str(row['report_uri']))}'>report</a>")
-        if row.get("timeline_uri"):
+        if sample_row and sample_row.get("timeline_html_sample_rel"):
+            links.append(f"<a href='{html.escape(str(sample_row['timeline_html_sample_rel']))}'>timeline</a>")
+        elif row.get("timeline_uri"):
             links.append(f"<a href='{html.escape(str(row['timeline_uri']))}'>timeline</a>")
-        if row.get("trace_uri"):
+        if sample_row and sample_row.get("trace_path_sample_rel"):
+            links.append(f"<a href='{html.escape(str(sample_row['trace_path_sample_rel']))}'>trace</a>")
+        elif row.get("trace_uri"):
             links.append(f"<a href='{html.escape(str(row['trace_uri']))}'>trace</a>")
         rollout_table_rows.append(
             [
@@ -1216,6 +1285,11 @@ def render_index_html(
         "Rollouts": overview.get("rollout_count", 0),
         "Mean reward": format_decimal(overview.get("mean_reward")),
         "Solved fraction": f"{100.0 * float(overview.get('solved_fraction') or 0.0):.1f}%",
+        "Completed rollouts / s": (
+            format_decimal(overview.get("completed_rollouts_per_s"))
+            if overview.get("completed_rollouts_per_s") is not None
+            else "n/a"
+        ),
         "Parse errors": int(overview.get("parse_errors_total") or 0),
         "Parse error rate": f"{100.0 * float(overview.get('parse_error_rate') or 0.0):.2f}%",
         "Context overflows": int(overview.get("context_overflow_errors") or 0),
@@ -1248,9 +1322,8 @@ def render_index_html(
     )
 
     caveats = [
-        "Sample rooflines are representative only; the trace cards at the bottom are not a full census of every rollout.",
+        "Representative traces are a 12-rollout sample chosen for qualitative debugging across different outcomes and hop lengths; they are not aggregate statistics for the whole run.",
         "Current runs only show raw prompt text in the timeline when prompt logging is enabled. Otherwise the timeline falls back to structured trace state and tool outputs.",
-        "The final `report` stage in privacy_hopqa is deterministic string assembly, so its wall time is typically near zero compared with `hop_resolve`.",
     ]
 
     return f"""<!DOCTYPE html>
@@ -1395,6 +1468,16 @@ def render_index_html(
       box-shadow: 0 10px 28px rgba(30, 36, 48, 0.05);
       overflow: auto;
     }}
+    .table-card.scrollable {{
+      max-height: 640px;
+      display: flex;
+      flex-direction: column;
+    }}
+    .table-scroll {{
+      overflow: auto;
+      min-height: 0;
+      flex: 1 1 auto;
+    }}
     .table-card h3 {{
       margin: 0 0 10px;
       font-size: 18px;
@@ -1486,6 +1569,7 @@ def render_index_html(
       <h1>Runtime Analysis Viewer</h1>
       <p><strong>Run:</strong> {html.escape(run_name)}</p>
       <p>This viewer summarizes `privacy_hopqa` runtime behavior from saved rollout traces, token logs, and sampled artifacts. It mirrors the older privacy-agent viewer more closely, but keeps the hop-specific diagnostics and representative trace viewers at the bottom.</p>
+      <p><strong>Loop:</strong> `hop_plan` picks up to 4 searches, retrieval runs, `doc_choose` selects up to 3 docs, `doc_read` inspects them, `hop_resolve` decides whether the current hop is answered, and the loop repeats until the chain is resolved or the budget is exhausted.</p>
       <div class="topnav">
         <a href="#overview">Overview</a>
         <a href="#context">Context + Iterations</a>
@@ -1580,9 +1664,11 @@ def render_index_html(
           <h3>LLM Calls</h3>
           {mapping_table(llm_stats, key_name="Statistic", value_name="Calls")}
         </section>
-        <section class="table-card">
+        <section class="table-card scrollable">
           <h3>Rollouts</h3>
-          {rollout_table}
+          <div class="table-scroll">
+            {rollout_table}
+          </div>
         </section>
       </div>
 
@@ -1645,6 +1731,7 @@ def main() -> None:
     problem_lookup = load_problem_lookup(run_dir)
     rollouts, error_rows, event_rows, sequences = load_rollouts(run_dir, problem_lookup)
     llm_call_rows = load_llm_call_rows(run_dir)
+    rollout_rate = compute_completed_rollout_rate(run_dir / "actor" / "info.log")
 
     write_csv(output_dir / "rollouts.csv", rollouts)
     write_csv(output_dir / "errors.csv", error_rows)
@@ -1925,6 +2012,8 @@ def main() -> None:
         "median_duration_s": median(durations) if durations else 0.0,
         "median_iterations": median(iterations) if iterations else 0.0,
         "median_llm_calls": median(llm_calls) if llm_calls else 0.0,
+        "completed_rollouts_per_s": rollout_rate.get("completed_rollouts_per_s"),
+        "seconds_per_completed_rollout": rollout_rate.get("seconds_per_completed_rollout"),
         "parse_errors_total": sum(int(row.get("kind") == "parse_error") for row in error_rows),
         "parse_error_rate": (
             sum(int(row.get("kind") == "parse_error") for row in error_rows) / len(llm_call_rows)

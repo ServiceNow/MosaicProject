@@ -341,6 +341,51 @@ def parse_actor_info(
     return llm_requests, prompt_records, llm_call_records
 
 
+def compute_completed_rollout_rate(actor_info_path: Path) -> dict[str, float | int | None]:
+    if not actor_info_path.exists():
+        return {
+            "first_finished": None,
+            "last_finished": None,
+            "elapsed_s": None,
+            "completed_rollouts_per_s": None,
+            "seconds_per_completed_rollout": None,
+        }
+    samples: list[tuple[datetime, int]] = []
+    with actor_info_path.open("r", encoding="utf-8", errors="ignore") as handle:
+        for raw_line in handle:
+            timestamp = parse_actor_timestamp(raw_line)
+            if not timestamp:
+                continue
+            match = re.search(r"rollouts finished so far: (\d+)", raw_line)
+            if not match:
+                continue
+            finished = int(match.group(1))
+            if not samples or samples[-1][1] != finished:
+                samples.append((timestamp, finished))
+    if len(samples) < 2:
+        finished = samples[-1][1] if samples else None
+        return {
+            "first_finished": finished,
+            "last_finished": finished,
+            "elapsed_s": None,
+            "completed_rollouts_per_s": None,
+            "seconds_per_completed_rollout": None,
+        }
+    first_ts, first_finished = samples[0]
+    last_ts, last_finished = samples[-1]
+    elapsed_s = max(0.0, (last_ts - first_ts).total_seconds())
+    finished_delta = max(0, last_finished - first_finished)
+    completed_rollouts_per_s = (finished_delta / elapsed_s) if elapsed_s > 0 else None
+    seconds_per_completed_rollout = (elapsed_s / finished_delta) if finished_delta > 0 else None
+    return {
+        "first_finished": first_finished,
+        "last_finished": last_finished,
+        "elapsed_s": elapsed_s,
+        "completed_rollouts_per_s": completed_rollouts_per_s,
+        "seconds_per_completed_rollout": seconds_per_completed_rollout,
+    }
+
+
 def discover_report_artifact(run_dir: Path) -> tuple[bool, Path | None, datetime | None]:
     workspace = run_dir / "workspace"
     reports = sorted(workspace.glob("research_report_*.md"))
@@ -1093,7 +1138,8 @@ def write_html_viewer(
     def has_plot(filename: str) -> bool:
         return (plot_dir / filename).exists()
 
-    counts = summary["counts"]
+    counts = dict(summary["counts"])
+    counts["completed_rollouts_per_s"] = format_scalar(summary.get("completed_rollouts_per_s"))
     llm_stats = summary["llm_request_latency_s"]
     prompt_stats = summary["logged_prompt_tokens"]
     response_token_stats = summary["logged_response_tokens"]
@@ -1133,6 +1179,7 @@ def write_html_viewer(
         ("Median response tokens", format_scalar(response_token_stats.get("median"))),
         ("Median reward", format_scalar(reward_stats.get("median"))),
         ("Median rollout duration", f"{format_scalar(rollout_stats.get('median'))} s"),
+        ("Completed rollouts / s", format_scalar(summary.get("completed_rollouts_per_s"))),
         ("Median tool execution", f"{format_scalar(action_stats.get('median'))} s"),
         ("Median findings token share", f"{latest_findings_share * 100:.1f}%"),
     ]
@@ -1664,6 +1711,7 @@ def main() -> None:
 
     actor_info_path = run_dir / "actor" / "info.log"
     llm_requests, prompt_records, llm_call_records = parse_actor_info(actor_info_path)
+    rollout_rate = compute_completed_rollout_rate(actor_info_path)
     rollouts, actions, iterations = parse_rollout_sessions(run_dir)
 
     rollout_lookup = {str(row["rollout_id"]): row for row in rollouts}
@@ -1753,6 +1801,8 @@ def main() -> None:
     summary = {
         "run_dir": str(run_dir),
         "generated_at_utc": datetime.now(UTC).isoformat(),
+        "completed_rollouts_per_s": rollout_rate.get("completed_rollouts_per_s"),
+        "seconds_per_completed_rollout": rollout_rate.get("seconds_per_completed_rollout"),
         "counts": {
             "llm_requests": len(llm_requests),
             "llm_call_records": len(llm_call_records),
