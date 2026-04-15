@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Privacy Agent Runtime Analyses</title>
+  <title>Privacy Runtime Analyses</title>
   <style>
     :root {
       --bg: #f5f4ef;
@@ -91,9 +91,9 @@
 <body>
   <div class="page">
     <section class="hero">
-      <h1>Privacy Agent Runtime Analyses</h1>
-      <p>This landing page links the two current concise-QA runtime-analysis bundles so you can open either viewer directly and push the generated artifacts without hunting for individual paths.</p>
-      <p>The baseline run is the older planning-only setup; the second run is the retrieve-only local-search variant with per-call LLM token logging.</p>
+      <h1>Privacy Runtime Analyses</h1>
+      <p>This landing page links the current runtime-analysis bundles so you can open each viewer directly and push the generated artifacts without hunting for individual paths.</p>
+      <p>The first two viewers are the older `privacy_agent` concise-QA runs. The third is the new async `privacy_hopqa` training run with hop-level planning, parallel retrieval, and parallel doc reads.</p>
     </section>
 
     <section class="grid">
@@ -125,6 +125,23 @@
         </dl>
         <a class="button" href="./privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/index.html">Open Viewer</a>
         <a class="secondary" href="./privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/summary.json">summary.json</a>
+      </article>
+
+      <article class="card">
+        <h2>Async Privacy HopQA</h2>
+        <div class="meta">Run: <code>privacy_hopqa_qwen3_8b_async_v1</code></div>
+        <dl>
+          <dt>Completed rollouts</dt><dd>1,154</dd>
+          <dt>Mean reward</dt><dd>0.1027</dd>
+          <dt>Median reward</dt><dd>0.0</dd>
+          <dt>Solved fraction</dt><dd>0.0260</dd>
+          <dt>Median rollout duration</dt><dd>308.81 s</dd>
+          <dt>Median iterations</dt><dd>6</dd>
+          <dt>Median LLM calls</dt><dd>34</dd>
+          <dt>Parse errors logged</dt><dd>12</dd>
+        </dl>
+        <a class="button" href="./privacy_hopqa_qwen3_8b_async_v1/index.html">Open Viewer</a>
+        <a class="secondary" href="./privacy_hopqa_qwen3_8b_async_v1/summary.json">summary.json</a>
       </article>
     </section>
   </div>
