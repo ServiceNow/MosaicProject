@@ -624,16 +624,68 @@ def plot_metric_by_group(
 def plot_rollout_roofline(events: list[dict[str, Any]], path: Path, *, title: str) -> None:
     if not events:
         return
-    lane_order = sorted(
-        {str(event.get("lane") or "") for event in events if str(event.get("lane") or "")},
-        key=lambda lane: min(float(event.get("start_s") or 0.0) for event in events if str(event.get("lane") or "") == lane),
-    )
+
+    def base_lane(event: dict[str, Any]) -> str:
+        stage = str(event.get("stage") or "")
+        lane = str(event.get("lane") or "")
+        if stage == "hop_plan":
+            return "hop plan"
+        if stage == "doc_choose":
+            return "doc choose"
+        if stage == "hop_resolve":
+            return "hop resolve"
+        if stage == "report":
+            return "final report"
+        if stage == "search":
+            if "local" in lane:
+                return "local retrieval"
+            return "web retrieval"
+        if stage == "doc_read":
+            if lane.startswith("read:local"):
+                return "local doc read"
+            return "web doc read"
+        return stage or "other"
+
+    grouped_events: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for event in sorted(events, key=lambda row: (float(row.get("start_s") or 0.0), float(row.get("end_s") or row.get("start_s") or 0.0))):
+        grouped_events[base_lane(event)].append(event)
+
+    display_events: list[tuple[str, dict[str, Any]]] = []
+    lane_order: list[str] = []
+    preferred_order = [
+        "hop plan",
+        "web retrieval",
+        "local retrieval",
+        "doc choose",
+        "web doc read",
+        "local doc read",
+        "hop resolve",
+        "final report",
+    ]
+    for base in preferred_order + sorted(key for key in grouped_events if key not in preferred_order):
+        if base not in grouped_events:
+            continue
+        lanes_end: list[float] = []
+        for event in grouped_events[base]:
+            start_s = float(event.get("start_s") or 0.0)
+            end_s = float(event.get("end_s") or start_s)
+            slot = 0
+            while slot < len(lanes_end) and start_s < lanes_end[slot]:
+                slot += 1
+            if slot == len(lanes_end):
+                lanes_end.append(end_s)
+            else:
+                lanes_end[slot] = end_s
+            lane_name = base if slot == 0 else f"{base} #{slot + 1}"
+            if lane_name not in lane_order:
+                lane_order.append(lane_name)
+            display_events.append((lane_name, event))
+
     lane_index = {lane: idx for idx, lane in enumerate(lane_order)}
     fig_height = max(3.6, len(lane_order) * 0.38 + 1.2)
     fig, ax = plt.subplots(figsize=(11.5, fig_height))
 
-    for event in sorted(events, key=lambda row: (float(row.get("start_s") or 0.0), str(row.get("lane") or ""))):
-        lane = str(event.get("lane") or "")
+    for lane, event in sorted(display_events, key=lambda item: (float(item[1].get("start_s") or 0.0), lane_index.get(item[0], 0))):
         if lane not in lane_index:
             continue
         stage = str(event.get("stage") or "")
@@ -810,6 +862,15 @@ def display_value(value: Any) -> str:
     return str(value)
 
 
+def format_decimal(value: Any, decimals: int = 3) -> str:
+    if value in ("", None):
+        return ""
+    try:
+        return f"{float(value):.{decimals}f}"
+    except (TypeError, ValueError):
+        return str(value)
+
+
 def render_index_html(
     output_dir: Path,
     run_name: str,
@@ -869,7 +930,7 @@ def render_index_html(
         roofline_cards.append(
             "<div class='sample-card'>"
             f"<div class='sample-title'>{html.escape(str(row.get('rollout_id') or ''))}</div>"
-            f"<div class='sample-meta'>reward={html.escape(display_value(row.get('reward')))}, hops={html.escape(display_value(row.get('hop_count') if row.get('hop_count') not in (None, '') else row.get('total_hops')))}, pattern={html.escape(display_value(row.get('hop_pattern') or ''))}, parse={html.escape(display_value(row.get('parse_errors_total')))}</div>"
+            f"<div class='sample-meta'>reward={html.escape(format_decimal(row.get('reward')))}, hops={html.escape(display_value(row.get('hop_count') if row.get('hop_count') not in (None, '') else row.get('total_hops')))}, pattern={html.escape(display_value(row.get('hop_pattern') or ''))}, parse={html.escape(display_value(row.get('parse_errors_total')))}</div>"
             f"{roofline_img}"
             f"<div class='sample-links'>{' | '.join(links)}</div>"
             "</div>"
@@ -893,7 +954,7 @@ def render_index_html(
                 html.escape(str(row.get("chain_id") or "")),
                 html.escape(str(row.get("hop_pattern") or "")),
                 html.escape(display_value(row.get("hop_count") if row.get("hop_count") not in (None, "") else row.get("total_hops"))),
-                html.escape(display_value(row.get("reward"))),
+                html.escape(format_decimal(row.get("reward"))),
                 html.escape(str(row.get("predicted_final_answer") or "")),
                 html.escape(str(row.get("ground_truth_final_answer") or "")),
                 "<br/>".join(links),
@@ -921,7 +982,7 @@ def render_index_html(
         rollout_table_rows.append(
             [
                 html.escape(str(row.get("rollout_id") or "")),
-                html.escape(display_value(row.get("reward"))),
+                html.escape(format_decimal(row.get("reward"))),
                 html.escape(display_value(row.get("iterations_used"))),
                 html.escape(display_value(row.get("searches_total"))),
                 html.escape(display_value(row.get("docs_read"))),
@@ -1155,6 +1216,19 @@ def main() -> None:
     if llm_calls_plot.exists():
         plots.append(llm_calls_plot.name)
 
+    duration_by_iteration_plot = output_dir / "rollout_duration_by_final_iteration.png"
+    plot_metric_by_group(
+        rollouts,
+        "duration_s",
+        "iterations_used",
+        duration_by_iteration_plot,
+        title="Rollout Duration by Final Iteration Count",
+        xlabel="Duration (seconds)",
+        ylabel="Final iteration count",
+    )
+    if duration_by_iteration_plot.exists():
+        plots.append(duration_by_iteration_plot.name)
+
     searches_docs_plot = output_dir / "searches_vs_docs_read.png"
     plot_search_docs_scatter(rollouts, searches_docs_plot)
     if searches_docs_plot.exists():
@@ -1300,6 +1374,19 @@ def main() -> None:
     )
     if total_tokens_plot.exists():
         plots.append(total_tokens_plot.name)
+
+    total_tokens_by_iteration_plot = output_dir / "total_tokens_by_final_iteration.png"
+    plot_metric_by_group(
+        rollouts,
+        "total_tokens",
+        "iterations_used",
+        total_tokens_by_iteration_plot,
+        title="Total Tokens by Final Iteration Count",
+        xlabel="Total tokens",
+        ylabel="Final iteration count",
+    )
+    if total_tokens_by_iteration_plot.exists():
+        plots.append(total_tokens_by_iteration_plot.name)
 
     (output_dir / "stage_flow.svg").write_text(render_stage_flow_svg(sequences), encoding="utf-8")
 

@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>privacy_hopqa timeline</title>
+  <style>
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 24px;
+      color: #111827;
+      background: #f8fafc;
+    }
+    h1, h2 {
+      margin: 0 0 12px;
+    }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin: 0 0 24px;
+    }
+    .card {
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .card .label {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+    .card .value {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .lane-row {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .lane-label {
+      font-size: 13px;
+      color: #334155;
+      overflow-wrap: anywhere;
+    }
+    .lane-track {
+      position: relative;
+      height: 28px;
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .bar {
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      border-radius: 6px;
+      color: white;
+      font-size: 11px;
+      line-height: 22px;
+      padding: 0 6px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 18px;
+    }
+    th, td {
+      border-bottom: 1px solid #e2e8f0;
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 13px;
+    }
+    th {
+      background: #f1f5f9;
+    }
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>privacy_hopqa rollout timeline</h1>
+    <div class="summary">
+    <div class="card"><div class="label">Task</div><div class="value">DR0002</div></div>
+    <div class="card"><div class="label">Chain</div><div class="value">4b9e3b87</div></div>
+    <div class="card"><div class="label">Iterations</div><div class="value">8</div></div>
+    <div class="card"><div class="label">Resolved Hops</div><div class="value">0/3</div></div>
+    <div class="card"><div class="label">Searches</div><div class="value">30</div></div>
+    <div class="card"><div class="label">Docs Read</div><div class="value">21</div></div>
+    <div class="card"><div class="label">Parse Errors</div><div class="value">0</div></div>
+    <div class="card"><div class="label">Context Overflows</div><div class="value">0</div></div>
+    <div class="card"><div class="label">Duration (s)</div><div class="value">394.68</div></div>
+  </div>
+  <h2>Timeline</h2>
+  <div><div class='lane-row'><div class='lane-label'>plan</div><div class='lane-track'><div class="bar" style="left:0.000%;width:3.632%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 0.0, &quot;duration_s&quot;: 14.333, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 retrieval plan</div><div class="bar" style="left:11.522%;width:3.289%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 45.471, &quot;duration_s&quot;: 12.978, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 retrieval plan</div><div class="bar" style="left:24.928%;width:5.023%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 98.375, &quot;duration_s&quot;: 19.824, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 2}}">H1 retrieval plan</div><div class="bar" style="left:39.199%;width:4.173%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 154.694, &quot;duration_s&quot;: 16.47, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 3}}">H1 retrieval plan</div><div class="bar" style="left:53.079%;width:3.127%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 209.468, &quot;duration_s&quot;: 12.338, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 4}}">H1 retrieval plan</div><div class="bar" style="left:67.005%;width:3.467%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 264.425, &quot;duration_s&quot;: 13.681, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 5}}">H1 retrieval plan</div><div class="bar" style="left:78.185%;width:3.626%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 308.545, &quot;duration_s&quot;: 14.311, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 6}}">H1 retrieval plan</div><div class="bar" style="left:88.435%;width:3.690%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 348.994, &quot;duration_s&quot;: 14.561, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 7}}">H1 retrieval plan</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_0</div><div class='lane-track'><div class="bar" style="left:3.632%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market LMS training sessions percentage Q2...&quot;, &quot;start_s&quot;: 14.333, &quot;duration_s&quot;: 0.17, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market LMS training sessions percentage Q2...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_1</div><div class='lane-track'><div class="bar" style="left:3.632%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market proprietary LMS adoption rate 2025&quot;, &quot;start_s&quot;: 14.334, &quot;duration_s&quot;: 0.208, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market proprietary LMS adoption rate 2025</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_2</div><div class='lane-track'><div class="bar" style="left:3.632%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market Q2 2025 training systems report&quot;, &quot;start_s&quot;: 14.334, &quot;duration_s&quot;: 0.181, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market Q2 2025 training systems report</div></div></div><div class='lane-row'><div class='lane-label'>choose</div><div class='lane-track'><div class="bar" style="left:3.685%;width:4.073%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 14.542, &quot;duration_s&quot;: 16.072, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 choose docs</div><div class="bar" style="left:14.933%;width:6.557%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 58.932, &quot;duration_s&quot;: 25.877, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 choose docs</div><div class="bar" style="left:30.026%;width:4.651%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 118.491, &quot;duration_s&quot;: 18.356, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 2}}">H1 choose docs</div><div class="bar" style="left:43.744%;width:5.363%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 172.629, &quot;duration_s&quot;: 21.166, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 3}}">H1 choose docs</div><div class="bar" style="left:56.311%;width:6.043%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 222.221, &quot;duration_s&quot;: 23.85, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 4}}">H1 choose docs</div><div class="bar" style="left:70.792%;width:3.009%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 279.369, &quot;duration_s&quot;: 11.874, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 5}}">H1 choose docs</div><div class="bar" style="left:81.861%;width:2.020%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 323.052, &quot;duration_s&quot;: 7.97, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 6}}">H1 choose docs</div><div class="bar" style="left:92.385%;width:3.688%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 364.582, &quot;duration_s&quot;: 14.554, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 7}}">H1 choose docs</div></div></div><div class='lane-row'><div class='lane-label'>read:web/drbench_urls/drbench_urls_babc5efb6761afc1</div><div class='lane-track'><div class="bar" style="left:7.757%;width:1.344%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.bcg.com/publications/2024/personaliz...&quot;, &quot;start_s&quot;: 30.614, &quot;duration_s&quot;: 5.305, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/drbench_urls/drbench_urls_babc5efb6761afc1&quot;}}">https://www.bcg.com/publications/2024/personaliz...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/7344</div><div class='lane-track'><div class="bar" style="left:7.758%;width:1.874%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://joshbersin.com/2018/06/a-new-paradigm-fo...&quot;, &quot;start_s&quot;: 30.616, &quot;duration_s&quot;: 7.397, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/7344&quot;}}">https://joshbersin.com/2018/06/a-new-paradigm-fo...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/48881</div><div class='lane-track'><div class="bar" style="left:7.759%;width:1.929%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://trainingmag.com/2023-training-industry-r...&quot;, &quot;start_s&quot;: 30.618, &quot;duration_s&quot;: 7.613, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/48881&quot;}}">https://trainingmag.com/2023-training-industry-r...</div></div></div><div class='lane-row'><div class='lane-label'>resolve</div><div class='lane-track'><div class="bar" style="left:9.688%;width:1.834%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 38.232, &quot;duration_s&quot;: 7.239, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 resolve</div><div class="bar" style="left:22.770%;width:2.158%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 89.858, &quot;duration_s&quot;: 8.516, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 resolve</div><div class="bar" style="left:37.184%;width:2.015%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 146.741, &quot;duration_s&quot;: 7.953, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 2}}">H1 resolve</div><div class="bar" style="left:51.195%;width:1.884%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 202.033, &quot;duration_s&quot;: 7.434, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 3}}">H1 resolve</div><div class="bar" style="left:64.442%;width:2.563%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 254.309, &quot;duration_s&quot;: 10.116, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 4}}">H1 resolve</div><div class="bar" style="left:76.051%;width:2.134%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 300.125, &quot;duration_s&quot;: 8.42, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 5}}">H1 resolve</div><div class="bar" style="left:86.195%;width:2.240%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 340.156, &quot;duration_s&quot;: 8.838, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 6}}">H1 resolve</div><div class="bar" style="left:97.311%;width:2.689%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 384.021, &quot;duration_s&quot;: 10.612, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 7}}">H1 resolve</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_0</div><div class='lane-track'><div class="bar" style="left:14.811%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market LMS adoption rate Q2 2025&quot;, &quot;start_s&quot;: 58.449, &quot;duration_s&quot;: 0.482, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market LMS adoption rate Q2 2025</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_1</div><div class='lane-track'><div class="bar" style="left:14.811%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market training system usage statistics 20...&quot;, &quot;start_s&quot;: 58.45, &quot;duration_s&quot;: 0.482, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market training system usage statistics 20...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_2</div><div class='lane-track'><div class="bar" style="left:14.811%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market proprietary LMS implementation repo...&quot;, &quot;start_s&quot;: 58.45, &quot;duration_s&quot;: 0.263, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market proprietary LMS implementation repo...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_3</div><div class='lane-track'><div class="bar" style="left:14.811%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market annual report 2025 training metrics&quot;, &quot;start_s&quot;: 58.45, &quot;duration_s&quot;: 0.482, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market annual report 2025 training metrics</div></div></div><div class='lane-row'><div class='lane-label'>read:web/55737</div><div class='lane-track'><div class="bar" style="left:21.491%;width:1.257%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://aag-it.com/the-latest-cloud-computing-st...&quot;, &quot;start_s&quot;: 84.81, &quot;duration_s&quot;: 4.962, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/55737&quot;}}">https://aag-it.com/the-latest-cloud-computing-st...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/43881</div><div class='lane-track'><div class="bar" style="left:21.491%;width:1.279%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.nu.edu/blog/ai-statistics-trends/&quot;, &quot;start_s&quot;: 84.813, &quot;duration_s&quot;: 5.046, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/43881&quot;}}">https://www.nu.edu/blog/ai-statistics-trends/</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_0</div><div class='lane-track'><div class="bar" style="left:29.952%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market LMS training program adoption rate...&quot;, &quot;start_s&quot;: 118.199, &quot;duration_s&quot;: 0.23, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market LMS training program adoption rate...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_1</div><div class='lane-track'><div class="bar" style="left:29.952%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market training metrics 2025&quot;, &quot;start_s&quot;: 118.199, &quot;duration_s&quot;: 0.172, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market training metrics 2025</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_2</div><div class='lane-track'><div class="bar" style="left:29.952%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market proprietary LMS implementation deta...&quot;, &quot;start_s&quot;: 118.199, &quot;duration_s&quot;: 0.291, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market proprietary LMS implementation deta...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_3</div><div class='lane-track'><div class="bar" style="left:29.952%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market annual report 2025 training session...&quot;, &quot;start_s&quot;: 118.199, &quot;duration_s&quot;: 0.246, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market annual report 2025 training session...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/83536</div><div class='lane-track'><div class="bar" style="left:34.677%;width:2.507%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.acd-chem.com/education-meetings/cale...&quot;, &quot;start_s&quot;: 136.847, &quot;duration_s&quot;: 9.893, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/83536&quot;}}">https://www.acd-chem.com/education-meetings/cale...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/9684</div><div class='lane-track'><div class="bar" style="left:34.678%;width:2.335%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.fldoe.org/academics/standards/instru...&quot;, &quot;start_s&quot;: 136.85, &quot;duration_s&quot;: 9.213, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/9684&quot;}}">https://www.fldoe.org/academics/standards/instru...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_0</div><div class='lane-track'><div class="bar" style="left:43.389%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market LMS adoption rate Q2 2025 report&quot;, &quot;start_s&quot;: 171.227, &quot;duration_s&quot;: 0.517, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market LMS adoption rate Q2 2025 report</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_1</div><div class='lane-track'><div class="bar" style="left:43.389%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market training system usage 2025 statisti...&quot;, &quot;start_s&quot;: 171.227, &quot;duration_s&quot;: 1.395, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market training system usage 2025 statisti...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_2</div><div class='lane-track'><div class="bar" style="left:43.389%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market proprietary LMS implementation time...&quot;, &quot;start_s&quot;: 171.227, &quot;duration_s&quot;: 1.395, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market proprietary LMS implementation time...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_3</div><div class='lane-track'><div class="bar" style="left:43.389%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market Q2 2025 training program metrics&quot;, &quot;start_s&quot;: 171.227, &quot;duration_s&quot;: 0.634, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market Q2 2025 training program metrics</div></div></div><div class='lane-row'><div class='lane-label'>read:web/72135</div><div class='lane-track'><div class="bar" style="left:49.107%;width:2.048%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.explorance.com/blog/5-essential-step...&quot;, &quot;start_s&quot;: 193.795, &quot;duration_s&quot;: 8.081, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/72135&quot;}}">https://www.explorance.com/blog/5-essential-step...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/25243</div><div class='lane-track'><div class="bar" style="left:49.108%;width:2.084%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://en.wikipedia.org/wiki/History_of_virtual...&quot;, &quot;start_s&quot;: 193.797, &quot;duration_s&quot;: 8.225, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/25243&quot;}}">https://en.wikipedia.org/wiki/History_of_virtual...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/27541</div><div class='lane-track'><div class="bar" style="left:49.109%;width:2.064%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.nj.gov/labor/research-info/grants.sh...&quot;, &quot;start_s&quot;: 193.8, &quot;duration_s&quot;: 8.144, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/27541&quot;}}">https://www.nj.gov/labor/research-info/grants.sh...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_0</div><div class='lane-track'><div class="bar" style="left:56.205%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market Q2 2025 LMS training session statis...&quot;, &quot;start_s&quot;: 221.806, &quot;duration_s&quot;: 0.415, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market Q2 2025 LMS training session statis...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_1</div><div class='lane-track'><div class="bar" style="left:56.205%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market training system adoption rate 2025&quot;, &quot;start_s&quot;: 221.806, &quot;duration_s&quot;: 0.324, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market training system adoption rate 2025</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_2</div><div class='lane-track'><div class="bar" style="left:56.205%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market proprietary LMS usage percentage 20...&quot;, &quot;start_s&quot;: 221.806, &quot;duration_s&quot;: 0.222, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market proprietary LMS usage percentage 20...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_3</div><div class='lane-track'><div class="bar" style="left:56.206%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market training program metrics Q2 2025&quot;, &quot;start_s&quot;: 221.806, &quot;duration_s&quot;: 0.341, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market training program metrics Q2 2025</div></div></div><div class='lane-row'><div class='lane-label'>read:web/57542</div><div class='lane-track'><div class="bar" style="left:62.354%;width:1.873%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://lol.fandom.com/wiki/Larssen/Match_Histor...&quot;, &quot;start_s&quot;: 246.071, &quot;duration_s&quot;: 7.39, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/57542&quot;}}">https://lol.fandom.com/wiki/Larssen/Match_Histor...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/4161</div><div class='lane-track'><div class="bar" style="left:62.355%;width:2.073%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.gourmetpro.co/blog/largest-grocery-c...&quot;, &quot;start_s&quot;: 246.073, &quot;duration_s&quot;: 8.18, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/4161&quot;}}">https://www.gourmetpro.co/blog/largest-grocery-c...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/35353</div><div class='lane-track'><div class="bar" style="left:62.355%;width:1.678%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://dchas.org/2023/08/22/history-of-the-chas...&quot;, &quot;start_s&quot;: 246.075, &quot;duration_s&quot;: 6.623, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/35353&quot;}}">https://dchas.org/2023/08/22/history-of-the-chas...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_0</div><div class='lane-track'><div class="bar" style="left:70.472%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market Q2 2025 LMS training percentage&quot;, &quot;start_s&quot;: 278.105, &quot;duration_s&quot;: 0.782, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market Q2 2025 LMS training percentage</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_1</div><div class='lane-track'><div class="bar" style="left:70.472%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market proprietary LMS adoption rate Q2 20...&quot;, &quot;start_s&quot;: 278.105, &quot;duration_s&quot;: 0.766, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market proprietary LMS adoption rate Q2 20...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_2</div><div class='lane-track'><div class="bar" style="left:70.472%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market training program LMS usage statisti...&quot;, &quot;start_s&quot;: 278.105, &quot;duration_s&quot;: 1.202, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market training program LMS usage statisti...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_3</div><div class='lane-track'><div class="bar" style="left:70.472%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market annual report 2025 LMS training dat...&quot;, &quot;start_s&quot;: 278.106, &quot;duration_s&quot;: 1.202, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market annual report 2025 LMS training dat...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/5527</div><div class='lane-track'><div class="bar" style="left:73.801%;width:1.987%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://oag.ca.gov/privacy/databreach/list&quot;, &quot;start_s&quot;: 291.243, &quot;duration_s&quot;: 7.843, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/5527&quot;}}">https://oag.ca.gov/privacy/databreach/list</div></div></div><div class='lane-row'><div class='lane-label'>read:web/58940</div><div class='lane-track'><div class="bar" style="left:73.802%;width:2.235%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.grandviewresearch.com/industry-analy...&quot;, &quot;start_s&quot;: 291.247, &quot;duration_s&quot;: 8.818, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/58940&quot;}}">https://www.grandviewresearch.com/industry-analy...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/55979</div><div class='lane-track'><div class="bar" style="left:73.802%;width:2.234%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://research.contrary.com/company/long-term-...&quot;, &quot;start_s&quot;: 291.25, &quot;duration_s&quot;: 8.815, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/55979&quot;}}">https://research.contrary.com/company/long-term-...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter6_web_search_0</div><div class='lane-track'><div class="bar" style="left:81.811%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market LMS adoption rate Q2 2025&quot;, &quot;start_s&quot;: 322.856, &quot;duration_s&quot;: 0.142, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market LMS adoption rate Q2 2025</div></div></div><div class='lane-row'><div class='lane-label'>search:iter6_web_search_2</div><div class='lane-track'><div class="bar" style="left:81.811%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market proprietary LMS implementation metr...&quot;, &quot;start_s&quot;: 322.856, &quot;duration_s&quot;: 0.196, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market proprietary LMS implementation metr...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter6_web_search_3</div><div class='lane-track'><div class="bar" style="left:81.811%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market training session LMS percentage Q2...&quot;, &quot;start_s&quot;: 322.856, &quot;duration_s&quot;: 0.196, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market training session LMS percentage Q2...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/8007</div><div class='lane-track'><div class="bar" style="left:83.882%;width:1.441%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.sap.com/investors/en/why-invest/acqu...&quot;, &quot;start_s&quot;: 331.027, &quot;duration_s&quot;: 5.686, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/8007&quot;}}">https://www.sap.com/investors/en/why-invest/acqu...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/40400</div><div class='lane-track'><div class="bar" style="left:83.883%;width:1.339%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://explodingtopics.com/blog/chatgpt-users&quot;, &quot;start_s&quot;: 331.03, &quot;duration_s&quot;: 5.282, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/40400&quot;}}">https://explodingtopics.com/blog/chatgpt-users</div></div></div><div class='lane-row'><div class='lane-label'>read:web/52151</div><div class='lane-track'><div class="bar" style="left:83.883%;width:2.312%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.salesforce.com/news/stories/the-hist...&quot;, &quot;start_s&quot;: 331.032, &quot;duration_s&quot;: 9.123, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/52151&quot;}}">https://www.salesforce.com/news/stories/the-hist...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter7_web_search_0</div><div class='lane-track'><div class="bar" style="left:92.134%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market LMS training percentage Q2 2025&quot;, &quot;start_s&quot;: 363.591, &quot;duration_s&quot;: 0.968, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market LMS training percentage Q2 2025</div></div></div><div class='lane-row'><div class='lane-label'>search:iter7_web_search_1</div><div class='lane-track'><div class="bar" style="left:92.134%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market proprietary LMS adoption statistics...&quot;, &quot;start_s&quot;: 363.591, &quot;duration_s&quot;: 0.486, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market proprietary LMS adoption statistics...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter7_web_search_2</div><div class='lane-track'><div class="bar" style="left:92.134%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market training program Q2 2025 LMS report&quot;, &quot;start_s&quot;: 363.591, &quot;duration_s&quot;: 0.988, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market training program Q2 2025 LMS report</div></div></div><div class='lane-row'><div class='lane-label'>search:iter7_web_search_3</div><div class='lane-track'><div class="bar" style="left:92.134%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market digital training initiatives 2025&quot;, &quot;start_s&quot;: 363.591, &quot;duration_s&quot;: 0.658, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market digital training initiatives 2025</div></div></div><div class='lane-row'><div class='lane-label'>read:web/36412</div><div class='lane-track'><div class="bar" style="left:96.073%;width:1.238%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://thebankingacademy.com/the-international-...&quot;, &quot;start_s&quot;: 379.136, &quot;duration_s&quot;: 4.885, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/36412&quot;}}">https://thebankingacademy.com/the-international-...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/2245</div><div class='lane-track'><div class="bar" style="left:96.073%;width:1.153%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://conferenceonarchitecture.com/schedule/sp...&quot;, &quot;start_s&quot;: 379.139, &quot;duration_s&quot;: 4.552, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/2245&quot;}}">https://conferenceonarchitecture.com/schedule/sp...</div></div></div><div class='lane-row'><div class='lane-label'>report</div><div class='lane-track'><div class="bar" style="left:100.000%;width:0.800%;background:#4c78a8;" title="{&quot;stage&quot;: &quot;report&quot;, &quot;label&quot;: &quot;Final report&quot;, &quot;start_s&quot;: 394.634, &quot;duration_s&quot;: 0.01, &quot;meta&quot;: {&quot;resolved_hops&quot;: 0}}">Final report</div></div></div></div>
+  <h2>Events</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Lane</th>
+        <th>Stage</th>
+        <th>Label</th>
+        <th>Start (s)</th>
+        <th>Duration (s)</th>
+        <th>Metadata</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>0.00</td><td>14.33</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>search:iter0_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market LMS training sessions percentage Q2...</td><td>14.33</td><td>0.17</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market proprietary LMS adoption rate 2025</td><td>14.33</td><td>0.21</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market Q2 2025 training systems report</td><td>14.33</td><td>0.18</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>14.54</td><td>16.07</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>read:web/drbench_urls/drbench_urls_babc5efb6761afc1</td><td>doc_read</td><td>https://www.bcg.com/publications/2024/personaliz...</td><td>30.61</td><td>5.31</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/drbench_urls/drbench_urls_babc5efb6761afc1&quot;
+}</pre></td></tr><tr><td>read:web/7344</td><td>doc_read</td><td>https://joshbersin.com/2018/06/a-new-paradigm-fo...</td><td>30.62</td><td>7.40</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/7344&quot;
+}</pre></td></tr><tr><td>read:web/48881</td><td>doc_read</td><td>https://trainingmag.com/2023-training-industry-r...</td><td>30.62</td><td>7.61</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/48881&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>38.23</td><td>7.24</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>45.47</td><td>12.98</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>search:iter1_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market LMS adoption rate Q2 2025</td><td>58.45</td><td>0.48</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market training system usage statistics 20...</td><td>58.45</td><td>0.48</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market proprietary LMS implementation repo...</td><td>58.45</td><td>0.26</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_3</td><td>search</td><td>web_search: Lee&#x27;s Market annual report 2025 training metrics</td><td>58.45</td><td>0.48</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>58.93</td><td>25.88</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>read:web/55737</td><td>doc_read</td><td>https://aag-it.com/the-latest-cloud-computing-st...</td><td>84.81</td><td>4.96</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/55737&quot;
+}</pre></td></tr><tr><td>read:web/43881</td><td>doc_read</td><td>https://www.nu.edu/blog/ai-statistics-trends/</td><td>84.81</td><td>5.05</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/43881&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>89.86</td><td>8.52</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>98.37</td><td>19.82</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>search:iter2_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market LMS training program adoption rate...</td><td>118.20</td><td>0.23</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market training metrics 2025</td><td>118.20</td><td>0.17</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market proprietary LMS implementation deta...</td><td>118.20</td><td>0.29</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_3</td><td>search</td><td>web_search: Lee&#x27;s Market annual report 2025 training session...</td><td>118.20</td><td>0.25</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>118.49</td><td>18.36</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>read:web/83536</td><td>doc_read</td><td>https://www.acd-chem.com/education-meetings/cale...</td><td>136.85</td><td>9.89</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/83536&quot;
+}</pre></td></tr><tr><td>read:web/9684</td><td>doc_read</td><td>https://www.fldoe.org/academics/standards/instru...</td><td>136.85</td><td>9.21</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/9684&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>146.74</td><td>7.95</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>154.69</td><td>16.47</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>search:iter3_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market LMS adoption rate Q2 2025 report</td><td>171.23</td><td>0.52</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market training system usage 2025 statisti...</td><td>171.23</td><td>1.39</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market proprietary LMS implementation time...</td><td>171.23</td><td>1.39</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_web_search_3</td><td>search</td><td>web_search: Lee&#x27;s Market Q2 2025 training program metrics</td><td>171.23</td><td>0.63</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>172.63</td><td>21.17</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>read:web/72135</td><td>doc_read</td><td>https://www.explorance.com/blog/5-essential-step...</td><td>193.79</td><td>8.08</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/72135&quot;
+}</pre></td></tr><tr><td>read:web/25243</td><td>doc_read</td><td>https://en.wikipedia.org/wiki/History_of_virtual...</td><td>193.80</td><td>8.23</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/25243&quot;
+}</pre></td></tr><tr><td>read:web/27541</td><td>doc_read</td><td>https://www.nj.gov/labor/research-info/grants.sh...</td><td>193.80</td><td>8.14</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/27541&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>202.03</td><td>7.43</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>209.47</td><td>12.34</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>search:iter4_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market Q2 2025 LMS training session statis...</td><td>221.81</td><td>0.41</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter4_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market training system adoption rate 2025</td><td>221.81</td><td>0.32</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter4_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market proprietary LMS usage percentage 20...</td><td>221.81</td><td>0.22</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter4_web_search_3</td><td>search</td><td>web_search: Lee&#x27;s Market training program metrics Q2 2025</td><td>221.81</td><td>0.34</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>222.22</td><td>23.85</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>read:web/57542</td><td>doc_read</td><td>https://lol.fandom.com/wiki/Larssen/Match_Histor...</td><td>246.07</td><td>7.39</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/57542&quot;
+}</pre></td></tr><tr><td>read:web/4161</td><td>doc_read</td><td>https://www.gourmetpro.co/blog/largest-grocery-c...</td><td>246.07</td><td>8.18</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/4161&quot;
+}</pre></td></tr><tr><td>read:web/35353</td><td>doc_read</td><td>https://dchas.org/2023/08/22/history-of-the-chas...</td><td>246.07</td><td>6.62</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/35353&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>254.31</td><td>10.12</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>264.42</td><td>13.68</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market Q2 2025 LMS training percentage</td><td>278.11</td><td>0.78</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market proprietary LMS adoption rate Q2 20...</td><td>278.11</td><td>0.77</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market training program LMS usage statisti...</td><td>278.11</td><td>1.20</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_3</td><td>search</td><td>web_search: Lee&#x27;s Market annual report 2025 LMS training dat...</td><td>278.11</td><td>1.20</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>279.37</td><td>11.87</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>read:web/5527</td><td>doc_read</td><td>https://oag.ca.gov/privacy/databreach/list</td><td>291.24</td><td>7.84</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/5527&quot;
+}</pre></td></tr><tr><td>read:web/58940</td><td>doc_read</td><td>https://www.grandviewresearch.com/industry-analy...</td><td>291.25</td><td>8.82</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/58940&quot;
+}</pre></td></tr><tr><td>read:web/55979</td><td>doc_read</td><td>https://research.contrary.com/company/long-term-...</td><td>291.25</td><td>8.81</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/55979&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>300.12</td><td>8.42</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>308.54</td><td>14.31</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 6
+}</pre></td></tr><tr><td>search:iter6_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market LMS adoption rate Q2 2025</td><td>322.86</td><td>0.14</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter6_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market proprietary LMS implementation metr...</td><td>322.86</td><td>0.20</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter6_web_search_3</td><td>search</td><td>web_search: Lee&#x27;s Market training session LMS percentage Q2...</td><td>322.86</td><td>0.20</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>323.05</td><td>7.97</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 6
+}</pre></td></tr><tr><td>read:web/8007</td><td>doc_read</td><td>https://www.sap.com/investors/en/why-invest/acqu...</td><td>331.03</td><td>5.69</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/8007&quot;
+}</pre></td></tr><tr><td>read:web/40400</td><td>doc_read</td><td>https://explodingtopics.com/blog/chatgpt-users</td><td>331.03</td><td>5.28</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/40400&quot;
+}</pre></td></tr><tr><td>read:web/52151</td><td>doc_read</td><td>https://www.salesforce.com/news/stories/the-hist...</td><td>331.03</td><td>9.12</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/52151&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>340.16</td><td>8.84</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 6
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>348.99</td><td>14.56</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 7
+}</pre></td></tr><tr><td>search:iter7_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market LMS training percentage Q2 2025</td><td>363.59</td><td>0.97</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter7_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market proprietary LMS adoption statistics...</td><td>363.59</td><td>0.49</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter7_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market training program Q2 2025 LMS report</td><td>363.59</td><td>0.99</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter7_web_search_3</td><td>search</td><td>web_search: Lee&#x27;s Market digital training initiatives 2025</td><td>363.59</td><td>0.66</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>364.58</td><td>14.55</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 7
+}</pre></td></tr><tr><td>read:web/36412</td><td>doc_read</td><td>https://thebankingacademy.com/the-international-...</td><td>379.14</td><td>4.89</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/36412&quot;
+}</pre></td></tr><tr><td>read:web/2245</td><td>doc_read</td><td>https://conferenceonarchitecture.com/schedule/sp...</td><td>379.14</td><td>4.55</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/2245&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>384.02</td><td>10.61</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 7
+}</pre></td></tr><tr><td>report</td><td>report</td><td>Final report</td><td>394.63</td><td>0.00</td><td><pre>{
+  &quot;resolved_hops&quot;: 0
+}</pre></td></tr>
+    </tbody>
+  </table>
+</body>
+</html>

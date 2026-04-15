@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>privacy_hopqa timeline</title>
+  <style>
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 24px;
+      color: #111827;
+      background: #f8fafc;
+    }
+    h1, h2 {
+      margin: 0 0 12px;
+    }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin: 0 0 24px;
+    }
+    .card {
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .card .label {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+    .card .value {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .lane-row {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .lane-label {
+      font-size: 13px;
+      color: #334155;
+      overflow-wrap: anywhere;
+    }
+    .lane-track {
+      position: relative;
+      height: 28px;
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .bar {
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      border-radius: 6px;
+      color: white;
+      font-size: 11px;
+      line-height: 22px;
+      padding: 0 6px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 18px;
+    }
+    th, td {
+      border-bottom: 1px solid #e2e8f0;
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 13px;
+    }
+    th {
+      background: #f1f5f9;
+    }
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>privacy_hopqa rollout timeline</h1>
+    <div class="summary">
+    <div class="card"><div class="label">Task</div><div class="value">DR0003</div></div>
+    <div class="card"><div class="label">Chain</div><div class="value">85415553</div></div>
+    <div class="card"><div class="label">Iterations</div><div class="value">6</div></div>
+    <div class="card"><div class="label">Resolved Hops</div><div class="value">1/2</div></div>
+    <div class="card"><div class="label">Searches</div><div class="value">14</div></div>
+    <div class="card"><div class="label">Docs Read</div><div class="value">12</div></div>
+    <div class="card"><div class="label">Parse Errors</div><div class="value">0</div></div>
+    <div class="card"><div class="label">Context Overflows</div><div class="value">0</div></div>
+    <div class="card"><div class="label">Duration (s)</div><div class="value">266.07</div></div>
+  </div>
+  <h2>Timeline</h2>
+  <div><div class='lane-row'><div class='lane-label'>plan</div><div class='lane-track'><div class="bar" style="left:0.000%;width:2.346%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 0.0, &quot;duration_s&quot;: 6.242, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 retrieval plan</div><div class="bar" style="left:15.620%;width:4.095%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 41.554, &quot;duration_s&quot;: 10.895, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 retrieval plan</div><div class="bar" style="left:33.282%;width:5.469%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 88.542, &quot;duration_s&quot;: 14.551, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 2}}">H1 retrieval plan</div><div class="bar" style="left:43.009%;width:5.248%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H2 retrieval plan&quot;, &quot;start_s&quot;: 114.419, &quot;duration_s&quot;: 13.962, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 3}}">H2 retrieval plan</div><div class="bar" style="left:61.616%;width:9.948%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H2 retrieval plan&quot;, &quot;start_s&quot;: 163.919, &quot;duration_s&quot;: 26.465, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 4}}">H2 retrieval plan</div><div class="bar" style="left:83.700%;width:3.628%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H2 retrieval plan&quot;, &quot;start_s&quot;: 222.672, &quot;duration_s&quot;: 9.651, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 5}}">H2 retrieval plan</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_0</div><div class='lane-track'><div class="bar" style="left:2.346%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: In-N-Out Burger Oakland store closure year safet...&quot;, &quot;start_s&quot;: 6.242, &quot;duration_s&quot;: 0.341, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: In-N-Out Burger Oakland store closure year safet...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_1</div><div class='lane-track'><div class="bar" style="left:2.346%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: In-N-Out Burger Oakland store shutdown date safe...&quot;, &quot;start_s&quot;: 6.242, &quot;duration_s&quot;: 0.391, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: In-N-Out Burger Oakland store shutdown date safe...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_2</div><div class='lane-track'><div class="bar" style="left:2.346%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: In-N-Out Burger closure announcement Oakland Cal...&quot;, &quot;start_s&quot;: 6.242, &quot;duration_s&quot;: 0.502, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: In-N-Out Burger closure announcement Oakland Cal...</div></div></div><div class='lane-row'><div class='lane-label'>choose</div><div class='lane-track'><div class="bar" style="left:2.535%;width:8.720%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 6.744, &quot;duration_s&quot;: 23.198, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 choose docs</div><div class="bar" style="left:19.875%;width:9.675%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 52.875, &quot;duration_s&quot;: 25.74, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 choose docs</div><div class="bar" style="left:48.490%;width:5.946%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H2 choose docs&quot;, &quot;start_s&quot;: 129.001, &quot;duration_s&quot;: 15.817, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 3}}">H2 choose docs</div><div class="bar" style="left:71.625%;width:5.902%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H2 choose docs&quot;, &quot;start_s&quot;: 190.547, &quot;duration_s&quot;: 15.702, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 4}}">H2 choose docs</div><div class="bar" style="left:87.814%;width:5.909%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H2 choose docs&quot;, &quot;start_s&quot;: 233.616, &quot;duration_s&quot;: 15.72, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 5}}">H2 choose docs</div></div></div><div class='lane-row'><div class='lane-label'>read:web/41213</div><div class='lane-track'><div class="bar" style="left:11.255%;width:1.628%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.thetakeout.com/1591318/fast-food-cha...&quot;, &quot;start_s&quot;: 29.942, &quot;duration_s&quot;: 4.332, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/41213&quot;}}">https://www.thetakeout.com/1591318/fast-food-cha...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/28441</div><div class='lane-track'><div class="bar" style="left:11.256%;width:1.865%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.eatthis.com/restaurant-chains-closin...&quot;, &quot;start_s&quot;: 29.945, &quot;duration_s&quot;: 4.963, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/28441&quot;}}">https://www.eatthis.com/restaurant-chains-closin...</div></div></div><div class='lane-row'><div class='lane-label'>resolve</div><div class='lane-track'><div class="bar" style="left:13.122%;width:2.498%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 34.908, &quot;duration_s&quot;: 6.645, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 resolve</div><div class="bar" style="left:31.404%;width:1.878%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 83.546, &quot;duration_s&quot;: 4.995, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 resolve</div><div class="bar" style="left:38.850%;width:4.159%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 103.355, &quot;duration_s&quot;: 11.064, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 2}}">H1 resolve</div><div class="bar" style="left:57.962%;width:3.654%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H2 resolve&quot;, &quot;start_s&quot;: 154.199, &quot;duration_s&quot;: 9.72, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 3}}">H2 resolve</div><div class="bar" style="left:81.174%;width:2.526%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H2 resolve&quot;, &quot;start_s&quot;: 215.95, &quot;duration_s&quot;: 6.721, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 4}}">H2 resolve</div><div class="bar" style="left:96.693%;width:3.307%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H2 resolve&quot;, &quot;start_s&quot;: 257.237, &quot;duration_s&quot;: 8.798, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 5}}">H2 resolve</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_0</div><div class='lane-track'><div class="bar" style="left:19.715%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: In-N-Out Burger Oakland store closure announceme...&quot;, &quot;start_s&quot;: 52.449, &quot;duration_s&quot;: 0.408, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: In-N-Out Burger Oakland store closure announceme...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_1</div><div class='lane-track'><div class="bar" style="left:19.715%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: In-N-Out Burger Oakland store safety closure dat...&quot;, &quot;start_s&quot;: 52.449, &quot;duration_s&quot;: 0.313, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: In-N-Out Burger Oakland store safety closure dat...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_2</div><div class='lane-track'><div class="bar" style="left:19.715%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: In-N-Out Burger Oakland store closure reasons an...&quot;, &quot;start_s&quot;: 52.449, &quot;duration_s&quot;: 0.424, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: In-N-Out Burger Oakland store closure reasons an...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_3</div><div class='lane-track'><div class="bar" style="left:19.715%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: In-N-Out Burger safety concerns Oakland store cl...&quot;, &quot;start_s&quot;: 52.449, &quot;duration_s&quot;: 0.323, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: In-N-Out Burger safety concerns Oakland store cl...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/drbench_urls/drbench_urls_36399166840a25a2</div><div class='lane-track'><div class="bar" style="left:29.551%;width:1.714%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://eagleeye.com/blog/grocery-loyalty-inflat...&quot;, &quot;start_s&quot;: 78.615, &quot;duration_s&quot;: 4.559, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/drbench_urls/drbench_urls_36399166840a25a2&quot;}}">https://eagleeye.com/blog/grocery-loyalty-inflat...</div><div class="bar" style="left:77.527%;width:3.337%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://eagleeye.com/blog/grocery-loyalty-inflat...&quot;, &quot;start_s&quot;: 206.249, &quot;duration_s&quot;: 8.877, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/drbench_urls/drbench_urls_36399166840a25a2&quot;}}">https://eagleeye.com/blog/grocery-loyalty-inflat...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/36510</div><div class='lane-track'><div class="bar" style="left:29.551%;width:1.853%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://en.wikipedia.org/wiki/In-N-Out_Burger&quot;, &quot;start_s&quot;: 78.617, &quot;duration_s&quot;: 4.929, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/36510&quot;}}">https://en.wikipedia.org/wiki/In-N-Out_Burger</div></div></div><div class='lane-row'><div class='lane-label'>read:web/33483</div><div class='lane-track'><div class="bar" style="left:29.552%;width:1.566%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://edmmaniac.com/in-n-out-burger-largest-la...&quot;, &quot;start_s&quot;: 78.619, &quot;duration_s&quot;: 4.167, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/33483&quot;}}">https://edmmaniac.com/in-n-out-burger-largest-la...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_1</div><div class='lane-track'><div class="bar" style="left:38.751%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: In-N-Out Burger Oakland closure timeline safety...&quot;, &quot;start_s&quot;: 103.093, &quot;duration_s&quot;: 0.224, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: In-N-Out Burger Oakland closure timeline safety...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_2</div><div class='lane-track'><div class="bar" style="left:38.752%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: In-N-Out Burger Oakland store shutdown due to sa...&quot;, &quot;start_s&quot;: 103.093, &quot;duration_s&quot;: 0.263, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: In-N-Out Burger Oakland store shutdown due to sa...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_0</div><div class='lane-track'><div class="bar" style="left:48.257%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: NACE Catalyst Award 2023 winner&quot;, &quot;start_s&quot;: 128.381, &quot;duration_s&quot;: 0.619, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: NACE Catalyst Award 2023 winner</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_1</div><div class='lane-track'><div class="bar" style="left:48.257%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: 2023 NACE Catalyst Award recipient&quot;, &quot;start_s&quot;: 128.381, &quot;duration_s&quot;: 0.59, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: 2023 NACE Catalyst Award recipient</div></div></div><div class='lane-row'><div class='lane-label'>read:web/48186</div><div class='lane-track'><div class="bar" style="left:54.436%;width:3.173%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.naceweb.org/about-us/nace-awards/&quot;, &quot;start_s&quot;: 144.819, &quot;duration_s&quot;: 8.441, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/48186&quot;}}">https://www.naceweb.org/about-us/nace-awards/</div></div></div><div class='lane-row'><div class='lane-label'>read:web/11218</div><div class='lane-track'><div class="bar" style="left:54.437%;width:2.831%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://grad.georgetown.edu/gsas-events/graduate...&quot;, &quot;start_s&quot;: 144.821, &quot;duration_s&quot;: 7.53, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/11218&quot;}}">https://grad.georgetown.edu/gsas-events/graduate...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/21647</div><div class='lane-track'><div class="bar" style="left:54.438%;width:3.524%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.soace.org/honors-and-recognition&quot;, &quot;start_s&quot;: 144.823, &quot;duration_s&quot;: 9.376, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/21647&quot;}}">https://www.soace.org/honors-and-recognition</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_2</div><div class='lane-track'><div class="bar" style="left:71.564%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: NACE Catalyst Award winner in 2023&quot;, &quot;start_s&quot;: 190.384, &quot;duration_s&quot;: 0.163, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: NACE Catalyst Award winner in 2023</div></div></div><div class='lane-row'><div class='lane-label'>read:web/38107</div><div class='lane-track'><div class="bar" style="left:77.528%;width:3.646%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.nationalbook.org/awards-prizes/natio...&quot;, &quot;start_s&quot;: 206.251, &quot;duration_s&quot;: 9.699, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/38107&quot;}}">https://www.nationalbook.org/awards-prizes/natio...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_0</div><div class='lane-track'><div class="bar" style="left:87.328%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: NACE Catalyst Award 2024 winner&quot;, &quot;start_s&quot;: 232.323, &quot;duration_s&quot;: 1.218, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: NACE Catalyst Award 2024 winner</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_1</div><div class='lane-track'><div class="bar" style="left:87.328%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: 2024 NACE Catalyst Award recipient&quot;, &quot;start_s&quot;: 232.323, &quot;duration_s&quot;: 1.223, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: 2024 NACE Catalyst Award recipient</div></div></div><div class='lane-row'><div class='lane-label'>read:web/39402</div><div class='lane-track'><div class="bar" style="left:93.723%;width:2.970%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://provost.ncsu.edu/ofe/awards-and-honors/h...&quot;, &quot;start_s&quot;: 249.336, &quot;duration_s&quot;: 7.901, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/39402&quot;}}">https://provost.ncsu.edu/ofe/awards-and-honors/h...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/79330</div><div class='lane-track'><div class="bar" style="left:93.724%;width:2.235%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://awis.org/annual-awards/&quot;, &quot;start_s&quot;: 249.339, &quot;duration_s&quot;: 5.945, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/79330&quot;}}">https://awis.org/annual-awards/</div></div></div><div class='lane-row'><div class='lane-label'>report</div><div class='lane-track'><div class="bar" style="left:100.000%;width:0.800%;background:#4c78a8;" title="{&quot;stage&quot;: &quot;report&quot;, &quot;label&quot;: &quot;Final report&quot;, &quot;start_s&quot;: 266.035, &quot;duration_s&quot;: 0.01, &quot;meta&quot;: {&quot;resolved_hops&quot;: 1}}">Final report</div></div></div></div>
+  <h2>Events</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Lane</th>
+        <th>Stage</th>
+        <th>Label</th>
+        <th>Start (s)</th>
+        <th>Duration (s)</th>
+        <th>Metadata</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>0.00</td><td>6.24</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>search:iter0_web_search_0</td><td>search</td><td>web_search: In-N-Out Burger Oakland store closure year safet...</td><td>6.24</td><td>0.34</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_1</td><td>search</td><td>web_search: In-N-Out Burger Oakland store shutdown date safe...</td><td>6.24</td><td>0.39</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_2</td><td>search</td><td>web_search: In-N-Out Burger closure announcement Oakland Cal...</td><td>6.24</td><td>0.50</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>6.74</td><td>23.20</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>read:web/41213</td><td>doc_read</td><td>https://www.thetakeout.com/1591318/fast-food-cha...</td><td>29.94</td><td>4.33</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/41213&quot;
+}</pre></td></tr><tr><td>read:web/28441</td><td>doc_read</td><td>https://www.eatthis.com/restaurant-chains-closin...</td><td>29.95</td><td>4.96</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/28441&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>34.91</td><td>6.65</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>41.55</td><td>10.90</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>search:iter1_web_search_0</td><td>search</td><td>web_search: In-N-Out Burger Oakland store closure announceme...</td><td>52.45</td><td>0.41</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_1</td><td>search</td><td>web_search: In-N-Out Burger Oakland store safety closure dat...</td><td>52.45</td><td>0.31</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_2</td><td>search</td><td>web_search: In-N-Out Burger Oakland store closure reasons an...</td><td>52.45</td><td>0.42</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_3</td><td>search</td><td>web_search: In-N-Out Burger safety concerns Oakland store cl...</td><td>52.45</td><td>0.32</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>52.87</td><td>25.74</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>read:web/drbench_urls/drbench_urls_36399166840a25a2</td><td>doc_read</td><td>https://eagleeye.com/blog/grocery-loyalty-inflat...</td><td>78.61</td><td>4.56</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/drbench_urls/drbench_urls_36399166840a25a2&quot;
+}</pre></td></tr><tr><td>read:web/36510</td><td>doc_read</td><td>https://en.wikipedia.org/wiki/In-N-Out_Burger</td><td>78.62</td><td>4.93</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/36510&quot;
+}</pre></td></tr><tr><td>read:web/33483</td><td>doc_read</td><td>https://edmmaniac.com/in-n-out-burger-largest-la...</td><td>78.62</td><td>4.17</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/33483&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>83.55</td><td>5.00</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>88.54</td><td>14.55</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>search:iter2_web_search_1</td><td>search</td><td>web_search: In-N-Out Burger Oakland closure timeline safety...</td><td>103.09</td><td>0.22</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_2</td><td>search</td><td>web_search: In-N-Out Burger Oakland store shutdown due to sa...</td><td>103.09</td><td>0.26</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>103.36</td><td>11.06</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H2 retrieval plan</td><td>114.42</td><td>13.96</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>search:iter3_web_search_0</td><td>search</td><td>web_search: NACE Catalyst Award 2023 winner</td><td>128.38</td><td>0.62</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_web_search_1</td><td>search</td><td>web_search: 2023 NACE Catalyst Award recipient</td><td>128.38</td><td>0.59</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H2 choose docs</td><td>129.00</td><td>15.82</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>read:web/48186</td><td>doc_read</td><td>https://www.naceweb.org/about-us/nace-awards/</td><td>144.82</td><td>8.44</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/48186&quot;
+}</pre></td></tr><tr><td>read:web/11218</td><td>doc_read</td><td>https://grad.georgetown.edu/gsas-events/graduate...</td><td>144.82</td><td>7.53</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/11218&quot;
+}</pre></td></tr><tr><td>read:web/21647</td><td>doc_read</td><td>https://www.soace.org/honors-and-recognition</td><td>144.82</td><td>9.38</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/21647&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H2 resolve</td><td>154.20</td><td>9.72</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H2 retrieval plan</td><td>163.92</td><td>26.47</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>search:iter4_web_search_2</td><td>search</td><td>web_search: NACE Catalyst Award winner in 2023</td><td>190.38</td><td>0.16</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H2 choose docs</td><td>190.55</td><td>15.70</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>read:web/drbench_urls/drbench_urls_36399166840a25a2</td><td>doc_read</td><td>https://eagleeye.com/blog/grocery-loyalty-inflat...</td><td>206.25</td><td>8.88</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/drbench_urls/drbench_urls_36399166840a25a2&quot;
+}</pre></td></tr><tr><td>read:web/38107</td><td>doc_read</td><td>https://www.nationalbook.org/awards-prizes/natio...</td><td>206.25</td><td>9.70</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/38107&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H2 resolve</td><td>215.95</td><td>6.72</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H2 retrieval plan</td><td>222.67</td><td>9.65</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_0</td><td>search</td><td>web_search: NACE Catalyst Award 2024 winner</td><td>232.32</td><td>1.22</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_1</td><td>search</td><td>web_search: 2024 NACE Catalyst Award recipient</td><td>232.32</td><td>1.22</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H2 choose docs</td><td>233.62</td><td>15.72</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>read:web/39402</td><td>doc_read</td><td>https://provost.ncsu.edu/ofe/awards-and-honors/h...</td><td>249.34</td><td>7.90</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/39402&quot;
+}</pre></td></tr><tr><td>read:web/79330</td><td>doc_read</td><td>https://awis.org/annual-awards/</td><td>249.34</td><td>5.95</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/79330&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H2 resolve</td><td>257.24</td><td>8.80</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>report</td><td>report</td><td>Final report</td><td>266.03</td><td>0.00</td><td><pre>{
+  &quot;resolved_hops&quot;: 1
+}</pre></td></tr>
+    </tbody>
+  </table>
+</body>
+</html>

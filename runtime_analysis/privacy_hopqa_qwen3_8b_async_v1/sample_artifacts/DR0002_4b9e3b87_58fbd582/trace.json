@@ -1,0 +1,3224 @@
+{
+  "summary": {
+    "task_id": "DR0002",
+    "chain_id": "4b9e3b87",
+    "iterations_used": 8,
+    "resolved_hops": 0,
+    "total_hops": 3,
+    "searches_total": 30,
+    "docs_read": 21,
+    "duration_s": 394.68061700090766,
+    "stalled": false,
+    "llm_calls_total": 45,
+    "prompt_tokens": 67507,
+    "output_tokens": 28965,
+    "total_tokens": 96472,
+    "total_errors": 0,
+    "parse_errors_total": 0,
+    "context_overflow_errors": 0,
+    "errors_by_stage": {},
+    "errors_by_kind": {},
+    "errors_by_stage_kind": {},
+    "parse_errors_by_stage": {}
+  },
+  "hop_states": [
+    {
+      "hop_number": 1,
+      "question": "What percentage of training sessions at Lee's Market were conducted using the proprietary online learning management system as of Q2 2025?",
+      "status": "pending",
+      "attempts": 8,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": "The available documents are unrelated to Lee's Market training programs or LMS metrics, and the search history references documents (e.g., web/43881, web/48881) that were not included in the document-reading results.",
+      "search_history": [
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market LMS training sessions percentage Q2 2025",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_babc5efb6761afc1",
+            "web/83536",
+            "web/48881"
+          ]
+        },
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market proprietary LMS adoption rate 2025",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/7344",
+            "web/43881",
+            "web/58940"
+          ]
+        },
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market Q2 2025 training systems report",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_babc5efb6761afc1",
+            "web/48881",
+            "web/83536"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 1,
+          "action_id": "iter1_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market LMS adoption rate Q2 2025",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/55737",
+            "web/43881",
+            "web/58940"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 1,
+          "action_id": "iter1_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market training system usage statistics 2025",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/48881",
+            "web/43881",
+            "web/40400"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 1,
+          "action_id": "iter1_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market proprietary LMS implementation report",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/25243",
+            "web/7344",
+            "web/9684"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 1,
+          "action_id": "iter1_web_search_3",
+          "type": "web_search",
+          "query": "Lee's Market annual report 2025 training metrics",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_babc5efb6761afc1",
+            "web/48881",
+            "web/72135"
+          ]
+        },
+        {
+          "iteration": 2,
+          "hop_number": 1,
+          "action_id": "iter2_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market LMS training program adoption rate 2025",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/7344",
+            "web/48881",
+            "web/9684"
+          ]
+        },
+        {
+          "iteration": 2,
+          "hop_number": 1,
+          "action_id": "iter2_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market training metrics 2025",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/83536",
+            "web/4161",
+            "web/48881"
+          ]
+        },
+        {
+          "iteration": 2,
+          "hop_number": 1,
+          "action_id": "iter2_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market proprietary LMS implementation details",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/25243",
+            "web/7344",
+            "web/8007"
+          ]
+        },
+        {
+          "iteration": 2,
+          "hop_number": 1,
+          "action_id": "iter2_web_search_3",
+          "type": "web_search",
+          "query": "Lee's Market annual report 2025 training sessions",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_babc5efb6761afc1",
+            "web/83536",
+            "web/15955"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 1,
+          "action_id": "iter3_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market LMS adoption rate Q2 2025 report",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/55737",
+            "web/43881",
+            "web/58940"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 1,
+          "action_id": "iter3_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market training system usage 2025 statistics",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/48881",
+            "web/7128",
+            "web/43881"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 1,
+          "action_id": "iter3_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market proprietary LMS implementation timeline 2025",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/7344",
+            "web/25243",
+            "web/80960"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 1,
+          "action_id": "iter3_web_search_3",
+          "type": "web_search",
+          "query": "Lee's Market Q2 2025 training program metrics",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/72135",
+            "web/27541",
+            "web/83536"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 1,
+          "action_id": "iter4_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market Q2 2025 LMS training session statistics",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/57542",
+            "web/83536",
+            "web/35353"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 1,
+          "action_id": "iter4_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market training system adoption rate 2025",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/48881",
+            "web/7344",
+            "web/7128"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 1,
+          "action_id": "iter4_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market proprietary LMS usage percentage 2025",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_babc5efb6761afc1",
+            "web/43881",
+            "web/7344"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 1,
+          "action_id": "iter4_web_search_3",
+          "type": "web_search",
+          "query": "Lee's Market training program metrics Q2 2025",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/83536",
+            "web/4161",
+            "web/72135"
+          ]
+        },
+        {
+          "iteration": 5,
+          "hop_number": 1,
+          "action_id": "iter5_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market Q2 2025 LMS training percentage",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_babc5efb6761afc1",
+            "web/48881",
+            "web/7344"
+          ]
+        },
+        {
+          "iteration": 5,
+          "hop_number": 1,
+          "action_id": "iter5_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market proprietary LMS adoption rate Q2 2025",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/55737",
+            "web/58940",
+            "web/43881"
+          ]
+        },
+        {
+          "iteration": 5,
+          "hop_number": 1,
+          "action_id": "iter5_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market training program LMS usage statistics 2025",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/48881",
+            "web/7344",
+            "web/43881"
+          ]
+        },
+        {
+          "iteration": 5,
+          "hop_number": 1,
+          "action_id": "iter5_web_search_3",
+          "type": "web_search",
+          "query": "Lee's Market annual report 2025 LMS training data",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_babc5efb6761afc1",
+            "web/5527",
+            "web/57542"
+          ]
+        },
+        {
+          "iteration": 6,
+          "hop_number": 1,
+          "action_id": "iter6_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market LMS adoption rate Q2 2025",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/55737",
+            "web/43881",
+            "web/58940"
+          ]
+        },
+        {
+          "iteration": 6,
+          "hop_number": 1,
+          "action_id": "iter6_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market proprietary LMS implementation metrics 2025",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/7344",
+            "web/8007",
+            "web/55979"
+          ]
+        },
+        {
+          "iteration": 6,
+          "hop_number": 1,
+          "action_id": "iter6_web_search_3",
+          "type": "web_search",
+          "query": "Lee's Market training session LMS percentage Q2 2025",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_babc5efb6761afc1",
+            "web/48881",
+            "web/83536"
+          ]
+        },
+        {
+          "iteration": 7,
+          "hop_number": 1,
+          "action_id": "iter7_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market LMS training percentage Q2 2025",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_babc5efb6761afc1",
+            "web/48881",
+            "web/57542"
+          ]
+        },
+        {
+          "iteration": 7,
+          "hop_number": 1,
+          "action_id": "iter7_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market proprietary LMS adoption statistics 2025",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/43881",
+            "web/7344",
+            "web/58940"
+          ]
+        },
+        {
+          "iteration": 7,
+          "hop_number": 1,
+          "action_id": "iter7_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market training program Q2 2025 LMS report",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/72135",
+            "web/7344",
+            "web/83536"
+          ]
+        },
+        {
+          "iteration": 7,
+          "hop_number": 1,
+          "action_id": "iter7_web_search_3",
+          "type": "web_search",
+          "query": "Lee's Market digital training initiatives 2025",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_babc5efb6761afc1",
+            "web/27541",
+            "web/7344"
+          ]
+        }
+      ],
+      "selected_doc_ids": [
+        "web/drbench_urls/drbench_urls_babc5efb6761afc1",
+        "web/7344",
+        "web/48881",
+        "web/55737",
+        "web/43881",
+        "web/83536",
+        "web/9684",
+        "web/72135",
+        "web/25243",
+        "web/27541",
+        "web/57542",
+        "web/4161",
+        "web/35353",
+        "web/5527",
+        "web/58940",
+        "web/55979",
+        "web/8007",
+        "web/40400",
+        "web/52151",
+        "web/36412",
+        "web/2245"
+      ],
+      "reader_results": [
+        {
+          "doc_id": "web/drbench_urls/drbench_urls_babc5efb6761afc1",
+          "source": "web",
+          "title": "https://www.bcg.com/publications/2024/personalization-in-action",
+          "locator": "https://www.bcg.com/publications/2024/personalization-in-action",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The provided document does not mention Lee's Market or any training sessions conducted using a proprietary online learning management system. It discusses retail media personalization strategies but lacks specific data on Lee's Market's training metrics [DOC:web/drbench_urls/drbench_urls_babc5efb6761afc1].",
+          "confidence": 0.18,
+          "missing_information": "The document contains no information about Lee's Market's training session percentages or their use of a proprietary LMS."
+        },
+        {
+          "doc_id": "web/7344",
+          "source": "web",
+          "title": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+          "locator": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses the evolution of corporate training and LMS technology but does not mention Lee's Market, proprietary LMS adoption rates, or any specific data about training session percentages in Q2 2025 [DOC:web/7344].",
+          "confidence": 0.15,
+          "missing_information": "Specific data about Lee's Market's LMS adoption rates and training session statistics for Q2 2025"
+        },
+        {
+          "doc_id": "web/48881",
+          "source": "web",
+          "title": "https://trainingmag.com/2023-training-industry-report/",
+          "locator": "https://trainingmag.com/2023-training-industry-report/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Lee's Market or any specific percentages related to proprietary LMS training sessions [DOC:web/48881].",
+          "confidence": 0.18,
+          "missing_information": "Specific data about Lee's Market's LMS adoption rates and Q2 2025 training session statistics."
+        },
+        {
+          "doc_id": "web/55737",
+          "source": "web",
+          "title": "https://aag-it.com/the-latest-cloud-computing-statistics/",
+          "locator": "https://aag-it.com/the-latest-cloud-computing-statistics/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Lee's Market or any proprietary online learning management system training session statistics [DOC:web/55737].",
+          "confidence": 0.15,
+          "missing_information": "Specific data about Lee's Market LMS adoption rates and training session percentages."
+        },
+        {
+          "doc_id": "web/43881",
+          "source": "web",
+          "title": "https://www.nu.edu/blog/ai-statistics-trends/",
+          "locator": "https://www.nu.edu/blog/ai-statistics-trends/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Lee's Market or any specific statistics about training session usage of a proprietary LMS [DOC:web/43881].",
+          "confidence": 0.18,
+          "missing_information": "Specific data about Lee's Market's LMS adoption rates or training session statistics for Q2 2025"
+        },
+        {
+          "doc_id": "web/83536",
+          "source": "web",
+          "title": "https://www.acd-chem.com/education-meetings/calendar/",
+          "locator": "https://www.acd-chem.com/education-meetings/calendar/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Lee's Market or any proprietary online learning management system training sessions. It only references generic education events unrelated to Lee's Market [DOC:web/83536].",
+          "confidence": 0.18,
+          "missing_information": "Specific data about Lee's Market training sessions and their use of a proprietary LMS in Q2 2025"
+        },
+        {
+          "doc_id": "web/9684",
+          "source": "web",
+          "title": "https://www.fldoe.org/academics/standards/instructional-materials/",
+          "locator": "https://www.fldoe.org/academics/standards/instructional-materials/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document contains no information about Lee's Market training sessions or proprietary online learning management systems [DOC:web/9684].",
+          "confidence": 0.95,
+          "missing_information": "Specific data about Lee's Market training program adoption rates or LMS usage percentages is not present in the document."
+        },
+        {
+          "doc_id": "web/72135",
+          "source": "web",
+          "title": "https://www.explorance.com/blog/5-essential-steps-to-creating-effective-training-programs-to-drive-business-results",
+          "locator": "https://www.explorance.com/blog/5-essential-steps-to-creating-effective-training-programs-to-drive-business-results",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Lee's Market or any specific training program metrics for Q2 2025 [DOC:web/72135].",
+          "confidence": 0.15,
+          "missing_information": "Specific data about Lee's Market's training session percentages and proprietary LMS usage in Q2 2025"
+        },
+        {
+          "doc_id": "web/25243",
+          "source": "web",
+          "title": "https://en.wikipedia.org/wiki/History_of_virtual_learning_environments_in_the_1990s",
+          "locator": "https://en.wikipedia.org/wiki/History_of_virtual_learning_environments_in_the_1990s",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses historical virtual learning environments from the 1990s but contains no information about Lee's Market, its proprietary LMS, or training session statistics for Q2 2025 [DOC:web/25243].",
+          "confidence": 0.18,
+          "missing_information": "Specific data on Lee's Market's LMS usage percentages and 2025 training session statistics"
+        },
+        {
+          "doc_id": "web/27541",
+          "source": "web",
+          "title": "https://www.nj.gov/labor/research-info/grants.shtml",
+          "locator": "https://www.nj.gov/labor/research-info/grants.shtml",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The provided document [DOC:web/27541] discusses New Jersey state grant programs related to workforce development and adult education, but contains no mention of Lee's Market, training session metrics, or proprietary online learning management systems. No data about training methods or percentages is available in this excerpt.",
+          "confidence": 0.15,
+          "missing_information": "The document lacks any information about Lee's Market's training programs, their use of an online learning management system, or quantitative metrics related to training sessions."
+        },
+        {
+          "doc_id": "web/57542",
+          "source": "web",
+          "title": "https://lol.fandom.com/wiki/Larssen/Match_History",
+          "locator": "https://lol.fandom.com/wiki/Larssen/Match_History",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document titled 'Larssen/Match History' contains only esports match statistics for a player named Larssen and does not mention Lee's Market, training sessions, or any learning management system [DOC:web/57542].",
+          "confidence": 0.95,
+          "missing_information": "The document lacks any information about Lee's Market training sessions or LMS usage statistics."
+        },
+        {
+          "doc_id": "web/4161",
+          "source": "web",
+          "title": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+          "locator": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses macro trends in the US grocery market and mentions companies like Amazon Fresh but does not provide any data on Lee's Market training methodologies or percentages of sessions using an online LMS [DOC:web/4161].",
+          "confidence": 0.18,
+          "missing_information": "Specific data about Lee's Market training system adoption rates or metrics for Q2 2025"
+        },
+        {
+          "doc_id": "web/35353",
+          "source": "web",
+          "title": "https://dchas.org/2023/08/22/history-of-the-chas-lst-workshop-2/",
+          "locator": "https://dchas.org/2023/08/22/history-of-the-chas-lst-workshop-2/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses peer-led workshops and virtual training initiatives related to laboratory safety, but it does not mention Lee's Market, its training sessions, or any proprietary online learning management system usage statistics for Q2 2025 [DOC:web/35353].",
+          "confidence": 0.15,
+          "missing_information": "No data about Lee's Market training sessions or LMS usage percentages is provided in the document."
+        },
+        {
+          "doc_id": "web/5527",
+          "source": "web",
+          "title": "https://oag.ca.gov/privacy/databreach/list",
+          "locator": "https://oag.ca.gov/privacy/databreach/list",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document excerpt [DOC:web/5527] contains no information about Lee's Market training sessions or their use of a proprietary LMS. It primarily lists data breach notifications for various organizations without mentioning training data metrics.",
+          "confidence": 0.95,
+          "missing_information": "Specific data about Lee's Market training session percentages using an LMS is absent from the document."
+        },
+        {
+          "doc_id": "web/58940",
+          "source": "web",
+          "title": "https://www.grandviewresearch.com/industry-analysis/artificial-intelligence-ai-market",
+          "locator": "https://www.grandviewresearch.com/industry-analysis/artificial-intelligence-ai-market",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Lee's Market or any proprietary online learning management system adoption rates [DOC:web/58940].",
+          "confidence": 0.15,
+          "missing_information": "Specific data about Lee's Market's training session methodology and LMS adoption rate for Q2 2025"
+        },
+        {
+          "doc_id": "web/55979",
+          "source": "web",
+          "title": "https://research.contrary.com/company/long-term-stock-exchange",
+          "locator": "https://research.contrary.com/company/long-term-stock-exchange",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses long-term stock exchange initiatives and short-termism in corporate strategy but contains no mention of Lee's Market, training sessions, or proprietary LMS adoption rates [DOC:web/55979].",
+          "confidence": 0.18,
+          "missing_information": "The document lacks any data about Lee's Market's training session statistics or LMS usage metrics."
+        },
+        {
+          "doc_id": "web/8007",
+          "source": "web",
+          "title": "https://www.sap.com/investors/en/why-invest/acquisitions.html",
+          "locator": "https://www.sap.com/investors/en/why-invest/acquisitions.html",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses SAP's acquisitions and investments but does not mention Lee's Market or any training session metrics related to a proprietary LMS [DOC:web/8007].",
+          "confidence": 0.95,
+          "missing_information": "Specific data about Lee's Market's training session percentages using their proprietary LMS in Q2 2025"
+        },
+        {
+          "doc_id": "web/40400",
+          "source": "web",
+          "title": "https://explodingtopics.com/blog/chatgpt-users",
+          "locator": "https://explodingtopics.com/blog/chatgpt-users",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document focuses on ChatGPT user statistics and does not mention Lee's Market, its training sessions, or any proprietary online learning management system adoption rates [DOC:web/40400].",
+          "confidence": 0.15,
+          "missing_information": "The document lacks any information about Lee's Market's training sessions or LMS adoption rates."
+        },
+        {
+          "doc_id": "web/52151",
+          "source": "web",
+          "title": "https://www.salesforce.com/news/stories/the-history-of-salesforce/",
+          "locator": "https://www.salesforce.com/news/stories/the-history-of-salesforce/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses Salesforce's history and milestones but contains no information about Lee's Market, proprietary LMS implementation metrics, or training session statistics [DOC:web/52151].",
+          "confidence": 0.18,
+          "missing_information": "The document lacks any mention of Lee's Market, proprietary LMS usage data, or training session percentages related to 2025 metrics."
+        },
+        {
+          "doc_id": "web/36412",
+          "source": "web",
+          "title": "https://thebankingacademy.com/the-international-bank-leadership-programme",
+          "locator": "https://thebankingacademy.com/the-international-bank-leadership-programme",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses The Banking Academy's International Bank Leadership Programme, which includes online sessions but does not mention Lee's Market or any proprietary LMS usage statistics. No data on training session percentages or Lee's Market initiatives is provided [DOC:web/36412].",
+          "confidence": 0.82,
+          "missing_information": "Specific information about Lee's Market's training sessions, proprietary LMS usage, and Q2 2025 metrics is absent from the document."
+        },
+        {
+          "doc_id": "web/2245",
+          "source": "web",
+          "title": "https://conferenceonarchitecture.com/schedule/speakers/",
+          "locator": "https://conferenceonarchitecture.com/schedule/speakers/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses conference speakers and their work but provides no information about Lee's Market training sessions or proprietary learning management systems [DOC:web/2245].",
+          "confidence": 0.18,
+          "missing_information": "Data on Lee's Market training session percentages and LMS usage statistics"
+        }
+      ],
+      "candidate_doc_ids": [
+        "web/36412",
+        "web/2245"
+      ]
+    },
+    {
+      "hop_number": 2,
+      "question": "As of which quarter in 2025 were 75% of training sessions conducted using the proprietary online learning management system?",
+      "status": "pending",
+      "attempts": 0,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": null,
+      "search_history": [],
+      "selected_doc_ids": [],
+      "reader_results": [],
+      "candidate_doc_ids": []
+    },
+    {
+      "hop_number": 3,
+      "question": "How many new applications did Lee's Market receive in Q2 2025?",
+      "status": "pending",
+      "attempts": 0,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": null,
+      "search_history": [],
+      "selected_doc_ids": [],
+      "reader_results": [],
+      "candidate_doc_ids": []
+    }
+  ],
+  "actions": [
+    {
+      "id": "iter0_web_search_0",
+      "type": "web_search",
+      "description": "Search for Lee's Market training program statistics related to their LMS usage in Q2 2025",
+      "parameters": {
+        "query": "Lee's Market LMS training sessions percentage Q2 2025"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market LMS training sessions percentage Q2 2025",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_babc5efb6761afc1",
+            "source": "web",
+            "title": "https://www.bcg.com/publications/2024/personalization-in-action",
+            "locator": "https://www.bcg.com/publications/2024/personalization-in-action",
+            "rank": 1,
+            "score": 0.09679098150806242,
+            "queries": [
+              "Lee's Market LMS training sessions percentage Q2 2025",
+              "Lee's Market Q2 2025 training systems report"
+            ],
+            "snippet": "The Role of Retail Media in Personalization\n\nAmazon Advertising has led the way in retail media, while large retailers such as Walmart, Target, Kroger, and Instacart have built billion-dollar businesses. Category specialists such as Home Depot, Macy’s, Ulta Beauty, and Walgreens have also established sizeable positions..."
+          },
+          {
+            "doc_id": "web/83536",
+            "source": "web",
+            "title": "https://www.acd-chem.com/education-meetings/calendar/",
+            "locator": "https://www.acd-chem.com/education-meetings/calendar/",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market LMS training sessions percentage Q2 2025",
+              "Lee's Market Q2 2025 training systems report"
+            ],
+            "snippet": "---\ntitle: Calendar\ndate: 2019-03-01\n---\neducation & meetings\n\nTraining Schedule\n\n- Wednesday, June 11, 2025 | 2:00 – 3:30 pm (ET)| Register here | Learn More\n\nWhen OSHA knocks on your facility's door, it can be intimidating and stressful if you are unprepared. When prepared, it can feel like walking into a final exam..."
+          },
+          {
+            "doc_id": "web/48881",
+            "source": "web",
+            "title": "https://trainingmag.com/2023-training-industry-report/",
+            "locator": "https://trainingmag.com/2023-training-industry-report/",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market LMS training sessions percentage Q2 2025",
+              "Lee's Market proprietary LMS adoption rate 2025",
+              "Lee's Market Q2 2025 training systems report"
+            ],
+            "snippet": "---\ntitle: 2023 Training Industry Report\nauthor: Lorri Freifeld\ndate: 2023-11-14\n---\nABOUT THIS STUDY\n\nNow in its 42nd year, The Industry Report is recognized as the training industry's most trusted source of data on budgets, staffing, and programs. This year, the study was conducted by an outside research firm April-J..."
+          },
+          {
+            "doc_id": "web/57542",
+            "source": "web",
+            "title": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "locator": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market LMS training sessions percentage Q2 2025"
+            ],
+            "snippet": "---\ntitle: Larssen/Match History\ndate: 2025-06-01\n---\n|\n\nToggle columns:\n\n| Player: Larssen; Limit: 50 - Open As Query | |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---..."
+          },
+          {
+            "doc_id": "web/32626",
+            "source": "web",
+            "title": "https://nabe.com/NABE/Events/Event_List/",
+            "locator": "https://nabe.com/NABE/Events/Event_List/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market LMS training sessions percentage Q2 2025"
+            ],
+            "snippet": "---\ntitle: Upcoming Courses\ndate: 2012-05-11\n---\nUpcoming Events | Past Events | Educational Courses | Chapter Events\n\nFREE EMS Webinar Series: Understanding Consumer Spending on Travel & Tourism: Insights from BEA Services Data and PCE Measurement\n\nJune 10 from 2:00 - 3:00 PM Eastern\n\nLIVE ONLINE\n\nFREE TECH WEBINAR SE..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.17005496914498508,
+      "iteration": 0
+    },
+    {
+      "id": "iter0_web_search_1",
+      "type": "web_search",
+      "description": "Search for Lee's Market proprietary learning management system adoption metrics",
+      "parameters": {
+        "query": "Lee's Market proprietary LMS adoption rate 2025"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market proprietary LMS adoption rate 2025",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/7344",
+            "source": "web",
+            "title": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "locator": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "rank": 1,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market proprietary LMS adoption rate 2025",
+              "Lee's Market Q2 2025 training systems report"
+            ],
+            "snippet": "---\ntitle: A New Paradigm For Corporate Training: Learning In The Flow of Work\nauthor: Joshbersin\ndate: 2018-06-03\n---\nA New Paradigm For Corporate Training: Learning In The Flow of Work\n\nThe corporate training market is over $200 billion around the world[1] and it's going through a revolution. While we often think of..."
+          },
+          {
+            "doc_id": "web/43881",
+            "source": "web",
+            "title": "https://www.nu.edu/blog/ai-statistics-trends/",
+            "locator": "https://www.nu.edu/blog/ai-statistics-trends/",
+            "rank": 2,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market proprietary LMS adoption rate 2025"
+            ],
+            "snippet": "---\ntitle: 131 AI Statistics and Trends for 2025\ndate: 2025-05-12\n---\nIn the rapidly evolving landscape of technology, Artificial Intelligence (AI) has emerged as a cornerstone of innovation, reshaping industries, and altering the fabric of our daily lives. The year 2025 stands as a testament to the monumental strides..."
+          },
+          {
+            "doc_id": "web/58940",
+            "source": "web",
+            "title": "https://www.grandviewresearch.com/industry-analysis/artificial-intelligence-ai-market",
+            "locator": "https://www.grandviewresearch.com/industry-analysis/artificial-intelligence-ai-market",
+            "rank": 3,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market proprietary LMS adoption rate 2025"
+            ],
+            "snippet": "---\ntitle: Artificial Intelligence Market Size, Share & Trends Analysis Report By Solution, By Technology (Deep Learning, Machine Learning, NLP, Machine Vision, Generative AI), By Function, By End-Use, By Region, And Segment Forecasts, 2025 - 2030\ndate: 2025-03-01\n---\n- Home\n\n- »\n\n- Next Generation Technologies\n\n- »\n\n-..."
+          },
+          {
+            "doc_id": "web/48881",
+            "source": "web",
+            "title": "https://trainingmag.com/2023-training-industry-report/",
+            "locator": "https://trainingmag.com/2023-training-industry-report/",
+            "rank": 4,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market proprietary LMS adoption rate 2025"
+            ],
+            "snippet": "---\ntitle: 2023 Training Industry Report\nauthor: Lorri Freifeld\ndate: 2023-11-14\n---\nABOUT THIS STUDY\n\nNow in its 42nd year, The Industry Report is recognized as the training industry's most trusted source of data on budgets, staffing, and programs. This year, the study was conducted by an outside research firm April-J..."
+          },
+          {
+            "doc_id": "web/55737",
+            "source": "web",
+            "title": "https://aag-it.com/the-latest-cloud-computing-statistics/",
+            "locator": "https://aag-it.com/the-latest-cloud-computing-statistics/",
+            "rank": 5,
+            "score": 0.015384615384615385,
+            "queries": [
+              "Lee's Market proprietary LMS adoption rate 2025"
+            ],
+            "snippet": "---\ntitle: The Latest Cloud Computing Statistics (updated January 2025)\nauthor: Charles Griffiths Director; Innovation\ndate: 2025-01-01\n---\nThe Latest Cloud Computing Statistics (updated January 2025)\n\nHeadline Cloud Computing Statistics for 2024\n\n- 12-month revenues between the start of 2021 and 2022 for cloud infrast..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.20820215996354818,
+      "iteration": 0
+    },
+    {
+      "id": "iter0_web_search_2",
+      "type": "web_search",
+      "description": "Search for Lee's Market quarterly reports mentioning training systems",
+      "parameters": {
+        "query": "Lee's Market Q2 2025 training systems report"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market Q2 2025 training systems report",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_babc5efb6761afc1",
+            "source": "web",
+            "title": "https://www.bcg.com/publications/2024/personalization-in-action",
+            "locator": "https://www.bcg.com/publications/2024/personalization-in-action",
+            "rank": 1,
+            "score": 0.06504494976203068,
+            "queries": [
+              "Lee's Market Q2 2025 training systems report"
+            ],
+            "snippet": "Defining the Personalization Agenda in Retail\n\nAchieving these kinds of returns from personalization will take significant investment. We have found that large retailers leading in personalization are making annual investments of $10 million to $40 million in customer data platforms, marketing automation tools, AI mode..."
+          },
+          {
+            "doc_id": "web/48881",
+            "source": "web",
+            "title": "https://trainingmag.com/2023-training-industry-report/",
+            "locator": "https://trainingmag.com/2023-training-industry-report/",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market Q2 2025 training systems report"
+            ],
+            "snippet": "---\ntitle: 2023 Training Industry Report\nauthor: Lorri Freifeld\ndate: 2023-11-14\n---\nABOUT THIS STUDY\n\nNow in its 42nd year, The Industry Report is recognized as the training industry's most trusted source of data on budgets, staffing, and programs. This year, the study was conducted by an outside research firm April-J..."
+          },
+          {
+            "doc_id": "web/83536",
+            "source": "web",
+            "title": "https://www.acd-chem.com/education-meetings/calendar/",
+            "locator": "https://www.acd-chem.com/education-meetings/calendar/",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market Q2 2025 training systems report"
+            ],
+            "snippet": "---\ntitle: Calendar\ndate: 2019-03-01\n---\neducation & meetings\n\nTraining Schedule\n\n- Wednesday, June 11, 2025 | 2:00 – 3:30 pm (ET)| Register here | Learn More\n\nWhen OSHA knocks on your facility's door, it can be intimidating and stressful if you are unprepared. When prepared, it can feel like walking into a final exam..."
+          },
+          {
+            "doc_id": "web/7128",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Fort_Gregg-Adams",
+            "locator": "https://en.wikipedia.org/wiki/Fort_Gregg-Adams",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market Q2 2025 training systems report"
+            ],
+            "snippet": "---\ntitle: Fort Gregg-Adams - Wikipedia\nauthor: Authority control databases Geographic MusicBrainz area Other NARA\ndate: 2002-10-25\n---\nname: Fort Gregg-Adams\nlocation: Petersburg and Tri-cities Area, Virginia, U.S.\ntype: U.S. Army post\nbuilt: 1917\nused: 1917–19241941–present\ncontrolledby: United States Army\ngarrison:..."
+          },
+          {
+            "doc_id": "web/7344",
+            "source": "web",
+            "title": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "locator": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market Q2 2025 training systems report"
+            ],
+            "snippet": "---\ntitle: A New Paradigm For Corporate Training: Learning In The Flow of Work\nauthor: Joshbersin\ndate: 2018-06-03\n---\nA New Paradigm For Corporate Training: Learning In The Flow of Work\n\nThe corporate training market is over $200 billion around the world[1] and it's going through a revolution. While we often think of..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.1809766369406134,
+      "iteration": 0
+    },
+    {
+      "id": "iter1_web_search_0",
+      "type": "web_search",
+      "description": "Search for Lee's Market LMS adoption rate in Q2 2025",
+      "parameters": {
+        "query": "Lee's Market LMS adoption rate Q2 2025"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market LMS adoption rate Q2 2025",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/55737",
+            "source": "web",
+            "title": "https://aag-it.com/the-latest-cloud-computing-statistics/",
+            "locator": "https://aag-it.com/the-latest-cloud-computing-statistics/",
+            "rank": 1,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market LMS adoption rate Q2 2025"
+            ],
+            "snippet": "---\ntitle: The Latest Cloud Computing Statistics (updated January 2025)\nauthor: Charles Griffiths Director; Innovation\ndate: 2025-01-01\n---\nThe Latest Cloud Computing Statistics (updated January 2025)\n\nHeadline Cloud Computing Statistics for 2024\n\n- 12-month revenues between the start of 2021 and 2022 for cloud infrast..."
+          },
+          {
+            "doc_id": "web/43881",
+            "source": "web",
+            "title": "https://www.nu.edu/blog/ai-statistics-trends/",
+            "locator": "https://www.nu.edu/blog/ai-statistics-trends/",
+            "rank": 2,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market LMS adoption rate Q2 2025",
+              "Lee's Market training system usage statistics 2025"
+            ],
+            "snippet": "---\ntitle: 131 AI Statistics and Trends for 2025\ndate: 2025-05-12\n---\nIn the rapidly evolving landscape of technology, Artificial Intelligence (AI) has emerged as a cornerstone of innovation, reshaping industries, and altering the fabric of our daily lives. The year 2025 stands as a testament to the monumental strides..."
+          },
+          {
+            "doc_id": "web/58940",
+            "source": "web",
+            "title": "https://www.grandviewresearch.com/industry-analysis/artificial-intelligence-ai-market",
+            "locator": "https://www.grandviewresearch.com/industry-analysis/artificial-intelligence-ai-market",
+            "rank": 3,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market LMS adoption rate Q2 2025"
+            ],
+            "snippet": "---\ntitle: Artificial Intelligence Market Size, Share & Trends Analysis Report By Solution, By Technology (Deep Learning, Machine Learning, NLP, Machine Vision, Generative AI), By Function, By End-Use, By Region, And Segment Forecasts, 2025 - 2030\ndate: 2025-03-01\n---\n- Home\n\n- »\n\n- Next Generation Technologies\n\n- »\n\n-..."
+          },
+          {
+            "doc_id": "web/40400",
+            "source": "web",
+            "title": "https://explodingtopics.com/blog/chatgpt-users",
+            "locator": "https://explodingtopics.com/blog/chatgpt-users",
+            "rank": 4,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market LMS adoption rate Q2 2025",
+              "Lee's Market training system usage statistics 2025"
+            ],
+            "snippet": "---\ntitle: Number of ChatGPT Users (March 2025)\nauthor: Fabio Duarte\ndate: 2025-06-05\n---\nNumber of ChatGPT Users (March 2025)\n\nOpenAI's ChatGPT took off in record-breaking fashion.\n\nThe artificial intelligence chatbot picked up millions of users in a very short space of time.\n\nToday, ChatGPT is the generic name for se..."
+          },
+          {
+            "doc_id": "web/55979",
+            "source": "web",
+            "title": "https://research.contrary.com/company/long-term-stock-exchange",
+            "locator": "https://research.contrary.com/company/long-term-stock-exchange",
+            "rank": 5,
+            "score": 0.015384615384615385,
+            "queries": [
+              "Lee's Market LMS adoption rate Q2 2025"
+            ],
+            "snippet": "---\ntitle: Long-Term Stock Exchange\ndate: 2012-08-01\n---\nThesis\n\nEach quarter, public companies face scrutiny from investors and analysts over the state of their earnings reports. If a company misses its consensus estimates for quarterly earnings, its stock will likely be met with a flurry of selling activity, causing..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.48196408804506063,
+      "iteration": 1
+    },
+    {
+      "id": "iter1_web_search_1",
+      "type": "web_search",
+      "description": "Search for Lee's Market training system usage statistics 2025",
+      "parameters": {
+        "query": "Lee's Market training system usage statistics 2025"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market training system usage statistics 2025",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/48881",
+            "source": "web",
+            "title": "https://trainingmag.com/2023-training-industry-report/",
+            "locator": "https://trainingmag.com/2023-training-industry-report/",
+            "rank": 1,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market training system usage statistics 2025"
+            ],
+            "snippet": "---\ntitle: 2023 Training Industry Report\nauthor: Lorri Freifeld\ndate: 2023-11-14\n---\nABOUT THIS STUDY\n\nNow in its 42nd year, The Industry Report is recognized as the training industry's most trusted source of data on budgets, staffing, and programs. This year, the study was conducted by an outside research firm April-J..."
+          },
+          {
+            "doc_id": "web/43881",
+            "source": "web",
+            "title": "https://www.nu.edu/blog/ai-statistics-trends/",
+            "locator": "https://www.nu.edu/blog/ai-statistics-trends/",
+            "rank": 2,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market training system usage statistics 2025"
+            ],
+            "snippet": "---\ntitle: 131 AI Statistics and Trends for 2025\ndate: 2025-05-12\n---\nIn the rapidly evolving landscape of technology, Artificial Intelligence (AI) has emerged as a cornerstone of innovation, reshaping industries, and altering the fabric of our daily lives. The year 2025 stands as a testament to the monumental strides..."
+          },
+          {
+            "doc_id": "web/40400",
+            "source": "web",
+            "title": "https://explodingtopics.com/blog/chatgpt-users",
+            "locator": "https://explodingtopics.com/blog/chatgpt-users",
+            "rank": 3,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market training system usage statistics 2025"
+            ],
+            "snippet": "---\ntitle: Number of ChatGPT Users (March 2025)\nauthor: Fabio Duarte\ndate: 2025-06-05\n---\nNumber of ChatGPT Users (March 2025)\n\nOpenAI's ChatGPT took off in record-breaking fashion.\n\nThe artificial intelligence chatbot picked up millions of users in a very short space of time.\n\nToday, ChatGPT is the generic name for se..."
+          },
+          {
+            "doc_id": "web/7128",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Fort_Gregg-Adams",
+            "locator": "https://en.wikipedia.org/wiki/Fort_Gregg-Adams",
+            "rank": 4,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market training system usage statistics 2025"
+            ],
+            "snippet": "---\ntitle: Fort Gregg-Adams - Wikipedia\nauthor: Authority control databases Geographic MusicBrainz area Other NARA\ndate: 2002-10-25\n---\nname: Fort Gregg-Adams\nlocation: Petersburg and Tri-cities Area, Virginia, U.S.\ntype: U.S. Army post\nbuilt: 1917\nused: 1917–19241941–present\ncontrolledby: United States Army\ngarrison:..."
+          },
+          {
+            "doc_id": "web/7344",
+            "source": "web",
+            "title": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "locator": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "rank": 5,
+            "score": 0.015384615384615385,
+            "queries": [
+              "Lee's Market training system usage statistics 2025"
+            ],
+            "snippet": "---\ntitle: A New Paradigm For Corporate Training: Learning In The Flow of Work\nauthor: Joshbersin\ndate: 2018-06-03\n---\nA New Paradigm For Corporate Training: Learning In The Flow of Work\n\nThe corporate training market is over $200 billion around the world[1] and it's going through a revolution. While we often think of..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.4824193499516696,
+      "iteration": 1
+    },
+    {
+      "id": "iter1_web_search_2",
+      "type": "web_search",
+      "description": "Search for Lee's Market proprietary LMS implementation report",
+      "parameters": {
+        "query": "Lee's Market proprietary LMS implementation report"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market proprietary LMS implementation report",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/25243",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/History_of_virtual_learning_environments_in_the_1990s",
+            "locator": "https://en.wikipedia.org/wiki/History_of_virtual_learning_environments_in_the_1990s",
+            "rank": 1,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market proprietary LMS implementation report"
+            ],
+            "snippet": "---\ntitle: History of virtual learning environments in the 1990s - Wikipedia\ndate: 2007-08-15\n---\nIn the history of virtual learning environments, the 1990s was a time of growth, primarily due to the advent of the affordable computer and of the Internet.\n\n1980s\n\n1985\n\nThe Free Educational Mail (FrEdMail) network was cr..."
+          },
+          {
+            "doc_id": "web/7344",
+            "source": "web",
+            "title": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "locator": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "rank": 2,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market proprietary LMS implementation report"
+            ],
+            "snippet": "---\ntitle: A New Paradigm For Corporate Training: Learning In The Flow of Work\nauthor: Joshbersin\ndate: 2018-06-03\n---\nA New Paradigm For Corporate Training: Learning In The Flow of Work\n\nThe corporate training market is over $200 billion around the world[1] and it's going through a revolution. While we often think of..."
+          },
+          {
+            "doc_id": "web/9684",
+            "source": "web",
+            "title": "https://www.fldoe.org/academics/standards/instructional-materials/",
+            "locator": "https://www.fldoe.org/academics/standards/instructional-materials/",
+            "rank": 3,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market proprietary LMS implementation report"
+            ],
+            "snippet": "---\ntitle: Instructional Materials\ndate: 2024-12-08\n---\nInstructional Materials\n\nIf you have trouble accessing any of the files below please contact the Bureau of Standards and Instructional Support at 850-245-0423.\n\nGeneral Information\n\n- Library Media Training Updated 8/12/2024\n\n- Library Media Training Transcript (P..."
+          },
+          {
+            "doc_id": "web/13435",
+            "source": "web",
+            "title": "https://samm.dsca.mil/chapter/chapter-5",
+            "locator": "https://samm.dsca.mil/chapter/chapter-5",
+            "rank": 4,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market proprietary LMS implementation report"
+            ],
+            "snippet": "---\ntitle: Chapter 5\ndate: 2010-01-06\n---\nChapter 5, Foreign Military Sales Case Development, describes requirements for submission of Letters of Request (LORs) and for responding to them with either Price and Availability (P&A) data or a formal Letter of Offer and Acceptance (LOA).\n\nSection | Title |\n\n|---|---|\n\nC5.1...."
+          },
+          {
+            "doc_id": "web/8007",
+            "source": "web",
+            "title": "https://www.sap.com/investors/en/why-invest/acquisitions.html",
+            "locator": "https://www.sap.com/investors/en/why-invest/acquisitions.html",
+            "rank": 5,
+            "score": 0.015384615384615385,
+            "queries": [
+              "Lee's Market proprietary LMS implementation report"
+            ],
+            "snippet": "---\ntitle: Acquisitions\ndate: 2025-01-01\n---\n2024\n\n| WalkMe\n\nIn June 2024, SAP announced its intention to acquire WalkMe, a leader in digital adoption platforms (DAPs). WalkMe's solutions help organizations navigate constant technology change by providing users with advanced guidance and automation features that enable..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.2632239020895213,
+      "iteration": 1
+    },
+    {
+      "id": "iter1_web_search_3",
+      "type": "web_search",
+      "description": "Search for Lee's Market annual report 2025 training metrics",
+      "parameters": {
+        "query": "Lee's Market annual report 2025 training metrics"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market annual report 2025 training metrics",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_babc5efb6761afc1",
+            "source": "web",
+            "title": "https://www.bcg.com/publications/2024/personalization-in-action",
+            "locator": "https://www.bcg.com/publications/2024/personalization-in-action",
+            "rank": 1,
+            "score": 0.12804098150806242,
+            "queries": [
+              "Lee's Market annual report 2025 training metrics"
+            ],
+            "snippet": "The Role of Retail Media in Personalization\n\nRetail media is changing the traditional economic model of retail. In aggregate, the retail media advertising business is growing by 25% per year, and we estimate that it will exceed $100 billion worldwide by 2026. Onsite retail media—which is targeted ads on a retailer’s we..."
+          },
+          {
+            "doc_id": "web/48881",
+            "source": "web",
+            "title": "https://trainingmag.com/2023-training-industry-report/",
+            "locator": "https://trainingmag.com/2023-training-industry-report/",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market annual report 2025 training metrics"
+            ],
+            "snippet": "---\ntitle: 2023 Training Industry Report\nauthor: Lorri Freifeld\ndate: 2023-11-14\n---\nABOUT THIS STUDY\n\nNow in its 42nd year, The Industry Report is recognized as the training industry's most trusted source of data on budgets, staffing, and programs. This year, the study was conducted by an outside research firm April-J..."
+          },
+          {
+            "doc_id": "web/72135",
+            "source": "web",
+            "title": "https://www.explorance.com/blog/5-essential-steps-to-creating-effective-training-programs-to-drive-business-results",
+            "locator": "https://www.explorance.com/blog/5-essential-steps-to-creating-effective-training-programs-to-drive-business-results",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market annual report 2025 training metrics"
+            ],
+            "snippet": "---\ntitle: 5 Essential Steps to Building Effective Employee Training Programs That Drive Business Results\ndate: 2025-03-13\n---\nRegister for Explorance World 2025!\n\nHelp your organization harness the power of AI-enhanced feedback.\n\nSign Up Now Back to Blog Home\n\nPublished onMarch 13, 2025|6 min read\n\nThe most effective..."
+          },
+          {
+            "doc_id": "web/83536",
+            "source": "web",
+            "title": "https://www.acd-chem.com/education-meetings/calendar/",
+            "locator": "https://www.acd-chem.com/education-meetings/calendar/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market annual report 2025 training metrics"
+            ],
+            "snippet": "---\ntitle: Calendar\ndate: 2019-03-01\n---\neducation & meetings\n\nTraining Schedule\n\n- Wednesday, June 11, 2025 | 2:00 – 3:30 pm (ET)| Register here | Learn More\n\nWhen OSHA knocks on your facility's door, it can be intimidating and stressful if you are unprepared. When prepared, it can feel like walking into a final exam..."
+          },
+          {
+            "doc_id": "web/15955",
+            "source": "web",
+            "title": "https://www.facebook.com/nevadastatetreasurer/videos/a-conversation-with-erica-mosca-founder-executive-director-of-leaders-in-trainin/1109432386230268/",
+            "locator": "https://www.facebook.com/nevadastatetreasurer/videos/a-conversation-with-erica-mosca-founder-executive-director-of-leaders-in-trainin/1109432386230268/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market annual report 2025 training metrics"
+            ],
+            "snippet": "---\ntitle: A conversation with Erica Mosca, Founder & Executive Director of Leaders in Training | A conversation with Erica Mosca, Founder & Executive Director of Leaders in Training\n---\nthis is a placeholder\n\nthis is a placeholder\n\nthis is a placeholder"
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.4820612568873912,
+      "iteration": 1
+    },
+    {
+      "id": "iter2_web_search_0",
+      "type": "web_search",
+      "description": "Search for Lee's Market LMS adoption statistics or training program percentages",
+      "parameters": {
+        "query": "Lee's Market LMS training program adoption rate 2025"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market LMS training program adoption rate 2025",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/7344",
+            "source": "web",
+            "title": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "locator": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "rank": 1,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market LMS training program adoption rate 2025"
+            ],
+            "snippet": "---\ntitle: A New Paradigm For Corporate Training: Learning In The Flow of Work\nauthor: Joshbersin\ndate: 2018-06-03\n---\nA New Paradigm For Corporate Training: Learning In The Flow of Work\n\nThe corporate training market is over $200 billion around the world[1] and it's going through a revolution. While we often think of..."
+          },
+          {
+            "doc_id": "web/48881",
+            "source": "web",
+            "title": "https://trainingmag.com/2023-training-industry-report/",
+            "locator": "https://trainingmag.com/2023-training-industry-report/",
+            "rank": 2,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market LMS training program adoption rate 2025"
+            ],
+            "snippet": "---\ntitle: 2023 Training Industry Report\nauthor: Lorri Freifeld\ndate: 2023-11-14\n---\nABOUT THIS STUDY\n\nNow in its 42nd year, The Industry Report is recognized as the training industry's most trusted source of data on budgets, staffing, and programs. This year, the study was conducted by an outside research firm April-J..."
+          },
+          {
+            "doc_id": "web/9684",
+            "source": "web",
+            "title": "https://www.fldoe.org/academics/standards/instructional-materials/",
+            "locator": "https://www.fldoe.org/academics/standards/instructional-materials/",
+            "rank": 3,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market LMS training program adoption rate 2025"
+            ],
+            "snippet": "---\ntitle: Instructional Materials\ndate: 2024-12-08\n---\nInstructional Materials\n\nIf you have trouble accessing any of the files below please contact the Bureau of Standards and Instructional Support at 850-245-0423.\n\nGeneral Information\n\n- Library Media Training Updated 8/12/2024\n\n- Library Media Training Transcript (P..."
+          },
+          {
+            "doc_id": "web/43881",
+            "source": "web",
+            "title": "https://www.nu.edu/blog/ai-statistics-trends/",
+            "locator": "https://www.nu.edu/blog/ai-statistics-trends/",
+            "rank": 4,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market LMS training program adoption rate 2025"
+            ],
+            "snippet": "---\ntitle: 131 AI Statistics and Trends for 2025\ndate: 2025-05-12\n---\nIn the rapidly evolving landscape of technology, Artificial Intelligence (AI) has emerged as a cornerstone of innovation, reshaping industries, and altering the fabric of our daily lives. The year 2025 stands as a testament to the monumental strides..."
+          },
+          {
+            "doc_id": "web/72135",
+            "source": "web",
+            "title": "https://www.explorance.com/blog/5-essential-steps-to-creating-effective-training-programs-to-drive-business-results",
+            "locator": "https://www.explorance.com/blog/5-essential-steps-to-creating-effective-training-programs-to-drive-business-results",
+            "rank": 5,
+            "score": 0.015384615384615385,
+            "queries": [
+              "Lee's Market LMS training program adoption rate 2025"
+            ],
+            "snippet": "---\ntitle: 5 Essential Steps to Building Effective Employee Training Programs That Drive Business Results\ndate: 2025-03-13\n---\nRegister for Explorance World 2025!\n\nHelp your organization harness the power of AI-enhanced feedback.\n\nSign Up Now Back to Blog Home\n\nPublished onMarch 13, 2025|6 min read\n\nThe most effective..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.2304952871054411,
+      "iteration": 2
+    },
+    {
+      "id": "iter2_web_search_1",
+      "type": "web_search",
+      "description": "Search for general training metrics related to Lee's Market in 2025",
+      "parameters": {
+        "query": "Lee's Market training metrics 2025"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market training metrics 2025",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/83536",
+            "source": "web",
+            "title": "https://www.acd-chem.com/education-meetings/calendar/",
+            "locator": "https://www.acd-chem.com/education-meetings/calendar/",
+            "rank": 1,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market training metrics 2025",
+              "Lee's Market annual report 2025 training sessions"
+            ],
+            "snippet": "---\ntitle: Calendar\ndate: 2019-03-01\n---\neducation & meetings\n\nTraining Schedule\n\n- Wednesday, June 11, 2025 | 2:00 – 3:30 pm (ET)| Register here | Learn More\n\nWhen OSHA knocks on your facility's door, it can be intimidating and stressful if you are unprepared. When prepared, it can feel like walking into a final exam..."
+          },
+          {
+            "doc_id": "web/4161",
+            "source": "web",
+            "title": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+            "locator": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+            "rank": 2,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market training metrics 2025"
+            ],
+            "snippet": "---\ntitle: We have solutions to reach them\nauthor: No items found No items found\ndate: 2024-01-31\n---\nKey Takeaways: Overview of The US Retail Grocery Market in 2025\n\nThe US grocery retail market is a key part of the country's retail industry. It has a rich history, evolving from small, family-owned stores to large, di..."
+          },
+          {
+            "doc_id": "web/48881",
+            "source": "web",
+            "title": "https://trainingmag.com/2023-training-industry-report/",
+            "locator": "https://trainingmag.com/2023-training-industry-report/",
+            "rank": 3,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market training metrics 2025"
+            ],
+            "snippet": "---\ntitle: 2023 Training Industry Report\nauthor: Lorri Freifeld\ndate: 2023-11-14\n---\nABOUT THIS STUDY\n\nNow in its 42nd year, The Industry Report is recognized as the training industry's most trusted source of data on budgets, staffing, and programs. This year, the study was conducted by an outside research firm April-J..."
+          },
+          {
+            "doc_id": "web/57542",
+            "source": "web",
+            "title": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "locator": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "rank": 4,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market training metrics 2025"
+            ],
+            "snippet": "---\ntitle: Larssen/Match History\ndate: 2025-06-01\n---\n|\n\nToggle columns:\n\n| Player: Larssen; Limit: 50 - Open As Query | |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 5,
+            "score": 0.015384615384615385,
+            "queries": [
+              "Lee's Market training metrics 2025"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.17170497006736696,
+      "iteration": 2
+    },
+    {
+      "id": "iter2_web_search_2",
+      "type": "web_search",
+      "description": "Search for proprietary LMS implementation details for Lee's Market",
+      "parameters": {
+        "query": "Lee's Market proprietary LMS implementation details"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market proprietary LMS implementation details",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/25243",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/History_of_virtual_learning_environments_in_the_1990s",
+            "locator": "https://en.wikipedia.org/wiki/History_of_virtual_learning_environments_in_the_1990s",
+            "rank": 1,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market proprietary LMS implementation details"
+            ],
+            "snippet": "---\ntitle: History of virtual learning environments in the 1990s - Wikipedia\ndate: 2007-08-15\n---\nIn the history of virtual learning environments, the 1990s was a time of growth, primarily due to the advent of the affordable computer and of the Internet.\n\n1980s\n\n1985\n\nThe Free Educational Mail (FrEdMail) network was cr..."
+          },
+          {
+            "doc_id": "web/7344",
+            "source": "web",
+            "title": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "locator": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "rank": 2,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market proprietary LMS implementation details"
+            ],
+            "snippet": "---\ntitle: A New Paradigm For Corporate Training: Learning In The Flow of Work\nauthor: Joshbersin\ndate: 2018-06-03\n---\nA New Paradigm For Corporate Training: Learning In The Flow of Work\n\nThe corporate training market is over $200 billion around the world[1] and it's going through a revolution. While we often think of..."
+          },
+          {
+            "doc_id": "web/8007",
+            "source": "web",
+            "title": "https://www.sap.com/investors/en/why-invest/acquisitions.html",
+            "locator": "https://www.sap.com/investors/en/why-invest/acquisitions.html",
+            "rank": 3,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market proprietary LMS implementation details"
+            ],
+            "snippet": "---\ntitle: Acquisitions\ndate: 2025-01-01\n---\n2024\n\n| WalkMe\n\nIn June 2024, SAP announced its intention to acquire WalkMe, a leader in digital adoption platforms (DAPs). WalkMe's solutions help organizations navigate constant technology change by providing users with advanced guidance and automation features that enable..."
+          },
+          {
+            "doc_id": "web/55979",
+            "source": "web",
+            "title": "https://research.contrary.com/company/long-term-stock-exchange",
+            "locator": "https://research.contrary.com/company/long-term-stock-exchange",
+            "rank": 4,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market proprietary LMS implementation details"
+            ],
+            "snippet": "---\ntitle: Long-Term Stock Exchange\ndate: 2012-08-01\n---\nThesis\n\nEach quarter, public companies face scrutiny from investors and analysts over the state of their earnings reports. If a company misses its consensus estimates for quarterly earnings, its stock will likely be met with a flurry of selling activity, causing..."
+          },
+          {
+            "doc_id": "web/7128",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Fort_Gregg-Adams",
+            "locator": "https://en.wikipedia.org/wiki/Fort_Gregg-Adams",
+            "rank": 5,
+            "score": 0.015384615384615385,
+            "queries": [
+              "Lee's Market proprietary LMS implementation details"
+            ],
+            "snippet": "---\ntitle: Fort Gregg-Adams - Wikipedia\nauthor: Authority control databases Geographic MusicBrainz area Other NARA\ndate: 2002-10-25\n---\nname: Fort Gregg-Adams\nlocation: Petersburg and Tri-cities Area, Virginia, U.S.\ntype: U.S. Army post\nbuilt: 1917\nused: 1917–19241941–present\ncontrolledby: United States Army\ngarrison:..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.2914495309814811,
+      "iteration": 2
+    },
+    {
+      "id": "iter2_web_search_3",
+      "type": "web_search",
+      "description": "Search for training session data in Lee's Market annual reports",
+      "parameters": {
+        "query": "Lee's Market annual report 2025 training sessions"
+      },
+      "priority": 0.6,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market annual report 2025 training sessions",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_babc5efb6761afc1",
+            "source": "web",
+            "title": "https://www.bcg.com/publications/2024/personalization-in-action",
+            "locator": "https://www.bcg.com/publications/2024/personalization-in-action",
+            "rank": 1,
+            "score": 0.12804098150806242,
+            "queries": [
+              "Lee's Market annual report 2025 training sessions"
+            ],
+            "snippet": "The Role of Retail Media in Personalization\n\nRetail media is changing the traditional economic model of retail. In aggregate, the retail media advertising business is growing by 25% per year, and we estimate that it will exceed $100 billion worldwide by 2026. Onsite retail media—which is targeted ads on a retailer’s we..."
+          },
+          {
+            "doc_id": "web/83536",
+            "source": "web",
+            "title": "https://www.acd-chem.com/education-meetings/calendar/",
+            "locator": "https://www.acd-chem.com/education-meetings/calendar/",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market annual report 2025 training sessions"
+            ],
+            "snippet": "---\ntitle: Calendar\ndate: 2019-03-01\n---\neducation & meetings\n\nTraining Schedule\n\n- Wednesday, June 11, 2025 | 2:00 – 3:30 pm (ET)| Register here | Learn More\n\nWhen OSHA knocks on your facility's door, it can be intimidating and stressful if you are unprepared. When prepared, it can feel like walking into a final exam..."
+          },
+          {
+            "doc_id": "web/15955",
+            "source": "web",
+            "title": "https://www.facebook.com/nevadastatetreasurer/videos/a-conversation-with-erica-mosca-founder-executive-director-of-leaders-in-trainin/1109432386230268/",
+            "locator": "https://www.facebook.com/nevadastatetreasurer/videos/a-conversation-with-erica-mosca-founder-executive-director-of-leaders-in-trainin/1109432386230268/",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market annual report 2025 training sessions"
+            ],
+            "snippet": "---\ntitle: A conversation with Erica Mosca, Founder & Executive Director of Leaders in Training | A conversation with Erica Mosca, Founder & Executive Director of Leaders in Training\n---\nthis is a placeholder\n\nthis is a placeholder\n\nthis is a placeholder"
+          },
+          {
+            "doc_id": "web/29286",
+            "source": "web",
+            "title": "https://acui.org/events-education/2026-annual-conference/2025-annual-conference/",
+            "locator": "https://acui.org/events-education/2026-annual-conference/2025-annual-conference/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market annual report 2025 training sessions"
+            ],
+            "snippet": "---\ntitle: 2025 Annual Conference\ndate: 2025-02-11\n---\nThank you to everyone who joined us in New York City for the 2025 ACUI Annual Conference, March 16–20!\n\nThe 2025 Conference Program Team created a meaningful and memorable experience in New York City, March 16–20. Through the planning process, the team was drawn to..."
+          },
+          {
+            "doc_id": "web/48881",
+            "source": "web",
+            "title": "https://trainingmag.com/2023-training-industry-report/",
+            "locator": "https://trainingmag.com/2023-training-industry-report/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market annual report 2025 training sessions"
+            ],
+            "snippet": "---\ntitle: 2023 Training Industry Report\nauthor: Lorri Freifeld\ndate: 2023-11-14\n---\nABOUT THIS STUDY\n\nNow in its 42nd year, The Industry Report is recognized as the training industry's most trusted source of data on budgets, staffing, and programs. This year, the study was conducted by an outside research firm April-J..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.2458917209878564,
+      "iteration": 2
+    },
+    {
+      "id": "iter3_web_search_0",
+      "type": "web_search",
+      "description": "Search for Lee's Market LMS adoption rate in Q2 2025 reports",
+      "parameters": {
+        "query": "Lee's Market LMS adoption rate Q2 2025 report"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market LMS adoption rate Q2 2025 report",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/55737",
+            "source": "web",
+            "title": "https://aag-it.com/the-latest-cloud-computing-statistics/",
+            "locator": "https://aag-it.com/the-latest-cloud-computing-statistics/",
+            "rank": 1,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market LMS adoption rate Q2 2025 report"
+            ],
+            "snippet": "---\ntitle: The Latest Cloud Computing Statistics (updated January 2025)\nauthor: Charles Griffiths Director; Innovation\ndate: 2025-01-01\n---\nThe Latest Cloud Computing Statistics (updated January 2025)\n\nHeadline Cloud Computing Statistics for 2024\n\n- 12-month revenues between the start of 2021 and 2022 for cloud infrast..."
+          },
+          {
+            "doc_id": "web/43881",
+            "source": "web",
+            "title": "https://www.nu.edu/blog/ai-statistics-trends/",
+            "locator": "https://www.nu.edu/blog/ai-statistics-trends/",
+            "rank": 2,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market LMS adoption rate Q2 2025 report"
+            ],
+            "snippet": "---\ntitle: 131 AI Statistics and Trends for 2025\ndate: 2025-05-12\n---\nIn the rapidly evolving landscape of technology, Artificial Intelligence (AI) has emerged as a cornerstone of innovation, reshaping industries, and altering the fabric of our daily lives. The year 2025 stands as a testament to the monumental strides..."
+          },
+          {
+            "doc_id": "web/58940",
+            "source": "web",
+            "title": "https://www.grandviewresearch.com/industry-analysis/artificial-intelligence-ai-market",
+            "locator": "https://www.grandviewresearch.com/industry-analysis/artificial-intelligence-ai-market",
+            "rank": 3,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market LMS adoption rate Q2 2025 report"
+            ],
+            "snippet": "---\ntitle: Artificial Intelligence Market Size, Share & Trends Analysis Report By Solution, By Technology (Deep Learning, Machine Learning, NLP, Machine Vision, Generative AI), By Function, By End-Use, By Region, And Segment Forecasts, 2025 - 2030\ndate: 2025-03-01\n---\n- Home\n\n- »\n\n- Next Generation Technologies\n\n- »\n\n-..."
+          },
+          {
+            "doc_id": "web/9684",
+            "source": "web",
+            "title": "https://www.fldoe.org/academics/standards/instructional-materials/",
+            "locator": "https://www.fldoe.org/academics/standards/instructional-materials/",
+            "rank": 4,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market LMS adoption rate Q2 2025 report"
+            ],
+            "snippet": "---\ntitle: Instructional Materials\ndate: 2024-12-08\n---\nInstructional Materials\n\nIf you have trouble accessing any of the files below please contact the Bureau of Standards and Instructional Support at 850-245-0423.\n\nGeneral Information\n\n- Library Media Training Updated 8/12/2024\n\n- Library Media Training Transcript (P..."
+          },
+          {
+            "doc_id": "web/8007",
+            "source": "web",
+            "title": "https://www.sap.com/investors/en/why-invest/acquisitions.html",
+            "locator": "https://www.sap.com/investors/en/why-invest/acquisitions.html",
+            "rank": 5,
+            "score": 0.015384615384615385,
+            "queries": [
+              "Lee's Market LMS adoption rate Q2 2025 report"
+            ],
+            "snippet": "---\ntitle: Acquisitions\ndate: 2025-01-01\n---\n2024\n\n| WalkMe\n\nIn June 2024, SAP announced its intention to acquire WalkMe, a leader in digital adoption platforms (DAPs). WalkMe's solutions help organizations navigate constant technology change by providing users with advanced guidance and automation features that enable..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.5168181280605495,
+      "iteration": 3
+    },
+    {
+      "id": "iter3_web_search_1",
+      "type": "web_search",
+      "description": "Search for Lee's Market training system usage statistics in 2025",
+      "parameters": {
+        "query": "Lee's Market training system usage 2025 statistics"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market training system usage 2025 statistics",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/48881",
+            "source": "web",
+            "title": "https://trainingmag.com/2023-training-industry-report/",
+            "locator": "https://trainingmag.com/2023-training-industry-report/",
+            "rank": 1,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market training system usage 2025 statistics"
+            ],
+            "snippet": "---\ntitle: 2023 Training Industry Report\nauthor: Lorri Freifeld\ndate: 2023-11-14\n---\nABOUT THIS STUDY\n\nNow in its 42nd year, The Industry Report is recognized as the training industry's most trusted source of data on budgets, staffing, and programs. This year, the study was conducted by an outside research firm April-J..."
+          },
+          {
+            "doc_id": "web/7128",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Fort_Gregg-Adams",
+            "locator": "https://en.wikipedia.org/wiki/Fort_Gregg-Adams",
+            "rank": 2,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market training system usage 2025 statistics"
+            ],
+            "snippet": "---\ntitle: Fort Gregg-Adams - Wikipedia\nauthor: Authority control databases Geographic MusicBrainz area Other NARA\ndate: 2002-10-25\n---\nname: Fort Gregg-Adams\nlocation: Petersburg and Tri-cities Area, Virginia, U.S.\ntype: U.S. Army post\nbuilt: 1917\nused: 1917–19241941–present\ncontrolledby: United States Army\ngarrison:..."
+          },
+          {
+            "doc_id": "web/43881",
+            "source": "web",
+            "title": "https://www.nu.edu/blog/ai-statistics-trends/",
+            "locator": "https://www.nu.edu/blog/ai-statistics-trends/",
+            "rank": 3,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market training system usage 2025 statistics"
+            ],
+            "snippet": "---\ntitle: 131 AI Statistics and Trends for 2025\ndate: 2025-05-12\n---\nIn the rapidly evolving landscape of technology, Artificial Intelligence (AI) has emerged as a cornerstone of innovation, reshaping industries, and altering the fabric of our daily lives. The year 2025 stands as a testament to the monumental strides..."
+          },
+          {
+            "doc_id": "web/83536",
+            "source": "web",
+            "title": "https://www.acd-chem.com/education-meetings/calendar/",
+            "locator": "https://www.acd-chem.com/education-meetings/calendar/",
+            "rank": 4,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market training system usage 2025 statistics"
+            ],
+            "snippet": "---\ntitle: Calendar\ndate: 2019-03-01\n---\neducation & meetings\n\nTraining Schedule\n\n- Wednesday, June 11, 2025 | 2:00 – 3:30 pm (ET)| Register here | Learn More\n\nWhen OSHA knocks on your facility's door, it can be intimidating and stressful if you are unprepared. When prepared, it can feel like walking into a final exam..."
+          },
+          {
+            "doc_id": "web/7344",
+            "source": "web",
+            "title": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "locator": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "rank": 5,
+            "score": 0.015384615384615385,
+            "queries": [
+              "Lee's Market training system usage 2025 statistics"
+            ],
+            "snippet": "---\ntitle: A New Paradigm For Corporate Training: Learning In The Flow of Work\nauthor: Joshbersin\ndate: 2018-06-03\n---\nA New Paradigm For Corporate Training: Learning In The Flow of Work\n\nThe corporate training market is over $200 billion around the world[1] and it's going through a revolution. While we often think of..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 1.3945087669417262,
+      "iteration": 3
+    },
+    {
+      "id": "iter3_web_search_2",
+      "type": "web_search",
+      "description": "Search for Lee's Market proprietary LMS implementation timeline",
+      "parameters": {
+        "query": "Lee's Market proprietary LMS implementation timeline 2025"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market proprietary LMS implementation timeline 2025",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/7344",
+            "source": "web",
+            "title": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "locator": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "rank": 1,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market proprietary LMS implementation timeline 2025"
+            ],
+            "snippet": "---\ntitle: A New Paradigm For Corporate Training: Learning In The Flow of Work\nauthor: Joshbersin\ndate: 2018-06-03\n---\nA New Paradigm For Corporate Training: Learning In The Flow of Work\n\nThe corporate training market is over $200 billion around the world[1] and it's going through a revolution. While we often think of..."
+          },
+          {
+            "doc_id": "web/25243",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/History_of_virtual_learning_environments_in_the_1990s",
+            "locator": "https://en.wikipedia.org/wiki/History_of_virtual_learning_environments_in_the_1990s",
+            "rank": 2,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market proprietary LMS implementation timeline 2025"
+            ],
+            "snippet": "---\ntitle: History of virtual learning environments in the 1990s - Wikipedia\ndate: 2007-08-15\n---\nIn the history of virtual learning environments, the 1990s was a time of growth, primarily due to the advent of the affordable computer and of the Internet.\n\n1980s\n\n1985\n\nThe Free Educational Mail (FrEdMail) network was cr..."
+          },
+          {
+            "doc_id": "web/80960",
+            "source": "web",
+            "title": "https://lsers.net/",
+            "locator": "https://lsers.net/",
+            "rank": 3,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market proprietary LMS implementation timeline 2025"
+            ],
+            "snippet": "---\ntitle: Holiday Office Closure\ndate: 2025-01-01\n---\nLSERS' office will be closed on Thursday, June 19, 2025, in observance ... Read more\n\nStriving for Excellence in Customer Service\n\nThis website provides information about the Louisiana School Employees' Retirement System (LSERS), including an overview of provisions..."
+          },
+          {
+            "doc_id": "web/52151",
+            "source": "web",
+            "title": "https://www.salesforce.com/news/stories/the-history-of-salesforce/",
+            "locator": "https://www.salesforce.com/news/stories/the-history-of-salesforce/",
+            "rank": 4,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market proprietary LMS implementation timeline 2025"
+            ],
+            "snippet": "---\ntitle: Image Modal\ndate: 2024-01-01\n---\nEditor's Note: This page was last updated in January 2025. For media inquiries about the history of Salesforce, please contact PR@salesforce.com.\n\n25 Years of Salesforce News Highlights\n\nThe below timeline captures the history of Salesforce, including some key milestones alon..."
+          },
+          {
+            "doc_id": "web/55979",
+            "source": "web",
+            "title": "https://research.contrary.com/company/long-term-stock-exchange",
+            "locator": "https://research.contrary.com/company/long-term-stock-exchange",
+            "rank": 5,
+            "score": 0.015384615384615385,
+            "queries": [
+              "Lee's Market proprietary LMS implementation timeline 2025"
+            ],
+            "snippet": "---\ntitle: Long-Term Stock Exchange\ndate: 2012-08-01\n---\nThesis\n\nEach quarter, public companies face scrutiny from investors and analysts over the state of their earnings reports. If a company misses its consensus estimates for quarterly earnings, its stock will likely be met with a flurry of selling activity, causing..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 1.394899391103536,
+      "iteration": 3
+    },
+    {
+      "id": "iter3_web_search_3",
+      "type": "web_search",
+      "description": "Search for Lee's Market Q2 2025 training program metrics",
+      "parameters": {
+        "query": "Lee's Market Q2 2025 training program metrics"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market Q2 2025 training program metrics",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/72135",
+            "source": "web",
+            "title": "https://www.explorance.com/blog/5-essential-steps-to-creating-effective-training-programs-to-drive-business-results",
+            "locator": "https://www.explorance.com/blog/5-essential-steps-to-creating-effective-training-programs-to-drive-business-results",
+            "rank": 1,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market Q2 2025 training program metrics"
+            ],
+            "snippet": "---\ntitle: 5 Essential Steps to Building Effective Employee Training Programs That Drive Business Results\ndate: 2025-03-13\n---\nRegister for Explorance World 2025!\n\nHelp your organization harness the power of AI-enhanced feedback.\n\nSign Up Now Back to Blog Home\n\nPublished onMarch 13, 2025|6 min read\n\nThe most effective..."
+          },
+          {
+            "doc_id": "web/27541",
+            "source": "web",
+            "title": "https://www.nj.gov/labor/research-info/grants.shtml",
+            "locator": "https://www.nj.gov/labor/research-info/grants.shtml",
+            "rank": 2,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market Q2 2025 training program metrics"
+            ],
+            "snippet": "---\ntitle: Official Site of The State of New Jersey\ndate: 2024-09-01\n---\nGrant Opportunities\n\nBrowse this page to learn about grant opportunities available through the New Jersey Department of Labor and Workforce Development.\n\nNOTICE OF GRANT OPPORTUNITY (NGO)\n\nAnnouncement Date: March 5, 2025\n\nLetter of Intent Deadlin..."
+          },
+          {
+            "doc_id": "web/83536",
+            "source": "web",
+            "title": "https://www.acd-chem.com/education-meetings/calendar/",
+            "locator": "https://www.acd-chem.com/education-meetings/calendar/",
+            "rank": 3,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market Q2 2025 training program metrics"
+            ],
+            "snippet": "---\ntitle: Calendar\ndate: 2019-03-01\n---\neducation & meetings\n\nTraining Schedule\n\n- Wednesday, June 11, 2025 | 2:00 – 3:30 pm (ET)| Register here | Learn More\n\nWhen OSHA knocks on your facility's door, it can be intimidating and stressful if you are unprepared. When prepared, it can feel like walking into a final exam..."
+          },
+          {
+            "doc_id": "web/17275",
+            "source": "web",
+            "title": "https://www.greatplacetowork.com/resources/blog/employee-training-development-benefits-planning",
+            "locator": "https://www.greatplacetowork.com/resources/blog/employee-training-development-benefits-planning",
+            "rank": 4,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market Q2 2025 training program metrics"
+            ],
+            "snippet": "---\ntitle: Employee Training and Development: The Benefits of Upskilling or Reskilling Your Team\nauthor: Claire Hastwell\ndate: 2025-02-14\n---\nDeveloping, Employee Experience, Retention Strategies, Talent Management, Training & Development\n\nEmployee training and development isn't just about teaching employees to do thei..."
+          },
+          {
+            "doc_id": "web/15955",
+            "source": "web",
+            "title": "https://www.facebook.com/nevadastatetreasurer/videos/a-conversation-with-erica-mosca-founder-executive-director-of-leaders-in-trainin/1109432386230268/",
+            "locator": "https://www.facebook.com/nevadastatetreasurer/videos/a-conversation-with-erica-mosca-founder-executive-director-of-leaders-in-trainin/1109432386230268/",
+            "rank": 5,
+            "score": 0.015384615384615385,
+            "queries": [
+              "Lee's Market Q2 2025 training program metrics"
+            ],
+            "snippet": "---\ntitle: A conversation with Erica Mosca, Founder & Executive Director of Leaders in Training | A conversation with Erica Mosca, Founder & Executive Director of Leaders in Training\n---\nthis is a placeholder\n\nthis is a placeholder\n\nthis is a placeholder"
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.6335987190250307,
+      "iteration": 3
+    },
+    {
+      "id": "iter4_web_search_0",
+      "type": "web_search",
+      "description": "Search for Lee's Market Q2 2025 LMS training session statistics",
+      "parameters": {
+        "query": "Lee's Market Q2 2025 LMS training session statistics"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market Q2 2025 LMS training session statistics",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/57542",
+            "source": "web",
+            "title": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "locator": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "rank": 1,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market Q2 2025 LMS training session statistics"
+            ],
+            "snippet": "---\ntitle: Larssen/Match History\ndate: 2025-06-01\n---\n|\n\nToggle columns:\n\n| Player: Larssen; Limit: 50 - Open As Query | |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---..."
+          },
+          {
+            "doc_id": "web/83536",
+            "source": "web",
+            "title": "https://www.acd-chem.com/education-meetings/calendar/",
+            "locator": "https://www.acd-chem.com/education-meetings/calendar/",
+            "rank": 2,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market Q2 2025 LMS training session statistics"
+            ],
+            "snippet": "---\ntitle: Calendar\ndate: 2019-03-01\n---\neducation & meetings\n\nTraining Schedule\n\n- Wednesday, June 11, 2025 | 2:00 – 3:30 pm (ET)| Register here | Learn More\n\nWhen OSHA knocks on your facility's door, it can be intimidating and stressful if you are unprepared. When prepared, it can feel like walking into a final exam..."
+          },
+          {
+            "doc_id": "web/35353",
+            "source": "web",
+            "title": "https://dchas.org/2023/08/22/history-of-the-chas-lst-workshop-2/",
+            "locator": "https://dchas.org/2023/08/22/history-of-the-chas-lst-workshop-2/",
+            "rank": 3,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market Q2 2025 LMS training session statistics"
+            ],
+            "snippet": "---\ntitle: Peer-Led Workshops\nauthor: Melinda Box\ndate: 2023-08-22\n---\nCurrent Workshops Schedule\n\n[If you are looking for other workshops run by CHAS, please click here.]\n\nRegister for March 16, 2025 Empowering Academic Researchers to Strengthen Safety Culture\n\nHistory of Peer-Led Workshops\n\nThe 1st Peer-Led Workshop..."
+          },
+          {
+            "doc_id": "web/48881",
+            "source": "web",
+            "title": "https://trainingmag.com/2023-training-industry-report/",
+            "locator": "https://trainingmag.com/2023-training-industry-report/",
+            "rank": 4,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market Q2 2025 LMS training session statistics"
+            ],
+            "snippet": "---\ntitle: 2023 Training Industry Report\nauthor: Lorri Freifeld\ndate: 2023-11-14\n---\nABOUT THIS STUDY\n\nNow in its 42nd year, The Industry Report is recognized as the training industry's most trusted source of data on budgets, staffing, and programs. This year, the study was conducted by an outside research firm April-J..."
+          },
+          {
+            "doc_id": "web/1099",
+            "source": "web",
+            "title": "https://elearnmag.acm.org/archive.cfm?aid=2218536",
+            "locator": "https://elearnmag.acm.org/archive.cfm?aid=2218536",
+            "rank": 5,
+            "score": 0.015384615384615385,
+            "queries": [
+              "Lee's Market Q2 2025 LMS training session statistics"
+            ],
+            "snippet": "---\ntitle: An Inside Look at ASTD's 2012 International Conference and Exposition\nauthor: David Kelly; May\ndate: 2012-05-01\n---\n- Home\n\n- Articles\n\n- Reviews\n\n- About\n\n- Archives\n\n- Past Issues\n\n- The eLearn Blog\n\nArchives\n\n| To leave a comment you must sign in. Please log in or create an ACM Account. Forgot your userna..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.414650022983551,
+      "iteration": 4
+    },
+    {
+      "id": "iter4_web_search_1",
+      "type": "web_search",
+      "description": "Search for Lee's Market training system adoption rate 2025",
+      "parameters": {
+        "query": "Lee's Market training system adoption rate 2025"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market training system adoption rate 2025",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/48881",
+            "source": "web",
+            "title": "https://trainingmag.com/2023-training-industry-report/",
+            "locator": "https://trainingmag.com/2023-training-industry-report/",
+            "rank": 1,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market training system adoption rate 2025"
+            ],
+            "snippet": "---\ntitle: 2023 Training Industry Report\nauthor: Lorri Freifeld\ndate: 2023-11-14\n---\nABOUT THIS STUDY\n\nNow in its 42nd year, The Industry Report is recognized as the training industry's most trusted source of data on budgets, staffing, and programs. This year, the study was conducted by an outside research firm April-J..."
+          },
+          {
+            "doc_id": "web/7344",
+            "source": "web",
+            "title": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "locator": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "rank": 2,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market training system adoption rate 2025"
+            ],
+            "snippet": "---\ntitle: A New Paradigm For Corporate Training: Learning In The Flow of Work\nauthor: Joshbersin\ndate: 2018-06-03\n---\nA New Paradigm For Corporate Training: Learning In The Flow of Work\n\nThe corporate training market is over $200 billion around the world[1] and it's going through a revolution. While we often think of..."
+          },
+          {
+            "doc_id": "web/7128",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Fort_Gregg-Adams",
+            "locator": "https://en.wikipedia.org/wiki/Fort_Gregg-Adams",
+            "rank": 3,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market training system adoption rate 2025"
+            ],
+            "snippet": "---\ntitle: Fort Gregg-Adams - Wikipedia\nauthor: Authority control databases Geographic MusicBrainz area Other NARA\ndate: 2002-10-25\n---\nname: Fort Gregg-Adams\nlocation: Petersburg and Tri-cities Area, Virginia, U.S.\ntype: U.S. Army post\nbuilt: 1917\nused: 1917–19241941–present\ncontrolledby: United States Army\ngarrison:..."
+          },
+          {
+            "doc_id": "web/4161",
+            "source": "web",
+            "title": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+            "locator": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+            "rank": 4,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market training system adoption rate 2025",
+              "Lee's Market training program metrics Q2 2025"
+            ],
+            "snippet": "---\ntitle: We have solutions to reach them\nauthor: No items found No items found\ndate: 2024-01-31\n---\nKey Takeaways: Overview of The US Retail Grocery Market in 2025\n\nThe US grocery retail market is a key part of the country's retail industry. It has a rich history, evolving from small, family-owned stores to large, di..."
+          },
+          {
+            "doc_id": "web/43881",
+            "source": "web",
+            "title": "https://www.nu.edu/blog/ai-statistics-trends/",
+            "locator": "https://www.nu.edu/blog/ai-statistics-trends/",
+            "rank": 5,
+            "score": 0.015384615384615385,
+            "queries": [
+              "Lee's Market training system adoption rate 2025"
+            ],
+            "snippet": "---\ntitle: 131 AI Statistics and Trends for 2025\ndate: 2025-05-12\n---\nIn the rapidly evolving landscape of technology, Artificial Intelligence (AI) has emerged as a cornerstone of innovation, reshaping industries, and altering the fabric of our daily lives. The year 2025 stands as a testament to the monumental strides..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.32433844986371696,
+      "iteration": 4
+    },
+    {
+      "id": "iter4_web_search_2",
+      "type": "web_search",
+      "description": "Search for Lee's Market proprietary LMS usage percentage 2025",
+      "parameters": {
+        "query": "Lee's Market proprietary LMS usage percentage 2025"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market proprietary LMS usage percentage 2025",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_babc5efb6761afc1",
+            "source": "web",
+            "title": "https://www.bcg.com/publications/2024/personalization-in-action",
+            "locator": "https://www.bcg.com/publications/2024/personalization-in-action",
+            "rank": 1,
+            "score": 0.09679098150806242,
+            "queries": [
+              "Lee's Market proprietary LMS usage percentage 2025"
+            ],
+            "snippet": "The Role of Retail Media in Personalization\n\nAmazon Advertising has led the way in retail media, while large retailers such as Walmart, Target, Kroger, and Instacart have built billion-dollar businesses. Category specialists such as Home Depot, Macy’s, Ulta Beauty, and Walgreens have also established sizeable positions..."
+          },
+          {
+            "doc_id": "web/43881",
+            "source": "web",
+            "title": "https://www.nu.edu/blog/ai-statistics-trends/",
+            "locator": "https://www.nu.edu/blog/ai-statistics-trends/",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market proprietary LMS usage percentage 2025"
+            ],
+            "snippet": "---\ntitle: 131 AI Statistics and Trends for 2025\ndate: 2025-05-12\n---\nIn the rapidly evolving landscape of technology, Artificial Intelligence (AI) has emerged as a cornerstone of innovation, reshaping industries, and altering the fabric of our daily lives. The year 2025 stands as a testament to the monumental strides..."
+          },
+          {
+            "doc_id": "web/7344",
+            "source": "web",
+            "title": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "locator": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market proprietary LMS usage percentage 2025"
+            ],
+            "snippet": "---\ntitle: A New Paradigm For Corporate Training: Learning In The Flow of Work\nauthor: Joshbersin\ndate: 2018-06-03\n---\nA New Paradigm For Corporate Training: Learning In The Flow of Work\n\nThe corporate training market is over $200 billion around the world[1] and it's going through a revolution. While we often think of..."
+          },
+          {
+            "doc_id": "web/48881",
+            "source": "web",
+            "title": "https://trainingmag.com/2023-training-industry-report/",
+            "locator": "https://trainingmag.com/2023-training-industry-report/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market proprietary LMS usage percentage 2025"
+            ],
+            "snippet": "---\ntitle: 2023 Training Industry Report\nauthor: Lorri Freifeld\ndate: 2023-11-14\n---\nABOUT THIS STUDY\n\nNow in its 42nd year, The Industry Report is recognized as the training industry's most trusted source of data on budgets, staffing, and programs. This year, the study was conducted by an outside research firm April-J..."
+          },
+          {
+            "doc_id": "web/55737",
+            "source": "web",
+            "title": "https://aag-it.com/the-latest-cloud-computing-statistics/",
+            "locator": "https://aag-it.com/the-latest-cloud-computing-statistics/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market proprietary LMS usage percentage 2025"
+            ],
+            "snippet": "---\ntitle: The Latest Cloud Computing Statistics (updated January 2025)\nauthor: Charles Griffiths Director; Innovation\ndate: 2025-01-01\n---\nThe Latest Cloud Computing Statistics (updated January 2025)\n\nHeadline Cloud Computing Statistics for 2024\n\n- 12-month revenues between the start of 2021 and 2022 for cloud infrast..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.22165404306724668,
+      "iteration": 4
+    },
+    {
+      "id": "iter4_web_search_3",
+      "type": "web_search",
+      "description": "Search for Lee's Market training program metrics Q2 2025",
+      "parameters": {
+        "query": "Lee's Market training program metrics Q2 2025"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market training program metrics Q2 2025",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/83536",
+            "source": "web",
+            "title": "https://www.acd-chem.com/education-meetings/calendar/",
+            "locator": "https://www.acd-chem.com/education-meetings/calendar/",
+            "rank": 1,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market training program metrics Q2 2025"
+            ],
+            "snippet": "---\ntitle: Calendar\ndate: 2019-03-01\n---\neducation & meetings\n\nTraining Schedule\n\n- Wednesday, June 11, 2025 | 2:00 – 3:30 pm (ET)| Register here | Learn More\n\nWhen OSHA knocks on your facility's door, it can be intimidating and stressful if you are unprepared. When prepared, it can feel like walking into a final exam..."
+          },
+          {
+            "doc_id": "web/4161",
+            "source": "web",
+            "title": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+            "locator": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+            "rank": 2,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market training program metrics Q2 2025"
+            ],
+            "snippet": "---\ntitle: We have solutions to reach them\nauthor: No items found No items found\ndate: 2024-01-31\n---\nKey Takeaways: Overview of The US Retail Grocery Market in 2025\n\nThe US grocery retail market is a key part of the country's retail industry. It has a rich history, evolving from small, family-owned stores to large, di..."
+          },
+          {
+            "doc_id": "web/72135",
+            "source": "web",
+            "title": "https://www.explorance.com/blog/5-essential-steps-to-creating-effective-training-programs-to-drive-business-results",
+            "locator": "https://www.explorance.com/blog/5-essential-steps-to-creating-effective-training-programs-to-drive-business-results",
+            "rank": 3,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market training program metrics Q2 2025"
+            ],
+            "snippet": "---\ntitle: 5 Essential Steps to Building Effective Employee Training Programs That Drive Business Results\ndate: 2025-03-13\n---\nRegister for Explorance World 2025!\n\nHelp your organization harness the power of AI-enhanced feedback.\n\nSign Up Now Back to Blog Home\n\nPublished onMarch 13, 2025|6 min read\n\nThe most effective..."
+          },
+          {
+            "doc_id": "web/48881",
+            "source": "web",
+            "title": "https://trainingmag.com/2023-training-industry-report/",
+            "locator": "https://trainingmag.com/2023-training-industry-report/",
+            "rank": 4,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market training program metrics Q2 2025"
+            ],
+            "snippet": "---\ntitle: 2023 Training Industry Report\nauthor: Lorri Freifeld\ndate: 2023-11-14\n---\nABOUT THIS STUDY\n\nNow in its 42nd year, The Industry Report is recognized as the training industry's most trusted source of data on budgets, staffing, and programs. This year, the study was conducted by an outside research firm April-J..."
+          },
+          {
+            "doc_id": "web/27541",
+            "source": "web",
+            "title": "https://www.nj.gov/labor/research-info/grants.shtml",
+            "locator": "https://www.nj.gov/labor/research-info/grants.shtml",
+            "rank": 5,
+            "score": 0.015384615384615385,
+            "queries": [
+              "Lee's Market training program metrics Q2 2025"
+            ],
+            "snippet": "---\ntitle: Official Site of The State of New Jersey\ndate: 2024-09-01\n---\nGrant Opportunities\n\nBrowse this page to learn about grant opportunities available through the New Jersey Department of Labor and Workforce Development.\n\nNOTICE OF GRANT OPPORTUNITY (NGO)\n\nAnnouncement Date: March 5, 2025\n\nLetter of Intent Deadlin..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.3406742720399052,
+      "iteration": 4
+    },
+    {
+      "id": "iter5_web_search_0",
+      "type": "web_search",
+      "description": "Search for Lee's Market Q2 2025 LMS training percentage details",
+      "parameters": {
+        "query": "Lee's Market Q2 2025 LMS training percentage"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market Q2 2025 LMS training percentage",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_babc5efb6761afc1",
+            "source": "web",
+            "title": "https://www.bcg.com/publications/2024/personalization-in-action",
+            "locator": "https://www.bcg.com/publications/2024/personalization-in-action",
+            "rank": 1,
+            "score": 0.09679098150806242,
+            "queries": [
+              "Lee's Market Q2 2025 LMS training percentage"
+            ],
+            "snippet": "The Role of Retail Media in Personalization\n\nAmazon Advertising has led the way in retail media, while large retailers such as Walmart, Target, Kroger, and Instacart have built billion-dollar businesses. Category specialists such as Home Depot, Macy’s, Ulta Beauty, and Walgreens have also established sizeable positions..."
+          },
+          {
+            "doc_id": "web/48881",
+            "source": "web",
+            "title": "https://trainingmag.com/2023-training-industry-report/",
+            "locator": "https://trainingmag.com/2023-training-industry-report/",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market Q2 2025 LMS training percentage"
+            ],
+            "snippet": "---\ntitle: 2023 Training Industry Report\nauthor: Lorri Freifeld\ndate: 2023-11-14\n---\nABOUT THIS STUDY\n\nNow in its 42nd year, The Industry Report is recognized as the training industry's most trusted source of data on budgets, staffing, and programs. This year, the study was conducted by an outside research firm April-J..."
+          },
+          {
+            "doc_id": "web/7344",
+            "source": "web",
+            "title": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "locator": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market Q2 2025 LMS training percentage"
+            ],
+            "snippet": "---\ntitle: A New Paradigm For Corporate Training: Learning In The Flow of Work\nauthor: Joshbersin\ndate: 2018-06-03\n---\nA New Paradigm For Corporate Training: Learning In The Flow of Work\n\nThe corporate training market is over $200 billion around the world[1] and it's going through a revolution. While we often think of..."
+          },
+          {
+            "doc_id": "web/83536",
+            "source": "web",
+            "title": "https://www.acd-chem.com/education-meetings/calendar/",
+            "locator": "https://www.acd-chem.com/education-meetings/calendar/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market Q2 2025 LMS training percentage"
+            ],
+            "snippet": "---\ntitle: Calendar\ndate: 2019-03-01\n---\neducation & meetings\n\nTraining Schedule\n\n- Wednesday, June 11, 2025 | 2:00 – 3:30 pm (ET)| Register here | Learn More\n\nWhen OSHA knocks on your facility's door, it can be intimidating and stressful if you are unprepared. When prepared, it can feel like walking into a final exam..."
+          },
+          {
+            "doc_id": "web/57542",
+            "source": "web",
+            "title": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "locator": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market Q2 2025 LMS training percentage"
+            ],
+            "snippet": "---\ntitle: Larssen/Match History\ndate: 2025-06-01\n---\n|\n\nToggle columns:\n\n| Player: Larssen; Limit: 50 - Open As Query | |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.7816581060178578,
+      "iteration": 5
+    },
+    {
+      "id": "iter5_web_search_1",
+      "type": "web_search",
+      "description": "Search for Lee's Market proprietary LMS adoption rate in Q2 2025",
+      "parameters": {
+        "query": "Lee's Market proprietary LMS adoption rate Q2 2025"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market proprietary LMS adoption rate Q2 2025",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/55737",
+            "source": "web",
+            "title": "https://aag-it.com/the-latest-cloud-computing-statistics/",
+            "locator": "https://aag-it.com/the-latest-cloud-computing-statistics/",
+            "rank": 1,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market proprietary LMS adoption rate Q2 2025"
+            ],
+            "snippet": "---\ntitle: The Latest Cloud Computing Statistics (updated January 2025)\nauthor: Charles Griffiths Director; Innovation\ndate: 2025-01-01\n---\nThe Latest Cloud Computing Statistics (updated January 2025)\n\nHeadline Cloud Computing Statistics for 2024\n\n- 12-month revenues between the start of 2021 and 2022 for cloud infrast..."
+          },
+          {
+            "doc_id": "web/58940",
+            "source": "web",
+            "title": "https://www.grandviewresearch.com/industry-analysis/artificial-intelligence-ai-market",
+            "locator": "https://www.grandviewresearch.com/industry-analysis/artificial-intelligence-ai-market",
+            "rank": 2,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market proprietary LMS adoption rate Q2 2025"
+            ],
+            "snippet": "---\ntitle: Artificial Intelligence Market Size, Share & Trends Analysis Report By Solution, By Technology (Deep Learning, Machine Learning, NLP, Machine Vision, Generative AI), By Function, By End-Use, By Region, And Segment Forecasts, 2025 - 2030\ndate: 2025-03-01\n---\n- Home\n\n- »\n\n- Next Generation Technologies\n\n- »\n\n-..."
+          },
+          {
+            "doc_id": "web/43881",
+            "source": "web",
+            "title": "https://www.nu.edu/blog/ai-statistics-trends/",
+            "locator": "https://www.nu.edu/blog/ai-statistics-trends/",
+            "rank": 3,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market proprietary LMS adoption rate Q2 2025"
+            ],
+            "snippet": "---\ntitle: 131 AI Statistics and Trends for 2025\ndate: 2025-05-12\n---\nIn the rapidly evolving landscape of technology, Artificial Intelligence (AI) has emerged as a cornerstone of innovation, reshaping industries, and altering the fabric of our daily lives. The year 2025 stands as a testament to the monumental strides..."
+          },
+          {
+            "doc_id": "web/55979",
+            "source": "web",
+            "title": "https://research.contrary.com/company/long-term-stock-exchange",
+            "locator": "https://research.contrary.com/company/long-term-stock-exchange",
+            "rank": 4,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market proprietary LMS adoption rate Q2 2025"
+            ],
+            "snippet": "---\ntitle: Long-Term Stock Exchange\ndate: 2012-08-01\n---\nThesis\n\nEach quarter, public companies face scrutiny from investors and analysts over the state of their earnings reports. If a company misses its consensus estimates for quarterly earnings, its stock will likely be met with a flurry of selling activity, causing..."
+          },
+          {
+            "doc_id": "web/7344",
+            "source": "web",
+            "title": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "locator": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "rank": 5,
+            "score": 0.015384615384615385,
+            "queries": [
+              "Lee's Market proprietary LMS adoption rate Q2 2025"
+            ],
+            "snippet": "---\ntitle: A New Paradigm For Corporate Training: Learning In The Flow of Work\nauthor: Joshbersin\ndate: 2018-06-03\n---\nA New Paradigm For Corporate Training: Learning In The Flow of Work\n\nThe corporate training market is over $200 billion around the world[1] and it's going through a revolution. While we often think of..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.7663372170645744,
+      "iteration": 5
+    },
+    {
+      "id": "iter5_web_search_2",
+      "type": "web_search",
+      "description": "Search for Lee's Market training program LMS usage statistics 2025",
+      "parameters": {
+        "query": "Lee's Market training program LMS usage statistics 2025"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market training program LMS usage statistics 2025",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/48881",
+            "source": "web",
+            "title": "https://trainingmag.com/2023-training-industry-report/",
+            "locator": "https://trainingmag.com/2023-training-industry-report/",
+            "rank": 1,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market training program LMS usage statistics 2025"
+            ],
+            "snippet": "---\ntitle: 2023 Training Industry Report\nauthor: Lorri Freifeld\ndate: 2023-11-14\n---\nABOUT THIS STUDY\n\nNow in its 42nd year, The Industry Report is recognized as the training industry's most trusted source of data on budgets, staffing, and programs. This year, the study was conducted by an outside research firm April-J..."
+          },
+          {
+            "doc_id": "web/7344",
+            "source": "web",
+            "title": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "locator": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "rank": 2,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market training program LMS usage statistics 2025"
+            ],
+            "snippet": "---\ntitle: A New Paradigm For Corporate Training: Learning In The Flow of Work\nauthor: Joshbersin\ndate: 2018-06-03\n---\nA New Paradigm For Corporate Training: Learning In The Flow of Work\n\nThe corporate training market is over $200 billion around the world[1] and it's going through a revolution. While we often think of..."
+          },
+          {
+            "doc_id": "web/43881",
+            "source": "web",
+            "title": "https://www.nu.edu/blog/ai-statistics-trends/",
+            "locator": "https://www.nu.edu/blog/ai-statistics-trends/",
+            "rank": 3,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market training program LMS usage statistics 2025"
+            ],
+            "snippet": "---\ntitle: 131 AI Statistics and Trends for 2025\ndate: 2025-05-12\n---\nIn the rapidly evolving landscape of technology, Artificial Intelligence (AI) has emerged as a cornerstone of innovation, reshaping industries, and altering the fabric of our daily lives. The year 2025 stands as a testament to the monumental strides..."
+          },
+          {
+            "doc_id": "web/72135",
+            "source": "web",
+            "title": "https://www.explorance.com/blog/5-essential-steps-to-creating-effective-training-programs-to-drive-business-results",
+            "locator": "https://www.explorance.com/blog/5-essential-steps-to-creating-effective-training-programs-to-drive-business-results",
+            "rank": 4,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market training program LMS usage statistics 2025"
+            ],
+            "snippet": "---\ntitle: 5 Essential Steps to Building Effective Employee Training Programs That Drive Business Results\ndate: 2025-03-13\n---\nRegister for Explorance World 2025!\n\nHelp your organization harness the power of AI-enhanced feedback.\n\nSign Up Now Back to Blog Home\n\nPublished onMarch 13, 2025|6 min read\n\nThe most effective..."
+          },
+          {
+            "doc_id": "web/69838",
+            "source": "web",
+            "title": "https://www.skillsoft.com/press-releases/skillsoft-to-acquire-codecademy-a-leading-platform-for-learning-high-demand-technical-skills-creating-a-worldwide-community-of-more-than-85-million-learners",
+            "locator": "https://www.skillsoft.com/press-releases/skillsoft-to-acquire-codecademy-a-leading-platform-for-learning-high-demand-technical-skills-creating-a-worldwide-community-of-more-than-85-million-learners",
+            "rank": 5,
+            "score": 0.015384615384615385,
+            "queries": [
+              "Lee's Market training program LMS usage statistics 2025"
+            ],
+            "snippet": "---\ntitle: Skillsoft to Acquire Codecademy, a Leading Platform for Learning High-Demand Technical Skills, Creating a Worldwide Community of More Than 85 Million Learners\ndate: 2021-12-22\n---\nSkillsoft to Acquire Codecademy, a Leading Platform for Learning High-Demand Technical Skills, Creating a Worldwide Community of..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 1.2023153910413384,
+      "iteration": 5
+    },
+    {
+      "id": "iter5_web_search_3",
+      "type": "web_search",
+      "description": "Search for Lee's Market annual report 2025 LMS training data",
+      "parameters": {
+        "query": "Lee's Market annual report 2025 LMS training data"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market annual report 2025 LMS training data",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_babc5efb6761afc1",
+            "source": "web",
+            "title": "https://www.bcg.com/publications/2024/personalization-in-action",
+            "locator": "https://www.bcg.com/publications/2024/personalization-in-action",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "Lee's Market annual report 2025 LMS training data"
+            ],
+            "snippet": "Defining the Personalization Agenda in Retail\n\nAchieving these kinds of returns from personalization will take significant investment. We have found that large retailers leading in personalization are making annual investments of $10 million to $40 million in customer data platforms, marketing automation tools, AI mode..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market annual report 2025 LMS training data"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/57542",
+            "source": "web",
+            "title": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "locator": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market annual report 2025 LMS training data"
+            ],
+            "snippet": "---\ntitle: Larssen/Match History\ndate: 2025-06-01\n---\n|\n\nToggle columns:\n\n| Player: Larssen; Limit: 50 - Open As Query | |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---..."
+          },
+          {
+            "doc_id": "web/83536",
+            "source": "web",
+            "title": "https://www.acd-chem.com/education-meetings/calendar/",
+            "locator": "https://www.acd-chem.com/education-meetings/calendar/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market annual report 2025 LMS training data"
+            ],
+            "snippet": "---\ntitle: Calendar\ndate: 2019-03-01\n---\neducation & meetings\n\nTraining Schedule\n\n- Wednesday, June 11, 2025 | 2:00 – 3:30 pm (ET)| Register here | Learn More\n\nWhen OSHA knocks on your facility's door, it can be intimidating and stressful if you are unprepared. When prepared, it can feel like walking into a final exam..."
+          },
+          {
+            "doc_id": "web/32453",
+            "source": "web",
+            "title": "https://cityofls.net/parks/facilities/longview-community-center",
+            "locator": "https://cityofls.net/parks/facilities/longview-community-center",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market annual report 2025 LMS training data"
+            ],
+            "snippet": "---\ntitle: Longview Community Center\ndate: 2025-01-01\n---\n-\n\n-\n\n- Online Registration\n\n-\n\nParks\n\n-\n\nParks\n\n- Arborwalk Park\n\n- Sylvia Bailey Park\n\n- Banner Park Upper\n\n- Banner Park Lower\n\n- Canterbury Park\n\n- Deer Valley Park\n\n- Dogwood Park\n\n- Eagle Creek Park\n\n- Happy Tails Park\n\n- Harris Park\n\n- Charles David Hartm..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 1.2021057878155261,
+      "iteration": 5
+    },
+    {
+      "id": "iter6_web_search_0",
+      "type": "web_search",
+      "description": "Search for Lee's Market LMS adoption rate in Q2 2025",
+      "parameters": {
+        "query": "Lee's Market LMS adoption rate Q2 2025"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market LMS adoption rate Q2 2025",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/55737",
+            "source": "web",
+            "title": "https://aag-it.com/the-latest-cloud-computing-statistics/",
+            "locator": "https://aag-it.com/the-latest-cloud-computing-statistics/",
+            "rank": 1,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market LMS adoption rate Q2 2025"
+            ],
+            "snippet": "---\ntitle: The Latest Cloud Computing Statistics (updated January 2025)\nauthor: Charles Griffiths Director; Innovation\ndate: 2025-01-01\n---\nThe Latest Cloud Computing Statistics (updated January 2025)\n\nHeadline Cloud Computing Statistics for 2024\n\n- 12-month revenues between the start of 2021 and 2022 for cloud infrast..."
+          },
+          {
+            "doc_id": "web/43881",
+            "source": "web",
+            "title": "https://www.nu.edu/blog/ai-statistics-trends/",
+            "locator": "https://www.nu.edu/blog/ai-statistics-trends/",
+            "rank": 2,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market LMS adoption rate Q2 2025"
+            ],
+            "snippet": "---\ntitle: 131 AI Statistics and Trends for 2025\ndate: 2025-05-12\n---\nIn the rapidly evolving landscape of technology, Artificial Intelligence (AI) has emerged as a cornerstone of innovation, reshaping industries, and altering the fabric of our daily lives. The year 2025 stands as a testament to the monumental strides..."
+          },
+          {
+            "doc_id": "web/58940",
+            "source": "web",
+            "title": "https://www.grandviewresearch.com/industry-analysis/artificial-intelligence-ai-market",
+            "locator": "https://www.grandviewresearch.com/industry-analysis/artificial-intelligence-ai-market",
+            "rank": 3,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market LMS adoption rate Q2 2025"
+            ],
+            "snippet": "---\ntitle: Artificial Intelligence Market Size, Share & Trends Analysis Report By Solution, By Technology (Deep Learning, Machine Learning, NLP, Machine Vision, Generative AI), By Function, By End-Use, By Region, And Segment Forecasts, 2025 - 2030\ndate: 2025-03-01\n---\n- Home\n\n- »\n\n- Next Generation Technologies\n\n- »\n\n-..."
+          },
+          {
+            "doc_id": "web/40400",
+            "source": "web",
+            "title": "https://explodingtopics.com/blog/chatgpt-users",
+            "locator": "https://explodingtopics.com/blog/chatgpt-users",
+            "rank": 4,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market LMS adoption rate Q2 2025"
+            ],
+            "snippet": "---\ntitle: Number of ChatGPT Users (March 2025)\nauthor: Fabio Duarte\ndate: 2025-06-05\n---\nNumber of ChatGPT Users (March 2025)\n\nOpenAI's ChatGPT took off in record-breaking fashion.\n\nThe artificial intelligence chatbot picked up millions of users in a very short space of time.\n\nToday, ChatGPT is the generic name for se..."
+          },
+          {
+            "doc_id": "web/55979",
+            "source": "web",
+            "title": "https://research.contrary.com/company/long-term-stock-exchange",
+            "locator": "https://research.contrary.com/company/long-term-stock-exchange",
+            "rank": 5,
+            "score": 0.015384615384615385,
+            "queries": [
+              "Lee's Market LMS adoption rate Q2 2025"
+            ],
+            "snippet": "---\ntitle: Long-Term Stock Exchange\ndate: 2012-08-01\n---\nThesis\n\nEach quarter, public companies face scrutiny from investors and analysts over the state of their earnings reports. If a company misses its consensus estimates for quarterly earnings, its stock will likely be met with a flurry of selling activity, causing..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.14200185309164226,
+      "iteration": 6
+    },
+    {
+      "id": "iter6_web_search_2",
+      "type": "web_search",
+      "description": "Search for Lee's Market proprietary LMS implementation metrics 2025",
+      "parameters": {
+        "query": "Lee's Market proprietary LMS implementation metrics 2025"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market proprietary LMS implementation metrics 2025",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/7344",
+            "source": "web",
+            "title": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "locator": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "rank": 1,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market proprietary LMS implementation metrics 2025"
+            ],
+            "snippet": "---\ntitle: A New Paradigm For Corporate Training: Learning In The Flow of Work\nauthor: Joshbersin\ndate: 2018-06-03\n---\nA New Paradigm For Corporate Training: Learning In The Flow of Work\n\nThe corporate training market is over $200 billion around the world[1] and it's going through a revolution. While we often think of..."
+          },
+          {
+            "doc_id": "web/8007",
+            "source": "web",
+            "title": "https://www.sap.com/investors/en/why-invest/acquisitions.html",
+            "locator": "https://www.sap.com/investors/en/why-invest/acquisitions.html",
+            "rank": 2,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market proprietary LMS implementation metrics 2025"
+            ],
+            "snippet": "---\ntitle: Acquisitions\ndate: 2025-01-01\n---\n2024\n\n| WalkMe\n\nIn June 2024, SAP announced its intention to acquire WalkMe, a leader in digital adoption platforms (DAPs). WalkMe's solutions help organizations navigate constant technology change by providing users with advanced guidance and automation features that enable..."
+          },
+          {
+            "doc_id": "web/55979",
+            "source": "web",
+            "title": "https://research.contrary.com/company/long-term-stock-exchange",
+            "locator": "https://research.contrary.com/company/long-term-stock-exchange",
+            "rank": 3,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market proprietary LMS implementation metrics 2025"
+            ],
+            "snippet": "---\ntitle: Long-Term Stock Exchange\ndate: 2012-08-01\n---\nThesis\n\nEach quarter, public companies face scrutiny from investors and analysts over the state of their earnings reports. If a company misses its consensus estimates for quarterly earnings, its stock will likely be met with a flurry of selling activity, causing..."
+          },
+          {
+            "doc_id": "web/52151",
+            "source": "web",
+            "title": "https://www.salesforce.com/news/stories/the-history-of-salesforce/",
+            "locator": "https://www.salesforce.com/news/stories/the-history-of-salesforce/",
+            "rank": 4,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market proprietary LMS implementation metrics 2025"
+            ],
+            "snippet": "---\ntitle: Image Modal\ndate: 2024-01-01\n---\nEditor's Note: This page was last updated in January 2025. For media inquiries about the history of Salesforce, please contact PR@salesforce.com.\n\n25 Years of Salesforce News Highlights\n\nThe below timeline captures the history of Salesforce, including some key milestones alon..."
+          },
+          {
+            "doc_id": "web/57542",
+            "source": "web",
+            "title": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "locator": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "rank": 5,
+            "score": 0.015384615384615385,
+            "queries": [
+              "Lee's Market proprietary LMS implementation metrics 2025"
+            ],
+            "snippet": "---\ntitle: Larssen/Match History\ndate: 2025-06-01\n---\n|\n\nToggle columns:\n\n| Player: Larssen; Limit: 50 - Open As Query | |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.19600654998794198,
+      "iteration": 6
+    },
+    {
+      "id": "iter6_web_search_3",
+      "type": "web_search",
+      "description": "Search for Lee's Market training session LMS percentage Q2 2025",
+      "parameters": {
+        "query": "Lee's Market training session LMS percentage Q2 2025"
+      },
+      "priority": 0.85,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market training session LMS percentage Q2 2025",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_babc5efb6761afc1",
+            "source": "web",
+            "title": "https://www.bcg.com/publications/2024/personalization-in-action",
+            "locator": "https://www.bcg.com/publications/2024/personalization-in-action",
+            "rank": 1,
+            "score": 0.09679098150806242,
+            "queries": [
+              "Lee's Market training session LMS percentage Q2 2025"
+            ],
+            "snippet": "The Role of Retail Media in Personalization\n\nAmazon Advertising has led the way in retail media, while large retailers such as Walmart, Target, Kroger, and Instacart have built billion-dollar businesses. Category specialists such as Home Depot, Macy’s, Ulta Beauty, and Walgreens have also established sizeable positions..."
+          },
+          {
+            "doc_id": "web/48881",
+            "source": "web",
+            "title": "https://trainingmag.com/2023-training-industry-report/",
+            "locator": "https://trainingmag.com/2023-training-industry-report/",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market training session LMS percentage Q2 2025"
+            ],
+            "snippet": "---\ntitle: 2023 Training Industry Report\nauthor: Lorri Freifeld\ndate: 2023-11-14\n---\nABOUT THIS STUDY\n\nNow in its 42nd year, The Industry Report is recognized as the training industry's most trusted source of data on budgets, staffing, and programs. This year, the study was conducted by an outside research firm April-J..."
+          },
+          {
+            "doc_id": "web/83536",
+            "source": "web",
+            "title": "https://www.acd-chem.com/education-meetings/calendar/",
+            "locator": "https://www.acd-chem.com/education-meetings/calendar/",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market training session LMS percentage Q2 2025"
+            ],
+            "snippet": "---\ntitle: Calendar\ndate: 2019-03-01\n---\neducation & meetings\n\nTraining Schedule\n\n- Wednesday, June 11, 2025 | 2:00 – 3:30 pm (ET)| Register here | Learn More\n\nWhen OSHA knocks on your facility's door, it can be intimidating and stressful if you are unprepared. When prepared, it can feel like walking into a final exam..."
+          },
+          {
+            "doc_id": "web/57542",
+            "source": "web",
+            "title": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "locator": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market training session LMS percentage Q2 2025"
+            ],
+            "snippet": "---\ntitle: Larssen/Match History\ndate: 2025-06-01\n---\n|\n\nToggle columns:\n\n| Player: Larssen; Limit: 50 - Open As Query | |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---..."
+          },
+          {
+            "doc_id": "web/7344",
+            "source": "web",
+            "title": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "locator": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market training session LMS percentage Q2 2025"
+            ],
+            "snippet": "---\ntitle: A New Paradigm For Corporate Training: Learning In The Flow of Work\nauthor: Joshbersin\ndate: 2018-06-03\n---\nA New Paradigm For Corporate Training: Learning In The Flow of Work\n\nThe corporate training market is over $200 billion around the world[1] and it's going through a revolution. While we often think of..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.1957378159277141,
+      "iteration": 6
+    },
+    {
+      "id": "iter7_web_search_0",
+      "type": "web_search",
+      "description": "Search for Lee's Market LMS training percentage Q2 2025",
+      "parameters": {
+        "query": "Lee's Market LMS training percentage Q2 2025"
+      },
+      "priority": 0.8,
+      "expected_output": "Direct mention of percentage of training sessions using LMS in Q2 2025",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market LMS training percentage Q2 2025",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_babc5efb6761afc1",
+            "source": "web",
+            "title": "https://www.bcg.com/publications/2024/personalization-in-action",
+            "locator": "https://www.bcg.com/publications/2024/personalization-in-action",
+            "rank": 1,
+            "score": 0.09679098150806242,
+            "queries": [
+              "Lee's Market LMS training percentage Q2 2025"
+            ],
+            "snippet": "The Role of Retail Media in Personalization\n\nAmazon Advertising has led the way in retail media, while large retailers such as Walmart, Target, Kroger, and Instacart have built billion-dollar businesses. Category specialists such as Home Depot, Macy’s, Ulta Beauty, and Walgreens have also established sizeable positions..."
+          },
+          {
+            "doc_id": "web/48881",
+            "source": "web",
+            "title": "https://trainingmag.com/2023-training-industry-report/",
+            "locator": "https://trainingmag.com/2023-training-industry-report/",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market LMS training percentage Q2 2025"
+            ],
+            "snippet": "---\ntitle: 2023 Training Industry Report\nauthor: Lorri Freifeld\ndate: 2023-11-14\n---\nABOUT THIS STUDY\n\nNow in its 42nd year, The Industry Report is recognized as the training industry's most trusted source of data on budgets, staffing, and programs. This year, the study was conducted by an outside research firm April-J..."
+          },
+          {
+            "doc_id": "web/57542",
+            "source": "web",
+            "title": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "locator": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market LMS training percentage Q2 2025"
+            ],
+            "snippet": "---\ntitle: Larssen/Match History\ndate: 2025-06-01\n---\n|\n\nToggle columns:\n\n| Player: Larssen; Limit: 50 - Open As Query | |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---..."
+          },
+          {
+            "doc_id": "web/83536",
+            "source": "web",
+            "title": "https://www.acd-chem.com/education-meetings/calendar/",
+            "locator": "https://www.acd-chem.com/education-meetings/calendar/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market LMS training percentage Q2 2025"
+            ],
+            "snippet": "---\ntitle: Calendar\ndate: 2019-03-01\n---\neducation & meetings\n\nTraining Schedule\n\n- Wednesday, June 11, 2025 | 2:00 – 3:30 pm (ET)| Register here | Learn More\n\nWhen OSHA knocks on your facility's door, it can be intimidating and stressful if you are unprepared. When prepared, it can feel like walking into a final exam..."
+          },
+          {
+            "doc_id": "web/7344",
+            "source": "web",
+            "title": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "locator": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market LMS training percentage Q2 2025"
+            ],
+            "snippet": "---\ntitle: A New Paradigm For Corporate Training: Learning In The Flow of Work\nauthor: Joshbersin\ndate: 2018-06-03\n---\nA New Paradigm For Corporate Training: Learning In The Flow of Work\n\nThe corporate training market is over $200 billion around the world[1] and it's going through a revolution. While we often think of..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.9675211000721902,
+      "iteration": 7
+    },
+    {
+      "id": "iter7_web_search_1",
+      "type": "web_search",
+      "description": "Search for Lee's Market proprietary LMS adoption statistics 2025",
+      "parameters": {
+        "query": "Lee's Market proprietary LMS adoption statistics 2025"
+      },
+      "priority": 0.75,
+      "expected_output": "Adoption rate or usage metrics for LMS across training sessions in 2025",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market proprietary LMS adoption statistics 2025",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/43881",
+            "source": "web",
+            "title": "https://www.nu.edu/blog/ai-statistics-trends/",
+            "locator": "https://www.nu.edu/blog/ai-statistics-trends/",
+            "rank": 1,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market proprietary LMS adoption statistics 2025"
+            ],
+            "snippet": "---\ntitle: 131 AI Statistics and Trends for 2025\ndate: 2025-05-12\n---\nIn the rapidly evolving landscape of technology, Artificial Intelligence (AI) has emerged as a cornerstone of innovation, reshaping industries, and altering the fabric of our daily lives. The year 2025 stands as a testament to the monumental strides..."
+          },
+          {
+            "doc_id": "web/7344",
+            "source": "web",
+            "title": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "locator": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "rank": 2,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market proprietary LMS adoption statistics 2025"
+            ],
+            "snippet": "---\ntitle: A New Paradigm For Corporate Training: Learning In The Flow of Work\nauthor: Joshbersin\ndate: 2018-06-03\n---\nA New Paradigm For Corporate Training: Learning In The Flow of Work\n\nThe corporate training market is over $200 billion around the world[1] and it's going through a revolution. While we often think of..."
+          },
+          {
+            "doc_id": "web/58940",
+            "source": "web",
+            "title": "https://www.grandviewresearch.com/industry-analysis/artificial-intelligence-ai-market",
+            "locator": "https://www.grandviewresearch.com/industry-analysis/artificial-intelligence-ai-market",
+            "rank": 3,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market proprietary LMS adoption statistics 2025"
+            ],
+            "snippet": "---\ntitle: Artificial Intelligence Market Size, Share & Trends Analysis Report By Solution, By Technology (Deep Learning, Machine Learning, NLP, Machine Vision, Generative AI), By Function, By End-Use, By Region, And Segment Forecasts, 2025 - 2030\ndate: 2025-03-01\n---\n- Home\n\n- »\n\n- Next Generation Technologies\n\n- »\n\n-..."
+          },
+          {
+            "doc_id": "web/55737",
+            "source": "web",
+            "title": "https://aag-it.com/the-latest-cloud-computing-statistics/",
+            "locator": "https://aag-it.com/the-latest-cloud-computing-statistics/",
+            "rank": 4,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market proprietary LMS adoption statistics 2025"
+            ],
+            "snippet": "---\ntitle: The Latest Cloud Computing Statistics (updated January 2025)\nauthor: Charles Griffiths Director; Innovation\ndate: 2025-01-01\n---\nThe Latest Cloud Computing Statistics (updated January 2025)\n\nHeadline Cloud Computing Statistics for 2024\n\n- 12-month revenues between the start of 2021 and 2022 for cloud infrast..."
+          },
+          {
+            "doc_id": "web/48881",
+            "source": "web",
+            "title": "https://trainingmag.com/2023-training-industry-report/",
+            "locator": "https://trainingmag.com/2023-training-industry-report/",
+            "rank": 5,
+            "score": 0.015384615384615385,
+            "queries": [
+              "Lee's Market proprietary LMS adoption statistics 2025"
+            ],
+            "snippet": "---\ntitle: 2023 Training Industry Report\nauthor: Lorri Freifeld\ndate: 2023-11-14\n---\nABOUT THIS STUDY\n\nNow in its 42nd year, The Industry Report is recognized as the training industry's most trusted source of data on budgets, staffing, and programs. This year, the study was conducted by an outside research firm April-J..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.4864366031251848,
+      "iteration": 7
+    },
+    {
+      "id": "iter7_web_search_2",
+      "type": "web_search",
+      "description": "Search for Lee's Market training program Q2 2025 LMS report",
+      "parameters": {
+        "query": "Lee's Market training program Q2 2025 LMS report"
+      },
+      "priority": 0.7,
+      "expected_output": "Internal or external reports detailing LMS usage percentages for Q2 2025",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market training program Q2 2025 LMS report",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/72135",
+            "source": "web",
+            "title": "https://www.explorance.com/blog/5-essential-steps-to-creating-effective-training-programs-to-drive-business-results",
+            "locator": "https://www.explorance.com/blog/5-essential-steps-to-creating-effective-training-programs-to-drive-business-results",
+            "rank": 1,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market training program Q2 2025 LMS report"
+            ],
+            "snippet": "---\ntitle: 5 Essential Steps to Building Effective Employee Training Programs That Drive Business Results\ndate: 2025-03-13\n---\nRegister for Explorance World 2025!\n\nHelp your organization harness the power of AI-enhanced feedback.\n\nSign Up Now Back to Blog Home\n\nPublished onMarch 13, 2025|6 min read\n\nThe most effective..."
+          },
+          {
+            "doc_id": "web/7344",
+            "source": "web",
+            "title": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "locator": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "rank": 2,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market training program Q2 2025 LMS report"
+            ],
+            "snippet": "---\ntitle: A New Paradigm For Corporate Training: Learning In The Flow of Work\nauthor: Joshbersin\ndate: 2018-06-03\n---\nA New Paradigm For Corporate Training: Learning In The Flow of Work\n\nThe corporate training market is over $200 billion around the world[1] and it's going through a revolution. While we often think of..."
+          },
+          {
+            "doc_id": "web/83536",
+            "source": "web",
+            "title": "https://www.acd-chem.com/education-meetings/calendar/",
+            "locator": "https://www.acd-chem.com/education-meetings/calendar/",
+            "rank": 3,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market training program Q2 2025 LMS report"
+            ],
+            "snippet": "---\ntitle: Calendar\ndate: 2019-03-01\n---\neducation & meetings\n\nTraining Schedule\n\n- Wednesday, June 11, 2025 | 2:00 – 3:30 pm (ET)| Register here | Learn More\n\nWhen OSHA knocks on your facility's door, it can be intimidating and stressful if you are unprepared. When prepared, it can feel like walking into a final exam..."
+          },
+          {
+            "doc_id": "web/27541",
+            "source": "web",
+            "title": "https://www.nj.gov/labor/research-info/grants.shtml",
+            "locator": "https://www.nj.gov/labor/research-info/grants.shtml",
+            "rank": 4,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market training program Q2 2025 LMS report"
+            ],
+            "snippet": "---\ntitle: Official Site of The State of New Jersey\ndate: 2024-09-01\n---\nGrant Opportunities\n\nBrowse this page to learn about grant opportunities available through the New Jersey Department of Labor and Workforce Development.\n\nNOTICE OF GRANT OPPORTUNITY (NGO)\n\nAnnouncement Date: March 5, 2025\n\nLetter of Intent Deadlin..."
+          },
+          {
+            "doc_id": "web/48881",
+            "source": "web",
+            "title": "https://trainingmag.com/2023-training-industry-report/",
+            "locator": "https://trainingmag.com/2023-training-industry-report/",
+            "rank": 5,
+            "score": 0.015384615384615385,
+            "queries": [
+              "Lee's Market training program Q2 2025 LMS report"
+            ],
+            "snippet": "---\ntitle: 2023 Training Industry Report\nauthor: Lorri Freifeld\ndate: 2023-11-14\n---\nABOUT THIS STUDY\n\nNow in its 42nd year, The Industry Report is recognized as the training industry's most trusted source of data on budgets, staffing, and programs. This year, the study was conducted by an outside research firm April-J..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.9880539351142943,
+      "iteration": 7
+    },
+    {
+      "id": "iter7_web_search_3",
+      "type": "web_search",
+      "description": "Search for Lee's Market digital training initiatives 2025",
+      "parameters": {
+        "query": "Lee's Market digital training initiatives 2025"
+      },
+      "priority": 0.65,
+      "expected_output": "Mentions of LMS implementation with quantitative metrics for 2025",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market digital training initiatives 2025",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_babc5efb6761afc1",
+            "source": "web",
+            "title": "https://www.bcg.com/publications/2024/personalization-in-action",
+            "locator": "https://www.bcg.com/publications/2024/personalization-in-action",
+            "rank": 1,
+            "score": 0.12804098150806242,
+            "queries": [
+              "Lee's Market digital training initiatives 2025"
+            ],
+            "snippet": "Four Trends Driving Personalization in Retail\n\nWhether consumers are shopping for groceries, dining out, picking up a prescription, or buying materials and equipment for a home improvement project, retailers can track their behaviors and preferences, both during the purchase and between purchases. Across categories, re..."
+          },
+          {
+            "doc_id": "web/27541",
+            "source": "web",
+            "title": "https://www.nj.gov/labor/research-info/grants.shtml",
+            "locator": "https://www.nj.gov/labor/research-info/grants.shtml",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market digital training initiatives 2025"
+            ],
+            "snippet": "---\ntitle: Official Site of The State of New Jersey\ndate: 2024-09-01\n---\nGrant Opportunities\n\nBrowse this page to learn about grant opportunities available through the New Jersey Department of Labor and Workforce Development.\n\nNOTICE OF GRANT OPPORTUNITY (NGO)\n\nAnnouncement Date: March 5, 2025\n\nLetter of Intent Deadlin..."
+          },
+          {
+            "doc_id": "web/7344",
+            "source": "web",
+            "title": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "locator": "https://joshbersin.com/2018/06/a-new-paradigm-for-corporate-training-learning-in-the-flow-of-work/",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market digital training initiatives 2025"
+            ],
+            "snippet": "---\ntitle: A New Paradigm For Corporate Training: Learning In The Flow of Work\nauthor: Joshbersin\ndate: 2018-06-03\n---\nA New Paradigm For Corporate Training: Learning In The Flow of Work\n\nThe corporate training market is over $200 billion around the world[1] and it's going through a revolution. While we often think of..."
+          },
+          {
+            "doc_id": "web/36412",
+            "source": "web",
+            "title": "https://thebankingacademy.com/the-international-bank-leadership-programme",
+            "locator": "https://thebankingacademy.com/the-international-bank-leadership-programme",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market digital training initiatives 2025"
+            ],
+            "snippet": "---\ntitle: Trainings, MasterClasses and Bootcamps\ndate: 2025-04-11\n---\nDate\n\n20 -24 April 2026\n\nLocation\n\nLondon, UK\n\n20 -24 April 2026\n\nLondon, UK\n\nAs banks and new financial institutions scale talented individuals into management positions, some from outside the industry, there is a need to equip them with an intuiti..."
+          },
+          {
+            "doc_id": "web/2245",
+            "source": "web",
+            "title": "https://conferenceonarchitecture.com/schedule/speakers/",
+            "locator": "https://conferenceonarchitecture.com/schedule/speakers/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market digital training initiatives 2025"
+            ],
+            "snippet": "---\ntitle: Keynotes, instructors, & more\ndate: 2025-01-01\n---\nKeynotes, instructors, & more\n\nAIA25 is renowned for curating visionary speakers whose bold ideas spark innovation, drive change, and shape the future—experiences to inspire your next project and elevate your impact.\n\nJune 7: Dami Lee, International Assoc. A..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.6576885411050171,
+      "iteration": 7
+    }
+  ],
+  "error_records": [],
+  "timeline_paths": {
+    "events_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v1/privacy_hopqa_runs/DR0002_4b9e3b87_58fbd582/timeline_events.json",
+    "summary_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v1/privacy_hopqa_runs/DR0002_4b9e3b87_58fbd582/timeline_summary.json",
+    "html_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v1/privacy_hopqa_runs/DR0002_4b9e3b87_58fbd582/timeline.html"
+  },
+  "report_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v1/privacy_hopqa_runs/DR0002_4b9e3b87_58fbd582/workspace/research_report_1776288736.md"
+}
