@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>privacy_hopqa timeline</title>
+  <style>
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 24px;
+      color: #111827;
+      background: #f8fafc;
+    }
+    h1, h2 {
+      margin: 0 0 12px;
+    }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin: 0 0 24px;
+    }
+    .card {
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .card .label {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+    .card .value {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .lane-row {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .lane-label {
+      font-size: 13px;
+      color: #334155;
+      overflow-wrap: anywhere;
+    }
+    .lane-track {
+      position: relative;
+      height: 28px;
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .bar {
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      border-radius: 6px;
+      color: white;
+      font-size: 11px;
+      line-height: 22px;
+      padding: 0 6px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 18px;
+    }
+    th, td {
+      border-bottom: 1px solid #e2e8f0;
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 13px;
+    }
+    th {
+      background: #f1f5f9;
+    }
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>privacy_hopqa rollout timeline</h1>
+    <div class="summary">
+    <div class="card"><div class="label">Task</div><div class="value">DR0079</div></div>
+    <div class="card"><div class="label">Chain</div><div class="value">dbef5af1</div></div>
+    <div class="card"><div class="label">Iterations</div><div class="value">6</div></div>
+    <div class="card"><div class="label">Resolved Hops</div><div class="value">0/2</div></div>
+    <div class="card"><div class="label">Searches</div><div class="value">18</div></div>
+    <div class="card"><div class="label">Docs Read</div><div class="value">12</div></div>
+    <div class="card"><div class="label">Parse Errors</div><div class="value">0</div></div>
+    <div class="card"><div class="label">Context Overflows</div><div class="value">0</div></div>
+    <div class="card"><div class="label">Duration (s)</div><div class="value">290.57</div></div>
+  </div>
+  <h2>Timeline</h2>
+  <div><div class='lane-row'><div class='lane-label'>plan</div><div class='lane-track'><div class="bar" style="left:0.000%;width:5.149%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 0.0, &quot;duration_s&quot;: 14.963, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 retrieval plan</div><div class="bar" style="left:11.979%;width:6.562%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 34.808, &quot;duration_s&quot;: 19.068, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 retrieval plan</div><div class="bar" style="left:28.693%;width:5.253%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 83.372, &quot;duration_s&quot;: 15.263, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 2}}">H1 retrieval plan</div><div class="bar" style="left:53.564%;width:4.214%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 155.642, &quot;duration_s&quot;: 12.245, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 3}}">H1 retrieval plan</div><div class="bar" style="left:71.373%;width:5.187%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 207.389, &quot;duration_s&quot;: 15.071, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 4}}">H1 retrieval plan</div><div class="bar" style="left:84.873%;width:4.641%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 246.615, &quot;duration_s&quot;: 13.484, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 5}}">H1 retrieval plan</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_0</div><div class='lane-track'><div class="bar" style="left:5.150%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: 2000 CONCACAF Gold Cup participating teams count&quot;, &quot;start_s&quot;: 14.963, &quot;duration_s&quot;: 0.161, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: 2000 CONCACAF Gold Cup participating teams count</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_1</div><div class='lane-track'><div class="bar" style="left:5.150%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: CONCACAF Gold Cup 2000 tournament teams list&quot;, &quot;start_s&quot;: 14.963, &quot;duration_s&quot;: 0.161, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: CONCACAF Gold Cup 2000 tournament teams list</div></div></div><div class='lane-row'><div class='lane-label'>choose</div><div class='lane-track'><div class="bar" style="left:5.205%;width:1.629%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 15.124, &quot;duration_s&quot;: 4.734, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 choose docs</div><div class="bar" style="left:18.624%;width:3.657%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 54.115, &quot;duration_s&quot;: 10.628, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 choose docs</div><div class="bar" style="left:34.088%;width:10.966%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 99.05, &quot;duration_s&quot;: 31.864, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 2}}">H1 choose docs</div><div class="bar" style="left:57.861%;width:6.302%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 168.125, &quot;duration_s&quot;: 18.312, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 3}}">H1 choose docs</div><div class="bar" style="left:76.894%;width:2.662%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 223.432, &quot;duration_s&quot;: 7.735, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 4}}">H1 choose docs</div><div class="bar" style="left:89.747%;width:5.566%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 260.777, &quot;duration_s&quot;: 16.174, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 5}}">H1 choose docs</div></div></div><div class='lane-row'><div class='lane-label'>read:web/53952</div><div class='lane-track'><div class="bar" style="left:6.834%;width:2.337%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup&quot;, &quot;start_s&quot;: 19.858, &quot;duration_s&quot;: 6.79, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/53952&quot;}}">https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup</div></div></div><div class='lane-row'><div class='lane-label'>resolve</div><div class='lane-track'><div class="bar" style="left:9.171%;width:2.808%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 26.648, &quot;duration_s&quot;: 8.16, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 resolve</div><div class="bar" style="left:25.610%;width:3.082%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 74.415, &quot;duration_s&quot;: 8.957, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 resolve</div><div class="bar" style="left:47.969%;width:5.595%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 139.383, &quot;duration_s&quot;: 16.259, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 2}}">H1 resolve</div><div class="bar" style="left:67.444%;width:3.930%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 195.97, &quot;duration_s&quot;: 11.419, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 3}}">H1 resolve</div><div class="bar" style="left:82.439%;width:2.434%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 239.541, &quot;duration_s&quot;: 7.074, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 4}}">H1 resolve</div><div class="bar" style="left:97.801%;width:2.199%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 284.178, &quot;duration_s&quot;: 6.391, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 5}}">H1 resolve</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_0</div><div class='lane-track'><div class="bar" style="left:18.542%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: 2000 CONCACAF Gold Cup number of participating t...&quot;, &quot;start_s&quot;: 53.876, &quot;duration_s&quot;: 0.238, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: 2000 CONCACAF Gold Cup number of participating t...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_2</div><div class='lane-track'><div class="bar" style="left:18.542%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: 2000 CONCACAF Gold Cup tournament structure team...&quot;, &quot;start_s&quot;: 53.876, &quot;duration_s&quot;: 0.185, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: 2000 CONCACAF Gold Cup tournament structure team...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_3</div><div class='lane-track'><div class="bar" style="left:18.542%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: historical CONCACAF Gold Cup 2000 teams count&quot;, &quot;start_s&quot;: 53.876, &quot;duration_s&quot;: 0.185, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: historical CONCACAF Gold Cup 2000 teams count</div></div></div><div class='lane-row'><div class='lane-label'>read:web/16842</div><div class='lane-track'><div class="bar" style="left:22.281%;width:3.329%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.ussoccer.com/history/organizational-...&quot;, &quot;start_s&quot;: 64.742, &quot;duration_s&quot;: 9.672, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/16842&quot;}}">https://www.ussoccer.com/history/organizational-...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_0</div><div class='lane-track'><div class="bar" style="left:33.945%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: 2000 CONCACAF Gold Cup final teams count&quot;, &quot;start_s&quot;: 98.635, &quot;duration_s&quot;: 0.4, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: 2000 CONCACAF Gold Cup final teams count</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_1</div><div class='lane-track'><div class="bar" style="left:33.945%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: CONCACAF Gold Cup 2000 participant list&quot;, &quot;start_s&quot;: 98.635, &quot;duration_s&quot;: 0.339, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: CONCACAF Gold Cup 2000 participant list</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_3</div><div class='lane-track'><div class="bar" style="left:33.945%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: official 2000 CONCACAF Gold Cup team list&quot;, &quot;start_s&quot;: 98.635, &quot;duration_s&quot;: 0.415, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: official 2000 CONCACAF Gold Cup team list</div></div></div><div class='lane-row'><div class='lane-label'>read:web/43927</div><div class='lane-track'><div class="bar" style="left:45.054%;width:2.897%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://phillysoccerpage.net/2014/05/23/the-us-a...&quot;, &quot;start_s&quot;: 130.914, &quot;duration_s&quot;: 8.418, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/43927&quot;}}">https://phillysoccerpage.net/2014/05/23/the-us-a...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/22978</div><div class='lane-track'><div class="bar" style="left:45.055%;width:2.883%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://thereggaeboyz.com/news.htm&quot;, &quot;start_s&quot;: 130.916, &quot;duration_s&quot;: 8.378, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/22978&quot;}}">https://thereggaeboyz.com/news.htm</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_0</div><div class='lane-track'><div class="bar" style="left:57.779%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: 2000 CONCACAF Gold Cup total teams&quot;, &quot;start_s&quot;: 167.887, &quot;duration_s&quot;: 0.171, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: 2000 CONCACAF Gold Cup total teams</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_1</div><div class='lane-track'><div class="bar" style="left:57.779%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: historical 2000 CONCACAF Gold Cup team count&quot;, &quot;start_s&quot;: 167.887, &quot;duration_s&quot;: 0.238, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: historical 2000 CONCACAF Gold Cup team count</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_3</div><div class='lane-track'><div class="bar" style="left:57.779%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: exact number of teams 2000 CONCACAF Gold Cup&quot;, &quot;start_s&quot;: 167.887, &quot;duration_s&quot;: 0.238, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: exact number of teams 2000 CONCACAF Gold Cup</div></div></div><div class='lane-row'><div class='lane-label'>read:web/drbench_urls/drbench_urls_49d3ed5cb98384f9</div><div class='lane-track'><div class="bar" style="left:64.163%;width:2.223%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.iea.org/reports/global-ev-outlook-20...&quot;, &quot;start_s&quot;: 186.437, &quot;duration_s&quot;: 6.46, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/drbench_urls/drbench_urls_49d3ed5cb98384f9&quot;}}">https://www.iea.org/reports/global-ev-outlook-20...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/72106</div><div class='lane-track'><div class="bar" style="left:64.164%;width:2.303%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.concacaf.com/gold-cup/article/concac...&quot;, &quot;start_s&quot;: 186.44, &quot;duration_s&quot;: 6.693, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/72106&quot;}}">https://www.concacaf.com/gold-cup/article/concac...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/27184</div><div class='lane-track'><div class="bar" style="left:64.164%;width:3.279%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.ussoccer.com/stories/2025/03/usmnt-c...&quot;, &quot;start_s&quot;: 186.442, &quot;duration_s&quot;: 9.528, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/27184&quot;}}">https://www.ussoccer.com/stories/2025/03/usmnt-c...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_0</div><div class='lane-track'><div class="bar" style="left:76.560%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: 2000 CONCACAF Gold Cup exact team count&quot;, &quot;start_s&quot;: 222.461, &quot;duration_s&quot;: 0.968, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: 2000 CONCACAF Gold Cup exact team count</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_1</div><div class='lane-track'><div class="bar" style="left:76.560%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: historical 2000 CONCACAF Gold Cup team numbers&quot;, &quot;start_s&quot;: 222.461, &quot;duration_s&quot;: 0.589, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: historical 2000 CONCACAF Gold Cup team numbers</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_2</div><div class='lane-track'><div class="bar" style="left:76.560%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: 2000 CONCACAF Gold Cup participant list&quot;, &quot;start_s&quot;: 222.461, &quot;duration_s&quot;: 0.967, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: 2000 CONCACAF Gold Cup participant list</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_3</div><div class='lane-track'><div class="bar" style="left:76.560%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: 2000 CONCACAF Gold Cup competing nations count&quot;, &quot;start_s&quot;: 222.461, &quot;duration_s&quot;: 0.97, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: 2000 CONCACAF Gold Cup competing nations count</div></div></div><div class='lane-row'><div class='lane-label'>read:web/69319</div><div class='lane-track'><div class="bar" style="left:79.556%;width:1.942%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://en.wikipedia.org/wiki/List_of_retired_nu...&quot;, &quot;start_s&quot;: 231.166, &quot;duration_s&quot;: 5.644, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/69319&quot;}}">https://en.wikipedia.org/wiki/List_of_retired_nu...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/25281</div><div class='lane-track'><div class="bar" style="left:79.557%;width:2.073%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://en.wikipedia.org/wiki/List_of_United_Sta...&quot;, &quot;start_s&quot;: 231.169, &quot;duration_s&quot;: 6.022, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/25281&quot;}}">https://en.wikipedia.org/wiki/List_of_United_Sta...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/21842</div><div class='lane-track'><div class="bar" style="left:79.558%;width:2.685%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.fourfourtwo.com/features/the-best-fo...&quot;, &quot;start_s&quot;: 231.172, &quot;duration_s&quot;: 7.802, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/21842&quot;}}">https://www.fourfourtwo.com/features/the-best-fo...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_1</div><div class='lane-track'><div class="bar" style="left:89.514%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: 2000 CONCACAF Gold Cup historical team count&quot;, &quot;start_s&quot;: 260.099, &quot;duration_s&quot;: 0.366, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: 2000 CONCACAF Gold Cup historical team count</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_2</div><div class='lane-track'><div class="bar" style="left:89.514%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: CONCACAF Gold Cup 2000 official team list&quot;, &quot;start_s&quot;: 260.1, &quot;duration_s&quot;: 0.346, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: CONCACAF Gold Cup 2000 official team list</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_3</div><div class='lane-track'><div class="bar" style="left:89.514%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: sports archives 2000 CONCACAF Gold Cup teams&quot;, &quot;start_s&quot;: 260.1, &quot;duration_s&quot;: 0.677, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: sports archives 2000 CONCACAF Gold Cup teams</div></div></div><div class='lane-row'><div class='lane-label'>read:web/62499</div><div class='lane-track'><div class="bar" style="left:95.313%;width:1.383%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.ussoccer.com/stories/2025/03/us-mens...&quot;, &quot;start_s&quot;: 276.951, &quot;duration_s&quot;: 4.02, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/62499&quot;}}">https://www.ussoccer.com/stories/2025/03/us-mens...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/44275</div><div class='lane-track'><div class="bar" style="left:95.314%;width:2.486%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;http://xtrahistory.blogspot.com/2013/01/Football...&quot;, &quot;start_s&quot;: 276.954, &quot;duration_s&quot;: 7.223, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/44275&quot;}}">http://xtrahistory.blogspot.com/2013/01/Football...</div></div></div><div class='lane-row'><div class='lane-label'>report</div><div class='lane-track'><div class="bar" style="left:100.000%;width:0.800%;background:#4c78a8;" title="{&quot;stage&quot;: &quot;report&quot;, &quot;label&quot;: &quot;Final report&quot;, &quot;start_s&quot;: 290.569, &quot;duration_s&quot;: 0.01, &quot;meta&quot;: {&quot;resolved_hops&quot;: 0}}">Final report</div></div></div></div>
+  <h2>Events</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Lane</th>
+        <th>Stage</th>
+        <th>Label</th>
+        <th>Start (s)</th>
+        <th>Duration (s)</th>
+        <th>Metadata</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>0.00</td><td>14.96</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>search:iter0_web_search_0</td><td>search</td><td>web_search: 2000 CONCACAF Gold Cup participating teams count</td><td>14.96</td><td>0.16</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_1</td><td>search</td><td>web_search: CONCACAF Gold Cup 2000 tournament teams list</td><td>14.96</td><td>0.16</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>15.12</td><td>4.73</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>read:web/53952</td><td>doc_read</td><td>https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup</td><td>19.86</td><td>6.79</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/53952&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>26.65</td><td>8.16</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>34.81</td><td>19.07</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>search:iter1_web_search_0</td><td>search</td><td>web_search: 2000 CONCACAF Gold Cup number of participating t...</td><td>53.88</td><td>0.24</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_2</td><td>search</td><td>web_search: 2000 CONCACAF Gold Cup tournament structure team...</td><td>53.88</td><td>0.18</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_3</td><td>search</td><td>web_search: historical CONCACAF Gold Cup 2000 teams count</td><td>53.88</td><td>0.18</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>54.11</td><td>10.63</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>read:web/16842</td><td>doc_read</td><td>https://www.ussoccer.com/history/organizational-...</td><td>64.74</td><td>9.67</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/16842&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>74.41</td><td>8.96</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>83.37</td><td>15.26</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>search:iter2_web_search_0</td><td>search</td><td>web_search: 2000 CONCACAF Gold Cup final teams count</td><td>98.63</td><td>0.40</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_1</td><td>search</td><td>web_search: CONCACAF Gold Cup 2000 participant list</td><td>98.63</td><td>0.34</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_3</td><td>search</td><td>web_search: official 2000 CONCACAF Gold Cup team list</td><td>98.63</td><td>0.41</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>99.05</td><td>31.86</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>read:web/43927</td><td>doc_read</td><td>https://phillysoccerpage.net/2014/05/23/the-us-a...</td><td>130.91</td><td>8.42</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/43927&quot;
+}</pre></td></tr><tr><td>read:web/22978</td><td>doc_read</td><td>https://thereggaeboyz.com/news.htm</td><td>130.92</td><td>8.38</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/22978&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>139.38</td><td>16.26</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>155.64</td><td>12.25</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>search:iter3_web_search_0</td><td>search</td><td>web_search: 2000 CONCACAF Gold Cup total teams</td><td>167.89</td><td>0.17</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_web_search_1</td><td>search</td><td>web_search: historical 2000 CONCACAF Gold Cup team count</td><td>167.89</td><td>0.24</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_web_search_3</td><td>search</td><td>web_search: exact number of teams 2000 CONCACAF Gold Cup</td><td>167.89</td><td>0.24</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>168.13</td><td>18.31</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>read:web/drbench_urls/drbench_urls_49d3ed5cb98384f9</td><td>doc_read</td><td>https://www.iea.org/reports/global-ev-outlook-20...</td><td>186.44</td><td>6.46</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/drbench_urls/drbench_urls_49d3ed5cb98384f9&quot;
+}</pre></td></tr><tr><td>read:web/72106</td><td>doc_read</td><td>https://www.concacaf.com/gold-cup/article/concac...</td><td>186.44</td><td>6.69</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/72106&quot;
+}</pre></td></tr><tr><td>read:web/27184</td><td>doc_read</td><td>https://www.ussoccer.com/stories/2025/03/usmnt-c...</td><td>186.44</td><td>9.53</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/27184&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>195.97</td><td>11.42</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>207.39</td><td>15.07</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>search:iter4_web_search_0</td><td>search</td><td>web_search: 2000 CONCACAF Gold Cup exact team count</td><td>222.46</td><td>0.97</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter4_web_search_1</td><td>search</td><td>web_search: historical 2000 CONCACAF Gold Cup team numbers</td><td>222.46</td><td>0.59</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter4_web_search_2</td><td>search</td><td>web_search: 2000 CONCACAF Gold Cup participant list</td><td>222.46</td><td>0.97</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter4_web_search_3</td><td>search</td><td>web_search: 2000 CONCACAF Gold Cup competing nations count</td><td>222.46</td><td>0.97</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>223.43</td><td>7.73</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>read:web/69319</td><td>doc_read</td><td>https://en.wikipedia.org/wiki/List_of_retired_nu...</td><td>231.17</td><td>5.64</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/69319&quot;
+}</pre></td></tr><tr><td>read:web/25281</td><td>doc_read</td><td>https://en.wikipedia.org/wiki/List_of_United_Sta...</td><td>231.17</td><td>6.02</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/25281&quot;
+}</pre></td></tr><tr><td>read:web/21842</td><td>doc_read</td><td>https://www.fourfourtwo.com/features/the-best-fo...</td><td>231.17</td><td>7.80</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/21842&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>239.54</td><td>7.07</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>246.61</td><td>13.48</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_1</td><td>search</td><td>web_search: 2000 CONCACAF Gold Cup historical team count</td><td>260.10</td><td>0.37</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_2</td><td>search</td><td>web_search: CONCACAF Gold Cup 2000 official team list</td><td>260.10</td><td>0.35</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_3</td><td>search</td><td>web_search: sports archives 2000 CONCACAF Gold Cup teams</td><td>260.10</td><td>0.68</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>260.78</td><td>16.17</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>read:web/62499</td><td>doc_read</td><td>https://www.ussoccer.com/stories/2025/03/us-mens...</td><td>276.95</td><td>4.02</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/62499&quot;
+}</pre></td></tr><tr><td>read:web/44275</td><td>doc_read</td><td>http://xtrahistory.blogspot.com/2013/01/Football...</td><td>276.95</td><td>7.22</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/44275&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>284.18</td><td>6.39</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>report</td><td>report</td><td>Final report</td><td>290.57</td><td>0.00</td><td><pre>{
+  &quot;resolved_hops&quot;: 0
+}</pre></td></tr>
+    </tbody>
+  </table>
+</body>
+</html>

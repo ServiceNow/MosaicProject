@@ -997,7 +997,6 @@ def render_index_html(
         ["Rollout", "Reward", "Iters", "Searches", "Docs", "Parse Err", "Ctx Oflow", "Duration (s)", "Artifacts"],
     )
 
-    flow_svg = (output_dir / "stage_flow.svg").read_text(encoding="utf-8") if (output_dir / "stage_flow.svg").exists() else ""
     hop_accuracy_table = html_table(hop_accuracy_rows, ["Hop", "Accuracy", "Solved / Total"])
     parse_rate_table = html_table(parse_rate_rows, ["Stage", "Parse Errors", "Attempts", "Rate"])
     llm_token_table = html_table(llm_token_rows, ["Call Type", "Calls", "Median Prompt", "Median Output", "Median Total", "Mean Total"])
@@ -1129,8 +1128,6 @@ def render_index_html(
   <div class="cards">{card_html}</div>
   <h2>Representative Trace Rooflines</h2>
   <div class="samples">{''.join(roofline_cards)}</div>
-  <h2>Aggregate Stage Flow</h2>
-  <div class="flow">{flow_svg}</div>
   <h2>Plots</h2>
   <div class="plots">{plot_html}</div>
   <h2>Per-Hop Accuracy</h2>
@@ -1388,7 +1385,9 @@ def main() -> None:
     if total_tokens_by_iteration_plot.exists():
         plots.append(total_tokens_by_iteration_plot.name)
 
-    (output_dir / "stage_flow.svg").write_text(render_stage_flow_svg(sequences), encoding="utf-8")
+    stage_flow_path = output_dir / "stage_flow.svg"
+    if stage_flow_path.exists():
+        stage_flow_path.unlink()
 
     sampled_rows = select_representative_rollouts(rollouts, limit=12)
     roofline_dir = output_dir / "sample_rooflines"

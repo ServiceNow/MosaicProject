@@ -1,0 +1,1957 @@
+{
+  "summary": {
+    "task_id": "DR0079",
+    "chain_id": "dbef5af1",
+    "iterations_used": 6,
+    "resolved_hops": 0,
+    "total_hops": 2,
+    "searches_total": 18,
+    "docs_read": 12,
+    "duration_s": 290.57495361892506,
+    "stalled": false,
+    "llm_calls_total": 30,
+    "prompt_tokens": 39644,
+    "output_tokens": 20840,
+    "total_tokens": 60484,
+    "total_errors": 0,
+    "parse_errors_total": 0,
+    "context_overflow_errors": 0,
+    "errors_by_stage": {},
+    "errors_by_kind": {},
+    "errors_by_stage_kind": {},
+    "parse_errors_by_stage": {}
+  },
+  "hop_states": [
+    {
+      "hop_number": 1,
+      "question": "How many teams participated in the 2000 CONCACAF Gold Cup?",
+      "status": "pending",
+      "attempts": 6,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": "All relevant documents retrieved from searches are either unrelated to the 2000 Gold Cup or lack specific team count information. The answer requires access to historical sports archives documenting the 2000 tournament's participants.",
+      "search_history": [
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_web_search_0",
+          "type": "web_search",
+          "query": "2000 CONCACAF Gold Cup participating teams count",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+            "web/53952",
+            "web/16842"
+          ]
+        },
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_web_search_1",
+          "type": "web_search",
+          "query": "CONCACAF Gold Cup 2000 tournament teams list",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/53952",
+            "web/16842",
+            "web/43927"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 1,
+          "action_id": "iter1_web_search_0",
+          "type": "web_search",
+          "query": "2000 CONCACAF Gold Cup number of participating teams",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+            "web/53952",
+            "web/16842"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 1,
+          "action_id": "iter1_web_search_2",
+          "type": "web_search",
+          "query": "2000 CONCACAF Gold Cup tournament structure teams",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/53952",
+            "web/16842",
+            "web/72106"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 1,
+          "action_id": "iter1_web_search_3",
+          "type": "web_search",
+          "query": "historical CONCACAF Gold Cup 2000 teams count",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+            "web/53952",
+            "web/16842"
+          ]
+        },
+        {
+          "iteration": 2,
+          "hop_number": 1,
+          "action_id": "iter2_web_search_0",
+          "type": "web_search",
+          "query": "2000 CONCACAF Gold Cup final teams count",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+            "web/53952",
+            "web/16842"
+          ]
+        },
+        {
+          "iteration": 2,
+          "hop_number": 1,
+          "action_id": "iter2_web_search_1",
+          "type": "web_search",
+          "query": "CONCACAF Gold Cup 2000 participant list",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/53952",
+            "web/43927",
+            "web/16842"
+          ]
+        },
+        {
+          "iteration": 2,
+          "hop_number": 1,
+          "action_id": "iter2_web_search_3",
+          "type": "web_search",
+          "query": "official 2000 CONCACAF Gold Cup team list",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/53952",
+            "web/43927",
+            "web/25281"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 1,
+          "action_id": "iter3_web_search_0",
+          "type": "web_search",
+          "query": "2000 CONCACAF Gold Cup total teams",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+            "web/53952",
+            "web/16842"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 1,
+          "action_id": "iter3_web_search_1",
+          "type": "web_search",
+          "query": "historical 2000 CONCACAF Gold Cup team count",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+            "web/53952",
+            "web/16842"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 1,
+          "action_id": "iter3_web_search_3",
+          "type": "web_search",
+          "query": "exact number of teams 2000 CONCACAF Gold Cup",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+            "web/53952",
+            "web/16842"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 1,
+          "action_id": "iter4_web_search_0",
+          "type": "web_search",
+          "query": "2000 CONCACAF Gold Cup exact team count",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+            "web/53952",
+            "web/16842"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 1,
+          "action_id": "iter4_web_search_1",
+          "type": "web_search",
+          "query": "historical 2000 CONCACAF Gold Cup team numbers",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+            "web/53952",
+            "web/69319"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 1,
+          "action_id": "iter4_web_search_2",
+          "type": "web_search",
+          "query": "2000 CONCACAF Gold Cup participant list",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/53952",
+            "web/43927",
+            "web/25281"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 1,
+          "action_id": "iter4_web_search_3",
+          "type": "web_search",
+          "query": "2000 CONCACAF Gold Cup competing nations count",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+            "web/53952",
+            "web/16842"
+          ]
+        },
+        {
+          "iteration": 5,
+          "hop_number": 1,
+          "action_id": "iter5_web_search_1",
+          "type": "web_search",
+          "query": "2000 CONCACAF Gold Cup historical team count",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+            "web/53952",
+            "web/16842"
+          ]
+        },
+        {
+          "iteration": 5,
+          "hop_number": 1,
+          "action_id": "iter5_web_search_2",
+          "type": "web_search",
+          "query": "CONCACAF Gold Cup 2000 official team list",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/53952",
+            "web/43927",
+            "web/25281"
+          ]
+        },
+        {
+          "iteration": 5,
+          "hop_number": 1,
+          "action_id": "iter5_web_search_3",
+          "type": "web_search",
+          "query": "sports archives 2000 CONCACAF Gold Cup teams",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+            "web/53952",
+            "web/16842"
+          ]
+        }
+      ],
+      "selected_doc_ids": [
+        "web/53952",
+        "web/16842",
+        "web/43927",
+        "web/22978",
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/72106",
+        "web/27184",
+        "web/69319",
+        "web/25281",
+        "web/21842",
+        "web/62499",
+        "web/44275"
+      ],
+      "reader_results": [
+        {
+          "doc_id": "web/53952",
+          "source": "web",
+          "title": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+          "locator": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document mentions 'number of teams: 1641 (qualifiers)' but this refers to cumulative participation across all editions of the CONCACAF Gold Cup, not specifically the 2000 tournament [DOC:web/53952]. The excerpt does not provide the exact number of teams for the 2000 edition.",
+          "confidence": 0.82,
+          "missing_information": "The document lacks specific information about the number of teams that participated in the 2000 CONCACAF Gold Cup."
+        },
+        {
+          "doc_id": "web/16842",
+          "source": "web",
+          "title": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+          "locator": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention the number of teams that participated in the 2000 CONCACAF Gold Cup [DOC:web/16842].",
+          "confidence": 0.82,
+          "missing_information": "The specific number of teams for the 2000 CONCACAF Gold Cup is not provided in the excerpt."
+        },
+        {
+          "doc_id": "web/43927",
+          "source": "web",
+          "title": "https://phillysoccerpage.net/2014/05/23/the-us-and-the-2010-world-cup/",
+          "locator": "https://phillysoccerpage.net/2014/05/23/the-us-and-the-2010-world-cup/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses the 2007 Gold Cup and 2010 World Cup but does not mention the 2000 CONCACAF Gold Cup or its participant teams [DOC:web/43927].",
+          "confidence": 0.18,
+          "missing_information": "The document lacks any information about the 2000 CONCACAF Gold Cup participants."
+        },
+        {
+          "doc_id": "web/22978",
+          "source": "web",
+          "title": "https://thereggaeboyz.com/news.htm",
+          "locator": "https://thereggaeboyz.com/news.htm",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document only discusses the 2017 CONCACAF Gold Cup matches involving Jamaica, USA, and Mexico, with no mention of the 2000 tournament or participant teams [DOC:web/22978].",
+          "confidence": 0.95,
+          "missing_information": "The document provides no information about the 2000 CONCACAF Gold Cup teams."
+        },
+        {
+          "doc_id": "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+          "source": "web",
+          "title": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+          "locator": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The provided document discusses electric vehicle sales trends and does not mention the 2000 CONCACAF Gold Cup or any sports-related events [DOC:web/drbench_urls/drbench_urls_49d3ed5cb98384f9].",
+          "confidence": 0.95,
+          "missing_information": "The document contains no information about the 2000 CONCACAF Gold Cup or participating teams."
+        },
+        {
+          "doc_id": "web/72106",
+          "source": "web",
+          "title": "https://www.concacaf.com/gold-cup/article/concacaf-announces-host-cities-and-stadiums-for-2025-gold-cup/",
+          "locator": "https://www.concacaf.com/gold-cup/article/concacaf-announces-host-cities-and-stadiums-for-2025-gold-cup/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document only discusses the 2025 CONCACAF Gold Cup, mentioning 16 teams for that event [DOC:web/72106], but provides no information about the 2000 tournament.",
+          "confidence": 0.1,
+          "missing_information": "The document contains no data about the 2000 CONCACAF Gold Cup team count."
+        },
+        {
+          "doc_id": "web/27184",
+          "source": "web",
+          "title": "https://www.ussoccer.com/stories/2025/03/usmnt-canada-for-bronze-in-concacaf-nations-league",
+          "locator": "https://www.ussoccer.com/stories/2025/03/usmnt-canada-for-bronze-in-concacaf-nations-league",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses the 2024-25 Concacaf Nations League and the 2025 Gold Cup but does not mention the 2000 CONCACAF Gold Cup or the number of teams participating in that specific event [DOC:web/27184].",
+          "confidence": 0.95,
+          "missing_information": "The document lacks any information about the 2000 CONCACAF Gold Cup participants."
+        },
+        {
+          "doc_id": "web/69319",
+          "source": "web",
+          "title": "https://en.wikipedia.org/wiki/List_of_retired_numbers_in_association_football",
+          "locator": "https://en.wikipedia.org/wiki/List_of_retired_numbers_in_association_football",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses retired soccer numbers and historical context about squad numbering but does not mention the 2000 CONCACAF Gold Cup or participating teams [DOC:web/69319].",
+          "confidence": 0.18,
+          "missing_information": "Specific information about the 2000 CONCACAF Gold Cup participants is required to answer the question."
+        },
+        {
+          "doc_id": "web/25281",
+          "source": "web",
+          "title": "https://en.wikipedia.org/wiki/List_of_United_States_men%27s_international_soccer_players",
+          "locator": "https://en.wikipedia.org/wiki/List_of_United_States_men%27s_international_soccer_players",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document provides player statistics for the United States men's national team but does not mention the number of teams in the 2000 CONCACAF Gold Cup [DOC:web/25281].",
+          "confidence": 0.82,
+          "missing_information": "The document lacks explicit information about the number of participating teams in the 2000 CONCACAF Gold Cup."
+        },
+        {
+          "doc_id": "web/21842",
+          "source": "web",
+          "title": "https://www.fourfourtwo.com/features/the-best-footballers-from-north-america-ever",
+          "locator": "https://www.fourfourtwo.com/features/the-best-footballers-from-north-america-ever",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document mentions Carlos Salcido participated in three CONCACAF Gold Cups, including the 2011 tournament, but does not specify the number of teams in the 2000 edition [DOC:web/21842].",
+          "confidence": 0.55,
+          "missing_information": "The document lacks explicit information about the 2000 CONCACAF Gold Cup participant teams."
+        },
+        {
+          "doc_id": "web/62499",
+          "source": "web",
+          "title": "https://www.ussoccer.com/stories/2025/03/us-mens-national-team-roster-players-squad-2025-concacaf-nations-league-finals",
+          "locator": "https://www.ussoccer.com/stories/2025/03/us-mens-national-team-roster-players-squad-2025-concacaf-nations-league-finals",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses the 2025 Concacaf Nations League roster and matches [DOC:web/62499], but provides no information about the 2000 CONCACAF Gold Cup or participating teams.",
+          "confidence": 0.95,
+          "missing_information": "Document contains no data about the 2000 CONCACAF Gold Cup participants"
+        },
+        {
+          "doc_id": "web/44275",
+          "source": "web",
+          "title": "http://xtrahistory.blogspot.com/2013/01/Football-Nation.html",
+          "locator": "http://xtrahistory.blogspot.com/2013/01/Football-Nation.html",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses Senegal's football history and Bolivia's national team details but does not mention the 2000 CONCACAF Gold Cup or the number of participating teams [DOC:web/44275].",
+          "confidence": 0.18,
+          "missing_information": "The document lacks any information about the 2000 CONCACAF Gold Cup or the number of teams that participated."
+        }
+      ],
+      "candidate_doc_ids": [
+        "web/62499",
+        "web/44275"
+      ]
+    },
+    {
+      "hop_number": 2,
+      "question": "What electric vehicle model corresponds to a battery assembly time change of -12% in the internal manufacturing dashboard?",
+      "status": "pending",
+      "attempts": 0,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": null,
+      "search_history": [],
+      "selected_doc_ids": [],
+      "reader_results": [],
+      "candidate_doc_ids": []
+    }
+  ],
+  "actions": [
+    {
+      "id": "iter0_web_search_0",
+      "type": "web_search",
+      "description": "Search for the number of teams in the 2000 CONCACAF Gold Cup",
+      "parameters": {
+        "query": "2000 CONCACAF Gold Cup participating teams count"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "2000 CONCACAF Gold Cup participating teams count",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+            "source": "web",
+            "title": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+            "locator": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "2000 CONCACAF Gold Cup participating teams count"
+            ],
+            "snippet": "Second-hand markets for electric cars are on the rise\n\nSUVs may be defined differently across regions, but broadly refer to vehicles that incorporate features commonly found in off-road vehicles (e.g. four-wheel drive, higher ground clearance, larger cargo area). In this report, small and large SUVs both count as SUVs...."
+          },
+          {
+            "doc_id": "web/53952",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "locator": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "2000 CONCACAF Gold Cup participating teams count",
+              "CONCACAF Gold Cup 2000 tournament teams list"
+            ],
+            "snippet": "---\ntitle: CONCACAF Gold Cup - Wikipedia\nauthor: Authority control databases National United States\ndate: 2003-06-21\n---\nname: CONCACAF Gold Cup\nimagesize: 220px\norganiser: CONCACAF\nfounded: 1991About Gold Cup 17 December 2020 CONCACAF 2 August 2021 2 August 2021 live2007 CONCACAF Gold Cup – Technical Report CONCACAF\nr..."
+          },
+          {
+            "doc_id": "web/16842",
+            "source": "web",
+            "title": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "locator": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "2000 CONCACAF Gold Cup participating teams count",
+              "CONCACAF Gold Cup 2000 tournament teams list"
+            ],
+            "snippet": "---\ntitle: CONCACAF\ndate: 2000-01-01\n---\nCONCACAF\n\nHOST OF THE WORLD'S GAME\n\nThe Confederation of North, Central America and Caribbean Association Football (CONCACAF) was founded in 1961 and serves as the organizing body for 41 national associations, including the United States, and spans from Canada in the north to Su..."
+          },
+          {
+            "doc_id": "web/72106",
+            "source": "web",
+            "title": "https://www.concacaf.com/gold-cup/article/concacaf-announces-host-cities-and-stadiums-for-2025-gold-cup/",
+            "locator": "https://www.concacaf.com/gold-cup/article/concacaf-announces-host-cities-and-stadiums-for-2025-gold-cup/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "2000 CONCACAF Gold Cup participating teams count",
+              "CONCACAF Gold Cup 2000 tournament teams list"
+            ],
+            "snippet": "---\ntitle: Concacaf announces host cities and stadiums for 2025 Gold Cup\ndate: 2025-01-01\n---\n- Concacaf's flagship men's national team tournament will be played in USA and Canada\n\n- 14 stadiums in 11 metropolitan areas will host Gold Cup matches\n\n- Tournament will be played between June 14 and July 6 and will feature..."
+          },
+          {
+            "doc_id": "web/43927",
+            "source": "web",
+            "title": "https://phillysoccerpage.net/2014/05/23/the-us-and-the-2010-world-cup/",
+            "locator": "https://phillysoccerpage.net/2014/05/23/the-us-and-the-2010-world-cup/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "2000 CONCACAF Gold Cup participating teams count",
+              "CONCACAF Gold Cup 2000 tournament teams list"
+            ],
+            "snippet": "---\ntitle: The US and the 2010 World Cup\ndate: 2014-05-23\n---\nOur series on the US at the World Cup continues with a look at the 2010 World Cup in South Africa.\n\nFollowing its poor showing at the 2006 World Cup, the US was clearly in need of new leadership, and three weeks after it's exit from the tournament, the US So..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.1605583659838885,
+      "iteration": 0
+    },
+    {
+      "id": "iter0_web_search_1",
+      "type": "web_search",
+      "description": "Search for historical details of the 2000 CONCACAF Gold Cup",
+      "parameters": {
+        "query": "CONCACAF Gold Cup 2000 tournament teams list"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "CONCACAF Gold Cup 2000 tournament teams list",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/53952",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "locator": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "rank": 1,
+            "score": 0.01639344262295082,
+            "queries": [
+              "CONCACAF Gold Cup 2000 tournament teams list"
+            ],
+            "snippet": "---\ntitle: CONCACAF Gold Cup - Wikipedia\nauthor: Authority control databases National United States\ndate: 2003-06-21\n---\nname: CONCACAF Gold Cup\nimagesize: 220px\norganiser: CONCACAF\nfounded: 1991About Gold Cup 17 December 2020 CONCACAF 2 August 2021 2 August 2021 live2007 CONCACAF Gold Cup – Technical Report CONCACAF\nr..."
+          },
+          {
+            "doc_id": "web/16842",
+            "source": "web",
+            "title": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "locator": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "rank": 2,
+            "score": 0.016129032258064516,
+            "queries": [
+              "CONCACAF Gold Cup 2000 tournament teams list"
+            ],
+            "snippet": "---\ntitle: CONCACAF\ndate: 2000-01-01\n---\nCONCACAF\n\nHOST OF THE WORLD'S GAME\n\nThe Confederation of North, Central America and Caribbean Association Football (CONCACAF) was founded in 1961 and serves as the organizing body for 41 national associations, including the United States, and spans from Canada in the north to Su..."
+          },
+          {
+            "doc_id": "web/43927",
+            "source": "web",
+            "title": "https://phillysoccerpage.net/2014/05/23/the-us-and-the-2010-world-cup/",
+            "locator": "https://phillysoccerpage.net/2014/05/23/the-us-and-the-2010-world-cup/",
+            "rank": 3,
+            "score": 0.015873015873015872,
+            "queries": [
+              "CONCACAF Gold Cup 2000 tournament teams list"
+            ],
+            "snippet": "---\ntitle: The US and the 2010 World Cup\ndate: 2014-05-23\n---\nOur series on the US at the World Cup continues with a look at the 2010 World Cup in South Africa.\n\nFollowing its poor showing at the 2006 World Cup, the US was clearly in need of new leadership, and three weeks after it's exit from the tournament, the US So..."
+          },
+          {
+            "doc_id": "web/72106",
+            "source": "web",
+            "title": "https://www.concacaf.com/gold-cup/article/concacaf-announces-host-cities-and-stadiums-for-2025-gold-cup/",
+            "locator": "https://www.concacaf.com/gold-cup/article/concacaf-announces-host-cities-and-stadiums-for-2025-gold-cup/",
+            "rank": 4,
+            "score": 0.015625,
+            "queries": [
+              "CONCACAF Gold Cup 2000 tournament teams list"
+            ],
+            "snippet": "---\ntitle: Concacaf announces host cities and stadiums for 2025 Gold Cup\ndate: 2025-01-01\n---\n- Concacaf's flagship men's national team tournament will be played in USA and Canada\n\n- 14 stadiums in 11 metropolitan areas will host Gold Cup matches\n\n- Tournament will be played between June 14 and July 6 and will feature..."
+          },
+          {
+            "doc_id": "web/27184",
+            "source": "web",
+            "title": "https://www.ussoccer.com/stories/2025/03/usmnt-canada-for-bronze-in-concacaf-nations-league",
+            "locator": "https://www.ussoccer.com/stories/2025/03/usmnt-canada-for-bronze-in-concacaf-nations-league",
+            "rank": 5,
+            "score": 0.015384615384615385,
+            "queries": [
+              "CONCACAF Gold Cup 2000 tournament teams list"
+            ],
+            "snippet": "---\ntitle: USMNT Takes On Canada for Bronze in Concacaf Nations League\ndate: 2025-03-20\n---\nCHICAGO (March 23, 2025) — The U.S. Men's National Team's final run of competitive matches before next year's World Cup continues Sunday in Los Angeles, where it will play Canada for third place in the 2024-25 Concacaf Nations L..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.1605302079115063,
+      "iteration": 0
+    },
+    {
+      "id": "iter1_web_search_0",
+      "type": "web_search",
+      "description": "Search for the number of teams in the 2000 CONCACAF Gold Cup",
+      "parameters": {
+        "query": "2000 CONCACAF Gold Cup number of participating teams"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "2000 CONCACAF Gold Cup number of participating teams",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+            "source": "web",
+            "title": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+            "locator": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "2000 CONCACAF Gold Cup number of participating teams",
+              "historical CONCACAF Gold Cup 2000 teams count"
+            ],
+            "snippet": "Strong electric car sales in the first quarter of 2024 surpass the annual total from just four years ago\n\nThere are of course downside risks to the 2024 outlook for electric car sales. Factors such as high interest rates and economic uncertainty could potentially reduce the growth of global electric car sales in 2024...."
+          },
+          {
+            "doc_id": "web/53952",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "locator": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "2000 CONCACAF Gold Cup number of participating teams"
+            ],
+            "snippet": "---\ntitle: CONCACAF Gold Cup - Wikipedia\nauthor: Authority control databases National United States\ndate: 2003-06-21\n---\nname: CONCACAF Gold Cup\nimagesize: 220px\norganiser: CONCACAF\nfounded: 1991About Gold Cup 17 December 2020 CONCACAF 2 August 2021 2 August 2021 live2007 CONCACAF Gold Cup – Technical Report CONCACAF\nr..."
+          },
+          {
+            "doc_id": "web/16842",
+            "source": "web",
+            "title": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "locator": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "2000 CONCACAF Gold Cup number of participating teams",
+              "2000 CONCACAF Gold Cup tournament structure teams",
+              "historical CONCACAF Gold Cup 2000 teams count"
+            ],
+            "snippet": "---\ntitle: CONCACAF\ndate: 2000-01-01\n---\nCONCACAF\n\nHOST OF THE WORLD'S GAME\n\nThe Confederation of North, Central America and Caribbean Association Football (CONCACAF) was founded in 1961 and serves as the organizing body for 41 national associations, including the United States, and spans from Canada in the north to Su..."
+          },
+          {
+            "doc_id": "web/72106",
+            "source": "web",
+            "title": "https://www.concacaf.com/gold-cup/article/concacaf-announces-host-cities-and-stadiums-for-2025-gold-cup/",
+            "locator": "https://www.concacaf.com/gold-cup/article/concacaf-announces-host-cities-and-stadiums-for-2025-gold-cup/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "2000 CONCACAF Gold Cup number of participating teams",
+              "2000 CONCACAF Gold Cup tournament structure teams",
+              "historical CONCACAF Gold Cup 2000 teams count"
+            ],
+            "snippet": "---\ntitle: Concacaf announces host cities and stadiums for 2025 Gold Cup\ndate: 2025-01-01\n---\n- Concacaf's flagship men's national team tournament will be played in USA and Canada\n\n- 14 stadiums in 11 metropolitan areas will host Gold Cup matches\n\n- Tournament will be played between June 14 and July 6 and will feature..."
+          },
+          {
+            "doc_id": "web/3252",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Leagues_Cup",
+            "locator": "https://en.wikipedia.org/wiki/Leagues_Cup",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "2000 CONCACAF Gold Cup number of participating teams"
+            ],
+            "snippet": "---\ntitle: Leagues Cup - Wikipedia\ndate: 2019-05-30\n---\nname: Leagues Cup\nimagesize: 250px\nfounded: 2019\nregion: NAFU (Canada, Mexico, United States)\nnumber of teams: 36\nqualifier for: CONCACAF Champions Cup\nrelated comps: CONCACAF Caribbean Cup CONCACAF Central American Cup\ncurrent champions: USA Columbus Crew (1st ti..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.23844851297326386,
+      "iteration": 1
+    },
+    {
+      "id": "iter1_web_search_2",
+      "type": "web_search",
+      "description": "Search for the structure of the 2000 CONCACAF Gold Cup",
+      "parameters": {
+        "query": "2000 CONCACAF Gold Cup tournament structure teams"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "2000 CONCACAF Gold Cup tournament structure teams",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/53952",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "locator": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "rank": 1,
+            "score": 0.01639344262295082,
+            "queries": [
+              "2000 CONCACAF Gold Cup tournament structure teams"
+            ],
+            "snippet": "---\ntitle: CONCACAF Gold Cup - Wikipedia\nauthor: Authority control databases National United States\ndate: 2003-06-21\n---\nname: CONCACAF Gold Cup\nimagesize: 220px\norganiser: CONCACAF\nfounded: 1991About Gold Cup 17 December 2020 CONCACAF 2 August 2021 2 August 2021 live2007 CONCACAF Gold Cup – Technical Report CONCACAF\nr..."
+          },
+          {
+            "doc_id": "web/16842",
+            "source": "web",
+            "title": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "locator": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "rank": 2,
+            "score": 0.016129032258064516,
+            "queries": [
+              "2000 CONCACAF Gold Cup tournament structure teams"
+            ],
+            "snippet": "---\ntitle: CONCACAF\ndate: 2000-01-01\n---\nCONCACAF\n\nHOST OF THE WORLD'S GAME\n\nThe Confederation of North, Central America and Caribbean Association Football (CONCACAF) was founded in 1961 and serves as the organizing body for 41 national associations, including the United States, and spans from Canada in the north to Su..."
+          },
+          {
+            "doc_id": "web/72106",
+            "source": "web",
+            "title": "https://www.concacaf.com/gold-cup/article/concacaf-announces-host-cities-and-stadiums-for-2025-gold-cup/",
+            "locator": "https://www.concacaf.com/gold-cup/article/concacaf-announces-host-cities-and-stadiums-for-2025-gold-cup/",
+            "rank": 3,
+            "score": 0.015873015873015872,
+            "queries": [
+              "2000 CONCACAF Gold Cup tournament structure teams"
+            ],
+            "snippet": "---\ntitle: Concacaf announces host cities and stadiums for 2025 Gold Cup\ndate: 2025-01-01\n---\n- Concacaf's flagship men's national team tournament will be played in USA and Canada\n\n- 14 stadiums in 11 metropolitan areas will host Gold Cup matches\n\n- Tournament will be played between June 14 and July 6 and will feature..."
+          },
+          {
+            "doc_id": "web/48145",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/2023_Leagues_Cup",
+            "locator": "https://en.wikipedia.org/wiki/2023_Leagues_Cup",
+            "rank": 4,
+            "score": 0.015625,
+            "queries": [
+              "2000 CONCACAF Gold Cup tournament structure teams"
+            ],
+            "snippet": "---\ntitle: 2023 Leagues Cup - Wikipedia\ndate: 2022-07-27\n---\ntourney_name: Leagues Cup\nyear: 2023\nsize: 250px\ncountry: Canada\ncountry2: United States\ndates: July 21 – August 19\nassociations: 3\nnum_teams: 47\nvenues: 30\ncities: 30\nchampion_other: USA Inter Miami CF\ncount: 1\nsecond_other: USA Nashville SC\nthird_other: USA..."
+          },
+          {
+            "doc_id": "web/41779",
+            "source": "web",
+            "title": "https://www.leaguescup.com/news/leagues-cup-2024-unveils-new-tournament-format-and-groups-for-second-edition-of-",
+            "locator": "https://www.leaguescup.com/news/leagues-cup-2024-unveils-new-tournament-format-and-groups-for-second-edition-of-",
+            "rank": 5,
+            "score": 0.015384615384615385,
+            "queries": [
+              "2000 CONCACAF Gold Cup tournament structure teams"
+            ],
+            "snippet": "---\ntitle: Leagues Cup 2024 Unveils New Tournament Format and Groups for Second Edition of MLS vs LIGA MX Competition\ndate: 2024-08-25\n---\nMajor League Soccer (MLS) and LIGA MX announced the format and groups for Leagues Cup 2024, the second edition of the international soccer competition featuring all 47 clubs from Ca..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.18488143500871956,
+      "iteration": 1
+    },
+    {
+      "id": "iter1_web_search_3",
+      "type": "web_search",
+      "description": "Search for historical data on the 2000 CONCACAF Gold Cup teams",
+      "parameters": {
+        "query": "historical CONCACAF Gold Cup 2000 teams count"
+      },
+      "priority": 0.65,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "historical CONCACAF Gold Cup 2000 teams count",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+            "source": "web",
+            "title": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+            "locator": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "historical CONCACAF Gold Cup 2000 teams count"
+            ],
+            "snippet": "Second-hand markets for electric cars are on the rise\n\nSUVs may be defined differently across regions, but broadly refer to vehicles that incorporate features commonly found in off-road vehicles (e.g. four-wheel drive, higher ground clearance, larger cargo area). In this report, small and large SUVs both count as SUVs...."
+          },
+          {
+            "doc_id": "web/53952",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "locator": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "historical CONCACAF Gold Cup 2000 teams count"
+            ],
+            "snippet": "---\ntitle: CONCACAF Gold Cup - Wikipedia\nauthor: Authority control databases National United States\ndate: 2003-06-21\n---\nname: CONCACAF Gold Cup\nimagesize: 220px\norganiser: CONCACAF\nfounded: 1991About Gold Cup 17 December 2020 CONCACAF 2 August 2021 2 August 2021 live2007 CONCACAF Gold Cup – Technical Report CONCACAF\nr..."
+          },
+          {
+            "doc_id": "web/16842",
+            "source": "web",
+            "title": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "locator": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "historical CONCACAF Gold Cup 2000 teams count"
+            ],
+            "snippet": "---\ntitle: CONCACAF\ndate: 2000-01-01\n---\nCONCACAF\n\nHOST OF THE WORLD'S GAME\n\nThe Confederation of North, Central America and Caribbean Association Football (CONCACAF) was founded in 1961 and serves as the organizing body for 41 national associations, including the United States, and spans from Canada in the north to Su..."
+          },
+          {
+            "doc_id": "web/72106",
+            "source": "web",
+            "title": "https://www.concacaf.com/gold-cup/article/concacaf-announces-host-cities-and-stadiums-for-2025-gold-cup/",
+            "locator": "https://www.concacaf.com/gold-cup/article/concacaf-announces-host-cities-and-stadiums-for-2025-gold-cup/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "historical CONCACAF Gold Cup 2000 teams count"
+            ],
+            "snippet": "---\ntitle: Concacaf announces host cities and stadiums for 2025 Gold Cup\ndate: 2025-01-01\n---\n- Concacaf's flagship men's national team tournament will be played in USA and Canada\n\n- 14 stadiums in 11 metropolitan areas will host Gold Cup matches\n\n- Tournament will be played between June 14 and July 6 and will feature..."
+          },
+          {
+            "doc_id": "web/43927",
+            "source": "web",
+            "title": "https://phillysoccerpage.net/2014/05/23/the-us-and-the-2010-world-cup/",
+            "locator": "https://phillysoccerpage.net/2014/05/23/the-us-and-the-2010-world-cup/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "historical CONCACAF Gold Cup 2000 teams count"
+            ],
+            "snippet": "---\ntitle: The US and the 2010 World Cup\ndate: 2014-05-23\n---\nOur series on the US at the World Cup continues with a look at the 2010 World Cup in South Africa.\n\nFollowing its poor showing at the 2006 World Cup, the US was clearly in need of new leadership, and three weeks after it's exit from the tournament, the US So..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.18499159906059504,
+      "iteration": 1
+    },
+    {
+      "id": "iter2_web_search_0",
+      "type": "web_search",
+      "description": "Search for the exact number of teams in the 2000 CONCACAF Gold Cup final tournament",
+      "parameters": {
+        "query": "2000 CONCACAF Gold Cup final teams count"
+      },
+      "priority": 0.9,
+      "expected_output": "Specific number of teams that competed in the 2000 CONCACAF Gold Cup final stage",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "2000 CONCACAF Gold Cup final teams count",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+            "source": "web",
+            "title": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+            "locator": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "2000 CONCACAF Gold Cup final teams count"
+            ],
+            "snippet": "Second-hand markets for electric cars are on the rise\n\nSUVs may be defined differently across regions, but broadly refer to vehicles that incorporate features commonly found in off-road vehicles (e.g. four-wheel drive, higher ground clearance, larger cargo area). In this report, small and large SUVs both count as SUVs...."
+          },
+          {
+            "doc_id": "web/53952",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "locator": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "2000 CONCACAF Gold Cup final teams count"
+            ],
+            "snippet": "---\ntitle: CONCACAF Gold Cup - Wikipedia\nauthor: Authority control databases National United States\ndate: 2003-06-21\n---\nname: CONCACAF Gold Cup\nimagesize: 220px\norganiser: CONCACAF\nfounded: 1991About Gold Cup 17 December 2020 CONCACAF 2 August 2021 2 August 2021 live2007 CONCACAF Gold Cup – Technical Report CONCACAF\nr..."
+          },
+          {
+            "doc_id": "web/16842",
+            "source": "web",
+            "title": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "locator": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "2000 CONCACAF Gold Cup final teams count"
+            ],
+            "snippet": "---\ntitle: CONCACAF\ndate: 2000-01-01\n---\nCONCACAF\n\nHOST OF THE WORLD'S GAME\n\nThe Confederation of North, Central America and Caribbean Association Football (CONCACAF) was founded in 1961 and serves as the organizing body for 41 national associations, including the United States, and spans from Canada in the north to Su..."
+          },
+          {
+            "doc_id": "web/71554",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/MLS_Cup_2002",
+            "locator": "https://en.wikipedia.org/wiki/MLS_Cup_2002",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "2000 CONCACAF Gold Cup final teams count"
+            ],
+            "snippet": "---\ntitle: MLS Cup 2002 - Wikipedia\ndate: 2006-03-03\n---\ntitle: MLS Cup 2002\nevent: MLS Cup\nteam1: Los Angeles Galaxy\nteam1score: 1\nteam2: New England Revolution\nteam2score: 0\ndetails: After golden goal extra time\ndate: October 20, 2002\nstadium: Gillette Stadium\ncity: Foxborough, Massachusetts, US\nman_of_the_match1a: C..."
+          },
+          {
+            "doc_id": "web/72106",
+            "source": "web",
+            "title": "https://www.concacaf.com/gold-cup/article/concacaf-announces-host-cities-and-stadiums-for-2025-gold-cup/",
+            "locator": "https://www.concacaf.com/gold-cup/article/concacaf-announces-host-cities-and-stadiums-for-2025-gold-cup/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "2000 CONCACAF Gold Cup final teams count"
+            ],
+            "snippet": "---\ntitle: Concacaf announces host cities and stadiums for 2025 Gold Cup\ndate: 2025-01-01\n---\n- Concacaf's flagship men's national team tournament will be played in USA and Canada\n\n- 14 stadiums in 11 metropolitan areas will host Gold Cup matches\n\n- Tournament will be played between June 14 and July 6 and will feature..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.39994117291644216,
+      "iteration": 2
+    },
+    {
+      "id": "iter2_web_search_1",
+      "type": "web_search",
+      "description": "Search for participant lists of the 2000 CONCACAF Gold Cup",
+      "parameters": {
+        "query": "CONCACAF Gold Cup 2000 participant list"
+      },
+      "priority": 0.85,
+      "expected_output": "List or count of teams that participated in the 2000 CONCACAF Gold Cup",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "CONCACAF Gold Cup 2000 participant list",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/53952",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "locator": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "rank": 1,
+            "score": 0.01639344262295082,
+            "queries": [
+              "CONCACAF Gold Cup 2000 participant list"
+            ],
+            "snippet": "---\ntitle: CONCACAF Gold Cup - Wikipedia\nauthor: Authority control databases National United States\ndate: 2003-06-21\n---\nname: CONCACAF Gold Cup\nimagesize: 220px\norganiser: CONCACAF\nfounded: 1991About Gold Cup 17 December 2020 CONCACAF 2 August 2021 2 August 2021 live2007 CONCACAF Gold Cup – Technical Report CONCACAF\nr..."
+          },
+          {
+            "doc_id": "web/43927",
+            "source": "web",
+            "title": "https://phillysoccerpage.net/2014/05/23/the-us-and-the-2010-world-cup/",
+            "locator": "https://phillysoccerpage.net/2014/05/23/the-us-and-the-2010-world-cup/",
+            "rank": 2,
+            "score": 0.016129032258064516,
+            "queries": [
+              "CONCACAF Gold Cup 2000 participant list",
+              "official 2000 CONCACAF Gold Cup team list"
+            ],
+            "snippet": "---\ntitle: The US and the 2010 World Cup\ndate: 2014-05-23\n---\nOur series on the US at the World Cup continues with a look at the 2010 World Cup in South Africa.\n\nFollowing its poor showing at the 2006 World Cup, the US was clearly in need of new leadership, and three weeks after it's exit from the tournament, the US So..."
+          },
+          {
+            "doc_id": "web/16842",
+            "source": "web",
+            "title": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "locator": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "rank": 3,
+            "score": 0.015873015873015872,
+            "queries": [
+              "CONCACAF Gold Cup 2000 participant list"
+            ],
+            "snippet": "---\ntitle: CONCACAF\ndate: 2000-01-01\n---\nCONCACAF\n\nHOST OF THE WORLD'S GAME\n\nThe Confederation of North, Central America and Caribbean Association Football (CONCACAF) was founded in 1961 and serves as the organizing body for 41 national associations, including the United States, and spans from Canada in the north to Su..."
+          },
+          {
+            "doc_id": "web/25281",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/List_of_United_States_men%27s_international_soccer_players",
+            "locator": "https://en.wikipedia.org/wiki/List_of_United_States_men%27s_international_soccer_players",
+            "rank": 4,
+            "score": 0.015625,
+            "queries": [
+              "CONCACAF Gold Cup 2000 participant list",
+              "official 2000 CONCACAF Gold Cup team list"
+            ],
+            "snippet": "---\ntitle: List of United States men's international soccer players - Wikipedia\ndate: 2006-12-04\n---\nThe following tables include various statistics for players on the United States men's national soccer team (featuring all caps, goals, assists and goalkeeper wins and shutouts) from the team's first match in 1916 throu..."
+          },
+          {
+            "doc_id": "web/27184",
+            "source": "web",
+            "title": "https://www.ussoccer.com/stories/2025/03/usmnt-canada-for-bronze-in-concacaf-nations-league",
+            "locator": "https://www.ussoccer.com/stories/2025/03/usmnt-canada-for-bronze-in-concacaf-nations-league",
+            "rank": 5,
+            "score": 0.015384615384615385,
+            "queries": [
+              "CONCACAF Gold Cup 2000 participant list"
+            ],
+            "snippet": "---\ntitle: USMNT Takes On Canada for Bronze in Concacaf Nations League\ndate: 2025-03-20\n---\nCHICAGO (March 23, 2025) — The U.S. Men's National Team's final run of competitive matches before next year's World Cup continues Sunday in Los Angeles, where it will play Canada for third place in the 2024-25 Concacaf Nations L..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.339431299129501,
+      "iteration": 2
+    },
+    {
+      "id": "iter2_web_search_3",
+      "type": "web_search",
+      "description": "Search for official records of the 2000 CONCACAF Gold Cup participants",
+      "parameters": {
+        "query": "official 2000 CONCACAF Gold Cup team list"
+      },
+      "priority": 0.8,
+      "expected_output": "Official documentation specifying the number of teams in the 2000 CONCACAF Gold Cup",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "official 2000 CONCACAF Gold Cup team list",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/53952",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "locator": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "rank": 1,
+            "score": 0.01639344262295082,
+            "queries": [
+              "official 2000 CONCACAF Gold Cup team list"
+            ],
+            "snippet": "---\ntitle: CONCACAF Gold Cup - Wikipedia\nauthor: Authority control databases National United States\ndate: 2003-06-21\n---\nname: CONCACAF Gold Cup\nimagesize: 220px\norganiser: CONCACAF\nfounded: 1991About Gold Cup 17 December 2020 CONCACAF 2 August 2021 2 August 2021 live2007 CONCACAF Gold Cup – Technical Report CONCACAF\nr..."
+          },
+          {
+            "doc_id": "web/43927",
+            "source": "web",
+            "title": "https://phillysoccerpage.net/2014/05/23/the-us-and-the-2010-world-cup/",
+            "locator": "https://phillysoccerpage.net/2014/05/23/the-us-and-the-2010-world-cup/",
+            "rank": 2,
+            "score": 0.016129032258064516,
+            "queries": [
+              "official 2000 CONCACAF Gold Cup team list"
+            ],
+            "snippet": "---\ntitle: The US and the 2010 World Cup\ndate: 2014-05-23\n---\nOur series on the US at the World Cup continues with a look at the 2010 World Cup in South Africa.\n\nFollowing its poor showing at the 2006 World Cup, the US was clearly in need of new leadership, and three weeks after it's exit from the tournament, the US So..."
+          },
+          {
+            "doc_id": "web/25281",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/List_of_United_States_men%27s_international_soccer_players",
+            "locator": "https://en.wikipedia.org/wiki/List_of_United_States_men%27s_international_soccer_players",
+            "rank": 3,
+            "score": 0.015873015873015872,
+            "queries": [
+              "official 2000 CONCACAF Gold Cup team list"
+            ],
+            "snippet": "---\ntitle: List of United States men's international soccer players - Wikipedia\ndate: 2006-12-04\n---\nThe following tables include various statistics for players on the United States men's national soccer team (featuring all caps, goals, assists and goalkeeper wins and shutouts) from the team's first match in 1916 throu..."
+          },
+          {
+            "doc_id": "web/22978",
+            "source": "web",
+            "title": "https://thereggaeboyz.com/news.htm",
+            "locator": "https://thereggaeboyz.com/news.htm",
+            "rank": 4,
+            "score": 0.015625,
+            "queries": [
+              "official 2000 CONCACAF Gold Cup team list"
+            ],
+            "snippet": "---\ntitle: Jamaica Football News 2011\ndate: 2011-01-09\n---\n|\n\nThe USA defeats Jamaica 2-1 to lift 2017 Gold Cup title\n\nJuly 26, 2017\n\nThe United States defeated Jamaica 2-1 Wednesday night to lift the 2017 CONCACAF Gold Cup title. Jordan Morris scored the winning goal in the 88th minute to give the USA its sixth CONCAC..."
+          },
+          {
+            "doc_id": "web/21842",
+            "source": "web",
+            "title": "https://www.fourfourtwo.com/features/the-best-footballers-from-north-america-ever",
+            "locator": "https://www.fourfourtwo.com/features/the-best-footballers-from-north-america-ever",
+            "rank": 5,
+            "score": 0.015384615384615385,
+            "queries": [
+              "official 2000 CONCACAF Gold Cup team list"
+            ],
+            "snippet": "---\ntitle: The best footballers from North America ever\nauthor: Tom Hancock\ndate: 2024-03-20\n---\nThe best footballers from North America ever\n\nCounting down CONCACAF's finest players from throughout history\n\nFrom Mexico to the Caribbean and beyond, the expansive continent of North America has produced some top football..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.41484964499250054,
+      "iteration": 2
+    },
+    {
+      "id": "iter3_web_search_0",
+      "type": "web_search",
+      "description": "Search for the specific number of teams in the 2000 CONCACAF Gold Cup",
+      "parameters": {
+        "query": "2000 CONCACAF Gold Cup total teams"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "2000 CONCACAF Gold Cup total teams",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+            "source": "web",
+            "title": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+            "locator": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "2000 CONCACAF Gold Cup total teams",
+              "historical 2000 CONCACAF Gold Cup team count",
+              "exact number of teams 2000 CONCACAF Gold Cup"
+            ],
+            "snippet": "Strong electric car sales in the first quarter of 2024 surpass the annual total from just four years ago\n\nSince 2021, first-quarter electric car sales have typically accounted for 15-20% of the total global annual sales. Based on this observed trend, coupled with policy momentum and the seasonality that EV sales typica..."
+          },
+          {
+            "doc_id": "web/53952",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "locator": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "2000 CONCACAF Gold Cup total teams"
+            ],
+            "snippet": "---\ntitle: CONCACAF Gold Cup - Wikipedia\nauthor: Authority control databases National United States\ndate: 2003-06-21\n---\nname: CONCACAF Gold Cup\nimagesize: 220px\norganiser: CONCACAF\nfounded: 1991About Gold Cup 17 December 2020 CONCACAF 2 August 2021 2 August 2021 live2007 CONCACAF Gold Cup – Technical Report CONCACAF\nr..."
+          },
+          {
+            "doc_id": "web/16842",
+            "source": "web",
+            "title": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "locator": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "2000 CONCACAF Gold Cup total teams"
+            ],
+            "snippet": "---\ntitle: CONCACAF\ndate: 2000-01-01\n---\nCONCACAF\n\nHOST OF THE WORLD'S GAME\n\nThe Confederation of North, Central America and Caribbean Association Football (CONCACAF) was founded in 1961 and serves as the organizing body for 41 national associations, including the United States, and spans from Canada in the north to Su..."
+          },
+          {
+            "doc_id": "web/72106",
+            "source": "web",
+            "title": "https://www.concacaf.com/gold-cup/article/concacaf-announces-host-cities-and-stadiums-for-2025-gold-cup/",
+            "locator": "https://www.concacaf.com/gold-cup/article/concacaf-announces-host-cities-and-stadiums-for-2025-gold-cup/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "2000 CONCACAF Gold Cup total teams",
+              "historical 2000 CONCACAF Gold Cup team count",
+              "exact number of teams 2000 CONCACAF Gold Cup"
+            ],
+            "snippet": "---\ntitle: Concacaf announces host cities and stadiums for 2025 Gold Cup\ndate: 2025-01-01\n---\n- Concacaf's flagship men's national team tournament will be played in USA and Canada\n\n- 14 stadiums in 11 metropolitan areas will host Gold Cup matches\n\n- Tournament will be played between June 14 and July 6 and will feature..."
+          },
+          {
+            "doc_id": "web/27184",
+            "source": "web",
+            "title": "https://www.ussoccer.com/stories/2025/03/usmnt-canada-for-bronze-in-concacaf-nations-league",
+            "locator": "https://www.ussoccer.com/stories/2025/03/usmnt-canada-for-bronze-in-concacaf-nations-league",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "2000 CONCACAF Gold Cup total teams"
+            ],
+            "snippet": "---\ntitle: USMNT Takes On Canada for Bronze in Concacaf Nations League\ndate: 2025-03-20\n---\nCHICAGO (March 23, 2025) — The U.S. Men's National Team's final run of competitive matches before next year's World Cup continues Sunday in Los Angeles, where it will play Canada for third place in the 2024-25 Concacaf Nations L..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.17091012210585177,
+      "iteration": 3
+    },
+    {
+      "id": "iter3_web_search_1",
+      "type": "web_search",
+      "description": "Search for historical data on 2000 CONCACAF Gold Cup participants",
+      "parameters": {
+        "query": "historical 2000 CONCACAF Gold Cup team count"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "historical 2000 CONCACAF Gold Cup team count",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+            "source": "web",
+            "title": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+            "locator": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "historical 2000 CONCACAF Gold Cup team count"
+            ],
+            "snippet": "Second-hand markets for electric cars are on the rise\n\nSUVs may be defined differently across regions, but broadly refer to vehicles that incorporate features commonly found in off-road vehicles (e.g. four-wheel drive, higher ground clearance, larger cargo area). In this report, small and large SUVs both count as SUVs...."
+          },
+          {
+            "doc_id": "web/53952",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "locator": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "historical 2000 CONCACAF Gold Cup team count"
+            ],
+            "snippet": "---\ntitle: CONCACAF Gold Cup - Wikipedia\nauthor: Authority control databases National United States\ndate: 2003-06-21\n---\nname: CONCACAF Gold Cup\nimagesize: 220px\norganiser: CONCACAF\nfounded: 1991About Gold Cup 17 December 2020 CONCACAF 2 August 2021 2 August 2021 live2007 CONCACAF Gold Cup – Technical Report CONCACAF\nr..."
+          },
+          {
+            "doc_id": "web/16842",
+            "source": "web",
+            "title": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "locator": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "historical 2000 CONCACAF Gold Cup team count"
+            ],
+            "snippet": "---\ntitle: CONCACAF\ndate: 2000-01-01\n---\nCONCACAF\n\nHOST OF THE WORLD'S GAME\n\nThe Confederation of North, Central America and Caribbean Association Football (CONCACAF) was founded in 1961 and serves as the organizing body for 41 national associations, including the United States, and spans from Canada in the north to Su..."
+          },
+          {
+            "doc_id": "web/72106",
+            "source": "web",
+            "title": "https://www.concacaf.com/gold-cup/article/concacaf-announces-host-cities-and-stadiums-for-2025-gold-cup/",
+            "locator": "https://www.concacaf.com/gold-cup/article/concacaf-announces-host-cities-and-stadiums-for-2025-gold-cup/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "historical 2000 CONCACAF Gold Cup team count"
+            ],
+            "snippet": "---\ntitle: Concacaf announces host cities and stadiums for 2025 Gold Cup\ndate: 2025-01-01\n---\n- Concacaf's flagship men's national team tournament will be played in USA and Canada\n\n- 14 stadiums in 11 metropolitan areas will host Gold Cup matches\n\n- Tournament will be played between June 14 and July 6 and will feature..."
+          },
+          {
+            "doc_id": "web/43927",
+            "source": "web",
+            "title": "https://phillysoccerpage.net/2014/05/23/the-us-and-the-2010-world-cup/",
+            "locator": "https://phillysoccerpage.net/2014/05/23/the-us-and-the-2010-world-cup/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "historical 2000 CONCACAF Gold Cup team count"
+            ],
+            "snippet": "---\ntitle: The US and the 2010 World Cup\ndate: 2014-05-23\n---\nOur series on the US at the World Cup continues with a look at the 2010 World Cup in South Africa.\n\nFollowing its poor showing at the 2006 World Cup, the US was clearly in need of new leadership, and three weeks after it's exit from the tournament, the US So..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.23767980188131332,
+      "iteration": 3
+    },
+    {
+      "id": "iter3_web_search_3",
+      "type": "web_search",
+      "description": "Search for the exact number of teams in the 2000 CONCACAF Gold Cup",
+      "parameters": {
+        "query": "exact number of teams 2000 CONCACAF Gold Cup"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "exact number of teams 2000 CONCACAF Gold Cup",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+            "source": "web",
+            "title": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+            "locator": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "exact number of teams 2000 CONCACAF Gold Cup"
+            ],
+            "snippet": "Strong electric car sales in the first quarter of 2024 surpass the annual total from just four years ago\n\nThere are of course downside risks to the 2024 outlook for electric car sales. Factors such as high interest rates and economic uncertainty could potentially reduce the growth of global electric car sales in 2024...."
+          },
+          {
+            "doc_id": "web/53952",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "locator": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "exact number of teams 2000 CONCACAF Gold Cup"
+            ],
+            "snippet": "---\ntitle: CONCACAF Gold Cup - Wikipedia\nauthor: Authority control databases National United States\ndate: 2003-06-21\n---\nname: CONCACAF Gold Cup\nimagesize: 220px\norganiser: CONCACAF\nfounded: 1991About Gold Cup 17 December 2020 CONCACAF 2 August 2021 2 August 2021 live2007 CONCACAF Gold Cup – Technical Report CONCACAF\nr..."
+          },
+          {
+            "doc_id": "web/16842",
+            "source": "web",
+            "title": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "locator": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "exact number of teams 2000 CONCACAF Gold Cup"
+            ],
+            "snippet": "---\ntitle: CONCACAF\ndate: 2000-01-01\n---\nCONCACAF\n\nHOST OF THE WORLD'S GAME\n\nThe Confederation of North, Central America and Caribbean Association Football (CONCACAF) was founded in 1961 and serves as the organizing body for 41 national associations, including the United States, and spans from Canada in the north to Su..."
+          },
+          {
+            "doc_id": "web/72106",
+            "source": "web",
+            "title": "https://www.concacaf.com/gold-cup/article/concacaf-announces-host-cities-and-stadiums-for-2025-gold-cup/",
+            "locator": "https://www.concacaf.com/gold-cup/article/concacaf-announces-host-cities-and-stadiums-for-2025-gold-cup/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "exact number of teams 2000 CONCACAF Gold Cup"
+            ],
+            "snippet": "---\ntitle: Concacaf announces host cities and stadiums for 2025 Gold Cup\ndate: 2025-01-01\n---\n- Concacaf's flagship men's national team tournament will be played in USA and Canada\n\n- 14 stadiums in 11 metropolitan areas will host Gold Cup matches\n\n- Tournament will be played between June 14 and July 6 and will feature..."
+          },
+          {
+            "doc_id": "web/3252",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Leagues_Cup",
+            "locator": "https://en.wikipedia.org/wiki/Leagues_Cup",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "exact number of teams 2000 CONCACAF Gold Cup"
+            ],
+            "snippet": "---\ntitle: Leagues Cup - Wikipedia\ndate: 2019-05-30\n---\nname: Leagues Cup\nimagesize: 250px\nfounded: 2019\nregion: NAFU (Canada, Mexico, United States)\nnumber of teams: 36\nqualifier for: CONCACAF Champions Cup\nrelated comps: CONCACAF Caribbean Cup CONCACAF Central American Cup\ncurrent champions: USA Columbus Crew (1st ti..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.23777303798124194,
+      "iteration": 3
+    },
+    {
+      "id": "iter4_web_search_0",
+      "type": "web_search",
+      "description": "Search for the exact number of teams in the 2000 CONCACAF Gold Cup",
+      "parameters": {
+        "query": "2000 CONCACAF Gold Cup exact team count"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "2000 CONCACAF Gold Cup exact team count",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+            "source": "web",
+            "title": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+            "locator": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "2000 CONCACAF Gold Cup exact team count"
+            ],
+            "snippet": "Second-hand markets for electric cars are on the rise\n\nSUVs may be defined differently across regions, but broadly refer to vehicles that incorporate features commonly found in off-road vehicles (e.g. four-wheel drive, higher ground clearance, larger cargo area). In this report, small and large SUVs both count as SUVs...."
+          },
+          {
+            "doc_id": "web/53952",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "locator": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "2000 CONCACAF Gold Cup exact team count"
+            ],
+            "snippet": "---\ntitle: CONCACAF Gold Cup - Wikipedia\nauthor: Authority control databases National United States\ndate: 2003-06-21\n---\nname: CONCACAF Gold Cup\nimagesize: 220px\norganiser: CONCACAF\nfounded: 1991About Gold Cup 17 December 2020 CONCACAF 2 August 2021 2 August 2021 live2007 CONCACAF Gold Cup – Technical Report CONCACAF\nr..."
+          },
+          {
+            "doc_id": "web/16842",
+            "source": "web",
+            "title": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "locator": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "2000 CONCACAF Gold Cup exact team count"
+            ],
+            "snippet": "---\ntitle: CONCACAF\ndate: 2000-01-01\n---\nCONCACAF\n\nHOST OF THE WORLD'S GAME\n\nThe Confederation of North, Central America and Caribbean Association Football (CONCACAF) was founded in 1961 and serves as the organizing body for 41 national associations, including the United States, and spans from Canada in the north to Su..."
+          },
+          {
+            "doc_id": "web/72106",
+            "source": "web",
+            "title": "https://www.concacaf.com/gold-cup/article/concacaf-announces-host-cities-and-stadiums-for-2025-gold-cup/",
+            "locator": "https://www.concacaf.com/gold-cup/article/concacaf-announces-host-cities-and-stadiums-for-2025-gold-cup/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "2000 CONCACAF Gold Cup exact team count"
+            ],
+            "snippet": "---\ntitle: Concacaf announces host cities and stadiums for 2025 Gold Cup\ndate: 2025-01-01\n---\n- Concacaf's flagship men's national team tournament will be played in USA and Canada\n\n- 14 stadiums in 11 metropolitan areas will host Gold Cup matches\n\n- Tournament will be played between June 14 and July 6 and will feature..."
+          },
+          {
+            "doc_id": "web/27184",
+            "source": "web",
+            "title": "https://www.ussoccer.com/stories/2025/03/usmnt-canada-for-bronze-in-concacaf-nations-league",
+            "locator": "https://www.ussoccer.com/stories/2025/03/usmnt-canada-for-bronze-in-concacaf-nations-league",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "2000 CONCACAF Gold Cup exact team count"
+            ],
+            "snippet": "---\ntitle: USMNT Takes On Canada for Bronze in Concacaf Nations League\ndate: 2025-03-20\n---\nCHICAGO (March 23, 2025) — The U.S. Men's National Team's final run of competitive matches before next year's World Cup continues Sunday in Los Angeles, where it will play Canada for third place in the 2024-25 Concacaf Nations L..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.9675478900317103,
+      "iteration": 4
+    },
+    {
+      "id": "iter4_web_search_1",
+      "type": "web_search",
+      "description": "Search for historical participant numbers of the 2000 CONCACAF Gold Cup",
+      "parameters": {
+        "query": "historical 2000 CONCACAF Gold Cup team numbers"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "historical 2000 CONCACAF Gold Cup team numbers",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+            "source": "web",
+            "title": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+            "locator": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+            "rank": 1,
+            "score": 0.09679098150806242,
+            "queries": [
+              "historical 2000 CONCACAF Gold Cup team numbers"
+            ],
+            "snippet": "Second-hand markets for electric cars are on the rise\n\nAs major electric car markets reach maturity, more and more used electric cars are becoming available for resale. Our estimates suggest that in 2023, the market size for used electric cars amounted to nearly 800 000 in China , 400 000 in the United States and more..."
+          },
+          {
+            "doc_id": "web/53952",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "locator": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "historical 2000 CONCACAF Gold Cup team numbers"
+            ],
+            "snippet": "---\ntitle: CONCACAF Gold Cup - Wikipedia\nauthor: Authority control databases National United States\ndate: 2003-06-21\n---\nname: CONCACAF Gold Cup\nimagesize: 220px\norganiser: CONCACAF\nfounded: 1991About Gold Cup 17 December 2020 CONCACAF 2 August 2021 2 August 2021 live2007 CONCACAF Gold Cup – Technical Report CONCACAF\nr..."
+          },
+          {
+            "doc_id": "web/69319",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/List_of_retired_numbers_in_association_football",
+            "locator": "https://en.wikipedia.org/wiki/List_of_retired_numbers_in_association_football",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "historical 2000 CONCACAF Gold Cup team numbers"
+            ],
+            "snippet": "---\ntitle: List of retired numbers in association football - Wikipedia\ndate: 2006-06-04\n---\nAssociation football clubs around the world sometimes retire squad numbers to recognise players' service to the club, whether that be through their loyalty or quality.\n\nBackground\n\nThis practice, long established in the major No..."
+          },
+          {
+            "doc_id": "web/25281",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/List_of_United_States_men%27s_international_soccer_players",
+            "locator": "https://en.wikipedia.org/wiki/List_of_United_States_men%27s_international_soccer_players",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "historical 2000 CONCACAF Gold Cup team numbers",
+              "2000 CONCACAF Gold Cup participant list"
+            ],
+            "snippet": "---\ntitle: List of United States men's international soccer players - Wikipedia\ndate: 2006-12-04\n---\nThe following tables include various statistics for players on the United States men's national soccer team (featuring all caps, goals, assists and goalkeeper wins and shutouts) from the team's first match in 1916 throu..."
+          },
+          {
+            "doc_id": "web/51411",
+            "source": "web",
+            "title": "http://unclemikesmusings.blogspot.com/2015/02/best-soccer-players-by-uniform-number.html",
+            "locator": "http://unclemikesmusings.blogspot.com/2015/02/best-soccer-players-by-uniform-number.html",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "historical 2000 CONCACAF Gold Cup team numbers"
+            ],
+            "snippet": "---\ntitle: Uncle Mike's Musings: A Yankees Blog and More\nauthor: Uncle Mike\ndate: 2015-02-26\n---\nIn this case, I am making an exception to the rule of club over country, and finding out, as best I can -- we're talking, literally, about a whole world of players, going back to 1928 when numbers first appeared on English..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.5894650970585644,
+      "iteration": 4
+    },
+    {
+      "id": "iter4_web_search_2",
+      "type": "web_search",
+      "description": "Search for the 2000 CONCACAF Gold Cup tournament participant list",
+      "parameters": {
+        "query": "2000 CONCACAF Gold Cup participant list"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "2000 CONCACAF Gold Cup participant list",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/53952",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "locator": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "rank": 1,
+            "score": 0.01639344262295082,
+            "queries": [
+              "2000 CONCACAF Gold Cup participant list"
+            ],
+            "snippet": "---\ntitle: CONCACAF Gold Cup - Wikipedia\nauthor: Authority control databases National United States\ndate: 2003-06-21\n---\nname: CONCACAF Gold Cup\nimagesize: 220px\norganiser: CONCACAF\nfounded: 1991About Gold Cup 17 December 2020 CONCACAF 2 August 2021 2 August 2021 live2007 CONCACAF Gold Cup – Technical Report CONCACAF\nr..."
+          },
+          {
+            "doc_id": "web/43927",
+            "source": "web",
+            "title": "https://phillysoccerpage.net/2014/05/23/the-us-and-the-2010-world-cup/",
+            "locator": "https://phillysoccerpage.net/2014/05/23/the-us-and-the-2010-world-cup/",
+            "rank": 2,
+            "score": 0.016129032258064516,
+            "queries": [
+              "2000 CONCACAF Gold Cup participant list"
+            ],
+            "snippet": "---\ntitle: The US and the 2010 World Cup\ndate: 2014-05-23\n---\nOur series on the US at the World Cup continues with a look at the 2010 World Cup in South Africa.\n\nFollowing its poor showing at the 2006 World Cup, the US was clearly in need of new leadership, and three weeks after it's exit from the tournament, the US So..."
+          },
+          {
+            "doc_id": "web/25281",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/List_of_United_States_men%27s_international_soccer_players",
+            "locator": "https://en.wikipedia.org/wiki/List_of_United_States_men%27s_international_soccer_players",
+            "rank": 3,
+            "score": 0.015873015873015872,
+            "queries": [
+              "2000 CONCACAF Gold Cup participant list"
+            ],
+            "snippet": "---\ntitle: List of United States men's international soccer players - Wikipedia\ndate: 2006-12-04\n---\nThe following tables include various statistics for players on the United States men's national soccer team (featuring all caps, goals, assists and goalkeeper wins and shutouts) from the team's first match in 1916 throu..."
+          },
+          {
+            "doc_id": "web/21842",
+            "source": "web",
+            "title": "https://www.fourfourtwo.com/features/the-best-footballers-from-north-america-ever",
+            "locator": "https://www.fourfourtwo.com/features/the-best-footballers-from-north-america-ever",
+            "rank": 4,
+            "score": 0.015625,
+            "queries": [
+              "2000 CONCACAF Gold Cup participant list"
+            ],
+            "snippet": "---\ntitle: The best footballers from North America ever\nauthor: Tom Hancock\ndate: 2024-03-20\n---\nThe best footballers from North America ever\n\nCounting down CONCACAF's finest players from throughout history\n\nFrom Mexico to the Caribbean and beyond, the expansive continent of North America has produced some top football..."
+          },
+          {
+            "doc_id": "web/16842",
+            "source": "web",
+            "title": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "locator": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "rank": 5,
+            "score": 0.015384615384615385,
+            "queries": [
+              "2000 CONCACAF Gold Cup participant list"
+            ],
+            "snippet": "---\ntitle: CONCACAF\ndate: 2000-01-01\n---\nCONCACAF\n\nHOST OF THE WORLD'S GAME\n\nThe Confederation of North, Central America and Caribbean Association Football (CONCACAF) was founded in 1961 and serves as the organizing body for 41 national associations, including the United States, and spans from Canada in the north to Su..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.9672714790794998,
+      "iteration": 4
+    },
+    {
+      "id": "iter4_web_search_3",
+      "type": "web_search",
+      "description": "Search for the number of nations competing in the 2000 CONCACAF Gold Cup",
+      "parameters": {
+        "query": "2000 CONCACAF Gold Cup competing nations count"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "2000 CONCACAF Gold Cup competing nations count",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+            "source": "web",
+            "title": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+            "locator": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "2000 CONCACAF Gold Cup competing nations count"
+            ],
+            "snippet": "Second-hand markets for electric cars are on the rise\n\nSUVs may be defined differently across regions, but broadly refer to vehicles that incorporate features commonly found in off-road vehicles (e.g. four-wheel drive, higher ground clearance, larger cargo area). In this report, small and large SUVs both count as SUVs...."
+          },
+          {
+            "doc_id": "web/53952",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "locator": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "2000 CONCACAF Gold Cup competing nations count"
+            ],
+            "snippet": "---\ntitle: CONCACAF Gold Cup - Wikipedia\nauthor: Authority control databases National United States\ndate: 2003-06-21\n---\nname: CONCACAF Gold Cup\nimagesize: 220px\norganiser: CONCACAF\nfounded: 1991About Gold Cup 17 December 2020 CONCACAF 2 August 2021 2 August 2021 live2007 CONCACAF Gold Cup – Technical Report CONCACAF\nr..."
+          },
+          {
+            "doc_id": "web/16842",
+            "source": "web",
+            "title": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "locator": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "2000 CONCACAF Gold Cup competing nations count"
+            ],
+            "snippet": "---\ntitle: CONCACAF\ndate: 2000-01-01\n---\nCONCACAF\n\nHOST OF THE WORLD'S GAME\n\nThe Confederation of North, Central America and Caribbean Association Football (CONCACAF) was founded in 1961 and serves as the organizing body for 41 national associations, including the United States, and spans from Canada in the north to Su..."
+          },
+          {
+            "doc_id": "web/72106",
+            "source": "web",
+            "title": "https://www.concacaf.com/gold-cup/article/concacaf-announces-host-cities-and-stadiums-for-2025-gold-cup/",
+            "locator": "https://www.concacaf.com/gold-cup/article/concacaf-announces-host-cities-and-stadiums-for-2025-gold-cup/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "2000 CONCACAF Gold Cup competing nations count"
+            ],
+            "snippet": "---\ntitle: Concacaf announces host cities and stadiums for 2025 Gold Cup\ndate: 2025-01-01\n---\n- Concacaf's flagship men's national team tournament will be played in USA and Canada\n\n- 14 stadiums in 11 metropolitan areas will host Gold Cup matches\n\n- Tournament will be played between June 14 and July 6 and will feature..."
+          },
+          {
+            "doc_id": "web/27184",
+            "source": "web",
+            "title": "https://www.ussoccer.com/stories/2025/03/usmnt-canada-for-bronze-in-concacaf-nations-league",
+            "locator": "https://www.ussoccer.com/stories/2025/03/usmnt-canada-for-bronze-in-concacaf-nations-league",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "2000 CONCACAF Gold Cup competing nations count"
+            ],
+            "snippet": "---\ntitle: USMNT Takes On Canada for Bronze in Concacaf Nations League\ndate: 2025-03-20\n---\nCHICAGO (March 23, 2025) — The U.S. Men's National Team's final run of competitive matches before next year's World Cup continues Sunday in Los Angeles, where it will play Canada for third place in the 2024-25 Concacaf Nations L..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.9704215060919523,
+      "iteration": 4
+    },
+    {
+      "id": "iter5_web_search_1",
+      "type": "web_search",
+      "description": "Search for historical data on 2000 CONCACAF Gold Cup participants",
+      "parameters": {
+        "query": "2000 CONCACAF Gold Cup historical team count"
+      },
+      "priority": 0.85,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "2000 CONCACAF Gold Cup historical team count",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+            "source": "web",
+            "title": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+            "locator": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "2000 CONCACAF Gold Cup historical team count"
+            ],
+            "snippet": "Second-hand markets for electric cars are on the rise\n\nSUVs may be defined differently across regions, but broadly refer to vehicles that incorporate features commonly found in off-road vehicles (e.g. four-wheel drive, higher ground clearance, larger cargo area). In this report, small and large SUVs both count as SUVs...."
+          },
+          {
+            "doc_id": "web/53952",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "locator": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "2000 CONCACAF Gold Cup historical team count"
+            ],
+            "snippet": "---\ntitle: CONCACAF Gold Cup - Wikipedia\nauthor: Authority control databases National United States\ndate: 2003-06-21\n---\nname: CONCACAF Gold Cup\nimagesize: 220px\norganiser: CONCACAF\nfounded: 1991About Gold Cup 17 December 2020 CONCACAF 2 August 2021 2 August 2021 live2007 CONCACAF Gold Cup – Technical Report CONCACAF\nr..."
+          },
+          {
+            "doc_id": "web/16842",
+            "source": "web",
+            "title": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "locator": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "2000 CONCACAF Gold Cup historical team count"
+            ],
+            "snippet": "---\ntitle: CONCACAF\ndate: 2000-01-01\n---\nCONCACAF\n\nHOST OF THE WORLD'S GAME\n\nThe Confederation of North, Central America and Caribbean Association Football (CONCACAF) was founded in 1961 and serves as the organizing body for 41 national associations, including the United States, and spans from Canada in the north to Su..."
+          },
+          {
+            "doc_id": "web/72106",
+            "source": "web",
+            "title": "https://www.concacaf.com/gold-cup/article/concacaf-announces-host-cities-and-stadiums-for-2025-gold-cup/",
+            "locator": "https://www.concacaf.com/gold-cup/article/concacaf-announces-host-cities-and-stadiums-for-2025-gold-cup/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "2000 CONCACAF Gold Cup historical team count"
+            ],
+            "snippet": "---\ntitle: Concacaf announces host cities and stadiums for 2025 Gold Cup\ndate: 2025-01-01\n---\n- Concacaf's flagship men's national team tournament will be played in USA and Canada\n\n- 14 stadiums in 11 metropolitan areas will host Gold Cup matches\n\n- Tournament will be played between June 14 and July 6 and will feature..."
+          },
+          {
+            "doc_id": "web/44275",
+            "source": "web",
+            "title": "http://xtrahistory.blogspot.com/2013/01/Football-Nation.html",
+            "locator": "http://xtrahistory.blogspot.com/2013/01/Football-Nation.html",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "2000 CONCACAF Gold Cup historical team count"
+            ],
+            "snippet": "---\ntitle: World Football Historic Center\nauthor: Naratorn Wirunhchatapant\ndate: 2015-08-18\n---\nFor more than the Century in history of World football, it has been created a lot of greatness to be memorized and football has still been the most popular sports in the World. The first official tournament of the World comp..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.36567606404423714,
+      "iteration": 5
+    },
+    {
+      "id": "iter5_web_search_2",
+      "type": "web_search",
+      "description": "Search for official CONCACAF records on 2000 Gold Cup teams",
+      "parameters": {
+        "query": "CONCACAF Gold Cup 2000 official team list"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "CONCACAF Gold Cup 2000 official team list",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/53952",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "locator": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "rank": 1,
+            "score": 0.01639344262295082,
+            "queries": [
+              "CONCACAF Gold Cup 2000 official team list"
+            ],
+            "snippet": "---\ntitle: CONCACAF Gold Cup - Wikipedia\nauthor: Authority control databases National United States\ndate: 2003-06-21\n---\nname: CONCACAF Gold Cup\nimagesize: 220px\norganiser: CONCACAF\nfounded: 1991About Gold Cup 17 December 2020 CONCACAF 2 August 2021 2 August 2021 live2007 CONCACAF Gold Cup – Technical Report CONCACAF\nr..."
+          },
+          {
+            "doc_id": "web/43927",
+            "source": "web",
+            "title": "https://phillysoccerpage.net/2014/05/23/the-us-and-the-2010-world-cup/",
+            "locator": "https://phillysoccerpage.net/2014/05/23/the-us-and-the-2010-world-cup/",
+            "rank": 2,
+            "score": 0.016129032258064516,
+            "queries": [
+              "CONCACAF Gold Cup 2000 official team list"
+            ],
+            "snippet": "---\ntitle: The US and the 2010 World Cup\ndate: 2014-05-23\n---\nOur series on the US at the World Cup continues with a look at the 2010 World Cup in South Africa.\n\nFollowing its poor showing at the 2006 World Cup, the US was clearly in need of new leadership, and three weeks after it's exit from the tournament, the US So..."
+          },
+          {
+            "doc_id": "web/25281",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/List_of_United_States_men%27s_international_soccer_players",
+            "locator": "https://en.wikipedia.org/wiki/List_of_United_States_men%27s_international_soccer_players",
+            "rank": 3,
+            "score": 0.015873015873015872,
+            "queries": [
+              "CONCACAF Gold Cup 2000 official team list"
+            ],
+            "snippet": "---\ntitle: List of United States men's international soccer players - Wikipedia\ndate: 2006-12-04\n---\nThe following tables include various statistics for players on the United States men's national soccer team (featuring all caps, goals, assists and goalkeeper wins and shutouts) from the team's first match in 1916 throu..."
+          },
+          {
+            "doc_id": "web/62499",
+            "source": "web",
+            "title": "https://www.ussoccer.com/stories/2025/03/us-mens-national-team-roster-players-squad-2025-concacaf-nations-league-finals",
+            "locator": "https://www.ussoccer.com/stories/2025/03/us-mens-national-team-roster-players-squad-2025-concacaf-nations-league-finals",
+            "rank": 4,
+            "score": 0.015625,
+            "queries": [
+              "CONCACAF Gold Cup 2000 official team list"
+            ],
+            "snippet": "---\ntitle: Pochettino Selects 23-Player U.S. Men's National Team Roster for 2025 Concacaf Nations League\ndate: 2025-03-11\n---\nCHICAGO (March 11, 2025) – U.S. Men's National Team head coach Mauricio Pochettino has selected the 23-player roster that will compete for the 2025 Concacaf Nations League title. The U.S. will f..."
+          },
+          {
+            "doc_id": "web/21842",
+            "source": "web",
+            "title": "https://www.fourfourtwo.com/features/the-best-footballers-from-north-america-ever",
+            "locator": "https://www.fourfourtwo.com/features/the-best-footballers-from-north-america-ever",
+            "rank": 5,
+            "score": 0.015384615384615385,
+            "queries": [
+              "CONCACAF Gold Cup 2000 official team list"
+            ],
+            "snippet": "---\ntitle: The best footballers from North America ever\nauthor: Tom Hancock\ndate: 2024-03-20\n---\nThe best footballers from North America ever\n\nCounting down CONCACAF's finest players from throughout history\n\nFrom Mexico to the Caribbean and beyond, the expansive continent of North America has produced some top football..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.34642417216673493,
+      "iteration": 5
+    },
+    {
+      "id": "iter5_web_search_3",
+      "type": "web_search",
+      "description": "Search for sports archives mentioning 2000 CONCACAF Gold Cup teams",
+      "parameters": {
+        "query": "sports archives 2000 CONCACAF Gold Cup teams"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "sports archives 2000 CONCACAF Gold Cup teams",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+            "source": "web",
+            "title": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+            "locator": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+            "rank": 1,
+            "score": 0.09679098150806242,
+            "queries": [
+              "sports archives 2000 CONCACAF Gold Cup teams"
+            ],
+            "snippet": "Sales in emerging markets are increasing, albeit from a low base, led by Southeast Asia and Brazil\n\nIn Viet Nam, after an exceptional 2022 for the overall car market, car sales contracted by 25% in 2023, but electric car sales still recorded unprecedented growth: from under 100 in 2021, to 7 000 in 2022, and over 30 00..."
+          },
+          {
+            "doc_id": "web/53952",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "locator": "https://en.wikipedia.org/wiki/CONCACAF_Gold_Cup",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "sports archives 2000 CONCACAF Gold Cup teams"
+            ],
+            "snippet": "---\ntitle: CONCACAF Gold Cup - Wikipedia\nauthor: Authority control databases National United States\ndate: 2003-06-21\n---\nname: CONCACAF Gold Cup\nimagesize: 220px\norganiser: CONCACAF\nfounded: 1991About Gold Cup 17 December 2020 CONCACAF 2 August 2021 2 August 2021 live2007 CONCACAF Gold Cup – Technical Report CONCACAF\nr..."
+          },
+          {
+            "doc_id": "web/16842",
+            "source": "web",
+            "title": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "locator": "https://www.ussoccer.com/history/organizational-structure/concacaf",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "sports archives 2000 CONCACAF Gold Cup teams"
+            ],
+            "snippet": "---\ntitle: CONCACAF\ndate: 2000-01-01\n---\nCONCACAF\n\nHOST OF THE WORLD'S GAME\n\nThe Confederation of North, Central America and Caribbean Association Football (CONCACAF) was founded in 1961 and serves as the organizing body for 41 national associations, including the United States, and spans from Canada in the north to Su..."
+          },
+          {
+            "doc_id": "web/43927",
+            "source": "web",
+            "title": "https://phillysoccerpage.net/2014/05/23/the-us-and-the-2010-world-cup/",
+            "locator": "https://phillysoccerpage.net/2014/05/23/the-us-and-the-2010-world-cup/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "sports archives 2000 CONCACAF Gold Cup teams"
+            ],
+            "snippet": "---\ntitle: The US and the 2010 World Cup\ndate: 2014-05-23\n---\nOur series on the US at the World Cup continues with a look at the 2010 World Cup in South Africa.\n\nFollowing its poor showing at the 2006 World Cup, the US was clearly in need of new leadership, and three weeks after it's exit from the tournament, the US So..."
+          },
+          {
+            "doc_id": "web/22978",
+            "source": "web",
+            "title": "https://thereggaeboyz.com/news.htm",
+            "locator": "https://thereggaeboyz.com/news.htm",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "sports archives 2000 CONCACAF Gold Cup teams"
+            ],
+            "snippet": "---\ntitle: Jamaica Football News 2011\ndate: 2011-01-09\n---\n|\n\nThe USA defeats Jamaica 2-1 to lift 2017 Gold Cup title\n\nJuly 26, 2017\n\nThe United States defeated Jamaica 2-1 Wednesday night to lift the 2017 CONCACAF Gold Cup title. Jordan Morris scored the winning goal in the 88th minute to give the USA its sixth CONCAC..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.6774309340398759,
+      "iteration": 5
+    }
+  ],
+  "error_records": [],
+  "timeline_paths": {
+    "events_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v1/privacy_hopqa_runs/DR0079_dbef5af1_88704b11/timeline_events.json",
+    "summary_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v1/privacy_hopqa_runs/DR0079_dbef5af1_88704b11/timeline_summary.json",
+    "html_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v1/privacy_hopqa_runs/DR0079_dbef5af1_88704b11/timeline.html"
+  },
+  "report_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v1/privacy_hopqa_runs/DR0079_dbef5af1_88704b11/workspace/research_report_1776288664.md"
+}

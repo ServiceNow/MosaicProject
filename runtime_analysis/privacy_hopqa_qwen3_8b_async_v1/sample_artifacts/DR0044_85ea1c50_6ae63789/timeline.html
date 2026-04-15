@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>privacy_hopqa timeline</title>
+  <style>
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 24px;
+      color: #111827;
+      background: #f8fafc;
+    }
+    h1, h2 {
+      margin: 0 0 12px;
+    }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin: 0 0 24px;
+    }
+    .card {
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .card .label {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+    .card .value {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .lane-row {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .lane-label {
+      font-size: 13px;
+      color: #334155;
+      overflow-wrap: anywhere;
+    }
+    .lane-track {
+      position: relative;
+      height: 28px;
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .bar {
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      border-radius: 6px;
+      color: white;
+      font-size: 11px;
+      line-height: 22px;
+      padding: 0 6px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 18px;
+    }
+    th, td {
+      border-bottom: 1px solid #e2e8f0;
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 13px;
+    }
+    th {
+      background: #f1f5f9;
+    }
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>privacy_hopqa rollout timeline</h1>
+    <div class="summary">
+    <div class="card"><div class="label">Task</div><div class="value">DR0044</div></div>
+    <div class="card"><div class="label">Chain</div><div class="value">85ea1c50</div></div>
+    <div class="card"><div class="label">Iterations</div><div class="value">10</div></div>
+    <div class="card"><div class="label">Resolved Hops</div><div class="value">1/4</div></div>
+    <div class="card"><div class="label">Searches</div><div class="value">35</div></div>
+    <div class="card"><div class="label">Docs Read</div><div class="value">22</div></div>
+    <div class="card"><div class="label">Parse Errors</div><div class="value">0</div></div>
+    <div class="card"><div class="label">Context Overflows</div><div class="value">0</div></div>
+    <div class="card"><div class="label">Duration (s)</div><div class="value">498.81</div></div>
+  </div>
+  <h2>Timeline</h2>
+  <div><div class='lane-row'><div class='lane-label'>plan</div><div class='lane-track'><div class="bar" style="left:0.000%;width:2.108%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 0.0, &quot;duration_s&quot;: 10.516, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 retrieval plan</div><div class="bar" style="left:9.272%;width:3.172%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 46.247, &quot;duration_s&quot;: 15.823, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 retrieval plan</div><div class="bar" style="left:19.799%;width:2.046%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 98.757, &quot;duration_s&quot;: 10.204, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 2}}">H1 retrieval plan</div><div class="bar" style="left:28.312%;width:3.969%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 141.218, &quot;duration_s&quot;: 19.799, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 3}}">H1 retrieval plan</div><div class="bar" style="left:38.715%;width:3.955%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 193.109, &quot;duration_s&quot;: 19.727, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 4}}">H1 retrieval plan</div><div class="bar" style="left:49.138%;width:4.884%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 245.099, &quot;duration_s&quot;: 24.361, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 5}}">H1 retrieval plan</div><div class="bar" style="left:58.454%;width:2.366%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 291.567, &quot;duration_s&quot;: 11.802, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 6}}">H1 retrieval plan</div><div class="bar" style="left:66.125%;width:2.207%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H2 retrieval plan&quot;, &quot;start_s&quot;: 329.83, &quot;duration_s&quot;: 11.009, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 7}}">H2 retrieval plan</div><div class="bar" style="left:76.085%;width:2.820%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H2 retrieval plan&quot;, &quot;start_s&quot;: 379.51, &quot;duration_s&quot;: 14.067, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 8}}">H2 retrieval plan</div><div class="bar" style="left:87.884%;width:3.170%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H2 retrieval plan&quot;, &quot;start_s&quot;: 438.361, &quot;duration_s&quot;: 15.814, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 9}}">H2 retrieval plan</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_0</div><div class='lane-track'><div class="bar" style="left:2.108%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions website navigation intuitive...&quot;, &quot;start_s&quot;: 10.516, &quot;duration_s&quot;: 0.245, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions website navigation intuitive...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_1</div><div class='lane-track'><div class="bar" style="left:2.108%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: user satisfaction surveys MediConn Solutions 202...&quot;, &quot;start_s&quot;: 10.516, &quot;duration_s&quot;: 0.246, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: user satisfaction surveys MediConn Solutions 202...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_2</div><div class='lane-track'><div class="bar" style="left:2.108%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions website usability statistics...&quot;, &quot;start_s&quot;: 10.516, &quot;duration_s&quot;: 0.227, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions website usability statistics...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_3</div><div class='lane-track'><div class="bar" style="left:2.108%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: virtual healthcare platform user feedback 2024&quot;, &quot;start_s&quot;: 10.516, &quot;duration_s&quot;: 0.246, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: virtual healthcare platform user feedback 2024</div></div></div><div class='lane-row'><div class='lane-label'>choose</div><div class='lane-track'><div class="bar" style="left:2.158%;width:4.246%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 10.762, &quot;duration_s&quot;: 21.177, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 choose docs</div><div class="bar" style="left:12.556%;width:4.505%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 62.627, &quot;duration_s&quot;: 22.47, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 choose docs</div><div class="bar" style="left:21.893%;width:3.610%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 109.203, &quot;duration_s&quot;: 18.007, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 2}}">H1 choose docs</div><div class="bar" style="left:32.370%;width:3.248%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 161.461, &quot;duration_s&quot;: 16.199, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 3}}">H1 choose docs</div><div class="bar" style="left:42.968%;width:3.603%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 214.321, &quot;duration_s&quot;: 17.969, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 4}}">H1 choose docs</div><div class="bar" style="left:54.140%;width:1.655%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 270.047, &quot;duration_s&quot;: 8.256, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 5}}">H1 choose docs</div><div class="bar" style="left:61.313%;width:2.559%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 305.829, &quot;duration_s&quot;: 12.762, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 6}}">H1 choose docs</div><div class="bar" style="left:68.379%;width:4.932%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H2 choose docs&quot;, &quot;start_s&quot;: 341.071, &quot;duration_s&quot;: 24.599, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 7}}">H2 choose docs</div><div class="bar" style="left:79.067%;width:6.182%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H2 choose docs&quot;, &quot;start_s&quot;: 394.385, &quot;duration_s&quot;: 30.835, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 8}}">H2 choose docs</div><div class="bar" style="left:91.207%;width:5.403%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H2 choose docs&quot;, &quot;start_s&quot;: 454.938, &quot;duration_s&quot;: 26.949, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 9}}">H2 choose docs</div></div></div><div class='lane-row'><div class='lane-label'>read:web/drbench_urls/drbench_urls_09992779000bc1fb</div><div class='lane-track'><div class="bar" style="left:6.403%;width:1.113%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://chghealthcare.com/blog/telehealth-the-fu...&quot;, &quot;start_s&quot;: 31.939, &quot;duration_s&quot;: 5.552, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/drbench_urls/drbench_urls_09992779000bc1fb&quot;}}">https://chghealthcare.com/blog/telehealth-the-fu...</div><div class="bar" style="left:85.249%;width:1.132%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://chghealthcare.com/blog/telehealth-the-fu...&quot;, &quot;start_s&quot;: 425.22, &quot;duration_s&quot;: 5.645, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/drbench_urls/drbench_urls_09992779000bc1fb&quot;}}">https://chghealthcare.com/blog/telehealth-the-fu...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/12102</div><div class='lane-track'><div class="bar" style="left:6.404%;width:1.073%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://pmc.ncbi.nlm.nih.gov/articles/PMC1000117...&quot;, &quot;start_s&quot;: 31.942, &quot;duration_s&quot;: 5.351, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/12102&quot;}}">https://pmc.ncbi.nlm.nih.gov/articles/PMC1000117...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/35636</div><div class='lane-track'><div class="bar" style="left:6.404%;width:1.364%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.wegotransit.com/&quot;, &quot;start_s&quot;: 31.944, &quot;duration_s&quot;: 6.806, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/35636&quot;}}">https://www.wegotransit.com/</div></div></div><div class='lane-row'><div class='lane-label'>resolve</div><div class='lane-track'><div class="bar" style="left:7.769%;width:1.503%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 38.75, &quot;duration_s&quot;: 7.496, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 resolve</div><div class="bar" style="left:18.616%;width:1.183%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 92.857, &quot;duration_s&quot;: 5.9, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 resolve</div><div class="bar" style="left:27.158%;width:1.154%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 135.463, &quot;duration_s&quot;: 5.755, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 2}}">H1 resolve</div><div class="bar" style="left:37.140%;width:1.575%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 185.251, &quot;duration_s&quot;: 7.858, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 3}}">H1 resolve</div><div class="bar" style="left:47.870%;width:1.268%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 238.772, &quot;duration_s&quot;: 6.327, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 4}}">H1 resolve</div><div class="bar" style="left:56.945%;width:1.509%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 284.042, &quot;duration_s&quot;: 7.525, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 5}}">H1 resolve</div><div class="bar" style="left:64.608%;width:1.517%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 322.261, &quot;duration_s&quot;: 7.569, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 6}}">H1 resolve</div><div class="bar" style="left:74.741%;width:1.344%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H2 resolve&quot;, &quot;start_s&quot;: 372.806, &quot;duration_s&quot;: 6.704, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 7}}">H2 resolve</div><div class="bar" style="left:86.484%;width:1.399%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H2 resolve&quot;, &quot;start_s&quot;: 431.381, &quot;duration_s&quot;: 6.98, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 8}}">H2 resolve</div><div class="bar" style="left:98.189%;width:1.811%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H2 resolve&quot;, &quot;start_s&quot;: 489.762, &quot;duration_s&quot;: 9.033, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 9}}">H2 resolve</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_0</div><div class='lane-track'><div class="bar" style="left:12.444%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions website navigation user satis...&quot;, &quot;start_s&quot;: 62.07, &quot;duration_s&quot;: 0.557, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions website navigation user satis...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_2</div><div class='lane-track'><div class="bar" style="left:12.444%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: virtual healthcare platform navigation feedback...&quot;, &quot;start_s&quot;: 62.07, &quot;duration_s&quot;: 0.417, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: virtual healthcare platform navigation feedback...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_3</div><div class='lane-track'><div class="bar" style="left:12.444%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions annual report 2024 website in...&quot;, &quot;start_s&quot;: 62.07, &quot;duration_s&quot;: 0.433, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions annual report 2024 website in...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/30652</div><div class='lane-track'><div class="bar" style="left:17.062%;width:1.555%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.inta.org/events/2024-annual-meeting/&quot;, &quot;start_s&quot;: 85.102, &quot;duration_s&quot;: 7.754, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/30652&quot;}}">https://www.inta.org/events/2024-annual-meeting/</div></div></div><div class='lane-row'><div class='lane-label'>read:web/77898</div><div class='lane-track'><div class="bar" style="left:17.064%;width:1.318%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://informationr.net/ir/25-4/paper876.html&quot;, &quot;start_s&quot;: 85.113, &quot;duration_s&quot;: 6.576, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/77898&quot;}}">https://informationr.net/ir/25-4/paper876.html</div></div></div><div class='lane-row'><div class='lane-label'>read:web/90192</div><div class='lane-track'><div class="bar" style="left:17.065%;width:1.276%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.health.ny.gov/health_care/medicaid/p...&quot;, &quot;start_s&quot;: 85.118, &quot;duration_s&quot;: 6.363, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/90192&quot;}}">https://www.health.ny.gov/health_care/medicaid/p...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_0</div><div class='lane-track'><div class="bar" style="left:21.847%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions 2024 website navigation surve...&quot;, &quot;start_s&quot;: 108.971, &quot;duration_s&quot;: 0.208, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions 2024 website navigation surve...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_1</div><div class='lane-track'><div class="bar" style="left:21.847%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: virtual healthcare platform navigation usability...&quot;, &quot;start_s&quot;: 108.971, &quot;duration_s&quot;: 0.232, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: virtual healthcare platform navigation usability...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_2</div><div class='lane-track'><div class="bar" style="left:21.847%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions customer feedback reports 202...&quot;, &quot;start_s&quot;: 108.971, &quot;duration_s&quot;: 0.148, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions customer feedback reports 202...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_3</div><div class='lane-track'><div class="bar" style="left:21.847%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: telehealth website intuitiveness metrics 2024&quot;, &quot;start_s&quot;: 108.971, &quot;duration_s&quot;: 0.195, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: telehealth website intuitiveness metrics 2024</div></div></div><div class='lane-row'><div class='lane-label'>read:web/79713</div><div class='lane-track'><div class="bar" style="left:25.504%;width:1.545%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.ctdatahaven.org/reports/datahaven-co...&quot;, &quot;start_s&quot;: 127.211, &quot;duration_s&quot;: 7.706, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/79713&quot;}}">https://www.ctdatahaven.org/reports/datahaven-co...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/86685</div><div class='lane-track'><div class="bar" style="left:25.505%;width:1.653%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://assessmentresearch.arizona.edu/reports-a...&quot;, &quot;start_s&quot;: 127.216, &quot;duration_s&quot;: 8.247, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/86685&quot;}}">https://assessmentresearch.arizona.edu/reports-a...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_1</div><div class='lane-track'><div class="bar" style="left:32.281%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: user feedback on MediConn Solutions website intu...&quot;, &quot;start_s&quot;: 161.017, &quot;duration_s&quot;: 0.444, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: user feedback on MediConn Solutions website intu...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_2</div><div class='lane-track'><div class="bar" style="left:32.281%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions annual report 2024 website me...&quot;, &quot;start_s&quot;: 161.017, &quot;duration_s&quot;: 0.224, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions annual report 2024 website me...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_3</div><div class='lane-track'><div class="bar" style="left:32.281%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: intuitive website navigation percentage MediConn...&quot;, &quot;start_s&quot;: 161.017, &quot;duration_s&quot;: 0.223, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: intuitive website navigation percentage MediConn...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/49660</div><div class='lane-track'><div class="bar" style="left:35.618%;width:1.405%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.nngroup.com/books/designing-web-usab...&quot;, &quot;start_s&quot;: 177.661, &quot;duration_s&quot;: 7.006, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/49660&quot;}}">https://www.nngroup.com/books/designing-web-usab...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/63808</div><div class='lane-track'><div class="bar" style="left:35.618%;width:1.521%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://useu.usmission.gov/about-the-mission/&quot;, &quot;start_s&quot;: 177.664, &quot;duration_s&quot;: 7.587, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/63808&quot;}}">https://useu.usmission.gov/about-the-mission/</div></div></div><div class='lane-row'><div class='lane-label'>read:web/64534</div><div class='lane-track'><div class="bar" style="left:35.619%;width:1.278%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.cisco.com/c/en/us/solutions/collater...&quot;, &quot;start_s&quot;: 177.666, &quot;duration_s&quot;: 6.374, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/64534&quot;}}">https://www.cisco.com/c/en/us/solutions/collater...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_0</div><div class='lane-track'><div class="bar" style="left:42.678%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions 2024 website navigation usabi...&quot;, &quot;start_s&quot;: 212.876, &quot;duration_s&quot;: 1.397, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions 2024 website navigation usabi...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_1</div><div class='lane-track'><div class="bar" style="left:42.678%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: user satisfaction percentage MediConn Solutions...&quot;, &quot;start_s&quot;: 212.876, &quot;duration_s&quot;: 1.395, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: user satisfaction percentage MediConn Solutions...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_2</div><div class='lane-track'><div class="bar" style="left:42.678%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions website intuitiveness survey...&quot;, &quot;start_s&quot;: 212.876, &quot;duration_s&quot;: 0.504, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions website intuitiveness survey...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_3</div><div class='lane-track'><div class="bar" style="left:42.678%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: virtual healthcare platform MediConn Solutions u...&quot;, &quot;start_s&quot;: 212.876, &quot;duration_s&quot;: 0.465, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: virtual healthcare platform MediConn Solutions u...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/44098</div><div class='lane-track'><div class="bar" style="left:46.570%;width:0.981%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.checkmarket.com/blog/how-to-estimate...&quot;, &quot;start_s&quot;: 232.291, &quot;duration_s&quot;: 4.893, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/44098&quot;}}">https://www.checkmarket.com/blog/how-to-estimate...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/52537</div><div class='lane-track'><div class="bar" style="left:46.571%;width:0.960%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://medfluencers.com/&quot;, &quot;start_s&quot;: 232.292, &quot;duration_s&quot;: 4.79, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/52537&quot;}}">https://medfluencers.com/</div></div></div><div class='lane-row'><div class='lane-label'>read:web/16455</div><div class='lane-track'><div class="bar" style="left:46.571%;width:1.299%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://pmc.ncbi.nlm.nih.gov/articles/PMC7534107...&quot;, &quot;start_s&quot;: 232.294, &quot;duration_s&quot;: 6.478, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/16455&quot;}}">https://pmc.ncbi.nlm.nih.gov/articles/PMC7534107...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_0</div><div class='lane-track'><div class="bar" style="left:54.022%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions 2024 website navigation intui...&quot;, &quot;start_s&quot;: 269.46, &quot;duration_s&quot;: 0.562, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions 2024 website navigation intui...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_1</div><div class='lane-track'><div class="bar" style="left:54.022%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions website user satisfaction met...&quot;, &quot;start_s&quot;: 269.46, &quot;duration_s&quot;: 0.219, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions website user satisfaction met...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_2</div><div class='lane-track'><div class="bar" style="left:54.022%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions 2024 website navigation impro...&quot;, &quot;start_s&quot;: 269.46, &quot;duration_s&quot;: 0.561, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions 2024 website navigation impro...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_local_document_search_3</div><div class='lane-track'><div class="bar" style="left:54.022%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;local_document_search: MediConn Solutions 2024 navigation usability int...&quot;, &quot;start_s&quot;: 269.46, &quot;duration_s&quot;: 0.178, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">local_document_search: MediConn Solutions 2024 navigation usability int...</div></div></div><div class='lane-row'><div class='lane-label'>read:doc_3ae26523_1776278555</div><div class='lane-track'><div class="bar" style="left:55.795%;width:1.150%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;MediConn_Website_Navigation_Insights_Data.xlsx&quot;, &quot;start_s&quot;: 278.303, &quot;duration_s&quot;: 5.738, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;doc_3ae26523_1776278555&quot;}}">MediConn_Website_Navigation_Insights_Data.xlsx</div><div class="bar" style="left:96.610%;width:1.579%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;MediConn_Website_Navigation_Insights_Data.xlsx&quot;, &quot;start_s&quot;: 481.887, &quot;duration_s&quot;: 7.875, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;doc_3ae26523_1776278555&quot;}}">MediConn_Website_Navigation_Insights_Data.xlsx</div></div></div><div class='lane-row'><div class='lane-label'>search:iter6_web_search_0</div><div class='lane-track'><div class="bar" style="left:60.821%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions 2024 user experience survey n...&quot;, &quot;start_s&quot;: 303.373, &quot;duration_s&quot;: 1.642, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions 2024 user experience survey n...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter6_web_search_1</div><div class='lane-track'><div class="bar" style="left:60.821%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions internal 2024 website navigat...&quot;, &quot;start_s&quot;: 303.373, &quot;duration_s&quot;: 2.014, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions internal 2024 website navigat...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter6_local_document_search_2</div><div class='lane-track'><div class="bar" style="left:60.821%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;local_document_search: 2024 navigation usability MediConn Solutions use...&quot;, &quot;start_s&quot;: 303.373, &quot;duration_s&quot;: 1.243, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">local_document_search: 2024 navigation usability MediConn Solutions use...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter6_web_search_3</div><div class='lane-track'><div class="bar" style="left:60.821%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: third-party analysis MediConn Solutions 2024 web...&quot;, &quot;start_s&quot;: 303.374, &quot;duration_s&quot;: 2.455, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: third-party analysis MediConn Solutions 2024 web...</div></div></div><div class='lane-row'><div class='lane-label'>read:doc_e19eb24c_1776278554</div><div class='lane-track'><div class="bar" style="left:63.872%;width:0.800%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;Competitor-Pricing-Analysis.pdf&quot;, &quot;start_s&quot;: 318.591, &quot;duration_s&quot;: 3.669, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;doc_e19eb24c_1776278554&quot;}}">Competitor-Pricing-Analysis.pdf</div></div></div><div class='lane-row'><div class='lane-label'>search:iter7_web_search_0</div><div class='lane-track'><div class="bar" style="left:68.332%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: lymphoscintigraphy 92% sensitivity lymphedema di...&quot;, &quot;start_s&quot;: 340.839, &quot;duration_s&quot;: 0.232, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: lymphoscintigraphy 92% sensitivity lymphedema di...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/98672</div><div class='lane-track'><div class="bar" style="left:73.402%;width:1.339%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.cancer.gov/about-cancer/diagnosis-st...&quot;, &quot;start_s&quot;: 366.124, &quot;duration_s&quot;: 6.681, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/98672&quot;}}">https://www.cancer.gov/about-cancer/diagnosis-st...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/63364</div><div class='lane-track'><div class="bar" style="left:73.402%;width:1.217%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://orthop.washington.edu/patient-care/artic...&quot;, &quot;start_s&quot;: 366.128, &quot;duration_s&quot;: 6.072, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/63364&quot;}}">https://orthop.washington.edu/patient-care/artic...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter8_web_search_0</div><div class='lane-track'><div class="bar" style="left:78.905%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: lymphoscintigraphy 92% sensitivity lymphedema di...&quot;, &quot;start_s&quot;: 393.577, &quot;duration_s&quot;: 0.71, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: lymphoscintigraphy 92% sensitivity lymphedema di...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter8_web_search_1</div><div class='lane-track'><div class="bar" style="left:78.905%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: lymphoscintigraphy diagnostic accuracy lymphedem...&quot;, &quot;start_s&quot;: 393.577, &quot;duration_s&quot;: 0.451, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: lymphoscintigraphy diagnostic accuracy lymphedem...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter8_web_search_2</div><div class='lane-track'><div class="bar" style="left:78.905%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: lymphedema lymphoscintigraphy 92% sensitivity st...&quot;, &quot;start_s&quot;: 393.577, &quot;duration_s&quot;: 0.71, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: lymphedema lymphoscintigraphy 92% sensitivity st...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter8_web_search_3</div><div class='lane-track'><div class="bar" style="left:78.905%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: medical journal lymphoscintigraphy 92% sensitivi...&quot;, &quot;start_s&quot;: 393.577, &quot;duration_s&quot;: 0.71, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: medical journal lymphoscintigraphy 92% sensitivi...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/85007</div><div class='lane-track'><div class="bar" style="left:85.250%;width:1.235%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://intersocietal.org/value-added-services/i...&quot;, &quot;start_s&quot;: 425.223, &quot;duration_s&quot;: 6.158, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/85007&quot;}}">https://intersocietal.org/value-added-services/i...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/43218</div><div class='lane-track'><div class="bar" style="left:85.251%;width:1.061%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://medicine.utah.edu/radiology/research/202...&quot;, &quot;start_s&quot;: 425.227, &quot;duration_s&quot;: 5.294, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/43218&quot;}}">https://medicine.utah.edu/radiology/research/202...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter9_web_search_0</div><div class='lane-track'><div class="bar" style="left:91.054%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: lymphoscintigraphy lymphedema diagnosis sensitiv...&quot;, &quot;start_s&quot;: 454.176, &quot;duration_s&quot;: 0.762, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: lymphoscintigraphy lymphedema diagnosis sensitiv...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter9_web_search_1</div><div class='lane-track'><div class="bar" style="left:91.054%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: clinical trial lymphoscintigraphy 92% sensitivit...&quot;, &quot;start_s&quot;: 454.176, &quot;duration_s&quot;: 0.636, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: clinical trial lymphoscintigraphy 92% sensitivit...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter9_web_search_2</div><div class='lane-track'><div class="bar" style="left:91.054%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: medical journal lymphoscintigraphy diagnostic ac...&quot;, &quot;start_s&quot;: 454.176, &quot;duration_s&quot;: 0.636, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: medical journal lymphoscintigraphy diagnostic ac...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter9_local_document_search_3</div><div class='lane-track'><div class="bar" style="left:91.054%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;local_document_search: lymphoscintigraphy sensitivity 92% lymphedema di...&quot;, &quot;start_s&quot;: 454.176, &quot;duration_s&quot;: 0.302, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">local_document_search: lymphoscintigraphy sensitivity 92% lymphedema di...</div></div></div><div class='lane-row'><div class='lane-label'>report</div><div class='lane-track'><div class="bar" style="left:100.000%;width:0.800%;background:#4c78a8;" title="{&quot;stage&quot;: &quot;report&quot;, &quot;label&quot;: &quot;Final report&quot;, &quot;start_s&quot;: 498.795, &quot;duration_s&quot;: 0.01, &quot;meta&quot;: {&quot;resolved_hops&quot;: 1}}">Final report</div></div></div></div>
+  <h2>Events</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Lane</th>
+        <th>Stage</th>
+        <th>Label</th>
+        <th>Start (s)</th>
+        <th>Duration (s)</th>
+        <th>Metadata</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>0.00</td><td>10.52</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>search:iter0_web_search_0</td><td>search</td><td>web_search: MediConn Solutions website navigation intuitive...</td><td>10.52</td><td>0.24</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_1</td><td>search</td><td>web_search: user satisfaction surveys MediConn Solutions 202...</td><td>10.52</td><td>0.25</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_2</td><td>search</td><td>web_search: MediConn Solutions website usability statistics...</td><td>10.52</td><td>0.23</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_3</td><td>search</td><td>web_search: virtual healthcare platform user feedback 2024</td><td>10.52</td><td>0.25</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>10.76</td><td>21.18</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>read:web/drbench_urls/drbench_urls_09992779000bc1fb</td><td>doc_read</td><td>https://chghealthcare.com/blog/telehealth-the-fu...</td><td>31.94</td><td>5.55</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/drbench_urls/drbench_urls_09992779000bc1fb&quot;
+}</pre></td></tr><tr><td>read:web/12102</td><td>doc_read</td><td>https://pmc.ncbi.nlm.nih.gov/articles/PMC1000117...</td><td>31.94</td><td>5.35</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/12102&quot;
+}</pre></td></tr><tr><td>read:web/35636</td><td>doc_read</td><td>https://www.wegotransit.com/</td><td>31.94</td><td>6.81</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/35636&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>38.75</td><td>7.50</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>46.25</td><td>15.82</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>search:iter1_web_search_0</td><td>search</td><td>web_search: MediConn Solutions website navigation user satis...</td><td>62.07</td><td>0.56</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_2</td><td>search</td><td>web_search: virtual healthcare platform navigation feedback...</td><td>62.07</td><td>0.42</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_3</td><td>search</td><td>web_search: MediConn Solutions annual report 2024 website in...</td><td>62.07</td><td>0.43</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>62.63</td><td>22.47</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>read:web/30652</td><td>doc_read</td><td>https://www.inta.org/events/2024-annual-meeting/</td><td>85.10</td><td>7.75</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/30652&quot;
+}</pre></td></tr><tr><td>read:web/77898</td><td>doc_read</td><td>https://informationr.net/ir/25-4/paper876.html</td><td>85.11</td><td>6.58</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/77898&quot;
+}</pre></td></tr><tr><td>read:web/90192</td><td>doc_read</td><td>https://www.health.ny.gov/health_care/medicaid/p...</td><td>85.12</td><td>6.36</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/90192&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>92.86</td><td>5.90</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>98.76</td><td>10.20</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>search:iter2_web_search_0</td><td>search</td><td>web_search: MediConn Solutions 2024 website navigation surve...</td><td>108.97</td><td>0.21</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_1</td><td>search</td><td>web_search: virtual healthcare platform navigation usability...</td><td>108.97</td><td>0.23</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_2</td><td>search</td><td>web_search: MediConn Solutions customer feedback reports 202...</td><td>108.97</td><td>0.15</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_3</td><td>search</td><td>web_search: telehealth website intuitiveness metrics 2024</td><td>108.97</td><td>0.19</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>109.20</td><td>18.01</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>read:web/79713</td><td>doc_read</td><td>https://www.ctdatahaven.org/reports/datahaven-co...</td><td>127.21</td><td>7.71</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/79713&quot;
+}</pre></td></tr><tr><td>read:web/86685</td><td>doc_read</td><td>https://assessmentresearch.arizona.edu/reports-a...</td><td>127.22</td><td>8.25</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/86685&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>135.46</td><td>5.75</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>141.22</td><td>19.80</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>search:iter3_web_search_1</td><td>search</td><td>web_search: user feedback on MediConn Solutions website intu...</td><td>161.02</td><td>0.44</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_web_search_2</td><td>search</td><td>web_search: MediConn Solutions annual report 2024 website me...</td><td>161.02</td><td>0.22</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_web_search_3</td><td>search</td><td>web_search: intuitive website navigation percentage MediConn...</td><td>161.02</td><td>0.22</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>161.46</td><td>16.20</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>read:web/49660</td><td>doc_read</td><td>https://www.nngroup.com/books/designing-web-usab...</td><td>177.66</td><td>7.01</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/49660&quot;
+}</pre></td></tr><tr><td>read:web/63808</td><td>doc_read</td><td>https://useu.usmission.gov/about-the-mission/</td><td>177.66</td><td>7.59</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/63808&quot;
+}</pre></td></tr><tr><td>read:web/64534</td><td>doc_read</td><td>https://www.cisco.com/c/en/us/solutions/collater...</td><td>177.67</td><td>6.37</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/64534&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>185.25</td><td>7.86</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>193.11</td><td>19.73</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>search:iter4_web_search_0</td><td>search</td><td>web_search: MediConn Solutions 2024 website navigation usabi...</td><td>212.88</td><td>1.40</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter4_web_search_1</td><td>search</td><td>web_search: user satisfaction percentage MediConn Solutions...</td><td>212.88</td><td>1.40</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter4_web_search_2</td><td>search</td><td>web_search: MediConn Solutions website intuitiveness survey...</td><td>212.88</td><td>0.50</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter4_web_search_3</td><td>search</td><td>web_search: virtual healthcare platform MediConn Solutions u...</td><td>212.88</td><td>0.46</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>214.32</td><td>17.97</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>read:web/44098</td><td>doc_read</td><td>https://www.checkmarket.com/blog/how-to-estimate...</td><td>232.29</td><td>4.89</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/44098&quot;
+}</pre></td></tr><tr><td>read:web/52537</td><td>doc_read</td><td>https://medfluencers.com/</td><td>232.29</td><td>4.79</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/52537&quot;
+}</pre></td></tr><tr><td>read:web/16455</td><td>doc_read</td><td>https://pmc.ncbi.nlm.nih.gov/articles/PMC7534107...</td><td>232.29</td><td>6.48</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/16455&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>238.77</td><td>6.33</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>245.10</td><td>24.36</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_0</td><td>search</td><td>web_search: MediConn Solutions 2024 website navigation intui...</td><td>269.46</td><td>0.56</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_1</td><td>search</td><td>web_search: MediConn Solutions website user satisfaction met...</td><td>269.46</td><td>0.22</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_2</td><td>search</td><td>web_search: MediConn Solutions 2024 website navigation impro...</td><td>269.46</td><td>0.56</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_local_document_search_3</td><td>search</td><td>local_document_search: MediConn Solutions 2024 navigation usability int...</td><td>269.46</td><td>0.18</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>270.05</td><td>8.26</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>read:doc_3ae26523_1776278555</td><td>doc_read</td><td>MediConn_Website_Navigation_Insights_Data.xlsx</td><td>278.30</td><td>5.74</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;doc_3ae26523_1776278555&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>284.04</td><td>7.52</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>291.57</td><td>11.80</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 6
+}</pre></td></tr><tr><td>search:iter6_web_search_0</td><td>search</td><td>web_search: MediConn Solutions 2024 user experience survey n...</td><td>303.37</td><td>1.64</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter6_web_search_1</td><td>search</td><td>web_search: MediConn Solutions internal 2024 website navigat...</td><td>303.37</td><td>2.01</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter6_local_document_search_2</td><td>search</td><td>local_document_search: 2024 navigation usability MediConn Solutions use...</td><td>303.37</td><td>1.24</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter6_web_search_3</td><td>search</td><td>web_search: third-party analysis MediConn Solutions 2024 web...</td><td>303.37</td><td>2.45</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>305.83</td><td>12.76</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 6
+}</pre></td></tr><tr><td>read:doc_e19eb24c_1776278554</td><td>doc_read</td><td>Competitor-Pricing-Analysis.pdf</td><td>318.59</td><td>3.67</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;doc_e19eb24c_1776278554&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>322.26</td><td>7.57</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 6
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H2 retrieval plan</td><td>329.83</td><td>11.01</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 7
+}</pre></td></tr><tr><td>search:iter7_web_search_0</td><td>search</td><td>web_search: lymphoscintigraphy 92% sensitivity lymphedema di...</td><td>340.84</td><td>0.23</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H2 choose docs</td><td>341.07</td><td>24.60</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 7
+}</pre></td></tr><tr><td>read:web/98672</td><td>doc_read</td><td>https://www.cancer.gov/about-cancer/diagnosis-st...</td><td>366.12</td><td>6.68</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/98672&quot;
+}</pre></td></tr><tr><td>read:web/63364</td><td>doc_read</td><td>https://orthop.washington.edu/patient-care/artic...</td><td>366.13</td><td>6.07</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/63364&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H2 resolve</td><td>372.81</td><td>6.70</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 7
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H2 retrieval plan</td><td>379.51</td><td>14.07</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 8
+}</pre></td></tr><tr><td>search:iter8_web_search_0</td><td>search</td><td>web_search: lymphoscintigraphy 92% sensitivity lymphedema di...</td><td>393.58</td><td>0.71</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter8_web_search_1</td><td>search</td><td>web_search: lymphoscintigraphy diagnostic accuracy lymphedem...</td><td>393.58</td><td>0.45</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter8_web_search_2</td><td>search</td><td>web_search: lymphedema lymphoscintigraphy 92% sensitivity st...</td><td>393.58</td><td>0.71</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter8_web_search_3</td><td>search</td><td>web_search: medical journal lymphoscintigraphy 92% sensitivi...</td><td>393.58</td><td>0.71</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H2 choose docs</td><td>394.38</td><td>30.83</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 8
+}</pre></td></tr><tr><td>read:web/drbench_urls/drbench_urls_09992779000bc1fb</td><td>doc_read</td><td>https://chghealthcare.com/blog/telehealth-the-fu...</td><td>425.22</td><td>5.65</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/drbench_urls/drbench_urls_09992779000bc1fb&quot;
+}</pre></td></tr><tr><td>read:web/85007</td><td>doc_read</td><td>https://intersocietal.org/value-added-services/i...</td><td>425.22</td><td>6.16</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/85007&quot;
+}</pre></td></tr><tr><td>read:web/43218</td><td>doc_read</td><td>https://medicine.utah.edu/radiology/research/202...</td><td>425.23</td><td>5.29</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/43218&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H2 resolve</td><td>431.38</td><td>6.98</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 8
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H2 retrieval plan</td><td>438.36</td><td>15.81</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 9
+}</pre></td></tr><tr><td>search:iter9_web_search_0</td><td>search</td><td>web_search: lymphoscintigraphy lymphedema diagnosis sensitiv...</td><td>454.18</td><td>0.76</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter9_web_search_1</td><td>search</td><td>web_search: clinical trial lymphoscintigraphy 92% sensitivit...</td><td>454.18</td><td>0.64</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter9_web_search_2</td><td>search</td><td>web_search: medical journal lymphoscintigraphy diagnostic ac...</td><td>454.18</td><td>0.64</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter9_local_document_search_3</td><td>search</td><td>local_document_search: lymphoscintigraphy sensitivity 92% lymphedema di...</td><td>454.18</td><td>0.30</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H2 choose docs</td><td>454.94</td><td>26.95</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 9
+}</pre></td></tr><tr><td>read:doc_3ae26523_1776278555</td><td>doc_read</td><td>MediConn_Website_Navigation_Insights_Data.xlsx</td><td>481.89</td><td>7.87</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;doc_3ae26523_1776278555&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H2 resolve</td><td>489.76</td><td>9.03</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 9
+}</pre></td></tr><tr><td>report</td><td>report</td><td>Final report</td><td>498.80</td><td>0.00</td><td><pre>{
+  &quot;resolved_hops&quot;: 1
+}</pre></td></tr>
+    </tbody>
+  </table>
+</body>
+</html>

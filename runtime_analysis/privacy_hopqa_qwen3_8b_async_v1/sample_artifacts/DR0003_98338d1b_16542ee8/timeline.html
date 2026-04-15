@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>privacy_hopqa timeline</title>
+  <style>
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 24px;
+      color: #111827;
+      background: #f8fafc;
+    }
+    h1, h2 {
+      margin: 0 0 12px;
+    }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin: 0 0 24px;
+    }
+    .card {
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .card .label {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+    .card .value {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .lane-row {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .lane-label {
+      font-size: 13px;
+      color: #334155;
+      overflow-wrap: anywhere;
+    }
+    .lane-track {
+      position: relative;
+      height: 28px;
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .bar {
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      border-radius: 6px;
+      color: white;
+      font-size: 11px;
+      line-height: 22px;
+      padding: 0 6px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 18px;
+    }
+    th, td {
+      border-bottom: 1px solid #e2e8f0;
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 13px;
+    }
+    th {
+      background: #f1f5f9;
+    }
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>privacy_hopqa rollout timeline</h1>
+    <div class="summary">
+    <div class="card"><div class="label">Task</div><div class="value">DR0003</div></div>
+    <div class="card"><div class="label">Chain</div><div class="value">98338d1b</div></div>
+    <div class="card"><div class="label">Iterations</div><div class="value">8</div></div>
+    <div class="card"><div class="label">Resolved Hops</div><div class="value">0/3</div></div>
+    <div class="card"><div class="label">Searches</div><div class="value">30</div></div>
+    <div class="card"><div class="label">Docs Read</div><div class="value">21</div></div>
+    <div class="card"><div class="label">Parse Errors</div><div class="value">0</div></div>
+    <div class="card"><div class="label">Context Overflows</div><div class="value">0</div></div>
+    <div class="card"><div class="label">Duration (s)</div><div class="value">363.03</div></div>
+  </div>
+  <h2>Timeline</h2>
+  <div><div class='lane-row'><div class='lane-label'>plan</div><div class='lane-track'><div class="bar" style="left:0.000%;width:2.640%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 0.0, &quot;duration_s&quot;: 9.583, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 retrieval plan</div><div class="bar" style="left:13.728%;width:3.557%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 49.832, &quot;duration_s&quot;: 12.911, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 retrieval plan</div><div class="bar" style="left:25.857%;width:3.203%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 93.863, &quot;duration_s&quot;: 11.628, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 2}}">H1 retrieval plan</div><div class="bar" style="left:38.542%;width:4.426%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 139.906, &quot;duration_s&quot;: 16.068, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 3}}">H1 retrieval plan</div><div class="bar" style="left:51.960%;width:3.816%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 188.616, &quot;duration_s&quot;: 13.852, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 4}}">H1 retrieval plan</div><div class="bar" style="left:65.386%;width:3.867%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 237.349, &quot;duration_s&quot;: 14.038, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 5}}">H1 retrieval plan</div><div class="bar" style="left:80.062%;width:2.658%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 290.627, &quot;duration_s&quot;: 9.647, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 6}}">H1 retrieval plan</div><div class="bar" style="left:89.373%;width:4.579%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 324.423, &quot;duration_s&quot;: 16.621, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 7}}">H1 retrieval plan</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_0</div><div class='lane-track'><div class="bar" style="left:2.640%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market false positives reduction Q4 2022 t...&quot;, &quot;start_s&quot;: 9.583, &quot;duration_s&quot;: 0.354, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market false positives reduction Q4 2022 t...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_1</div><div class='lane-track'><div class="bar" style="left:2.640%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market threat detection system implementat...&quot;, &quot;start_s&quot;: 9.583, &quot;duration_s&quot;: 0.357, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market threat detection system implementat...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_2</div><div class='lane-track'><div class="bar" style="left:2.640%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market Q4 2022 financial report operationa...&quot;, &quot;start_s&quot;: 9.583, &quot;duration_s&quot;: 0.365, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market Q4 2022 financial report operationa...</div></div></div><div class='lane-row'><div class='lane-label'>choose</div><div class='lane-track'><div class="bar" style="left:2.755%;width:6.457%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 10.0, &quot;duration_s&quot;: 23.438, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 choose docs</div><div class="bar" style="left:17.714%;width:4.181%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 64.302, &quot;duration_s&quot;: 15.176, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 choose docs</div><div class="bar" style="left:29.440%;width:5.657%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 106.866, &quot;duration_s&quot;: 20.535, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 2}}">H1 choose docs</div><div class="bar" style="left:43.219%;width:5.347%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 156.883, &quot;duration_s&quot;: 19.41, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 3}}">H1 choose docs</div><div class="bar" style="left:55.941%;width:5.226%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 203.066, &quot;duration_s&quot;: 18.971, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 4}}">H1 choose docs</div><div class="bar" style="left:69.487%;width:5.245%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 252.239, &quot;duration_s&quot;: 19.038, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 5}}">H1 choose docs</div><div class="bar" style="left:82.822%;width:1.990%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 300.644, &quot;duration_s&quot;: 7.225, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 6}}">H1 choose docs</div><div class="bar" style="left:94.426%;width:2.305%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 342.767, &quot;duration_s&quot;: 8.367, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 7}}">H1 choose docs</div></div></div><div class='lane-row'><div class='lane-label'>read:web/36490</div><div class='lane-track'><div class="bar" style="left:9.212%;width:1.574%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://carnegieendowment.org/features/fincyber-...&quot;, &quot;start_s&quot;: 33.439, &quot;duration_s&quot;: 5.712, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/36490&quot;}}">https://carnegieendowment.org/features/fincyber-...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/5527</div><div class='lane-track'><div class="bar" style="left:9.212%;width:1.845%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://oag.ca.gov/privacy/databreach/list&quot;, &quot;start_s&quot;: 33.441, &quot;duration_s&quot;: 6.697, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/5527&quot;}}">https://oag.ca.gov/privacy/databreach/list</div></div></div><div class='lane-row'><div class='lane-label'>read:web/18197</div><div class='lane-track'><div class="bar" style="left:9.213%;width:2.437%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://ral.ucar.edu/solutions/products/low-leve...&quot;, &quot;start_s&quot;: 33.444, &quot;duration_s&quot;: 8.846, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/18197&quot;}}">https://ral.ucar.edu/solutions/products/low-leve...</div></div></div><div class='lane-row'><div class='lane-label'>resolve</div><div class='lane-track'><div class="bar" style="left:11.673%;width:2.055%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 42.374, &quot;duration_s&quot;: 7.458, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 resolve</div><div class="bar" style="left:23.883%;width:1.974%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 86.696, &quot;duration_s&quot;: 7.166, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 resolve</div><div class="bar" style="left:36.795%;width:1.747%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 133.565, &quot;duration_s&quot;: 6.341, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 2}}">H1 resolve</div><div class="bar" style="left:50.470%;width:1.490%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 183.205, &quot;duration_s&quot;: 5.41, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 3}}">H1 resolve</div><div class="bar" style="left:63.453%;width:1.932%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 230.335, &quot;duration_s&quot;: 7.014, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 4}}">H1 resolve</div><div class="bar" style="left:77.358%;width:2.705%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 280.808, &quot;duration_s&quot;: 9.818, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 5}}">H1 resolve</div><div class="bar" style="left:86.943%;width:2.430%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 315.602, &quot;duration_s&quot;: 8.821, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 6}}">H1 resolve</div><div class="bar" style="left:98.547%;width:1.453%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 357.726, &quot;duration_s&quot;: 5.273, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 7}}">H1 resolve</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_0</div><div class='lane-track'><div class="bar" style="left:17.285%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market threat detection system Q4 2022 fal...&quot;, &quot;start_s&quot;: 62.743, &quot;duration_s&quot;: 1.146, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market threat detection system Q4 2022 fal...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_1</div><div class='lane-track'><div class="bar" style="left:17.285%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market security system implementation 2022...&quot;, &quot;start_s&quot;: 62.743, &quot;duration_s&quot;: 1.153, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market security system implementation 2022...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_2</div><div class='lane-track'><div class="bar" style="left:17.285%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market 2022 financial report threat detect...&quot;, &quot;start_s&quot;: 62.743, &quot;duration_s&quot;: 1.153, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market 2022 financial report threat detect...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_3</div><div class='lane-track'><div class="bar" style="left:17.285%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market threat detection system rollout 202...&quot;, &quot;start_s&quot;: 62.743, &quot;duration_s&quot;: 1.148, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market threat detection system rollout 202...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/drbench_urls/drbench_urls_36399166840a25a2</div><div class='lane-track'><div class="bar" style="left:21.895%;width:1.810%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://eagleeye.com/blog/grocery-loyalty-inflat...&quot;, &quot;start_s&quot;: 79.479, &quot;duration_s&quot;: 6.57, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/drbench_urls/drbench_urls_36399166840a25a2&quot;}}">https://eagleeye.com/blog/grocery-loyalty-inflat...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/13494</div><div class='lane-track'><div class="bar" style="left:21.896%;width:1.898%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.loudoun.gov/civicalerts.aspx?ARC=L&amp;W...&quot;, &quot;start_s&quot;: 79.481, &quot;duration_s&quot;: 6.89, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/13494&quot;}}">https://www.loudoun.gov/civicalerts.aspx?ARC=L&amp;W...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/16719</div><div class='lane-track'><div class="bar" style="left:21.896%;width:1.987%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://nces.ed.gov/fastfacts/display.asp?id=334&quot;, &quot;start_s&quot;: 79.484, &quot;duration_s&quot;: 7.212, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/16719&quot;}}">https://nces.ed.gov/fastfacts/display.asp?id=334</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_0</div><div class='lane-track'><div class="bar" style="left:29.061%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market threat detection system false posit...&quot;, &quot;start_s&quot;: 105.491, &quot;duration_s&quot;: 1.303, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market threat detection system false posit...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_1</div><div class='lane-track'><div class="bar" style="left:29.061%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market security system performance 2022 fa...&quot;, &quot;start_s&quot;: 105.491, &quot;duration_s&quot;: 1.303, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market security system performance 2022 fa...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_2</div><div class='lane-track'><div class="bar" style="left:29.061%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market 2022 threat detection efficiency fa...&quot;, &quot;start_s&quot;: 105.492, &quot;duration_s&quot;: 0.224, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market 2022 threat detection efficiency fa...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_3</div><div class='lane-track'><div class="bar" style="left:29.061%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: grocery cybersecurity false positive reduction 2...&quot;, &quot;start_s&quot;: 105.492, &quot;duration_s&quot;: 0.224, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: grocery cybersecurity false positive reduction 2...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/45322</div><div class='lane-track'><div class="bar" style="left:35.101%;width:1.694%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://en.wikipedia.org/wiki/Traffic_enforcemen...&quot;, &quot;start_s&quot;: 127.416, &quot;duration_s&quot;: 6.149, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/45322&quot;}}">https://en.wikipedia.org/wiki/Traffic_enforcemen...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/58334</div><div class='lane-track'><div class="bar" style="left:35.101%;width:1.634%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.mckinsey.com/industries/retail/our-i...&quot;, &quot;start_s&quot;: 127.418, &quot;duration_s&quot;: 5.933, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/58334&quot;}}">https://www.mckinsey.com/industries/retail/our-i...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/4161</div><div class='lane-track'><div class="bar" style="left:35.102%;width:1.617%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.gourmetpro.co/blog/largest-grocery-c...&quot;, &quot;start_s&quot;: 127.42, &quot;duration_s&quot;: 5.869, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/4161&quot;}}">https://www.gourmetpro.co/blog/largest-grocery-c...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_0</div><div class='lane-track'><div class="bar" style="left:42.982%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market threat detection system false posit...&quot;, &quot;start_s&quot;: 156.023, &quot;duration_s&quot;: 0.631, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market threat detection system false posit...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_1</div><div class='lane-track'><div class="bar" style="left:42.982%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market cybersecurity metrics Q4 2022 opera...&quot;, &quot;start_s&quot;: 156.023, &quot;duration_s&quot;: 0.86, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market cybersecurity metrics Q4 2022 opera...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_2</div><div class='lane-track'><div class="bar" style="left:42.982%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market security system performance 2022 fa...&quot;, &quot;start_s&quot;: 156.023, &quot;duration_s&quot;: 0.859, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market security system performance 2022 fa...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_3</div><div class='lane-track'><div class="bar" style="left:42.982%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market threat detection system implementat...&quot;, &quot;start_s&quot;: 156.024, &quot;duration_s&quot;: 0.624, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market threat detection system implementat...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/91890</div><div class='lane-track'><div class="bar" style="left:48.566%;width:1.722%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.varonis.com/blog/cybersecurity-stati...&quot;, &quot;start_s&quot;: 176.293, &quot;duration_s&quot;: 6.252, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/91890&quot;}}">https://www.varonis.com/blog/cybersecurity-stati...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/4912</div><div class='lane-track'><div class="bar" style="left:48.566%;width:1.709%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://purplesec.us/resources/cybersecurity-sta...&quot;, &quot;start_s&quot;: 176.296, &quot;duration_s&quot;: 6.203, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/4912&quot;}}">https://purplesec.us/resources/cybersecurity-sta...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/92231</div><div class='lane-track'><div class="bar" style="left:48.567%;width:1.903%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://investor.illumina.com/news/press-release...&quot;, &quot;start_s&quot;: 176.298, &quot;duration_s&quot;: 6.907, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/92231&quot;}}">https://investor.illumina.com/news/press-release...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_0</div><div class='lane-track'><div class="bar" style="left:55.776%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market Q4 2022 cybersecurity false positiv...&quot;, &quot;start_s&quot;: 202.468, &quot;duration_s&quot;: 0.599, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market Q4 2022 cybersecurity false positiv...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_1</div><div class='lane-track'><div class="bar" style="left:55.776%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market threat detection system Q4 2022 imp...&quot;, &quot;start_s&quot;: 202.468, &quot;duration_s&quot;: 0.467, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market threat detection system Q4 2022 imp...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_2</div><div class='lane-track'><div class="bar" style="left:55.776%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: grocery retail cybersecurity false positive redu...&quot;, &quot;start_s&quot;: 202.468, &quot;duration_s&quot;: 0.537, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: grocery retail cybersecurity false positive redu...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_3</div><div class='lane-track'><div class="bar" style="left:55.776%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market 2022 financial report security syst...&quot;, &quot;start_s&quot;: 202.468, &quot;duration_s&quot;: 0.557, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market 2022 financial report security syst...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/30967</div><div class='lane-track'><div class="bar" style="left:61.167%;width:1.785%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.cm-alliance.com/cybersecurity-blog/m...&quot;, &quot;start_s&quot;: 222.037, &quot;duration_s&quot;: 6.478, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/30967&quot;}}">https://www.cm-alliance.com/cybersecurity-blog/m...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/40337</div><div class='lane-track'><div class="bar" style="left:61.168%;width:2.285%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.ecrloss.com/research/measuring-retai...&quot;, &quot;start_s&quot;: 222.04, &quot;duration_s&quot;: 8.295, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/40337&quot;}}">https://www.ecrloss.com/research/measuring-retai...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/41690</div><div class='lane-track'><div class="bar" style="left:61.169%;width:2.089%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.cnbc.com/2023/09/08/this-is-how-much...&quot;, &quot;start_s&quot;: 222.042, &quot;duration_s&quot;: 7.584, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/41690&quot;}}">https://www.cnbc.com/2023/09/08/this-is-how-much...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_0</div><div class='lane-track'><div class="bar" style="left:69.253%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market Q4 2022 cybersecurity performance r...&quot;, &quot;start_s&quot;: 251.388, &quot;duration_s&quot;: 0.805, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market Q4 2022 cybersecurity performance r...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_1</div><div class='lane-track'><div class="bar" style="left:69.253%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market security system 2022 false alarm re...&quot;, &quot;start_s&quot;: 251.388, &quot;duration_s&quot;: 0.793, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market security system 2022 false alarm re...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_2</div><div class='lane-track'><div class="bar" style="left:69.253%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market 2022 financial report cybersecurity...&quot;, &quot;start_s&quot;: 251.388, &quot;duration_s&quot;: 0.848, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market 2022 financial report cybersecurity...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_3</div><div class='lane-track'><div class="bar" style="left:69.253%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market threat detection system Q4 2022 tec...&quot;, &quot;start_s&quot;: 251.388, &quot;duration_s&quot;: 0.851, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market threat detection system Q4 2022 tec...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/57530</div><div class='lane-track'><div class="bar" style="left:74.732%;width:2.266%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://secureframe.com/blog/recent-cyber-attack...&quot;, &quot;start_s&quot;: 271.278, &quot;duration_s&quot;: 8.226, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/57530&quot;}}">https://secureframe.com/blog/recent-cyber-attack...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/61453</div><div class='lane-track'><div class="bar" style="left:74.733%;width:2.625%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.soundthinking.com/&quot;, &quot;start_s&quot;: 271.28, &quot;duration_s&quot;: 9.528, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/61453&quot;}}">https://www.soundthinking.com/</div></div></div><div class='lane-row'><div class='lane-label'>search:iter6_web_search_0</div><div class='lane-track'><div class="bar" style="left:82.720%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market Q4 2022 cybersecurity system false...&quot;, &quot;start_s&quot;: 300.274, &quot;duration_s&quot;: 0.307, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market Q4 2022 cybersecurity system false...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter6_web_search_1</div><div class='lane-track'><div class="bar" style="left:82.720%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market 2022 security system efficiency fal...&quot;, &quot;start_s&quot;: 300.274, &quot;duration_s&quot;: 0.369, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market 2022 security system efficiency fal...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter6_web_search_2</div><div class='lane-track'><div class="bar" style="left:82.720%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: threat detection system false positive impact Le...&quot;, &quot;start_s&quot;: 300.274, &quot;duration_s&quot;: 0.322, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: threat detection system false positive impact Le...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/62991</div><div class='lane-track'><div class="bar" style="left:84.812%;width:1.816%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://onemileatatime.com/department-of-homelan...&quot;, &quot;start_s&quot;: 307.869, &quot;duration_s&quot;: 6.594, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/62991&quot;}}">https://onemileatatime.com/department-of-homelan...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/80697</div><div class='lane-track'><div class="bar" style="left:84.813%;width:2.129%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.cm-alliance.com/cybersecurity-blog/b...&quot;, &quot;start_s&quot;: 307.871, &quot;duration_s&quot;: 7.73, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/80697&quot;}}">https://www.cm-alliance.com/cybersecurity-blog/b...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter7_web_search_0</div><div class='lane-track'><div class="bar" style="left:93.951%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market Q4 2022 threat detection system fal...&quot;, &quot;start_s&quot;: 341.044, &quot;duration_s&quot;: 1.723, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market Q4 2022 threat detection system fal...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter7_web_search_1</div><div class='lane-track'><div class="bar" style="left:93.951%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market cybersecurity performance report Q4...&quot;, &quot;start_s&quot;: 341.044, &quot;duration_s&quot;: 1.526, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market cybersecurity performance report Q4...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter7_web_search_2</div><div class='lane-track'><div class="bar" style="left:93.951%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market 2022 security system efficiency fal...&quot;, &quot;start_s&quot;: 341.044, &quot;duration_s&quot;: 1.04, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market 2022 security system efficiency fal...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter7_web_search_3</div><div class='lane-track'><div class="bar" style="left:93.952%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market threat detection system impact on f...&quot;, &quot;start_s&quot;: 341.044, &quot;duration_s&quot;: 1.526, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market threat detection system impact on f...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/50867</div><div class='lane-track'><div class="bar" style="left:96.731%;width:1.809%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.aclu.org/news/privacy-technology/ama...&quot;, &quot;start_s&quot;: 351.134, &quot;duration_s&quot;: 6.567, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/50867&quot;}}">https://www.aclu.org/news/privacy-technology/ama...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/70421</div><div class='lane-track'><div class="bar" style="left:96.732%;width:1.815%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.ifsecglobal.com/uncategorized/songs-...&quot;, &quot;start_s&quot;: 351.136, &quot;duration_s&quot;: 6.59, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/70421&quot;}}">https://www.ifsecglobal.com/uncategorized/songs-...</div></div></div><div class='lane-row'><div class='lane-label'>report</div><div class='lane-track'><div class="bar" style="left:100.000%;width:0.800%;background:#4c78a8;" title="{&quot;stage&quot;: &quot;report&quot;, &quot;label&quot;: &quot;Final report&quot;, &quot;start_s&quot;: 362.999, &quot;duration_s&quot;: 0.01, &quot;meta&quot;: {&quot;resolved_hops&quot;: 0}}">Final report</div></div></div></div>
+  <h2>Events</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Lane</th>
+        <th>Stage</th>
+        <th>Label</th>
+        <th>Start (s)</th>
+        <th>Duration (s)</th>
+        <th>Metadata</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>0.00</td><td>9.58</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>search:iter0_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market false positives reduction Q4 2022 t...</td><td>9.58</td><td>0.35</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market threat detection system implementat...</td><td>9.58</td><td>0.36</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market Q4 2022 financial report operationa...</td><td>9.58</td><td>0.37</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>10.00</td><td>23.44</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>read:web/36490</td><td>doc_read</td><td>https://carnegieendowment.org/features/fincyber-...</td><td>33.44</td><td>5.71</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/36490&quot;
+}</pre></td></tr><tr><td>read:web/5527</td><td>doc_read</td><td>https://oag.ca.gov/privacy/databreach/list</td><td>33.44</td><td>6.70</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/5527&quot;
+}</pre></td></tr><tr><td>read:web/18197</td><td>doc_read</td><td>https://ral.ucar.edu/solutions/products/low-leve...</td><td>33.44</td><td>8.85</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/18197&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>42.37</td><td>7.46</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>49.83</td><td>12.91</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>search:iter1_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market threat detection system Q4 2022 fal...</td><td>62.74</td><td>1.15</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market security system implementation 2022...</td><td>62.74</td><td>1.15</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market 2022 financial report threat detect...</td><td>62.74</td><td>1.15</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_3</td><td>search</td><td>web_search: Lee&#x27;s Market threat detection system rollout 202...</td><td>62.74</td><td>1.15</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>64.30</td><td>15.18</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>read:web/drbench_urls/drbench_urls_36399166840a25a2</td><td>doc_read</td><td>https://eagleeye.com/blog/grocery-loyalty-inflat...</td><td>79.48</td><td>6.57</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/drbench_urls/drbench_urls_36399166840a25a2&quot;
+}</pre></td></tr><tr><td>read:web/13494</td><td>doc_read</td><td>https://www.loudoun.gov/civicalerts.aspx?ARC=L&amp;W...</td><td>79.48</td><td>6.89</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/13494&quot;
+}</pre></td></tr><tr><td>read:web/16719</td><td>doc_read</td><td>https://nces.ed.gov/fastfacts/display.asp?id=334</td><td>79.48</td><td>7.21</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/16719&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>86.70</td><td>7.17</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>93.86</td><td>11.63</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>search:iter2_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market threat detection system false posit...</td><td>105.49</td><td>1.30</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market security system performance 2022 fa...</td><td>105.49</td><td>1.30</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market 2022 threat detection efficiency fa...</td><td>105.49</td><td>0.22</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_3</td><td>search</td><td>web_search: grocery cybersecurity false positive reduction 2...</td><td>105.49</td><td>0.22</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>106.87</td><td>20.53</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>read:web/45322</td><td>doc_read</td><td>https://en.wikipedia.org/wiki/Traffic_enforcemen...</td><td>127.42</td><td>6.15</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/45322&quot;
+}</pre></td></tr><tr><td>read:web/58334</td><td>doc_read</td><td>https://www.mckinsey.com/industries/retail/our-i...</td><td>127.42</td><td>5.93</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/58334&quot;
+}</pre></td></tr><tr><td>read:web/4161</td><td>doc_read</td><td>https://www.gourmetpro.co/blog/largest-grocery-c...</td><td>127.42</td><td>5.87</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/4161&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>133.56</td><td>6.34</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>139.91</td><td>16.07</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>search:iter3_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market threat detection system false posit...</td><td>156.02</td><td>0.63</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market cybersecurity metrics Q4 2022 opera...</td><td>156.02</td><td>0.86</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market security system performance 2022 fa...</td><td>156.02</td><td>0.86</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_web_search_3</td><td>search</td><td>web_search: Lee&#x27;s Market threat detection system implementat...</td><td>156.02</td><td>0.62</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>156.88</td><td>19.41</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>read:web/91890</td><td>doc_read</td><td>https://www.varonis.com/blog/cybersecurity-stati...</td><td>176.29</td><td>6.25</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/91890&quot;
+}</pre></td></tr><tr><td>read:web/4912</td><td>doc_read</td><td>https://purplesec.us/resources/cybersecurity-sta...</td><td>176.30</td><td>6.20</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/4912&quot;
+}</pre></td></tr><tr><td>read:web/92231</td><td>doc_read</td><td>https://investor.illumina.com/news/press-release...</td><td>176.30</td><td>6.91</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/92231&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>183.21</td><td>5.41</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>188.62</td><td>13.85</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>search:iter4_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market Q4 2022 cybersecurity false positiv...</td><td>202.47</td><td>0.60</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter4_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market threat detection system Q4 2022 imp...</td><td>202.47</td><td>0.47</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter4_web_search_2</td><td>search</td><td>web_search: grocery retail cybersecurity false positive redu...</td><td>202.47</td><td>0.54</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter4_web_search_3</td><td>search</td><td>web_search: Lee&#x27;s Market 2022 financial report security syst...</td><td>202.47</td><td>0.56</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>203.07</td><td>18.97</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>read:web/30967</td><td>doc_read</td><td>https://www.cm-alliance.com/cybersecurity-blog/m...</td><td>222.04</td><td>6.48</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/30967&quot;
+}</pre></td></tr><tr><td>read:web/40337</td><td>doc_read</td><td>https://www.ecrloss.com/research/measuring-retai...</td><td>222.04</td><td>8.30</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/40337&quot;
+}</pre></td></tr><tr><td>read:web/41690</td><td>doc_read</td><td>https://www.cnbc.com/2023/09/08/this-is-how-much...</td><td>222.04</td><td>7.58</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/41690&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>230.34</td><td>7.01</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>237.35</td><td>14.04</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market Q4 2022 cybersecurity performance r...</td><td>251.39</td><td>0.80</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market security system 2022 false alarm re...</td><td>251.39</td><td>0.79</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market 2022 financial report cybersecurity...</td><td>251.39</td><td>0.85</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_3</td><td>search</td><td>web_search: Lee&#x27;s Market threat detection system Q4 2022 tec...</td><td>251.39</td><td>0.85</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>252.24</td><td>19.04</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>read:web/57530</td><td>doc_read</td><td>https://secureframe.com/blog/recent-cyber-attack...</td><td>271.28</td><td>8.23</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/57530&quot;
+}</pre></td></tr><tr><td>read:web/61453</td><td>doc_read</td><td>https://www.soundthinking.com/</td><td>271.28</td><td>9.53</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/61453&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>280.81</td><td>9.82</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>290.63</td><td>9.65</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 6
+}</pre></td></tr><tr><td>search:iter6_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market Q4 2022 cybersecurity system false...</td><td>300.27</td><td>0.31</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter6_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market 2022 security system efficiency fal...</td><td>300.27</td><td>0.37</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter6_web_search_2</td><td>search</td><td>web_search: threat detection system false positive impact Le...</td><td>300.27</td><td>0.32</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>300.64</td><td>7.23</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 6
+}</pre></td></tr><tr><td>read:web/62991</td><td>doc_read</td><td>https://onemileatatime.com/department-of-homelan...</td><td>307.87</td><td>6.59</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/62991&quot;
+}</pre></td></tr><tr><td>read:web/80697</td><td>doc_read</td><td>https://www.cm-alliance.com/cybersecurity-blog/b...</td><td>307.87</td><td>7.73</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/80697&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>315.60</td><td>8.82</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 6
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>324.42</td><td>16.62</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 7
+}</pre></td></tr><tr><td>search:iter7_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market Q4 2022 threat detection system fal...</td><td>341.04</td><td>1.72</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter7_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market cybersecurity performance report Q4...</td><td>341.04</td><td>1.53</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter7_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market 2022 security system efficiency fal...</td><td>341.04</td><td>1.04</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter7_web_search_3</td><td>search</td><td>web_search: Lee&#x27;s Market threat detection system impact on f...</td><td>341.04</td><td>1.53</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>342.77</td><td>8.37</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 7
+}</pre></td></tr><tr><td>read:web/50867</td><td>doc_read</td><td>https://www.aclu.org/news/privacy-technology/ama...</td><td>351.13</td><td>6.57</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/50867&quot;
+}</pre></td></tr><tr><td>read:web/70421</td><td>doc_read</td><td>https://www.ifsecglobal.com/uncategorized/songs-...</td><td>351.14</td><td>6.59</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/70421&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>357.73</td><td>5.27</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 7
+}</pre></td></tr><tr><td>report</td><td>report</td><td>Final report</td><td>363.00</td><td>0.00</td><td><pre>{
+  &quot;resolved_hops&quot;: 0
+}</pre></td></tr>
+    </tbody>
+  </table>
+</body>
+</html>

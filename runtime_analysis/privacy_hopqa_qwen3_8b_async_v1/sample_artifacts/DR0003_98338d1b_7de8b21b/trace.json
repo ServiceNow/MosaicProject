@@ -1,0 +1,3436 @@
+{
+  "summary": {
+    "task_id": "DR0003",
+    "chain_id": "98338d1b",
+    "iterations_used": 8,
+    "resolved_hops": 0,
+    "total_hops": 3,
+    "searches_total": 32,
+    "docs_read": 22,
+    "duration_s": 387.85508421901613,
+    "stalled": false,
+    "llm_calls_total": 46,
+    "prompt_tokens": 76900,
+    "output_tokens": 28989,
+    "total_tokens": 105889,
+    "total_errors": 0,
+    "parse_errors_total": 0,
+    "context_overflow_errors": 0,
+    "errors_by_stage": {},
+    "errors_by_kind": {},
+    "errors_by_stage_kind": {},
+    "parse_errors_by_stage": {}
+  },
+  "hop_states": [
+    {
+      "hop_number": 1,
+      "question": "What was the reduction in false positives after implementing the new threat detection system at Lee's Market in Q4 2022?",
+      "status": "pending",
+      "attempts": 8,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": "The available documents either discuss unrelated topics (AMD financial results, inventory shrinkage, Ohio Auditor news) or explicitly state they lack information about Lee's Market security system performance metrics.",
+      "search_history": [
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market false positives reduction Q4 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/92231",
+            "web/93509"
+          ]
+        },
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market threat detection system performance 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/5527",
+            "web/18197"
+          ]
+        },
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market security system false positives Q4 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/5527",
+            "web/36490"
+          ]
+        },
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_web_search_3",
+          "type": "web_search",
+          "query": "Lee's Market cybersecurity false positive reduction 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/30967",
+            "web/5527"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 1,
+          "action_id": "iter1_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market threat detection system false positive reduction Q4 2022 report",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/45322",
+            "web/5527"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 1,
+          "action_id": "iter1_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market cybersecurity performance metrics 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/4912",
+            "web/91890"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 1,
+          "action_id": "iter1_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market threat detection system case study Q4 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/5527",
+            "web/4161"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 1,
+          "action_id": "iter1_web_search_3",
+          "type": "web_search",
+          "query": "Lee's Market security system false positive reduction 2022 press release",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/5527",
+            "web/13494"
+          ]
+        },
+        {
+          "iteration": 2,
+          "hop_number": 1,
+          "action_id": "iter2_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market false positives reduction Q4 2022 report",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/92231",
+            "web/93509"
+          ]
+        },
+        {
+          "iteration": 2,
+          "hop_number": 1,
+          "action_id": "iter2_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market cybersecurity false positive metrics 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/4912",
+            "web/36490"
+          ]
+        },
+        {
+          "iteration": 2,
+          "hop_number": 1,
+          "action_id": "iter2_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market security system implementation Q4 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/5527",
+            "web/45135"
+          ]
+        },
+        {
+          "iteration": 2,
+          "hop_number": 1,
+          "action_id": "iter2_web_search_3",
+          "type": "web_search",
+          "query": "Lee's Market security improvement press release 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/5527",
+            "web/13494"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 1,
+          "action_id": "iter3_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market cybersecurity system performance report Q4 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/30967",
+            "web/36490"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 1,
+          "action_id": "iter3_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market security system false positive metrics 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/5527",
+            "web/70194"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 1,
+          "action_id": "iter3_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market threat detection system audit Q4 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/5527",
+            "web/95459"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 1,
+          "action_id": "iter3_web_search_3",
+          "type": "web_search",
+          "query": "Lee's Market false positive reduction case study 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/73645",
+            "web/17094"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 1,
+          "action_id": "iter4_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market security system performance metrics Q4 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/92231",
+            "web/93509"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 1,
+          "action_id": "iter4_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market cybersecurity system audit report 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/80697",
+            "web/29471"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 1,
+          "action_id": "iter4_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market security improvements false positive reduction 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/5527",
+            "web/7490"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 1,
+          "action_id": "iter4_web_search_3",
+          "type": "web_search",
+          "query": "Lee's Market threat detection system case study 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/61453",
+            "web/18197"
+          ]
+        },
+        {
+          "iteration": 5,
+          "hop_number": 1,
+          "action_id": "iter5_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market threat detection system false positive reduction Q4 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/45322",
+            "web/5527"
+          ]
+        },
+        {
+          "iteration": 5,
+          "hop_number": 1,
+          "action_id": "iter5_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market security system performance report 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/5527",
+            "web/31351"
+          ]
+        },
+        {
+          "iteration": 5,
+          "hop_number": 1,
+          "action_id": "iter5_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market security improvement case study 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/5527",
+            "web/30967"
+          ]
+        },
+        {
+          "iteration": 5,
+          "hop_number": 1,
+          "action_id": "iter5_web_search_3",
+          "type": "web_search",
+          "query": "Lee's Market security system audit 2022 internal",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/5527",
+            "web/34840"
+          ]
+        },
+        {
+          "iteration": 6,
+          "hop_number": 1,
+          "action_id": "iter6_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market threat detection system false positive reduction Q4 2022 report",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/45322",
+            "web/5527"
+          ]
+        },
+        {
+          "iteration": 6,
+          "hop_number": 1,
+          "action_id": "iter6_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market cybersecurity system performance metrics 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/4912",
+            "web/91890"
+          ]
+        },
+        {
+          "iteration": 6,
+          "hop_number": 1,
+          "action_id": "iter6_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market security system false positives reduction case study",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/45322",
+            "web/18197"
+          ]
+        },
+        {
+          "iteration": 6,
+          "hop_number": 1,
+          "action_id": "iter6_web_search_3",
+          "type": "web_search",
+          "query": "Lee's Market threat detection system audit 2022 Q4",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/5527",
+            "web/13866"
+          ]
+        },
+        {
+          "iteration": 7,
+          "hop_number": 1,
+          "action_id": "iter7_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market threat detection system false positive reduction metrics Q4 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/45322",
+            "web/34285"
+          ]
+        },
+        {
+          "iteration": 7,
+          "hop_number": 1,
+          "action_id": "iter7_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market security system performance report Q4 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/52191",
+            "web/92231"
+          ]
+        },
+        {
+          "iteration": 7,
+          "hop_number": 1,
+          "action_id": "iter7_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market cybersecurity false positive reduction case study 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/30967",
+            "web/80697"
+          ]
+        },
+        {
+          "iteration": 7,
+          "hop_number": 1,
+          "action_id": "iter7_web_search_3",
+          "type": "web_search",
+          "query": "Lee's Market threat detection system audit 2022 Q4 report",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "web/5527",
+            "web/95459"
+          ]
+        }
+      ],
+      "selected_doc_ids": [
+        "web/drbench_urls/drbench_urls_36399166840a25a2",
+        "web/30967",
+        "web/5527",
+        "web/45322",
+        "web/4912",
+        "web/13494",
+        "web/92231",
+        "web/36490",
+        "web/45135",
+        "web/73645",
+        "web/17094",
+        "web/70194",
+        "web/61453",
+        "web/80697",
+        "web/18197",
+        "web/31351",
+        "web/34840",
+        "web/13866",
+        "web/91890",
+        "web/52191",
+        "web/34285",
+        "web/95459"
+      ],
+      "reader_results": [
+        {
+          "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+          "source": "web",
+          "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+          "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Lee's Market, threat detection systems, or false positive reduction metrics in Q4 2022. It focuses on grocery loyalty programs and AI-driven customer engagement strategies [DOC:web/drbench_urls/drbench_urls_36399166840a25a2].",
+          "confidence": 0.95,
+          "missing_information": "Specific details about Lee's Market's threat detection system implementation and false positive reduction metrics in Q4 2022"
+        },
+        {
+          "doc_id": "web/30967",
+          "source": "web",
+          "title": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+          "locator": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Lee's Market or any false positive reduction metrics related to a threat detection system implementation in Q4 2022 [DOC:web/30967].",
+          "confidence": 0.18,
+          "missing_information": "Specific data about Lee's Market's false positive reduction after implementing a threat detection system in Q4 2022 is not present in the document."
+        },
+        {
+          "doc_id": "web/5527",
+          "source": "web",
+          "title": "https://oag.ca.gov/privacy/databreach/list",
+          "locator": "https://oag.ca.gov/privacy/databreach/list",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document excerpt does not mention Lee's Market or any details about threat detection systems, false positives, or performance metrics for Q4 2022 [DOC:web/5527].",
+          "confidence": 0.18,
+          "missing_information": "Specific data about Lee's Market's threat detection system performance and false positive reduction in Q4 2022 is absent from the document."
+        },
+        {
+          "doc_id": "web/45322",
+          "source": "web",
+          "title": "https://en.wikipedia.org/wiki/Traffic_enforcement_camera",
+          "locator": "https://en.wikipedia.org/wiki/Traffic_enforcement_camera",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses traffic enforcement cameras and their impact on accidents/injuries but does not mention Lee's Market, threat detection systems, or false positive reduction metrics for Q4 2022 [DOC:web/45322].",
+          "confidence": 0.15,
+          "missing_information": "Specific data about Lee's Market's threat detection system false positives in Q4 2022"
+        },
+        {
+          "doc_id": "web/4912",
+          "source": "web",
+          "title": "https://purplesec.us/resources/cybersecurity-statistics/",
+          "locator": "https://purplesec.us/resources/cybersecurity-statistics/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document contains no information about Lee's Market, threat detection systems, or false positive reduction metrics for Q4 2022 [DOC:web/4912].",
+          "confidence": 0.15,
+          "missing_information": "Specific details about Lee's Market's cybersecurity implementation and false positive metrics"
+        },
+        {
+          "doc_id": "web/13494",
+          "source": "web",
+          "title": "https://www.loudoun.gov/civicalerts.aspx?ARC=L&What=2&CC=2&ItemID=9877&From=AID%3D9877",
+          "locator": "https://www.loudoun.gov/civicalerts.aspx?ARC=L&What=2&CC=2&ItemID=9877&From=AID%3D9877",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document contains no information about Lee's Market, threat detection systems, or false positive reduction metrics for 2022 [DOC:web/13494].",
+          "confidence": 0.15,
+          "missing_information": "Specific details about Lee's Market security system implementation and false positive reduction data for Q4 2022"
+        },
+        {
+          "doc_id": "web/92231",
+          "source": "web",
+          "title": "https://investor.illumina.com/news/press-release-details/2023/Illumina-Reports-Financial-Results-for-Fourth-Quarter-and-Fiscal-Year-2022/default.aspx",
+          "locator": "https://investor.illumina.com/news/press-release-details/2023/Illumina-Reports-Financial-Results-for-Fourth-Quarter-and-Fiscal-Year-2022/default.aspx",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The provided document [DOC:web/92231] contains financial results from Illumina Inc. for Q4 2022 but does not mention Lee's Market, threat detection systems, or any metrics related to false positives. The content focuses solely on Illumina's revenue, earnings, and product developments.",
+          "confidence": 0.95,
+          "missing_information": "The document lacks any information about Lee's Market, security system implementations, or false positive reduction metrics."
+        },
+        {
+          "doc_id": "web/36490",
+          "source": "web",
+          "title": "https://carnegieendowment.org/features/fincyber-timeline",
+          "locator": "https://carnegieendowment.org/features/fincyber-timeline",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Lee's Market, a threat detection system implementation, or any false positive metrics for 2022 [DOC:web/36490].",
+          "confidence": 0.95,
+          "missing_information": "Specific information about Lee's Market's threat detection system and false positive reduction metrics is absent from the document."
+        },
+        {
+          "doc_id": "web/45135",
+          "source": "web",
+          "title": "https://www.secretservice.gov/newsroom/releases/2024/07/written-testimony-director-kimberly-cheatle-oversight-committee-attempted",
+          "locator": "https://www.secretservice.gov/newsroom/releases/2024/07/written-testimony-director-kimberly-cheatle-oversight-committee-attempted",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses the Secret Service's response to an assassination attempt and mentions Lee's Market in the context of the incident, but it does not provide any data on false positives, threat detection systems, or metrics from Q4 2022 [DOC:web/45135].",
+          "confidence": 0.18,
+          "missing_information": "No information about false positives, threat detection systems, or Lee's Market security implementation metrics is provided in the document."
+        },
+        {
+          "doc_id": "web/73645",
+          "source": "web",
+          "title": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.0020124",
+          "locator": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.0020124",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses general research reliability and bias but does not mention Lee's Market, threat detection systems, or false positive reduction metrics in Q4 2022 [DOC:web/73645].",
+          "confidence": 0.18,
+          "missing_information": "Specific details about Lee's Market's threat detection system implementation and false positive reduction data are absent from the document."
+        },
+        {
+          "doc_id": "web/17094",
+          "source": "web",
+          "title": "https://pmc.ncbi.nlm.nih.gov/articles/PMC1182327/",
+          "locator": "https://pmc.ncbi.nlm.nih.gov/articles/PMC1182327/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses general statistics about false research findings but does not mention Lee's Market, a threat detection system, or any specific false positive reduction metrics from Q4 2022 [DOC:web/17094].",
+          "confidence": 0.18,
+          "missing_information": "Specific details about Lee's Market's threat detection system implementation and its impact on false positives in Q4 2022"
+        },
+        {
+          "doc_id": "web/70194",
+          "source": "web",
+          "title": "https://blog.dogsbite.org/2024/04/louisville-metro-dog-bite-investigations-by-breed-other-activites.html",
+          "locator": "https://blog.dogsbite.org/2024/04/louisville-metro-dog-bite-investigations-by-breed-other-activites.html",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses Louisville Metro dog bite investigations and licensing data but contains no information about Lee's Market, threat detection systems, or false positive metrics [DOC:web/70194].",
+          "confidence": 0.95,
+          "missing_information": "No data exists in the provided document about Lee's Market's security system or false positive reduction metrics for 2022."
+        },
+        {
+          "doc_id": "web/61453",
+          "source": "web",
+          "title": "https://www.soundthinking.com/",
+          "locator": "https://www.soundthinking.com/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:web/61453] does not mention Lee's Market or any specific metrics related to false positives from a threat detection system implementation in Q4 2022.",
+          "confidence": 0.18,
+          "missing_information": "Specific details about Lee's Market's threat detection system implementation, false positive reduction metrics, and Q4 2022 timeframe"
+        },
+        {
+          "doc_id": "web/80697",
+          "source": "web",
+          "title": "https://www.cm-alliance.com/cybersecurity-blog/biggest-cyber-attacks-ransomware-attacks-data-breaches-of-march-2025",
+          "locator": "https://www.cm-alliance.com/cybersecurity-blog/biggest-cyber-attacks-ransomware-attacks-data-breaches-of-march-2025",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses cybersecurity incidents in March 2025 but does not mention Lee's Market, false positives, or any threat detection system implementation in Q4 2022 [DOC:web/80697].",
+          "confidence": 0.15,
+          "missing_information": "Specific details about Lee's Market's cybersecurity system implementation, false positives metrics, and Q4 2022 timeframe"
+        },
+        {
+          "doc_id": "web/18197",
+          "source": "web",
+          "title": "https://ral.ucar.edu/solutions/products/low-level-wind-shear-alert-system-llwas",
+          "locator": "https://ral.ucar.edu/solutions/products/low-level-wind-shear-alert-system-llwas",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses LLWAS system specifications but does not mention Lee's Market, specific false positive reduction metrics, or Q4 2022 implementation data [DOC:web/18197].",
+          "confidence": 0.18,
+          "missing_information": "Specific false positive reduction data for Lee's Market Q4 2022 implementation"
+        },
+        {
+          "doc_id": "web/31351",
+          "source": "web",
+          "title": "https://www.eeoc.gov/2022-annual-performance-report-apr",
+          "locator": "https://www.eeoc.gov/2022-annual-performance-report-apr",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:web/31351] is the EEOC's 2022 Annual Performance Report, which does not mention Lee's Market, threat detection systems, or false positive reduction metrics. The excerpt contains no relevant information about the specific query.",
+          "confidence": 0.15,
+          "missing_information": "The document lacks details about Lee's Market's security system implementation, false positive rates, or Q4 2022 performance metrics."
+        },
+        {
+          "doc_id": "web/34840",
+          "source": "web",
+          "title": "https://www.irs.gov/irm/part4/irm_04-010-003",
+          "locator": "https://www.irs.gov/irm/part4/irm_04-010-003",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document excerpt does not mention Lee's Market, a threat detection system implementation, or any metrics related to false positives in Q4 2022 [DOC:web/34840].",
+          "confidence": 0.18,
+          "missing_information": "Specific details about Lee's Market's threat detection system implementation and false positive reduction metrics"
+        },
+        {
+          "doc_id": "web/13866",
+          "source": "web",
+          "title": "https://americanoversight.org/resource/how-the-arizona-election-audit-has-already-been-compromised/",
+          "locator": "https://americanoversight.org/resource/how-the-arizona-election-audit-has-already-been-compromised/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses Arizona election audit controversies and mentions Cyber Ninjas but does not reference Lee's Market, threat detection systems, or any metrics about false positives [DOC:web/13866].",
+          "confidence": 0.95,
+          "missing_information": "The document lacks any information about Lee's Market, threat detection systems, or false positive reduction metrics."
+        },
+        {
+          "doc_id": "web/91890",
+          "source": "web",
+          "title": "https://www.varonis.com/blog/cybersecurity-statistics",
+          "locator": "https://www.varonis.com/blog/cybersecurity-statistics",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Lee's Market or any specific threat detection system implementation metrics for Q4 2022 [DOC:web/91890].",
+          "confidence": 0.18,
+          "missing_information": "Specific performance metrics from Lee's Market's cybersecurity system implementation in Q4 2022"
+        },
+        {
+          "doc_id": "web/52191",
+          "source": "web",
+          "title": "https://ir.amd.com/news-events/press-releases/detail/1115/amd-reports-fourth-quarter-and-full-year-2022-financial-results",
+          "locator": "https://ir.amd.com/news-events/press-releases/detail/1115/amd-reports-fourth-quarter-and-full-year-2022-financial-results",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document contains AMD's financial results for Q4 2022 and does not mention Lee's Market, threat detection systems, or any metrics related to false positives [DOC:web/52191].",
+          "confidence": 0.95,
+          "missing_information": "No information about Lee's Market security system performance or false positive reduction metrics is present in the document."
+        },
+        {
+          "doc_id": "web/34285",
+          "source": "web",
+          "title": "https://www.statista.com/statistics/1139351/retailers-inventory-shrinkage-rate-us/",
+          "locator": "https://www.statista.com/statistics/1139351/retailers-inventory-shrinkage-rate-us/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses inventory shrinkage rates across US retailers but does not mention Lee's Market or any threat detection system implementation metrics [DOC:web/34285].",
+          "confidence": 0.95,
+          "missing_information": "Specific false positive reduction metrics for Lee's Market's threat detection system in Q4 2022"
+        },
+        {
+          "doc_id": "web/95459",
+          "source": "web",
+          "title": "https://ohioauditor.gov/news",
+          "locator": "https://ohioauditor.gov/news",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document excerpt does not mention Lee's Market, a threat detection system, or any metrics related to false positives in Q4 2022 [DOC:web/95459].",
+          "confidence": 0.18,
+          "missing_information": "Specific details about Lee's Market's threat detection system implementation and false positive reduction metrics."
+        }
+      ],
+      "candidate_doc_ids": [
+        "web/52191",
+        "web/34285",
+        "web/95459",
+        "web/40337",
+        "web/57530",
+        "web/93509",
+        "web/29471",
+        "web/41690"
+      ]
+    },
+    {
+      "hop_number": 2,
+      "question": "What year did Lee's Market reduce false positives by 40%?",
+      "status": "pending",
+      "attempts": 0,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": null,
+      "search_history": [],
+      "selected_doc_ids": [],
+      "reader_results": [],
+      "candidate_doc_ids": []
+    },
+    {
+      "hop_number": 3,
+      "question": "What was the monthly average facility maintenance cost for Q4 of 2022?",
+      "status": "pending",
+      "attempts": 0,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": null,
+      "search_history": [],
+      "selected_doc_ids": [],
+      "reader_results": [],
+      "candidate_doc_ids": []
+    }
+  ],
+  "actions": [
+    {
+      "id": "iter0_web_search_0",
+      "type": "web_search",
+      "description": "Search for Q4 2022 false positive reduction data from Lee's Market",
+      "parameters": {
+        "query": "Lee's Market false positives reduction Q4 2022"
+      },
+      "priority": 0.9,
+      "expected_output": "Quantitative metric showing false positive reduction percentage or absolute number",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market false positives reduction Q4 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market false positives reduction Q4 2022",
+              "Lee's Market threat detection system performance 2022",
+              "Lee's Market security system false positives Q4 2022",
+              "Lee's Market cybersecurity false positive reduction 2022"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/92231",
+            "source": "web",
+            "title": "https://investor.illumina.com/news/press-release-details/2023/Illumina-Reports-Financial-Results-for-Fourth-Quarter-and-Fiscal-Year-2022/default.aspx",
+            "locator": "https://investor.illumina.com/news/press-release-details/2023/Illumina-Reports-Financial-Results-for-Fourth-Quarter-and-Fiscal-Year-2022/default.aspx",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market false positives reduction Q4 2022"
+            ],
+            "snippet": "---\ntitle: Press Release\ndate: 2023-02-07\n---\nIllumina Reports Financial Results for Fourth Quarter and Fiscal Year 2022\n\n- Revenue of $1.08 billion for Q4 2022, down 10% from Q4 2021, and down 7% on a constant currency basis\n\n- Revenue of $4.58 billion for fiscal year 2022, up 1% from fiscal year 2021, and up 3% on a..."
+          },
+          {
+            "doc_id": "web/93509",
+            "source": "web",
+            "title": "https://www.merck.com/news/merck-announces-fourth-quarter-and-full-year-2022-financial-results/",
+            "locator": "https://www.merck.com/news/merck-announces-fourth-quarter-and-full-year-2022-financial-results/",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market false positives reduction Q4 2022"
+            ],
+            "snippet": "---\ntitle: What can we help you find?\ndate: 2023-02-02\n---\nMerck Announces Fourth-Quarter and Full-Year 2022 Financial Results\n\nFebruary 2, 2023 6:30 am ET\n\n- Fourth-Quarter and Full-Year 2022 Results Reflect Sustained Strong Revenue Growth\n\n- Fourth-Quarter 2022 Worldwide Sales Were $13.8 Billion, an Increase of 2% Fr..."
+          },
+          {
+            "doc_id": "web/41690",
+            "source": "web",
+            "title": "https://www.cnbc.com/2023/09/08/this-is-how-much-money-retailers-are-losing-to-shrink-retail-theft.html",
+            "locator": "https://www.cnbc.com/2023/09/08/this-is-how-much-money-retailers-are-losing-to-shrink-retail-theft.html",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market false positives reduction Q4 2022"
+            ],
+            "snippet": "---\ntitle: Shrink and theft losses near $1 billion at Lowe's — here's how much they're costing other retailers\nauthor: Gabrielle Fonrouge; Gabrielle-Fonrouge\ndate: 2023-09-08\n---\nA range of retailers are again blaming shrink as one of the reasons they saw another quarter of lackluster profits.\n\nBut some of those compan..."
+          },
+          {
+            "doc_id": "web/34285",
+            "source": "web",
+            "title": "https://www.statista.com/statistics/1139351/retailers-inventory-shrinkage-rate-us/",
+            "locator": "https://www.statista.com/statistics/1139351/retailers-inventory-shrinkage-rate-us/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market false positives reduction Q4 2022"
+            ],
+            "snippet": "---\ntitle: Breakdown of U.S. retailers' inventory shrinkage percentage in 2022\nauthor: Kasia Davies; Jan\ndate: 2025-01-14\n---\nIn fiscal 2022, over 13 percent of retail brands in the United States stated that they experienced an inventory shrink of 3 percent and higher. Over 20 percent experienced inventory shrinkage be..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 23.435644878074527,
+      "iteration": 0
+    },
+    {
+      "id": "iter0_web_search_1",
+      "type": "web_search",
+      "description": "Search for threat detection system performance reports from Lee's Market",
+      "parameters": {
+        "query": "Lee's Market threat detection system performance 2022"
+      },
+      "priority": 0.85,
+      "expected_output": "Document containing false positive reduction statistics",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market threat detection system performance 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market threat detection system performance 2022"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market threat detection system performance 2022",
+              "Lee's Market security system false positives Q4 2022",
+              "Lee's Market cybersecurity false positive reduction 2022"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/18197",
+            "source": "web",
+            "title": "https://ral.ucar.edu/solutions/products/low-level-wind-shear-alert-system-llwas",
+            "locator": "https://ral.ucar.edu/solutions/products/low-level-wind-shear-alert-system-llwas",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market threat detection system performance 2022"
+            ],
+            "snippet": "---\ntitle: Low-Level Wind Shear Alert System (LLWAS)\ndate: 2025-01-01\n---\nLow-Level Wind Shear Alert System (LLWAS)\n\nContents\n\nThe LLWAS system was originally developed by the FAA in the 1970s to detect large scale wind shifts (sea breeze fronts, gust fronts and cold and warm fronts). It was developed by the FAA in res..."
+          },
+          {
+            "doc_id": "web/61453",
+            "source": "web",
+            "title": "https://www.soundthinking.com/",
+            "locator": "https://www.soundthinking.com/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market threat detection system performance 2022"
+            ],
+            "snippet": "---\ntitle: The Latest\ndate: 2024-10-20\n---\nLaw Enforcement Solutions\n\nLaw Enforcement Solutions\n\nOne More Life\n\nOne More Life\n\nAI-driven technology + long-term partnerships = lives saved\n\nPlay Video\n\nPause Video\n\nSecurity Solutions\n\nSecurity Solutions\n\nWeapons Detection Without the Bottlenecks\n\nWeapons Detection Withou..."
+          },
+          {
+            "doc_id": "web/45322",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Traffic_enforcement_camera",
+            "locator": "https://en.wikipedia.org/wiki/Traffic_enforcement_camera",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market threat detection system performance 2022"
+            ],
+            "snippet": "---\ntitle: Traffic enforcement camera - Wikipedia\ndate: 2002-11-04\n---\nA traffic enforcement camera (also a red light camera, speed camera, road safety camera, bus lane camera, depending on use) is a camera which may be mounted beside or over a road or installed in an enforcement vehicle to detect motoring offenses, in..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 23.352177795022726,
+      "iteration": 0
+    },
+    {
+      "id": "iter0_web_search_2",
+      "type": "web_search",
+      "description": "Search for security system implementation results from Lee's Market",
+      "parameters": {
+        "query": "Lee's Market security system false positives Q4 2022"
+      },
+      "priority": 0.8,
+      "expected_output": "News article or report detailing system effectiveness metrics",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market security system false positives Q4 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market security system false positives Q4 2022"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market security system false positives Q4 2022"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/36490",
+            "source": "web",
+            "title": "https://carnegieendowment.org/features/fincyber-timeline",
+            "locator": "https://carnegieendowment.org/features/fincyber-timeline",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market security system false positives Q4 2022",
+              "Lee's Market cybersecurity false positive reduction 2022"
+            ],
+            "snippet": "---\ntitle: Timeline of Cyber Incidents Involving Financial Institutions\ndate: 2007-04-26\n---\nThis timeline chronicles ~200 cyber incidents targeting financial institutions since 2007, and can be filtered by country, region, year, attribution, incident type, and actor type. Cybersecurity risks to the financial system ha..."
+          },
+          {
+            "doc_id": "web/13494",
+            "source": "web",
+            "title": "https://www.loudoun.gov/civicalerts.aspx?ARC=L&What=2&CC=2&ItemID=9877&From=AID%3D9877",
+            "locator": "https://www.loudoun.gov/civicalerts.aspx?ARC=L&What=2&CC=2&ItemID=9877&From=AID%3D9877",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market security system false positives Q4 2022"
+            ],
+            "snippet": "---\ntitle: News & Announcements • Loudoun County, VA\ndate: 2022-07-09\n---\n| Name |\n\nPublished Date |\n\nArchived Date |\n\n| Emergency Alert | 3/16/2010 11:27 AM | 3/16/2010 11:34 AM |\n\n| Recycling and Waste Disposal | 7/22/2011 12:39 PM | 7/22/2011 12:39 PM |\n\n| Fire Marshal | 8/25/2011 1:17 PM | 9/12/2011 8:41 PM |\n\n| Re..."
+          },
+          {
+            "doc_id": "web/7490",
+            "source": "web",
+            "title": "https://www.cbp.gov/newsroom/national-media-release/cbp-releases-february-2023-monthly-operational-update",
+            "locator": "https://www.cbp.gov/newsroom/national-media-release/cbp-releases-february-2023-monthly-operational-update",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market security system false positives Q4 2022"
+            ],
+            "snippet": "---\ntitle: CBP Releases February 2023 Monthly Operational Update\ndate: 2023-03-15\n---\nEncounters between ports of entry remain at lowest level since February 2021.\n\nWASHINGTON – U.S. Customs and Border Protection released operational statistics today for February 2023, which can be viewed on the CBP Enforcement Statist..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 23.434978497913107,
+      "iteration": 0
+    },
+    {
+      "id": "iter0_web_search_3",
+      "type": "web_search",
+      "description": "Search for Lee's Market cybersecurity performance metrics",
+      "parameters": {
+        "query": "Lee's Market cybersecurity false positive reduction 2022"
+      },
+      "priority": 0.75,
+      "expected_output": "Dataset or analysis showing false positive reduction figures",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market cybersecurity false positive reduction 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market cybersecurity false positive reduction 2022"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/30967",
+            "source": "web",
+            "title": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "locator": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market cybersecurity false positive reduction 2022"
+            ],
+            "snippet": "---\ntitle: May 2024: Biggest Cyber Attacks, Data Breaches & Ransomware Attacks\ndate: 2025-06-02\n---\nMay 2024: Biggest Cyber Attacks, Data Breaches & Ransomware Attacks\n\nDate: 1 June 2024\n\nWhy did Dell, the UK Ministry of Defence, Australian Mortgage Lender FirstMac, WebTPA, Entertainment ticketing giant TicketMaster, A..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market cybersecurity false positive reduction 2022"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/80697",
+            "source": "web",
+            "title": "https://www.cm-alliance.com/cybersecurity-blog/biggest-cyber-attacks-ransomware-attacks-data-breaches-of-march-2025",
+            "locator": "https://www.cm-alliance.com/cybersecurity-blog/biggest-cyber-attacks-ransomware-attacks-data-breaches-of-march-2025",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market cybersecurity false positive reduction 2022"
+            ],
+            "snippet": "---\ntitle: Biggest Cyber Attacks, Ransomware Attacks, Data Breaches of March 2025\ndate: 2025-06-02\n---\nBiggest Cyber Attacks, Ransomware Attacks, Data Breaches of March 2025\n\nDate: 1 April 2025\n\nWhat do X, New York University, GitHub Actions, Blockchain Gaming Platform WEMIX, and the Polish Space Agency have in common?..."
+          },
+          {
+            "doc_id": "web/36490",
+            "source": "web",
+            "title": "https://carnegieendowment.org/features/fincyber-timeline",
+            "locator": "https://carnegieendowment.org/features/fincyber-timeline",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market cybersecurity false positive reduction 2022"
+            ],
+            "snippet": "---\ntitle: Timeline of Cyber Incidents Involving Financial Institutions\ndate: 2007-04-26\n---\nThis timeline chronicles ~200 cyber incidents targeting financial institutions since 2007, and can be filtered by country, region, year, attribution, incident type, and actor type. Cybersecurity risks to the financial system ha..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 23.578426748979837,
+      "iteration": 0
+    },
+    {
+      "id": "iter1_web_search_0",
+      "type": "web_search",
+      "description": "Search for Lee's Market threat detection system false positive reduction Q4 2022 report",
+      "parameters": {
+        "query": "Lee's Market threat detection system false positive reduction Q4 2022 report"
+      },
+      "priority": 0.9,
+      "expected_output": "A document containing specific metrics on false positive reduction for Lee's Market in Q4 2022",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market threat detection system false positive reduction Q4 2022 report",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market threat detection system false positive reduction Q4 2022 report"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/45322",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Traffic_enforcement_camera",
+            "locator": "https://en.wikipedia.org/wiki/Traffic_enforcement_camera",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market threat detection system false positive reduction Q4 2022 report",
+              "Lee's Market security system false positive reduction 2022 press release"
+            ],
+            "snippet": "---\ntitle: Traffic enforcement camera - Wikipedia\ndate: 2002-11-04\n---\nA traffic enforcement camera (also a red light camera, speed camera, road safety camera, bus lane camera, depending on use) is a camera which may be mounted beside or over a road or installed in an enforcement vehicle to detect motoring offenses, in..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market threat detection system false positive reduction Q4 2022 report"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/18197",
+            "source": "web",
+            "title": "https://ral.ucar.edu/solutions/products/low-level-wind-shear-alert-system-llwas",
+            "locator": "https://ral.ucar.edu/solutions/products/low-level-wind-shear-alert-system-llwas",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market threat detection system false positive reduction Q4 2022 report",
+              "Lee's Market threat detection system case study Q4 2022"
+            ],
+            "snippet": "---\ntitle: Low-Level Wind Shear Alert System (LLWAS)\ndate: 2025-01-01\n---\nLow-Level Wind Shear Alert System (LLWAS)\n\nContents\n\nThe LLWAS system was originally developed by the FAA in the 1970s to detect large scale wind shifts (sea breeze fronts, gust fronts and cold and warm fronts). It was developed by the FAA in res..."
+          },
+          {
+            "doc_id": "web/83704",
+            "source": "web",
+            "title": "https://nrsplus.com/petro/",
+            "locator": "https://nrsplus.com/petro/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market threat detection system false positive reduction Q4 2022 report"
+            ],
+            "snippet": "---\ntitle: Explore the Ultimate Pump-Integrated POS System for Gas Stations & EMV Solution at the Pumps\ndate: 2025-01-01\n---\nHome NRS Petro\n\nthe Ultimate\n\nPump-Integrated\n\nPOS\n\nSystem for\n\nGas Stations\n\n&\n\nEMV Solution at\n\nthe Pumps\n\nEmpowering Gas Stations with\n\nSecure EMV Compliant Transactions\n\nand Streamlined Opera..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 2.798973879078403,
+      "iteration": 1
+    },
+    {
+      "id": "iter1_web_search_1",
+      "type": "web_search",
+      "description": "Search for Lee's Market cybersecurity performance metrics 2022",
+      "parameters": {
+        "query": "Lee's Market cybersecurity performance metrics 2022"
+      },
+      "priority": 0.85,
+      "expected_output": "A document with annual or quarterly cybersecurity performance data including false positive metrics",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market cybersecurity performance metrics 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market cybersecurity performance metrics 2022"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/4912",
+            "source": "web",
+            "title": "https://purplesec.us/resources/cybersecurity-statistics/",
+            "locator": "https://purplesec.us/resources/cybersecurity-statistics/",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market cybersecurity performance metrics 2022"
+            ],
+            "snippet": "---\ntitle: 2024 Cybersecurity Statistics\nauthor: Jason Firch; MBA\ndate: 2025-05-24\n---\n2024 Cybersecurity Statistics\n\nThe Ultimate List Of Cybersecurity Stats Data, & Trends\n\nHundreds of cyber security statistics including the latest ransomware stats, the cost of cybercrime, the rise of supply chain attacks, and much m..."
+          },
+          {
+            "doc_id": "web/91890",
+            "source": "web",
+            "title": "https://www.varonis.com/blog/cybersecurity-statistics",
+            "locator": "https://www.varonis.com/blog/cybersecurity-statistics",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market cybersecurity performance metrics 2022"
+            ],
+            "snippet": "---\ntitle: 157 Cybersecurity Statistics and Trends [updated 2024]\nauthor: Rob Sobers\ndate: 2024-09-13\n---\nCybersecurity is a day-to-day operation for many businesses, but it's not a small task to stay on top of what's been going on over the past year or so.\n\nWe've compiled this list of the most important stats and tren..."
+          },
+          {
+            "doc_id": "web/88213",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2023/",
+            "locator": "https://cybersecurityventures.com/cybersecurity-almanac-2023/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market cybersecurity performance metrics 2022"
+            ],
+            "snippet": "---\ntitle: 24 May 2023 Cybersecurity Almanac: 100 Facts, Figures, Predictions, And Statistics\ndate: 2023-05-24\n---\n24 May 2023 Cybersecurity Almanac: 100 Facts, Figures, Predictions, And Statistics\n\nThe past, present, and future of cybercrime. Visit our Partner Evolution Equity\n\n– Steve Morgan, Editor-In-Chief\n\nSausali..."
+          },
+          {
+            "doc_id": "web/30161",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2022/",
+            "locator": "https://cybersecurityventures.com/cybersecurity-almanac-2022/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market cybersecurity performance metrics 2022"
+            ],
+            "snippet": "---\ntitle: 19 Jan 2022 Cybersecurity Almanac: 100 Facts, Figures, Predictions And Statistics\ndate: 2024-01-01\n---\n19 Jan 2022 Cybersecurity Almanac: 100 Facts, Figures, Predictions And Statistics\n\nThe past, present, and future of cybercrime. Sponsored by Cisco\n\n– Steve Morgan, Editor-in-Chief\n\nSausalito, Calif. – Jan...."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 2.6178733590058982,
+      "iteration": 1
+    },
+    {
+      "id": "iter1_web_search_2",
+      "type": "web_search",
+      "description": "Search for Lee's Market threat detection system case study Q4 2022",
+      "parameters": {
+        "query": "Lee's Market threat detection system case study Q4 2022"
+      },
+      "priority": 0.8,
+      "expected_output": "A case study document detailing system implementation and performance outcomes",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market threat detection system case study Q4 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market threat detection system case study Q4 2022"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market threat detection system case study Q4 2022"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/4161",
+            "source": "web",
+            "title": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+            "locator": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market threat detection system case study Q4 2022"
+            ],
+            "snippet": "---\ntitle: We have solutions to reach them\nauthor: No items found No items found\ndate: 2024-01-31\n---\nKey Takeaways: Overview of The US Retail Grocery Market in 2025\n\nThe US grocery retail market is a key part of the country's retail industry. It has a rich history, evolving from small, family-owned stores to large, di..."
+          },
+          {
+            "doc_id": "web/18197",
+            "source": "web",
+            "title": "https://ral.ucar.edu/solutions/products/low-level-wind-shear-alert-system-llwas",
+            "locator": "https://ral.ucar.edu/solutions/products/low-level-wind-shear-alert-system-llwas",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market threat detection system case study Q4 2022"
+            ],
+            "snippet": "---\ntitle: Low-Level Wind Shear Alert System (LLWAS)\ndate: 2025-01-01\n---\nLow-Level Wind Shear Alert System (LLWAS)\n\nContents\n\nThe LLWAS system was originally developed by the FAA in the 1970s to detect large scale wind shifts (sea breeze fronts, gust fronts and cold and warm fronts). It was developed by the FAA in res..."
+          },
+          {
+            "doc_id": "web/30967",
+            "source": "web",
+            "title": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "locator": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market threat detection system case study Q4 2022"
+            ],
+            "snippet": "---\ntitle: May 2024: Biggest Cyber Attacks, Data Breaches & Ransomware Attacks\ndate: 2025-06-02\n---\nMay 2024: Biggest Cyber Attacks, Data Breaches & Ransomware Attacks\n\nDate: 1 June 2024\n\nWhy did Dell, the UK Ministry of Defence, Australian Mortgage Lender FirstMac, WebTPA, Entertainment ticketing giant TicketMaster, A..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 2.799251406220719,
+      "iteration": 1
+    },
+    {
+      "id": "iter1_web_search_3",
+      "type": "web_search",
+      "description": "Search for Lee's Market security system false positive reduction 2022 press release",
+      "parameters": {
+        "query": "Lee's Market security system false positive reduction 2022 press release"
+      },
+      "priority": 0.8,
+      "expected_output": "A press release containing official announcement of false positive reduction metrics",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market security system false positive reduction 2022 press release",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market security system false positive reduction 2022 press release"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market security system false positive reduction 2022 press release"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/13494",
+            "source": "web",
+            "title": "https://www.loudoun.gov/civicalerts.aspx?ARC=L&What=2&CC=2&ItemID=9877&From=AID%3D9877",
+            "locator": "https://www.loudoun.gov/civicalerts.aspx?ARC=L&What=2&CC=2&ItemID=9877&From=AID%3D9877",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market security system false positive reduction 2022 press release"
+            ],
+            "snippet": "---\ntitle: News & Announcements • Loudoun County, VA\ndate: 2022-07-09\n---\n| Name |\n\nPublished Date |\n\nArchived Date |\n\n| Emergency Alert | 3/16/2010 11:27 AM | 3/16/2010 11:34 AM |\n\n| Recycling and Waste Disposal | 7/22/2011 12:39 PM | 7/22/2011 12:39 PM |\n\n| Fire Marshal | 8/25/2011 1:17 PM | 9/12/2011 8:41 PM |\n\n| Re..."
+          },
+          {
+            "doc_id": "web/45322",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Traffic_enforcement_camera",
+            "locator": "https://en.wikipedia.org/wiki/Traffic_enforcement_camera",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market security system false positive reduction 2022 press release"
+            ],
+            "snippet": "---\ntitle: Traffic enforcement camera - Wikipedia\ndate: 2002-11-04\n---\nA traffic enforcement camera (also a red light camera, speed camera, road safety camera, bus lane camera, depending on use) is a camera which may be mounted beside or over a road or installed in an enforcement vehicle to detect motoring offenses, in..."
+          },
+          {
+            "doc_id": "web/70421",
+            "source": "web",
+            "title": "https://www.ifsecglobal.com/uncategorized/songs-about-security-false-alarm/",
+            "locator": "https://www.ifsecglobal.com/uncategorized/songs-about-security-false-alarm/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market security system false positive reduction 2022 press release"
+            ],
+            "snippet": "<!DOCTYPE html><html xmlns=\"http://www.w3.org/1999/xhtml\"><head><link data-optimized=\"2\" rel=\"stylesheet\" href=\"https://www.ifsecglobal.com/wp-content/litespeed/css/825d75186fba07c7ebdcf2f3f4a90936.css?ver=ca317\"><script type=\"text/javascript\" async=\"\" charset=\"utf-8\" src=\"https://www.gstatic.com/recaptcha/releases/GUG..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 2.8610774010885507,
+      "iteration": 1
+    },
+    {
+      "id": "iter2_web_search_0",
+      "type": "web_search",
+      "description": "Search for Lee's Market false positive reduction metrics in Q4 2022",
+      "parameters": {
+        "query": "Lee's Market false positives reduction Q4 2022 report"
+      },
+      "priority": 0.9,
+      "expected_output": "Candidate evidence for false positive reduction metrics in Q4 2022",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market false positives reduction Q4 2022 report",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market false positives reduction Q4 2022 report"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/92231",
+            "source": "web",
+            "title": "https://investor.illumina.com/news/press-release-details/2023/Illumina-Reports-Financial-Results-for-Fourth-Quarter-and-Fiscal-Year-2022/default.aspx",
+            "locator": "https://investor.illumina.com/news/press-release-details/2023/Illumina-Reports-Financial-Results-for-Fourth-Quarter-and-Fiscal-Year-2022/default.aspx",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market false positives reduction Q4 2022 report",
+              "Lee's Market security system implementation Q4 2022"
+            ],
+            "snippet": "---\ntitle: Press Release\ndate: 2023-02-07\n---\nIllumina Reports Financial Results for Fourth Quarter and Fiscal Year 2022\n\n- Revenue of $1.08 billion for Q4 2022, down 10% from Q4 2021, and down 7% on a constant currency basis\n\n- Revenue of $4.58 billion for fiscal year 2022, up 1% from fiscal year 2021, and up 3% on a..."
+          },
+          {
+            "doc_id": "web/93509",
+            "source": "web",
+            "title": "https://www.merck.com/news/merck-announces-fourth-quarter-and-full-year-2022-financial-results/",
+            "locator": "https://www.merck.com/news/merck-announces-fourth-quarter-and-full-year-2022-financial-results/",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market false positives reduction Q4 2022 report",
+              "Lee's Market security system implementation Q4 2022"
+            ],
+            "snippet": "---\ntitle: What can we help you find?\ndate: 2023-02-02\n---\nMerck Announces Fourth-Quarter and Full-Year 2022 Financial Results\n\nFebruary 2, 2023 6:30 am ET\n\n- Fourth-Quarter and Full-Year 2022 Results Reflect Sustained Strong Revenue Growth\n\n- Fourth-Quarter 2022 Worldwide Sales Were $13.8 Billion, an Increase of 2% Fr..."
+          },
+          {
+            "doc_id": "web/41690",
+            "source": "web",
+            "title": "https://www.cnbc.com/2023/09/08/this-is-how-much-money-retailers-are-losing-to-shrink-retail-theft.html",
+            "locator": "https://www.cnbc.com/2023/09/08/this-is-how-much-money-retailers-are-losing-to-shrink-retail-theft.html",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market false positives reduction Q4 2022 report"
+            ],
+            "snippet": "---\ntitle: Shrink and theft losses near $1 billion at Lowe's — here's how much they're costing other retailers\nauthor: Gabrielle Fonrouge; Gabrielle-Fonrouge\ndate: 2023-09-08\n---\nA range of retailers are again blaming shrink as one of the reasons they saw another quarter of lackluster profits.\n\nBut some of those compan..."
+          },
+          {
+            "doc_id": "web/34285",
+            "source": "web",
+            "title": "https://www.statista.com/statistics/1139351/retailers-inventory-shrinkage-rate-us/",
+            "locator": "https://www.statista.com/statistics/1139351/retailers-inventory-shrinkage-rate-us/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market false positives reduction Q4 2022 report"
+            ],
+            "snippet": "---\ntitle: Breakdown of U.S. retailers' inventory shrinkage percentage in 2022\nauthor: Kasia Davies; Jan\ndate: 2025-01-14\n---\nIn fiscal 2022, over 13 percent of retail brands in the United States stated that they experienced an inventory shrink of 3 percent and higher. Over 20 percent experienced inventory shrinkage be..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.7398579081054777,
+      "iteration": 2
+    },
+    {
+      "id": "iter2_web_search_1",
+      "type": "web_search",
+      "description": "Search for cybersecurity performance details of Lee's Market in 2022",
+      "parameters": {
+        "query": "Lee's Market cybersecurity false positive metrics 2022"
+      },
+      "priority": 0.85,
+      "expected_output": "Candidate evidence for false positive reduction or system performance data",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market cybersecurity false positive metrics 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market cybersecurity false positive metrics 2022"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/4912",
+            "source": "web",
+            "title": "https://purplesec.us/resources/cybersecurity-statistics/",
+            "locator": "https://purplesec.us/resources/cybersecurity-statistics/",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market cybersecurity false positive metrics 2022"
+            ],
+            "snippet": "---\ntitle: 2024 Cybersecurity Statistics\nauthor: Jason Firch; MBA\ndate: 2025-05-24\n---\n2024 Cybersecurity Statistics\n\nThe Ultimate List Of Cybersecurity Stats Data, & Trends\n\nHundreds of cyber security statistics including the latest ransomware stats, the cost of cybercrime, the rise of supply chain attacks, and much m..."
+          },
+          {
+            "doc_id": "web/36490",
+            "source": "web",
+            "title": "https://carnegieendowment.org/features/fincyber-timeline",
+            "locator": "https://carnegieendowment.org/features/fincyber-timeline",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market cybersecurity false positive metrics 2022"
+            ],
+            "snippet": "---\ntitle: Timeline of Cyber Incidents Involving Financial Institutions\ndate: 2007-04-26\n---\nThis timeline chronicles ~200 cyber incidents targeting financial institutions since 2007, and can be filtered by country, region, year, attribution, incident type, and actor type. Cybersecurity risks to the financial system ha..."
+          },
+          {
+            "doc_id": "web/30967",
+            "source": "web",
+            "title": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "locator": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market cybersecurity false positive metrics 2022"
+            ],
+            "snippet": "---\ntitle: May 2024: Biggest Cyber Attacks, Data Breaches & Ransomware Attacks\ndate: 2025-06-02\n---\nMay 2024: Biggest Cyber Attacks, Data Breaches & Ransomware Attacks\n\nDate: 1 June 2024\n\nWhy did Dell, the UK Ministry of Defence, Australian Mortgage Lender FirstMac, WebTPA, Entertainment ticketing giant TicketMaster, A..."
+          },
+          {
+            "doc_id": "web/80697",
+            "source": "web",
+            "title": "https://www.cm-alliance.com/cybersecurity-blog/biggest-cyber-attacks-ransomware-attacks-data-breaches-of-march-2025",
+            "locator": "https://www.cm-alliance.com/cybersecurity-blog/biggest-cyber-attacks-ransomware-attacks-data-breaches-of-march-2025",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market cybersecurity false positive metrics 2022"
+            ],
+            "snippet": "---\ntitle: Biggest Cyber Attacks, Ransomware Attacks, Data Breaches of March 2025\ndate: 2025-06-02\n---\nBiggest Cyber Attacks, Ransomware Attacks, Data Breaches of March 2025\n\nDate: 1 April 2025\n\nWhat do X, New York University, GitHub Actions, Blockchain Gaming Platform WEMIX, and the Polish Space Agency have in common?..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.7037970400415361,
+      "iteration": 2
+    },
+    {
+      "id": "iter2_web_search_2",
+      "type": "web_search",
+      "description": "Search for security system implementation details at Lee's Market in Q4 2022",
+      "parameters": {
+        "query": "Lee's Market security system implementation Q4 2022"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for system changes and performance impacts",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market security system implementation Q4 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market security system implementation Q4 2022"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market security system implementation Q4 2022"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/45135",
+            "source": "web",
+            "title": "https://www.secretservice.gov/newsroom/releases/2024/07/written-testimony-director-kimberly-cheatle-oversight-committee-attempted",
+            "locator": "https://www.secretservice.gov/newsroom/releases/2024/07/written-testimony-director-kimberly-cheatle-oversight-committee-attempted",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market security system implementation Q4 2022",
+              "Lee's Market security improvement press release 2022"
+            ],
+            "snippet": "---\ntitle: Written Testimony from Director Kimberly Cheatle to the Oversight Committee on the Attempted Assassination of Former President Trump\ndate: 2024-07-22\n---\nGood morning, Chairman Comer, Ranking Member Raskin, and distinguished members of the Committee.\n\nMy name is Kimberly Cheatle, and I am the Director of the..."
+          },
+          {
+            "doc_id": "web/92231",
+            "source": "web",
+            "title": "https://investor.illumina.com/news/press-release-details/2023/Illumina-Reports-Financial-Results-for-Fourth-Quarter-and-Fiscal-Year-2022/default.aspx",
+            "locator": "https://investor.illumina.com/news/press-release-details/2023/Illumina-Reports-Financial-Results-for-Fourth-Quarter-and-Fiscal-Year-2022/default.aspx",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market security system implementation Q4 2022"
+            ],
+            "snippet": "---\ntitle: Press Release\ndate: 2023-02-07\n---\nIllumina Reports Financial Results for Fourth Quarter and Fiscal Year 2022\n\n- Revenue of $1.08 billion for Q4 2022, down 10% from Q4 2021, and down 7% on a constant currency basis\n\n- Revenue of $4.58 billion for fiscal year 2022, up 1% from fiscal year 2021, and up 3% on a..."
+          },
+          {
+            "doc_id": "web/93509",
+            "source": "web",
+            "title": "https://www.merck.com/news/merck-announces-fourth-quarter-and-full-year-2022-financial-results/",
+            "locator": "https://www.merck.com/news/merck-announces-fourth-quarter-and-full-year-2022-financial-results/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market security system implementation Q4 2022"
+            ],
+            "snippet": "---\ntitle: What can we help you find?\ndate: 2023-02-02\n---\nMerck Announces Fourth-Quarter and Full-Year 2022 Financial Results\n\nFebruary 2, 2023 6:30 am ET\n\n- Fourth-Quarter and Full-Year 2022 Results Reflect Sustained Strong Revenue Growth\n\n- Fourth-Quarter 2022 Worldwide Sales Were $13.8 Billion, an Increase of 2% Fr..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.5651903231628239,
+      "iteration": 2
+    },
+    {
+      "id": "iter2_web_search_3",
+      "type": "web_search",
+      "description": "Search for press releases about Lee's Market security improvements in 2022",
+      "parameters": {
+        "query": "Lee's Market security improvement press release 2022"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for formal announcements about system performance",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market security improvement press release 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market security improvement press release 2022"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market security improvement press release 2022"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/13494",
+            "source": "web",
+            "title": "https://www.loudoun.gov/civicalerts.aspx?ARC=L&What=2&CC=2&ItemID=9877&From=AID%3D9877",
+            "locator": "https://www.loudoun.gov/civicalerts.aspx?ARC=L&What=2&CC=2&ItemID=9877&From=AID%3D9877",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market security improvement press release 2022"
+            ],
+            "snippet": "---\ntitle: News & Announcements • Loudoun County, VA\ndate: 2022-07-09\n---\n| Name |\n\nPublished Date |\n\nArchived Date |\n\n| Emergency Alert | 3/16/2010 11:27 AM | 3/16/2010 11:34 AM |\n\n| Recycling and Waste Disposal | 7/22/2011 12:39 PM | 7/22/2011 12:39 PM |\n\n| Fire Marshal | 8/25/2011 1:17 PM | 9/12/2011 8:41 PM |\n\n| Re..."
+          },
+          {
+            "doc_id": "web/45135",
+            "source": "web",
+            "title": "https://www.secretservice.gov/newsroom/releases/2024/07/written-testimony-director-kimberly-cheatle-oversight-committee-attempted",
+            "locator": "https://www.secretservice.gov/newsroom/releases/2024/07/written-testimony-director-kimberly-cheatle-oversight-committee-attempted",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market security improvement press release 2022"
+            ],
+            "snippet": "---\ntitle: Written Testimony from Director Kimberly Cheatle to the Oversight Committee on the Attempted Assassination of Former President Trump\ndate: 2024-07-22\n---\nGood morning, Chairman Comer, Ranking Member Raskin, and distinguished members of the Committee.\n\nMy name is Kimberly Cheatle, and I am the Director of the..."
+          },
+          {
+            "doc_id": "web/72370",
+            "source": "web",
+            "title": "https://legalaidnyc.org/press-room-archive/",
+            "locator": "https://legalaidnyc.org/press-room-archive/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market security improvement press release 2022"
+            ],
+            "snippet": "---\ntitle: Press Room Archive\ndate: 2025-06-03\n---\nCall 212-577-3300\n\nMarch\n\n03/31/25 LAS Statement on Medicaid Home Care Transition 03/28/25 LAS Releases Report Highlighting Impact Correction Officers' Strike 03/27/25 LAS Statement on the NYC Rent Guidelines Board's 2025 Income and Expense Study 03/27/25 Lawmakers Hol..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.6437987789977342,
+      "iteration": 2
+    },
+    {
+      "id": "iter3_web_search_0",
+      "type": "web_search",
+      "description": "Search for Lee's Market cybersecurity system performance report Q4 2022",
+      "parameters": {
+        "query": "Lee's Market cybersecurity system performance report Q4 2022"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market cybersecurity system performance report Q4 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market cybersecurity system performance report Q4 2022"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/30967",
+            "source": "web",
+            "title": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "locator": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market cybersecurity system performance report Q4 2022"
+            ],
+            "snippet": "---\ntitle: May 2024: Biggest Cyber Attacks, Data Breaches & Ransomware Attacks\ndate: 2025-06-02\n---\nMay 2024: Biggest Cyber Attacks, Data Breaches & Ransomware Attacks\n\nDate: 1 June 2024\n\nWhy did Dell, the UK Ministry of Defence, Australian Mortgage Lender FirstMac, WebTPA, Entertainment ticketing giant TicketMaster, A..."
+          },
+          {
+            "doc_id": "web/36490",
+            "source": "web",
+            "title": "https://carnegieendowment.org/features/fincyber-timeline",
+            "locator": "https://carnegieendowment.org/features/fincyber-timeline",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market cybersecurity system performance report Q4 2022"
+            ],
+            "snippet": "---\ntitle: Timeline of Cyber Incidents Involving Financial Institutions\ndate: 2007-04-26\n---\nThis timeline chronicles ~200 cyber incidents targeting financial institutions since 2007, and can be filtered by country, region, year, attribution, incident type, and actor type. Cybersecurity risks to the financial system ha..."
+          },
+          {
+            "doc_id": "web/12200",
+            "source": "web",
+            "title": "https://www.cm-alliance.com/cybersecurity-blog/january-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "locator": "https://www.cm-alliance.com/cybersecurity-blog/january-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market cybersecurity system performance report Q4 2022"
+            ],
+            "snippet": "---\ntitle: January 2024: Biggest Cyber Attacks, Data Breaches, Ransomware Attacks\ndate: 2025-06-02\n---\nJanuary 2024: Biggest Cyber Attacks, Data Breaches, Ransomware Attacks\n\nDate: 1 February 2024\n\nThe year has started with a bang quite literally, at least in the world of cybersecurity. Check out our monthly compilatio..."
+          },
+          {
+            "doc_id": "web/80697",
+            "source": "web",
+            "title": "https://www.cm-alliance.com/cybersecurity-blog/biggest-cyber-attacks-ransomware-attacks-data-breaches-of-march-2025",
+            "locator": "https://www.cm-alliance.com/cybersecurity-blog/biggest-cyber-attacks-ransomware-attacks-data-breaches-of-march-2025",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market cybersecurity system performance report Q4 2022"
+            ],
+            "snippet": "---\ntitle: Biggest Cyber Attacks, Ransomware Attacks, Data Breaches of March 2025\ndate: 2025-06-02\n---\nBiggest Cyber Attacks, Ransomware Attacks, Data Breaches of March 2025\n\nDate: 1 April 2025\n\nWhat do X, New York University, GitHub Actions, Blockchain Gaming Platform WEMIX, and the Polish Space Agency have in common?..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.16769500286318362,
+      "iteration": 3
+    },
+    {
+      "id": "iter3_web_search_1",
+      "type": "web_search",
+      "description": "Search for Lee's Market security system false positive metrics 2022",
+      "parameters": {
+        "query": "Lee's Market security system false positive metrics 2022"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market security system false positive metrics 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market security system false positive metrics 2022"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market security system false positive metrics 2022"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/70194",
+            "source": "web",
+            "title": "https://blog.dogsbite.org/2024/04/louisville-metro-dog-bite-investigations-by-breed-other-activites.html",
+            "locator": "https://blog.dogsbite.org/2024/04/louisville-metro-dog-bite-investigations-by-breed-other-activites.html",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market security system false positive metrics 2022"
+            ],
+            "snippet": "---\ntitle: A Review of Louisville Metro Animal Services Open Data Set: Dog Bite Investigations by Breed, Dog Licenses and Other Activities\nauthor: Colleen Lynn\ndate: 2024-04-29\n---\nA review of Louisville Metro dog bite investigations and dog licensing data.\n\nView All Statistics\n\nLouisville, KY - We examined 1317 dog bi..."
+          },
+          {
+            "doc_id": "web/31980",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Equifax",
+            "locator": "https://en.wikipedia.org/wiki/Equifax",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market security system false positive metrics 2022"
+            ],
+            "snippet": "---\ntitle: Equifax - Wikipedia\ndate: 2004-09-05\n---\nname: Equifax Inc.\nlogo: Equifax Logo.svg\nimage_size: 250px\nimage_caption: Equifax's headquarters in Atlanta, Georgia.\ntype: Public\ntraded_as: nowrap, S&P 500 component\nhq_location_city: Atlanta, Georgia\nhq_location_country: United States\nfounded: 1899 (as Retail Cred..."
+          },
+          {
+            "doc_id": "web/36490",
+            "source": "web",
+            "title": "https://carnegieendowment.org/features/fincyber-timeline",
+            "locator": "https://carnegieendowment.org/features/fincyber-timeline",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market security system false positive metrics 2022"
+            ],
+            "snippet": "---\ntitle: Timeline of Cyber Incidents Involving Financial Institutions\ndate: 2007-04-26\n---\nThis timeline chronicles ~200 cyber incidents targeting financial institutions since 2007, and can be filtered by country, region, year, attribution, incident type, and actor type. Cybersecurity risks to the financial system ha..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.24703224399127066,
+      "iteration": 3
+    },
+    {
+      "id": "iter3_web_search_2",
+      "type": "web_search",
+      "description": "Search for Lee's Market threat detection system audit Q4 2022",
+      "parameters": {
+        "query": "Lee's Market threat detection system audit Q4 2022"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market threat detection system audit Q4 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market threat detection system audit Q4 2022"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market threat detection system audit Q4 2022"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/95459",
+            "source": "web",
+            "title": "https://ohioauditor.gov/news",
+            "locator": "https://ohioauditor.gov/news",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market threat detection system audit Q4 2022"
+            ],
+            "snippet": "---\ntitle: All Press Releases\ndate: 2020-06-04\n---\nAll Press Releases\n\nFor Immediate Release\n\nCOLUMBUS — A special audit released Thursday details the investigation into a former intervention specialist for the Educational Service Center Council of Governments, who was convicted after she was paid for janitorial hours..."
+          },
+          {
+            "doc_id": "web/36490",
+            "source": "web",
+            "title": "https://carnegieendowment.org/features/fincyber-timeline",
+            "locator": "https://carnegieendowment.org/features/fincyber-timeline",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market threat detection system audit Q4 2022"
+            ],
+            "snippet": "---\ntitle: Timeline of Cyber Incidents Involving Financial Institutions\ndate: 2007-04-26\n---\nThis timeline chronicles ~200 cyber incidents targeting financial institutions since 2007, and can be filtered by country, region, year, attribution, incident type, and actor type. Cybersecurity risks to the financial system ha..."
+          },
+          {
+            "doc_id": "web/4161",
+            "source": "web",
+            "title": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+            "locator": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market threat detection system audit Q4 2022"
+            ],
+            "snippet": "---\ntitle: We have solutions to reach them\nauthor: No items found No items found\ndate: 2024-01-31\n---\nKey Takeaways: Overview of The US Retail Grocery Market in 2025\n\nThe US grocery retail market is a key part of the country's retail industry. It has a rich history, evolving from small, family-owned stores to large, di..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.19505067518912256,
+      "iteration": 3
+    },
+    {
+      "id": "iter3_web_search_3",
+      "type": "web_search",
+      "description": "Search for Lee's Market false positive reduction case study 2022",
+      "parameters": {
+        "query": "Lee's Market false positive reduction case study 2022"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market false positive reduction case study 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market false positive reduction case study 2022"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/73645",
+            "source": "web",
+            "title": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.0020124",
+            "locator": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.0020124",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market false positive reduction case study 2022"
+            ],
+            "snippet": "---\ntitle: Why Most Published Research Findings Are False\nauthor: John P A Ioannidis\ndate: 2005-08-30\n---\nCorrection\n\n25 Aug 2022: Ioannidis JPA (2022) Correction: Why Most Published Research Findings Are False. PLOS Medicine 19(8): e1004085.  View correction\n\nFigures\n\nAbstract\n\nSummary\n\nThere is increasing concern tha..."
+          },
+          {
+            "doc_id": "web/17094",
+            "source": "web",
+            "title": "https://pmc.ncbi.nlm.nih.gov/articles/PMC1182327/",
+            "locator": "https://pmc.ncbi.nlm.nih.gov/articles/PMC1182327/",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market false positive reduction case study 2022"
+            ],
+            "snippet": "---\ntitle: Why Most Published Research Findings Are False\ndate: 2005-01-01\n---\nSummary\n\nThere is increasing concern that most current published research findings are false. The probability that a research claim is true may depend on study power and bias, the number of other studies on the same question, and, importantl..."
+          },
+          {
+            "doc_id": "web/99562",
+            "source": "web",
+            "title": "https://www.bloggang.com/m/viewdiary.php?id=rhoetaupsilon&month=03-2011&date=13&group=2&gblog=237",
+            "locator": "https://www.bloggang.com/m/viewdiary.php?id=rhoetaupsilon&month=03-2011&date=13&group=2&gblog=237",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market false positive reduction case study 2022"
+            ],
+            "snippet": "---\ntitle: Mr.Feynman\ndate: 2011-03-13\n---\n checking into risk taker a seller workhorse wish most commonly it is approachable the competition when pruchasing an explanation to getting a kama'aina ( previous pompous [url=// Factory Outlet[/url] !benefits visualise clog an organization wizard [url=// Factory Outlet[/url]..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market false positive reduction case study 2022"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.26346140005625784,
+      "iteration": 3
+    },
+    {
+      "id": "iter4_web_search_0",
+      "type": "web_search",
+      "description": "Search for Lee's Market security system performance metrics Q4 2022",
+      "parameters": {
+        "query": "Lee's Market security system performance metrics Q4 2022"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for false positive reduction metrics",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market security system performance metrics Q4 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market security system performance metrics Q4 2022"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/92231",
+            "source": "web",
+            "title": "https://investor.illumina.com/news/press-release-details/2023/Illumina-Reports-Financial-Results-for-Fourth-Quarter-and-Fiscal-Year-2022/default.aspx",
+            "locator": "https://investor.illumina.com/news/press-release-details/2023/Illumina-Reports-Financial-Results-for-Fourth-Quarter-and-Fiscal-Year-2022/default.aspx",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market security system performance metrics Q4 2022"
+            ],
+            "snippet": "---\ntitle: Press Release\ndate: 2023-02-07\n---\nIllumina Reports Financial Results for Fourth Quarter and Fiscal Year 2022\n\n- Revenue of $1.08 billion for Q4 2022, down 10% from Q4 2021, and down 7% on a constant currency basis\n\n- Revenue of $4.58 billion for fiscal year 2022, up 1% from fiscal year 2021, and up 3% on a..."
+          },
+          {
+            "doc_id": "web/93509",
+            "source": "web",
+            "title": "https://www.merck.com/news/merck-announces-fourth-quarter-and-full-year-2022-financial-results/",
+            "locator": "https://www.merck.com/news/merck-announces-fourth-quarter-and-full-year-2022-financial-results/",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market security system performance metrics Q4 2022"
+            ],
+            "snippet": "---\ntitle: What can we help you find?\ndate: 2023-02-02\n---\nMerck Announces Fourth-Quarter and Full-Year 2022 Financial Results\n\nFebruary 2, 2023 6:30 am ET\n\n- Fourth-Quarter and Full-Year 2022 Results Reflect Sustained Strong Revenue Growth\n\n- Fourth-Quarter 2022 Worldwide Sales Were $13.8 Billion, an Increase of 2% Fr..."
+          },
+          {
+            "doc_id": "web/52191",
+            "source": "web",
+            "title": "https://ir.amd.com/news-events/press-releases/detail/1115/amd-reports-fourth-quarter-and-full-year-2022-financial-results",
+            "locator": "https://ir.amd.com/news-events/press-releases/detail/1115/amd-reports-fourth-quarter-and-full-year-2022-financial-results",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market security system performance metrics Q4 2022"
+            ],
+            "snippet": "---\ntitle: AMD Reports Fourth Quarter and Full Year 2022 Financial Results\ndate: 2023-01-31\n---\nAMD Reports Fourth Quarter and Full Year 2022 Financial Results\n\n― Record full year revenue of $23.6 Billion up 44% year-over-year ―\n\nSANTA CLARA, Calif., Jan. 31, 2023 (GLOBE NEWSWIRE) -- AMD (NASDAQ:AMD) today announced re..."
+          },
+          {
+            "doc_id": "web/19388",
+            "source": "web",
+            "title": "https://investors.coca-colacompany.com/news-events/press-releases/detail/1101/coca-cola-reports-fourth-quarter-and-full-year-2023-results",
+            "locator": "https://investors.coca-colacompany.com/news-events/press-releases/detail/1101/coca-cola-reports-fourth-quarter-and-full-year-2023-results",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market security system performance metrics Q4 2022"
+            ],
+            "snippet": "---\ntitle: Coca-Cola Reports Fourth Quarter and Full-Year 2023 Results\ndate: 2024-02-13\n---\nCoca-Cola Reports Fourth Quarter and Full-Year 2023 Results\n\nGlobal Unit Case Volume Grew 2% for the Quarter and 2% for the Full Year\n\nNet Revenues Grew 7% for the Quarter and 6% for the Full Year;\n\nOrganic Revenues (Non-GAAP) G..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.5062992440070957,
+      "iteration": 4
+    },
+    {
+      "id": "iter4_web_search_1",
+      "type": "web_search",
+      "description": "Search for Lee's Market cybersecurity system audit report 2022",
+      "parameters": {
+        "query": "Lee's Market cybersecurity system audit report 2022"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for system implementation details",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market cybersecurity system audit report 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market cybersecurity system audit report 2022"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/80697",
+            "source": "web",
+            "title": "https://www.cm-alliance.com/cybersecurity-blog/biggest-cyber-attacks-ransomware-attacks-data-breaches-of-march-2025",
+            "locator": "https://www.cm-alliance.com/cybersecurity-blog/biggest-cyber-attacks-ransomware-attacks-data-breaches-of-march-2025",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market cybersecurity system audit report 2022"
+            ],
+            "snippet": "---\ntitle: Biggest Cyber Attacks, Ransomware Attacks, Data Breaches of March 2025\ndate: 2025-06-02\n---\nBiggest Cyber Attacks, Ransomware Attacks, Data Breaches of March 2025\n\nDate: 1 April 2025\n\nWhat do X, New York University, GitHub Actions, Blockchain Gaming Platform WEMIX, and the Polish Space Agency have in common?..."
+          },
+          {
+            "doc_id": "web/29471",
+            "source": "web",
+            "title": "https://www.cm-alliance.com/cybersecurity-blog/january-2025-recent-cyber-attacks-data-breaches-ransomware-attacks",
+            "locator": "https://www.cm-alliance.com/cybersecurity-blog/january-2025-recent-cyber-attacks-data-breaches-ransomware-attacks",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market cybersecurity system audit report 2022"
+            ],
+            "snippet": "---\ntitle: January 2025: Recent Cyber Attacks, Data Breaches, Ransomware Attacks\ndate: 2025-06-02\n---\nJanuary 2025: Recent Cyber Attacks, Data Breaches, Ransomware Attacks\n\nDate: 3 February 2025\n\nWhat could an open-source toolkit, a cannabis product supplier, an AI startup from China and a UK telecom giant have in comm..."
+          },
+          {
+            "doc_id": "web/30967",
+            "source": "web",
+            "title": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "locator": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market cybersecurity system audit report 2022"
+            ],
+            "snippet": "---\ntitle: May 2024: Biggest Cyber Attacks, Data Breaches & Ransomware Attacks\ndate: 2025-06-02\n---\nMay 2024: Biggest Cyber Attacks, Data Breaches & Ransomware Attacks\n\nDate: 1 June 2024\n\nWhy did Dell, the UK Ministry of Defence, Australian Mortgage Lender FirstMac, WebTPA, Entertainment ticketing giant TicketMaster, A..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market cybersecurity system audit report 2022"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.2883594590239227,
+      "iteration": 4
+    },
+    {
+      "id": "iter4_web_search_2",
+      "type": "web_search",
+      "description": "Search for Lee's Market security improvements false positive reduction 2022",
+      "parameters": {
+        "query": "Lee's Market security improvements false positive reduction 2022"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for quantitative reduction data",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market security improvements false positive reduction 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market security improvements false positive reduction 2022"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market security improvements false positive reduction 2022"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/7490",
+            "source": "web",
+            "title": "https://www.cbp.gov/newsroom/national-media-release/cbp-releases-february-2023-monthly-operational-update",
+            "locator": "https://www.cbp.gov/newsroom/national-media-release/cbp-releases-february-2023-monthly-operational-update",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market security improvements false positive reduction 2022"
+            ],
+            "snippet": "---\ntitle: CBP Releases February 2023 Monthly Operational Update\ndate: 2023-03-15\n---\nEncounters between ports of entry remain at lowest level since February 2021.\n\nWASHINGTON – U.S. Customs and Border Protection released operational statistics today for February 2023, which can be viewed on the CBP Enforcement Statist..."
+          },
+          {
+            "doc_id": "web/62991",
+            "source": "web",
+            "title": "https://onemileatatime.com/department-of-homeland-security-letter/",
+            "locator": "https://onemileatatime.com/department-of-homeland-security-letter/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market security improvements false positive reduction 2022"
+            ],
+            "snippet": "---\ntitle: Here's The Letter I Received From The Department Of Homeland Security\nauthor: Ben Schlappig March 4\ndate: 2017-03-04\n---\nAs I first wrote about a bit over a month ago, at the beginning of the year I seemed to be on some sort of a U.S. government watchlist. I belong to the TSA Trusted Traveler program, and am..."
+          },
+          {
+            "doc_id": "web/70421",
+            "source": "web",
+            "title": "https://www.ifsecglobal.com/uncategorized/songs-about-security-false-alarm/",
+            "locator": "https://www.ifsecglobal.com/uncategorized/songs-about-security-false-alarm/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market security improvements false positive reduction 2022"
+            ],
+            "snippet": "<!DOCTYPE html><html xmlns=\"http://www.w3.org/1999/xhtml\"><head><link data-optimized=\"2\" rel=\"stylesheet\" href=\"https://www.ifsecglobal.com/wp-content/litespeed/css/825d75186fba07c7ebdcf2f3f4a90936.css?ver=ca317\"><script type=\"text/javascript\" async=\"\" charset=\"utf-8\" src=\"https://www.gstatic.com/recaptcha/releases/GUG..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.5059440159238875,
+      "iteration": 4
+    },
+    {
+      "id": "iter4_web_search_3",
+      "type": "web_search",
+      "description": "Search for Lee's Market threat detection system case study 2022",
+      "parameters": {
+        "query": "Lee's Market threat detection system case study 2022"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for implementation outcomes",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market threat detection system case study 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market threat detection system case study 2022"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/61453",
+            "source": "web",
+            "title": "https://www.soundthinking.com/",
+            "locator": "https://www.soundthinking.com/",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market threat detection system case study 2022"
+            ],
+            "snippet": "---\ntitle: The Latest\ndate: 2024-10-20\n---\nLaw Enforcement Solutions\n\nLaw Enforcement Solutions\n\nOne More Life\n\nOne More Life\n\nAI-driven technology + long-term partnerships = lives saved\n\nPlay Video\n\nPause Video\n\nSecurity Solutions\n\nSecurity Solutions\n\nWeapons Detection Without the Bottlenecks\n\nWeapons Detection Withou..."
+          },
+          {
+            "doc_id": "web/18197",
+            "source": "web",
+            "title": "https://ral.ucar.edu/solutions/products/low-level-wind-shear-alert-system-llwas",
+            "locator": "https://ral.ucar.edu/solutions/products/low-level-wind-shear-alert-system-llwas",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market threat detection system case study 2022"
+            ],
+            "snippet": "---\ntitle: Low-Level Wind Shear Alert System (LLWAS)\ndate: 2025-01-01\n---\nLow-Level Wind Shear Alert System (LLWAS)\n\nContents\n\nThe LLWAS system was originally developed by the FAA in the 1970s to detect large scale wind shifts (sea breeze fronts, gust fronts and cold and warm fronts). It was developed by the FAA in res..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market threat detection system case study 2022"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/72298",
+            "source": "web",
+            "title": "https://www.cisco.com/c/en/us/about/corporate-strategy-office/acquisitions/acquisitions-list-years.html",
+            "locator": "https://www.cisco.com/c/en/us/about/corporate-strategy-office/acquisitions/acquisitions-list-years.html",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market threat detection system case study 2022"
+            ],
+            "snippet": "---\ntitle: Acquisitions by Year\ndate: 2017-10-23\n---\nNote: all dates refer to the public announce date\n\n- SnapAttack - December 16, 2024\n\nSnapAttack is a privately held company that offers a threat detection and engineering platform. At a time when organizations around the world need to build digital resilience more th..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.267068532994017,
+      "iteration": 4
+    },
+    {
+      "id": "iter5_web_search_0",
+      "type": "web_search",
+      "description": "Search for Lee's Market threat detection system false positive reduction metrics in Q4 2022",
+      "parameters": {
+        "query": "Lee's Market threat detection system false positive reduction Q4 2022"
+      },
+      "priority": 0.8,
+      "expected_output": "Direct evidence of false positive reduction figures from Q4 2022",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market threat detection system false positive reduction Q4 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market threat detection system false positive reduction Q4 2022"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/45322",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Traffic_enforcement_camera",
+            "locator": "https://en.wikipedia.org/wiki/Traffic_enforcement_camera",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market threat detection system false positive reduction Q4 2022"
+            ],
+            "snippet": "---\ntitle: Traffic enforcement camera - Wikipedia\ndate: 2002-11-04\n---\nA traffic enforcement camera (also a red light camera, speed camera, road safety camera, bus lane camera, depending on use) is a camera which may be mounted beside or over a road or installed in an enforcement vehicle to detect motoring offenses, in..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market threat detection system false positive reduction Q4 2022"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/18197",
+            "source": "web",
+            "title": "https://ral.ucar.edu/solutions/products/low-level-wind-shear-alert-system-llwas",
+            "locator": "https://ral.ucar.edu/solutions/products/low-level-wind-shear-alert-system-llwas",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market threat detection system false positive reduction Q4 2022"
+            ],
+            "snippet": "---\ntitle: Low-Level Wind Shear Alert System (LLWAS)\ndate: 2025-01-01\n---\nLow-Level Wind Shear Alert System (LLWAS)\n\nContents\n\nThe LLWAS system was originally developed by the FAA in the 1970s to detect large scale wind shifts (sea breeze fronts, gust fronts and cold and warm fronts). It was developed by the FAA in res..."
+          },
+          {
+            "doc_id": "web/83704",
+            "source": "web",
+            "title": "https://nrsplus.com/petro/",
+            "locator": "https://nrsplus.com/petro/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market threat detection system false positive reduction Q4 2022"
+            ],
+            "snippet": "---\ntitle: Explore the Ultimate Pump-Integrated POS System for Gas Stations & EMV Solution at the Pumps\ndate: 2025-01-01\n---\nHome NRS Petro\n\nthe Ultimate\n\nPump-Integrated\n\nPOS\n\nSystem for\n\nGas Stations\n\n&\n\nEMV Solution at\n\nthe Pumps\n\nEmpowering Gas Stations with\n\nSecure EMV Compliant Transactions\n\nand Streamlined Opera..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 1.5131049631163478,
+      "iteration": 5
+    },
+    {
+      "id": "iter5_web_search_1",
+      "type": "web_search",
+      "description": "Search for security system performance reports from Lee's Market in 2022",
+      "parameters": {
+        "query": "Lee's Market security system performance report 2022"
+      },
+      "priority": 0.7,
+      "expected_output": "Performance metrics including false positive data",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market security system performance report 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market security system performance report 2022"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market security system performance report 2022"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/31351",
+            "source": "web",
+            "title": "https://www.eeoc.gov/2022-annual-performance-report-apr",
+            "locator": "https://www.eeoc.gov/2022-annual-performance-report-apr",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market security system performance report 2022"
+            ],
+            "snippet": "---\ntitle: 2022 Annual Performance Report (APR)\ndate: 2018-02-12\n---\nAn official website of the United States government\n\nHere's how you know\n\nOfficial websites use .gov\n\nA .gov website belongs to an official government organization in the United States.\n\nSecure .gov websites use HTTPS\n\nA lock (\n\n) or https:// means yo..."
+          },
+          {
+            "doc_id": "web/45135",
+            "source": "web",
+            "title": "https://www.secretservice.gov/newsroom/releases/2024/07/written-testimony-director-kimberly-cheatle-oversight-committee-attempted",
+            "locator": "https://www.secretservice.gov/newsroom/releases/2024/07/written-testimony-director-kimberly-cheatle-oversight-committee-attempted",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market security system performance report 2022"
+            ],
+            "snippet": "---\ntitle: Written Testimony from Director Kimberly Cheatle to the Oversight Committee on the Attempted Assassination of Former President Trump\ndate: 2024-07-22\n---\nGood morning, Chairman Comer, Ranking Member Raskin, and distinguished members of the Committee.\n\nMy name is Kimberly Cheatle, and I am the Director of the..."
+          },
+          {
+            "doc_id": "web/16719",
+            "source": "web",
+            "title": "https://nces.ed.gov/fastfacts/display.asp?id=334",
+            "locator": "https://nces.ed.gov/fastfacts/display.asp?id=334",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market security system performance report 2022"
+            ],
+            "snippet": "---\ntitle: School safety and security measures\ndate: 2024-07-25\n---\nQuestion:\n\nWhat safety and security measures are used in America's public schools?\n\nResponse:\n\nSchools use a variety of practices and procedures to promote the safety of students, faculty, and staff.1 The School Survey on Crime and Safety (SSOCS) colle..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 1.5133918330539018,
+      "iteration": 5
+    },
+    {
+      "id": "iter5_web_search_2",
+      "type": "web_search",
+      "description": "Search for case studies on Lee's Market security improvements 2022",
+      "parameters": {
+        "query": "Lee's Market security improvement case study 2022"
+      },
+      "priority": 0.7,
+      "expected_output": "Detailed analysis of system implementation outcomes",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market security improvement case study 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market security improvement case study 2022"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market security improvement case study 2022"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/30967",
+            "source": "web",
+            "title": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "locator": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market security improvement case study 2022"
+            ],
+            "snippet": "---\ntitle: May 2024: Biggest Cyber Attacks, Data Breaches & Ransomware Attacks\ndate: 2025-06-02\n---\nMay 2024: Biggest Cyber Attacks, Data Breaches & Ransomware Attacks\n\nDate: 1 June 2024\n\nWhy did Dell, the UK Ministry of Defence, Australian Mortgage Lender FirstMac, WebTPA, Entertainment ticketing giant TicketMaster, A..."
+          },
+          {
+            "doc_id": "web/14186",
+            "source": "web",
+            "title": "https://www.cyberlands.io/topsecuritybreachescanada",
+            "locator": "https://www.cyberlands.io/topsecuritybreachescanada",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market security improvement case study 2022"
+            ],
+            "snippet": "---\ntitle: Top 15 Cybersecurity Breaches in Canada\ndate: 2024-01-01\n---\nLearn about the state of cybersecurity in the Canada and the 15 biggest breaches in this country.\n\nCompared to 2019 statistics, the frequency of security breaches today has increased by 20%, meaning that every 11 seconds one ransomware attack happe..."
+          },
+          {
+            "doc_id": "web/6793",
+            "source": "web",
+            "title": "https://nces.ed.gov/pubs98/safetech/chapter4.asp",
+            "locator": "https://nces.ed.gov/pubs98/safetech/chapter4.asp",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market security improvement case study 2022"
+            ],
+            "snippet": "---\ntitle: Chapter 4-Security Management, from Safeguarding Your Technology, NCES Publication 98-297 (National Center for Education Statistics)\ndate: 1996-01-01\n---\n| |\n\n|\n\nCHAPTER 4\n\nSecurity Management |\n\n|\n\n|\n\n|\n\n|\n\nEffective security strikes a balance between protection and convenience.\n\n|\n\n|\n\nIntroduction to Secur..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 1.5131692958530039,
+      "iteration": 5
+    },
+    {
+      "id": "iter5_web_search_3",
+      "type": "web_search",
+      "description": "Search for internal audit documents about Lee's Market security systems 2022",
+      "parameters": {
+        "query": "Lee's Market security system audit 2022 internal"
+      },
+      "priority": 0.6,
+      "expected_output": "Internal evaluation data on false positive reduction",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market security system audit 2022 internal",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market security system audit 2022 internal"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market security system audit 2022 internal"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/34840",
+            "source": "web",
+            "title": "https://www.irs.gov/irm/part4/irm_04-010-003",
+            "locator": "https://www.irs.gov/irm/part4/irm_04-010-003",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market security system audit 2022 internal"
+            ],
+            "snippet": "---\ntitle: File\ndate: 2023-03-05\n---\n- 4.10.3 Examination Techniques\n\n- 4.10.3.1 Program Scope and Objectives\n\n- 4.10.3.1.1 Background\n\n- 4.10.3.1.2 Authority\n\n- 4.10.3.1.3 Responsibilities\n\n- 4.10.3.1.4 Acronyms\n\n- 4.10.3.1.5 Related Resources\n\n- 4.10.3.2 Overview\n\n- 4.10.3.3 Risk Analysis\n\n- 4.10.3.3.1 The 80/20 Conc..."
+          },
+          {
+            "doc_id": "web/13866",
+            "source": "web",
+            "title": "https://americanoversight.org/resource/how-the-arizona-election-audit-has-already-been-compromised/",
+            "locator": "https://americanoversight.org/resource/how-the-arizona-election-audit-has-already-been-compromised/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market security system audit 2022 internal"
+            ],
+            "snippet": "---\ntitle: How the Arizona Election 'Audit' Has Already Been Compromised\ndate: 2021-09-23\n---\nHow the Arizona Election 'Audit' Has Already Been Compromised\n\nDespite the Arizona Senate's secrecy, enough is already known about the sham ballot review's biased origins and the involvement of conspiracy theorists to know tha..."
+          },
+          {
+            "doc_id": "web/45135",
+            "source": "web",
+            "title": "https://www.secretservice.gov/newsroom/releases/2024/07/written-testimony-director-kimberly-cheatle-oversight-committee-attempted",
+            "locator": "https://www.secretservice.gov/newsroom/releases/2024/07/written-testimony-director-kimberly-cheatle-oversight-committee-attempted",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market security system audit 2022 internal"
+            ],
+            "snippet": "---\ntitle: Written Testimony from Director Kimberly Cheatle to the Oversight Committee on the Attempted Assassination of Former President Trump\ndate: 2024-07-22\n---\nGood morning, Chairman Comer, Ranking Member Raskin, and distinguished members of the Committee.\n\nMy name is Kimberly Cheatle, and I am the Director of the..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.43969883187673986,
+      "iteration": 5
+    },
+    {
+      "id": "iter6_web_search_0",
+      "type": "web_search",
+      "description": "Search for Lee's Market threat detection system false positive reduction Q4 2022 report",
+      "parameters": {
+        "query": "Lee's Market threat detection system false positive reduction Q4 2022 report"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market threat detection system false positive reduction Q4 2022 report",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market threat detection system false positive reduction Q4 2022 report"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/45322",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Traffic_enforcement_camera",
+            "locator": "https://en.wikipedia.org/wiki/Traffic_enforcement_camera",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market threat detection system false positive reduction Q4 2022 report"
+            ],
+            "snippet": "---\ntitle: Traffic enforcement camera - Wikipedia\ndate: 2002-11-04\n---\nA traffic enforcement camera (also a red light camera, speed camera, road safety camera, bus lane camera, depending on use) is a camera which may be mounted beside or over a road or installed in an enforcement vehicle to detect motoring offenses, in..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market threat detection system false positive reduction Q4 2022 report"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/18197",
+            "source": "web",
+            "title": "https://ral.ucar.edu/solutions/products/low-level-wind-shear-alert-system-llwas",
+            "locator": "https://ral.ucar.edu/solutions/products/low-level-wind-shear-alert-system-llwas",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market threat detection system false positive reduction Q4 2022 report"
+            ],
+            "snippet": "---\ntitle: Low-Level Wind Shear Alert System (LLWAS)\ndate: 2025-01-01\n---\nLow-Level Wind Shear Alert System (LLWAS)\n\nContents\n\nThe LLWAS system was originally developed by the FAA in the 1970s to detect large scale wind shifts (sea breeze fronts, gust fronts and cold and warm fronts). It was developed by the FAA in res..."
+          },
+          {
+            "doc_id": "web/83704",
+            "source": "web",
+            "title": "https://nrsplus.com/petro/",
+            "locator": "https://nrsplus.com/petro/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market threat detection system false positive reduction Q4 2022 report"
+            ],
+            "snippet": "---\ntitle: Explore the Ultimate Pump-Integrated POS System for Gas Stations & EMV Solution at the Pumps\ndate: 2025-01-01\n---\nHome NRS Petro\n\nthe Ultimate\n\nPump-Integrated\n\nPOS\n\nSystem for\n\nGas Stations\n\n&\n\nEMV Solution at\n\nthe Pumps\n\nEmpowering Gas Stations with\n\nSecure EMV Compliant Transactions\n\nand Streamlined Opera..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.7190610009711236,
+      "iteration": 6
+    },
+    {
+      "id": "iter6_web_search_1",
+      "type": "web_search",
+      "description": "Search for Lee's Market cybersecurity system performance metrics 2022",
+      "parameters": {
+        "query": "Lee's Market cybersecurity system performance metrics 2022"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market cybersecurity system performance metrics 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market cybersecurity system performance metrics 2022"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/4912",
+            "source": "web",
+            "title": "https://purplesec.us/resources/cybersecurity-statistics/",
+            "locator": "https://purplesec.us/resources/cybersecurity-statistics/",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market cybersecurity system performance metrics 2022"
+            ],
+            "snippet": "---\ntitle: 2024 Cybersecurity Statistics\nauthor: Jason Firch; MBA\ndate: 2025-05-24\n---\n2024 Cybersecurity Statistics\n\nThe Ultimate List Of Cybersecurity Stats Data, & Trends\n\nHundreds of cyber security statistics including the latest ransomware stats, the cost of cybercrime, the rise of supply chain attacks, and much m..."
+          },
+          {
+            "doc_id": "web/91890",
+            "source": "web",
+            "title": "https://www.varonis.com/blog/cybersecurity-statistics",
+            "locator": "https://www.varonis.com/blog/cybersecurity-statistics",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market cybersecurity system performance metrics 2022"
+            ],
+            "snippet": "---\ntitle: 157 Cybersecurity Statistics and Trends [updated 2024]\nauthor: Rob Sobers\ndate: 2024-09-13\n---\nCybersecurity is a day-to-day operation for many businesses, but it's not a small task to stay on top of what's been going on over the past year or so.\n\nWe've compiled this list of the most important stats and tren..."
+          },
+          {
+            "doc_id": "web/30967",
+            "source": "web",
+            "title": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "locator": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market cybersecurity system performance metrics 2022"
+            ],
+            "snippet": "---\ntitle: May 2024: Biggest Cyber Attacks, Data Breaches & Ransomware Attacks\ndate: 2025-06-02\n---\nMay 2024: Biggest Cyber Attacks, Data Breaches & Ransomware Attacks\n\nDate: 1 June 2024\n\nWhy did Dell, the UK Ministry of Defence, Australian Mortgage Lender FirstMac, WebTPA, Entertainment ticketing giant TicketMaster, A..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market cybersecurity system performance metrics 2022"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.7195507930591702,
+      "iteration": 6
+    },
+    {
+      "id": "iter6_web_search_2",
+      "type": "web_search",
+      "description": "Search for Lee's Market security system false positives reduction case study",
+      "parameters": {
+        "query": "Lee's Market security system false positives reduction case study"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market security system false positives reduction case study",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market security system false positives reduction case study"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/45322",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Traffic_enforcement_camera",
+            "locator": "https://en.wikipedia.org/wiki/Traffic_enforcement_camera",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market security system false positives reduction case study"
+            ],
+            "snippet": "---\ntitle: Traffic enforcement camera - Wikipedia\ndate: 2002-11-04\n---\nA traffic enforcement camera (also a red light camera, speed camera, road safety camera, bus lane camera, depending on use) is a camera which may be mounted beside or over a road or installed in an enforcement vehicle to detect motoring offenses, in..."
+          },
+          {
+            "doc_id": "web/18197",
+            "source": "web",
+            "title": "https://ral.ucar.edu/solutions/products/low-level-wind-shear-alert-system-llwas",
+            "locator": "https://ral.ucar.edu/solutions/products/low-level-wind-shear-alert-system-llwas",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market security system false positives reduction case study"
+            ],
+            "snippet": "---\ntitle: Low-Level Wind Shear Alert System (LLWAS)\ndate: 2025-01-01\n---\nLow-Level Wind Shear Alert System (LLWAS)\n\nContents\n\nThe LLWAS system was originally developed by the FAA in the 1970s to detect large scale wind shifts (sea breeze fronts, gust fronts and cold and warm fronts). It was developed by the FAA in res..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market security system false positives reduction case study"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/70421",
+            "source": "web",
+            "title": "https://www.ifsecglobal.com/uncategorized/songs-about-security-false-alarm/",
+            "locator": "https://www.ifsecglobal.com/uncategorized/songs-about-security-false-alarm/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market security system false positives reduction case study"
+            ],
+            "snippet": "<!DOCTYPE html><html xmlns=\"http://www.w3.org/1999/xhtml\"><head><link data-optimized=\"2\" rel=\"stylesheet\" href=\"https://www.ifsecglobal.com/wp-content/litespeed/css/825d75186fba07c7ebdcf2f3f4a90936.css?ver=ca317\"><script type=\"text/javascript\" async=\"\" charset=\"utf-8\" src=\"https://www.gstatic.com/recaptcha/releases/GUG..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.4584165320266038,
+      "iteration": 6
+    },
+    {
+      "id": "iter6_web_search_3",
+      "type": "web_search",
+      "description": "Search for Lee's Market threat detection system audit 2022 Q4",
+      "parameters": {
+        "query": "Lee's Market threat detection system audit 2022 Q4"
+      },
+      "priority": 0.65,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market threat detection system audit 2022 Q4",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market threat detection system audit 2022 Q4"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market threat detection system audit 2022 Q4"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/13866",
+            "source": "web",
+            "title": "https://americanoversight.org/resource/how-the-arizona-election-audit-has-already-been-compromised/",
+            "locator": "https://americanoversight.org/resource/how-the-arizona-election-audit-has-already-been-compromised/",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market threat detection system audit 2022 Q4"
+            ],
+            "snippet": "---\ntitle: How the Arizona Election 'Audit' Has Already Been Compromised\ndate: 2021-09-23\n---\nHow the Arizona Election 'Audit' Has Already Been Compromised\n\nDespite the Arizona Senate's secrecy, enough is already known about the sham ballot review's biased origins and the involvement of conspiracy theorists to know tha..."
+          },
+          {
+            "doc_id": "web/95459",
+            "source": "web",
+            "title": "https://ohioauditor.gov/news",
+            "locator": "https://ohioauditor.gov/news",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market threat detection system audit 2022 Q4"
+            ],
+            "snippet": "---\ntitle: All Press Releases\ndate: 2020-06-04\n---\nAll Press Releases\n\nFor Immediate Release\n\nCOLUMBUS — A special audit released Thursday details the investigation into a former intervention specialist for the Educational Service Center Council of Governments, who was convicted after she was paid for janitorial hours..."
+          },
+          {
+            "doc_id": "web/30967",
+            "source": "web",
+            "title": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "locator": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market threat detection system audit 2022 Q4"
+            ],
+            "snippet": "---\ntitle: May 2024: Biggest Cyber Attacks, Data Breaches & Ransomware Attacks\ndate: 2025-06-02\n---\nMay 2024: Biggest Cyber Attacks, Data Breaches & Ransomware Attacks\n\nDate: 1 June 2024\n\nWhy did Dell, the UK Ministry of Defence, Australian Mortgage Lender FirstMac, WebTPA, Entertainment ticketing giant TicketMaster, A..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.7189813379663974,
+      "iteration": 6
+    },
+    {
+      "id": "iter7_web_search_0",
+      "type": "web_search",
+      "description": "Search for Lee's Market threat detection system false positive reduction metrics Q4 2022",
+      "parameters": {
+        "query": "Lee's Market threat detection system false positive reduction metrics Q4 2022"
+      },
+      "priority": 0.8,
+      "expected_output": "Direct mention of false positive reduction percentage or numerical data from Q4 2022",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market threat detection system false positive reduction metrics Q4 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market threat detection system false positive reduction metrics Q4 2022"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/45322",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Traffic_enforcement_camera",
+            "locator": "https://en.wikipedia.org/wiki/Traffic_enforcement_camera",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market threat detection system false positive reduction metrics Q4 2022"
+            ],
+            "snippet": "---\ntitle: Traffic enforcement camera - Wikipedia\ndate: 2002-11-04\n---\nA traffic enforcement camera (also a red light camera, speed camera, road safety camera, bus lane camera, depending on use) is a camera which may be mounted beside or over a road or installed in an enforcement vehicle to detect motoring offenses, in..."
+          },
+          {
+            "doc_id": "web/34285",
+            "source": "web",
+            "title": "https://www.statista.com/statistics/1139351/retailers-inventory-shrinkage-rate-us/",
+            "locator": "https://www.statista.com/statistics/1139351/retailers-inventory-shrinkage-rate-us/",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market threat detection system false positive reduction metrics Q4 2022"
+            ],
+            "snippet": "---\ntitle: Breakdown of U.S. retailers' inventory shrinkage percentage in 2022\nauthor: Kasia Davies; Jan\ndate: 2025-01-14\n---\nIn fiscal 2022, over 13 percent of retail brands in the United States stated that they experienced an inventory shrink of 3 percent and higher. Over 20 percent experienced inventory shrinkage be..."
+          },
+          {
+            "doc_id": "web/40337",
+            "source": "web",
+            "title": "https://www.ecrloss.com/research/measuring-retail-shrinkage/",
+            "locator": "https://www.ecrloss.com/research/measuring-retail-shrinkage/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market threat detection system false positive reduction metrics Q4 2022"
+            ],
+            "snippet": "---\ntitle: Measuring Retail Shrink\ndate: 2023-01-01\n---\nWritten by:\n\n- - Executive Summary\n\n- 1. Introduction\n\n- 2. Methodology\n\n- 3. Review of Shrinkage Measurement\n\n- 4. Definition of Shrinkage\n\n- 5. Perspectives on Shrinkage\n\n- - 5.1 Stewardship and Performance Improvement\n\n- - 5.2 Cost Reduction and Sales Improveme..."
+          },
+          {
+            "doc_id": "web/92231",
+            "source": "web",
+            "title": "https://investor.illumina.com/news/press-release-details/2023/Illumina-Reports-Financial-Results-for-Fourth-Quarter-and-Fiscal-Year-2022/default.aspx",
+            "locator": "https://investor.illumina.com/news/press-release-details/2023/Illumina-Reports-Financial-Results-for-Fourth-Quarter-and-Fiscal-Year-2022/default.aspx",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market threat detection system false positive reduction metrics Q4 2022"
+            ],
+            "snippet": "---\ntitle: Press Release\ndate: 2023-02-07\n---\nIllumina Reports Financial Results for Fourth Quarter and Fiscal Year 2022\n\n- Revenue of $1.08 billion for Q4 2022, down 10% from Q4 2021, and down 7% on a constant currency basis\n\n- Revenue of $4.58 billion for fiscal year 2022, up 1% from fiscal year 2021, and up 3% on a..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.39069921895861626,
+      "iteration": 7
+    },
+    {
+      "id": "iter7_web_search_1",
+      "type": "web_search",
+      "description": "Search for Lee's Market security system performance report Q4 2022",
+      "parameters": {
+        "query": "Lee's Market security system performance report Q4 2022"
+      },
+      "priority": 0.75,
+      "expected_output": "Performance metrics including false positive reduction figures",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market security system performance report Q4 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market security system performance report Q4 2022"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/52191",
+            "source": "web",
+            "title": "https://ir.amd.com/news-events/press-releases/detail/1115/amd-reports-fourth-quarter-and-full-year-2022-financial-results",
+            "locator": "https://ir.amd.com/news-events/press-releases/detail/1115/amd-reports-fourth-quarter-and-full-year-2022-financial-results",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market security system performance report Q4 2022"
+            ],
+            "snippet": "---\ntitle: AMD Reports Fourth Quarter and Full Year 2022 Financial Results\ndate: 2023-01-31\n---\nAMD Reports Fourth Quarter and Full Year 2022 Financial Results\n\n― Record full year revenue of $23.6 Billion up 44% year-over-year ―\n\nSANTA CLARA, Calif., Jan. 31, 2023 (GLOBE NEWSWIRE) -- AMD (NASDAQ:AMD) today announced re..."
+          },
+          {
+            "doc_id": "web/92231",
+            "source": "web",
+            "title": "https://investor.illumina.com/news/press-release-details/2023/Illumina-Reports-Financial-Results-for-Fourth-Quarter-and-Fiscal-Year-2022/default.aspx",
+            "locator": "https://investor.illumina.com/news/press-release-details/2023/Illumina-Reports-Financial-Results-for-Fourth-Quarter-and-Fiscal-Year-2022/default.aspx",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market security system performance report Q4 2022"
+            ],
+            "snippet": "---\ntitle: Press Release\ndate: 2023-02-07\n---\nIllumina Reports Financial Results for Fourth Quarter and Fiscal Year 2022\n\n- Revenue of $1.08 billion for Q4 2022, down 10% from Q4 2021, and down 7% on a constant currency basis\n\n- Revenue of $4.58 billion for fiscal year 2022, up 1% from fiscal year 2021, and up 3% on a..."
+          },
+          {
+            "doc_id": "web/93509",
+            "source": "web",
+            "title": "https://www.merck.com/news/merck-announces-fourth-quarter-and-full-year-2022-financial-results/",
+            "locator": "https://www.merck.com/news/merck-announces-fourth-quarter-and-full-year-2022-financial-results/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market security system performance report Q4 2022"
+            ],
+            "snippet": "---\ntitle: What can we help you find?\ndate: 2023-02-02\n---\nMerck Announces Fourth-Quarter and Full-Year 2022 Financial Results\n\nFebruary 2, 2023 6:30 am ET\n\n- Fourth-Quarter and Full-Year 2022 Results Reflect Sustained Strong Revenue Growth\n\n- Fourth-Quarter 2022 Worldwide Sales Were $13.8 Billion, an Increase of 2% Fr..."
+          },
+          {
+            "doc_id": "web/41690",
+            "source": "web",
+            "title": "https://www.cnbc.com/2023/09/08/this-is-how-much-money-retailers-are-losing-to-shrink-retail-theft.html",
+            "locator": "https://www.cnbc.com/2023/09/08/this-is-how-much-money-retailers-are-losing-to-shrink-retail-theft.html",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market security system performance report Q4 2022"
+            ],
+            "snippet": "---\ntitle: Shrink and theft losses near $1 billion at Lowe's — here's how much they're costing other retailers\nauthor: Gabrielle Fonrouge; Gabrielle-Fonrouge\ndate: 2023-09-08\n---\nA range of retailers are again blaming shrink as one of the reasons they saw another quarter of lackluster profits.\n\nBut some of those compan..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.3911125420127064,
+      "iteration": 7
+    },
+    {
+      "id": "iter7_web_search_2",
+      "type": "web_search",
+      "description": "Search for Lee's Market cybersecurity false positive reduction case study 2022",
+      "parameters": {
+        "query": "Lee's Market cybersecurity false positive reduction case study 2022"
+      },
+      "priority": 0.7,
+      "expected_output": "Case study details with specific reduction numbers or analysis",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market cybersecurity false positive reduction case study 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market cybersecurity false positive reduction case study 2022"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/30967",
+            "source": "web",
+            "title": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "locator": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market cybersecurity false positive reduction case study 2022"
+            ],
+            "snippet": "---\ntitle: May 2024: Biggest Cyber Attacks, Data Breaches & Ransomware Attacks\ndate: 2025-06-02\n---\nMay 2024: Biggest Cyber Attacks, Data Breaches & Ransomware Attacks\n\nDate: 1 June 2024\n\nWhy did Dell, the UK Ministry of Defence, Australian Mortgage Lender FirstMac, WebTPA, Entertainment ticketing giant TicketMaster, A..."
+          },
+          {
+            "doc_id": "web/80697",
+            "source": "web",
+            "title": "https://www.cm-alliance.com/cybersecurity-blog/biggest-cyber-attacks-ransomware-attacks-data-breaches-of-march-2025",
+            "locator": "https://www.cm-alliance.com/cybersecurity-blog/biggest-cyber-attacks-ransomware-attacks-data-breaches-of-march-2025",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market cybersecurity false positive reduction case study 2022"
+            ],
+            "snippet": "---\ntitle: Biggest Cyber Attacks, Ransomware Attacks, Data Breaches of March 2025\ndate: 2025-06-02\n---\nBiggest Cyber Attacks, Ransomware Attacks, Data Breaches of March 2025\n\nDate: 1 April 2025\n\nWhat do X, New York University, GitHub Actions, Blockchain Gaming Platform WEMIX, and the Polish Space Agency have in common?..."
+          },
+          {
+            "doc_id": "web/57530",
+            "source": "web",
+            "title": "https://secureframe.com/blog/recent-cyber-attacks",
+            "locator": "https://secureframe.com/blog/recent-cyber-attacks",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market cybersecurity false positive reduction case study 2022"
+            ],
+            "snippet": "---\ntitle: Cyber attack trends\ndate: 2024-12-11\n---\n15 Recent Cyber Attacks & What They Tell Us About the Future of Cybersecurity\n\nFor the fourth year in a row, cyber attacks were reported as the number one cause of outages across organizations in Veeam's annual Data Protection Report.\n\nWhile respondents said they will..."
+          },
+          {
+            "doc_id": "web/29471",
+            "source": "web",
+            "title": "https://www.cm-alliance.com/cybersecurity-blog/january-2025-recent-cyber-attacks-data-breaches-ransomware-attacks",
+            "locator": "https://www.cm-alliance.com/cybersecurity-blog/january-2025-recent-cyber-attacks-data-breaches-ransomware-attacks",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market cybersecurity false positive reduction case study 2022"
+            ],
+            "snippet": "---\ntitle: January 2025: Recent Cyber Attacks, Data Breaches, Ransomware Attacks\ndate: 2025-06-02\n---\nJanuary 2025: Recent Cyber Attacks, Data Breaches, Ransomware Attacks\n\nDate: 3 February 2025\n\nWhat could an open-source toolkit, a cannabis product supplier, an AI startup from China and a UK telecom giant have in comm..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.39124707016162574,
+      "iteration": 7
+    },
+    {
+      "id": "iter7_web_search_3",
+      "type": "web_search",
+      "description": "Search for Lee's Market threat detection system audit 2022 Q4 report",
+      "parameters": {
+        "query": "Lee's Market threat detection system audit 2022 Q4 report"
+      },
+      "priority": 0.7,
+      "expected_output": "Audit findings including false positive reduction data",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market threat detection system audit 2022 Q4 report",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_36399166840a25a2",
+            "source": "web",
+            "title": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "locator": "https://eagleeye.com/blog/grocery-loyalty-inflation-data-growth",
+            "rank": 1,
+            "score": 0.03278688524590164,
+            "queries": [
+              "Lee's Market threat detection system audit 2022 Q4 report"
+            ],
+            "snippet": "1 min read\n\nSarah Jarvis Updated on November 27, 2025\n\nContents\n\nWhy Data-Driven Loyalty Matters Now\n\nTangible Business Impact in a Margin‑Pressed Market\n\nEvolution from Static Rewards to Predictive Engagement\n\nBlueprint for Next‑Generation Grocery Loyalty\n\nInflation is compressing margins and shifting shopper behavior..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market threat detection system audit 2022 Q4 report"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/95459",
+            "source": "web",
+            "title": "https://ohioauditor.gov/news",
+            "locator": "https://ohioauditor.gov/news",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market threat detection system audit 2022 Q4 report"
+            ],
+            "snippet": "---\ntitle: All Press Releases\ndate: 2020-06-04\n---\nAll Press Releases\n\nFor Immediate Release\n\nCOLUMBUS — A special audit released Thursday details the investigation into a former intervention specialist for the Educational Service Center Council of Governments, who was convicted after she was paid for janitorial hours..."
+          },
+          {
+            "doc_id": "web/13866",
+            "source": "web",
+            "title": "https://americanoversight.org/resource/how-the-arizona-election-audit-has-already-been-compromised/",
+            "locator": "https://americanoversight.org/resource/how-the-arizona-election-audit-has-already-been-compromised/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market threat detection system audit 2022 Q4 report"
+            ],
+            "snippet": "---\ntitle: How the Arizona Election 'Audit' Has Already Been Compromised\ndate: 2021-09-23\n---\nHow the Arizona Election 'Audit' Has Already Been Compromised\n\nDespite the Arizona Senate's secrecy, enough is already known about the sham ballot review's biased origins and the involvement of conspiracy theorists to know tha..."
+          },
+          {
+            "doc_id": "web/30967",
+            "source": "web",
+            "title": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "locator": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market threat detection system audit 2022 Q4 report"
+            ],
+            "snippet": "---\ntitle: May 2024: Biggest Cyber Attacks, Data Breaches & Ransomware Attacks\ndate: 2025-06-02\n---\nMay 2024: Biggest Cyber Attacks, Data Breaches & Ransomware Attacks\n\nDate: 1 June 2024\n\nWhy did Dell, the UK Ministry of Defence, Australian Mortgage Lender FirstMac, WebTPA, Entertainment ticketing giant TicketMaster, A..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.39071777183562517,
+      "iteration": 7
+    }
+  ],
+  "error_records": [],
+  "timeline_paths": {
+    "events_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v1/privacy_hopqa_runs/DR0003_98338d1b_7de8b21b/timeline_events.json",
+    "summary_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v1/privacy_hopqa_runs/DR0003_98338d1b_7de8b21b/timeline_summary.json",
+    "html_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v1/privacy_hopqa_runs/DR0003_98338d1b_7de8b21b/timeline.html"
+  },
+  "report_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v1/privacy_hopqa_runs/DR0003_98338d1b_7de8b21b/workspace/research_report_1776285857.md"
+}

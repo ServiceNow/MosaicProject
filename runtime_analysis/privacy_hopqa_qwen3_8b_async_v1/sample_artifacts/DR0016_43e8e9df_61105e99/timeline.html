@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>privacy_hopqa timeline</title>
+  <style>
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 24px;
+      color: #111827;
+      background: #f8fafc;
+    }
+    h1, h2 {
+      margin: 0 0 12px;
+    }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin: 0 0 24px;
+    }
+    .card {
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .card .label {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+    .card .value {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .lane-row {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .lane-label {
+      font-size: 13px;
+      color: #334155;
+      overflow-wrap: anywhere;
+    }
+    .lane-track {
+      position: relative;
+      height: 28px;
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .bar {
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      border-radius: 6px;
+      color: white;
+      font-size: 11px;
+      line-height: 22px;
+      padding: 0 6px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 18px;
+    }
+    th, td {
+      border-bottom: 1px solid #e2e8f0;
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 13px;
+    }
+    th {
+      background: #f1f5f9;
+    }
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>privacy_hopqa rollout timeline</h1>
+    <div class="summary">
+    <div class="card"><div class="label">Task</div><div class="value">DR0016</div></div>
+    <div class="card"><div class="label">Chain</div><div class="value">43e8e9df</div></div>
+    <div class="card"><div class="label">Iterations</div><div class="value">5</div></div>
+    <div class="card"><div class="label">Resolved Hops</div><div class="value">2/2</div></div>
+    <div class="card"><div class="label">Searches</div><div class="value">18</div></div>
+    <div class="card"><div class="label">Docs Read</div><div class="value">11</div></div>
+    <div class="card"><div class="label">Parse Errors</div><div class="value">0</div></div>
+    <div class="card"><div class="label">Context Overflows</div><div class="value">0</div></div>
+    <div class="card"><div class="label">Duration (s)</div><div class="value">238.58</div></div>
+  </div>
+  <h2>Timeline</h2>
+  <div><div class='lane-row'><div class='lane-label'>plan</div><div class='lane-track'><div class="bar" style="left:0.000%;width:6.299%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 0.0, &quot;duration_s&quot;: 15.026, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 retrieval plan</div><div class="bar" style="left:23.776%;width:7.732%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H2 retrieval plan&quot;, &quot;start_s&quot;: 56.717, &quot;duration_s&quot;: 18.443, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 1}}">H2 retrieval plan</div><div class="bar" style="left:42.567%;width:4.898%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H2 retrieval plan&quot;, &quot;start_s&quot;: 101.54, &quot;duration_s&quot;: 11.685, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 2}}">H2 retrieval plan</div><div class="bar" style="left:64.802%;width:5.752%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H2 retrieval plan&quot;, &quot;start_s&quot;: 154.579, &quot;duration_s&quot;: 13.721, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 3}}">H2 retrieval plan</div><div class="bar" style="left:85.309%;width:4.790%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H2 retrieval plan&quot;, &quot;start_s&quot;: 203.497, &quot;duration_s&quot;: 11.426, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 4}}">H2 retrieval plan</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_0</div><div class='lane-track'><div class="bar" style="left:6.299%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: My Trade is Mystery: Seven Meditations from a Li...&quot;, &quot;start_s&quot;: 15.026, &quot;duration_s&quot;: 1.578, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: My Trade is Mystery: Seven Meditations from a Li...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_1</div><div class='lane-track'><div class="bar" style="left:6.299%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Carl Phillips My Trade is Mystery Yale Universit...&quot;, &quot;start_s&quot;: 15.027, &quot;duration_s&quot;: 0.875, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Carl Phillips My Trade is Mystery Yale Universit...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_2</div><div class='lane-track'><div class="bar" style="left:6.299%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: &#x27;My Trade is Mystery&#x27; publication year by Carl P...&quot;, &quot;start_s&quot;: 15.027, &quot;duration_s&quot;: 1.25, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: &#x27;My Trade is Mystery&#x27; publication year by Carl P...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_3</div><div class='lane-track'><div class="bar" style="left:6.299%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Carl Phillips bibliography My Trade is Mystery Y...&quot;, &quot;start_s&quot;: 15.027, &quot;duration_s&quot;: 1.594, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Carl Phillips bibliography My Trade is Mystery Y...</div></div></div><div class='lane-row'><div class='lane-label'>choose</div><div class='lane-track'><div class="bar" style="left:6.968%;width:10.379%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 16.621, &quot;duration_s&quot;: 24.758, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 choose docs</div><div class="bar" style="left:31.662%;width:4.839%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H2 choose docs&quot;, &quot;start_s&quot;: 75.527, &quot;duration_s&quot;: 11.544, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 1}}">H2 choose docs</div><div class="bar" style="left:47.623%;width:9.665%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H2 choose docs&quot;, &quot;start_s&quot;: 113.6, &quot;duration_s&quot;: 23.054, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 2}}">H2 choose docs</div><div class="bar" style="left:70.663%;width:8.771%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H2 choose docs&quot;, &quot;start_s&quot;: 168.56, &quot;duration_s&quot;: 20.923, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 3}}">H2 choose docs</div><div class="bar" style="left:90.415%;width:4.061%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H2 choose docs&quot;, &quot;start_s&quot;: 215.679, &quot;duration_s&quot;: 9.688, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 4}}">H2 choose docs</div></div></div><div class='lane-row'><div class='lane-label'>read:web/2899</div><div class='lane-track'><div class="bar" style="left:17.347%;width:3.202%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.poetmercurio.com/what-the-universe-i...&quot;, &quot;start_s&quot;: 41.379, &quot;duration_s&quot;: 7.639, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/2899&quot;}}">https://www.poetmercurio.com/what-the-universe-i...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/28446</div><div class='lane-track'><div class="bar" style="left:17.348%;width:2.867%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://mysteryreaders.org/macavity-awards/&quot;, &quot;start_s&quot;: 41.382, &quot;duration_s&quot;: 6.839, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/28446&quot;}}">https://mysteryreaders.org/macavity-awards/</div></div></div><div class='lane-row'><div class='lane-label'>resolve</div><div class='lane-track'><div class="bar" style="left:20.549%;width:3.227%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 49.018, &quot;duration_s&quot;: 7.698, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 resolve</div><div class="bar" style="left:39.575%;width:2.992%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H2 resolve&quot;, &quot;start_s&quot;: 94.402, &quot;duration_s&quot;: 7.137, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 1}}">H2 resolve</div><div class="bar" style="left:60.124%;width:4.677%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H2 resolve&quot;, &quot;start_s&quot;: 143.422, &quot;duration_s&quot;: 11.157, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 2}}">H2 resolve</div><div class="bar" style="left:82.376%;width:2.932%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H2 resolve&quot;, &quot;start_s&quot;: 196.503, &quot;duration_s&quot;: 6.995, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 3}}">H2 resolve</div><div class="bar" style="left:97.031%;width:2.969%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H2 resolve&quot;, &quot;start_s&quot;: 231.46, &quot;duration_s&quot;: 7.083, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 4}}">H2 resolve</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_0</div><div class='lane-track'><div class="bar" style="left:31.508%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market Operations meeting agenda 2022 send...&quot;, &quot;start_s&quot;: 75.16, &quot;duration_s&quot;: 0.242, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market Operations meeting agenda 2022 send...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_1</div><div class='lane-track'><div class="bar" style="left:31.508%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market 2022 meeting agenda sender internal...&quot;, &quot;start_s&quot;: 75.16, &quot;duration_s&quot;: 0.366, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market 2022 meeting agenda sender internal...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_2</div><div class='lane-track'><div class="bar" style="left:31.508%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market Operations team agenda responsibili...&quot;, &quot;start_s&quot;: 75.16, &quot;duration_s&quot;: 0.294, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market Operations team agenda responsibili...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_3</div><div class='lane-track'><div class="bar" style="left:31.508%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market meeting agenda protocols 2022&quot;, &quot;start_s&quot;: 75.16, &quot;duration_s&quot;: 0.366, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market meeting agenda protocols 2022</div></div></div><div class='lane-row'><div class='lane-label'>read:web/74402</div><div class='lane-track'><div class="bar" style="left:36.511%;width:3.064%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.gilbertschool.org/about-us/coporatio...&quot;, &quot;start_s&quot;: 87.094, &quot;duration_s&quot;: 7.309, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/74402&quot;}}">https://www.gilbertschool.org/about-us/coporatio...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/36831</div><div class='lane-track'><div class="bar" style="left:36.512%;width:2.775%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://gse.com.gh/wp-content/uploads/2023/06/PR...&quot;, &quot;start_s&quot;: 87.097, &quot;duration_s&quot;: 6.621, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/36831&quot;}}">https://gse.com.gh/wp-content/uploads/2023/06/PR...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/13818</div><div class='lane-track'><div class="bar" style="left:36.513%;width:2.986%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.raymondmaine.org/boards-committees/b...&quot;, &quot;start_s&quot;: 87.1, &quot;duration_s&quot;: 7.123, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/13818&quot;}}">https://www.raymondmaine.org/boards-committees/b...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_0</div><div class='lane-track'><div class="bar" style="left:47.465%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market Operations meeting agenda sender 20...&quot;, &quot;start_s&quot;: 113.225, &quot;duration_s&quot;: 0.186, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market Operations meeting agenda sender 20...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_1</div><div class='lane-track'><div class="bar" style="left:47.465%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market 2022 Operations meeting agenda inte...&quot;, &quot;start_s&quot;: 113.225, &quot;duration_s&quot;: 0.375, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market 2022 Operations meeting agenda inte...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_2</div><div class='lane-track'><div class="bar" style="left:47.465%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market Operations team responsibilities 20...&quot;, &quot;start_s&quot;: 113.225, &quot;duration_s&quot;: 0.203, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market Operations team responsibilities 20...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_3</div><div class='lane-track'><div class="bar" style="left:47.465%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market 2022 meeting protocols Operations&quot;, &quot;start_s&quot;: 113.225, &quot;duration_s&quot;: 0.203, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market 2022 meeting protocols Operations</div></div></div><div class='lane-row'><div class='lane-label'>read:web/89630</div><div class='lane-track'><div class="bar" style="left:57.294%;width:2.830%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.495partnership.org/events-committee-...&quot;, &quot;start_s&quot;: 136.67, &quot;duration_s&quot;: 6.751, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/89630&quot;}}">https://www.495partnership.org/events-committee-...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/45702</div><div class='lane-track'><div class="bar" style="left:57.295%;width:2.264%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://farmersmarketla.com/index.html&quot;, &quot;start_s&quot;: 136.673, &quot;duration_s&quot;: 5.402, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/45702&quot;}}">https://farmersmarketla.com/index.html</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_0</div><div class='lane-track'><div class="bar" style="left:70.553%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market 2022 Operations meeting agenda inte...&quot;, &quot;start_s&quot;: 168.3, &quot;duration_s&quot;: 0.26, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market 2022 Operations meeting agenda inte...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_1</div><div class='lane-track'><div class="bar" style="left:70.553%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market Operations Director 2022 meeting ag...&quot;, &quot;start_s&quot;: 168.3, &quot;duration_s&quot;: 0.26, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market Operations Director 2022 meeting ag...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_2</div><div class='lane-track'><div class="bar" style="left:70.554%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market meeting protocols 2022 agenda distr...&quot;, &quot;start_s&quot;: 168.3, &quot;duration_s&quot;: 0.259, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market meeting protocols 2022 agenda distr...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_3</div><div class='lane-track'><div class="bar" style="left:70.554%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market 2022 Operations meeting calendar en...&quot;, &quot;start_s&quot;: 168.3, &quot;duration_s&quot;: 0.26, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market 2022 Operations meeting calendar en...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/55432</div><div class='lane-track'><div class="bar" style="left:79.434%;width:2.388%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.revisor.mn.gov/statutes/cite/13d/ful...&quot;, &quot;start_s&quot;: 189.483, &quot;duration_s&quot;: 5.697, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/55432&quot;}}">https://www.revisor.mn.gov/statutes/cite/13d/ful...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/13494</div><div class='lane-track'><div class="bar" style="left:79.435%;width:2.912%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.loudoun.gov/civicalerts.aspx?ARC=L&amp;W...&quot;, &quot;start_s&quot;: 189.486, &quot;duration_s&quot;: 6.946, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/13494&quot;}}">https://www.loudoun.gov/civicalerts.aspx?ARC=L&amp;W...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/15666</div><div class='lane-track'><div class="bar" style="left:79.436%;width:2.940%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;http://www.boardmannews.net/news.php?page=Commun...&quot;, &quot;start_s&quot;: 189.489, &quot;duration_s&quot;: 7.013, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/15666&quot;}}">http://www.boardmannews.net/news.php?page=Commun...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_fallback</div><div class='lane-track'><div class="bar" style="left:90.098%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Who sent the agenda for the monthly Operations m...&quot;, &quot;start_s&quot;: 214.923, &quot;duration_s&quot;: 0.756, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Who sent the agenda for the monthly Operations m...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_local_fallback</div><div class='lane-track'><div class="bar" style="left:90.098%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;local_document_search: Who sent the agenda for the monthly Operations m...&quot;, &quot;start_s&quot;: 214.923, &quot;duration_s&quot;: 0.221, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">local_document_search: Who sent the agenda for the monthly Operations m...</div></div></div><div class='lane-row'><div class='lane-label'>read:doc_ebd3d20f_1776278550</div><div class='lane-track'><div class="bar" style="left:94.477%;width:2.554%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;roundcube_email_20251202_212951.jsonl&quot;, &quot;start_s&quot;: 225.367, &quot;duration_s&quot;: 6.092, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;doc_ebd3d20f_1776278550&quot;}}">roundcube_email_20251202_212951.jsonl</div></div></div><div class='lane-row'><div class='lane-label'>report</div><div class='lane-track'><div class="bar" style="left:100.000%;width:0.800%;background:#4c78a8;" title="{&quot;stage&quot;: &quot;report&quot;, &quot;label&quot;: &quot;Final report&quot;, &quot;start_s&quot;: 238.542, &quot;duration_s&quot;: 0.01, &quot;meta&quot;: {&quot;resolved_hops&quot;: 2}}">Final report</div></div></div></div>
+  <h2>Events</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Lane</th>
+        <th>Stage</th>
+        <th>Label</th>
+        <th>Start (s)</th>
+        <th>Duration (s)</th>
+        <th>Metadata</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>0.00</td><td>15.03</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>search:iter0_web_search_0</td><td>search</td><td>web_search: My Trade is Mystery: Seven Meditations from a Li...</td><td>15.03</td><td>1.58</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_1</td><td>search</td><td>web_search: Carl Phillips My Trade is Mystery Yale Universit...</td><td>15.03</td><td>0.87</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_2</td><td>search</td><td>web_search: &#x27;My Trade is Mystery&#x27; publication year by Carl P...</td><td>15.03</td><td>1.25</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_3</td><td>search</td><td>web_search: Carl Phillips bibliography My Trade is Mystery Y...</td><td>15.03</td><td>1.59</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>16.62</td><td>24.76</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>read:web/2899</td><td>doc_read</td><td>https://www.poetmercurio.com/what-the-universe-i...</td><td>41.38</td><td>7.64</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/2899&quot;
+}</pre></td></tr><tr><td>read:web/28446</td><td>doc_read</td><td>https://mysteryreaders.org/macavity-awards/</td><td>41.38</td><td>6.84</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/28446&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>49.02</td><td>7.70</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H2 retrieval plan</td><td>56.72</td><td>18.44</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>search:iter1_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market Operations meeting agenda 2022 send...</td><td>75.16</td><td>0.24</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market 2022 meeting agenda sender internal...</td><td>75.16</td><td>0.37</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market Operations team agenda responsibili...</td><td>75.16</td><td>0.29</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_3</td><td>search</td><td>web_search: Lee&#x27;s Market meeting agenda protocols 2022</td><td>75.16</td><td>0.37</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H2 choose docs</td><td>75.53</td><td>11.54</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>read:web/74402</td><td>doc_read</td><td>https://www.gilbertschool.org/about-us/coporatio...</td><td>87.09</td><td>7.31</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/74402&quot;
+}</pre></td></tr><tr><td>read:web/36831</td><td>doc_read</td><td>https://gse.com.gh/wp-content/uploads/2023/06/PR...</td><td>87.10</td><td>6.62</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/36831&quot;
+}</pre></td></tr><tr><td>read:web/13818</td><td>doc_read</td><td>https://www.raymondmaine.org/boards-committees/b...</td><td>87.10</td><td>7.12</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/13818&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H2 resolve</td><td>94.40</td><td>7.14</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H2 retrieval plan</td><td>101.54</td><td>11.68</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>search:iter2_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market Operations meeting agenda sender 20...</td><td>113.22</td><td>0.19</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market 2022 Operations meeting agenda inte...</td><td>113.22</td><td>0.38</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market Operations team responsibilities 20...</td><td>113.22</td><td>0.20</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_3</td><td>search</td><td>web_search: Lee&#x27;s Market 2022 meeting protocols Operations</td><td>113.22</td><td>0.20</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H2 choose docs</td><td>113.60</td><td>23.05</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>read:web/89630</td><td>doc_read</td><td>https://www.495partnership.org/events-committee-...</td><td>136.67</td><td>6.75</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/89630&quot;
+}</pre></td></tr><tr><td>read:web/45702</td><td>doc_read</td><td>https://farmersmarketla.com/index.html</td><td>136.67</td><td>5.40</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/45702&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H2 resolve</td><td>143.42</td><td>11.16</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H2 retrieval plan</td><td>154.58</td><td>13.72</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>search:iter3_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market 2022 Operations meeting agenda inte...</td><td>168.30</td><td>0.26</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market Operations Director 2022 meeting ag...</td><td>168.30</td><td>0.26</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market meeting protocols 2022 agenda distr...</td><td>168.30</td><td>0.26</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_web_search_3</td><td>search</td><td>web_search: Lee&#x27;s Market 2022 Operations meeting calendar en...</td><td>168.30</td><td>0.26</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H2 choose docs</td><td>168.56</td><td>20.92</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>read:web/55432</td><td>doc_read</td><td>https://www.revisor.mn.gov/statutes/cite/13d/ful...</td><td>189.48</td><td>5.70</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/55432&quot;
+}</pre></td></tr><tr><td>read:web/13494</td><td>doc_read</td><td>https://www.loudoun.gov/civicalerts.aspx?ARC=L&amp;W...</td><td>189.49</td><td>6.95</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/13494&quot;
+}</pre></td></tr><tr><td>read:web/15666</td><td>doc_read</td><td>http://www.boardmannews.net/news.php?page=Commun...</td><td>189.49</td><td>7.01</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/15666&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H2 resolve</td><td>196.50</td><td>6.99</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H2 retrieval plan</td><td>203.50</td><td>11.43</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>search:iter4_web_fallback</td><td>search</td><td>web_search: Who sent the agenda for the monthly Operations m...</td><td>214.92</td><td>0.76</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter4_local_fallback</td><td>search</td><td>local_document_search: Who sent the agenda for the monthly Operations m...</td><td>214.92</td><td>0.22</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H2 choose docs</td><td>215.68</td><td>9.69</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>read:doc_ebd3d20f_1776278550</td><td>doc_read</td><td>roundcube_email_20251202_212951.jsonl</td><td>225.37</td><td>6.09</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;doc_ebd3d20f_1776278550&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H2 resolve</td><td>231.46</td><td>7.08</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>report</td><td>report</td><td>Final report</td><td>238.54</td><td>0.00</td><td><pre>{
+  &quot;resolved_hops&quot;: 2
+}</pre></td></tr>
+    </tbody>
+  </table>
+</body>
+</html>
