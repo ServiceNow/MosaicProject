@@ -6,31 +6,31 @@
 - LLM plots therefore show overall latency plus prompt-size distributions by `log_name`.
 
 ## Headline Stats
-- Completed rollouts analyzed: `8844`
-- Total completed tool actions analyzed: `59793`
-- Total LLM request duration samples: `65574`
-- Total LLM call summaries: `65563`
-- Evaluated reports with rewards: `8844`
-- Median LLM request latency: `13.18s`
-- Median LLM response tokens: `850`
-- Median LLM total tokens: `2564`
+- Completed rollouts analyzed: `9812`
+- Total completed tool actions analyzed: `66995`
+- Total LLM request duration samples: `73385`
+- Total LLM call summaries: `73371`
+- Evaluated reports with rewards: `9812`
+- Median LLM request latency: `13.21s`
+- Median LLM response tokens: `852`
+- Median LLM total tokens: `2573`
 - Mean rollout reward: `0.031`
 - Median rollout reward: `0.000`
-- Median completed rollout duration: `63.00s`
+- Median completed rollout duration: `63.61s`
 - Median tool execution time: `0.47s`
 - Median Latest Findings share of logged prompts: `98.2%`
 
 ## Top LLM Call Types
-- `analysis_final_synthesis`: `13837`
-- `adaptive_iter0`: `8942`
-- `action_plan_fallback`: `8933`
-- `report_qa`: `8836`
-- `adaptive_iter1`: `6940`
-- `adaptive_iter2`: `4859`
-- `adaptive_iter3`: `3603`
-- `adaptive_iter4`: `2688`
+- `analysis_final_synthesis`: `15562`
+- `adaptive_iter0`: `9925`
+- `action_plan_fallback`: `9915`
+- `report_qa`: `9811`
+- `adaptive_iter1`: `7740`
+- `adaptive_iter2`: `5425`
+- `adaptive_iter3`: `4029`
+- `adaptive_iter4`: `3036`
 
 ## Top Action Types
-- `web_search`: `33365`
-- `data_analysis`: `13821`
-- `local_document_search`: `12607`
+- `web_search`: `37317`
+- `data_analysis`: `15533`
+- `local_document_search`: `14145`

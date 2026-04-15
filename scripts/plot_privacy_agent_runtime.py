@@ -1049,7 +1049,22 @@ def render_spot_check_samples(samples: list[dict[str, Any]]) -> str:
     return "\n".join(cards)
 
 
-def plot_card(title: str, filename: str, *, blurb: str = "") -> str:
+def plot_card(
+    title: str,
+    filename: str,
+    *,
+    blurb: str = "",
+    available: bool = True,
+    missing_note: str = "Plot not available for this run.",
+) -> str:
+    if not available:
+        return f"""
+        <section class="plot-card">
+          <h3>{html.escape(title)}</h3>
+          <p class="blurb">{html.escape(blurb)}</p>
+          <p class="section-note">{html.escape(missing_note)}</p>
+        </section>
+        """
     return f"""
     <section class="plot-card">
       <h3>{html.escape(title)}</h3>
@@ -1073,6 +1088,11 @@ def write_html_viewer(
     actions: list[dict[str, Any]],
     iterations: list[dict[str, Any]],
 ) -> None:
+    plot_dir = path.parent
+
+    def has_plot(filename: str) -> bool:
+        return (plot_dir / filename).exists()
+
     counts = summary["counts"]
     llm_stats = summary["llm_request_latency_s"]
     prompt_stats = summary["logged_prompt_tokens"]
@@ -1127,21 +1147,25 @@ def write_html_viewer(
                 "LLM Latency Distribution",
                 "llm_latency_distribution.png",
                 blurb="Overall LLM request latency. Exact latency by log_name is not recoverable from the concurrent actor logs.",
+                available=has_plot("llm_latency_distribution.png"),
             ),
             plot_card(
                 "Rollout Duration Distribution",
                 "rollout_duration_distribution.png",
                 blurb="Completed rollout wall-clock durations, filtered to rollouts with a final report artifact.",
+                available=has_plot("rollout_duration_distribution.png"),
             ),
             plot_card(
                 "Iteration Count Distribution",
                 "iteration_count_distribution.png",
                 blurb="Final iteration counts across completed rollouts.",
+                available=has_plot("iteration_count_distribution.png"),
             ),
             plot_card(
                 "Actions Per Rollout",
                 "actions_per_rollout_distribution.png",
                 blurb="How many tool actions each completed rollout executed before producing a report.",
+                available=has_plot("actions_per_rollout_distribution.png"),
             ),
         ]
     )
@@ -1151,16 +1175,19 @@ def write_html_viewer(
                 "Prompt Tokens by LLM Call Type",
                 "prompt_tokens_by_log_name.png",
                 blurb="Large adaptive prompts dominate; the second panel now shows a median token breakdown by prompt section instead of a fraction.",
+                available=has_plot("prompt_tokens_by_log_name.png"),
             ),
             plot_card(
                 "Rollout Duration by Final Iteration",
                 "rollout_duration_by_iteration.png",
                 blurb="Completed rollout time split by how many iterations the agent ended up using.",
+                available=has_plot("rollout_duration_by_iteration.png"),
             ),
             plot_card(
                 "Median Time per Iteration",
                 "iteration_time_breakdown.png",
                 blurb="Median wall time per iteration, split into tool execution versus residual LLM and orchestration time.",
+                available=has_plot("iteration_time_breakdown.png"),
             ),
         ]
     )
@@ -1170,6 +1197,7 @@ def write_html_viewer(
                 "Rollout Reward Distribution",
                 "reward_distribution.png",
                 blurb="Reward counts recomputed from saved reports and dataset ground truth.",
+                available=has_plot("reward_distribution.png"),
             ),
         ]
     )
@@ -1179,21 +1207,29 @@ def write_html_viewer(
                 "Response Token Distribution",
                 "llm_response_token_distribution.png",
                 blurb="Overall response-token distribution across logged privacy-agent LLM calls.",
+                available=has_plot("llm_response_token_distribution.png"),
+                missing_note="This run does not have per-call LLM token logs, so response-token plots are unavailable.",
             ),
             plot_card(
                 "Response Tokens by LLM Call Type",
                 "llm_output_tokens_by_log_name.png",
                 blurb="Per-call response-token distribution grouped by log_name.",
+                available=has_plot("llm_output_tokens_by_log_name.png"),
+                missing_note="This run does not have per-call LLM token logs, so response-token plots are unavailable.",
             ),
             plot_card(
                 "Token Totals by LLM Call Type",
                 "llm_token_totals_by_log_name.png",
                 blurb="Aggregate prompt versus response token volume for the most expensive call types.",
+                available=has_plot("llm_token_totals_by_log_name.png"),
+                missing_note="This run does not have per-call LLM token logs, so token-total plots are unavailable.",
             ),
             plot_card(
                 "Token Totals by Rollout",
                 "llm_token_totals_by_rollout.png",
                 blurb="Aggregate prompt versus response token volume for the most token-heavy completed rollouts.",
+                available=has_plot("llm_token_totals_by_rollout.png"),
+                missing_note="This run does not have per-call LLM token logs, so token-total plots are unavailable.",
             ),
         ]
     )
@@ -1203,21 +1239,25 @@ def write_html_viewer(
                 "Tool Latency by Action Type",
                 "tool_latency_by_action_type.png",
                 blurb="Distribution of per-action execution time using action categories from the final action plan.",
+                available=has_plot("tool_latency_by_action_type.png"),
             ),
             plot_card(
                 "Tool Latency by Backend",
                 "tool_latency_by_backend.png",
                 blurb="Distribution of execution time grouped by the backend tool actually used.",
+                available=has_plot("tool_latency_by_backend.png"),
             ),
             plot_card(
                 "Tool Counts by Action Type",
                 "tool_counts_by_action_type.png",
                 blurb="Volume of completed tool calls by action type.",
+                available=has_plot("tool_counts_by_action_type.png"),
             ),
             plot_card(
                 "Tool Counts by Backend",
                 "tool_counts_by_backend.png",
                 blurb="Volume of completed tool calls by backend tool.",
+                available=has_plot("tool_counts_by_backend.png"),
             ),
         ]
     )
@@ -1236,7 +1276,9 @@ def write_html_viewer(
         "reward_records.csv",
     ]
     raw_links_html = "\n".join(
-        f"<li><a href='{html.escape(name)}'>{html.escape(name)}</a></li>" for name in raw_links
+        f"<li><a href='{html.escape(name)}'>{html.escape(name)}</a></li>"
+        for name in raw_links
+        if (plot_dir / name).exists()
     )
 
     html_doc = f"""<!DOCTYPE html>
