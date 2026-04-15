@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Runtime Analysis - privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2</title>
+  <style>
+    :root {
+      --bg: #f5f4ef;
+      --panel: #ffffff;
+      --ink: #1e2430;
+      --muted: #5f6b7a;
+      --line: #d7dbe2;
+      --accent: #1f5da8;
+      --accent-soft: #e7f0fb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #f8f7f2 0%, #eef3f8 100%);
+      color: var(--ink);
+    }
+    a { color: var(--accent); }
+    .page {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+    .hero {
+      background: radial-gradient(circle at top left, #ffffff 0%, #eef4fb 45%, #f8f7f2 100%);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 28px 30px;
+      margin-bottom: 22px;
+      box-shadow: 0 18px 50px rgba(30, 36, 48, 0.06);
+    }
+    .hero h1 { margin: 0 0 8px; font-size: 30px; }
+    .hero p { margin: 6px 0; color: var(--muted); max-width: 1000px; }
+    .topnav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+    .topnav a {
+      text-decoration: none;
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid #cfe0f6;
+      font-size: 14px;
+    }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin: 22px 0;
+    }
+    .stat-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px 18px;
+      box-shadow: 0 8px 24px rgba(30, 36, 48, 0.04);
+    }
+    .stat-label {
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .section {
+      margin: 28px 0;
+    }
+    .section h2 {
+      margin: 0 0 12px;
+      font-size: 22px;
+    }
+    .section p.section-note {
+      margin: 0 0 14px;
+      color: var(--muted);
+    }
+    .plot-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 18px;
+    }
+    .plot-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: 0 12px 32px rgba(30, 36, 48, 0.05);
+    }
+    .plot-card h3 {
+      margin: 4px 0 8px;
+      font-size: 18px;
+    }
+    .plot-card .blurb {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 14px;
+      min-height: 40px;
+    }
+    .plot-card img {
+      width: 100%;
+      display: block;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+    .table-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+      gap: 18px;
+    }
+    .table-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 10px 28px rgba(30, 36, 48, 0.05);
+      overflow: auto;
+    }
+    .table-card h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .data-table th, .data-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    .data-table th {
+      position: sticky;
+      top: 0;
+      background: #f7f9fc;
+      z-index: 1;
+    }
+    .preview-table {
+      font-size: 12px;
+    }
+    details {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-top: 12px;
+    }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #f7f9fc;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 12px;
+      max-height: 420px;
+      overflow: auto;
+    }
+    summary {
+      cursor: pointer;
+      font-weight: 600;
+    }
+    ul.raw-links {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+    .limitations li { margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <h1>Runtime Analysis Viewer</h1>
+      <p><strong>Run:</strong> privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2</p>
+      <p>This viewer is generated from the saved actor logs and per-rollout session artifacts. Tool timings are exact at the action level; LLM timings are exact overall but only prompt sizes are attributable to specific call types because the actor logs request durations without request IDs under concurrency.</p>
+      <div class="topnav">
+        <a href="#overview">Overview</a>
+        <a href="#context">Context + Iterations</a>
+        <a href="#llm-tokens">LLM Tokens</a>
+        <a href="#rewards">Rewards</a>
+        <a href="#tools">Tools</a>
+        <a href="#tables">Tables</a>
+        <a href="#raw">Raw Files</a>
+      </div>
+      <div class="stat-grid">
+        <div class='stat-card'><div class='stat-label'>Completed rollouts</div><div class='stat-value'>8,844</div></div>
+<div class='stat-card'><div class='stat-label'>Completed tool actions</div><div class='stat-value'>59,793</div></div>
+<div class='stat-card'><div class='stat-label'>LLM requests</div><div class='stat-value'>65,574</div></div>
+<div class='stat-card'><div class='stat-label'>LLM call summaries</div><div class='stat-value'>65,563</div></div>
+<div class='stat-card'><div class='stat-label'>Prompt summaries</div><div class='stat-value'>22,436</div></div>
+<div class='stat-card'><div class='stat-label'>Evaluated rewards</div><div class='stat-value'>8,844</div></div>
+<div class='stat-card'><div class='stat-label'>Median LLM latency</div><div class='stat-value'>13.18 s</div></div>
+<div class='stat-card'><div class='stat-label'>Median response tokens</div><div class='stat-value'>850</div></div>
+<div class='stat-card'><div class='stat-label'>Median reward</div><div class='stat-value'>0.000</div></div>
+<div class='stat-card'><div class='stat-label'>Median rollout duration</div><div class='stat-value'>63.00 s</div></div>
+<div class='stat-card'><div class='stat-label'>Median tool execution</div><div class='stat-value'>0.473 s</div></div>
+<div class='stat-card'><div class='stat-label'>Median findings token share</div><div class='stat-value'>98.2%</div></div>
+      </div>
+    </section>
+
+    <section class="section" id="overview">
+      <h2>Overview Plots</h2>
+      <p class="section-note">These are the quickest plots to check for overall throughput shape, rollout duration, and how often the agent keeps iterating.</p>
+      <div class="plot-grid">
+        
+    <section class="plot-card">
+      <h3>LLM Latency Distribution</h3>
+      <p class="blurb">Overall LLM request latency. Exact latency by log_name is not recoverable from the concurrent actor logs.</p>
+      <a href="llm_latency_distribution.png"><img src="llm_latency_distribution.png" alt="LLM Latency Distribution"></a>
+    </section>
+    
+
+    <section class="plot-card">
+      <h3>Rollout Duration Distribution</h3>
+      <p class="blurb">Completed rollout wall-clock durations, filtered to rollouts with a final report artifact.</p>
+      <a href="rollout_duration_distribution.png"><img src="rollout_duration_distribution.png" alt="Rollout Duration Distribution"></a>
+    </section>
+    
+
+    <section class="plot-card">
+      <h3>Iteration Count Distribution</h3>
+      <p class="blurb">Final iteration counts across completed rollouts.</p>
+      <a href="iteration_count_distribution.png"><img src="iteration_count_distribution.png" alt="Iteration Count Distribution"></a>
+    </section>
+    
+
+    <section class="plot-card">
+      <h3>Actions Per Rollout</h3>
+      <p class="blurb">How many tool actions each completed rollout executed before producing a report.</p>
+      <a href="actions_per_rollout_distribution.png"><img src="actions_per_rollout_distribution.png" alt="Actions Per Rollout"></a>
+    </section>
+    
+      </div>
+    </section>
+
+    <section class="section" id="context">
+      <h2>Context + Iteration Behavior</h2>
+      <p class="section-note">This section is usually the most useful for explaining why the run feels slow. It focuses on prompt size and how each extra iteration adds wall time.</p>
+      <div class="plot-grid">
+        
+    <section class="plot-card">
+      <h3>Prompt Tokens by LLM Call Type</h3>
+      <p class="blurb">Large adaptive prompts dominate; the second panel now shows a median token breakdown by prompt section instead of a fraction.</p>
+      <a href="prompt_tokens_by_log_name.png"><img src="prompt_tokens_by_log_name.png" alt="Prompt Tokens by LLM Call Type"></a>
+    </section>
+    
+
+    <section class="plot-card">
+      <h3>Rollout Duration by Final Iteration</h3>
+      <p class="blurb">Completed rollout time split by how many iterations the agent ended up using.</p>
+      <a href="rollout_duration_by_iteration.png"><img src="rollout_duration_by_iteration.png" alt="Rollout Duration by Final Iteration"></a>
+    </section>
+    
+
+    <section class="plot-card">
+      <h3>Median Time per Iteration</h3>
+      <p class="blurb">Median wall time per iteration, split into tool execution versus residual LLM and orchestration time.</p>
+      <a href="iteration_time_breakdown.png"><img src="iteration_time_breakdown.png" alt="Median Time per Iteration"></a>
+    </section>
+    
+      </div>
+    </section>
+
+    <section class="section" id="llm-tokens">
+      <h2>LLM Token Usage</h2>
+      <p class="section-note">These views use the explicit `privacy_agent llm call summary` lines emitted by the rollout adapter. They show response tokens and aggregate token volume by call type and rollout.</p>
+      <div class="plot-grid">
+        
+    <section class="plot-card">
+      <h3>Response Token Distribution</h3>
+      <p class="blurb">Overall response-token distribution across logged privacy-agent LLM calls.</p>
+      <a href="llm_response_token_distribution.png"><img src="llm_response_token_distribution.png" alt="Response Token Distribution"></a>
+    </section>
+    
+
+    <section class="plot-card">
+      <h3>Response Tokens by LLM Call Type</h3>
+      <p class="blurb">Per-call response-token distribution grouped by log_name.</p>
+      <a href="llm_output_tokens_by_log_name.png"><img src="llm_output_tokens_by_log_name.png" alt="Response Tokens by LLM Call Type"></a>
+    </section>
+    
+
+    <section class="plot-card">
+      <h3>Token Totals by LLM Call Type</h3>
+      <p class="blurb">Aggregate prompt versus response token volume for the most expensive call types.</p>
+      <a href="llm_token_totals_by_log_name.png"><img src="llm_token_totals_by_log_name.png" alt="Token Totals by LLM Call Type"></a>
+    </section>
+    
+
+    <section class="plot-card">
+      <h3>Token Totals by Rollout</h3>
+      <p class="blurb">Aggregate prompt versus response token volume for the most token-heavy completed rollouts.</p>
+      <a href="llm_token_totals_by_rollout.png"><img src="llm_token_totals_by_rollout.png" alt="Token Totals by Rollout"></a>
+    </section>
+    
+      </div>
+    </section>
+
+    <section class="section" id="rewards">
+      <h2>Reward Spot Checks</h2>
+      <p class="section-note">These views recompute reward from the saved report answers against the dataset ground truth, then show a reproducible random sample of rollout reports for manual inspection.</p>
+      <div class="plot-grid">
+        
+    <section class="plot-card">
+      <h3>Rollout Reward Distribution</h3>
+      <p class="blurb">Reward counts recomputed from saved reports and dataset ground truth.</p>
+      <a href="reward_distribution.png"><img src="reward_distribution.png" alt="Rollout Reward Distribution"></a>
+    </section>
+    
+      </div>
+      <div class="table-grid">
+        <section class="table-card">
+          <h3>Rollout Reward Stats</h3>
+          <table class='data-table'><thead><tr><th>Statistic</th><th>Reward</th></tr></thead><tbody><tr><td>count</td><td>8,844</td></tr>
+<tr><td>mean</td><td>0.031</td></tr>
+<tr><td>median</td><td>0.000</td></tr>
+<tr><td>min</td><td>0.000</td></tr>
+<tr><td>p90</td><td>0.000</td></tr>
+<tr><td>p95</td><td>0.200</td></tr>
+<tr><td>p99</td><td>0.500</td></tr>
+<tr><td>max</td><td>1.000</td></tr></tbody></table>
+        </section>
+        <section class="table-card">
+          <h3>Reward Distribution</h3>
+          <table class='data-table'><thead><tr><th>Reward</th><th>Rollouts</th></tr></thead><tbody><tr><td>0.00</td><td>8,072</td></tr>
+<tr><td>0.20</td><td>434</td></tr>
+<tr><td>0.25</td><td>2</td></tr>
+<tr><td>0.33</td><td>93</td></tr>
+<tr><td>0.40</td><td>12</td></tr>
+<tr><td>0.50</td><td>150</td></tr>
+<tr><td>0.67</td><td>22</td></tr>
+<tr><td>1.00</td><td>59</td></tr></tbody></table>
+        </section>
+      </div>
+      
+            <details class="sample-card">
+              <summary>DR0001_25cbf112_a6983f04 | reward=0.000 | hops=0/4</summary>
+              <p><strong>Task:</strong> DR0001</p>
+              <p><strong>Iterations:</strong> 10 | <strong>Actions:</strong> 17 | <strong>Duration:</strong> 234.74 s</p>
+              <p><strong>Predicted final answer:</strong> NOT_FOUND</p>
+              <p><strong>Ground-truth final answer:</strong> Q2 2022</p>
+              <p><strong>Question preview:</strong> 1. In what year did Chaad complete a residency with the Contemporary Art?
+2. In what quarter of (1) did Lee&#x27;s Market launch its LED lighting retrofit program?
+3. What percentage reduction in overall lighting energy expenditure resulted from the initiative launched in (2)?
+4 (final). In which quarter did Lee&#x27;s Market achieve a (3) reduction in transit times?</p>
+              <table class='data-table preview-table'><thead><tr><th>Hop</th><th>Predicted</th><th>Ground Truth</th><th>Correct</th><th>Match</th></tr></thead><tbody><tr><td>1</td><td>NOT_FOUND</td><td>2022</td><td>false</td><td>0.000</td></tr>
+<tr><td>2</td><td>NOT_FOUND</td><td>Q3 2022</td><td>false</td><td>0.000</td></tr>
+<tr><td>3</td><td>NOT_FOUND</td><td>12%</td><td>false</td><td>0.000</td></tr>
+<tr><td>4</td><td>NOT_FOUND</td><td>Q2 2022</td><td>false</td><td>0.000</td></tr></tbody></table>
+              <p><strong>Report path:</strong> /mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_25cbf112_a6983f04/workspace/research_report_20260415_092020.md</p>
+              <pre># Research Findings: 1. In what year did Chaad complete a residency with the Contemporary Art?
+2. In what quarter of (1) did Lee&#x27;s Market launch its LED lighting retrofit program?
+3. What percentage reduction in overall lighting energy expenditure resulted from the initiative launched in (2)?
+4 (final). In which quarter did Lee&#x27;s Market achieve a (3) reduction in transit times?
+
+&lt;think&gt;
+Okay, let&#x27;s tackle these questions one by one. The user wants short answers with justifications. First, the original research questions are numbered 1 to 4, and the sub-questions Q1 to Q4 are similar but with some dependencies. The available evidence is empty, so I need to check if there&#x27;s any info provided.
+
+Looking at the task context, there&#x27;s a company description for Lee&#x27;s Market, but no specific data about Chaad&#x27;s residency, LED program launch quarters, percentage reductions, or transit time improvements. The available evidence is an empty list, so there&#x27;s no documentation to reference. 
+
+For question 1, asking about Chaad&#x27;s residency year with Contemporary Art—without any documents, I can&#x27;t find that info. Same for Q2, which depends on Q1&#x27;s answer (the quarter of (1)). Since there&#x27;s no data, all answers would be NOT_FOUND. The justifications need to cite DOC:doc_id, but since there are no documents, maybe they should just state that. But the rules say to use only provided evidence. So all answers are NOT_FOUND. The final answer would combine them, but since they&#x27;re all not found, maybe the final is also NOT_FOUND. I need to make sure each answer is as concise as possible and justify with the lack of evidence.
+&lt;/think&gt;
+
+ANSWER_1: NOT_FOUND  
+JUSTIFICATION_1: No evidence provided   
+
+ANSWER_2: NOT_FOUND  
+JUSTIFICATION_2: No evidence provided   
+
+ANSWER_3: NOT_FOUND  
+JUSTIFICATION_3: No evidence provided   
+
+ANSWER_4: NOT_FOUND  
+JUSTIFICATION_4: No evidence provided   
+
+ANSWER_FINAL: NOT_FOUND  
+JUSTIFICATION_FINAL: Sub-answers rely on missing evidence &lt;|im_end|&gt;</pre>
+            </details>
+            
+
+            <details class="sample-card">
+              <summary>DR0002_4b9e3b87_a899ef06 | reward=0.000 | hops=0/3</summary>
+              <p><strong>Task:</strong> DR0002</p>
+              <p><strong>Iterations:</strong> 5 | <strong>Actions:</strong> 9 | <strong>Duration:</strong> 102.18 s</p>
+              <p><strong>Predicted final answer:</strong> NOT_FOUND</p>
+              <p><strong>Ground-truth final answer:</strong> 500</p>
+              <p><strong>Question preview:</strong> 1. What percentage of training sessions at Lee&#x27;s Market were conducted using the proprietary online learning management system as of Q2 2025?
+2. As of which quarter in 2025 were (1) of training sessions conducted using the proprietary online learning management system?
+3 (final). How many new applications did Lee&#x27;s Market receive in (2)?</p>
+              <table class='data-table preview-table'><thead><tr><th>Hop</th><th>Predicted</th><th>Ground Truth</th><th>Correct</th><th>Match</th></tr></thead><tbody><tr><td>1</td><td>NOT_FOUND</td><td>75%</td><td>false</td><td>0.000</td></tr>
+<tr><td>2</td><td>NOT_FOUND</td><td>Q2 2025</td><td>false</td><td>0.000</td></tr>
+<tr><td>3</td><td>NOT_FOUND</td><td>500</td><td>false</td><td>0.000</td></tr></tbody></table>
+              <p><strong>Report path:</strong> /mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0002_4b9e3b87_a899ef06/workspace/research_report_20260415_111426.md</p>
+              <pre># Research Findings: 1. What percentage of training sessions at Lee&#x27;s Market were conducted using the proprietary online learning management system as of Q2 2025?
+2. As of which quarter in 2025 were (1) of training sessions conducted using the proprietary online learning management system?
+3 (final). How many new applications did Lee&#x27;s Market receive in (2)?
+
+&lt;think&gt;
+Okay, let&#x27;s tackle this step by step. The user has three questions about Lee&#x27;s Market&#x27;s training sessions and new applications. The first question is about the percentage of training sessions using their proprietary LMS in Q2 2025. The second asks for the quarter in 2025 when (1) of training sessions were conducted using the LMS. The third is about the number of new applications received in (2).
+
+Looking at the available evidence, the document analysis mentions that no relevant documents were found in the vector store. The content of the document says that there&#x27;s no data to calculate percentages or aggregate training session data. The user&#x27;s provided evidence is from a document that states the lack of relevant documents, so there&#x27;s no numerical data here.
+
+Since there&#x27;s no data available, all three questions can&#x27;t be answered with the given information. The answers should be NOT_FOUND because the required evidence isn&#x27;t present. Each justification needs to cite the document where this was noted, which is the provided evidence document with doc_id &quot;doc_c12f8e08_1776251589&quot;. 
+
+So, for each answer, I&#x27;ll have to state NOT_FOUND and reference the document. The final answer would combine that all three questions lack data. But the user might expect answers based on the sub-questions, but since the documents aren&#x27;t found, the correct response is NOT_FOUND for each.
+&lt;/think&gt;
+
+ANSWER_1: NOT_FOUND  
+JUSTIFICATION_1: No relevant documents found   
+
+ANSWER_2: NOT_FOUND  
+JUSTIFICATION_2: No relevant documents found   
+
+ANSWER_3: NOT_FOUND  
+JUSTIFICATION_3: No relevant documents found   
+
+ANSWER_FINAL: NOT_FOUND  </pre>
+            </details>
+            
+
+            <details class="sample-card">
+              <summary>DR0003_4c20816c_9183e4bd | reward=0.000 | hops=0/2</summary>
+              <p><strong>Task:</strong> DR0003</p>
+              <p><strong>Iterations:</strong> 5 | <strong>Actions:</strong> 9 | <strong>Duration:</strong> 101.48 s</p>
+              <p><strong>Predicted final answer:</strong> NOT_FOUND</p>
+              <p><strong>Ground-truth final answer:</strong> the end of Q4 2024</p>
+              <p><strong>Question preview:</strong> 1. What was the renewable energy usage percentage at Lee&#x27;s Market as of Q1 2024?
+2 (final). By when does Lee&#x27;s Market anticipate achieving a (1) improvement in website performance?</p>
+              <table class='data-table preview-table'><thead><tr><th>Hop</th><th>Predicted</th><th>Ground Truth</th><th>Correct</th><th>Match</th></tr></thead><tbody><tr><td>1</td><td>NOT_FOUND</td><td>25%</td><td>false</td><td>0.000</td></tr>
+<tr><td>2</td><td>NOT_FOUND</td><td>the end of Q4 2024</td><td>false</td><td>0.000</td></tr></tbody></table>
+              <p><strong>Report path:</strong> /mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0003_4c20816c_9183e4bd/workspace/research_report_20260415_065402.md</p>
+              <pre># Research Findings: 1. What was the renewable energy usage percentage at Lee&#x27;s Market as of Q1 2024?
+2 (final). By when does Lee&#x27;s Market anticipate achieving a (1) improvement in website performance?
+
+&lt;think&gt;
+Okay, let&#x27;s tackle these questions. First, the user wants the renewable energy usage percentage at Lee&#x27;s Market as of Q1 2024. But looking at the available evidence, there&#x27;s nothing provided. So I can&#x27;t find that data. The second question is about when they expect a (1) improvement in website performance. Again, no evidence is given here. Since both questions don&#x27;t have supporting documents, I need to mark them as NOT_FOUND. The final answer should explain that the answers aren&#x27;t found because there&#x27;s no evidence. I need to make sure each answer is short and the justifications cite the docs, but since there are none, they&#x27;ll be NOT_FOUND.
+&lt;/think&gt;
+
+ANSWER_1: NOT_FOUND
+JUSTIFICATION_1: No evidence provided [DOC:]
+ANSWER_2: NOT_FOUND
+JUSTIFICATION_2: No evidence provided [DOC:]
+ANSWER_FINAL: NOT_FOUND
+JUSTIFICATION_FINAL: Sub-answers lack supporting evidence [DOC:]&lt;|im_end|&gt;</pre>
+            </details>
+            
+
+            <details class="sample-card">
+              <summary>DR0003_98338d1b_968d8f8c | reward=0.000 | hops=0/3</summary>
+              <p><strong>Task:</strong> DR0003</p>
+              <p><strong>Iterations:</strong> 6 | <strong>Actions:</strong> 11 | <strong>Duration:</strong> 154.79 s</p>
+              <p><strong>Predicted final answer:</strong> NOT_FOUND</p>
+              <p><strong>Ground-truth final answer:</strong> 212500</p>
+              <p><strong>Question preview:</strong> 1. What was the reduction in false positives after implementing the new threat detection system at Lee&#x27;s Market in Q4 2022?
+2. What year did Lee&#x27;s Market reduce false positives by (1)?
+3 (final). What was the monthly average facility maintenance cost for Q4 of (2)?</p>
+              <table class='data-table preview-table'><thead><tr><th>Hop</th><th>Predicted</th><th>Ground Truth</th><th>Correct</th><th>Match</th></tr></thead><tbody><tr><td>1</td><td>NOT_FOUND</td><td>40%</td><td>false</td><td>0.000</td></tr>
+<tr><td>2</td><td>NOT_FOUND</td><td>2022</td><td>false</td><td>0.000</td></tr>
+<tr><td>3</td><td></td><td>212500</td><td>false</td><td>0.000</td></tr></tbody></table>
+              <p><strong>Report path:</strong> /mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0003_98338d1b_968d8f8c/workspace/research_report_20260415_081151.md</p>
+              <pre># Research Findings: 1. What was the reduction in false positives after implementing the new threat detection system at Lee&#x27;s Market in Q4 2022?
+2. What year did Lee&#x27;s Market reduce false positives by (1)?
+3 (final). What was the monthly average facility maintenance cost for Q4 of (2)?
+
+&lt;think&gt;
+Okay, let&#x27;s tackle these questions step by step. The user is asking about the reduction in false positives after implementing a new threat detection system at Lee&#x27;s Market in Q4 2022. Then the year when this reduction happened, and the monthly average facility maintenance cost for that quarter.
+
+Looking at the available evidence, the first document mentions that no relevant documents were found in the vector store. However, there are some recent findings from different actions. The second document also states that no relevant documents were found, but there were some successful searches. However, the actual documents retrieved might not have the specific data needed.
+
+For the first question about the reduction in false positives, since no documents are found, the answer would be NOT_FOUND. Similarly, the second question asks for the year, which is likely 2022, but without data, it&#x27;s also NOT_FOUND. The third question is about the monthly average maintenance cost for Q4 2022, which again, no documents are available. 
+
+But wait, the user&#x27;s task context mentions that the company is Lee&#x27;s Market and the time frame is Q4 2022. Since the documents don&#x27;t provide the data, all answers would be NOT_FOUND. However, the third question references the year from the second question, which is also NOT_FOUND. So, combining these, all answers would be NOT_FOUND because there&#x27;s no evidence to support them.
+&lt;/think&gt;
+
+ANSWER_1: NOT_FOUND  
+JUSTIFICATION_1: No relevant documents found in vector store   
+ANSWER_2: NOT_FOUND  
+JUSTIFICATION_2: No relevant documents found in vector store   
+ANSWER_FINAL: NOT_FOUND  
+JUSTIFICATION_FINAL: No evidence provided for false positive reduction or maintenanc</pre>
+            </details>
+            
+
+            <details class="sample-card">
+              <summary>DR0026_080d67f1_363180d9 | reward=0.200 | hops=1/5</summary>
+              <p><strong>Task:</strong> DR0026</p>
+              <p><strong>Iterations:</strong> 7 | <strong>Actions:</strong> 16 | <strong>Duration:</strong> 249.82 s</p>
+              <p><strong>Predicted final answer:</strong> NOT_FOUND</p>
+              <p><strong>Ground-truth final answer:</strong> 30%</p>
+              <p><strong>Question preview:</strong> 1. According to the Corporate Transparency Act information, until what year must domestic and foreign entities formed or registered before January 1, 2024, file their initial beneficial ownership information report with FinCEN?
+2. What is the title of the customer service analysis report covering the first months of (1)?
+3. What university&#x27;s innovation campus building was completed in (2)?
+4. What year is (3)&#x27;s budget of $2.06 billion associated with?
+5 (final). What percentage of respondents preferred online shopping with home delivery in the survey conducted in June (4)?</p>
+              <table class='data-table preview-table'><thead><tr><th>Hop</th><th>Predicted</th><th>Ground Truth</th><th>Correct</th><th>Match</th></tr></thead><tbody><tr><td>1</td><td>2025</td><td>2025</td><td>true</td><td>1.000</td></tr>
+<tr><td>2</td><td>NOT_FOUND</td><td>February 2025</td><td>false</td><td>0.000</td></tr>
+<tr><td>3</td><td>NOT_FOUND</td><td>Virginia Tech</td><td>false</td><td>0.000</td></tr>
+<tr><td>4</td><td>NOT_FOUND</td><td>2023</td><td>false</td><td>0.000</td></tr>
+<tr><td>5</td><td>NOT_FOUND</td><td>30%</td><td>false</td><td>0.000</td></tr></tbody></table>
+              <p><strong>Report path:</strong> /mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0026_080d67f1_363180d9/workspace/research_report_20260415_052402.md</p>
+              <pre># Research Findings: 1. According to the Corporate Transparency Act information, until what year must domestic and foreign entities formed or registered before January 1, 2024, file their initial beneficial ownership information report with FinCEN?
+2. What is the title of the customer service analysis report covering the first months of (1)?
+3. What university&#x27;s innovation campus building was completed in (2)?
+4. What year is (3)&#x27;s budget of $2.06 billion associated with?
+5 (final). What percentage of respondents preferred online shopping with home delivery in the survey conducted in June (4)?
+
+&lt;think&gt;
+Okay, let&#x27;s tackle each question step by step.
+
+First, the original research questions are numbered 1-5, and the sub-questions Q1-Q5 are linked. The task is to answer each with a short answer and justification.
+
+Starting with Q1: According to the Corporate Transparency Act, until what year must entities formed before Jan 1, 2024, file their initial BOI report? Looking at the evidence, the third document mentions that companies formed before Jan 1, 2024, have until Jan 1, 2025. So the answer should be 2025. Justification from DOC:doc_341a8c2f_1776230392.
+
+Q2 asks for the title of the customer service analysis report covering the first months of (1). Wait, (1) refers to the year from Q1, which is 2025. But looking through the evidence, there&#x27;s a document titled &quot;Frequently Asked Questions&quot; and &quot;Beneficial Ownership Information Reporting Rule Fact Sheet&quot;. However, there&#x27;s no mention of a customer service analysis report. The documents mention reports related to BOI, but not a customer service analysis. Hmm, maybe the second document&#x27;s title is &quot;Beneficial Ownership Information Reporting Rule Fact Sheet&quot; which might be the report. But the question is about a customer service analysis. Wait, maybe the answer is &quot;Customer Service Analysis Report&quot; but the evidence doesn&#x27;t specify. Wait, the user&#x27;s task context mentions Lee&#x27;s Market, but the available evidence doesn&#x27;t mention</pre>
+            </details>
+            
+
+            <details class="sample-card">
+              <summary>DR0036_feec6577_c174f064 | reward=0.000 | hops=0/2</summary>
+              <p><strong>Task:</strong> DR0036</p>
+              <p><strong>Iterations:</strong> 9 | <strong>Actions:</strong> 16 | <strong>Duration:</strong> 167.30 s</p>
+              <p><strong>Predicted final answer:</strong> NOT_FOUND</p>
+              <p><strong>Ground-truth final answer:</strong> Conclusion</p>
+              <p><strong>Question preview:</strong> 1. By what year would workers at dialysis clinics and large health systems reach the $25 hourly minimum wage?
+2 (final). What section of the report summarizes the strategies for ensuring success in (1) and beyond?</p>
+              <table class='data-table preview-table'><thead><tr><th>Hop</th><th>Predicted</th><th>Ground Truth</th><th>Correct</th><th>Match</th></tr></thead><tbody><tr><td>1</td><td>NOT_FOUND</td><td>2026</td><td>false</td><td>0.000</td></tr>
+<tr><td>2</td><td>NOT_FOUND</td><td>Conclusion</td><td>false</td><td>0.000</td></tr></tbody></table>
+              <p><strong>Report path:</strong> /mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0036_feec6577_c174f064/workspace/research_report_20260415_031643.md</p>
+              <pre># Research Findings: 1. By what year would workers at dialysis clinics and large health systems reach the $25 hourly minimum wage?
+2 (final). What section of the report summarizes the strategies for ensuring success in (1) and beyond?
+
+&lt;think&gt;
+Okay, let&#x27;s see. The user has two questions here. The first one is about the year when workers at dialysis clinics and large health systems would reach a $25 hourly minimum wage. The second question asks which section of the report summarizes the strategies for ensuring success in (1) and beyond.
+
+Looking at the available evidence, there&#x27;s only one document provided with a doc_id of &quot;doc_f0d4974a_1776222927&quot;. The content of this document mentions that no relevant documents were found in the vector store. However, there are some findings from recent searches, but the document analysis says they aren&#x27;t relevant. The user&#x27;s task context is about Elexion Automotive, which designs electric vehicles, but the questions are about minimum wage and report sections. 
+
+Since the document analysis states no relevant documents were found, there&#x27;s no evidence here to answer either question. The user&#x27;s sub-questions are about workers in dialysis clinics and health systems, which don&#x27;t seem related to Elexion Automotive&#x27;s focus on electric vehicles. The provided evidence doesn&#x27;t mention anything about minimum wage increases or report sections related to that. 
+
+Therefore, both answers would be NOT_FOUND because there&#x27;s no relevant information in the given documents to answer the questions. The justification would cite the document analysis indicating no relevant documents were found.
+&lt;/think&gt;
+
+ANSWER_1: NOT_FOUND  
+JUSTIFICATION_1: No relevant documents found   
+
+ANSWER_2: NOT_FOUND  
+JUSTIFICATION_2: No relevant documents found   
+
+ANSWER_FINAL: NOT_FOUND  
+JUSTIFICATION_FINAL: No evidence addresses wage timelines or report sections &lt;|im_end|&gt;</pre>
+            </details>
+            
+
+            <details class="sample-card">
+              <summary>DR0044_85ea1c50_d9a78c89 | reward=0.000 | hops=0/4</summary>
+              <p><strong>Task:</strong> DR0044</p>
+              <p><strong>Iterations:</strong> 6 | <strong>Actions:</strong> 11 | <strong>Duration:</strong> 203.90 s</p>
+              <p><strong>Predicted final answer:</strong> NOT_FOUND</p>
+              <p><strong>Ground-truth final answer:</strong> John Doe</p>
+              <p><strong>Question preview:</strong> 1. What was the percentage of users who found the website navigation intuitive at MediConn Solutions in 2024?
+2. What year is associated with the (1) sensitivity of lymphoscintigraphy for lymphedema diagnosis?
+3. Where was the third edition of Plastic and Reconstructive Surgery Board Review published in (2)?
+4 (final). What meeting does John schedule to discuss leveraging the growing demand for virtual healthcare services in (3)?</p>
+              <table class='data-table preview-table'><thead><tr><th>Hop</th><th>Predicted</th><th>Ground Truth</th><th>Correct</th><th>Match</th></tr></thead><tbody><tr><td>1</td><td>NOT_FOUND</td><td>92%</td><td>false</td><td>0.000</td></tr>
+<tr><td>2</td><td>NOT_FOUND</td><td>2016</td><td>false</td><td>0.000</td></tr>
+<tr><td>3</td><td>NOT_FOUND</td><td>Ontario</td><td>false</td><td>0.000</td></tr>
+<tr><td>4</td><td>NOT_FOUND</td><td>John Doe</td><td>false</td><td>0.000</td></tr></tbody></table>
+              <p><strong>Report path:</strong> /mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0044_85ea1c50_d9a78c89/workspace/research_report_20260415_103103.md</p>
+              <pre># Research Findings: 1. What was the percentage of users who found the website navigation intuitive at MediConn Solutions in 2024?
+2. What year is associated with the (1) sensitivity of lymphoscintigraphy for lymphedema diagnosis?
+3. Where was the third edition of Plastic and Reconstructive Surgery Board Review published in (2)?
+4 (final). What meeting does John schedule to discuss leveraging the growing demand for virtual healthcare services in (3)?
+
+&lt;think&gt;
+Okay, let&#x27;s tackle this query step by step. The user has four questions to answer, each requiring a short answer and a justification. The context provided is about MediConn Solutions and some research questions related to their services. The evidence given is from a document that mentions no relevant documents were found.
+
+Starting with the first question: the percentage of users who found the website navigation intuitive at MediConn Solutions in 2024. The evidence states that no relevant documents were found, so I can&#x27;t find the answer here. The answer should be NOT_FOUND with the justification citing the document that mentions no data.
+
+Second question: the year associated with the sensitivity of lymphoscintigraphy for lymphedema diagnosis. Again, the evidence doesn&#x27;t have any data, so NOT_FOUND, citing the same document.
+
+Third question: Where the third edition of the Plastic and Reconstructive Surgery Board Review was published in (2). The evidence says no relevant documents were found, so NOT_FOUND again. 
+
+Fourth question: What meeting John schedules to discuss virtual healthcare services in (3). The context doesn&#x27;t provide info on meetings, so also NOT_FOUND. 
+
+Since all sub-questions rely on the same evidence which lacks data, each answer is NOT_FOUND. The final answer should combine these, but since they all are NOT_FOUND, the final justification will note the lack of relevant documents.
+&lt;/think&gt;
+
+ANSWER_1: NOT_FOUND  
+JUSTIFICATION_1: No numerical data found   
+
+ANSWER_2: NOT_FOUND  
+JUSTIFICATION_2: </pre>
+            </details>
+            
+
+            <details class="sample-card">
+              <summary>DR0099_c4742644_e687b419 | reward=0.000 | hops=0/2</summary>
+              <p><strong>Task:</strong> DR0099</p>
+              <p><strong>Iterations:</strong> 5 | <strong>Actions:</strong> 9 | <strong>Duration:</strong> 163.81 s</p>
+              <p><strong>Predicted final answer:</strong> NOT_FOUND</p>
+              <p><strong>Ground-truth final answer:</strong> Elexion</p>
+              <p><strong>Question preview:</strong> 1. What year is the penultimate year of the Muppet Babies broadcast run?
+2 (final). Which company sold exactly (1) electric vehicles?</p>
+              <table class='data-table preview-table'><thead><tr><th>Hop</th><th>Predicted</th><th>Ground Truth</th><th>Correct</th><th>Match</th></tr></thead><tbody><tr><td>1</td><td>NOT_FOUND</td><td>1990</td><td>false</td><td>0.000</td></tr>
+<tr><td>2</td><td>NOT_FOUND</td><td>Elexion</td><td>false</td><td>0.000</td></tr></tbody></table>
+              <p><strong>Report path:</strong> /mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0099_c4742644_e687b419/workspace/research_report_20260415_100913.md</p>
+              <pre># Research Findings: 1. What year is the penultimate year of the Muppet Babies broadcast run?
+2 (final). Which company sold exactly (1) electric vehicles?
+
+&lt;think&gt;
+Okay, let&#x27;s tackle these questions. 
+
+First, the original research questions are about the penultimate year of Muppet Babies and a company that sold exactly one electric vehicle. The context mentions Elexion Automotive as the company in the EV sector. 
+
+Looking at the evidence provided, the user tried to access some Excel files related to Elexion Automotive&#x27;s EV sales and battery data. However, the content excerpts just mention that the openpyxl library isn&#x27;t available, so the files couldn&#x27;t be processed. There&#x27;s no actual data retrieved here. 
+
+For the first question about Muppet Babies, the evidence doesn&#x27;t mention anything about TV broadcast years. The only info is about Elexion Automotive. So I can&#x27;t find the answer here. 
+
+The second question asks which company sold exactly one EV. The context says Elexion is in the EV industry, but the evidence doesn&#x27;t provide sales numbers. The local_document_search results don&#x27;t have relevant data. So there&#x27;s no info on how many EVs they sold. 
+
+Since there&#x27;s no data in the provided evidence to answer either question, both answers would be NOT_FOUND. The justifications need to reference the documents, but since the evidence doesn&#x27;t help, I have to note that.
+&lt;/think&gt;
+
+ANSWER_1: NOT_FOUND
+JUSTIFICATION_1: No evidence about Muppet Babies years 
+
+ANSWER_2: NOT_FOUND
+JUSTIFICATION_2: No EV sales data available 
+
+ANSWER_FINAL: NOT_FOUND
+JUSTIFICATION_FINAL: Evidence lacks required data for both questions &lt;|im_end|&gt;</pre>
+            </details>
+            
+    </section>
+
+    <section class="section" id="tools">
+      <h2>Tool Timing</h2>
+      <p class="section-note">These plots use per-action execution times stored in each rollout&apos;s final action plan, so this breakdown is much more precise than the text logs alone.</p>
+      <div class="plot-grid">
+        
+    <section class="plot-card">
+      <h3>Tool Latency by Action Type</h3>
+      <p class="blurb">Distribution of per-action execution time using action categories from the final action plan.</p>
+      <a href="tool_latency_by_action_type.png"><img src="tool_latency_by_action_type.png" alt="Tool Latency by Action Type"></a>
+    </section>
+    
+
+    <section class="plot-card">
+      <h3>Tool Latency by Backend</h3>
+      <p class="blurb">Distribution of execution time grouped by the backend tool actually used.</p>
+      <a href="tool_latency_by_backend.png"><img src="tool_latency_by_backend.png" alt="Tool Latency by Backend"></a>
+    </section>
+    
+
+    <section class="plot-card">
+      <h3>Tool Counts by Action Type</h3>
+      <p class="blurb">Volume of completed tool calls by action type.</p>
+      <a href="tool_counts_by_action_type.png"><img src="tool_counts_by_action_type.png" alt="Tool Counts by Action Type"></a>
+    </section>
+    
+
+    <section class="plot-card">
+      <h3>Tool Counts by Backend</h3>
+      <p class="blurb">Volume of completed tool calls by backend tool.</p>
+      <a href="tool_counts_by_backend.png"><img src="tool_counts_by_backend.png" alt="Tool Counts by Backend"></a>
+    </section>
+    
+      </div>
+    </section>
+
+    <section class="section" id="tables">
+      <h2>Summary Tables</h2>
+      <div class="table-grid">
+        <section class="table-card">
+          <h3>Counts</h3>
+          <table class='data-table'><thead><tr><th>Metric</th><th>Value</th></tr></thead><tbody><tr><td>llm_requests</td><td>65,574</td></tr>
+<tr><td>llm_call_records</td><td>65,563</td></tr>
+<tr><td>prompt_records</td><td>22,436</td></tr>
+<tr><td>reward_records</td><td>8,844</td></tr>
+<tr><td>rollouts_all</td><td>8,864</td></tr>
+<tr><td>rollouts_completed_with_report</td><td>8,844</td></tr>
+<tr><td>actions_completed_with_report</td><td>59,793</td></tr>
+<tr><td>iteration_records_completed_with_report</td><td>33,480</td></tr></tbody></table>
+        </section>
+        <section class="table-card">
+          <h3>LLM Request Latency</h3>
+          <table class='data-table'><thead><tr><th>Statistic</th><th>Seconds</th></tr></thead><tbody><tr><td>count</td><td>65,574</td></tr>
+<tr><td>mean</td><td>14.72</td></tr>
+<tr><td>median</td><td>13.18</td></tr>
+<tr><td>min</td><td>0.190</td></tr>
+<tr><td>p90</td><td>24.36</td></tr>
+<tr><td>p95</td><td>29.83</td></tr>
+<tr><td>p99</td><td>42.94</td></tr>
+<tr><td>max</td><td>75.42</td></tr></tbody></table>
+        </section>
+        <section class="table-card">
+          <h3>Logged Prompt Tokens</h3>
+          <table class='data-table'><thead><tr><th>Statistic</th><th>Tokens</th></tr></thead><tbody><tr><td>count</td><td>22,436</td></tr>
+<tr><td>mean</td><td>14,443.68</td></tr>
+<tr><td>median</td><td>12,667.00</td></tr>
+<tr><td>min</td><td>4,096</td></tr>
+<tr><td>p90</td><td>23,873.50</td></tr>
+<tr><td>p95</td><td>26,266.50</td></tr>
+<tr><td>p99</td><td>28,992.50</td></tr>
+<tr><td>max</td><td>40,121</td></tr></tbody></table>
+        </section>
+        <section class="table-card">
+          <h3>Logged Response Tokens</h3>
+          <table class='data-table'><thead><tr><th>Statistic</th><th>Tokens</th></tr></thead><tbody><tr><td>count</td><td>65,563</td></tr>
+<tr><td>mean</td><td>943.68</td></tr>
+<tr><td>median</td><td>850</td></tr>
+<tr><td>min</td><td>132</td></tr>
+<tr><td>p90</td><td>1,530.00</td></tr>
+<tr><td>p95</td><td>1,859.00</td></tr>
+<tr><td>p99</td><td>2,739.38</td></tr>
+<tr><td>max</td><td>4,102</td></tr></tbody></table>
+        </section>
+        <section class="table-card">
+          <h3>Logged Total Tokens</h3>
+          <table class='data-table'><thead><tr><th>Statistic</th><th>Tokens</th></tr></thead><tbody><tr><td>count</td><td>65,563</td></tr>
+<tr><td>mean</td><td>6,722.59</td></tr>
+<tr><td>median</td><td>2,564</td></tr>
+<tr><td>min</td><td>604</td></tr>
+<tr><td>p90</td><td>18,656.60</td></tr>
+<tr><td>p95</td><td>23,335.70</td></tr>
+<tr><td>p99</td><td>28,873.66</td></tr>
+<tr><td>max</td><td>37,727</td></tr></tbody></table>
+        </section>
+        <section class="table-card">
+          <h3>Rollout Reward</h3>
+          <table class='data-table'><thead><tr><th>Statistic</th><th>Reward</th></tr></thead><tbody><tr><td>count</td><td>8,844</td></tr>
+<tr><td>mean</td><td>0.031</td></tr>
+<tr><td>median</td><td>0.000</td></tr>
+<tr><td>min</td><td>0.000</td></tr>
+<tr><td>p90</td><td>0.000</td></tr>
+<tr><td>p95</td><td>0.200</td></tr>
+<tr><td>p99</td><td>0.500</td></tr>
+<tr><td>max</td><td>1.000</td></tr></tbody></table>
+        </section>
+        <section class="table-card">
+          <h3>Completed Rollout Duration</h3>
+          <table class='data-table'><thead><tr><th>Statistic</th><th>Seconds</th></tr></thead><tbody><tr><td>count</td><td>8,844</td></tr>
+<tr><td>mean</td><td>91.05</td></tr>
+<tr><td>median</td><td>63.00</td></tr>
+<tr><td>min</td><td>6.405</td></tr>
+<tr><td>p90</td><td>203.36</td></tr>
+<tr><td>p95</td><td>246.18</td></tr>
+<tr><td>p99</td><td>321.16</td></tr>
+<tr><td>max</td><td>475.16</td></tr></tbody></table>
+        </section>
+        <section class="table-card">
+          <h3>LLM Token Usage by Call Type</h3>
+          <table class='data-table'><thead><tr><th>Log name</th><th>call_count</th><th>captured_call_count</th><th>prompt_tokens</th><th>response_tokens</th><th>total_tokens</th><th>mean_prompt_tokens</th><th>mean_response_tokens</th></tr></thead><tbody><tr><td>adaptive_iter0</td><td>8,942</td><td>8,942</td><td>166,456,442</td><td>7,738,202</td><td>174,194,644</td><td>18,615.12</td><td>865.38</td></tr>
+<tr><td>adaptive_iter1</td><td>6,940</td><td>6,940</td><td>58,553,100</td><td>6,242,807</td><td>64,795,907</td><td>8,437.05</td><td>899.54</td></tr>
+<tr><td>adaptive_iter2</td><td>4,859</td><td>4,859</td><td>31,965,571</td><td>4,520,196</td><td>36,485,767</td><td>6,578.63</td><td>930.27</td></tr>
+<tr><td>adaptive_iter3</td><td>3,603</td><td>3,603</td><td>25,508,013</td><td>3,415,385</td><td>28,923,398</td><td>7,079.66</td><td>947.93</td></tr>
+<tr><td>analysis_final_synthesis</td><td>13,837</td><td>0</td><td>13,232,732</td><td>13,691,197</td><td>26,923,929</td><td>956.33</td><td>989.46</td></tr>
+<tr><td>action_plan_fallback</td><td>8,933</td><td>8,933</td><td>9,868,989</td><td>12,523,294</td><td>22,392,283</td><td>1,104.78</td><td>1,401.91</td></tr>
+<tr><td>adaptive_iter4</td><td>2,688</td><td>2,688</td><td>18,965,674</td><td>2,522,809</td><td>21,488,483</td><td>7,055.68</td><td>938.55</td></tr>
+<tr><td>adaptive_iter5</td><td>2,066</td><td>2,066</td><td>14,316,746</td><td>1,932,764</td><td>16,249,510</td><td>6,929.69</td><td>935.51</td></tr>
+<tr><td>adaptive_iter6</td><td>1,624</td><td>1,624</td><td>11,198,299</td><td>1,561,967</td><td>12,760,266</td><td>6,895.50</td><td>961.80</td></tr>
+<tr><td>report_qa</td><td>8,836</td><td>0</td><td>7,813,281</td><td>4,649,917</td><td>12,463,198</td><td>884.26</td><td>526.25</td></tr>
+<tr><td>adaptive_iter7</td><td>1,262</td><td>1,262</td><td>8,552,279</td><td>1,194,841</td><td>9,747,120</td><td>6,776.77</td><td>946.78</td></tr>
+<tr><td>adaptive_iter8</td><td>1,011</td><td>1,011</td><td>6,935,451</td><td>929,781</td><td>7,865,232</td><td>6,859.99</td><td>919.66</td></tr></tbody></table>
+        </section>
+        <section class="table-card">
+          <h3>LLM Token Usage by Rollout</h3>
+          <table class='data-table'><thead><tr><th>Rollout</th><th>call_count</th><th>captured_call_count</th><th>prompt_tokens</th><th>response_tokens</th><th>total_tokens</th><th>mean_prompt_tokens</th><th>mean_response_tokens</th></tr></thead><tbody><tr><td>DR0036_feec6577_cfaf476a</td><td>19</td><td>12</td><td>171,032</td><td>21,096</td><td>192,128</td><td>9,001.68</td><td>1,110.32</td></tr>
+<tr><td>DR0044_85ea1c50_dcd1e7ad</td><td>17</td><td>12</td><td>161,277</td><td>19,488</td><td>180,765</td><td>9,486.88</td><td>1,146.35</td></tr>
+<tr><td>DR0036_feec6577_a3d5a5db</td><td>13</td><td>11</td><td>170,221</td><td>10,354</td><td>180,575</td><td>13,093.92</td><td>796.46</td></tr>
+<tr><td>DR0044_85ea1c50_9c371350</td><td>16</td><td>11</td><td>155,818</td><td>21,624</td><td>177,442</td><td>9,738.62</td><td>1,351.50</td></tr>
+<tr><td>DR0036_feec6577_eed9e5e9</td><td>15</td><td>12</td><td>163,864</td><td>13,259</td><td>177,123</td><td>10,924.27</td><td>883.93</td></tr>
+<tr><td>DR0036_feec6577_c6c8ef24</td><td>15</td><td>13</td><td>160,229</td><td>12,948</td><td>173,177</td><td>10,681.93</td><td>863.20</td></tr>
+<tr><td>DR0099_c4742644_fc123a8d</td><td>21</td><td>12</td><td>153,642</td><td>18,263</td><td>171,905</td><td>7,316.29</td><td>869.67</td></tr>
+<tr><td>DR0044_85ea1c50_7646cd3d</td><td>14</td><td>12</td><td>149,988</td><td>20,492</td><td>170,480</td><td>10,713.43</td><td>1,463.71</td></tr>
+<tr><td>DR0010_0db8a3e5_e2b27af1</td><td>23</td><td>12</td><td>144,492</td><td>25,061</td><td>169,553</td><td>6,282.26</td><td>1,089.61</td></tr>
+<tr><td>DR0044_85ea1c50_ca3f00e7</td><td>16</td><td>10</td><td>147,912</td><td>20,230</td><td>168,142</td><td>9,244.50</td><td>1,264.38</td></tr>
+<tr><td>DR0026_080d67f1_8b9296ed</td><td>15</td><td>11</td><td>143,784</td><td>22,171</td><td>165,955</td><td>9,585.60</td><td>1,478.07</td></tr>
+<tr><td>DR0010_0db8a3e5_43dc0057</td><td>19</td><td>11</td><td>144,970</td><td>20,834</td><td>165,804</td><td>7,630.00</td><td>1,096.53</td></tr></tbody></table>
+        </section>
+        <section class="table-card">
+          <h3>Completed Action Execution</h3>
+          <table class='data-table'><thead><tr><th>Statistic</th><th>Seconds</th></tr></thead><tbody><tr><td>count</td><td>59,793</td></tr>
+<tr><td>mean</td><td>3.801</td></tr>
+<tr><td>median</td><td>0.473</td></tr>
+<tr><td>min</td><td>0.003</td></tr>
+<tr><td>p90</td><td>15.01</td></tr>
+<tr><td>p95</td><td>17.88</td></tr>
+<tr><td>p99</td><td>24.52</td></tr>
+<tr><td>max</td><td>103.79</td></tr></tbody></table>
+        </section>
+        <section class="table-card">
+          <h3>Iteration Count Distribution</h3>
+          <table class='data-table'><thead><tr><th>Final iteration</th><th>Rollouts</th></tr></thead><tbody><tr><td>1</td><td>1,976</td></tr>
+<tr><td>2</td><td>2,059</td></tr>
+<tr><td>3</td><td>1,234</td></tr>
+<tr><td>4</td><td>899</td></tr>
+<tr><td>5</td><td>623</td></tr>
+<tr><td>6</td><td>440</td></tr>
+<tr><td>7</td><td>363</td></tr>
+<tr><td>8</td><td>242</td></tr>
+<tr><td>9</td><td>224</td></tr>
+<tr><td>10</td><td>784</td></tr></tbody></table>
+        </section>
+        <section class="table-card">
+          <h3>Prompt Count by Log Name</h3>
+          <table class='data-table'><thead><tr><th>Log name</th><th>Prompt summaries</th></tr></thead><tbody><tr><td>adaptive_iter0</td><td>8,770</td></tr>
+<tr><td>adaptive_iter1</td><td>4,516</td></tr>
+<tr><td>adaptive_iter2</td><td>2,381</td></tr>
+<tr><td>adaptive_iter3</td><td>1,891</td></tr>
+<tr><td>adaptive_iter4</td><td>1,422</td></tr>
+<tr><td>adaptive_iter5</td><td>1,077</td></tr>
+<tr><td>adaptive_iter6</td><td>836</td></tr>
+<tr><td>adaptive_iter7</td><td>618</td></tr>
+<tr><td>adaptive_iter8</td><td>521</td></tr>
+<tr><td>adaptive_iter9</td><td>386</td></tr>
+<tr><td>analysis_synthesis</td><td>15</td></tr>
+<tr><td>analysis_final_synthesis</td><td>3</td></tr></tbody></table>
+        </section>
+        <section class="table-card">
+          <h3>Action Timing by Type</h3>
+          <table class='data-table'><thead><tr><th>Action type</th><th>count</th><th>mean</th><th>median</th><th>p90</th><th>p95</th><th>p99</th><th>max</th></tr></thead><tbody><tr><td>web_search</td><td>33,365</td><td>0.487</td><td>0.466</td><td>0.702</td><td>0.812</td><td>1.155</td><td>5.855</td></tr>
+<tr><td>data_analysis</td><td>13,821</td><td>15.14</td><td>14.34</td><td>20.85</td><td>23.93</td><td>33.27</td><td>103.79</td></tr>
+<tr><td>local_document_search</td><td>12,607</td><td>0.145</td><td>0.122</td><td>0.226</td><td>0.272</td><td>0.406</td><td>3.639</td></tr></tbody></table>
+        </section>
+        <section class="table-card">
+          <h3>Action Timing by Backend Tool</h3>
+          <table class='data-table'><thead><tr><th>Backend</th><th>count</th><th>mean</th><th>median</th><th>p90</th><th>p95</th><th>p99</th><th>max</th></tr></thead><tbody><tr><td>browsecomp_search</td><td>33,365</td><td>0.487</td><td>0.466</td><td>0.702</td><td>0.812</td><td>1.155</td><td>5.855</td></tr>
+<tr><td>smart_analysis</td><td>13,821</td><td>15.14</td><td>14.34</td><td>20.85</td><td>23.93</td><td>33.27</td><td>103.79</td></tr>
+<tr><td>local_document_search</td><td>12,607</td><td>0.145</td><td>0.122</td><td>0.226</td><td>0.272</td><td>0.406</td><td>3.639</td></tr></tbody></table>
+        </section>
+      </div>
+
+      <details>
+        <summary>Preview: rollouts.csv</summary>
+        <table class='data-table preview-table'><thead><tr><th>rollout_id</th><th>has_report</th><th>report_path</th><th>start_timestamp</th><th>end_timestamp</th><th>duration_s</th><th>current_iteration</th><th>max_iterations</th><th>total_actions</th><th>completed_actions</th><th>failed_actions</th><th>pending_actions</th><th>tool_exec_time_s</th><th>non_tool_time_s</th></tr></thead><tbody><tr><td>DR0001_06a7f3db_004eec27</td><td>true</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_004eec27/workspace/research_report_20260415_043035.md</td><td>2026-04-15T04:30:10.996663</td><td>2026-04-15T04:30:35</td><td>24.00</td><td>1</td><td>10</td><td>3</td><td>3</td><td>0</td><td>0</td><td>8.398</td><td>15.61</td></tr>
+<tr><td>DR0001_06a7f3db_010f1196</td><td>true</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_010f1196/workspace/research_report_20260415_072506.md</td><td>2026-04-15T07:23:25.086913</td><td>2026-04-15T07:25:06</td><td>100.91</td><td>6</td><td>10</td><td>11</td><td>11</td><td>0</td><td>0</td><td>30.49</td><td>70.42</td></tr>
+<tr><td>DR0001_06a7f3db_01e6a31f</td><td>true</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_01e6a31f/workspace/research_report_20260415_044617.md</td><td>2026-04-15T04:45:48.307404</td><td>2026-04-15T04:46:17</td><td>28.69</td><td>1</td><td>10</td><td>3</td><td>3</td><td>0</td><td>0</td><td>11.96</td><td>16.73</td></tr>
+<tr><td>DR0001_06a7f3db_0282b1e4</td><td>true</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_0282b1e4/workspace/research_report_20260415_093947.md</td><td>2026-04-15T09:38:09.796438</td><td>2026-04-15T09:39:47</td><td>97.20</td><td>6</td><td>10</td><td>8</td><td>8</td><td>0</td><td>0</td><td>1.813</td><td>95.39</td></tr>
+<tr><td>DR0001_06a7f3db_02b0b5c8</td><td>true</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_02b0b5c8/workspace/research_report_20260415_100145.md</td><td>2026-04-15T09:59:15.015533</td><td>2026-04-15T10:01:45</td><td>149.98</td><td>9</td><td>10</td><td>13</td><td>13</td><td>0</td><td>0</td><td>43.83</td><td>106.16</td></tr>
+<tr><td>DR0001_06a7f3db_03000fe6</td><td>true</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_03000fe6/workspace/research_report_20260415_075415.md</td><td>2026-04-15T07:50:59.455495</td><td>2026-04-15T07:54:15</td><td>195.54</td><td>10</td><td>10</td><td>17</td><td>16</td><td>0</td><td>1</td><td>60.14</td><td>135.41</td></tr>
+<tr><td>DR0001_06a7f3db_034118d0</td><td>true</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_034118d0/workspace/research_report_20260415_050636.md</td><td>2026-04-15T05:05:57.472625</td><td>2026-04-15T05:06:36</td><td>38.53</td><td>1</td><td>10</td><td>3</td><td>3</td><td>0</td><td>0</td><td>21.21</td><td>17.31</td></tr>
+<tr><td>DR0001_06a7f3db_04c83886</td><td>true</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_04c83886/workspace/research_report_20260415_103153.md</td><td>2026-04-15T10:31:14.952918</td><td>2026-04-15T10:31:53</td><td>38.05</td><td>1</td><td>10</td><td>3</td><td>3</td><td>0</td><td>0</td><td>18.24</td><td>19.81</td></tr>
+<tr><td>DR0001_06a7f3db_053c34e0</td><td>true</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_053c34e0/workspace/research_report_20260415_062209.md</td><td>2026-04-15T06:21:31.850304</td><td>2026-04-15T06:22:09</td><td>37.15</td><td>1</td><td>10</td><td>3</td><td>3</td><td>0</td><td>0</td><td>18.18</td><td>18.97</td></tr>
+<tr><td>DR0001_06a7f3db_05b906f9</td><td>true</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_05b906f9/workspace/research_report_20260415_032619.md</td><td>2026-04-15T03:25:30.747177</td><td>2026-04-15T03:26:19</td><td>48.25</td><td>3</td><td>10</td><td>6</td><td>6</td><td>0</td><td>0</td><td>10.99</td><td>37.26</td></tr>
+<tr><td>DR0001_06a7f3db_065fe515</td><td>true</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_065fe515/workspace/research_report_20260415_103232.md</td><td>2026-04-15T10:31:18.163513</td><td>2026-04-15T10:32:32</td><td>73.84</td><td>5</td><td>10</td><td>8</td><td>8</td><td>0</td><td>0</td><td>20.60</td><td>53.23</td></tr>
+<tr><td>DR0001_06a7f3db_06e22c99</td><td>true</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_06e22c99/workspace/research_report_20260415_034107.md</td><td>2026-04-15T03:40:17.686355</td><td>2026-04-15T03:41:07</td><td>49.31</td><td>3</td><td>10</td><td>6</td><td>6</td><td>0</td><td>0</td><td>15.85</td><td>33.46</td></tr>
+<tr><td>DR0001_06a7f3db_070e1323</td><td>true</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_070e1323/workspace/research_report_20260415_044424.md</td><td>2026-04-15T04:43:39.147038</td><td>2026-04-15T04:44:24</td><td>44.85</td><td>2</td><td>10</td><td>4</td><td>4</td><td>0</td><td>0</td><td>10.40</td><td>34.46</td></tr>
+<tr><td>DR0001_06a7f3db_0724be5b</td><td>true</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_0724be5b/workspace/research_report_20260415_075126.md</td><td>2026-04-15T07:50:59.665418</td><td>2026-04-15T07:51:26</td><td>26.33</td><td>1</td><td>10</td><td>3</td><td>3</td><td>0</td><td>0</td><td>11.72</td><td>14.61</td></tr>
+<tr><td>DR0001_06a7f3db_076e6c36</td><td>true</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_076e6c36/workspace/research_report_20260415_082751.md</td><td>2026-04-15T08:27:03.451501</td><td>2026-04-15T08:27:51</td><td>47.55</td><td>2</td><td>10</td><td>4</td><td>4</td><td>0</td><td>0</td><td>13.89</td><td>33.65</td></tr></tbody></table>
+      </details>
+      <details>
+        <summary>Preview: actions.csv</summary>
+        <table class='data-table preview-table'><thead><tr><th>rollout_id</th><th>has_report</th><th>action_id</th><th>action_type</th><th>backend_tool</th><th>status</th><th>execution_time_s</th><th>iteration_completed</th><th>completion_time</th><th>created_from_research_step</th><th>preferred_tool</th></tr></thead><tbody><tr><td>DR0001_06a7f3db_004eec27</td><td>true</td><td>fallback_action_0</td><td>local_document_search</td><td>local_document_search</td><td>completed</td><td>0.059</td><td>0</td><td>2026-04-15T04:30:11.057182</td><td>fallback_generation</td><td>LocalFileSearchTool</td></tr>
+<tr><td>DR0001_06a7f3db_004eec27</td><td>true</td><td>fallback_action_1</td><td>web_search</td><td>browsecomp_search</td><td>completed</td><td>0.444</td><td>0</td><td>2026-04-15T04:30:11.500946</td><td>fallback_generation</td><td>BrowseCompSearchTool</td></tr>
+<tr><td>DR0001_06a7f3db_004eec27</td><td>true</td><td>fallback_action_2</td><td>data_analysis</td><td>smart_analysis</td><td>completed</td><td>7.895</td><td>0</td><td>2026-04-15T04:30:19.396657</td><td>fallback_generation</td><td>SmartAnalysisTool</td></tr>
+<tr><td>DR0001_06a7f3db_010f1196</td><td>true</td><td>fallback_action_0</td><td>local_document_search</td><td>local_document_search</td><td>completed</td><td>0.078</td><td>0</td><td>2026-04-15T07:23:25.167293</td><td>fallback_generation</td><td>LocalFileSearchTool</td></tr>
+<tr><td>DR0001_06a7f3db_010f1196</td><td>true</td><td>fallback_action_1</td><td>web_search</td><td>browsecomp_search</td><td>completed</td><td>0.494</td><td>0</td><td>2026-04-15T07:23:25.661471</td><td>fallback_generation</td><td>BrowseCompSearchTool</td></tr>
+<tr><td>DR0001_06a7f3db_010f1196</td><td>true</td><td>fallback_action_2</td><td>data_analysis</td><td>smart_analysis</td><td>completed</td><td>18.91</td><td>0</td><td>2026-04-15T07:23:44.574146</td><td>fallback_generation</td><td>SmartAnalysisTool</td></tr>
+<tr><td>DR0001_06a7f3db_010f1196</td><td>true</td><td>adaptive_0_local_document_search_search_for_unpr_0</td><td>local_document_search</td><td>local_document_search</td><td>completed</td><td>0.226</td><td>1</td><td>2026-04-15T07:23:56.163417</td><td></td><td>LocalFileSearchTool</td></tr>
+<tr><td>DR0001_06a7f3db_010f1196</td><td>true</td><td>adaptive_0_web_search_find_official_c_1</td><td>web_search</td><td>browsecomp_search</td><td>completed</td><td>0.488</td><td>1</td><td>2026-04-15T07:23:56.651205</td><td></td><td>BrowseCompSearchTool</td></tr>
+<tr><td>DR0001_06a7f3db_010f1196</td><td>true</td><td>adaptive_1_local_document_search_search_for_inte_1</td><td>local_document_search</td><td>local_document_search</td><td>completed</td><td>0.115</td><td>2</td><td>2026-04-15T07:24:10.116226</td><td></td><td>LocalFileSearchTool</td></tr>
+<tr><td>DR0001_06a7f3db_010f1196</td><td>true</td><td>adaptive_2_web_search_search_for_the__0</td><td>web_search</td><td>browsecomp_search</td><td>completed</td><td>0.654</td><td>3</td><td>2026-04-15T07:24:26.303778</td><td></td><td>BrowseCompSearchTool</td></tr>
+<tr><td>DR0001_06a7f3db_010f1196</td><td>true</td><td>adaptive_2_local_document_search_search_for_fsma_1</td><td>local_document_search</td><td>local_document_search</td><td>completed</td><td>0.098</td><td>3</td><td>2026-04-15T07:24:26.402592</td><td></td><td>LocalFileSearchTool</td></tr>
+<tr><td>DR0001_06a7f3db_010f1196</td><td>true</td><td>adaptive_3_web_search_search_for_lee&#x27;_0</td><td>web_search</td><td>browsecomp_search</td><td>completed</td><td>0.321</td><td>4</td><td>2026-04-15T07:24:48.550641</td><td></td><td>browsecomp_search</td></tr>
+<tr><td>DR0001_06a7f3db_010f1196</td><td>true</td><td>adaptive_3_data_analysis_analyze_quarter_1</td><td>data_analysis</td><td>smart_analysis</td><td>completed</td><td>8.993</td><td>4</td><td>2026-04-15T07:24:48.229139</td><td></td><td>SmartAnalysisTool</td></tr>
+<tr><td>DR0001_06a7f3db_010f1196</td><td>true</td><td>adaptive_4_local_document_search_search_for_inte_0</td><td>local_document_search</td><td>local_document_search</td><td>completed</td><td>0.113</td><td>5</td><td>2026-04-15T07:24:55.841362</td><td></td><td>LocalFileSearchTool</td></tr>
+<tr><td>DR0001_06a7f3db_01e6a31f</td><td>true</td><td>fallback_action_0</td><td>web_search</td><td>browsecomp_search</td><td>completed</td><td>0.562</td><td>0</td><td>2026-04-15T04:45:48.871471</td><td>fallback_generation</td><td>BrowseCompSearchTool</td></tr></tbody></table>
+      </details>
+      <details>
+        <summary>Preview: iterations.csv</summary>
+        <table class='data-table preview-table'><thead><tr><th>rollout_id</th><th>has_report</th><th>iteration</th><th>action_count</th><th>wall_time_s</th><th>tool_time_s</th><th>non_tool_time_s</th></tr></thead><tbody><tr><td>DR0001_06a7f3db_004eec27</td><td>true</td><td>0</td><td>3</td><td>8.400</td><td>8.398</td><td>0.002</td></tr>
+<tr><td>DR0001_06a7f3db_010f1196</td><td>true</td><td>0</td><td>3</td><td>19.49</td><td>19.48</td><td>0.002</td></tr>
+<tr><td>DR0001_06a7f3db_010f1196</td><td>true</td><td>1</td><td>2</td><td>12.08</td><td>0.714</td><td>11.36</td></tr>
+<tr><td>DR0001_06a7f3db_010f1196</td><td>true</td><td>2</td><td>1</td><td>13.47</td><td>0.115</td><td>13.35</td></tr>
+<tr><td>DR0001_06a7f3db_010f1196</td><td>true</td><td>3</td><td>2</td><td>16.29</td><td>0.753</td><td>15.53</td></tr>
+<tr><td>DR0001_06a7f3db_010f1196</td><td>true</td><td>4</td><td>2</td><td>22.15</td><td>9.314</td><td>12.83</td></tr>
+<tr><td>DR0001_06a7f3db_010f1196</td><td>true</td><td>5</td><td>1</td><td>7.291</td><td>0.113</td><td>7.177</td></tr>
+<tr><td>DR0001_06a7f3db_01e6a31f</td><td>true</td><td>0</td><td>3</td><td>11.97</td><td>11.96</td><td>0.003</td></tr>
+<tr><td>DR0001_06a7f3db_0282b1e4</td><td>true</td><td>0</td><td>3</td><td>0.660</td><td>0.646</td><td>0.015</td></tr>
+<tr><td>DR0001_06a7f3db_0282b1e4</td><td>true</td><td>1</td><td>1</td><td>26.82</td><td>0.186</td><td>26.64</td></tr>
+<tr><td>DR0001_06a7f3db_0282b1e4</td><td>true</td><td>2</td><td>1</td><td>15.16</td><td>0.468</td><td>14.69</td></tr>
+<tr><td>DR0001_06a7f3db_0282b1e4</td><td>true</td><td>3</td><td>1</td><td>14.60</td><td>0.095</td><td>14.51</td></tr>
+<tr><td>DR0001_06a7f3db_0282b1e4</td><td>true</td><td>4</td><td>1</td><td>11.01</td><td>0.339</td><td>10.67</td></tr>
+<tr><td>DR0001_06a7f3db_0282b1e4</td><td>true</td><td>5</td><td>1</td><td>9.919</td><td>0.079</td><td>9.840</td></tr>
+<tr><td>DR0001_06a7f3db_02b0b5c8</td><td>true</td><td>0</td><td>3</td><td>17.30</td><td>17.30</td><td>0.002</td></tr></tbody></table>
+      </details>
+      <details>
+        <summary>Preview: prompt_records.csv</summary>
+        <table class='data-table preview-table'><thead><tr><th>timestamp</th><th>log_name</th><th>prompt_tokens</th><th>prompt_chars</th><th>latest_findings_tokens</th><th>latest_findings_chars</th><th>instructions_tokens</th><th>planning_context_tokens</th><th>task_definition_tokens</th><th>documents_or_evidence_tokens</th><th>reporting_context_tokens</th><th>other_tokens</th></tr></thead><tbody><tr><td>2026-04-15T02:44:59.483000</td><td>adaptive_iter0</td><td>9,216</td><td>37,264</td><td>8,998</td><td>36,246</td><td>0</td><td>17</td><td>45</td><td>0</td><td>0</td><td>129</td></tr>
+<tr><td>2026-04-15T02:45:01.748000</td><td>adaptive_iter0</td><td>16,805</td><td>69,433</td><td>16,593</td><td>68,477</td><td>0</td><td>17</td><td>44</td><td>0</td><td>0</td><td>123</td></tr>
+<tr><td>2026-04-15T02:45:03.141000</td><td>adaptive_iter0</td><td>28,026</td><td>101,520</td><td>27,784</td><td>100,400</td><td>0</td><td>17</td><td>75</td><td>0</td><td>0</td><td>123</td></tr>
+<tr><td>2026-04-15T02:45:04.306000</td><td>adaptive_iter0</td><td>10,102</td><td>39,592</td><td>9,881</td><td>38,573</td><td>0</td><td>17</td><td>48</td><td>0</td><td>0</td><td>129</td></tr>
+<tr><td>2026-04-15T02:45:05.165000</td><td>adaptive_iter0</td><td>23,654</td><td>94,570</td><td>23,366</td><td>93,210</td><td>0</td><td>17</td><td>121</td><td>0</td><td>0</td><td>123</td></tr>
+<tr><td>2026-04-15T02:45:05.555000</td><td>adaptive_iter0</td><td>18,272</td><td>69,121</td><td>18,056</td><td>68,143</td><td>0</td><td>17</td><td>44</td><td>0</td><td>0</td><td>128</td></tr>
+<tr><td>2026-04-15T02:45:08.679000</td><td>adaptive_iter0</td><td>12,879</td><td>43,628</td><td>12,695</td><td>42,891</td><td>0</td><td>17</td><td>31</td><td>0</td><td>0</td><td>109</td></tr>
+<tr><td>2026-04-15T02:45:09.519000</td><td>adaptive_iter0</td><td>11,182</td><td>36,989</td><td>10,964</td><td>36,011</td><td>0</td><td>17</td><td>51</td><td>0</td><td>0</td><td>123</td></tr>
+<tr><td>2026-04-15T02:45:09.963000</td><td>adaptive_iter0</td><td>10,907</td><td>46,690</td><td>10,671</td><td>45,573</td><td>0</td><td>17</td><td>63</td><td>0</td><td>0</td><td>129</td></tr>
+<tr><td>2026-04-15T02:45:10.121000</td><td>adaptive_iter0</td><td>23,416</td><td>81,567</td><td>23,181</td><td>80,504</td><td>0</td><td>17</td><td>63</td><td>0</td><td>0</td><td>128</td></tr>
+<tr><td>2026-04-15T02:45:13.936000</td><td>adaptive_iter0</td><td>25,623</td><td>105,901</td><td>25,372</td><td>104,676</td><td>0</td><td>17</td><td>92</td><td>0</td><td>0</td><td>117</td></tr>
+<tr><td>2026-04-15T02:45:16.265000</td><td>adaptive_iter0</td><td>14,070</td><td>51,489</td><td>13,853</td><td>50,488</td><td>0</td><td>17</td><td>44</td><td>0</td><td>0</td><td>129</td></tr>
+<tr><td>2026-04-15T02:45:16.488000</td><td>adaptive_iter0</td><td>11,882</td><td>41,168</td><td>11,665</td><td>40,155</td><td>0</td><td>17</td><td>53</td><td>0</td><td>0</td><td>122</td></tr>
+<tr><td>2026-04-15T02:45:18.506000</td><td>adaptive_iter1</td><td>8,708</td><td>32,469</td><td>8,487</td><td>31,450</td><td>0</td><td>17</td><td>48</td><td>0</td><td>0</td><td>129</td></tr>
+<tr><td>2026-04-15T02:45:20.195000</td><td>adaptive_iter0</td><td>19,048</td><td>82,239</td><td>18,812</td><td>81,124</td><td>0</td><td>17</td><td>69</td><td>0</td><td>0</td><td>123</td></tr></tbody></table>
+      </details>
+      <details>
+        <summary>Preview: llm_call_records.csv</summary>
+        <table class='data-table preview-table'><thead><tr><th>timestamp</th><th>rollout_id</th><th>task_id</th><th>chain_id</th><th>log_name</th><th>prompt_tokens</th><th>output_tokens</th><th>total_tokens</th><th>capture_mode</th><th>captured</th><th>requested_model</th><th>has_report</th><th>rollout_duration_s</th><th>rollout_iteration_count</th></tr></thead><tbody><tr><td>2026-04-15T02:44:56.644000</td><td>DR0003_4c20816c_e10586fb</td><td>DR0003</td><td>4c20816c</td><td>action_plan_fallback</td><td>1,091</td><td>726</td><td>1,817</td><td>planning_only</td><td>true</td><td>/mnt/llmd/base_models/Qwen3-8B</td><td>true</td><td>53.32</td><td>3</td></tr>
+<tr><td>2026-04-15T02:44:57.686000</td><td>DR0099_c4742644_01819bcb</td><td>DR0099</td><td>c4742644</td><td>action_plan_fallback</td><td>1,059</td><td>758</td><td>1,817</td><td>planning_only</td><td>true</td><td>/mnt/llmd/base_models/Qwen3-8B</td><td>true</td><td>47.30</td><td>2</td></tr>
+<tr><td>2026-04-15T02:44:58.630000</td><td>DR0001_06a7f3db_bb06192f</td><td>DR0001</td><td>06a7f3db</td><td>action_plan_fallback</td><td>1,092</td><td>936</td><td>2,028</td><td>planning_only</td><td>true</td><td>/mnt/llmd/base_models/Qwen3-8B</td><td>true</td><td>43.35</td><td>3</td></tr>
+<tr><td>2026-04-15T02:44:58.745000</td><td>DR0003_98338d1b_4d44435d</td><td>DR0003</td><td>98338d1b</td><td>action_plan_fallback</td><td>1,110</td><td>930</td><td>2,040</td><td>planning_only</td><td>true</td><td>/mnt/llmd/base_models/Qwen3-8B</td><td>true</td><td>26.23</td><td>1</td></tr>
+<tr><td>2026-04-15T02:44:59.298000</td><td>DR0073_fe2c0014_101322f9</td><td>DR0073</td><td>fe2c0014</td><td>action_plan_fallback</td><td>1,093</td><td>1,021</td><td>2,114</td><td>planning_only</td><td>true</td><td>/mnt/llmd/base_models/Qwen3-8B</td><td>true</td><td>33.68</td><td>2</td></tr>
+<tr><td>2026-04-15T02:45:00.293000</td><td>DR0079_dbef5af1_3998a209</td><td>DR0079</td><td>dbef5af1</td><td>action_plan_fallback</td><td>1,086</td><td>1,006</td><td>2,092</td><td>planning_only</td><td>true</td><td>/mnt/llmd/base_models/Qwen3-8B</td><td>true</td><td>80.69</td><td>5</td></tr>
+<tr><td>2026-04-15T02:45:00.296000</td><td>DR0012_736e7d35_5867b8fb</td><td>DR0012</td><td>736e7d35</td><td>action_plan_fallback</td><td>1,105</td><td>1,075</td><td>2,180</td><td>planning_only</td><td>true</td><td>/mnt/llmd/base_models/Qwen3-8B</td><td>true</td><td>19.70</td><td>1</td></tr>
+<tr><td>2026-04-15T02:45:00.385000</td><td>DR0005_51277225_bd1b5599</td><td>DR0005</td><td>51277225</td><td>action_plan_fallback</td><td>1,092</td><td>1,027</td><td>2,119</td><td>planning_only</td><td>true</td><td>/mnt/llmd/base_models/Qwen3-8B</td><td>true</td><td>23.61</td><td>1</td></tr>
+<tr><td>2026-04-15T02:45:00.672000</td><td>DR0002_4b9e3b87_61cb8a21</td><td>DR0002</td><td>4b9e3b87</td><td>action_plan_fallback</td><td>1,122</td><td>1,036</td><td>2,158</td><td>planning_only</td><td>true</td><td>/mnt/llmd/base_models/Qwen3-8B</td><td>true</td><td>48.31</td><td>3</td></tr>
+<tr><td>2026-04-15T02:45:01.634000</td><td>DR0008_fdac8c9a_4d5e4d8d</td><td>DR0008</td><td>fdac8c9a</td><td>action_plan_fallback</td><td>1,092</td><td>1,198</td><td>2,290</td><td>planning_only</td><td>true</td><td>/mnt/llmd/base_models/Qwen3-8B</td><td>true</td><td>34.36</td><td>1</td></tr>
+<tr><td>2026-04-15T02:45:02.393000</td><td>DR0036_feec6577_092d2fed</td><td>DR0036</td><td>feec6577</td><td>action_plan_fallback</td><td>1,088</td><td>1,167</td><td>2,255</td><td>planning_only</td><td>true</td><td>/mnt/llmd/base_models/Qwen3-8B</td><td>true</td><td>36.59</td><td>1</td></tr>
+<tr><td>2026-04-15T02:45:02.662000</td><td>DR0077_b10de00c_4e201d0d</td><td>DR0077</td><td>b10de00c</td><td>action_plan_fallback</td><td>1,111</td><td>1,242</td><td>2,353</td><td>planning_only</td><td>true</td><td>/mnt/llmd/base_models/Qwen3-8B</td><td>true</td><td>30.33</td><td>1</td></tr>
+<tr><td>2026-04-15T02:45:02.666000</td><td>DR0016_43e8e9df_c9ddb712</td><td>DR0016</td><td>43e8e9df</td><td>action_plan_fallback</td><td>1,095</td><td>1,237</td><td>2,332</td><td>planning_only</td><td>true</td><td>/mnt/llmd/base_models/Qwen3-8B</td><td>true</td><td>41.33</td><td>2</td></tr>
+<tr><td>2026-04-15T02:45:02.785000</td><td>DR0026_080d67f1_d8909a2e</td><td>DR0026</td><td>080d67f1</td><td>action_plan_fallback</td><td>1,168</td><td>1,238</td><td>2,406</td><td>planning_only</td><td>true</td><td>/mnt/llmd/base_models/Qwen3-8B</td><td>true</td><td>223.21</td><td>7</td></tr>
+<tr><td>2026-04-15T02:45:05.411000</td><td>DR0003_4c20816c_e10586fb</td><td>DR0003</td><td>4c20816c</td><td>analysis_final_synthesis</td><td>834</td><td>716</td><td>1,550</td><td>planning_only</td><td>false</td><td>/mnt/llmd/base_models/Qwen3-8B</td><td>true</td><td>53.32</td><td>3</td></tr></tbody></table>
+      </details>
+      <details>
+        <summary>Preview: llm_requests.csv</summary>
+        <table class='data-table preview-table'><thead><tr><th>timestamp</th><th>duration_s</th></tr></thead><tbody><tr><td>2026-04-15T02:44:56.632000</td><td>8.080</td></tr>
+<tr><td>2026-04-15T02:44:57.677000</td><td>8.210</td></tr>
+<tr><td>2026-04-15T02:44:58.622000</td><td>9.790</td></tr>
+<tr><td>2026-04-15T02:44:58.736000</td><td>10.18</td></tr>
+<tr><td>2026-04-15T02:44:59.289000</td><td>11.81</td></tr>
+<tr><td>2026-04-15T02:45:00.284000</td><td>10.73</td></tr>
+<tr><td>2026-04-15T02:45:00.287000</td><td>11.73</td></tr>
+<tr><td>2026-04-15T02:45:00.378000</td><td>10.92</td></tr>
+<tr><td>2026-04-15T02:45:00.664000</td><td>11.11</td></tr>
+<tr><td>2026-04-15T02:45:01.626000</td><td>12.78</td></tr>
+<tr><td>2026-04-15T02:45:01.983000</td><td>12.80</td></tr>
+<tr><td>2026-04-15T02:45:02.651000</td><td>13.13</td></tr>
+<tr><td>2026-04-15T02:45:02.655000</td><td>13.21</td></tr>
+<tr><td>2026-04-15T02:45:02.776000</td><td>13.21</td></tr>
+<tr><td>2026-04-15T02:45:05.403000</td><td>7.530</td></tr></tbody></table>
+      </details>
+      <details>
+        <summary>Preview: reward_records.csv</summary>
+        <table class='data-table preview-table'><thead><tr><th>rollout_id</th><th>task_id</th><th>chain_id</th><th>report_path</th><th>reward</th><th>correct_hops</th><th>total_hops</th><th>final_correct</th><th>final_match_score</th><th>iterations</th><th>total_actions</th><th>duration_s</th><th>predicted_final_answer</th><th>ground_truth_final_answer</th><th>predicted_answers_json</th><th>ground_truth_hops_json</th><th>per_hop_json</th><th>report_preview</th><th>task_question_preview</th><th>justifications_json</th></tr></thead><tbody><tr><td>DR0001_06a7f3db_004eec27</td><td>DR0001</td><td>06a7f3db</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_004eec27/workspace/research_report_20260415_043035.md</td><td>0.000</td><td>0</td><td>2</td><td>false</td><td>0.000</td><td>1</td><td>3</td><td>24.00</td><td>NOT_FOUND</td><td>Emily Patel</td><td>{&quot;1&quot;: &quot;NOT_FOUND&quot;, &quot;2&quot;: &quot;NOT_FOUND&quot;, &quot;FINAL&quot;: &quot;NOT_FOUND&quot;}</td><td>[{&quot;answer&quot;: &quot;85%&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;hop_number&quot;: 1, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?&quot;}, {&quot;answer&quot;: &quot;Emily Patel&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;hop_number&quot;: 2, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;Who reported that 85% of high-risk food suppliers are FSMA 204 compliant?&quot;}]</td><td>[{&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;ground_truth&quot;: &quot;85%&quot;, &quot;hop&quot;: 1, &quot;match_score&quot;: 0.0}, {&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;ground_truth&quot;: &quot;Emily Patel&quot;, &quot;hop&quot;: 2, &quot;match_score&quot;: 0.0}]</td><td># Research Findings: 1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?
+
+&lt;think&gt;
+Okay, let&#x27;s see. The user has two questions here. First, they want to know the percentage of suppliers at Lee&#x27;s Market that had implemented corrective action procedures according to the quarterly review. Second, they&#x27;re asking who reported that one of the high-risk food suppliers are FSMA 204 compliant.
+
+Looking at the available evidence, there are two documents. The first one is an AI synthesis that mentions no relevant documents found in the vector store. The second document is a research finding that used local_document_search but retrieved items that couldn&#x27;t be processed because PDF libraries weren&#x27;t available. The content excerpts from those files are just error messages about missing libraries. 
+
+So for the first question, there&#x27;s no actual data provided. The AI synthesis says no relevant documents were found, and the other document&#x27;s retrieved items couldn&#x27;t be processed. That means there&#x27;s no evidence to answer the percentage. Similarly, the second question about FSMA compliance also doesn&#x27;t have any data because the same issue applies—no accessible documents with the required info. 
+
+The user might be expecting some numbers or names, but based on the given evidence, there&#x27;s nothing. Both answers would be NOT_FOUND since the necessary information isn&#x27;t available in the provided documents. The justifications would reference the AI synthesis document and the research finding document, explaining that the documents either didn&#x27;t have relevant info or couldn&#x27;t be processed.
+&lt;/think&gt;
+
+ANSWER_1: NOT_FOUND  
+JUSTIFICATION_1: No relevant documents found in vector store   
+
+ANSWER_2: NOT_FOUND  
+JUSTIFICATION_2: Retrieved documents contained unprocessable PDF errors   
+
+ANSWER_FINAL: NOT_FOUND  
+JUSTIFICATION_FINAL: No evidence</td><td>1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?</td><td>{&quot;1&quot;: &quot;No relevant documents found in vector store&quot;, &quot;2&quot;: &quot;Retrieved documents contained unprocessable PDF errors&quot;, &quot;FINAL&quot;: &quot;No evidence provided to answer either sub-question &lt;|im_end|&gt;&quot;}</td></tr>
+<tr><td>DR0001_06a7f3db_010f1196</td><td>DR0001</td><td>06a7f3db</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_010f1196/workspace/research_report_20260415_072506.md</td><td>0.000</td><td>0</td><td>2</td><td>false</td><td>0.000</td><td>6</td><td>11</td><td>100.91</td><td>NOT_FOUND</td><td>Emily Patel</td><td>{&quot;1&quot;: &quot;NOT_FOUND&quot;, &quot;2&quot;: &quot;NOT_FOUND&quot;, &quot;FINAL&quot;: &quot;NOT_FOUND&quot;}</td><td>[{&quot;answer&quot;: &quot;85%&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;hop_number&quot;: 1, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?&quot;}, {&quot;answer&quot;: &quot;Emily Patel&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;hop_number&quot;: 2, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;Who reported that 85% of high-risk food suppliers are FSMA 204 compliant?&quot;}]</td><td>[{&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;ground_truth&quot;: &quot;85%&quot;, &quot;hop&quot;: 1, &quot;match_score&quot;: 0.0}, {&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;ground_truth&quot;: &quot;Emily Patel&quot;, &quot;hop&quot;: 2, &quot;match_score&quot;: 0.0}]</td><td># Research Findings: 1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?
+
+&lt;think&gt;
+Okay, let&#x27;s start by looking at the original research questions. The first one is asking for the percentage of suppliers at Lee&#x27;s Market that had implemented corrective action procedures according to the quarterly review. The second question is who reported that 1 of high-risk food suppliers are FSMA 204 compliant.
+
+Looking at the available evidence, the first document (doc_74ce5d30_1776237888) mentions that the AI synthesis found no relevant documents in the vector store. That&#x27;s important because if there&#x27;s no data, we can&#x27;t calculate the percentage. The second document (doc_9a6cf5de_1776237866) talks about a search for FSMA 204 compliance reports but also mentions that the PDF processing libraries aren&#x27;t available, so the content isn&#x27;t accessible. The third document (doc_c320e2b0_1776237824) again states that no relevant documents were found in the vector store, reinforcing that there&#x27;s no data to reference.
+
+For question 1, since there&#x27;s no relevant data found in the documents, the answer would be NOT_FOUND. The justification would cite the document that mentions no relevant documents found. For question 2, the same applies because the search for FSMA 204 compliance reports didn&#x27;t retrieve any usable information. The answer here would also be NOT_FOUND, citing the same document that mentions the search results were irrelevant or missing. 
+
+The final answer would combine both, stating that both answers are not found due to the lack of relevant documents. The justification would reference the documents that highlight the absence of data.
+&lt;/think&gt;
+
+ANSWER_1: NOT_FOUND  
+JUSTIFICATION_1: No relevant documents found in vector store   
+
+ANSWER_2: NOT_FOUND  
+JUSTIFICATION_2: No relevant documents found in vector store   
+
+ANSWER_F</td><td>1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?</td><td>{&quot;1&quot;: &quot;No relevant documents found in vector store&quot;, &quot;2&quot;: &quot;No relevant documents found in vector store&quot;, &quot;FINAL&quot;: &quot;No data available to calculate percentage or identify reporting entity &lt;|im_end|&gt;&quot;}</td></tr>
+<tr><td>DR0001_06a7f3db_01e6a31f</td><td>DR0001</td><td>06a7f3db</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_01e6a31f/workspace/research_report_20260415_044617.md</td><td>0.000</td><td>0</td><td>2</td><td>false</td><td>0.000</td><td>1</td><td>3</td><td>28.69</td><td>NOT_FOUND</td><td>Emily Patel</td><td>{&quot;1&quot;: &quot;NOT_FOUND&quot;, &quot;2&quot;: &quot;NOT_FOUND&quot;, &quot;FINAL&quot;: &quot;NOT_FOUND&quot;}</td><td>[{&quot;answer&quot;: &quot;85%&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;hop_number&quot;: 1, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?&quot;}, {&quot;answer&quot;: &quot;Emily Patel&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;hop_number&quot;: 2, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;Who reported that 85% of high-risk food suppliers are FSMA 204 compliant?&quot;}]</td><td>[{&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;ground_truth&quot;: &quot;85%&quot;, &quot;hop&quot;: 1, &quot;match_score&quot;: 0.0}, {&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;ground_truth&quot;: &quot;Emily Patel&quot;, &quot;hop&quot;: 2, &quot;match_score&quot;: 0.0}]</td><td># Research Findings: 1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?
+
+&lt;think&gt;
+Okay, let&#x27;s tackle these questions. The user is asking about two specific points related to Lee&#x27;s Market suppliers. 
+
+First, the percentage of suppliers with corrective action procedures. The available evidence mentions that no relevant documents were found in the vector store. The AI synthesis document states there&#x27;s no data to reference here. So, I can&#x27;t find a numerical answer here. The answer should be NOT_FOUND since there&#x27;s no data.
+
+Second, who reported that one of the high-risk suppliers is FSMA 204 compliant. Again, the same document says no documents were found. The user might be expecting a name, but the evidence doesn&#x27;t provide that. So this answer is also NOT_FOUND.
+
+Since both answers rely on the same evidence and there&#x27;s no data, the final answer should explain that both queries couldn&#x27;t be addressed due to lack of documents. The confidence level is low because there&#x27;s no data to support the answers. 
+
+I need to structure each answer with the short answer and justification, citing the document. But since there&#x27;s no data, the justifications will mention the absence of relevant documents.
+&lt;/think&gt;
+
+ANSWER_1: NOT_FOUND  
+JUSTIFICATION_1: No documents found   
+
+ANSWER_2: NOT_FOUND  
+JUSTIFICATION_2: No documents found   
+
+ANSWER_FINAL: NOT_FOUND  
+JUSTIFICATION_FINAL: No evidence provided for either query &lt;|im_end|&gt;</td><td>1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?</td><td>{&quot;1&quot;: &quot;No documents found&quot;, &quot;2&quot;: &quot;No documents found&quot;, &quot;FINAL&quot;: &quot;No evidence provided for either query &lt;|im_end|&gt;&quot;}</td></tr>
+<tr><td>DR0001_06a7f3db_0282b1e4</td><td>DR0001</td><td>06a7f3db</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_0282b1e4/workspace/research_report_20260415_093947.md</td><td>0.000</td><td>0</td><td>2</td><td>false</td><td>0.000</td><td>6</td><td>8</td><td>97.20</td><td>NOT_FOUND</td><td>Emily Patel</td><td>{&quot;1&quot;: &quot;NOT_FOUND&quot;, &quot;2&quot;: &quot;NOT_FOUND&quot;, &quot;FINAL&quot;: &quot;NOT_FOUND&quot;}</td><td>[{&quot;answer&quot;: &quot;85%&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;hop_number&quot;: 1, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?&quot;}, {&quot;answer&quot;: &quot;Emily Patel&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;hop_number&quot;: 2, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;Who reported that 85% of high-risk food suppliers are FSMA 204 compliant?&quot;}]</td><td>[{&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;ground_truth&quot;: &quot;85%&quot;, &quot;hop&quot;: 1, &quot;match_score&quot;: 0.0}, {&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;ground_truth&quot;: &quot;Emily Patel&quot;, &quot;hop&quot;: 2, &quot;match_score&quot;: 0.0}]</td><td># Research Findings: 1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?
+
+&lt;think&gt;
+Okay, let&#x27;s tackle these questions. First, the user wants answers to two questions with short, exact responses and justifications. The context is about Lee&#x27;s Market and their suppliers&#x27; compliance.
+
+Starting with Question 1: What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review? The available evidence shows that the local_document_search was done but the PDFs couldn&#x27;t be processed. All the retrieved documents have relevance scores of 0.0, so there&#x27;s no actual data here. Therefore, I can&#x27;t find the percentage. So the answer should be NOT_FOUND.
+
+Question 2: Who reported that (1) of high-risk food suppliers are FSMA 204 compliant? Again, the same evidence applies. The search results don&#x27;t provide any information about FSMA 204 compliance or who reported it. The documents mentioned are about food safety compliance but no specific data on the number or the reporter. So this answer is also NOT_FOUND.
+
+Since both questions can&#x27;t be answered with the provided evidence, the final answer would state that both are not found. The justifications need to reference the DOC IDs from the evidence, even though the content isn&#x27;t helpful. But according to the rules, each justification must include a DOC:doc_id. So even though the evidence isn&#x27;t useful, I have to cite the doc_id provided.
+&lt;/think&gt;
+
+ANSWER_1: NOT_FOUND  
+JUSTIFICATION_1: No relevant data retrieved   
+
+ANSWER_2: NOT_FOUND  
+JUSTIFICATION_2: No compliance data identified   
+
+ANSWER_FINAL: NOT_FOUND  
+JUSTIFICATION_FINAL: Evidence lacks specific percentages or reporting entities &lt;|im_end|&gt;</td><td>1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?</td><td>{&quot;1&quot;: &quot;No relevant data retrieved&quot;, &quot;2&quot;: &quot;No compliance data identified&quot;, &quot;FINAL&quot;: &quot;Evidence lacks specific percentages or reporting entities &lt;|im_end|&gt;&quot;}</td></tr>
+<tr><td>DR0001_06a7f3db_02b0b5c8</td><td>DR0001</td><td>06a7f3db</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_02b0b5c8/workspace/research_report_20260415_100145.md</td><td>0.000</td><td>0</td><td>2</td><td>false</td><td>0.000</td><td>9</td><td>13</td><td>149.98</td><td>NOT_FOUND</td><td>Emily Patel</td><td>{&quot;1&quot;: &quot;NOT_FOUND&quot;, &quot;2&quot;: &quot;NOT_FOUND&quot;, &quot;FINAL&quot;: &quot;NOT_FOUND&quot;}</td><td>[{&quot;answer&quot;: &quot;85%&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;hop_number&quot;: 1, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?&quot;}, {&quot;answer&quot;: &quot;Emily Patel&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;hop_number&quot;: 2, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;Who reported that 85% of high-risk food suppliers are FSMA 204 compliant?&quot;}]</td><td>[{&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;ground_truth&quot;: &quot;85%&quot;, &quot;hop&quot;: 1, &quot;match_score&quot;: 0.0}, {&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;ground_truth&quot;: &quot;Emily Patel&quot;, &quot;hop&quot;: 2, &quot;match_score&quot;: 0.0}]</td><td># Research Findings: 1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?
+
+&lt;think&gt;
+Okay, let me try to figure this out. The user has two questions about Lee&#x27;s Market suppliers and FSMA compliance. The available evidence is a document that says no relevant documents were found in the vector store. But there&#x27;s also mention of some retrieved items in the recent findings.
+
+First, for question 1: the percentage of suppliers with corrective actions. The document analysis says no relevant docs found, so there&#x27;s no data to answer that. The answer should be NOT_FOUND. Similarly, question 2 asks who reported FSMA compliance. Again, no relevant documents, so NOT_FOUND. The final answer would combine both, stating that no data was found for either. I need to make sure each answer is short and cites the document where it&#x27;s mentioned that no relevant documents were found. The justifications should reference the provided evidence, even if it&#x27;s negative. Alright, that&#x27;s the plan.
+&lt;/think&gt;
+
+ANSWER_1: NOT_FOUND  
+JUSTIFICATION_1: No relevant documents found   
+
+ANSWER_2: NOT_FOUND  
+JUSTIFICATION_2: No relevant documents found   
+
+ANSWER_FINAL: NOT_FOUND  
+JUSTIFICATION_FINAL: No data available for either sub-question &lt;|im_end|&gt;</td><td>1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?</td><td>{&quot;1&quot;: &quot;No relevant documents found&quot;, &quot;2&quot;: &quot;No relevant documents found&quot;, &quot;FINAL&quot;: &quot;No data available for either sub-question &lt;|im_end|&gt;&quot;}</td></tr>
+<tr><td>DR0001_06a7f3db_03000fe6</td><td>DR0001</td><td>06a7f3db</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_03000fe6/workspace/research_report_20260415_075415.md</td><td>0.000</td><td>0</td><td>2</td><td>false</td><td>0.000</td><td>10</td><td>17</td><td>195.54</td><td>NOT_FOUND</td><td>Emily Patel</td><td>{&quot;1&quot;: &quot;NOT_FOUND&quot;, &quot;2&quot;: &quot;NOT_FOUND&quot;, &quot;FINAL&quot;: &quot;NOT_FOUND&quot;}</td><td>[{&quot;answer&quot;: &quot;85%&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;hop_number&quot;: 1, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?&quot;}, {&quot;answer&quot;: &quot;Emily Patel&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;hop_number&quot;: 2, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;Who reported that 85% of high-risk food suppliers are FSMA 204 compliant?&quot;}]</td><td>[{&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;ground_truth&quot;: &quot;85%&quot;, &quot;hop&quot;: 1, &quot;match_score&quot;: 0.0}, {&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;ground_truth&quot;: &quot;Emily Patel&quot;, &quot;hop&quot;: 2, &quot;match_score&quot;: 0.0}]</td><td># Research Findings: 1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?
+
+&lt;think&gt;
+Okay, let&#x27;s tackle these questions step by step. First, the user wants the percentage of suppliers at Lee&#x27;s Market that implemented corrective action procedures according to the quarterly review. Then, they need to know who reported that one of the high-risk food suppliers is FSMA 204 compliant.
+
+Looking at the available evidence, all three documents mention that no relevant documents were found in the vector store. The first document says the analysis couldn&#x27;t find relevant docs, the second one too, and the third one as well. So, there&#x27;s no data here to answer either question. Since the required info isn&#x27;t present in the provided evidence, both answers should be NOT_FOUND. The justifications all point to the lack of relevant documents. The final answer combines these two, confirming that the data isn&#x27;t available.
+&lt;/think&gt;
+
+ANSWER_1: NOT_FOUND  
+JUSTIFICATION_1: No relevant documents found in vector store   
+
+ANSWER_2: NOT_FOUND  
+JUSTIFICATION_2: No relevant documents found in vector store   
+
+ANSWER_FINAL: NOT_FOUND  
+JUSTIFICATION_FINAL: Both questions lack supporting documents in the vector store &lt;|im_end|&gt;</td><td>1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?</td><td>{&quot;1&quot;: &quot;No relevant documents found in vector store&quot;, &quot;2&quot;: &quot;No relevant documents found in vector store&quot;, &quot;FINAL&quot;: &quot;Both questions lack supporting documents in the vector store &lt;|im_end|&gt;&quot;}</td></tr>
+<tr><td>DR0001_06a7f3db_034118d0</td><td>DR0001</td><td>06a7f3db</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_034118d0/workspace/research_report_20260415_050636.md</td><td>0.000</td><td>0</td><td>2</td><td>false</td><td>0.000</td><td>1</td><td>3</td><td>38.53</td><td>NOT_FOUND</td><td>Emily Patel</td><td>{&quot;1&quot;: &quot;NOT_FOUND&quot;, &quot;2&quot;: &quot;NOT_FOUND&quot;, &quot;FINAL&quot;: &quot;NOT_FOUND&quot;}</td><td>[{&quot;answer&quot;: &quot;85%&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;hop_number&quot;: 1, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?&quot;}, {&quot;answer&quot;: &quot;Emily Patel&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;hop_number&quot;: 2, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;Who reported that 85% of high-risk food suppliers are FSMA 204 compliant?&quot;}]</td><td>[{&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;ground_truth&quot;: &quot;85%&quot;, &quot;hop&quot;: 1, &quot;match_score&quot;: 0.0}, {&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;ground_truth&quot;: &quot;Emily Patel&quot;, &quot;hop&quot;: 2, &quot;match_score&quot;: 0.0}]</td><td># Research Findings: 1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?
+
+&lt;think&gt;
+Okay, let&#x27;s break down the user&#x27;s query. They want answers to two questions about Lee&#x27;s Market&#x27;s suppliers and FSMA compliance. The first question is about the percentage of suppliers with corrective action procedures from a quarterly review. The second asks who reported that 1 of high-risk suppliers are FSMA 204 compliant.
+
+Looking at the available evidence, there&#x27;s a document (doc_ef3328d7_1776229578) with a score of 0.744. The content mentions that no relevant documents were found in the vector store. However, the user&#x27;s task context says &quot;Available Evidence&quot; includes this document, even though it&#x27;s an AI synthesis. The synthesis content talks about the research questions but doesn&#x27;t provide specific data or answers. 
+
+Since the evidence doesn&#x27;t have specific numbers or names, the answers can&#x27;t be determined from the provided documents. The user also mentioned that if the answer isn&#x27;t found, we should write NOT_FOUND. Therefore, both answers would be NOT_FOUND because there&#x27;s no data in the given evidence to answer them. The justification for each would reference the document where the lack of data is noted.
+&lt;/think&gt;
+
+ANSWER_1: NOT_FOUND  
+JUSTIFICATION_1: No relevant documents found   
+
+ANSWER_2: NOT_FOUND  
+JUSTIFICATION_2: No relevant documents found   
+
+ANSWER_FINAL: NOT_FOUND  
+JUSTIFICATION_FINAL: No evidence provides data for either question &lt;|im_end|&gt;</td><td>1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?</td><td>{&quot;1&quot;: &quot;No relevant documents found&quot;, &quot;2&quot;: &quot;No relevant documents found&quot;, &quot;FINAL&quot;: &quot;No evidence provides data for either question &lt;|im_end|&gt;&quot;}</td></tr>
+<tr><td>DR0001_06a7f3db_04c83886</td><td>DR0001</td><td>06a7f3db</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_04c83886/workspace/research_report_20260415_103153.md</td><td>0.000</td><td>0</td><td>2</td><td>false</td><td>0.000</td><td>1</td><td>3</td><td>38.05</td><td>NOT_FOUND</td><td>Emily Patel</td><td>{&quot;1&quot;: &quot;NOT_FOUND&quot;, &quot;2&quot;: &quot;NOT_FOUND&quot;, &quot;FINAL&quot;: &quot;NOT_FOUND&quot;}</td><td>[{&quot;answer&quot;: &quot;85%&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;hop_number&quot;: 1, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?&quot;}, {&quot;answer&quot;: &quot;Emily Patel&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;hop_number&quot;: 2, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;Who reported that 85% of high-risk food suppliers are FSMA 204 compliant?&quot;}]</td><td>[{&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;ground_truth&quot;: &quot;85%&quot;, &quot;hop&quot;: 1, &quot;match_score&quot;: 0.0}, {&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;ground_truth&quot;: &quot;Emily Patel&quot;, &quot;hop&quot;: 2, &quot;match_score&quot;: 0.0}]</td><td># Research Findings: 1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?
+
+&lt;think&gt;
+Okay, let&#x27;s tackle this. The user has two questions here. Let me go through each one step by step.
+
+First, the original research questions are about Lee&#x27;s Market suppliers. The first question asks for the percentage of suppliers that implemented corrective action procedures according to the quarterly review. The second is about who reported that one of the high-risk food suppliers is FSMA 204 compliant.
+
+Looking at the available evidence, there&#x27;s only one document provided, which is the AI Research Analysis. The content mentions that no relevant documents were found in the vector store. However, the document analysis part says that browsecomp_search retrieved 5 items, but the vector store had none. This is conflicting. But since the user instructed to use the citations from the Document Analysis, which states no documents were found, I need to proceed with that.
+
+For the first question, since there&#x27;s no evidence provided about the percentage of suppliers implementing corrective actions, the answer would be NOT_FOUND. Similarly, the second question asks about who reported the compliance, but again, no documents were found. The example given in the user&#x27;s message includes hypothetical citations, but in this case, the actual documents are not present. So both answers would be NOT_FOUND. However, the user might expect the answer based on the mention of &quot;browsecomp_search: Success - Retrieved 5 items,&quot; but the document analysis contradicts that. Since the rules state to use only the provided evidence and if no documents are found, then the answer is NOT_FOUND. 
+
+Therefore, both answers will be NOT_FOUND with justifications citing the document analysis where it states no relevant documents were found.
+&lt;/think&gt;
+
+ANSWER_1: NOT_FOUND  
+</td><td>1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?</td><td>{&quot;1&quot;: &quot;No relevant documents found in vector store&quot;, &quot;2&quot;: &quot;No relevant documents found in vector store&quot;, &quot;FINAL&quot;: &quot;No supporting documents were available for either question &lt;|im_end|&gt;&quot;}</td></tr>
+<tr><td>DR0001_06a7f3db_053c34e0</td><td>DR0001</td><td>06a7f3db</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_053c34e0/workspace/research_report_20260415_062209.md</td><td>0.000</td><td>0</td><td>2</td><td>false</td><td>0.000</td><td>1</td><td>3</td><td>37.15</td><td>NOT_FOUND</td><td>Emily Patel</td><td>{&quot;1&quot;: &quot;NOT_FOUND&quot;, &quot;2&quot;: &quot;NOT_FOUND&quot;, &quot;FINAL&quot;: &quot;NOT_FOUND&quot;}</td><td>[{&quot;answer&quot;: &quot;85%&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;hop_number&quot;: 1, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?&quot;}, {&quot;answer&quot;: &quot;Emily Patel&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;hop_number&quot;: 2, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;Who reported that 85% of high-risk food suppliers are FSMA 204 compliant?&quot;}]</td><td>[{&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;ground_truth&quot;: &quot;85%&quot;, &quot;hop&quot;: 1, &quot;match_score&quot;: 0.0}, {&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;ground_truth&quot;: &quot;Emily Patel&quot;, &quot;hop&quot;: 2, &quot;match_score&quot;: 0.0}]</td><td># Research Findings: 1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?
+
+&lt;think&gt;
+Okay, let&#x27;s tackle these questions. The user wants answers to two questions about Lee&#x27;s Market suppliers.
+
+First, the original question: What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review? The available evidence mentions that no relevant documents were found. The content of the AI synthesis document says that no documents were found in the vector store. So there&#x27;s no data to answer this. The answer should be NOT_FOUND because there&#x27;s no supporting evidence.
+
+Second, the question is who reported that (1) of high-risk food suppliers are FSMA 204 compliant. Again, the same document analysis states no relevant documents were found. The context doesn&#x27;t provide any information about who reported compliance. So this answer is also NOT_FOUND.
+
+Since both questions can&#x27;t be answered with the given data, the final answer should state that the information isn&#x27;t available. The justifications need to cite the document where it&#x27;s mentioned that no relevant documents were found. But since the answer is NOT_FOUND, the justification refers to that document. However, the rules say each justification must include a  if evidence exists. Here, the evidence is the absence of documents, so the doc_id from the analysis is used.
+
+Wait, the document analysis is in the evidence array. The first document&#x27;s source_type is AI synthesis. The content mentions no relevant documents found. So the citation would be . But the user&#x27;s instruction says if you cannot determine the answer, write NOT_FOUND. So both answers are NOT_FOUND with the same justification citing that doc.
+&lt;/think&gt;
+
+ANSWER_1: NOT_FOUND  
+JUSTIFICATION_1: No relevant documents found   
+
+ANSWER_2: NOT_FOUND  
+JUSTIFICATION_2</td><td>1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?</td><td>{&quot;1&quot;: &quot;No relevant documents found&quot;, &quot;2&quot;: &quot;No relevant documents found&quot;, &quot;FINAL&quot;: &quot;No data available to answer sub-questions &lt;|im_end|&gt;&quot;}</td></tr>
+<tr><td>DR0001_06a7f3db_05b906f9</td><td>DR0001</td><td>06a7f3db</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_05b906f9/workspace/research_report_20260415_032619.md</td><td>0.000</td><td>0</td><td>2</td><td>false</td><td>0.000</td><td>3</td><td>6</td><td>48.25</td><td>NOT_FOUND</td><td>Emily Patel</td><td>{&quot;1&quot;: &quot;NOT_FOUND&quot;, &quot;2&quot;: &quot;NOT_FOUND&quot;, &quot;FINAL&quot;: &quot;NOT_FOUND&quot;}</td><td>[{&quot;answer&quot;: &quot;85%&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;hop_number&quot;: 1, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?&quot;}, {&quot;answer&quot;: &quot;Emily Patel&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;hop_number&quot;: 2, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;Who reported that 85% of high-risk food suppliers are FSMA 204 compliant?&quot;}]</td><td>[{&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;ground_truth&quot;: &quot;85%&quot;, &quot;hop&quot;: 1, &quot;match_score&quot;: 0.0}, {&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;ground_truth&quot;: &quot;Emily Patel&quot;, &quot;hop&quot;: 2, &quot;match_score&quot;: 0.0}]</td><td># Research Findings: 1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?
+
+&lt;think&gt;
+Okay, let&#x27;s tackle this query. The user is asking two specific questions about Lee&#x27;s Market suppliers. 
+
+First, they want the percentage of suppliers who implemented corrective action procedures according to the quarterly review. The second question is about who reported that one of the high-risk food suppliers is FSMA 204 compliant.
+
+Looking at the available evidence, there&#x27;s only one document (doc_7e458d49_1776223540) with a score of 0.727. The content mentions that no relevant documents were found in the vector store. The document also talks about conflicting information between recent findings and document analysis. However, the key point here is that the Document Analysis explicitly states &quot;No relevant documents found in vector store.&quot; 
+
+Since there are no documents providing the required data, I can&#x27;t extract the percentage or identify the person who reported the compliance. The user might have expected data, but according to the provided evidence, there&#x27;s nothing to reference. Both questions are about specific data points that aren&#x27;t present in the given documents. Therefore, the answers should be NOT_FOUND for both questions. The final answer would indicate that the necessary information isn&#x27;t available in the provided sources.
+&lt;/think&gt;
+
+ANSWER_1: NOT_FOUND  
+JUSTIFICATION_1: No relevant documents found in vector store   
+
+ANSWER_2: NOT_FOUND  
+JUSTIFICATION_2: No relevant documents found in vector store   
+
+ANSWER_FINAL: NOT_FOUND  
+JUSTIFICATION_FINAL: No documents provide data on supplier percentages or FSMA 204 compliance reports &lt;|im_end|&gt;</td><td>1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?</td><td>{&quot;1&quot;: &quot;No relevant documents found in vector store&quot;, &quot;2&quot;: &quot;No relevant documents found in vector store&quot;, &quot;FINAL&quot;: &quot;No documents provide data on supplier percentages or FSMA 204 compliance reports &lt;|im_end|&gt;&quot;}</td></tr>
+<tr><td>DR0001_06a7f3db_065fe515</td><td>DR0001</td><td>06a7f3db</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_065fe515/workspace/research_report_20260415_103232.md</td><td>0.000</td><td>0</td><td>2</td><td>false</td><td>0.000</td><td>5</td><td>8</td><td>73.84</td><td>NOT_FOUND</td><td>Emily Patel</td><td>{&quot;1&quot;: &quot;NOT_FOUND&quot;, &quot;2&quot;: &quot;NOT_FOUND&quot;, &quot;FINAL&quot;: &quot;NOT_FOUND&quot;}</td><td>[{&quot;answer&quot;: &quot;85%&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;hop_number&quot;: 1, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?&quot;}, {&quot;answer&quot;: &quot;Emily Patel&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;hop_number&quot;: 2, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;Who reported that 85% of high-risk food suppliers are FSMA 204 compliant?&quot;}]</td><td>[{&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;ground_truth&quot;: &quot;85%&quot;, &quot;hop&quot;: 1, &quot;match_score&quot;: 0.0}, {&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;ground_truth&quot;: &quot;Emily Patel&quot;, &quot;hop&quot;: 2, &quot;match_score&quot;: 0.0}]</td><td># Research Findings: 1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?
+
+&lt;think&gt;
+Okay, let&#x27;s tackle this query. The user wants answers to two questions about Lee&#x27;s Market&#x27;s suppliers and FSMA 204 compliance. The available evidence shows that no relevant documents were found in the vector store, which means there&#x27;s no data to base the answers on. 
+
+First, for the percentage of suppliers with corrective action procedures, since there&#x27;s no data, the answer should be NOT_FOUND. Similarly, the second question about who reported the compliance can&#x27;t be answered without the necessary documents. The justifications need to cite the document analysis that mentions no relevant documents found. 
+
+I need to make sure each answer is concise and the justifications reference the correct DOC IDs. Since both questions lack evidence, both answers will be NOT_FOUND with the same justification. The final answer should combine these, explaining that no data was found for either question.
+&lt;/think&gt;
+
+ANSWER_1: NOT_FOUND  
+JUSTIFICATION_1: No relevant documents found   
+
+ANSWER_2: NOT_FOUND  
+JUSTIFICATION_2: No relevant documents found   
+
+ANSWER_FINAL: NOT_FOUND  
+JUSTIFICATION_FINAL: Both questions lack supporting documents &lt;|im_end|&gt;</td><td>1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?</td><td>{&quot;1&quot;: &quot;No relevant documents found&quot;, &quot;2&quot;: &quot;No relevant documents found&quot;, &quot;FINAL&quot;: &quot;Both questions lack supporting documents &lt;|im_end|&gt;&quot;}</td></tr>
+<tr><td>DR0001_06a7f3db_06e22c99</td><td>DR0001</td><td>06a7f3db</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_06e22c99/workspace/research_report_20260415_034107.md</td><td>0.000</td><td>0</td><td>2</td><td>false</td><td>0.000</td><td>3</td><td>6</td><td>49.31</td><td>NOT_FOUND</td><td>Emily Patel</td><td>{&quot;1&quot;: &quot;NOT_FOUND&quot;, &quot;2&quot;: &quot;NOT_FOUND&quot;, &quot;FINAL&quot;: &quot;NOT_FOUND&quot;}</td><td>[{&quot;answer&quot;: &quot;85%&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;hop_number&quot;: 1, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?&quot;}, {&quot;answer&quot;: &quot;Emily Patel&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;hop_number&quot;: 2, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;Who reported that 85% of high-risk food suppliers are FSMA 204 compliant?&quot;}]</td><td>[{&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;ground_truth&quot;: &quot;85%&quot;, &quot;hop&quot;: 1, &quot;match_score&quot;: 0.0}, {&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;ground_truth&quot;: &quot;Emily Patel&quot;, &quot;hop&quot;: 2, &quot;match_score&quot;: 0.0}]</td><td># Research Findings: 1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?
+
+&lt;think&gt;
+Okay, let me process this query step by step. The user is asking two questions about Lee&#x27;s Market suppliers and their compliance with FSMA 204. The available evidence is a single document that states no relevant documents were found in the vector store. 
+
+First, for the percentage of suppliers with corrective action procedures, the evidence doesn&#x27;t provide any data. The document mentions that there are no relevant documents, so I can&#x27;t answer that. Similarly, the second question about who reported FSMA compliance also lacks data. Since there&#x27;s no information, the answers should be NOT_FOUND. 
+
+I need to make sure each answer is concise and the justifications cite the DOC:doc_id. The final answer combines both sub-answers, explaining the lack of data from the document analysis.
+&lt;/think&gt;
+
+ANSWER_1: NOT_FOUND
+JUSTIFICATION_1: No relevant documents found 
+
+ANSWER_2: NOT_FOUND
+JUSTIFICATION_2: No relevant documents found 
+
+ANSWER_FINAL: NOT_FOUND
+JUSTIFICATION_FINAL: No data available in cited documents &lt;|im_end|&gt;</td><td>1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?</td><td>{&quot;1&quot;: &quot;No relevant documents found&quot;, &quot;2&quot;: &quot;No relevant documents found&quot;, &quot;FINAL&quot;: &quot;No data available in cited documents &lt;|im_end|&gt;&quot;}</td></tr>
+<tr><td>DR0001_06a7f3db_070e1323</td><td>DR0001</td><td>06a7f3db</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_070e1323/workspace/research_report_20260415_044424.md</td><td>0.000</td><td>0</td><td>2</td><td>false</td><td>0.000</td><td>2</td><td>4</td><td>44.85</td><td>NOT_FOUND</td><td>Emily Patel</td><td>{&quot;1&quot;: &quot;NOT_FOUND&quot;, &quot;2&quot;: &quot;NOT_FOUND&quot;, &quot;FINAL&quot;: &quot;NOT_FOUND&quot;}</td><td>[{&quot;answer&quot;: &quot;85%&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;hop_number&quot;: 1, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?&quot;}, {&quot;answer&quot;: &quot;Emily Patel&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;hop_number&quot;: 2, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;Who reported that 85% of high-risk food suppliers are FSMA 204 compliant?&quot;}]</td><td>[{&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;ground_truth&quot;: &quot;85%&quot;, &quot;hop&quot;: 1, &quot;match_score&quot;: 0.0}, {&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;ground_truth&quot;: &quot;Emily Patel&quot;, &quot;hop&quot;: 2, &quot;match_score&quot;: 0.0}]</td><td># Research Findings: 1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?
+
+&lt;think&gt;
+Okay, let&#x27;s tackle these questions step by step. 
+
+First, the user is asking about the percentage of suppliers at Lee&#x27;s Market that implemented corrective action procedures according to the quarterly review. The available evidence from the provided document mentions that no relevant documents were found in the vector store. Since there&#x27;s no data here, I can&#x27;t provide a specific percentage. So the answer for Q1 would be NOT_FOUND.
+
+Next, the second question is asking who reported that one of the high-risk food suppliers is FSMA 204 compliant. Again, the same document states that no relevant documents were found. Without any supporting data, I can&#x27;t identify the person or entity responsible. Therefore, the answer for Q2 is also NOT_FOUND.
+
+Now, the final answer requires combining the sub-answers. Both questions lack data, so the final answer would state that the information is not found in the available documents. The justification would explain that the documents didn&#x27;t provide the necessary details for either question.
+&lt;/think&gt;
+
+ANSWER_1: NOT_FOUND
+JUSTIFICATION_1: No relevant documents found 
+
+ANSWER_2: NOT_FOUND
+JUSTIFICATION_2: No relevant documents found 
+
+ANSWER_FINAL: NOT_FOUND
+JUSTIFICATION_FINAL: No data available in documents for either question &lt;|im_end|&gt;</td><td>1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?</td><td>{&quot;1&quot;: &quot;No relevant documents found&quot;, &quot;2&quot;: &quot;No relevant documents found&quot;, &quot;FINAL&quot;: &quot;No data available in documents for either question &lt;|im_end|&gt;&quot;}</td></tr>
+<tr><td>DR0001_06a7f3db_0724be5b</td><td>DR0001</td><td>06a7f3db</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_0724be5b/workspace/research_report_20260415_075126.md</td><td>0.000</td><td>0</td><td>2</td><td>false</td><td>0.000</td><td>1</td><td>3</td><td>26.33</td><td>NOT_FOUND</td><td>Emily Patel</td><td>{&quot;1&quot;: &quot;NOT_FOUND&quot;, &quot;2&quot;: &quot;NOT_FOUND&quot;, &quot;FINAL&quot;: &quot;NOT_FOUND&quot;}</td><td>[{&quot;answer&quot;: &quot;85%&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;hop_number&quot;: 1, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?&quot;}, {&quot;answer&quot;: &quot;Emily Patel&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;hop_number&quot;: 2, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;Who reported that 85% of high-risk food suppliers are FSMA 204 compliant?&quot;}]</td><td>[{&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;ground_truth&quot;: &quot;85%&quot;, &quot;hop&quot;: 1, &quot;match_score&quot;: 0.0}, {&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;ground_truth&quot;: &quot;Emily Patel&quot;, &quot;hop&quot;: 2, &quot;match_score&quot;: 0.0}]</td><td># Research Findings: 1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?
+
+&lt;think&gt;
+Okay, let&#x27;s see. The user has two questions related to Lee&#x27;s Market and their suppliers. The first question is about the percentage of suppliers that implemented corrective action procedures according to the quarterly review. The second asks who reported that one of the high-risk food suppliers are FSMA 204 compliant.
+
+Looking at the available evidence, there&#x27;s only one document provided, which is from an AI synthesis. The content mentions that no relevant documents were found in the vector store. However, the document analysis also says that there were retrieved items from a web search, but the vector store doesn&#x27;t have them. This seems conflicting, but the key point is that the evidence doesn&#x27;t provide specific data for either question.
+
+For the first question, since there&#x27;s no data on the percentage of suppliers with corrective actions, the answer would be NOT_FOUND. The justification would cite the document where it&#x27;s stated that no documents were found. Similarly, the second question is about who reported the compliance, but again, there&#x27;s no specific information provided. The answer here would also be NOT_FOUND, citing the same document.
+
+The final answer would combine both sub-answers, stating that the necessary data wasn&#x27;t found in the available evidence. The justification would note that the AI synthesis mentions no relevant documents were found, leading to the conclusion that the answers aren&#x27;t available.
+&lt;/think&gt;
+
+ANSWER_1: NOT_FOUND  
+JUSTIFICATION_1: No relevant documents found in vector store   
+
+ANSWER_2: NOT_FOUND  
+JUSTIFICATION_2: No relevant documents found in vector store   
+
+ANSWER_FINAL: NOT_FOUND  
+JUSTIFICATION_FINAL: Evidence lacks specific data on percentages or reporting entities &lt;|im_end|&gt;</td><td>1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?</td><td>{&quot;1&quot;: &quot;No relevant documents found in vector store&quot;, &quot;2&quot;: &quot;No relevant documents found in vector store&quot;, &quot;FINAL&quot;: &quot;Evidence lacks specific data on percentages or reporting entities &lt;|im_end|&gt;&quot;}</td></tr>
+<tr><td>DR0001_06a7f3db_076e6c36</td><td>DR0001</td><td>06a7f3db</td><td>/mnt/llmd/results/exps/alexg/reason/privacy_agent_qwen3_8b_no_plan_companyctx_planningonly_retrieveonly_v2/privacy_agent_runs/DR0001_06a7f3db_076e6c36/workspace/research_report_20260415_082751.md</td><td>0.000</td><td>0</td><td>2</td><td>false</td><td>0.000</td><td>2</td><td>4</td><td>47.55</td><td>NOT_FOUND</td><td>Emily Patel</td><td>{&quot;1&quot;: &quot;NOT_FOUND&quot;, &quot;2&quot;: &quot;NOT_FOUND&quot;, &quot;FINAL&quot;: &quot;NOT_FOUND&quot;}</td><td>[{&quot;answer&quot;: &quot;85%&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;hop_number&quot;: 1, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?&quot;}, {&quot;answer&quot;: &quot;Emily Patel&quot;, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;hop_number&quot;: 2, &quot;hop_type&quot;: &quot;L&quot;, &quot;question&quot;: &quot;Who reported that 85% of high-risk food suppliers are FSMA 204 compliant?&quot;}]</td><td>[{&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN001_pdf/food-safety-regulatory-compliance.md&quot;, &quot;ground_truth&quot;: &quot;85%&quot;, &quot;hop&quot;: 1, &quot;match_score&quot;: 0.0}, {&quot;agent_answer&quot;: &quot;NOT_FOUND&quot;, &quot;correct&quot;: false, &quot;doc_id&quot;: &quot;local/DR0001/IN011_roundcube/roundcube_email_20250818_112436.jsonl&quot;, &quot;ground_truth&quot;: &quot;Emily Patel&quot;, &quot;hop&quot;: 2, &quot;match_score&quot;: 0.0}]</td><td># Research Findings: 1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?
+
+&lt;think&gt;
+Okay, let me try to figure this out. The user provided two questions about Lee&#x27;s Market suppliers and FSMA 204 compliance. The available evidence is from a Document Analysis that says no relevant documents were found. The AI synthesis mentions that, so I need to check if there&#x27;s any data in the given evidence to answer the questions.
+
+First question: What percentage of suppliers had corrective action procedures? The Document Analysis says no relevant documents, so there&#x27;s no data here. The answer should be NOT_FOUND.
+
+Second question: Who reported that 1 of high-risk suppliers are FSMA 204 compliant? Again, the same issue. No documents are cited, so no answer can be given. Both answers would be NOT_FOUND because there&#x27;s no evidence provided. The final answer would combine these, but since both are not found, maybe the final is also NOT_FOUND. But the user wants each answer with justification. Since the evidence is the same for both, the justifications would both reference the Document Analysis with the doc_id provided. Wait, the Document Analysis has a doc_id of &quot;doc_21b0393d_1776241637&quot; but the score is 0.757. The user&#x27;s instruction says to use that if evidence exists. But since the answer is not found, the justifications would state that no documents were found. So both answers are NOT_FOUND, and the final answer would be the same. Let me make sure I follow the rules strictly.
+&lt;/think&gt;
+
+ANSWER_1: NOT_FOUND  
+JUSTIFICATION_1: No relevant documents found   
+
+ANSWER_2: NOT_FOUND  
+JUSTIFICATION_2: No relevant documents found   
+
+ANSWER_FINAL: NOT_FOUND  
+JUSTIFICATION_FINAL: No documents provided to answer sub-questions &lt;|im_end|&gt;</td><td>1. What percentage of suppliers at Lee&#x27;s Market had implemented corrective action procedures according to the quarterly review?
+2 (final). Who reported that (1) of high-risk food suppliers are FSMA 204 compliant?</td><td>{&quot;1&quot;: &quot;No relevant documents found&quot;, &quot;2&quot;: &quot;No relevant documents found&quot;, &quot;FINAL&quot;: &quot;No documents provided to answer sub-questions &lt;|im_end|&gt;&quot;}</td></tr></tbody></table>
+      </details>
+    </section>
+
+    <section class="section" id="raw">
+      <h2>Raw Files + Caveats</h2>
+      <div class="table-grid">
+        <section class="table-card">
+          <h3>Raw Outputs</h3>
+          <ul class="raw-links">
+            <li><a href='summary.json'>summary.json</a></li>
+<li><a href='README.md'>README.md</a></li>
+<li><a href='rollouts.csv'>rollouts.csv</a></li>
+<li><a href='actions.csv'>actions.csv</a></li>
+<li><a href='iterations.csv'>iterations.csv</a></li>
+<li><a href='llm_requests.csv'>llm_requests.csv</a></li>
+<li><a href='llm_call_records.csv'>llm_call_records.csv</a></li>
+<li><a href='llm_tokens_by_rollout.csv'>llm_tokens_by_rollout.csv</a></li>
+<li><a href='llm_tokens_by_log_name.csv'>llm_tokens_by_log_name.csv</a></li>
+<li><a href='prompt_records.csv'>prompt_records.csv</a></li>
+<li><a href='reward_records.csv'>reward_records.csv</a></li>
+          </ul>
+        </section>
+        <section class="table-card">
+          <h3>Limitations</h3>
+          <ul class="limitations">
+            <li>LLM duration logs do not include request IDs, so exact latency attribution to log_name is not possible under concurrency.</li><li>Prompt summaries cover large prompts (&gt;= 4096 tokens) or overflow cases, not every single LLM call.</li><li>Prompt/response token by rollout and by call type requires the newer `privacy_agent llm call summary` log lines; older runs will show empty sections.</li><li>Rollout timing analysis is filtered to runs with a saved report to avoid in-progress session artifacts.</li>
+          </ul>
+        </section>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
