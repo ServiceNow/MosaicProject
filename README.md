@@ -45,7 +45,7 @@ Start the reusable privacy-agent helper stack:
 python -m trajectory_generation.src.retrieval.privacy_helper_stack \
   --host 0.0.0.0 \
   --port 8012 \
-  --local-index-root /mnt/llmd/results/exps/alexg/privacy_agent/local_indices
+  --local-index-root /mnt/llmd/results/exps/alexg/privacy_agent/local_indices_fixeddeps_20260415
 ```
 
 This service is designed to sit behind an internal DNS name for PipelineRL
@@ -58,6 +58,16 @@ API that serves:
   with optional curated DRBench task URLs when `docs_curated_web.jsonl` and
   `chunks_curated_web.jsonl` are available
 - `/health` for startup checks
+
+Note on `local_indices_fixeddeps_20260415`:
+- this dated root is intentional, not a random scratch path
+- it was rebuilt on 2026-04-15 after installing the missing document-extraction
+  dependencies in the `pipeline-rl` env (`python-docx`, `openpyxl`,
+  `python-pptx`, `PyPDF2`, `pdfplumber`, `xlrd`)
+- older local indices could contain stale placeholder strings like
+  `python-docx library not available` instead of real extracted document text
+- if you rebuild the local indices again, update the helper spec and this README
+  deliberately rather than silently reverting to the older root
 
 Render a generated JSONL file to HTML:
 

@@ -1,6 +1,13 @@
 image: registry.toolkit-sp.yul201.service-now.com/snow.research.tapes/interactive-toolkit:throughput
 name: privacy_helper_1gpu
 workdir: /home/toolkit/my_code/MosaicProject
+# This helper intentionally points at the rebuilt local index root from
+# 2026-04-15. The previous root contained stale task-local extraction output
+# from before python-docx/openpyxl/python-pptx/PyPDF2/pdfplumber/xlrd were
+# installed in the pipeline-rl env, which caused placeholders like
+# "python-docx library not available" to be indexed as document content.
+# If you rebuild the local indices again, update this path explicitly rather
+# than assuming /mnt/llmd/results/exps/alexg/privacy_agent/local_indices is safe.
 command:
   - /opt/conda/bin/conda
   - run
