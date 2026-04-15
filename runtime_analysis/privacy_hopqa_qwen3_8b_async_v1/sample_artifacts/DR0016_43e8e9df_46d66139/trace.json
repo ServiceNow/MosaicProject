@@ -1,0 +1,1666 @@
+{
+  "summary": {
+    "task_id": "DR0016",
+    "chain_id": "43e8e9df",
+    "iterations_used": 5,
+    "resolved_hops": 2,
+    "total_hops": 2,
+    "searches_total": 15,
+    "docs_read": 9,
+    "duration_s": 227.25772501598112,
+    "stalled": false,
+    "llm_calls_total": 24,
+    "prompt_tokens": 36097,
+    "output_tokens": 17076,
+    "total_tokens": 53173,
+    "total_errors": 1,
+    "parse_errors_total": 1,
+    "context_overflow_errors": 0,
+    "errors_by_stage": {
+      "hop_plan": 1
+    },
+    "errors_by_kind": {
+      "parse_error": 1
+    },
+    "errors_by_stage_kind": {
+      "hop_plan": {
+        "parse_error": 1
+      }
+    },
+    "parse_errors_by_stage": {
+      "hop_plan": 1
+    }
+  },
+  "hop_states": [
+    {
+      "hop_number": 1,
+      "question": "In what year was Carl Phillips' book 'My Trade is Mystery: Seven Meditations from a Life in Writing' published by Yale University Press?",
+      "status": "answered",
+      "attempts": 1,
+      "answer": "2022",
+      "justification": "The document [DOC:web/2899] explicitly states that Carl Phillips' book 'My Trade is Mystery: Seven Meditations from a Life in Writing' was published by Yale University Press in 2022.",
+      "confidence": 0.9,
+      "resolution_reason": "The answer is directly supported by a reliable web document with high confidence, and there are no conflicting sources in the search results.",
+      "search_history": [
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_web_fallback",
+          "type": "web_search",
+          "query": "In what year was Carl Phillips' book 'My Trade is Mystery: Seven Meditations from a Life in Writing' published by Yale University Press?",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/2899",
+            "web/67338",
+            "web/56720"
+          ]
+        },
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_local_fallback",
+          "type": "local_document_search",
+          "query": "In what year was Carl Phillips' book 'My Trade is Mystery: Seven Meditations from a Life in Writing' published by Yale University Press?",
+          "result_count": 5,
+          "top_doc_ids": [
+            "doc_300de3ce_1776278550",
+            "doc_eb61d943_1776278550",
+            "doc_54d50538_1776278550"
+          ]
+        }
+      ],
+      "selected_doc_ids": [
+        "web/2899"
+      ],
+      "reader_results": [
+        {
+          "doc_id": "web/2899",
+          "source": "web",
+          "title": "https://www.poetmercurio.com/what-the-universe-is/2024/12/9/what-the-universe-is-carl-phillips-and-erin-belieu",
+          "locator": "https://www.poetmercurio.com/what-the-universe-is/2024/12/9/what-the-universe-is-carl-phillips-and-erin-belieu",
+          "can_answer": true,
+          "proposed_answer": "2022",
+          "justification": "The document states that Carl Phillips' book 'My Trade is Mystery: Seven Meditations from a Life in Writing' was published by Yale University Press in 2022 [DOC:web/2899].",
+          "confidence": 0.95,
+          "missing_information": ""
+        }
+      ],
+      "candidate_doc_ids": [
+        "web/2899",
+        "doc_300de3ce_1776278550",
+        "web/67338",
+        "doc_eb61d943_1776278550",
+        "web/56720",
+        "doc_54d50538_1776278550",
+        "web/33010",
+        "doc_7643d81c_1776278550",
+        "web/23230",
+        "doc_6ad8a01f_1776278550"
+      ]
+    },
+    {
+      "hop_number": 2,
+      "question": "Who sent the agenda for the monthly Operations meeting in 2022?",
+      "status": "answered",
+      "attempts": 4,
+      "answer": "Emily Patel",
+      "justification": "The email [DOC:doc_ebd3d20f_1776278550] explicitly states Emily Patel sent the agenda for the monthly Operations meeting with the subject line 'Monthly Operations Meeting - Agenda' and date 2022-05-10.",
+      "confidence": 0.9,
+      "resolution_reason": "The local document directly answers the question with specific evidence, and no conflicting information is present in the search results.",
+      "search_history": [
+        {
+          "iteration": 1,
+          "hop_number": 2,
+          "action_id": "iter1_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market Operations meeting agenda 2022 sender",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/74402",
+            "web/36831",
+            "web/89630"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 2,
+          "action_id": "iter1_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market Operations meeting internal communications 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/71411",
+            "web/36831",
+            "web/18939"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 2,
+          "action_id": "iter1_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market monthly meeting protocols 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/74402",
+            "web/3887",
+            "web/36831"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 2,
+          "action_id": "iter1_web_search_3",
+          "type": "web_search",
+          "query": "Carl Phillips Lee's Market 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/2899",
+            "web/15110",
+            "web/3887"
+          ]
+        },
+        {
+          "iteration": 2,
+          "hop_number": 2,
+          "action_id": "iter2_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market Operations meeting agenda sender 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/74402",
+            "web/36831",
+            "web/89630"
+          ]
+        },
+        {
+          "iteration": 2,
+          "hop_number": 2,
+          "action_id": "iter2_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market 2022 meeting agenda internal communications",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/74402",
+            "web/55432",
+            "web/52246"
+          ]
+        },
+        {
+          "iteration": 2,
+          "hop_number": 2,
+          "action_id": "iter2_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market Operations meeting agenda originator 2022",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/36831",
+            "web/74402",
+            "web/18939"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 2,
+          "action_id": "iter3_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market 2022 Operations meeting agenda sender details",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/74402",
+            "web/36831",
+            "web/89630"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 2,
+          "action_id": "iter3_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market 2022 Operations meeting internal memo agenda",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/74402",
+            "web/36831",
+            "web/2622"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 2,
+          "action_id": "iter3_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market Operations meeting protocols 2022 originator",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/18939",
+            "web/36831",
+            "web/7027"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 2,
+          "action_id": "iter3_web_search_3",
+          "type": "web_search",
+          "query": "Lee's Market 2022 Operations meeting agenda PDF sender",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/74402",
+            "web/36831",
+            "web/89630"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 2,
+          "action_id": "iter4_web_fallback",
+          "type": "web_search",
+          "query": "Who sent the agenda for the monthly Operations meeting in 2022?",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/74402",
+            "web/83684",
+            "web/8776"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 2,
+          "action_id": "iter4_local_fallback",
+          "type": "local_document_search",
+          "query": "Who sent the agenda for the monthly Operations meeting in 2022?",
+          "result_count": 5,
+          "top_doc_ids": [
+            "doc_ebd3d20f_1776278550",
+            "doc_5c249b9c_1776278550",
+            "doc_29464546_1776278550"
+          ]
+        }
+      ],
+      "selected_doc_ids": [
+        "web/74402",
+        "web/71411",
+        "web/89630",
+        "web/36831",
+        "web/18939",
+        "web/2622",
+        "web/78634",
+        "doc_ebd3d20f_1776278550"
+      ],
+      "reader_results": [
+        {
+          "doc_id": "web/74402",
+          "source": "web",
+          "title": "https://www.gilbertschool.org/about-us/coporation-members/agendas-minutes",
+          "locator": "https://www.gilbertschool.org/about-us/coporation-members/agendas-minutes",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:web/74402] does not mention any agendas for the Operations meeting in 2022 or identify the sender of such an agenda. The content focuses on 2024-2025 meeting schedules and unrelated information.",
+          "confidence": 0.82,
+          "missing_information": "The document lacks details about the 2022 Operations meeting agenda or its sender."
+        },
+        {
+          "doc_id": "web/71411",
+          "source": "web",
+          "title": "https://www.acerwc.africa/en/communications/list",
+          "locator": "https://www.acerwc.africa/en/communications/list",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:web/71411] lists communication numbers and dates but does not explicitly state who sent the agenda for the monthly Operations meeting in 2022. No sender information is provided in the excerpt.",
+          "confidence": 0.82,
+          "missing_information": "The identity of the sender/organization responsible for the Operations meeting agenda in 2022."
+        },
+        {
+          "doc_id": "web/89630",
+          "source": "web",
+          "title": "https://www.495partnership.org/events-committee-meetings",
+          "locator": "https://www.495partnership.org/events-committee-meetings",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:web/89630] does not mention the sender of the Operations meeting agenda for 2022. It only discusses the 495/MetroWest Planning & Economic Development Working Group's meetings and unrelated events.",
+          "confidence": 0.82,
+          "missing_information": "The document lacks specific information about the sender of the Operations meeting agenda."
+        },
+        {
+          "doc_id": "web/36831",
+          "source": "web",
+          "title": "https://gse.com.gh/wp-content/uploads/2023/06/PR-197-FAN-MILK-PLC-ANNUAL-REPORT-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-DECEMBER-31-2022-2.pdf",
+          "locator": "https://gse.com.gh/wp-content/uploads/2023/06/PR-197-FAN-MILK-PLC-ANNUAL-REPORT-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-DECEMBER-31-2022-2.pdf",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:web/36831] discusses FAN MILK PLC's annual report and annual general meeting agenda, but does not mention any monthly Operations meetings or their agenda senders in 2022.",
+          "confidence": 0.95,
+          "missing_information": "The document lacks any information about monthly Operations meetings or the sender of their agendas for 2022."
+        },
+        {
+          "doc_id": "web/18939",
+          "source": "web",
+          "title": "https://linksinc.org/",
+          "locator": "https://linksinc.org/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:web/18939] discusses The Links, Incorporated and its programs but does not mention any monthly Operations meeting agenda or its sender for 2022. The queries about 'Lee's Market Operations meeting protocols 2022 originator' are not addressed in the excerpt.",
+          "confidence": 0.5,
+          "missing_information": "Specific details about the 2022 monthly Operations meeting agenda and its sender are absent from the document."
+        },
+        {
+          "doc_id": "web/2622",
+          "source": "web",
+          "title": "https://www.chcoc.gov/transmittals",
+          "locator": "https://www.chcoc.gov/transmittals",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:web/2622] mentions queries about a 2022 Operations meeting but contains no records or agendas for meetings from 2022—only entries dated 2025.",
+          "confidence": 0.95,
+          "missing_information": "The document lacks any specific information about the 2022 Operations meeting agenda or sender."
+        },
+        {
+          "doc_id": "web/78634",
+          "source": "web",
+          "title": "https://bidenwhitehouse.archives.gov/omb/information-for-agencies/memoranda/",
+          "locator": "https://bidenwhitehouse.archives.gov/omb/information-for-agencies/memoranda/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:web/78634] does not contain any information about the monthly Operations meeting agenda for 2022 or who sent it. The excerpt focuses on Biden White House memoranda from 2024-2025 and does not reference Lee's Market or 2022 meeting details.",
+          "confidence": 0.15,
+          "missing_information": "The document lacks any mention of the 2022 Operations meeting agenda or its sender."
+        },
+        {
+          "doc_id": "doc_ebd3d20f_1776278550",
+          "source": "local",
+          "title": "roundcube_email_20251202_212951.jsonl",
+          "locator": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0016/files/DI0003/roundcube_email_20251202_212951.jsonl",
+          "can_answer": true,
+          "proposed_answer": "Emily Patel",
+          "justification": "The email [DOC:doc_ebd3d20f_1776278550] shows Emily Patel sent the agenda for the monthly Operations meeting with the subject line 'Monthly Operations Meeting - Agenda' and date 2022-05-10.",
+          "confidence": 0.82,
+          "missing_information": ""
+        }
+      ],
+      "candidate_doc_ids": [
+        "doc_ebd3d20f_1776278550",
+        "doc_5c249b9c_1776278550",
+        "web/83684",
+        "web/8776",
+        "doc_29464546_1776278550",
+        "doc_300de3ce_1776278550",
+        "web/41661",
+        "doc_7643d81c_1776278550"
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "id": "iter0_web_fallback",
+      "type": "web_search",
+      "description": "Search the web for hop 1",
+      "parameters": {
+        "query": "In what year was Carl Phillips' book 'My Trade is Mystery: Seven Meditations from a Life in Writing' published by Yale University Press?"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate web evidence",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "In what year was Carl Phillips' book 'My Trade is Mystery: Seven Meditations from a Life in Writing' published by Yale University Press?",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/2899",
+            "source": "web",
+            "title": "https://www.poetmercurio.com/what-the-universe-is/2024/12/9/what-the-universe-is-carl-phillips-and-erin-belieu",
+            "locator": "https://www.poetmercurio.com/what-the-universe-is/2024/12/9/what-the-universe-is-carl-phillips-and-erin-belieu",
+            "rank": 1,
+            "score": 0.5610274076461792,
+            "queries": [
+              "In what year was Carl Phillips' book 'My Trade is Mystery: Seven Meditations from a Life in Writing' published by Yale University Press?"
+            ],
+            "snippet": "---\ntitle: What The Universe Is: Carl Phillips and Erin Belieu\ndate: 2024-12-09\n---\nAs the 2024 season of What The Universe Is: A (Virtual) Reading Series comes to a conclusion, it gives me tremendous pleasure to host Carl Phillips and Erin Belieu, two of the foremost practitioners of poetry writing today, as well as t..."
+          },
+          {
+            "doc_id": "web/67338",
+            "source": "web",
+            "title": "https://www.amazon.com/stores/author/B000APTHGI",
+            "locator": "https://www.amazon.com/stores/author/B000APTHGI",
+            "rank": 2,
+            "score": 0.4544752240180969,
+            "queries": [
+              "In what year was Carl Phillips' book 'My Trade is Mystery: Seven Meditations from a Life in Writing' published by Yale University Press?"
+            ],
+            "snippet": "---\ntitle: Michael Phillips\nauthor: Michael Phillips Home About All Books More\ndate: 2025-01-01\n---\nCategoriesNew & TrendingDeals & RewardsBest Sellers & MoreMembershipsCommunitiesMoreMoreYour Books\n\nAn error has occurred, please refresh the page.\n\nAn error has occurred, please refresh the page.\n\nAn error has occurred,..."
+          },
+          {
+            "doc_id": "web/56720",
+            "source": "web",
+            "title": "https://www.shadeliteraryarts.org/single-post/2020-forthcoming",
+            "locator": "https://www.shadeliteraryarts.org/single-post/2020-forthcoming",
+            "rank": 3,
+            "score": 0.4413016140460968,
+            "queries": [
+              "In what year was Carl Phillips' book 'My Trade is Mystery: Seven Meditations from a Life in Writing' published by Yale University Press?"
+            ],
+            "snippet": "---\ntitle: Shade Literary Arts\ndate: 2019-12-19\n---\n2020 Forthcoming Poetry Books by Queer People of Color\n\n- Shade Literary Arts\n\n- Dec 19, 2019\n\n- 27 min read\n\nUpdated: Mar 1, 2021\n\nFull-length and chapbooks are included in this list. Last updated: 3/1/2021\n\nAirlie Press\n\nAgain by Jennifer Perrine (September 1, price..."
+          },
+          {
+            "doc_id": "web/33010",
+            "source": "web",
+            "title": "https://www.krabarchive.com/ralphmag/IB/13-poetasters.html",
+            "locator": "https://www.krabarchive.com/ralphmag/IB/13-poetasters.html",
+            "rank": 4,
+            "score": 0.4377175271511078,
+            "queries": [
+              "In what year was Carl Phillips' book 'My Trade is Mystery: Seven Meditations from a Life in Writing' published by Yale University Press?"
+            ],
+            "snippet": "---\ntitle: Thirteen Awful Books of Poetry\ndate: 1999-04-03\n---\nThirteen Stinkers\n\nRALPH has come to be known for its estimable\n\nreviews of the best of contemporary poetry (and poets).\n\nHowever, in our twenty years online,\n\nwe've come across several quite revolting collections.\n\nHere we offer a selection of the worst of..."
+          },
+          {
+            "doc_id": "web/23230",
+            "source": "web",
+            "title": "https://artsandsciences.syracuse.edu/english-department/creative-writing-mf-program/raymond-carver-reading-series/previous-raymond-carver-reading-series/",
+            "locator": "https://artsandsciences.syracuse.edu/english-department/creative-writing-mf-program/raymond-carver-reading-series/previous-raymond-carver-reading-series/",
+            "rank": 5,
+            "score": 0.437531054019928,
+            "queries": [
+              "In what year was Carl Phillips' book 'My Trade is Mystery: Seven Meditations from a Life in Writing' published by Yale University Press?"
+            ],
+            "snippet": "---\ntitle: Previous Raymond Carver Reading Series\ndate: 2020-01-29\n---\nPrevious Raymond Carver Reading Series\n\nThe Raymond Carver Reading Series features twelve to fourteen prominent writers yearly as part of a large undergraduate class taught by TAs from the Creative Writing Program. The readings have an extended Ques..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 1.2125270061660558,
+      "iteration": 0
+    },
+    {
+      "id": "iter0_local_fallback",
+      "type": "local_document_search",
+      "description": "Search local documents for hop 1",
+      "parameters": {
+        "query": "In what year was Carl Phillips' book 'My Trade is Mystery: Seven Meditations from a Life in Writing' published by Yale University Press?"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate local evidence",
+      "status": "completed",
+      "actual_output": {
+        "tool": "local_document_search",
+        "query": "In what year was Carl Phillips' book 'My Trade is Mystery: Seven Meditations from a Life in Writing' published by Yale University Press?",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "doc_300de3ce_1776278550",
+            "source": "local",
+            "title": "mattermost_chat_20251202_212737.jsonl",
+            "locator": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0016/files/IN0001/mattermost_chat_20251202_212737.jsonl",
+            "rank": 1,
+            "score": 0.21083899855510305,
+            "queries": [
+              "In what year was Carl Phillips' book 'My Trade is Mystery: Seven Meditations from a Life in Writing' published by Yale University Press?"
+            ],
+            "snippet": "\nMattermost Message:\nUser: johnsmith\nChannel: supplier_relations\nTeam: operations\nTime: unknown\nMessage: Hey team, just a reminder that we have a meeting scheduled this afternoon to discuss the supplier contracts renewal. Let's make sure we're prepared with all the necessary data.\n"
+          },
+          {
+            "doc_id": "doc_eb61d943_1776278550",
+            "source": "local",
+            "title": "mattermost_chat_20251202_212737.jsonl",
+            "locator": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0016/files/IN0001/mattermost_chat_20251202_212737.jsonl",
+            "rank": 2,
+            "score": 0.20364552416974974,
+            "queries": [
+              "In what year was Carl Phillips' book 'My Trade is Mystery: Seven Meditations from a Life in Writing' published by Yale University Press?"
+            ],
+            "snippet": "\nMattermost Message:\nUser: sarahjohnson\nChannel: regulatory_updates\nTeam: compliance\nTime: unknown\nMessage: Hi team, we have a new policy update from the legal department. Please make sure to review it and let me know if there are any concerns.\n"
+          },
+          {
+            "doc_id": "doc_54d50538_1776278550",
+            "source": "local",
+            "title": "mattermost_chat_20251202_212737.jsonl",
+            "locator": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0016/files/IN0001/mattermost_chat_20251202_212737.jsonl",
+            "rank": 3,
+            "score": 0.1956574016123572,
+            "queries": [
+              "In what year was Carl Phillips' book 'My Trade is Mystery: Seven Meditations from a Life in Writing' published by Yale University Press?"
+            ],
+            "snippet": "\nMattermost Message:\nUser: emily.patel\nChannel: regulatory_updates\nTeam: compliance\nTime: unknown\nMessage: I'll be attending a regulatory conference next week. I'll share any relevant updates and learnings with the team when I return.\n"
+          },
+          {
+            "doc_id": "doc_7643d81c_1776278550",
+            "source": "local",
+            "title": "mattermost_chat_20251202_212737.jsonl",
+            "locator": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0016/files/IN0001/mattermost_chat_20251202_212737.jsonl",
+            "rank": 4,
+            "score": 0.19490171374323126,
+            "queries": [
+              "In what year was Carl Phillips' book 'My Trade is Mystery: Seven Meditations from a Life in Writing' published by Yale University Press?"
+            ],
+            "snippet": "\nMattermost Message:\nUser: johnsmith\nChannel: supplier_relations\nTeam: operations\nTime: 2021-05-08T18:53:20\nMessage: Hi team, as we continue to work on our FSMA 204 compliance efforts, it's important to remember that we have a shared responsibility with our suppliers. Can anyone give an update on the latest discussions..."
+          },
+          {
+            "doc_id": "doc_6ad8a01f_1776278550",
+            "source": "local",
+            "title": "mattermost_chat_20251202_212737.jsonl",
+            "locator": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0016/files/IN0001/mattermost_chat_20251202_212737.jsonl",
+            "rank": 5,
+            "score": 0.18979669296304297,
+            "queries": [
+              "In what year was Carl Phillips' book 'My Trade is Mystery: Seven Meditations from a Life in Writing' published by Yale University Press?"
+            ],
+            "snippet": "\nMattermost Message:\nUser: emily.patel\nChannel: supplier_relations\nTeam: operations\nTime: 2021-05-08T18:55:00\nMessage: Hello John, you're absolutely right. We have been actively collaborating with our suppliers on this matter. We hosted representatives from all our major suppliers at the Q1 2025 Supplier Review Day, wh..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.38700300198979676,
+      "iteration": 0
+    },
+    {
+      "id": "iter1_web_search_0",
+      "type": "web_search",
+      "description": "Search for the sender of Lee's Market Operations meeting agenda in 2022",
+      "parameters": {
+        "query": "Lee's Market Operations meeting agenda 2022 sender"
+      },
+      "priority": 0.9,
+      "expected_output": "Documentation of the meeting agenda and its sender",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market Operations meeting agenda 2022 sender",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/74402",
+            "source": "web",
+            "title": "https://www.gilbertschool.org/about-us/coporation-members/agendas-minutes",
+            "locator": "https://www.gilbertschool.org/about-us/coporation-members/agendas-minutes",
+            "rank": 1,
+            "score": 0.4456092417240143,
+            "queries": [
+              "Lee's Market Operations meeting agenda 2022 sender",
+              "Lee's Market monthly meeting protocols 2022"
+            ],
+            "snippet": "---\ntitle: The Gilbert School\ndate: 2019-03-07\n---\nAgendas and Minutes\n\n2024-2025\n\nAgendas\n\nAgendas 2024-2025\n\n- August 21, 2024 - Building and Grounds\n\n- August 21, 2024 - Finance Committee\n\n- August 21, 2024 - Regular Meeting\n\n- September 5, 2024 - Policy Committee\n\n- September 18, 2024 - Building and Grounds Committ..."
+          },
+          {
+            "doc_id": "web/36831",
+            "source": "web",
+            "title": "https://gse.com.gh/wp-content/uploads/2023/06/PR-197-FAN-MILK-PLC-ANNUAL-REPORT-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-DECEMBER-31-2022-2.pdf",
+            "locator": "https://gse.com.gh/wp-content/uploads/2023/06/PR-197-FAN-MILK-PLC-ANNUAL-REPORT-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-DECEMBER-31-2022-2.pdf",
+            "rank": 2,
+            "score": 0.44559788703918457,
+            "queries": [
+              "Lee's Market Operations meeting agenda 2022 sender",
+              "Lee's Market Operations meeting internal communications 2022",
+              "Lee's Market monthly meeting protocols 2022"
+            ],
+            "snippet": "ANNUAL REPORT & 20 22 FINANCIAL STATEMENTS FOR THE YEAR ENDED DECEMBER 31, 2022 Corporate Information 5 Notice of Annual General Meeting 6 Report of the Directors 8-11 Managing Director's Review 13-15 Corporate Governance 17-18 Independent Auditor's Report 19-22 Board of Directors 24-26 Financial Statements: i. Stateme..."
+          },
+          {
+            "doc_id": "web/89630",
+            "source": "web",
+            "title": "https://www.495partnership.org/events-committee-meetings",
+            "locator": "https://www.495partnership.org/events-committee-meetings",
+            "rank": 3,
+            "score": 0.42678630352020264,
+            "queries": [
+              "Lee's Market Operations meeting agenda 2022 sender"
+            ],
+            "snippet": "---\ntitle: Events and Committee Meetings\ndate: 2024-11-07\n---\nEvents and Committee MeetingsTo learn about 495/MetroWest Partnership events and committee meetings as they are announced, be sure to subscribe to our email newsletter! Upcoming Events and Committee MeetingsHousing Committee Meeting with Congressman Auchincl..."
+          },
+          {
+            "doc_id": "web/19609",
+            "source": "web",
+            "title": "https://www.idfa.org/events/dairy-forum-2025",
+            "locator": "https://www.idfa.org/events/dairy-forum-2025",
+            "rank": 4,
+            "score": 0.4189544916152954,
+            "queries": [
+              "Lee's Market Operations meeting agenda 2022 sender"
+            ],
+            "snippet": "---\ntitle: Chairman's Lecture - Understanding Washington's New Agenda\ndate: 2025-01-26\n---\nOverview\n\nThank you to everyone who joined us in San Antonio for Dairy Forum 2025!\n\nPresentations, Photos, and Live Stream Recordings can be found in the Dairy Forum 2025 Hub.\n\nSave the date for Dairy Forum 2026! Next year's conf..."
+          },
+          {
+            "doc_id": "web/15666",
+            "source": "web",
+            "title": "http://www.boardmannews.net/news.php?page=Community",
+            "locator": "http://www.boardmannews.net/news.php?page=Community",
+            "rank": 5,
+            "score": 0.4178721308708191,
+            "queries": [
+              "Lee's Market Operations meeting agenda 2022 sender"
+            ],
+            "snippet": "---\ntitle: Boardman News: The Boardman Ohio Community News Source\ndate: 1997-10-31\n---\n|\n\nMonday June 9, 2025 Boardman Weather % humidity\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n| |\n\n|\n\n|\n\n|\n\n|\n\n| NEWS |\n\n|\n\nNews\n\nCommunity\n\nSports |\n\n| |\n\n|\n\n|\n\n|\n\n| |\n\nTrustees Name Charles Hillman To Park Board |\n\n|\n\n| |\n\nJune..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.2299833579454571,
+      "iteration": 1
+    },
+    {
+      "id": "iter1_web_search_1",
+      "type": "web_search",
+      "description": "Search for internal communications about 2022 Operations meetings at Lee's Market",
+      "parameters": {
+        "query": "Lee's Market Operations meeting internal communications 2022"
+      },
+      "priority": 0.8,
+      "expected_output": "Emails or records indicating the agenda sender",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market Operations meeting internal communications 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/71411",
+            "source": "web",
+            "title": "https://www.acerwc.africa/en/communications/list",
+            "locator": "https://www.acerwc.africa/en/communications/list",
+            "rank": 1,
+            "score": 0.4080362915992737,
+            "queries": [
+              "Lee's Market Operations meeting internal communications 2022"
+            ],
+            "snippet": "---\ntitle: Communication Number: 0026/Com/001/2025.\ndate: 2021-12-08\n---\nCommunications\n\nCommunication Number: 0026/Com/001/2025.\n\nCommunication Number: 0025/Com/001/2024\n\nCommunication Number: 0024/Com/001/2023\n\nCommunication Number: 0023/Com/005/2022\n\nCommunication Number: 0022/Com/004/2022\n\nCommunication Number: 002..."
+          },
+          {
+            "doc_id": "web/36831",
+            "source": "web",
+            "title": "https://gse.com.gh/wp-content/uploads/2023/06/PR-197-FAN-MILK-PLC-ANNUAL-REPORT-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-DECEMBER-31-2022-2.pdf",
+            "locator": "https://gse.com.gh/wp-content/uploads/2023/06/PR-197-FAN-MILK-PLC-ANNUAL-REPORT-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-DECEMBER-31-2022-2.pdf",
+            "rank": 2,
+            "score": 0.40470725297927856,
+            "queries": [
+              "Lee's Market Operations meeting internal communications 2022"
+            ],
+            "snippet": "ANNUAL REPORT & 20 22 FINANCIAL STATEMENTS FOR THE YEAR ENDED DECEMBER 31, 2022 Corporate Information 5 Notice of Annual General Meeting 6 Report of the Directors 8-11 Managing Director's Review 13-15 Corporate Governance 17-18 Independent Auditor's Report 19-22 Board of Directors 24-26 Financial Statements: i. Stateme..."
+          },
+          {
+            "doc_id": "web/18939",
+            "source": "web",
+            "title": "https://linksinc.org/",
+            "locator": "https://linksinc.org/",
+            "rank": 3,
+            "score": 0.40050309896469116,
+            "queries": [
+              "Lee's Market Operations meeting internal communications 2022"
+            ],
+            "snippet": "---\ntitle: MISSION\ndate: 2015-12-18\n---\nThe Links, Incorporated is an international, not-for-profit corporation, established in 1946. It is one of the nation's oldest and largest volunteer service organizations committed to enriching, sustaining, and ensuring the culture and economic survival of African Americans and o..."
+          },
+          {
+            "doc_id": "web/21618",
+            "source": "web",
+            "title": "https://www.ncaa.org/sports/2016/1/15/national-office-leadership-team.aspx",
+            "locator": "https://www.ncaa.org/sports/2016/1/15/national-office-leadership-team.aspx",
+            "rank": 4,
+            "score": 0.3995925188064575,
+            "queries": [
+              "Lee's Market Operations meeting internal communications 2022"
+            ],
+            "snippet": "---\ntitle: National Office Leadership Team\ndate: 2016-01-15\n---\nAt the NCAA's national office in Indianapolis, more than 500 staff members work under the leadership of a team of executives who are granted authority by the NCAA Board of Governors.\n\nDan Gavitt\n\nSenior Vice President of Basketball\n\nDan Gavitt joined the N..."
+          },
+          {
+            "doc_id": "web/22911",
+            "source": "web",
+            "title": "https://projects.iq.harvard.edu/koreanalumnibiographiesproject/people/kyunghoon-claude-lee",
+            "locator": "https://projects.iq.harvard.edu/koreanalumnibiographiesproject/people/kyunghoon-claude-lee",
+            "rank": 5,
+            "score": 0.3972034156322479,
+            "queries": [
+              "Lee's Market Operations meeting internal communications 2022"
+            ],
+            "snippet": "---\ntitle: Kyunghoon Claude Lee\ndate: 2025-01-01\n---\nKyunghoon Claude Lee\n\nKyunghoon Claude Lee (Yi Kyŏng-hun 李慶勳, 1944–present), one of the earliest Koreans who studied at the Harvard Business School, was a successful businessman.[1] Lee was born on July 17, 1944, in Seoul, Korea, as the first child of Yi To-yŏng (李道榮..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.2665736440103501,
+      "iteration": 1
+    },
+    {
+      "id": "iter1_web_search_2",
+      "type": "web_search",
+      "description": "Search for Lee's Market monthly meeting protocols from 2022",
+      "parameters": {
+        "query": "Lee's Market monthly meeting protocols 2022"
+      },
+      "priority": 0.75,
+      "expected_output": "Meeting records specifying the agenda distributor",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market monthly meeting protocols 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/74402",
+            "source": "web",
+            "title": "https://www.gilbertschool.org/about-us/coporation-members/agendas-minutes",
+            "locator": "https://www.gilbertschool.org/about-us/coporation-members/agendas-minutes",
+            "rank": 1,
+            "score": 0.46613436937332153,
+            "queries": [
+              "Lee's Market monthly meeting protocols 2022"
+            ],
+            "snippet": "---\ntitle: The Gilbert School\ndate: 2019-03-07\n---\nAgendas and Minutes\n\n2024-2025\n\nAgendas\n\nAgendas 2024-2025\n\n- August 21, 2024 - Building and Grounds\n\n- August 21, 2024 - Finance Committee\n\n- August 21, 2024 - Regular Meeting\n\n- September 5, 2024 - Policy Committee\n\n- September 18, 2024 - Building and Grounds Committ..."
+          },
+          {
+            "doc_id": "web/3887",
+            "source": "web",
+            "title": "https://www.portofbellingham.com/1002/Bellingham-Dockside-Market",
+            "locator": "https://www.portofbellingham.com/1002/Bellingham-Dockside-Market",
+            "rank": 2,
+            "score": 0.4577154219150543,
+            "queries": [
+              "Lee's Market monthly meeting protocols 2022",
+              "Carl Phillips Lee's Market 2022"
+            ],
+            "snippet": "---\ntitle: Bellingham Dockside Market\nauthor: This Is A Placeholder Government Websites By Civicplus\ndate: 2023-03-04\n---\nBellingham Dockside Market\n\nBellingham Dockside Market serves as the hub for local fishermen in and out of Squalicum Harbor to sell their catch and harvest directly to you! Follow signs into Squalic..."
+          },
+          {
+            "doc_id": "web/36831",
+            "source": "web",
+            "title": "https://gse.com.gh/wp-content/uploads/2023/06/PR-197-FAN-MILK-PLC-ANNUAL-REPORT-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-DECEMBER-31-2022-2.pdf",
+            "locator": "https://gse.com.gh/wp-content/uploads/2023/06/PR-197-FAN-MILK-PLC-ANNUAL-REPORT-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-DECEMBER-31-2022-2.pdf",
+            "rank": 3,
+            "score": 0.457653284072876,
+            "queries": [
+              "Lee's Market monthly meeting protocols 2022"
+            ],
+            "snippet": "ANNUAL REPORT & 20 22 FINANCIAL STATEMENTS FOR THE YEAR ENDED DECEMBER 31, 2022 Corporate Information 5 Notice of Annual General Meeting 6 Report of the Directors 8-11 Managing Director's Review 13-15 Corporate Governance 17-18 Independent Auditor's Report 19-22 Board of Directors 24-26 Financial Statements: i. Stateme..."
+          },
+          {
+            "doc_id": "web/13818",
+            "source": "web",
+            "title": "https://www.raymondmaine.org/boards-committees/board-selectmen/minutes-sm",
+            "locator": "https://www.raymondmaine.org/boards-committees/board-selectmen/minutes-sm",
+            "rank": 4,
+            "score": 0.45327141880989075,
+            "queries": [
+              "Lee's Market monthly meeting protocols 2022"
+            ],
+            "snippet": "---\ntitle: Town of Raymond, Maine\ndate: 2025-06-10\n---\nListed below are the approved minutes from the Select Board's Meetings from 2006 to present day. If you are interested in seeing minutes that are older, please contact Town Clerk Melanie Fernald.\n\nPer the \"Minutes Policy,\" reviewed and approved August 17, 2010, and..."
+          },
+          {
+            "doc_id": "web/45702",
+            "source": "web",
+            "title": "https://farmersmarketla.com/index.html",
+            "locator": "https://farmersmarketla.com/index.html",
+            "rank": 5,
+            "score": 0.44121819734573364,
+            "queries": [
+              "Lee's Market monthly meeting protocols 2022",
+              "Carl Phillips Lee's Market 2022"
+            ],
+            "snippet": "---\ntitle: Farmers Market L.A.\n---\nPlease ensure Javascript is enabled for purposes of\n\nwebsite accessibility"
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.26723129907622933,
+      "iteration": 1
+    },
+    {
+      "id": "iter1_web_search_3",
+      "type": "web_search",
+      "description": "Search for Carl Phillips' involvement with Lee's Market in 2022",
+      "parameters": {
+        "query": "Carl Phillips Lee's Market 2022"
+      },
+      "priority": 0.7,
+      "expected_output": "Link between the book's publication and meeting agenda sender",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Carl Phillips Lee's Market 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/2899",
+            "source": "web",
+            "title": "https://www.poetmercurio.com/what-the-universe-is/2024/12/9/what-the-universe-is-carl-phillips-and-erin-belieu",
+            "locator": "https://www.poetmercurio.com/what-the-universe-is/2024/12/9/what-the-universe-is-carl-phillips-and-erin-belieu",
+            "rank": 1,
+            "score": 0.4343414008617401,
+            "queries": [
+              "Carl Phillips Lee's Market 2022"
+            ],
+            "snippet": "---\ntitle: What The Universe Is: Carl Phillips and Erin Belieu\ndate: 2024-12-09\n---\nAs the 2024 season of What The Universe Is: A (Virtual) Reading Series comes to a conclusion, it gives me tremendous pleasure to host Carl Phillips and Erin Belieu, two of the foremost practitioners of poetry writing today, as well as t..."
+          },
+          {
+            "doc_id": "web/15110",
+            "source": "web",
+            "title": "https://www.culturetype.com/2017/11/01/culture-talk-arnold-lehman-on-curating-american-african-american-a-selling-exhibition-at-phillips-london/",
+            "locator": "https://www.culturetype.com/2017/11/01/culture-talk-arnold-lehman-on-curating-american-african-american-a-selling-exhibition-at-phillips-london/",
+            "rank": 2,
+            "score": 0.423294335603714,
+            "queries": [
+              "Carl Phillips Lee's Market 2022"
+            ],
+            "snippet": "---\ntitle: Culture Talk: Arnold Lehman on Curating 'American African American,' a Selling Exhibition at Phillips London\ndate: 2017-11-01\n---\nAMONG THE HALLMARKS of Arnold Lehman's nearly two-decade tenure as director of the Brooklyn Museum was his focus on community engagement, popular culture, and the visibility of Af..."
+          },
+          {
+            "doc_id": "web/3887",
+            "source": "web",
+            "title": "https://www.portofbellingham.com/1002/Bellingham-Dockside-Market",
+            "locator": "https://www.portofbellingham.com/1002/Bellingham-Dockside-Market",
+            "rank": 3,
+            "score": 0.42268306016921997,
+            "queries": [
+              "Carl Phillips Lee's Market 2022"
+            ],
+            "snippet": "---\ntitle: Bellingham Dockside Market\nauthor: This Is A Placeholder Government Websites By Civicplus\ndate: 2023-03-04\n---\nBellingham Dockside Market\n\nBellingham Dockside Market serves as the hub for local fishermen in and out of Squalicum Harbor to sell their catch and harvest directly to you! Follow signs into Squalic..."
+          },
+          {
+            "doc_id": "web/6437",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Kalvin_Phillips",
+            "locator": "https://en.wikipedia.org/wiki/Kalvin_Phillips",
+            "rank": 4,
+            "score": 0.4191606044769287,
+            "queries": [
+              "Carl Phillips Lee's Market 2022"
+            ],
+            "snippet": "---\ntitle: Kalvin Phillips - Wikipedia\ndate: 2015-04-06\n---\nname: Kalvin Phillips\nfull_name: Kalvin Mark Phillips\nbirth_date: 2 December 1995\nbirth_place: Leeds, England\nheight: 1.78 flip\nposition: Defensive midfielder\ncurrentclub: Ipswich Town(on loan from Manchester City)\nclubnumber: 8\nyouthyears1: 2003–2010\nyouthclu..."
+          },
+          {
+            "doc_id": "web/45702",
+            "source": "web",
+            "title": "https://farmersmarketla.com/index.html",
+            "locator": "https://farmersmarketla.com/index.html",
+            "rank": 5,
+            "score": 0.4066309332847595,
+            "queries": [
+              "Carl Phillips Lee's Market 2022"
+            ],
+            "snippet": "---\ntitle: Farmers Market L.A.\n---\nPlease ensure Javascript is enabled for purposes of\n\nwebsite accessibility"
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.22991170920431614,
+      "iteration": 1
+    },
+    {
+      "id": "iter2_web_search_0",
+      "type": "web_search",
+      "description": "Search for Lee's Market Operations meeting agenda sender 2022",
+      "parameters": {
+        "query": "Lee's Market Operations meeting agenda sender 2022"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market Operations meeting agenda sender 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/74402",
+            "source": "web",
+            "title": "https://www.gilbertschool.org/about-us/coporation-members/agendas-minutes",
+            "locator": "https://www.gilbertschool.org/about-us/coporation-members/agendas-minutes",
+            "rank": 1,
+            "score": 0.4514004588127136,
+            "queries": [
+              "Lee's Market Operations meeting agenda sender 2022"
+            ],
+            "snippet": "---\ntitle: The Gilbert School\ndate: 2019-03-07\n---\nAgendas and Minutes\n\n2024-2025\n\nAgendas\n\nAgendas 2024-2025\n\n- August 21, 2024 - Building and Grounds\n\n- August 21, 2024 - Finance Committee\n\n- August 21, 2024 - Regular Meeting\n\n- September 5, 2024 - Policy Committee\n\n- September 18, 2024 - Building and Grounds Committ..."
+          },
+          {
+            "doc_id": "web/36831",
+            "source": "web",
+            "title": "https://gse.com.gh/wp-content/uploads/2023/06/PR-197-FAN-MILK-PLC-ANNUAL-REPORT-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-DECEMBER-31-2022-2.pdf",
+            "locator": "https://gse.com.gh/wp-content/uploads/2023/06/PR-197-FAN-MILK-PLC-ANNUAL-REPORT-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-DECEMBER-31-2022-2.pdf",
+            "rank": 2,
+            "score": 0.4396854639053345,
+            "queries": [
+              "Lee's Market Operations meeting agenda sender 2022",
+              "Lee's Market Operations meeting agenda originator 2022"
+            ],
+            "snippet": "ANNUAL REPORT & 20 22 FINANCIAL STATEMENTS FOR THE YEAR ENDED DECEMBER 31, 2022 Corporate Information 5 Notice of Annual General Meeting 6 Report of the Directors 8-11 Managing Director's Review 13-15 Corporate Governance 17-18 Independent Auditor's Report 19-22 Board of Directors 24-26 Financial Statements: i. Stateme..."
+          },
+          {
+            "doc_id": "web/89630",
+            "source": "web",
+            "title": "https://www.495partnership.org/events-committee-meetings",
+            "locator": "https://www.495partnership.org/events-committee-meetings",
+            "rank": 3,
+            "score": 0.422710657119751,
+            "queries": [
+              "Lee's Market Operations meeting agenda sender 2022"
+            ],
+            "snippet": "---\ntitle: Events and Committee Meetings\ndate: 2024-11-07\n---\nEvents and Committee MeetingsTo learn about 495/MetroWest Partnership events and committee meetings as they are announced, be sure to subscribe to our email newsletter! Upcoming Events and Committee MeetingsHousing Committee Meeting with Congressman Auchincl..."
+          },
+          {
+            "doc_id": "web/45702",
+            "source": "web",
+            "title": "https://farmersmarketla.com/index.html",
+            "locator": "https://farmersmarketla.com/index.html",
+            "rank": 4,
+            "score": 0.4191952347755432,
+            "queries": [
+              "Lee's Market Operations meeting agenda sender 2022"
+            ],
+            "snippet": "---\ntitle: Farmers Market L.A.\n---\nPlease ensure Javascript is enabled for purposes of\n\nwebsite accessibility"
+          },
+          {
+            "doc_id": "web/15666",
+            "source": "web",
+            "title": "http://www.boardmannews.net/news.php?page=Community",
+            "locator": "http://www.boardmannews.net/news.php?page=Community",
+            "rank": 5,
+            "score": 0.4132879376411438,
+            "queries": [
+              "Lee's Market Operations meeting agenda sender 2022",
+              "Lee's Market Operations meeting agenda originator 2022"
+            ],
+            "snippet": "---\ntitle: Boardman News: The Boardman Ohio Community News Source\ndate: 1997-10-31\n---\n|\n\nMonday June 9, 2025 Boardman Weather % humidity\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n| |\n\n|\n\n|\n\n|\n\n|\n\n| NEWS |\n\n|\n\nNews\n\nCommunity\n\nSports |\n\n| |\n\n|\n\n|\n\n|\n\n| |\n\nTrustees Name Charles Hillman To Park Board |\n\n|\n\n| |\n\nJune..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.5323941640090197,
+      "iteration": 2
+    },
+    {
+      "id": "iter2_web_search_1",
+      "type": "web_search",
+      "description": "Search for internal communications about Lee's Market 2022 meeting agendas",
+      "parameters": {
+        "query": "Lee's Market 2022 meeting agenda internal communications"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market 2022 meeting agenda internal communications",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/74402",
+            "source": "web",
+            "title": "https://www.gilbertschool.org/about-us/coporation-members/agendas-minutes",
+            "locator": "https://www.gilbertschool.org/about-us/coporation-members/agendas-minutes",
+            "rank": 1,
+            "score": 0.4610453248023987,
+            "queries": [
+              "Lee's Market 2022 meeting agenda internal communications"
+            ],
+            "snippet": "---\ntitle: The Gilbert School\ndate: 2019-03-07\n---\nAgendas and Minutes\n\n2024-2025\n\nAgendas\n\nAgendas 2024-2025\n\n- August 21, 2024 - Building and Grounds\n\n- August 21, 2024 - Finance Committee\n\n- August 21, 2024 - Regular Meeting\n\n- September 5, 2024 - Policy Committee\n\n- September 18, 2024 - Building and Grounds Committ..."
+          },
+          {
+            "doc_id": "web/55432",
+            "source": "web",
+            "title": "https://www.revisor.mn.gov/statutes/cite/13d/full",
+            "locator": "https://www.revisor.mn.gov/statutes/cite/13d/full",
+            "rank": 2,
+            "score": 0.4380616545677185,
+            "queries": [
+              "Lee's Market 2022 meeting agenda internal communications"
+            ],
+            "snippet": "---\ntitle: Office of the Revisor of Statutes\ndate: 1997-01-01\n---\nThis chapter has been affected by law enacted during the 2025 Regular Session. More info...\n\n- 13D.02 subd. 1 has been amended by Chapter 39, Article 6, Section 1\n\n- 13D.02 subd. 4 has been amended by Chapter 39, Article 6, Section 2\n\nNote: see session l..."
+          },
+          {
+            "doc_id": "web/52246",
+            "source": "web",
+            "title": "https://www.letsdive.io/blog/how-to-make-your-town-hall-meetings-more-effective",
+            "locator": "https://www.letsdive.io/blog/how-to-make-your-town-hall-meetings-more-effective",
+            "rank": 3,
+            "score": 0.4336061477661133,
+            "queries": [
+              "Lee's Market 2022 meeting agenda internal communications"
+            ],
+            "snippet": "---\ntitle: How to Make Your Town Hall Meetings More Effective?\nauthor: This is some text inside\ndate: 2023-09-05\n---\nHow to Make Your Town Hall Meetings More Effective?\n\nLearn all about company town hall meetings. This is a guide to help you learn how to organize effective town hall meetings to enable better corporate..."
+          },
+          {
+            "doc_id": "web/8404",
+            "source": "web",
+            "title": "https://www.nsba.org/events/2025-annual-conference",
+            "locator": "https://www.nsba.org/events/2025-annual-conference",
+            "rank": 4,
+            "score": 0.4251280426979065,
+            "queries": [
+              "Lee's Market 2022 meeting agenda internal communications"
+            ],
+            "snippet": "---\ntitle: 2025 Annual Conference\ndate: 2024-06-10\n---\nThank you to the board members and education leaders from districts across the country for joining us in Atlanta.\n\nClick here to view conference photos and headshots.\n\nThis national event brings together education leaders from across the country, offering a unique..."
+          },
+          {
+            "doc_id": "web/99108",
+            "source": "web",
+            "title": "https://statutes.capitol.texas.gov/Docs/GV/htm/GV.551.htm",
+            "locator": "https://statutes.capitol.texas.gov/Docs/GV/htm/GV.551.htm",
+            "rank": 5,
+            "score": 0.42338472604751587,
+            "queries": [
+              "Lee's Market 2022 meeting agenda internal communications"
+            ],
+            "snippet": "---\ntitle: GOVERNMENT CODE CHAPTER 551. OPEN MEETINGS\ndate: 2005-06-17\n---\nGOVERNMENT CODE\n\nTITLE 5. OPEN GOVERNMENT; ETHICS\n\nSUBTITLE A. OPEN GOVERNMENT\n\nCHAPTER 551. OPEN MEETINGS\n\nSUBCHAPTER A. GENERAL PROVISIONS\n\nSec. 551.001. DEFINITIONS. In this chapter:\n\n(1) \"Closed meeting\" means a meeting to which the public d..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.5398122640326619,
+      "iteration": 2
+    },
+    {
+      "id": "iter2_web_search_2",
+      "type": "web_search",
+      "description": "Search for Lee's Market Operations meeting agenda originator 2022",
+      "parameters": {
+        "query": "Lee's Market Operations meeting agenda originator 2022"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market Operations meeting agenda originator 2022",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/36831",
+            "source": "web",
+            "title": "https://gse.com.gh/wp-content/uploads/2023/06/PR-197-FAN-MILK-PLC-ANNUAL-REPORT-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-DECEMBER-31-2022-2.pdf",
+            "locator": "https://gse.com.gh/wp-content/uploads/2023/06/PR-197-FAN-MILK-PLC-ANNUAL-REPORT-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-DECEMBER-31-2022-2.pdf",
+            "rank": 1,
+            "score": 0.4305768609046936,
+            "queries": [
+              "Lee's Market Operations meeting agenda originator 2022"
+            ],
+            "snippet": "ANNUAL REPORT & 20 22 FINANCIAL STATEMENTS FOR THE YEAR ENDED DECEMBER 31, 2022 Corporate Information 5 Notice of Annual General Meeting 6 Report of the Directors 8-11 Managing Director's Review 13-15 Corporate Governance 17-18 Independent Auditor's Report 19-22 Board of Directors 24-26 Financial Statements: i. Stateme..."
+          },
+          {
+            "doc_id": "web/74402",
+            "source": "web",
+            "title": "https://www.gilbertschool.org/about-us/coporation-members/agendas-minutes",
+            "locator": "https://www.gilbertschool.org/about-us/coporation-members/agendas-minutes",
+            "rank": 2,
+            "score": 0.4259317219257355,
+            "queries": [
+              "Lee's Market Operations meeting agenda originator 2022"
+            ],
+            "snippet": "---\ntitle: The Gilbert School\ndate: 2019-03-07\n---\nAgendas and Minutes\n\n2024-2025\n\nAgendas\n\nAgendas 2024-2025\n\n- August 21, 2024 - Building and Grounds\n\n- August 21, 2024 - Finance Committee\n\n- August 21, 2024 - Regular Meeting\n\n- September 5, 2024 - Policy Committee\n\n- September 18, 2024 - Building and Grounds Committ..."
+          },
+          {
+            "doc_id": "web/18939",
+            "source": "web",
+            "title": "https://linksinc.org/",
+            "locator": "https://linksinc.org/",
+            "rank": 3,
+            "score": 0.41935399174690247,
+            "queries": [
+              "Lee's Market Operations meeting agenda originator 2022"
+            ],
+            "snippet": "---\ntitle: MISSION\ndate: 2015-12-18\n---\nThe Links, Incorporated is an international, not-for-profit corporation, established in 1946. It is one of the nation's oldest and largest volunteer service organizations committed to enriching, sustaining, and ensuring the culture and economic survival of African Americans and o..."
+          },
+          {
+            "doc_id": "web/89630",
+            "source": "web",
+            "title": "https://www.495partnership.org/events-committee-meetings",
+            "locator": "https://www.495partnership.org/events-committee-meetings",
+            "rank": 4,
+            "score": 0.4183291792869568,
+            "queries": [
+              "Lee's Market Operations meeting agenda originator 2022"
+            ],
+            "snippet": "---\ntitle: Events and Committee Meetings\ndate: 2024-11-07\n---\nEvents and Committee MeetingsTo learn about 495/MetroWest Partnership events and committee meetings as they are announced, be sure to subscribe to our email newsletter! Upcoming Events and Committee MeetingsHousing Committee Meeting with Congressman Auchincl..."
+          },
+          {
+            "doc_id": "web/15666",
+            "source": "web",
+            "title": "http://www.boardmannews.net/news.php?page=Community",
+            "locator": "http://www.boardmannews.net/news.php?page=Community",
+            "rank": 5,
+            "score": 0.4113408923149109,
+            "queries": [
+              "Lee's Market Operations meeting agenda originator 2022"
+            ],
+            "snippet": "---\ntitle: Boardman News: The Boardman Ohio Community News Source\ndate: 1997-10-31\n---\n|\n\nMonday June 9, 2025 Boardman Weather % humidity\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n| |\n\n|\n\n|\n\n|\n\n|\n\n| NEWS |\n\n|\n\nNews\n\nCommunity\n\nSports |\n\n| |\n\n|\n\n|\n\n|\n\n| |\n\nTrustees Name Charles Hillman To Park Board |\n\n|\n\n| |\n\nJune..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.531254650093615,
+      "iteration": 2
+    },
+    {
+      "id": "iter3_web_search_0",
+      "type": "web_search",
+      "description": "Search for Lee's Market Operations meeting agenda sender details in 2022",
+      "parameters": {
+        "query": "Lee's Market 2022 Operations meeting agenda sender details"
+      },
+      "priority": 0.8,
+      "expected_output": "Specific mention of the sender or organizational role responsible for the agenda",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market 2022 Operations meeting agenda sender details",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/74402",
+            "source": "web",
+            "title": "https://www.gilbertschool.org/about-us/coporation-members/agendas-minutes",
+            "locator": "https://www.gilbertschool.org/about-us/coporation-members/agendas-minutes",
+            "rank": 1,
+            "score": 0.4586859941482544,
+            "queries": [
+              "Lee's Market 2022 Operations meeting agenda sender details"
+            ],
+            "snippet": "---\ntitle: The Gilbert School\ndate: 2019-03-07\n---\nAgendas and Minutes\n\n2024-2025\n\nAgendas\n\nAgendas 2024-2025\n\n- August 21, 2024 - Building and Grounds\n\n- August 21, 2024 - Finance Committee\n\n- August 21, 2024 - Regular Meeting\n\n- September 5, 2024 - Policy Committee\n\n- September 18, 2024 - Building and Grounds Committ..."
+          },
+          {
+            "doc_id": "web/36831",
+            "source": "web",
+            "title": "https://gse.com.gh/wp-content/uploads/2023/06/PR-197-FAN-MILK-PLC-ANNUAL-REPORT-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-DECEMBER-31-2022-2.pdf",
+            "locator": "https://gse.com.gh/wp-content/uploads/2023/06/PR-197-FAN-MILK-PLC-ANNUAL-REPORT-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-DECEMBER-31-2022-2.pdf",
+            "rank": 2,
+            "score": 0.4348595142364502,
+            "queries": [
+              "Lee's Market 2022 Operations meeting agenda sender details"
+            ],
+            "snippet": "ANNUAL REPORT & 20 22 FINANCIAL STATEMENTS FOR THE YEAR ENDED DECEMBER 31, 2022 Corporate Information 5 Notice of Annual General Meeting 6 Report of the Directors 8-11 Managing Director's Review 13-15 Corporate Governance 17-18 Independent Auditor's Report 19-22 Board of Directors 24-26 Financial Statements: i. Stateme..."
+          },
+          {
+            "doc_id": "web/89630",
+            "source": "web",
+            "title": "https://www.495partnership.org/events-committee-meetings",
+            "locator": "https://www.495partnership.org/events-committee-meetings",
+            "rank": 3,
+            "score": 0.42397183179855347,
+            "queries": [
+              "Lee's Market 2022 Operations meeting agenda sender details"
+            ],
+            "snippet": "---\ntitle: Events and Committee Meetings\ndate: 2024-11-07\n---\nEvents and Committee MeetingsTo learn about 495/MetroWest Partnership events and committee meetings as they are announced, be sure to subscribe to our email newsletter! Upcoming Events and Committee MeetingsHousing Committee Meeting with Congressman Auchincl..."
+          },
+          {
+            "doc_id": "web/15666",
+            "source": "web",
+            "title": "http://www.boardmannews.net/news.php?page=Community",
+            "locator": "http://www.boardmannews.net/news.php?page=Community",
+            "rank": 4,
+            "score": 0.4129149317741394,
+            "queries": [
+              "Lee's Market 2022 Operations meeting agenda sender details",
+              "Lee's Market 2022 Operations meeting internal memo agenda",
+              "Lee's Market 2022 Operations meeting agenda PDF sender"
+            ],
+            "snippet": "---\ntitle: Boardman News: The Boardman Ohio Community News Source\ndate: 1997-10-31\n---\n|\n\nMonday June 9, 2025 Boardman Weather % humidity\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n| |\n\n|\n\n|\n\n|\n\n|\n\n| NEWS |\n\n|\n\nNews\n\nCommunity\n\nSports |\n\n| |\n\n|\n\n|\n\n|\n\n| |\n\nTrustees Name Charles Hillman To Park Board |\n\n|\n\n| |\n\nJune..."
+          },
+          {
+            "doc_id": "web/13818",
+            "source": "web",
+            "title": "https://www.raymondmaine.org/boards-committees/board-selectmen/minutes-sm",
+            "locator": "https://www.raymondmaine.org/boards-committees/board-selectmen/minutes-sm",
+            "rank": 5,
+            "score": 0.4111815094947815,
+            "queries": [
+              "Lee's Market 2022 Operations meeting agenda sender details",
+              "Lee's Market 2022 Operations meeting agenda PDF sender"
+            ],
+            "snippet": "---\ntitle: Town of Raymond, Maine\ndate: 2025-06-10\n---\nListed below are the approved minutes from the Select Board's Meetings from 2006 to present day. If you are interested in seeing minutes that are older, please contact Town Clerk Melanie Fernald.\n\nPer the \"Minutes Policy,\" reviewed and approved August 17, 2010, and..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.47086596488952637,
+      "iteration": 3
+    },
+    {
+      "id": "iter3_web_search_1",
+      "type": "web_search",
+      "description": "Search for internal communications about 2022 Operations meeting agendas",
+      "parameters": {
+        "query": "Lee's Market 2022 Operations meeting internal memo agenda"
+      },
+      "priority": 0.8,
+      "expected_output": "Internal document references or emails indicating the sender",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market 2022 Operations meeting internal memo agenda",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/74402",
+            "source": "web",
+            "title": "https://www.gilbertschool.org/about-us/coporation-members/agendas-minutes",
+            "locator": "https://www.gilbertschool.org/about-us/coporation-members/agendas-minutes",
+            "rank": 1,
+            "score": 0.44569894671440125,
+            "queries": [
+              "Lee's Market 2022 Operations meeting internal memo agenda"
+            ],
+            "snippet": "---\ntitle: The Gilbert School\ndate: 2019-03-07\n---\nAgendas and Minutes\n\n2024-2025\n\nAgendas\n\nAgendas 2024-2025\n\n- August 21, 2024 - Building and Grounds\n\n- August 21, 2024 - Finance Committee\n\n- August 21, 2024 - Regular Meeting\n\n- September 5, 2024 - Policy Committee\n\n- September 18, 2024 - Building and Grounds Committ..."
+          },
+          {
+            "doc_id": "web/36831",
+            "source": "web",
+            "title": "https://gse.com.gh/wp-content/uploads/2023/06/PR-197-FAN-MILK-PLC-ANNUAL-REPORT-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-DECEMBER-31-2022-2.pdf",
+            "locator": "https://gse.com.gh/wp-content/uploads/2023/06/PR-197-FAN-MILK-PLC-ANNUAL-REPORT-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-DECEMBER-31-2022-2.pdf",
+            "rank": 2,
+            "score": 0.4347122311592102,
+            "queries": [
+              "Lee's Market 2022 Operations meeting internal memo agenda"
+            ],
+            "snippet": "ANNUAL REPORT & 20 22 FINANCIAL STATEMENTS FOR THE YEAR ENDED DECEMBER 31, 2022 Corporate Information 5 Notice of Annual General Meeting 6 Report of the Directors 8-11 Managing Director's Review 13-15 Corporate Governance 17-18 Independent Auditor's Report 19-22 Board of Directors 24-26 Financial Statements: i. Stateme..."
+          },
+          {
+            "doc_id": "web/2622",
+            "source": "web",
+            "title": "https://www.chcoc.gov/transmittals",
+            "locator": "https://www.chcoc.gov/transmittals",
+            "rank": 3,
+            "score": 0.4161050319671631,
+            "queries": [
+              "Lee's Market 2022 Operations meeting internal memo agenda"
+            ],
+            "snippet": "---\ntitle: Transmittals\ndate: 2025-06-06\n---\nBack to Top\n\nThe transmittal page allows users to search for various OPM memorandums to Chief Human Capital Officers, HR Directors and Heads of Agencies. Users can search by year and/or keyword.\n\nEnter your information into the text box below, select the apply button to filt..."
+          },
+          {
+            "doc_id": "web/78634",
+            "source": "web",
+            "title": "https://bidenwhitehouse.archives.gov/omb/information-for-agencies/memoranda/",
+            "locator": "https://bidenwhitehouse.archives.gov/omb/information-for-agencies/memoranda/",
+            "rank": 4,
+            "score": 0.4124493896961212,
+            "queries": [
+              "Lee's Market 2022 Operations meeting internal memo agenda"
+            ],
+            "snippet": "---\ntitle: Memoranda\ndate: 1995-03-08\n---\nMemoranda\n\n2024 | 2023 | 2022 | 2021 | 2020 | 2019 | 2018 | 2017 | 2016 | 2015 2014 | 2013 | 2012 | 2011 | 2010 | 2009 | 2008 | 2007 2006 | 2005 | 2004 | 2003 | 2002 | 2001 | 2000 | 1999 | 1995-1998\n\nMost of the documents on this page were created as PDFs. Click here for PDF as..."
+          },
+          {
+            "doc_id": "web/15666",
+            "source": "web",
+            "title": "http://www.boardmannews.net/news.php?page=Community",
+            "locator": "http://www.boardmannews.net/news.php?page=Community",
+            "rank": 5,
+            "score": 0.41185715794563293,
+            "queries": [
+              "Lee's Market 2022 Operations meeting internal memo agenda"
+            ],
+            "snippet": "---\ntitle: Boardman News: The Boardman Ohio Community News Source\ndate: 1997-10-31\n---\n|\n\nMonday June 9, 2025 Boardman Weather % humidity\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n| |\n\n|\n\n|\n\n|\n\n|\n\n| NEWS |\n\n|\n\nNews\n\nCommunity\n\nSports |\n\n| |\n\n|\n\n|\n\n|\n\n| |\n\nTrustees Name Charles Hillman To Park Board |\n\n|\n\n| |\n\nJune..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.4302404911722988,
+      "iteration": 3
+    },
+    {
+      "id": "iter3_web_search_2",
+      "type": "web_search",
+      "description": "Search for Lee's Market meeting protocols specifying agenda originators",
+      "parameters": {
+        "query": "Lee's Market Operations meeting protocols 2022 originator"
+      },
+      "priority": 0.75,
+      "expected_output": "Protocols or records explicitly naming the agenda sender",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market Operations meeting protocols 2022 originator",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/18939",
+            "source": "web",
+            "title": "https://linksinc.org/",
+            "locator": "https://linksinc.org/",
+            "rank": 1,
+            "score": 0.4171532690525055,
+            "queries": [
+              "Lee's Market Operations meeting protocols 2022 originator"
+            ],
+            "snippet": "---\ntitle: MISSION\ndate: 2015-12-18\n---\nThe Links, Incorporated is an international, not-for-profit corporation, established in 1946. It is one of the nation's oldest and largest volunteer service organizations committed to enriching, sustaining, and ensuring the culture and economic survival of African Americans and o..."
+          },
+          {
+            "doc_id": "web/36831",
+            "source": "web",
+            "title": "https://gse.com.gh/wp-content/uploads/2023/06/PR-197-FAN-MILK-PLC-ANNUAL-REPORT-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-DECEMBER-31-2022-2.pdf",
+            "locator": "https://gse.com.gh/wp-content/uploads/2023/06/PR-197-FAN-MILK-PLC-ANNUAL-REPORT-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-DECEMBER-31-2022-2.pdf",
+            "rank": 2,
+            "score": 0.4092928171157837,
+            "queries": [
+              "Lee's Market Operations meeting protocols 2022 originator"
+            ],
+            "snippet": "ANNUAL REPORT & 20 22 FINANCIAL STATEMENTS FOR THE YEAR ENDED DECEMBER 31, 2022 Corporate Information 5 Notice of Annual General Meeting 6 Report of the Directors 8-11 Managing Director's Review 13-15 Corporate Governance 17-18 Independent Auditor's Report 19-22 Board of Directors 24-26 Financial Statements: i. Stateme..."
+          },
+          {
+            "doc_id": "web/7027",
+            "source": "web",
+            "title": "https://www.thenarrativesociety.org/executive-council",
+            "locator": "https://www.thenarrativesociety.org/executive-council",
+            "rank": 3,
+            "score": 0.39345216751098633,
+            "queries": [
+              "Lee's Market Operations meeting protocols 2022 originator"
+            ],
+            "snippet": "---\ntitle: Executive Council\ndate: 1999-01-01\n---\nExecutive Council\n\nExecutive Council\n\nPresident: Marco Caracciolo, Ghent University\n\nFirst Vice President: Dorothee Birke, University of Innsbruck\n\nImmediate Past President: Yoon Sun Lee, Wellesley College\n\nSecretary-Treasurer; Editor, Narrative: James Phelan, The Ohio..."
+          },
+          {
+            "doc_id": "web/21618",
+            "source": "web",
+            "title": "https://www.ncaa.org/sports/2016/1/15/national-office-leadership-team.aspx",
+            "locator": "https://www.ncaa.org/sports/2016/1/15/national-office-leadership-team.aspx",
+            "rank": 4,
+            "score": 0.3930681347846985,
+            "queries": [
+              "Lee's Market Operations meeting protocols 2022 originator"
+            ],
+            "snippet": "---\ntitle: National Office Leadership Team\ndate: 2016-01-15\n---\nAt the NCAA's national office in Indianapolis, more than 500 staff members work under the leadership of a team of executives who are granted authority by the NCAA Board of Governors.\n\nDan Gavitt\n\nSenior Vice President of Basketball\n\nDan Gavitt joined the N..."
+          },
+          {
+            "doc_id": "web/7128",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Fort_Gregg-Adams",
+            "locator": "https://en.wikipedia.org/wiki/Fort_Gregg-Adams",
+            "rank": 5,
+            "score": 0.389615535736084,
+            "queries": [
+              "Lee's Market Operations meeting protocols 2022 originator"
+            ],
+            "snippet": "---\ntitle: Fort Gregg-Adams - Wikipedia\nauthor: Authority control databases Geographic MusicBrainz area Other NARA\ndate: 2002-10-25\n---\nname: Fort Gregg-Adams\nlocation: Petersburg and Tri-cities Area, Virginia, U.S.\ntype: U.S. Army post\nbuilt: 1917\nused: 1917–19241941–present\ncontrolledby: United States Army\ngarrison:..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.40532599901780486,
+      "iteration": 3
+    },
+    {
+      "id": "iter3_web_search_3",
+      "type": "web_search",
+      "description": "Search for Lee's Market 2022 meeting agendas with sender information",
+      "parameters": {
+        "query": "Lee's Market 2022 Operations meeting agenda PDF sender"
+      },
+      "priority": 0.75,
+      "expected_output": "PDF documents containing agenda details and sender information",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market 2022 Operations meeting agenda PDF sender",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/74402",
+            "source": "web",
+            "title": "https://www.gilbertschool.org/about-us/coporation-members/agendas-minutes",
+            "locator": "https://www.gilbertschool.org/about-us/coporation-members/agendas-minutes",
+            "rank": 1,
+            "score": 0.47019174695014954,
+            "queries": [
+              "Lee's Market 2022 Operations meeting agenda PDF sender"
+            ],
+            "snippet": "---\ntitle: The Gilbert School\ndate: 2019-03-07\n---\nAgendas and Minutes\n\n2024-2025\n\nAgendas\n\nAgendas 2024-2025\n\n- August 21, 2024 - Building and Grounds\n\n- August 21, 2024 - Finance Committee\n\n- August 21, 2024 - Regular Meeting\n\n- September 5, 2024 - Policy Committee\n\n- September 18, 2024 - Building and Grounds Committ..."
+          },
+          {
+            "doc_id": "web/36831",
+            "source": "web",
+            "title": "https://gse.com.gh/wp-content/uploads/2023/06/PR-197-FAN-MILK-PLC-ANNUAL-REPORT-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-DECEMBER-31-2022-2.pdf",
+            "locator": "https://gse.com.gh/wp-content/uploads/2023/06/PR-197-FAN-MILK-PLC-ANNUAL-REPORT-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-DECEMBER-31-2022-2.pdf",
+            "rank": 2,
+            "score": 0.4465148448944092,
+            "queries": [
+              "Lee's Market 2022 Operations meeting agenda PDF sender"
+            ],
+            "snippet": "ANNUAL REPORT & 20 22 FINANCIAL STATEMENTS FOR THE YEAR ENDED DECEMBER 31, 2022 Corporate Information 5 Notice of Annual General Meeting 6 Report of the Directors 8-11 Managing Director's Review 13-15 Corporate Governance 17-18 Independent Auditor's Report 19-22 Board of Directors 24-26 Financial Statements: i. Stateme..."
+          },
+          {
+            "doc_id": "web/89630",
+            "source": "web",
+            "title": "https://www.495partnership.org/events-committee-meetings",
+            "locator": "https://www.495partnership.org/events-committee-meetings",
+            "rank": 3,
+            "score": 0.43607401847839355,
+            "queries": [
+              "Lee's Market 2022 Operations meeting agenda PDF sender"
+            ],
+            "snippet": "---\ntitle: Events and Committee Meetings\ndate: 2024-11-07\n---\nEvents and Committee MeetingsTo learn about 495/MetroWest Partnership events and committee meetings as they are announced, be sure to subscribe to our email newsletter! Upcoming Events and Committee MeetingsHousing Committee Meeting with Congressman Auchincl..."
+          },
+          {
+            "doc_id": "web/13818",
+            "source": "web",
+            "title": "https://www.raymondmaine.org/boards-committees/board-selectmen/minutes-sm",
+            "locator": "https://www.raymondmaine.org/boards-committees/board-selectmen/minutes-sm",
+            "rank": 4,
+            "score": 0.42670679092407227,
+            "queries": [
+              "Lee's Market 2022 Operations meeting agenda PDF sender"
+            ],
+            "snippet": "---\ntitle: Town of Raymond, Maine\ndate: 2025-06-10\n---\nListed below are the approved minutes from the Select Board's Meetings from 2006 to present day. If you are interested in seeing minutes that are older, please contact Town Clerk Melanie Fernald.\n\nPer the \"Minutes Policy,\" reviewed and approved August 17, 2010, and..."
+          },
+          {
+            "doc_id": "web/15666",
+            "source": "web",
+            "title": "http://www.boardmannews.net/news.php?page=Community",
+            "locator": "http://www.boardmannews.net/news.php?page=Community",
+            "rank": 5,
+            "score": 0.42452865839004517,
+            "queries": [
+              "Lee's Market 2022 Operations meeting agenda PDF sender"
+            ],
+            "snippet": "---\ntitle: Boardman News: The Boardman Ohio Community News Source\ndate: 1997-10-31\n---\n|\n\nMonday June 9, 2025 Boardman Weather % humidity\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n|\n\n| |\n\n|\n\n|\n\n|\n\n|\n\n| NEWS |\n\n|\n\nNews\n\nCommunity\n\nSports |\n\n| |\n\n|\n\n|\n\n|\n\n| |\n\nTrustees Name Charles Hillman To Park Board |\n\n|\n\n| |\n\nJune..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.40540892188437283,
+      "iteration": 3
+    },
+    {
+      "id": "iter4_web_fallback",
+      "type": "web_search",
+      "description": "Search the web for hop 2",
+      "parameters": {
+        "query": "Who sent the agenda for the monthly Operations meeting in 2022?"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate web evidence",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Who sent the agenda for the monthly Operations meeting in 2022?",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/74402",
+            "source": "web",
+            "title": "https://www.gilbertschool.org/about-us/coporation-members/agendas-minutes",
+            "locator": "https://www.gilbertschool.org/about-us/coporation-members/agendas-minutes",
+            "rank": 1,
+            "score": 0.5044856071472168,
+            "queries": [
+              "Who sent the agenda for the monthly Operations meeting in 2022?"
+            ],
+            "snippet": "---\ntitle: The Gilbert School\ndate: 2019-03-07\n---\nAgendas and Minutes\n\n2024-2025\n\nAgendas\n\nAgendas 2024-2025\n\n- August 21, 2024 - Building and Grounds\n\n- August 21, 2024 - Finance Committee\n\n- August 21, 2024 - Regular Meeting\n\n- September 5, 2024 - Policy Committee\n\n- September 18, 2024 - Building and Grounds Committ..."
+          },
+          {
+            "doc_id": "web/83684",
+            "source": "web",
+            "title": "https://main.un.org/securitycouncil/en/2023-highlights",
+            "locator": "https://main.un.org/securitycouncil/en/2023-highlights",
+            "rank": 2,
+            "score": 0.46985751390457153,
+            "queries": [
+              "Who sent the agenda for the monthly Operations meeting in 2022?"
+            ],
+            "snippet": "---\ntitle: Highlights 2023\ndate: 2023-11-10\n---\nIn 2023, the Security Council maintained a high level of activity with a similar number of meetings compared to 2022. There were fewer decisions (eight per cent decrease in resolutions and presidential statements) and fewer press statements (50 per cent decrease). Althoug..."
+          },
+          {
+            "doc_id": "web/8776",
+            "source": "web",
+            "title": "https://press.un.org/en/2023/sc15172.doc.htm",
+            "locator": "https://press.un.org/en/2023/sc15172.doc.htm",
+            "rank": 3,
+            "score": 0.46427056193351746,
+            "queries": [
+              "Who sent the agenda for the monthly Operations meeting in 2022?"
+            ],
+            "snippet": "---\ntitle: With Invasion of Ukraine, Security Council's 2022 Efforts to Maintain International Peace, Stability Mired by Widening Rifts between Veto-Wielding Members\ndate: 2023-01-12\n---\nWith Invasion of Ukraine, Security Council's 2022 Efforts to Maintain International Peace, Stability Mired by Widening Rifts between..."
+          },
+          {
+            "doc_id": "web/36831",
+            "source": "web",
+            "title": "https://gse.com.gh/wp-content/uploads/2023/06/PR-197-FAN-MILK-PLC-ANNUAL-REPORT-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-DECEMBER-31-2022-2.pdf",
+            "locator": "https://gse.com.gh/wp-content/uploads/2023/06/PR-197-FAN-MILK-PLC-ANNUAL-REPORT-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-DECEMBER-31-2022-2.pdf",
+            "rank": 4,
+            "score": 0.46240028738975525,
+            "queries": [
+              "Who sent the agenda for the monthly Operations meeting in 2022?"
+            ],
+            "snippet": "ANNUAL REPORT & 20 22 FINANCIAL STATEMENTS FOR THE YEAR ENDED DECEMBER 31, 2022 Corporate Information 5 Notice of Annual General Meeting 6 Report of the Directors 8-11 Managing Director's Review 13-15 Corporate Governance 17-18 Independent Auditor's Report 19-22 Board of Directors 24-26 Financial Statements: i. Stateme..."
+          },
+          {
+            "doc_id": "web/41661",
+            "source": "web",
+            "title": "https://senedia.org/membership/printed-newsletters/",
+            "locator": "https://senedia.org/membership/printed-newsletters/",
+            "rank": 5,
+            "score": 0.4539996087551117,
+            "queries": [
+              "Who sent the agenda for the monthly Operations meeting in 2022?"
+            ],
+            "snippet": "---\ntitle: An Archive of Our Newsletters to Members\ndate: 2022-06-20\n---\nAn Archive of Our Newsletters to Members\n\nIn this edition:\n\n- SENEDIA YPG Event December 4, 2024\n\n- NAVSEA SBIR/STTR Event December 10, 2024\n\n- SENEDIA Members Only Holiday Open House December 12, 2024\n\n- SENEDIA Tech Talk – Canadian Commercial Co..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 1.4323301119729877,
+      "iteration": 4
+    },
+    {
+      "id": "iter4_local_fallback",
+      "type": "local_document_search",
+      "description": "Search local documents for hop 2",
+      "parameters": {
+        "query": "Who sent the agenda for the monthly Operations meeting in 2022?"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate local evidence",
+      "status": "completed",
+      "actual_output": {
+        "tool": "local_document_search",
+        "query": "Who sent the agenda for the monthly Operations meeting in 2022?",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "doc_ebd3d20f_1776278550",
+            "source": "local",
+            "title": "roundcube_email_20251202_212951.jsonl",
+            "locator": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0016/files/DI0003/roundcube_email_20251202_212951.jsonl",
+            "rank": 1,
+            "score": 0.612738889307637,
+            "queries": [
+              "Who sent the agenda for the monthly Operations meeting in 2022?"
+            ],
+            "snippet": "\nEmail Message:\nFrom: emily.patel@leesmarket.com\nTo: michael.wang@leesmarket.com, daniel.liu@leesmarket.com\nSubject: Monthly Operations Meeting - Agenda\nDate: 2022-05-10 09:30:00\nBody: Hello Team,\n\nI hope this email finds you well. The monthly Operations meeting is scheduled for next Monday at 10:00 AM. Here is the age..."
+          },
+          {
+            "doc_id": "doc_5c249b9c_1776278550",
+            "source": "local",
+            "title": "mattermost_chat_20251202_212737.jsonl",
+            "locator": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0016/files/IN0001/mattermost_chat_20251202_212737.jsonl",
+            "rank": 2,
+            "score": 0.48908752626110885,
+            "queries": [
+              "Who sent the agenda for the monthly Operations meeting in 2022?"
+            ],
+            "snippet": "\nMattermost Message:\nUser: emily.patel\nChannel: supplier_relations\nTeam: operations\nTime: unknown\nMessage: John, I've received an email from one of our suppliers regarding the increase in their product prices. Could we include this in our meeting discussion?\n"
+          },
+          {
+            "doc_id": "doc_29464546_1776278550",
+            "source": "local",
+            "title": "mattermost_chat_20251202_212737.jsonl",
+            "locator": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0016/files/IN0001/mattermost_chat_20251202_212737.jsonl",
+            "rank": 3,
+            "score": 0.45354760693492563,
+            "queries": [
+              "Who sent the agenda for the monthly Operations meeting in 2022?"
+            ],
+            "snippet": "\nMattermost Message:\nUser: johnsmith\nChannel: supplier_relations\nTeam: operations\nTime: unknown\nMessage: Thanks for the heads up, Emily. I'll add it to our meeting's agenda. Let's discuss how this price increase will impact our budget and operations.\n"
+          },
+          {
+            "doc_id": "doc_300de3ce_1776278550",
+            "source": "local",
+            "title": "mattermost_chat_20251202_212737.jsonl",
+            "locator": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0016/files/IN0001/mattermost_chat_20251202_212737.jsonl",
+            "rank": 4,
+            "score": 0.4444932912498575,
+            "queries": [
+              "Who sent the agenda for the monthly Operations meeting in 2022?"
+            ],
+            "snippet": "\nMattermost Message:\nUser: johnsmith\nChannel: supplier_relations\nTeam: operations\nTime: unknown\nMessage: Hey team, just a reminder that we have a meeting scheduled this afternoon to discuss the supplier contracts renewal. Let's make sure we're prepared with all the necessary data.\n"
+          },
+          {
+            "doc_id": "doc_7643d81c_1776278550",
+            "source": "local",
+            "title": "mattermost_chat_20251202_212737.jsonl",
+            "locator": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0016/files/IN0001/mattermost_chat_20251202_212737.jsonl",
+            "rank": 5,
+            "score": 0.4179526473218252,
+            "queries": [
+              "Who sent the agenda for the monthly Operations meeting in 2022?"
+            ],
+            "snippet": "\nMattermost Message:\nUser: johnsmith\nChannel: supplier_relations\nTeam: operations\nTime: 2021-05-08T18:53:20\nMessage: Hi team, as we continue to work on our FSMA 204 compliance efforts, it's important to remember that we have a shared responsibility with our suppliers. Can anyone give an update on the latest discussions..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.24180629616603255,
+      "iteration": 4
+    }
+  ],
+  "error_records": [
+    {
+      "stage": "hop_plan",
+      "kind": "parse_error",
+      "hop_number": 1,
+      "iteration": 0,
+      "message": "No valid JSON found in response: line 1 column 1 (char 0)",
+      "elapsed_s": 12.572555
+    }
+  ],
+  "timeline_paths": {
+    "events_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v1/privacy_hopqa_runs/DR0016_43e8e9df_46d66139/timeline_events.json",
+    "summary_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v1/privacy_hopqa_runs/DR0016_43e8e9df_46d66139/timeline_summary.json",
+    "html_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v1/privacy_hopqa_runs/DR0016_43e8e9df_46d66139/timeline.html"
+  },
+  "report_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v1/privacy_hopqa_runs/DR0016_43e8e9df_46d66139/workspace/research_report_1776287114.md"
+}

@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import csv
 import html
+import importlib.util
 import json
 import math
 import random
@@ -128,6 +129,23 @@ def load_jsonl(path: Path) -> list[dict[str, Any]]:
             if line:
                 rows.append(json.loads(line))
     return rows
+
+
+_TIMELINE_RENDERER = None
+
+
+def load_timeline_renderer():
+    global _TIMELINE_RENDERER
+    if _TIMELINE_RENDERER is not None:
+        return _TIMELINE_RENDERER
+    module_path = Path(__file__).resolve().parents[2] / "PipelineRL" / "pipelinerl" / "domains" / "privacy_hopqa" / "timeline.py"
+    spec = importlib.util.spec_from_file_location("privacy_hopqa_timeline_renderer", module_path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Unable to load timeline renderer from {module_path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    _TIMELINE_RENDERER = module.render_timeline_html
+    return _TIMELINE_RENDERER
 
 
 def normalize_answer(value: str | None) -> str:
@@ -754,7 +772,10 @@ def select_representative_rollouts(rollouts: list[dict[str, Any]], *, limit: int
 
 def copy_sample_artifacts(output_dir: Path, sampled_rows: list[dict[str, Any]]) -> None:
     sample_root = output_dir / "sample_artifacts"
+    if sample_root.exists():
+        shutil.rmtree(sample_root)
     sample_root.mkdir(parents=True, exist_ok=True)
+    render_timeline_html = load_timeline_renderer()
     for row in sampled_rows:
         rollout_id = str(row.get("rollout_id") or "")
         if not rollout_id:
@@ -763,7 +784,6 @@ def copy_sample_artifacts(output_dir: Path, sampled_rows: list[dict[str, Any]]) 
         target_dir.mkdir(parents=True, exist_ok=True)
         for key, filename in [
             ("report_path", "report.md"),
-            ("timeline_html", "timeline.html"),
             ("trace_path", "trace.json"),
             ("events_path", "timeline_events.json"),
         ]:
@@ -774,6 +794,36 @@ def copy_sample_artifacts(output_dir: Path, sampled_rows: list[dict[str, Any]]) 
             if source_path.exists():
                 shutil.copy2(source_path, target_dir / filename)
                 row[f"{key}_sample_rel"] = f"sample_artifacts/{rollout_id}/{filename}"
+        rollout_dir = Path(str(row.get("trace_path") or "")).parent
+        prompt_dir = rollout_dir / "prompts"
+        if prompt_dir.exists():
+            prompt_files = sorted(prompt_dir.glob("*.txt"))
+            if prompt_files:
+                target_prompt_dir = target_dir / "prompts"
+                target_prompt_dir.mkdir(parents=True, exist_ok=True)
+                for prompt_file in prompt_files:
+                    shutil.copy2(prompt_file, target_prompt_dir / prompt_file.name)
+                row["prompt_dir_sample_rel"] = f"sample_artifacts/{rollout_id}/prompts"
+        summary_path = rollout_dir / "timeline_summary.json"
+        events_path = rollout_dir / "timeline_events.json"
+        trace_path = rollout_dir / "trace.json"
+        if summary_path.exists() and events_path.exists() and trace_path.exists():
+            summary = load_json(summary_path)
+            events = load_json(events_path)
+            trace = load_json(trace_path)
+            report_text = ""
+            report_path = str(trace.get("report_path") or "")
+            if report_path and Path(report_path).exists():
+                report_text = Path(report_path).read_text(encoding="utf-8", errors="ignore")
+            rendered_timeline = render_timeline_html(
+                summary,
+                events,
+                trace=trace,
+                report_text=report_text,
+                prompt_dir=prompt_dir if prompt_dir.exists() else None,
+            )
+            (target_dir / "timeline.html").write_text(rendered_timeline, encoding="utf-8")
+            row["timeline_html_sample_rel"] = f"sample_artifacts/{rollout_id}/timeline.html"
         roofline_path = row.get("roofline_path")
         if roofline_path:
             row["roofline_rel"] = str(Path(roofline_path).relative_to(output_dir))
@@ -862,6 +912,12 @@ def display_value(value: Any) -> str:
     return str(value)
 
 
+def _truncate(text: str, limit: int = 140) -> str:
+    if len(text) <= limit:
+        return text
+    return text[: limit - 3] + "..."
+
+
 def format_decimal(value: Any, decimals: int = 3) -> str:
     if value in ("", None):
         return ""
@@ -871,6 +927,44 @@ def format_decimal(value: Any, decimals: int = 3) -> str:
         return str(value)
 
 
+def preview_table(rows: list[dict[str, Any]], limit: int = 12) -> str:
+    if not rows:
+        return "<p>No rows available.</p>"
+    keys = sorted({key for row in rows[:limit] for key in row.keys()})
+    preview_rows: list[list[str]] = []
+    for row in rows[:limit]:
+        cells = [html.escape(_truncate(display_value(row.get(key, "")), 140)) for key in keys]
+        preview_rows.append(cells)
+    return html_table(preview_rows, headers=keys)
+
+
+def mapping_table(mapping: dict[str, Any], *, key_name: str, value_name: str) -> str:
+    rows = [[html.escape(str(key)), html.escape(display_value(value))] for key, value in mapping.items()]
+    return html_table(rows, headers=[key_name, value_name])
+
+
+def plot_card(
+    title: str,
+    filename: str,
+    *,
+    blurb: str,
+    available: bool,
+    missing_note: str | None = None,
+) -> str:
+    body = (
+        f"<a href='{html.escape(filename)}'><img src='{html.escape(filename)}' alt='{html.escape(title)}' /></a>"
+        if available
+        else f"<div class='missing-note'>{html.escape(missing_note or 'Plot unavailable for this run.')}</div>"
+    )
+    return (
+        "<div class='plot-card'>"
+        f"<h3>{html.escape(title)}</h3>"
+        f"<p class='blurb'>{html.escape(blurb)}</p>"
+        f"{body}"
+        "</div>"
+    )
+
+
 def render_index_html(
     output_dir: Path,
     run_name: str,
@@ -878,10 +972,17 @@ def render_index_html(
     plots: list[str],
     sampled_rows: list[dict[str, Any]],
     rollout_rows: list[dict[str, Any]],
+    error_rows: list[dict[str, Any]],
+    llm_call_rows: list[dict[str, Any]],
     hop_accuracy_rows: list[list[str]],
     parse_rate_rows: list[list[str]],
     llm_token_rows: list[list[str]],
 ) -> str:
+    available = set(plots)
+
+    def has_plot(name: str) -> bool:
+        return name in available and (output_dir / name).exists()
+
     cards = [
         ("Rollouts", str(overview.get("rollout_count", 0))),
         ("Mean Reward", f"{float(overview.get('mean_reward') or 0.0):.3f}"),
@@ -894,21 +995,147 @@ def render_index_html(
         ("Context Overflows", str(int(overview.get("context_overflow_errors") or 0))),
     ]
     card_html = "".join(
-        "<div class='card'>"
-        f"<div class='label'>{html.escape(label)}</div>"
-        f"<div class='value'>{html.escape(value)}</div>"
+        "<div class='stat-card'>"
+        f"<div class='stat-label'>{html.escape(label)}</div>"
+        f"<div class='stat-value'>{html.escape(value)}</div>"
         "</div>"
         for label, value in cards
     )
 
-    plot_html = "".join(
-        "<div class='plot-card'>"
-        f"<a href='{html.escape(name)}'><img src='{html.escape(name)}' alt='{html.escape(name)}' /></a>"
-        f"<div class='plot-label'><a href='{html.escape(name)}'>{html.escape(name)}</a></div>"
-        "</div>"
-        for name in plots
+    overview_plots = "\n".join(
+        [
+            plot_card(
+                "Rollout Duration Distribution",
+                "rollout_duration_distribution.png",
+                blurb="Completed rollout time across the sampled run. This is the fastest overall throughput sanity check.",
+                available=has_plot("rollout_duration_distribution.png"),
+            ),
+            plot_card(
+                "Iteration Distribution",
+                "iteration_distribution.png",
+                blurb="How many search-resolve loops the agent needed before terminating each rollout.",
+                available=has_plot("iteration_distribution.png"),
+            ),
+            plot_card(
+                "LLM Calls per Rollout",
+                "llm_calls_distribution.png",
+                blurb="Total number of `hop_plan`, `doc_choose`, `doc_read`, and `hop_resolve` calls per rollout.",
+                available=has_plot("llm_calls_distribution.png"),
+            ),
+            plot_card(
+                "Searches vs Docs Read",
+                "searches_vs_docs_read.png",
+                blurb="Search fanout versus how many candidate docs were actually selected for close reading.",
+                available=has_plot("searches_vs_docs_read.png"),
+            ),
+        ]
     )
 
+    context_plots = "\n".join(
+        [
+            plot_card(
+                "Rollout Duration by Final Iteration",
+                "rollout_duration_by_final_iteration.png",
+                blurb="Completed rollout time split by how many iterations the hop-QA loop ended up using.",
+                available=has_plot("rollout_duration_by_final_iteration.png"),
+            ),
+            plot_card(
+                "Stage Duration Distribution",
+                "stage_duration_boxplot.png",
+                blurb="Per-stage wall time distribution. This is the fastest way to see whether planning, choosing, reading, or resolving is dominating.",
+                available=has_plot("stage_duration_boxplot.png"),
+            ),
+            plot_card(
+                "Total Tokens by Final Iteration",
+                "total_tokens_by_final_iteration.png",
+                blurb="Aggregate prompt plus output token volume split by the final number of iterations.",
+                available=has_plot("total_tokens_by_final_iteration.png"),
+            ),
+        ]
+    )
+
+    llm_token_plots = "\n".join(
+        [
+            plot_card(
+                "Prompt Tokens by Call Type",
+                "prompt_tokens_by_call_type.png",
+                blurb="Prompt-side token distribution by `hop_plan`, `doc_choose`, `doc_read`, and `hop_resolve`.",
+                available=has_plot("prompt_tokens_by_call_type.png"),
+            ),
+            plot_card(
+                "Output Tokens by Call Type",
+                "output_tokens_by_call_type.png",
+                blurb="Response-token distribution by LLM call type. This is the quickest read on generation-heavy stages.",
+                available=has_plot("output_tokens_by_call_type.png"),
+            ),
+            plot_card(
+                "Total Tokens by Call Type",
+                "total_tokens_by_call_type.png",
+                blurb="Combined prompt plus response token distribution by call type.",
+                available=has_plot("total_tokens_by_call_type.png"),
+            ),
+            plot_card(
+                "LLM Total Tokens per Rollout",
+                "llm_total_tokens_per_rollout.png",
+                blurb="Total LLM token volume per rollout across the full hop chain.",
+                available=has_plot("llm_total_tokens_per_rollout.png"),
+            ),
+        ]
+    )
+
+    reward_plots = "\n".join(
+        [
+            plot_card(
+                "Reward Distribution",
+                "reward_distribution.png",
+                blurb="Reward counts recomputed from saved reports and dataset ground truth.",
+                available=has_plot("reward_distribution.png"),
+            ),
+            plot_card(
+                "Reward by Hop Length",
+                "reward_by_hop_length.png",
+                blurb="How reward changes as the chain gets longer.",
+                available=has_plot("reward_by_hop_length.png"),
+            ),
+            plot_card(
+                "Reward by Hop Pattern",
+                "reward_by_hop_pattern.png",
+                blurb="Reward split by hop-type pattern like `LLL` or mixed local/web chains.",
+                available=has_plot("reward_by_hop_pattern.png"),
+            ),
+            plot_card(
+                "Per-Hop Position Accuracy",
+                "hop_position_accuracy.png",
+                blurb="Percent of first hops, second hops, and later hops solved correctly.",
+                available=has_plot("hop_position_accuracy.png"),
+            ),
+        ]
+    )
+
+    error_plots = "\n".join(
+        [
+            plot_card(
+                "Parse Error Rate by Stage",
+                "parse_error_rate_by_stage.png",
+                blurb="Parse failures normalized by the number of times that stage could have failed.",
+                available=has_plot("parse_error_rate_by_stage.png"),
+            ),
+            plot_card(
+                "Error Counts by Stage",
+                "errors_by_stage.png",
+                blurb="Absolute error volume by stage, split into parse errors, context overflows, and other failures.",
+                available=has_plot("errors_by_stage.png"),
+            ),
+            plot_card(
+                "Error Kinds",
+                "errors_by_kind.png",
+                blurb="Overall error-kind distribution for the run snapshot.",
+                available=has_plot("errors_by_kind.png"),
+            ),
+        ]
+    )
+
+    sampled_table_rows: list[list[str]] = []
     roofline_cards: list[str] = []
     for row in sampled_rows:
         links = []
@@ -917,16 +1144,15 @@ def render_index_html(
             ("timeline_html_sample_rel", "timeline"),
             ("trace_path_sample_rel", "trace"),
             ("events_path_sample_rel", "events"),
+            ("prompt_dir_sample_rel", "prompts"),
         ]:
             if row.get(key):
                 links.append(f"<a href='{html.escape(str(row[key]))}'>{label}</a>")
-        roofline_img = ""
-        if row.get("roofline_rel"):
-            roofline_img = (
-                f"<a href='{html.escape(str(row['roofline_rel']))}'>"
-                f"<img src='{html.escape(str(row['roofline_rel']))}' alt='{html.escape(str(row.get('rollout_id') or ''))}' />"
-                "</a>"
-            )
+        roofline_img = (
+            f"<a href='{html.escape(str(row['roofline_rel']))}'><img src='{html.escape(str(row['roofline_rel']))}' alt='{html.escape(str(row.get('rollout_id') or ''))}' /></a>"
+            if row.get("roofline_rel")
+            else "<div class='missing-note'>Roofline unavailable.</div>"
+        )
         roofline_cards.append(
             "<div class='sample-card'>"
             f"<div class='sample-title'>{html.escape(str(row.get('rollout_id') or ''))}</div>"
@@ -935,19 +1161,7 @@ def render_index_html(
             f"<div class='sample-links'>{' | '.join(links)}</div>"
             "</div>"
         )
-
-    sample_table_rows: list[list[str]] = []
-    for row in sampled_rows:
-        links = []
-        for key, label in [
-            ("report_path_sample_rel", "report"),
-            ("timeline_html_sample_rel", "timeline"),
-            ("trace_path_sample_rel", "trace"),
-            ("events_path_sample_rel", "events"),
-        ]:
-            if row.get(key):
-                links.append(f"<a href='{html.escape(str(row[key]))}'>{label}</a>")
-        sample_table_rows.append(
+        sampled_table_rows.append(
             [
                 html.escape(str(row.get("rollout_id") or "")),
                 html.escape(str(row.get("task_id") or "")),
@@ -961,13 +1175,13 @@ def render_index_html(
             ]
         )
     sampled_table = html_table(
-        sample_table_rows,
+        sampled_table_rows,
         ["Rollout", "Task", "Chain", "Pattern", "Hops", "Reward", "Predicted Final", "Gold Final", "Artifacts"],
     )
 
     rollout_rows_sorted = sorted(
         rollout_rows,
-        key=lambda row: (float(row.get("reward") or 0.0), float(row.get("duration_s") or 0.0)),
+        key=lambda row: (float(row.get("reward") or 0.0), -float(row.get("parse_errors_total") or 0.0), float(row.get("duration_s") or 0.0)),
         reverse=True,
     )
     rollout_table_rows: list[list[str]] = []
@@ -982,164 +1196,436 @@ def render_index_html(
         rollout_table_rows.append(
             [
                 html.escape(str(row.get("rollout_id") or "")),
+                html.escape(str(row.get("hop_pattern") or "")),
                 html.escape(format_decimal(row.get("reward"))),
                 html.escape(display_value(row.get("iterations_used"))),
                 html.escape(display_value(row.get("searches_total"))),
                 html.escape(display_value(row.get("docs_read"))),
                 html.escape(display_value(row.get("parse_errors_total"))),
                 html.escape(display_value(row.get("context_overflow_errors"))),
-                html.escape(f"{float(row.get('duration_s') or 0.0):.1f}"),
+                html.escape(format_decimal(row.get("duration_s"), decimals=3)),
                 "<br/>".join(links),
             ]
         )
     rollout_table = html_table(
         rollout_table_rows,
-        ["Rollout", "Reward", "Iters", "Searches", "Docs", "Parse Err", "Ctx Oflow", "Duration (s)", "Artifacts"],
+        ["Rollout", "Pattern", "Reward", "Iters", "Searches", "Docs", "Parse Err", "Ctx Oflow", "Duration (s)", "Artifacts"],
     )
 
+    counts = {
+        "Rollouts": overview.get("rollout_count", 0),
+        "Mean reward": format_decimal(overview.get("mean_reward")),
+        "Solved fraction": f"{100.0 * float(overview.get('solved_fraction') or 0.0):.1f}%",
+        "Parse errors": int(overview.get("parse_errors_total") or 0),
+        "Parse error rate": f"{100.0 * float(overview.get('parse_error_rate') or 0.0):.2f}%",
+        "Context overflows": int(overview.get("context_overflow_errors") or 0),
+    }
+    duration_stats = {key: format_decimal(value) for key, value in (overview.get("duration_stats") or {}).items()}
+    reward_stats = {key: format_decimal(value) for key, value in (overview.get("reward_stats") or {}).items()}
+    llm_stats = {key: format_decimal(value) for key, value in (overview.get("llm_call_stats") or {}).items()}
+
+    llm_token_table = html_table(
+        llm_token_rows,
+        ["Call Type", "Calls", "Median Prompt", "Median Output", "Median Total", "Mean Total"],
+    )
     hop_accuracy_table = html_table(hop_accuracy_rows, ["Hop", "Accuracy", "Solved / Total"])
     parse_rate_table = html_table(parse_rate_rows, ["Stage", "Parse Errors", "Attempts", "Rate"])
-    llm_token_table = html_table(llm_token_rows, ["Call Type", "Calls", "Median Prompt", "Median Output", "Median Total", "Mean Total"])
 
-    return f"""<!doctype html>
+    raw_links = [
+        "summary.json",
+        "rollouts.csv",
+        "errors.csv",
+        "events.csv",
+        "llm_calls.csv",
+        "hop_position_accuracy.csv",
+        "parse_error_rates.csv",
+        "llm_token_summary.csv",
+    ]
+    raw_links_html = "\n".join(
+        f"<li><a href='{html.escape(name)}'>{html.escape(name)}</a></li>"
+        for name in raw_links
+        if (output_dir / name).exists()
+    )
+
+    caveats = [
+        "Sample rooflines are representative only; the trace cards at the bottom are not a full census of every rollout.",
+        "Current runs only show raw prompt text in the timeline when prompt logging is enabled. Otherwise the timeline falls back to structured trace state and tool outputs.",
+        "The final `report` stage in privacy_hopqa is deterministic string assembly, so its wall time is typically near zero compared with `hop_resolve`.",
+    ]
+
+    return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>privacy_hopqa runtime analysis: {html.escape(run_name)}</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Runtime Analysis - {html.escape(run_name)}</title>
   <style>
+    :root {{
+      --bg: #f5f4ef;
+      --panel: #ffffff;
+      --ink: #1e2430;
+      --muted: #5f6b7a;
+      --line: #d7dbe2;
+      --accent: #1f5da8;
+      --accent-soft: #e7f0fb;
+    }}
+    * {{ box-sizing: border-box; }}
     body {{
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      margin: 24px;
-      color: #111827;
-      background: #f8fafc;
+      margin: 0;
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #f8f7f2 0%, #eef3f8 100%);
+      color: var(--ink);
     }}
-    h1, h2 {{
-      margin: 0 0 12px;
+    a {{ color: var(--accent); }}
+    .page {{
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 28px;
     }}
-    .cards {{
+    .hero {{
+      background: radial-gradient(circle at top left, #ffffff 0%, #eef4fb 45%, #f8f7f2 100%);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 28px 30px;
+      margin-bottom: 22px;
+      box-shadow: 0 18px 50px rgba(30, 36, 48, 0.06);
+    }}
+    .hero h1 {{ margin: 0 0 8px; font-size: 30px; }}
+    .hero p {{ margin: 6px 0; color: var(--muted); max-width: 1000px; }}
+    .topnav {{
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }}
+    .topnav a {{
+      text-decoration: none;
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid #cfe0f6;
+      font-size: 14px;
+    }}
+    .stat-grid {{
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 12px;
-      margin: 0 0 24px;
+      gap: 14px;
+      margin: 22px 0;
     }}
-    .card, .plot-card, .panel {{
-      background: white;
-      border: 1px solid #dbe3ef;
-      border-radius: 10px;
-      padding: 12px 14px;
+    .stat-card {{
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px 18px;
+      box-shadow: 0 8px 24px rgba(30, 36, 48, 0.04);
     }}
-    .card .label {{
+    .stat-label {{
       font-size: 12px;
-      color: #64748b;
-      margin-bottom: 4px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
     }}
-    .card .value {{
+    .stat-value {{
+      font-size: 28px;
+      font-weight: 700;
+    }}
+    .section {{
+      margin: 28px 0;
+    }}
+    .section h2 {{
+      margin: 0 0 12px;
       font-size: 22px;
-      font-weight: 600;
     }}
-    .plots {{
+    .section p.section-note {{
+      margin: 0 0 14px;
+      color: var(--muted);
+    }}
+    .plot-grid {{
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 16px;
-      margin: 0 0 24px;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 18px;
+    }}
+    .plot-card {{
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: 0 12px 32px rgba(30, 36, 48, 0.05);
+    }}
+    .plot-card h3 {{
+      margin: 4px 0 8px;
+      font-size: 18px;
+    }}
+    .plot-card .blurb {{
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 14px;
+      min-height: 40px;
     }}
     .plot-card img {{
       width: 100%;
-      height: auto;
       display: block;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #fff;
     }}
-    .plot-label {{
-      margin-top: 8px;
+    .missing-note {{
+      min-height: 260px;
+      display: grid;
+      place-items: center;
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+      color: var(--muted);
+      background: #f8fafc;
+      text-align: center;
+      padding: 16px;
+    }}
+    .table-grid {{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+      gap: 18px;
+    }}
+    .table-card {{
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 10px 28px rgba(30, 36, 48, 0.05);
+      overflow: auto;
+    }}
+    .table-card h3 {{
+      margin: 0 0 10px;
+      font-size: 18px;
+    }}
+    table {{
+      width: 100%;
+      border-collapse: collapse;
       font-size: 13px;
-      color: #475569;
     }}
-    .flow {{
-      overflow-x: auto;
-      background: white;
-      border: 1px solid #dbe3ef;
-      border-radius: 10px;
-      padding: 8px;
-      margin: 0 0 24px;
+    th, td {{
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
     }}
+    th {{
+      position: sticky;
+      top: 0;
+      background: #f7f9fc;
+      z-index: 1;
+    }}
+    details {{
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-top: 12px;
+    }}
+    summary {{
+      cursor: pointer;
+      font-weight: 600;
+    }}
+    ul.raw-links {{
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }}
+    .limitations li {{ margin-bottom: 8px; }}
     .samples {{
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
       gap: 16px;
-      margin: 0 0 24px;
+      margin-top: 12px;
     }}
     .sample-card {{
-      background: white;
-      border: 1px solid #dbe3ef;
-      border-radius: 10px;
-      padding: 12px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: 0 12px 32px rgba(30, 36, 48, 0.05);
     }}
     .sample-card img {{
       width: 100%;
-      height: auto;
       display: block;
       margin: 10px 0;
-      border-radius: 8px;
-      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #fff;
     }}
     .sample-title {{
       font-weight: 700;
       margin-bottom: 4px;
     }}
     .sample-meta {{
-      color: #475569;
+      color: var(--muted);
       font-size: 13px;
       margin-bottom: 8px;
     }}
     .sample-links {{
       font-size: 13px;
-      color: #475569;
+      color: var(--muted);
     }}
-    table {{
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-      border: 1px solid #dbe3ef;
-      border-radius: 10px;
-      overflow: hidden;
-      margin-top: 12px;
-    }}
-    th, td {{
-      border-bottom: 1px solid #e2e8f0;
-      padding: 10px 12px;
-      text-align: left;
-      vertical-align: top;
-      font-size: 13px;
-    }}
-    th {{
-      background: #f1f5f9;
-    }}
-    a {{
-      color: #1d4ed8;
-      text-decoration: none;
-    }}
-    a:hover {{
-      text-decoration: underline;
+    pre {{
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #f7f9fc;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 12px;
+      max-height: 420px;
+      overflow: auto;
     }}
   </style>
 </head>
 <body>
-  <h1>privacy_hopqa runtime analysis</h1>
-  <div class="panel"><strong>Run:</strong> {html.escape(run_name)}</div>
-  <div class="cards">{card_html}</div>
-  <h2>Representative Trace Rooflines</h2>
-  <div class="samples">{''.join(roofline_cards)}</div>
-  <h2>Plots</h2>
-  <div class="plots">{plot_html}</div>
-  <h2>Per-Hop Accuracy</h2>
-  {hop_accuracy_table}
-  <h2>Parse Error Rates</h2>
-  {parse_rate_table}
-  <h2>LLM Token Totals by Call Type</h2>
-  {llm_token_table}
-  <h2>Sampled Report Checks</h2>
-  {sampled_table}
-  <h2>Rollouts</h2>
-  {rollout_table}
+  <div class="page">
+    <section class="hero">
+      <h1>Runtime Analysis Viewer</h1>
+      <p><strong>Run:</strong> {html.escape(run_name)}</p>
+      <p>This viewer summarizes `privacy_hopqa` runtime behavior from saved rollout traces, token logs, and sampled artifacts. It mirrors the older privacy-agent viewer more closely, but keeps the hop-specific diagnostics and representative trace viewers at the bottom.</p>
+      <div class="topnav">
+        <a href="#overview">Overview</a>
+        <a href="#context">Context + Iterations</a>
+        <a href="#llm-tokens">LLM Tokens</a>
+        <a href="#rewards">Rewards</a>
+        <a href="#errors">Errors</a>
+        <a href="#tables">Tables</a>
+        <a href="#raw">Raw Files</a>
+        <a href="#traces">Representative Traces</a>
+      </div>
+      <div class="stat-grid">
+        {card_html}
+      </div>
+    </section>
+
+    <section class="section" id="overview">
+      <h2>Overview Plots</h2>
+      <p class="section-note">These are the quickest plots to check for throughput shape, rollout duration, and how much search fanout is happening before document reading.</p>
+      <div class="plot-grid">
+        {overview_plots}
+      </div>
+    </section>
+
+    <section class="section" id="context">
+      <h2>Context + Iteration Behavior</h2>
+      <p class="section-note">This section is usually the most useful for explaining why the run feels slow. It focuses on stage latency and how extra iterations add wall time and token usage.</p>
+      <div class="plot-grid">
+        {context_plots}
+      </div>
+    </section>
+
+    <section class="section" id="llm-tokens">
+      <h2>LLM Token Usage</h2>
+      <p class="section-note">These views use the explicit `privacy_hopqa llm call summary` lines emitted by the async rollout adapter. They help separate prompt-heavy from generation-heavy stages.</p>
+      <div class="plot-grid">
+        {llm_token_plots}
+      </div>
+    </section>
+
+    <section class="section" id="rewards">
+      <h2>Reward Spot Checks</h2>
+      <p class="section-note">These views recompute reward from the saved report answers against the dataset ground truth, then show representative sampled reports and artifacts for manual inspection.</p>
+      <div class="plot-grid">
+        {reward_plots}
+      </div>
+      <div class="table-grid">
+        <section class="table-card">
+          <h3>Per-Hop Accuracy</h3>
+          {hop_accuracy_table}
+        </section>
+        <section class="table-card">
+          <h3>Sampled Report Checks</h3>
+          {sampled_table}
+        </section>
+      </div>
+    </section>
+
+    <section class="section" id="errors">
+      <h2>Error Behavior</h2>
+      <p class="section-note">Parse-error rate is normalized by the number of LLM calls at that stage, so it reflects how often the stage fails when it actually has a chance to fail.</p>
+      <div class="plot-grid">
+        {error_plots}
+      </div>
+      <div class="table-grid">
+        <section class="table-card">
+          <h3>Parse Error Rates</h3>
+          {parse_rate_table}
+        </section>
+        <section class="table-card">
+          <h3>LLM Token Usage by Call Type</h3>
+          {llm_token_table}
+        </section>
+      </div>
+    </section>
+
+    <section class="section" id="tables">
+      <h2>Summary Tables</h2>
+      <div class="table-grid">
+        <section class="table-card">
+          <h3>Counts</h3>
+          {mapping_table(counts, key_name="Metric", value_name="Value")}
+        </section>
+        <section class="table-card">
+          <h3>Reward</h3>
+          {mapping_table(reward_stats, key_name="Statistic", value_name="Reward")}
+        </section>
+        <section class="table-card">
+          <h3>Duration</h3>
+          {mapping_table(duration_stats, key_name="Statistic", value_name="Seconds")}
+        </section>
+        <section class="table-card">
+          <h3>LLM Calls</h3>
+          {mapping_table(llm_stats, key_name="Statistic", value_name="Calls")}
+        </section>
+        <section class="table-card">
+          <h3>Rollouts</h3>
+          {rollout_table}
+        </section>
+      </div>
+
+      <details>
+        <summary>Preview: rollouts.csv</summary>
+        {preview_table(rollout_rows)}
+      </details>
+      <details>
+        <summary>Preview: errors.csv</summary>
+        {preview_table(error_rows)}
+      </details>
+      <details>
+        <summary>Preview: llm_calls.csv</summary>
+        {preview_table(llm_call_rows)}
+      </details>
+    </section>
+
+    <section class="section" id="raw">
+      <h2>Raw Files + Caveats</h2>
+      <div class="table-grid">
+        <section class="table-card">
+          <h3>Raw Outputs</h3>
+          <ul class="raw-links">
+            {raw_links_html}
+          </ul>
+        </section>
+        <section class="table-card">
+          <h3>Caveats</h3>
+          <ul class="limitations">
+            {''.join(f"<li>{html.escape(item)}</li>" for item in caveats)}
+          </ul>
+        </section>
+      </div>
+    </section>
+
+    <section class="section" id="traces">
+      <h2>Representative Traces</h2>
+      <p class="section-note">These rooflines are intentionally at the bottom so the main summary reads first. Each card links to a sampled report, interactive timeline, trace JSON, and event log for manual debugging.</p>
+      <div class="samples">
+        {''.join(roofline_cards)}
+      </div>
+    </section>
+  </div>
 </body>
 </html>"""
 
@@ -1481,6 +1967,8 @@ def main() -> None:
         plots,
         sampled_rows,
         rollouts,
+        error_rows,
+        llm_call_rows,
         hop_accuracy_rows,
         parse_rate_rows,
         llm_token_rows,
