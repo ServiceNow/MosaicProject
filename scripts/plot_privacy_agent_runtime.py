@@ -9,6 +9,7 @@ import csv
 import html
 import json
 import math
+import random
 import re
 from collections import Counter, defaultdict
 from datetime import UTC, datetime
@@ -25,7 +26,10 @@ import matplotlib.pyplot as plt
 ACTOR_TS_RE = re.compile(r"\[actor\]: (\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3})")
 LLM_DONE_RE = re.compile(r"LLM request done in ([0-9.]+)s")
 PROMPT_SUMMARY_RE = re.compile(r"privacy_agent prompt budget summary: (\{.*\})")
+LLM_CALL_SUMMARY_RE = re.compile(r"privacy_agent llm call summary: (\{.*\})")
 REPORT_TS_RE = re.compile(r"research_report_(\d{8}_\d{6})\.md$")
+ANSWER_RE = re.compile(r"^ANSWER_(\w+):\s*(.+)$")
+JUSTIFICATION_RE = re.compile(r"^JUSTIFICATION_(\w+):\s*(.+)$")
 
 
 def parse_args() -> argparse.Namespace:
@@ -112,9 +116,166 @@ def save_json(path: Path, payload: dict[str, Any]) -> None:
     path.write_text(json.dumps(payload, indent=2, sort_keys=True))
 
 
-def parse_actor_info(actor_info_path: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+def load_jsonl(path: Path) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    if not path.exists():
+        return rows
+    with path.open("r", encoding="utf-8") as handle:
+        for line in handle:
+            line = line.strip()
+            if line:
+                rows.append(json.loads(line))
+    return rows
+
+
+def normalize_answer(value: str | None) -> str:
+    text = "" if value is None else str(value)
+    text = text.lower().strip()
+    text = re.sub(r"\$\s*", "", text)
+    text = re.sub(r"(\d(?:\.\d+)?)\s*b\b", r"\1 billion", text)
+    text = re.sub(r"(\d(?:\.\d+)?)\s*m\b", r"\1 million", text)
+    text = re.sub(r"(\d(?:\.\d+)?)\s*k\b", r"\1 thousand", text)
+    text = re.sub(r"[^\w\s]", "", text)
+    text = re.sub(r"\s+", " ", text)
+    return text
+
+
+def token_f1_score(predicted: str | None, truth: str | None) -> float:
+    pred = normalize_answer(predicted)
+    gold = normalize_answer(truth)
+    if not pred or not gold:
+        return float(pred == gold)
+    pred_tokens = pred.split()
+    gold_tokens = gold.split()
+    pred_counts = Counter(pred_tokens)
+    gold_counts = Counter(gold_tokens)
+    overlap = pred_counts & gold_counts
+    common = sum(overlap.values())
+    if common == 0:
+        return 0.0
+    precision = common / len(pred_tokens)
+    recall = common / len(gold_tokens)
+    return 2 * precision * recall / (precision + recall)
+
+
+def answers_match(predicted: str | None, truth: str | None, f1_threshold: float = 0.75) -> tuple[bool, float]:
+    pred = normalize_answer(predicted)
+    gold = normalize_answer(truth)
+    if not pred or not gold:
+        score = float(pred == gold)
+        return bool(score), score
+    if pred == gold or gold in pred or pred in gold:
+        return True, 1.0
+    score = token_f1_score(pred, gold)
+    return score >= f1_threshold, score
+
+
+def score_chain_answers(problem: dict[str, Any], answers: dict[str, str], f1_threshold: float = 0.75) -> dict[str, Any]:
+    hops = list(problem.get("hops") or [])
+    per_hop: list[dict[str, Any]] = []
+    correct_count = 0
+    for hop in hops:
+        hop_num = str(hop["hop_number"])
+        predicted = answers.get(hop_num, "")
+        truth = hop.get("answer", "")
+        correct, match_score = answers_match(predicted, truth, f1_threshold=f1_threshold)
+        correct_count += int(correct)
+        per_hop.append(
+            {
+                "hop": int(hop_num),
+                "agent_answer": predicted,
+                "ground_truth": truth,
+                "correct": correct,
+                "match_score": match_score,
+                "doc_id": hop.get("doc_id"),
+            }
+        )
+    total_hops = max(len(hops), 1)
+    final_key = "FINAL" if "FINAL" in answers else str(len(hops))
+    final_correct, final_match_score = answers_match(
+        answers.get(final_key, ""),
+        problem.get("global_answer", ""),
+        f1_threshold=f1_threshold,
+    )
+    return {
+        "per_hop": per_hop,
+        "correct_hops": correct_count,
+        "total_hops": len(hops),
+        "reward": correct_count / total_hops,
+        "final_correct": final_correct,
+        "final_match_score": final_match_score,
+    }
+
+
+def parse_dataset_names(run_dir: Path) -> list[str]:
+    config_path = run_dir / "conf" / "exp_config.yaml"
+    if not config_path.exists():
+        return []
+    dataset_names: list[str] = []
+    for raw_line in config_path.read_text().splitlines():
+        line = raw_line.strip()
+        if not line or ":" not in line:
+            continue
+        key, value = line.split(":", 1)
+        if key.strip() not in {"train_dataset_names", "test_dataset_names"}:
+            continue
+        raw_value = value.strip()
+        if not raw_value:
+            continue
+        if raw_value.startswith("[") and raw_value.endswith("]"):
+            try:
+                parsed = ast.literal_eval(raw_value)
+            except (ValueError, SyntaxError):
+                parsed = []
+            for item in parsed:
+                if item:
+                    dataset_names.append(str(item))
+        else:
+            dataset_names.append(raw_value)
+    deduped: list[str] = []
+    seen = set()
+    for item in dataset_names:
+        if item not in seen:
+            deduped.append(item)
+            seen.add(item)
+    return deduped
+
+
+def load_problem_lookup(run_dir: Path) -> dict[tuple[str, str], dict[str, Any]]:
+    lookup: dict[tuple[str, str], dict[str, Any]] = {}
+    for dataset_name in parse_dataset_names(run_dir):
+        dataset_path = Path(dataset_name).expanduser()
+        if not dataset_path.exists():
+            continue
+        for row in load_jsonl(dataset_path):
+            task_id = str(row.get("task_id") or "")
+            chain_id = str(row.get("chain_id") or "")
+            if task_id and chain_id:
+                lookup[(task_id, chain_id)] = row
+    return lookup
+
+
+def parse_report_answers(report_text: str) -> tuple[dict[str, str], dict[str, str]]:
+    answers: dict[str, str] = {}
+    justifications: dict[str, str] = {}
+    for raw_line in report_text.splitlines():
+        line = raw_line.strip()
+        answer_match = ANSWER_RE.match(line)
+        if answer_match:
+            answers[answer_match.group(1)] = answer_match.group(2).strip()
+            continue
+        justification_match = JUSTIFICATION_RE.match(line)
+        if justification_match:
+            justifications[justification_match.group(1)] = justification_match.group(2).strip()
+    return answers, justifications
+
+
+def parse_actor_info(
+    actor_info_path: Path,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
     llm_requests: list[dict[str, Any]] = []
     prompt_records: list[dict[str, Any]] = []
+    llm_call_records: list[dict[str, Any]] = []
     with actor_info_path.open(errors="ignore") as handle:
         for raw_line in handle:
             timestamp = parse_actor_timestamp(raw_line)
@@ -155,16 +316,46 @@ def parse_actor_info(actor_info_path: Path) -> tuple[list[dict[str, Any]], list[
                         "other_tokens": int(by_category.get("other", {}).get("tokens", 0)),
                     }
                 )
-    return llm_requests, prompt_records
+
+            call_match = LLM_CALL_SUMMARY_RE.search(raw_line)
+            if call_match:
+                try:
+                    payload = json.loads(call_match.group(1))
+                except json.JSONDecodeError:
+                    continue
+                llm_call_records.append(
+                    {
+                        "timestamp": timestamp.isoformat(),
+                        "rollout_id": str(payload.get("rollout_id") or ""),
+                        "task_id": str(payload.get("task_id") or ""),
+                        "chain_id": str(payload.get("chain_id") or ""),
+                        "log_name": str(payload.get("log_name") or "unknown"),
+                        "prompt_tokens": int(payload.get("prompt_tokens") or 0),
+                        "output_tokens": int(payload.get("output_tokens") or 0),
+                        "total_tokens": int(payload.get("total_tokens") or 0),
+                        "capture_mode": str(payload.get("capture_mode") or ""),
+                        "captured": bool(payload.get("captured")),
+                        "requested_model": str(payload.get("requested_model") or ""),
+                    }
+                )
+    return llm_requests, prompt_records, llm_call_records
 
 
-def discover_report_timestamp(run_dir: Path) -> tuple[bool, datetime | None]:
+def discover_report_artifact(run_dir: Path) -> tuple[bool, Path | None, datetime | None]:
     workspace = run_dir / "workspace"
     reports = sorted(workspace.glob("research_report_*.md"))
     if not reports:
-        return False, None
-    timestamps = [ts for ts in (parse_report_timestamp(path) for path in reports) if ts is not None]
-    return True, max(timestamps) if timestamps else None
+        return False, None, None
+    scored_reports: list[tuple[datetime, Path]] = []
+    for report_path in reports:
+        report_ts = parse_report_timestamp(report_path)
+        if report_ts is not None:
+            scored_reports.append((report_ts, report_path))
+    if not scored_reports:
+        latest_report = reports[-1]
+        return True, latest_report, parse_report_timestamp(latest_report)
+    latest_ts, latest_report = max(scored_reports, key=lambda item: item[0])
+    return True, latest_report, latest_ts
 
 
 def derive_backend_tool(action: dict[str, Any]) -> str:
@@ -198,7 +389,7 @@ def parse_rollout_sessions(run_dir: Path) -> tuple[list[dict[str, Any]], list[di
 
         initial_ts = parse_iso_timestamp(initial_payload.get("timestamp"))
         final_ts = parse_iso_timestamp(final_payload.get("timestamp"))
-        has_report, report_ts = discover_report_timestamp(run_path)
+        has_report, report_path, report_ts = discover_report_artifact(run_path)
         start_ts = initial_ts
         end_ts = report_ts or final_ts
 
@@ -225,6 +416,7 @@ def parse_rollout_sessions(run_dir: Path) -> tuple[list[dict[str, Any]], list[di
         rollout_record = {
             "rollout_id": run_path.name,
             "has_report": has_report,
+            "report_path": str(report_path) if report_path else "",
             "start_timestamp": start_ts.isoformat() if start_ts else "",
             "end_timestamp": end_ts.isoformat() if end_ts else "",
             "duration_s": duration_s if duration_s is not None else "",
@@ -296,6 +488,70 @@ def parse_rollout_sessions(run_dir: Path) -> tuple[list[dict[str, Any]], list[di
     return rollouts, actions, iterations
 
 
+def evaluate_rollout_reports(
+    run_dir: Path,
+    rollouts: list[dict[str, Any]],
+    *,
+    f1_threshold: float = 0.75,
+    sample_size: int = 8,
+    sample_seed: int = 7,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    problem_lookup = load_problem_lookup(run_dir)
+    evaluation_rows: list[dict[str, Any]] = []
+
+    for rollout in rollouts:
+        report_path_str = str(rollout.get("report_path") or "")
+        if not rollout.get("has_report") or not report_path_str:
+            continue
+        report_path = Path(report_path_str)
+        if not report_path.exists():
+            continue
+        rollout_id = str(rollout.get("rollout_id") or "")
+        parts = rollout_id.rsplit("_", 2)
+        if len(parts) != 3:
+            continue
+        task_id, chain_id, _ = parts
+        problem = problem_lookup.get((task_id, chain_id))
+        if problem is None:
+            continue
+
+        report_text = report_path.read_text(encoding="utf-8", errors="ignore")
+        answers, justifications = parse_report_answers(report_text)
+        score = score_chain_answers(problem, answers, f1_threshold=f1_threshold)
+        evaluation_rows.append(
+            {
+                "rollout_id": rollout_id,
+                "task_id": task_id,
+                "chain_id": chain_id,
+                "report_path": report_path_str,
+                "reward": score["reward"],
+                "correct_hops": score["correct_hops"],
+                "total_hops": score["total_hops"],
+                "final_correct": bool(score["final_correct"]),
+                "final_match_score": score["final_match_score"],
+                "iterations": rollout.get("current_iteration", ""),
+                "total_actions": rollout.get("total_actions", ""),
+                "duration_s": rollout.get("duration_s", ""),
+                "predicted_final_answer": answers.get("FINAL", ""),
+                "ground_truth_final_answer": problem.get("global_answer", ""),
+                "predicted_answers_json": json.dumps(answers, sort_keys=True),
+                "ground_truth_hops_json": json.dumps(problem.get("hops", []), sort_keys=True),
+                "per_hop_json": json.dumps(score["per_hop"], sort_keys=True),
+                "report_preview": report_text[:2000],
+                "task_question_preview": str(problem.get("numbered_questions", ""))[:1000],
+                "justifications_json": json.dumps(justifications, sort_keys=True),
+            }
+        )
+
+    rng = random.Random(sample_seed)
+    if len(evaluation_rows) <= sample_size:
+        sampled_rows = list(evaluation_rows)
+    else:
+        sampled_rows = rng.sample(evaluation_rows, sample_size)
+    sampled_rows.sort(key=lambda row: str(row["rollout_id"]))
+    return evaluation_rows, sampled_rows
+
+
 def aggregate_group_stats(records: list[dict[str, Any]], group_key: str, value_key: str) -> dict[str, dict[str, Any]]:
     grouped: dict[str, list[float]] = defaultdict(list)
     for record in records:
@@ -304,6 +560,42 @@ def aggregate_group_stats(records: list[dict[str, Any]], group_key: str, value_k
             continue
         grouped[str(record.get(group_key, "unknown"))].append(float(value))
     return {group: numeric_stats(values) for group, values in sorted(grouped.items())}
+
+
+def aggregate_llm_token_usage(records: list[dict[str, Any]], group_key: str) -> dict[str, dict[str, Any]]:
+    grouped: dict[str, dict[str, Any]] = defaultdict(
+        lambda: {
+            "call_count": 0,
+            "captured_call_count": 0,
+            "prompt_tokens": 0,
+            "output_tokens": 0,
+            "total_tokens": 0,
+        }
+    )
+    for record in records:
+        key = str(record.get(group_key) or "unknown")
+        grouped[key]["call_count"] += 1
+        grouped[key]["captured_call_count"] += int(bool(record.get("captured")))
+        grouped[key]["prompt_tokens"] += int(record.get("prompt_tokens") or 0)
+        grouped[key]["output_tokens"] += int(record.get("output_tokens") or 0)
+        grouped[key]["total_tokens"] += int(record.get("total_tokens") or 0)
+
+    result: dict[str, dict[str, Any]] = {}
+    for key, stats in grouped.items():
+        call_count = max(1, int(stats["call_count"]))
+        result[key] = {
+            **stats,
+            "mean_prompt_tokens": stats["prompt_tokens"] / call_count,
+            "mean_output_tokens": stats["output_tokens"] / call_count,
+            "mean_total_tokens": stats["total_tokens"] / call_count,
+        }
+    return dict(
+        sorted(
+            result.items(),
+            key=lambda item: (item[1]["total_tokens"], item[1]["call_count"], item[0]),
+            reverse=True,
+        )
+    )
 
 
 def plot_hist_and_ecdf(
@@ -337,14 +629,14 @@ def plot_hist_and_ecdf(
 def plot_bar(counter: Counter[str], path: Path, *, title: str, xlabel: str, ylabel: str) -> None:
     if not counter:
         return
-    def _numeric_key(value: str) -> tuple[int, str]:
+    def _numeric_key(value: str) -> tuple[int, float | str]:
         try:
-            return (0, f"{int(value):08d}")
+            return (0, float(value))
         except ValueError:
             return (1, value)
 
     labels_and_values = list(counter.items())
-    if xlabel.lower().startswith("final iteration"):
+    if xlabel.lower().startswith("final iteration") or xlabel.lower().startswith("reward"):
         labels_and_values.sort(key=lambda item: _numeric_key(str(item[0])))
     else:
         labels_and_values.sort(key=lambda item: item[1], reverse=True)
@@ -447,18 +739,45 @@ def plot_prompt_token_breakdown(prompt_records: list[dict[str, Any]], path: Path
         return
     counts = Counter(record["log_name"] for record in prompt_records)
     labels = [label for label, _ in counts.most_common(8)]
-    grouped = {label: [int(record["prompt_tokens"]) for record in prompt_records if record["log_name"] == label] for label in labels}
-    median_share = []
+    grouped = {
+        label: [int(record["prompt_tokens"]) for record in prompt_records if record["log_name"] == label]
+        for label in labels
+    }
+    median_breakdown = {
+        "Latest Findings": [],
+        "Documents/Evidence": [],
+        "Task Definition": [],
+        "Planning Context": [],
+        "Instructions": [],
+        "Other": [],
+    }
     for label in labels:
-        shares = []
-        for record in prompt_records:
-            if record["log_name"] != label:
-                continue
-            prompt_tokens = int(record["prompt_tokens"])
-            findings = int(record["latest_findings_tokens"])
-            if prompt_tokens > 0:
-                shares.append(findings / prompt_tokens)
-        median_share.append(median(shares) if shares else 0.0)
+        rows = [record for record in prompt_records if record["log_name"] == label]
+        median_breakdown["Latest Findings"].append(
+            median([int(row["latest_findings_tokens"]) for row in rows]) if rows else 0.0
+        )
+        median_breakdown["Documents/Evidence"].append(
+            median([int(row["documents_or_evidence_tokens"]) for row in rows]) if rows else 0.0
+        )
+        median_breakdown["Task Definition"].append(
+            median([int(row["task_definition_tokens"]) for row in rows]) if rows else 0.0
+        )
+        median_breakdown["Planning Context"].append(
+            median([int(row["planning_context_tokens"]) for row in rows]) if rows else 0.0
+        )
+        median_breakdown["Instructions"].append(
+            median([int(row["instructions_tokens"]) for row in rows]) if rows else 0.0
+        )
+        median_breakdown["Other"].append(
+            median(
+                [
+                    int(row["reporting_context_tokens"]) + int(row["other_tokens"])
+                    for row in rows
+                ]
+            )
+            if rows
+            else 0.0
+        )
 
     fig, axes = plt.subplots(1, 2, figsize=(15, max(4.5, len(labels) * 0.65)))
     axes[0].boxplot([grouped[label] for label in labels], vert=False, tick_labels=labels, showfliers=False)
@@ -467,16 +786,87 @@ def plot_prompt_token_breakdown(prompt_records: list[dict[str, Any]], path: Path
     axes[0].set_ylabel("LLM call type")
     axes[0].grid(axis="x", alpha=0.25)
 
-    axes[1].barh(labels, median_share, color="#e45756")
-    axes[1].set_title("Median Latest Findings Share")
-    axes[1].set_xlabel("Fraction of prompt tokens")
+    left = [0.0] * len(labels)
+    colors = {
+        "Latest Findings": "#e45756",
+        "Documents/Evidence": "#4c78a8",
+        "Task Definition": "#72b7b2",
+        "Planning Context": "#54a24b",
+        "Instructions": "#f58518",
+        "Other": "#9d755d",
+    }
+    for category, values in median_breakdown.items():
+        axes[1].barh(labels, values, left=left, label=category, color=colors[category])
+        left = [left[idx] + values[idx] for idx in range(len(labels))]
+    axes[1].set_title("Median Prompt Token Breakdown")
+    axes[1].set_xlabel("Median tokens")
     axes[1].set_ylabel("LLM call type")
-    axes[1].set_xlim(0, 1.0)
     axes[1].grid(axis="x", alpha=0.25)
+    axes[1].legend(fontsize=8, loc="lower right")
 
     fig.tight_layout()
     fig.savefig(path, dpi=180)
     plt.close(fig)
+
+
+def plot_stacked_token_totals(
+    aggregated: dict[str, dict[str, Any]],
+    path: Path,
+    *,
+    title: str,
+    xlabel: str,
+    ylabel: str,
+    top_n: int = 12,
+) -> None:
+    if not aggregated:
+        return
+    items = list(aggregated.items())[:top_n]
+    labels = [label for label, _ in items]
+    prompt_values = [int(stats.get("prompt_tokens", 0)) for _, stats in items]
+    output_values = [int(stats.get("output_tokens", 0)) for _, stats in items]
+
+    fig, ax = plt.subplots(figsize=(11, max(4.5, len(labels) * 0.55)))
+    ax.barh(labels, prompt_values, color="#4c78a8", label="Prompt tokens")
+    ax.barh(labels, output_values, left=prompt_values, color="#f58518", label="Response tokens")
+    ax.set_title(title)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.legend()
+    ax.grid(axis="x", alpha=0.25)
+    fig.tight_layout()
+    fig.savefig(path, dpi=180)
+    plt.close(fig)
+
+
+def llm_token_usage_table(mapping: dict[str, dict[str, Any]], *, key_name: str, limit: int | None = None) -> str:
+    headers = [
+        key_name,
+        "call_count",
+        "captured_call_count",
+        "prompt_tokens",
+        "response_tokens",
+        "total_tokens",
+        "mean_prompt_tokens",
+        "mean_response_tokens",
+    ]
+    items = list(mapping.items())
+    if limit is not None:
+        items = items[:limit]
+    rows = []
+    for key, stats in items:
+        rows.append(
+            [
+                key,
+                stats.get("call_count", 0),
+                stats.get("captured_call_count", 0),
+                stats.get("prompt_tokens", 0),
+                stats.get("output_tokens", 0),
+                stats.get("total_tokens", 0),
+                stats.get("mean_prompt_tokens"),
+                stats.get("mean_output_tokens"),
+            ]
+        )
+    return html_table(headers, rows)
 
 
 def write_summary_markdown(
@@ -485,14 +875,20 @@ def write_summary_markdown(
     run_dir: Path,
     llm_requests: list[dict[str, Any]],
     prompt_records: list[dict[str, Any]],
+    llm_call_records: list[dict[str, Any]],
+    reward_records: list[dict[str, Any]],
     rollouts: list[dict[str, Any]],
     actions: list[dict[str, Any]],
     completed_rollouts: list[dict[str, Any]],
 ) -> None:
     llm_values = [float(row["duration_s"]) for row in llm_requests]
+    llm_output_values = [int(row["output_tokens"]) for row in llm_call_records]
+    llm_total_values = [int(row["total_tokens"]) for row in llm_call_records]
+    reward_values = [float(row["reward"]) for row in reward_records]
     completed_durations = [float(row["duration_s"]) for row in completed_rollouts if row.get("duration_s") not in ("", None)]
     tool_exec = [float(row["execution_time_s"]) for row in actions if row.get("execution_time_s") not in ("", None)]
     tool_counter = Counter(row["action_type"] for row in actions if row.get("has_report"))
+    llm_counter = Counter(row["log_name"] for row in llm_call_records)
     findings_share = [
         int(row["latest_findings_tokens"]) / int(row["prompt_tokens"])
         for row in prompt_records
@@ -511,15 +907,33 @@ def write_summary_markdown(
         f"- Completed rollouts analyzed: `{len(completed_rollouts)}`",
         f"- Total completed tool actions analyzed: `{sum(tool_counter.values())}`",
         f"- Total LLM request duration samples: `{len(llm_values)}`",
+        f"- Total LLM call summaries: `{len(llm_call_records)}`",
+        f"- Evaluated reports with rewards: `{len(reward_records)}`",
         f"- Median LLM request latency: `{median(llm_values):.2f}s`" if llm_values else "- Median LLM request latency: n/a",
+        f"- Median LLM response tokens: `{median(llm_output_values):.0f}`"
+        if llm_output_values
+        else "- Median LLM response tokens: n/a",
+        f"- Median LLM total tokens: `{median(llm_total_values):.0f}`"
+        if llm_total_values
+        else "- Median LLM total tokens: n/a",
+        f"- Mean rollout reward: `{mean(reward_values):.3f}`" if reward_values else "- Mean rollout reward: n/a",
+        f"- Median rollout reward: `{median(reward_values):.3f}`" if reward_values else "- Median rollout reward: n/a",
         f"- Median completed rollout duration: `{median(completed_durations):.2f}s`" if completed_durations else "- Median completed rollout duration: n/a",
         f"- Median tool execution time: `{median(tool_exec):.2f}s`" if tool_exec else "- Median tool execution time: n/a",
         f"- Median Latest Findings share of logged prompts: `{median(findings_share) * 100:.1f}%`"
         if findings_share
         else "- Median Latest Findings share of logged prompts: n/a",
         "",
-        "## Top Action Types",
+        "## Top LLM Call Types",
     ]
+    for label, count in llm_counter.most_common(8):
+        lines.append(f"- `{label}`: `{count}`")
+    lines.extend(
+        [
+            "",
+        "## Top Action Types",
+        ]
+    )
     for label, count in tool_counter.most_common(8):
         lines.append(f"- `{label}`: `{count}`")
     lines.append("")
@@ -592,6 +1006,49 @@ def preview_table(records: list[dict[str, Any]], *, limit: int = 15) -> str:
     return html_table(headers, body, table_class="data-table preview-table")
 
 
+def render_spot_check_samples(samples: list[dict[str, Any]]) -> str:
+    if not samples:
+        return "<p>No evaluated rollout samples available.</p>"
+
+    cards: list[str] = []
+    for sample in samples:
+        try:
+            per_hop = json.loads(sample.get("per_hop_json", "[]"))
+        except json.JSONDecodeError:
+            per_hop = []
+        hop_rows = [
+            [
+                row.get("hop"),
+                row.get("agent_answer", ""),
+                row.get("ground_truth", ""),
+                row.get("correct", False),
+                row.get("match_score"),
+            ]
+            for row in per_hop
+        ]
+        hop_table = html_table(
+            ["Hop", "Predicted", "Ground Truth", "Correct", "Match"],
+            hop_rows,
+            table_class="data-table preview-table",
+        )
+        cards.append(
+            f"""
+            <details class="sample-card">
+              <summary>{html.escape(sample['rollout_id'])} | reward={format_scalar(sample['reward'])} | hops={sample['correct_hops']}/{sample['total_hops']}</summary>
+              <p><strong>Task:</strong> {html.escape(str(sample.get('task_id', '')))}</p>
+              <p><strong>Iterations:</strong> {html.escape(format_scalar(sample.get('iterations')))} | <strong>Actions:</strong> {html.escape(format_scalar(sample.get('total_actions')))} | <strong>Duration:</strong> {html.escape(format_scalar(sample.get('duration_s')))} s</p>
+              <p><strong>Predicted final answer:</strong> {html.escape(str(sample.get('predicted_final_answer', '')))}</p>
+              <p><strong>Ground-truth final answer:</strong> {html.escape(str(sample.get('ground_truth_final_answer', '')))}</p>
+              <p><strong>Question preview:</strong> {html.escape(str(sample.get('task_question_preview', '')))}</p>
+              {hop_table}
+              <p><strong>Report path:</strong> {html.escape(str(sample.get('report_path', '')))}</p>
+              <pre>{html.escape(str(sample.get('report_preview', '')))}</pre>
+            </details>
+            """
+        )
+    return "\n".join(cards)
+
+
 def plot_card(title: str, filename: str, *, blurb: str = "") -> str:
     return f"""
     <section class="plot-card">
@@ -609,6 +1066,9 @@ def write_html_viewer(
     summary: dict[str, Any],
     llm_requests: list[dict[str, Any]],
     prompt_records: list[dict[str, Any]],
+    llm_call_records: list[dict[str, Any]],
+    reward_records: list[dict[str, Any]],
+    sampled_reward_records: list[dict[str, Any]],
     rollouts: list[dict[str, Any]],
     actions: list[dict[str, Any]],
     iterations: list[dict[str, Any]],
@@ -616,11 +1076,17 @@ def write_html_viewer(
     counts = summary["counts"]
     llm_stats = summary["llm_request_latency_s"]
     prompt_stats = summary["logged_prompt_tokens"]
+    response_token_stats = summary["logged_response_tokens"]
+    total_token_stats = summary["logged_total_tokens"]
+    reward_stats = summary["rollout_reward"]
     rollout_stats = summary["completed_rollout_duration_s"]
     action_stats = summary["completed_action_execution_s"]
 
     latest_findings_share = summary.get("median_latest_findings_share", 0.0)
     top_prompt_counts = dict(list(summary["prompt_count_by_log_name"].items())[:12])
+    top_llm_token_stats = dict(list(summary["llm_token_usage_by_log_name"].items())[:12])
+    top_rollout_token_stats = dict(list(summary["llm_token_usage_by_rollout"].items())[:12])
+    reward_distribution = summary["reward_distribution"]
     top_action_stats = dict(
         sorted(
             summary["action_execution_s_by_type"].items(),
@@ -640,11 +1106,15 @@ def write_html_viewer(
         ("Completed rollouts", counts["rollouts_completed_with_report"]),
         ("Completed tool actions", counts["actions_completed_with_report"]),
         ("LLM requests", counts["llm_requests"]),
+        ("LLM call summaries", counts["llm_call_records"]),
         ("Prompt summaries", counts["prompt_records"]),
+        ("Evaluated rewards", counts["reward_records"]),
         ("Median LLM latency", f"{format_scalar(llm_stats.get('median'))} s"),
+        ("Median response tokens", format_scalar(response_token_stats.get("median"))),
+        ("Median reward", format_scalar(reward_stats.get("median"))),
         ("Median rollout duration", f"{format_scalar(rollout_stats.get('median'))} s"),
         ("Median tool execution", f"{format_scalar(action_stats.get('median'))} s"),
-        ("Median findings share", f"{latest_findings_share * 100:.1f}%"),
+        ("Median findings token share", f"{latest_findings_share * 100:.1f}%"),
     ]
     card_html = "\n".join(
         f"<div class='stat-card'><div class='stat-label'>{html.escape(label)}</div><div class='stat-value'>{html.escape(format_scalar(value))}</div></div>"
@@ -680,7 +1150,7 @@ def write_html_viewer(
             plot_card(
                 "Prompt Tokens by LLM Call Type",
                 "prompt_tokens_by_log_name.png",
-                blurb="Large adaptive prompts dominate; the second panel shows how much of each prompt is Latest Findings.",
+                blurb="Large adaptive prompts dominate; the second panel now shows a median token breakdown by prompt section instead of a fraction.",
             ),
             plot_card(
                 "Rollout Duration by Final Iteration",
@@ -691,6 +1161,39 @@ def write_html_viewer(
                 "Median Time per Iteration",
                 "iteration_time_breakdown.png",
                 blurb="Median wall time per iteration, split into tool execution versus residual LLM and orchestration time.",
+            ),
+        ]
+    )
+    reward_plots = "\n".join(
+        [
+            plot_card(
+                "Rollout Reward Distribution",
+                "reward_distribution.png",
+                blurb="Reward counts recomputed from saved reports and dataset ground truth.",
+            ),
+        ]
+    )
+    llm_token_plots = "\n".join(
+        [
+            plot_card(
+                "Response Token Distribution",
+                "llm_response_token_distribution.png",
+                blurb="Overall response-token distribution across logged privacy-agent LLM calls.",
+            ),
+            plot_card(
+                "Response Tokens by LLM Call Type",
+                "llm_output_tokens_by_log_name.png",
+                blurb="Per-call response-token distribution grouped by log_name.",
+            ),
+            plot_card(
+                "Token Totals by LLM Call Type",
+                "llm_token_totals_by_log_name.png",
+                blurb="Aggregate prompt versus response token volume for the most expensive call types.",
+            ),
+            plot_card(
+                "Token Totals by Rollout",
+                "llm_token_totals_by_rollout.png",
+                blurb="Aggregate prompt versus response token volume for the most token-heavy completed rollouts.",
             ),
         ]
     )
@@ -726,7 +1229,11 @@ def write_html_viewer(
         "actions.csv",
         "iterations.csv",
         "llm_requests.csv",
+        "llm_call_records.csv",
+        "llm_tokens_by_rollout.csv",
+        "llm_tokens_by_log_name.csv",
         "prompt_records.csv",
+        "reward_records.csv",
     ]
     raw_links_html = "\n".join(
         f"<li><a href='{html.escape(name)}'>{html.escape(name)}</a></li>" for name in raw_links
@@ -894,6 +1401,17 @@ def write_html_viewer(
       padding: 12px 14px;
       margin-top: 12px;
     }}
+    pre {{
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #f7f9fc;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 12px;
+      max-height: 420px;
+      overflow: auto;
+    }}
     summary {{
       cursor: pointer;
       font-weight: 600;
@@ -915,6 +1433,8 @@ def write_html_viewer(
       <div class="topnav">
         <a href="#overview">Overview</a>
         <a href="#context">Context + Iterations</a>
+        <a href="#llm-tokens">LLM Tokens</a>
+        <a href="#rewards">Rewards</a>
         <a href="#tools">Tools</a>
         <a href="#tables">Tables</a>
         <a href="#raw">Raw Files</a>
@@ -938,6 +1458,33 @@ def write_html_viewer(
       <div class="plot-grid">
         {context_plots}
       </div>
+    </section>
+
+    <section class="section" id="llm-tokens">
+      <h2>LLM Token Usage</h2>
+      <p class="section-note">These views use the explicit `privacy_agent llm call summary` lines emitted by the rollout adapter. They show response tokens and aggregate token volume by call type and rollout.</p>
+      <div class="plot-grid">
+        {llm_token_plots}
+      </div>
+    </section>
+
+    <section class="section" id="rewards">
+      <h2>Reward Spot Checks</h2>
+      <p class="section-note">These views recompute reward from the saved report answers against the dataset ground truth, then show a reproducible random sample of rollout reports for manual inspection.</p>
+      <div class="plot-grid">
+        {reward_plots}
+      </div>
+      <div class="table-grid">
+        <section class="table-card">
+          <h3>Rollout Reward Stats</h3>
+          {mapping_table(reward_stats, key_name="Statistic", value_name="Reward")}
+        </section>
+        <section class="table-card">
+          <h3>Reward Distribution</h3>
+          {mapping_table(reward_distribution, key_name="Reward", value_name="Rollouts")}
+        </section>
+      </div>
+      {render_spot_check_samples(sampled_reward_records)}
     </section>
 
     <section class="section" id="tools">
@@ -964,8 +1511,28 @@ def write_html_viewer(
           {mapping_table(prompt_stats, key_name="Statistic", value_name="Tokens")}
         </section>
         <section class="table-card">
+          <h3>Logged Response Tokens</h3>
+          {mapping_table(response_token_stats, key_name="Statistic", value_name="Tokens")}
+        </section>
+        <section class="table-card">
+          <h3>Logged Total Tokens</h3>
+          {mapping_table(total_token_stats, key_name="Statistic", value_name="Tokens")}
+        </section>
+        <section class="table-card">
+          <h3>Rollout Reward</h3>
+          {mapping_table(reward_stats, key_name="Statistic", value_name="Reward")}
+        </section>
+        <section class="table-card">
           <h3>Completed Rollout Duration</h3>
           {mapping_table(rollout_stats, key_name="Statistic", value_name="Seconds")}
+        </section>
+        <section class="table-card">
+          <h3>LLM Token Usage by Call Type</h3>
+          {llm_token_usage_table(top_llm_token_stats, key_name="Log name", limit=12)}
+        </section>
+        <section class="table-card">
+          <h3>LLM Token Usage by Rollout</h3>
+          {llm_token_usage_table(top_rollout_token_stats, key_name="Rollout", limit=12)}
         </section>
         <section class="table-card">
           <h3>Completed Action Execution</h3>
@@ -1006,8 +1573,16 @@ def write_html_viewer(
         {preview_table(prompt_records)}
       </details>
       <details>
+        <summary>Preview: llm_call_records.csv</summary>
+        {preview_table(llm_call_records)}
+      </details>
+      <details>
         <summary>Preview: llm_requests.csv</summary>
         {preview_table(llm_requests)}
+      </details>
+      <details>
+        <summary>Preview: reward_records.csv</summary>
+        {preview_table(reward_records)}
       </details>
     </section>
 
@@ -1046,21 +1621,44 @@ def main() -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     actor_info_path = run_dir / "actor" / "info.log"
-    llm_requests, prompt_records = parse_actor_info(actor_info_path)
+    llm_requests, prompt_records, llm_call_records = parse_actor_info(actor_info_path)
     rollouts, actions, iterations = parse_rollout_sessions(run_dir)
+
+    rollout_lookup = {str(row["rollout_id"]): row for row in rollouts}
+    llm_call_records_enriched: list[dict[str, Any]] = []
+    for row in llm_call_records:
+        rollout = rollout_lookup.get(str(row.get("rollout_id") or ""), {})
+        llm_call_records_enriched.append(
+            {
+                **row,
+                "has_report": bool(rollout.get("has_report")),
+                "rollout_duration_s": rollout.get("duration_s", ""),
+                "rollout_iteration_count": rollout.get("current_iteration", ""),
+            }
+        )
+    llm_call_records = llm_call_records_enriched
+
+    reward_records, sampled_reward_records = evaluate_rollout_reports(run_dir, rollouts)
 
     completed_rollouts = [row for row in rollouts if row.get("has_report")]
     completed_actions = [row for row in actions if row.get("has_report") and row.get("status") == "completed"]
     completed_iterations = [row for row in iterations if row.get("has_report")]
+    completed_llm_call_records = [row for row in llm_call_records if row.get("has_report")]
+    llm_call_records_for_rollout_analysis = completed_llm_call_records or llm_call_records
 
     write_csv(output_dir / "llm_requests.csv", llm_requests)
     write_csv(output_dir / "prompt_records.csv", prompt_records)
+    write_csv(output_dir / "llm_call_records.csv", llm_call_records)
+    write_csv(output_dir / "reward_records.csv", reward_records)
     write_csv(output_dir / "rollouts.csv", rollouts)
     write_csv(output_dir / "actions.csv", actions)
     write_csv(output_dir / "iterations.csv", iterations)
 
     llm_durations = [float(row["duration_s"]) for row in llm_requests]
     prompt_tokens = [int(row["prompt_tokens"]) for row in prompt_records]
+    response_tokens = [int(row["output_tokens"]) for row in llm_call_records]
+    total_tokens = [int(row["total_tokens"]) for row in llm_call_records]
+    reward_values = [float(row["reward"]) for row in reward_records]
     completed_rollout_durations = [float(row["duration_s"]) for row in completed_rollouts if row.get("duration_s") not in ("", None)]
     actions_per_rollout = [int(row["total_actions"]) for row in completed_rollouts]
     iteration_counts = Counter(int(row["current_iteration"]) for row in completed_rollouts)
@@ -1080,17 +1678,44 @@ def main() -> None:
         tool_by_backend[str(row["backend_tool"])].append(float(value))
 
     prompt_counter = Counter(record["log_name"] for record in prompt_records)
+    llm_call_counter = Counter(record["log_name"] for record in llm_call_records)
+    reward_counter = Counter(f"{float(record['reward']):.2f}" for record in reward_records)
     prompt_stats_by_log_name = aggregate_group_stats(prompt_records, "log_name", "prompt_tokens")
+    llm_output_tokens_by_log_name = aggregate_group_stats(llm_call_records, "log_name", "output_tokens")
+    llm_token_usage_by_log_name = aggregate_llm_token_usage(llm_call_records, "log_name")
+    llm_token_usage_by_rollout = aggregate_llm_token_usage(llm_call_records_for_rollout_analysis, "rollout_id")
     action_stats_by_type = aggregate_group_stats(completed_actions, "action_type", "execution_time_s")
     action_stats_by_backend = aggregate_group_stats(completed_actions, "backend_tool", "execution_time_s")
     rollout_duration_by_iteration = aggregate_group_stats(completed_rollouts, "current_iteration", "duration_s")
+
+    llm_tokens_by_rollout_rows = []
+    for rollout_id, stats in llm_token_usage_by_rollout.items():
+        rollout = rollout_lookup.get(rollout_id, {})
+        llm_tokens_by_rollout_rows.append(
+            {
+                "rollout_id": rollout_id,
+                "has_report": bool(rollout.get("has_report")),
+                "current_iteration": rollout.get("current_iteration", ""),
+                "duration_s": rollout.get("duration_s", ""),
+                **stats,
+            }
+        )
+    llm_tokens_by_log_name_rows = [
+        {"log_name": log_name, **stats}
+        for log_name, stats in llm_token_usage_by_log_name.items()
+    ]
+
+    write_csv(output_dir / "llm_tokens_by_rollout.csv", llm_tokens_by_rollout_rows)
+    write_csv(output_dir / "llm_tokens_by_log_name.csv", llm_tokens_by_log_name_rows)
 
     summary = {
         "run_dir": str(run_dir),
         "generated_at_utc": datetime.now(UTC).isoformat(),
         "counts": {
             "llm_requests": len(llm_requests),
+            "llm_call_records": len(llm_call_records),
             "prompt_records": len(prompt_records),
+            "reward_records": len(reward_records),
             "rollouts_all": len(rollouts),
             "rollouts_completed_with_report": len(completed_rollouts),
             "actions_completed_with_report": len(completed_actions),
@@ -1098,18 +1723,27 @@ def main() -> None:
         },
         "llm_request_latency_s": numeric_stats(llm_durations),
         "logged_prompt_tokens": numeric_stats(prompt_tokens),
+        "logged_response_tokens": numeric_stats(response_tokens),
+        "logged_total_tokens": numeric_stats(total_tokens),
+        "rollout_reward": numeric_stats(reward_values),
         "completed_rollout_duration_s": numeric_stats(completed_rollout_durations),
         "completed_action_execution_s": numeric_stats(tool_exec_values),
         "median_latest_findings_share": median(findings_shares) if findings_shares else 0.0,
         "prompt_count_by_log_name": dict(prompt_counter.most_common()),
+        "llm_call_count_by_log_name": dict(llm_call_counter.most_common()),
+        "reward_distribution": dict(sorted(reward_counter.items(), key=lambda item: float(item[0]))),
         "iteration_count_distribution": dict(sorted(iteration_counts.items())),
         "prompt_tokens_by_log_name": prompt_stats_by_log_name,
+        "output_tokens_by_log_name": llm_output_tokens_by_log_name,
+        "llm_token_usage_by_log_name": llm_token_usage_by_log_name,
+        "llm_token_usage_by_rollout": llm_token_usage_by_rollout,
         "action_execution_s_by_type": action_stats_by_type,
         "action_execution_s_by_backend": action_stats_by_backend,
         "rollout_duration_s_by_final_iteration": rollout_duration_by_iteration,
         "limitations": [
             "LLM duration logs do not include request IDs, so exact latency attribution to log_name is not possible under concurrency.",
             "Prompt summaries cover large prompts (>= 4096 tokens) or overflow cases, not every single LLM call.",
+            "Prompt/response token by rollout and by call type requires the newer `privacy_agent llm call summary` log lines; older runs will show empty sections.",
             "Rollout timing analysis is filtered to runs with a saved report to avoid in-progress session artifacts.",
         ],
     }
@@ -1119,6 +1753,8 @@ def main() -> None:
         run_dir=run_dir,
         llm_requests=llm_requests,
         prompt_records=prompt_records,
+        llm_call_records=llm_call_records,
+        reward_records=reward_records,
         rollouts=rollouts,
         actions=completed_actions,
         completed_rollouts=completed_rollouts,
@@ -1131,6 +1767,19 @@ def main() -> None:
         xlabel="Latency (seconds)",
     )
     plot_prompt_token_breakdown(prompt_records, output_dir / "prompt_tokens_by_log_name.png")
+    plot_hist_and_ecdf(
+        response_tokens,
+        output_dir / "llm_response_token_distribution.png",
+        title="LLM Response Token Distribution",
+        xlabel="Response tokens",
+    )
+    plot_bar(
+        reward_counter,
+        output_dir / "reward_distribution.png",
+        title="Completed Rollout Reward Distribution",
+        xlabel="Reward",
+        ylabel="Rollouts",
+    )
     plot_hist_and_ecdf(
         completed_rollout_durations,
         output_dir / "rollout_duration_distribution.png",
@@ -1153,6 +1802,34 @@ def main() -> None:
     )
     plot_rollout_duration_by_iterations(completed_rollouts, output_dir / "rollout_duration_by_iteration.png")
     plot_iteration_breakdown(completed_iterations, output_dir / "iteration_time_breakdown.png")
+    plot_grouped_boxplot(
+        defaultdict(list, {
+            str(row["log_name"]): [int(item["output_tokens"]) for item in llm_call_records if item["log_name"] == row["log_name"]]
+            for row in [{"log_name": name} for name, _ in llm_call_counter.most_common(10)]
+        }),
+        output_dir / "llm_output_tokens_by_log_name.png",
+        title="LLM Response Tokens by Call Type",
+        xlabel="Response tokens",
+        ylabel="LLM call type",
+        top_n=10,
+        use_log_scale=False,
+    )
+    plot_stacked_token_totals(
+        llm_token_usage_by_log_name,
+        output_dir / "llm_token_totals_by_log_name.png",
+        title="Aggregate LLM Token Volume by Call Type",
+        xlabel="Token count",
+        ylabel="LLM call type",
+        top_n=12,
+    )
+    plot_stacked_token_totals(
+        llm_token_usage_by_rollout,
+        output_dir / "llm_token_totals_by_rollout.png",
+        title="Aggregate LLM Token Volume by Rollout",
+        xlabel="Token count",
+        ylabel="Rollout",
+        top_n=15,
+    )
     plot_grouped_boxplot(
         tool_by_type,
         output_dir / "tool_latency_by_action_type.png",
@@ -1191,6 +1868,9 @@ def main() -> None:
         summary=summary,
         llm_requests=llm_requests,
         prompt_records=prompt_records,
+        llm_call_records=llm_call_records,
+        reward_records=reward_records,
+        sampled_reward_records=sampled_reward_records,
         rollouts=rollouts,
         actions=actions,
         iterations=iterations,
