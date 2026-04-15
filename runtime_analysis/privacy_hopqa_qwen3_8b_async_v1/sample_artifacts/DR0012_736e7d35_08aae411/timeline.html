@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>privacy_hopqa timeline</title>
+  <style>
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 24px;
+      color: #111827;
+      background: #f8fafc;
+    }
+    h1, h2 {
+      margin: 0 0 12px;
+    }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin: 0 0 24px;
+    }
+    .card {
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .card .label {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+    .card .value {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .lane-row {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .lane-label {
+      font-size: 13px;
+      color: #334155;
+      overflow-wrap: anywhere;
+    }
+    .lane-track {
+      position: relative;
+      height: 28px;
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .bar {
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      border-radius: 6px;
+      color: white;
+      font-size: 11px;
+      line-height: 22px;
+      padding: 0 6px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 18px;
+    }
+    th, td {
+      border-bottom: 1px solid #e2e8f0;
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 13px;
+    }
+    th {
+      background: #f1f5f9;
+    }
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>privacy_hopqa rollout timeline</h1>
+    <div class="summary">
+    <div class="card"><div class="label">Task</div><div class="value">DR0012</div></div>
+    <div class="card"><div class="label">Chain</div><div class="value">736e7d35</div></div>
+    <div class="card"><div class="label">Iterations</div><div class="value">5</div></div>
+    <div class="card"><div class="label">Resolved Hops</div><div class="value">3/3</div></div>
+    <div class="card"><div class="label">Searches</div><div class="value">15</div></div>
+    <div class="card"><div class="label">Docs Read</div><div class="value">7</div></div>
+    <div class="card"><div class="label">Parse Errors</div><div class="value">0</div></div>
+    <div class="card"><div class="label">Context Overflows</div><div class="value">0</div></div>
+    <div class="card"><div class="label">Duration (s)</div><div class="value">240.02</div></div>
+  </div>
+  <h2>Timeline</h2>
+  <div><div class='lane-row'><div class='lane-label'>plan</div><div class='lane-track'><div class="bar" style="left:0.000%;width:3.225%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 0.0, &quot;duration_s&quot;: 7.738, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 retrieval plan</div><div class="bar" style="left:18.210%;width:7.807%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H2 retrieval plan&quot;, &quot;start_s&quot;: 43.7, &quot;duration_s&quot;: 18.736, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 1}}">H2 retrieval plan</div><div class="bar" style="left:46.621%;width:5.693%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H3 retrieval plan&quot;, &quot;start_s&quot;: 111.881, &quot;duration_s&quot;: 13.662, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;iteration&quot;: 2}}">H3 retrieval plan</div><div class="bar" style="left:69.155%;width:3.960%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H3 retrieval plan&quot;, &quot;start_s&quot;: 165.959, &quot;duration_s&quot;: 9.504, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;iteration&quot;: 3}}">H3 retrieval plan</div><div class="bar" style="left:85.152%;width:4.112%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H3 retrieval plan&quot;, &quot;start_s&quot;: 204.348, &quot;duration_s&quot;: 9.869, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;iteration&quot;: 4}}">H3 retrieval plan</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_0</div><div class='lane-track'><div class="bar" style="left:3.225%;width:6.951%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Elexion Automotive IT downtime reduction after i...&quot;, &quot;start_s&quot;: 7.738, &quot;duration_s&quot;: 16.682, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Elexion Automotive IT downtime reduction after i...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_1</div><div class='lane-track'><div class="bar" style="left:3.225%;width:7.532%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Elexion Automotive infrastructure changes downti...&quot;, &quot;start_s&quot;: 7.739, &quot;duration_s&quot;: 18.075, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Elexion Automotive infrastructure changes downti...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_2</div><div class='lane-track'><div class="bar" style="left:3.225%;width:5.498%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Elexion Automotive IT-related downtime reduction...&quot;, &quot;start_s&quot;: 7.739, &quot;duration_s&quot;: 13.193, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Elexion Automotive IT-related downtime reduction...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_local_document_search_3</div><div class='lane-track'><div class="bar" style="left:3.225%;width:4.644%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;local_document_search: IT downtime reduction infrastructure changes Ele...&quot;, &quot;start_s&quot;: 7.739, &quot;duration_s&quot;: 11.146, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">local_document_search: IT downtime reduction infrastructure changes Ele...</div></div></div><div class='lane-row'><div class='lane-label'>choose</div><div class='lane-track'><div class="bar" style="left:10.757%;width:3.165%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 25.814, &quot;duration_s&quot;: 7.596, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 choose docs</div><div class="bar" style="left:26.113%;width:14.051%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H2 choose docs&quot;, &quot;start_s&quot;: 62.666, &quot;duration_s&quot;: 33.719, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 1}}">H2 choose docs</div><div class="bar" style="left:52.415%;width:8.741%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H3 choose docs&quot;, &quot;start_s&quot;: 125.786, &quot;duration_s&quot;: 20.977, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;iteration&quot;: 2}}">H3 choose docs</div><div class="bar" style="left:73.210%;width:5.529%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H3 choose docs&quot;, &quot;start_s&quot;: 175.691, &quot;duration_s&quot;: 13.269, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;iteration&quot;: 3}}">H3 choose docs</div><div class="bar" style="left:89.354%;width:5.362%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H3 choose docs&quot;, &quot;start_s&quot;: 214.433, &quot;duration_s&quot;: 12.869, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;iteration&quot;: 4}}">H3 choose docs</div></div></div><div class='lane-row'><div class='lane-label'>read:doc_1d5d5cbf_1776278549</div><div class='lane-track'><div class="bar" style="left:13.922%;width:1.744%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;IT-Infrastructure-Maintenance-Report-Q3-2024.doc...&quot;, &quot;start_s&quot;: 33.41, &quot;duration_s&quot;: 4.184, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;doc_1d5d5cbf_1776278549&quot;}}">IT-Infrastructure-Maintenance-Report-Q3-2024.doc...</div></div></div><div class='lane-row'><div class='lane-label'>resolve</div><div class='lane-track'><div class="bar" style="left:15.666%;width:2.544%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 37.595, &quot;duration_s&quot;: 6.106, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 resolve</div><div class="bar" style="left:43.923%;width:2.698%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H2 resolve&quot;, &quot;start_s&quot;: 105.407, &quot;duration_s&quot;: 6.474, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 1}}">H2 resolve</div><div class="bar" style="left:66.527%;width:2.628%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H3 resolve&quot;, &quot;start_s&quot;: 159.652, &quot;duration_s&quot;: 6.307, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;iteration&quot;: 2}}">H3 resolve</div><div class="bar" style="left:81.643%;width:3.508%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H3 resolve&quot;, &quot;start_s&quot;: 195.929, &quot;duration_s&quot;: 8.419, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;iteration&quot;: 3}}">H3 resolve</div><div class="bar" style="left:97.190%;width:2.810%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H3 resolve&quot;, &quot;start_s&quot;: 233.238, &quot;duration_s&quot;: 6.743, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;iteration&quot;: 4}}">H3 resolve</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_0</div><div class='lane-track'><div class="bar" style="left:26.017%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Elexion Automotive IT infrastructure report 3.2...&quot;, &quot;start_s&quot;: 62.436, &quot;duration_s&quot;: 0.23, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Elexion Automotive IT infrastructure report 3.2...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_1</div><div class='lane-track'><div class="bar" style="left:26.017%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: IT-Infrastructure-Maintenance-Report-Q3-2024.doc...&quot;, &quot;start_s&quot;: 62.436, &quot;duration_s&quot;: 0.179, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: IT-Infrastructure-Maintenance-Report-Q3-2024.doc...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_local_document_search_2</div><div class='lane-track'><div class="bar" style="left:26.017%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;local_document_search: 3.2 hours reduction quarter&quot;, &quot;start_s&quot;: 62.436, &quot;duration_s&quot;: 0.073, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">local_document_search: 3.2 hours reduction quarter</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_3</div><div class='lane-track'><div class="bar" style="left:26.017%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Elexion Automotive IT downtime report Q3 2024&quot;, &quot;start_s&quot;: 62.436, &quot;duration_s&quot;: 0.225, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Elexion Automotive IT downtime report Q3 2024</div></div></div><div class='lane-row'><div class='lane-label'>read:doc_6008238f_1776278549</div><div class='lane-track'><div class="bar" style="left:40.164%;width:3.759%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;Elexion_Automotive_Compliance_Audit_Overview.xls...&quot;, &quot;start_s&quot;: 96.386, &quot;duration_s&quot;: 9.021, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;doc_6008238f_1776278549&quot;}}">Elexion_Automotive_Compliance_Audit_Overview.xls...</div></div></div><div class='lane-row'><div class='lane-label'>read:doc_edd6eb9d_1776278549</div><div class='lane-track'><div class="bar" style="left:40.165%;width:3.731%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;Elexion_Automotive_Data_Center_Energy_Usage.xlsx&quot;, &quot;start_s&quot;: 96.388, &quot;duration_s&quot;: 8.953, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;doc_edd6eb9d_1776278549&quot;}}">Elexion_Automotive_Data_Center_Energy_Usage.xlsx</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_0</div><div class='lane-track'><div class="bar" style="left:52.314%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Elexion Automotive Q3 2024 defect report user ex...&quot;, &quot;start_s&quot;: 125.543, &quot;duration_s&quot;: 0.234, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;result_count&quot;: 5}}">web_search: Elexion Automotive Q3 2024 defect report user ex...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_1</div><div class='lane-track'><div class="bar" style="left:52.314%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Elexion Automotive Q3 2024 UX/UI defect percenta...&quot;, &quot;start_s&quot;: 125.543, &quot;duration_s&quot;: 0.242, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;result_count&quot;: 5}}">web_search: Elexion Automotive Q3 2024 UX/UI defect percenta...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_local_document_search_2</div><div class='lane-track'><div class="bar" style="left:52.314%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;local_document_search: user experience defects Q3 2024&quot;, &quot;start_s&quot;: 125.543, &quot;duration_s&quot;: 0.153, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;result_count&quot;: 5}}">local_document_search: user experience defects Q3 2024</div></div></div><div class='lane-row'><div class='lane-label'>read:web/drbench_urls/drbench_urls_080fe02654671538</div><div class='lane-track'><div class="bar" style="left:61.156%;width:3.149%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.greencars.com/expert-insights/do-evs...&quot;, &quot;start_s&quot;: 146.763, &quot;duration_s&quot;: 7.558, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;doc_id&quot;: &quot;web/drbench_urls/drbench_urls_080fe02654671538&quot;}}">https://www.greencars.com/expert-insights/do-evs...</div></div></div><div class='lane-row'><div class='lane-label'>read:doc_c0cd17da_1776278549</div><div class='lane-track'><div class="bar" style="left:61.158%;width:5.369%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;Elexion_Automotive_SQA_Test_Report.xlsx&quot;, &quot;start_s&quot;: 146.768, &quot;duration_s&quot;: 12.884, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;doc_id&quot;: &quot;doc_c0cd17da_1776278549&quot;}}">Elexion_Automotive_SQA_Test_Report.xlsx</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_0</div><div class='lane-track'><div class="bar" style="left:73.115%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Elexion Automotive Q3 2024 UX/UI defect percenta...&quot;, &quot;start_s&quot;: 175.463, &quot;duration_s&quot;: 0.227, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;result_count&quot;: 5}}">web_search: Elexion Automotive Q3 2024 UX/UI defect percenta...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_local_document_search_1</div><div class='lane-track'><div class="bar" style="left:73.115%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;local_document_search: Q3 2024 defect categorization user experience in...&quot;, &quot;start_s&quot;: 175.463, &quot;duration_s&quot;: 0.093, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;result_count&quot;: 5}}">local_document_search: Q3 2024 defect categorization user experience in...</div></div></div><div class='lane-row'><div class='lane-label'>read:doc_746815ab_1776278550</div><div class='lane-track'><div class="bar" style="left:78.739%;width:2.904%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;Elexion-QA-Optimization-Electric-Vehicle-Product...&quot;, &quot;start_s&quot;: 188.96, &quot;duration_s&quot;: 6.969, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;doc_id&quot;: &quot;doc_746815ab_1776278550&quot;}}">Elexion-QA-Optimization-Electric-Vehicle-Product...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_0</div><div class='lane-track'><div class="bar" style="left:89.267%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Elexion Automotive Q3 2024 defect percentage UX/...&quot;, &quot;start_s&quot;: 214.224, &quot;duration_s&quot;: 0.208, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;result_count&quot;: 5}}">web_search: Elexion Automotive Q3 2024 defect percentage UX/...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_local_document_search_1</div><div class='lane-track'><div class="bar" style="left:89.267%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;local_document_search: Q3 2024 defect distribution user experience inte...&quot;, &quot;start_s&quot;: 214.224, &quot;duration_s&quot;: 0.106, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;result_count&quot;: 5}}">local_document_search: Q3 2024 defect distribution user experience inte...</div></div></div><div class='lane-row'><div class='lane-label'>read:doc_02ef3058_1776278550</div><div class='lane-track'><div class="bar" style="left:94.716%;width:2.474%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;QA-EV-Production-Optimization.docx&quot;, &quot;start_s&quot;: 227.301, &quot;duration_s&quot;: 5.936, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;doc_id&quot;: &quot;doc_02ef3058_1776278550&quot;}}">QA-EV-Production-Optimization.docx</div></div></div><div class='lane-row'><div class='lane-label'>report</div><div class='lane-track'><div class="bar" style="left:100.000%;width:0.800%;background:#4c78a8;" title="{&quot;stage&quot;: &quot;report&quot;, &quot;label&quot;: &quot;Final report&quot;, &quot;start_s&quot;: 239.981, &quot;duration_s&quot;: 0.01, &quot;meta&quot;: {&quot;resolved_hops&quot;: 3}}">Final report</div></div></div></div>
+  <h2>Events</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Lane</th>
+        <th>Stage</th>
+        <th>Label</th>
+        <th>Start (s)</th>
+        <th>Duration (s)</th>
+        <th>Metadata</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>0.00</td><td>7.74</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>search:iter0_web_search_0</td><td>search</td><td>web_search: Elexion Automotive IT downtime reduction after i...</td><td>7.74</td><td>16.68</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_1</td><td>search</td><td>web_search: Elexion Automotive infrastructure changes downti...</td><td>7.74</td><td>18.07</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_2</td><td>search</td><td>web_search: Elexion Automotive IT-related downtime reduction...</td><td>7.74</td><td>13.19</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_local_document_search_3</td><td>search</td><td>local_document_search: IT downtime reduction infrastructure changes Ele...</td><td>7.74</td><td>11.15</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>25.81</td><td>7.60</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>read:doc_1d5d5cbf_1776278549</td><td>doc_read</td><td>IT-Infrastructure-Maintenance-Report-Q3-2024.doc...</td><td>33.41</td><td>4.18</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;doc_1d5d5cbf_1776278549&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>37.59</td><td>6.11</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H2 retrieval plan</td><td>43.70</td><td>18.74</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>search:iter1_web_search_0</td><td>search</td><td>web_search: Elexion Automotive IT infrastructure report 3.2...</td><td>62.44</td><td>0.23</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_1</td><td>search</td><td>web_search: IT-Infrastructure-Maintenance-Report-Q3-2024.doc...</td><td>62.44</td><td>0.18</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_local_document_search_2</td><td>search</td><td>local_document_search: 3.2 hours reduction quarter</td><td>62.44</td><td>0.07</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_3</td><td>search</td><td>web_search: Elexion Automotive IT downtime report Q3 2024</td><td>62.44</td><td>0.22</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H2 choose docs</td><td>62.67</td><td>33.72</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>read:doc_6008238f_1776278549</td><td>doc_read</td><td>Elexion_Automotive_Compliance_Audit_Overview.xls...</td><td>96.39</td><td>9.02</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;doc_6008238f_1776278549&quot;
+}</pre></td></tr><tr><td>read:doc_edd6eb9d_1776278549</td><td>doc_read</td><td>Elexion_Automotive_Data_Center_Energy_Usage.xlsx</td><td>96.39</td><td>8.95</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;doc_edd6eb9d_1776278549&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H2 resolve</td><td>105.41</td><td>6.47</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H3 retrieval plan</td><td>111.88</td><td>13.66</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>search:iter2_web_search_0</td><td>search</td><td>web_search: Elexion Automotive Q3 2024 defect report user ex...</td><td>125.54</td><td>0.23</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_1</td><td>search</td><td>web_search: Elexion Automotive Q3 2024 UX/UI defect percenta...</td><td>125.54</td><td>0.24</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_local_document_search_2</td><td>search</td><td>local_document_search: user experience defects Q3 2024</td><td>125.54</td><td>0.15</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H3 choose docs</td><td>125.79</td><td>20.98</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>read:web/drbench_urls/drbench_urls_080fe02654671538</td><td>doc_read</td><td>https://www.greencars.com/expert-insights/do-evs...</td><td>146.76</td><td>7.56</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;doc_id&quot;: &quot;web/drbench_urls/drbench_urls_080fe02654671538&quot;
+}</pre></td></tr><tr><td>read:doc_c0cd17da_1776278549</td><td>doc_read</td><td>Elexion_Automotive_SQA_Test_Report.xlsx</td><td>146.77</td><td>12.88</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;doc_id&quot;: &quot;doc_c0cd17da_1776278549&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H3 resolve</td><td>159.65</td><td>6.31</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H3 retrieval plan</td><td>165.96</td><td>9.50</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>search:iter3_web_search_0</td><td>search</td><td>web_search: Elexion Automotive Q3 2024 UX/UI defect percenta...</td><td>175.46</td><td>0.23</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_local_document_search_1</td><td>search</td><td>local_document_search: Q3 2024 defect categorization user experience in...</td><td>175.46</td><td>0.09</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H3 choose docs</td><td>175.69</td><td>13.27</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>read:doc_746815ab_1776278550</td><td>doc_read</td><td>Elexion-QA-Optimization-Electric-Vehicle-Product...</td><td>188.96</td><td>6.97</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;doc_id&quot;: &quot;doc_746815ab_1776278550&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H3 resolve</td><td>195.93</td><td>8.42</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H3 retrieval plan</td><td>204.35</td><td>9.87</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>search:iter4_web_search_0</td><td>search</td><td>web_search: Elexion Automotive Q3 2024 defect percentage UX/...</td><td>214.22</td><td>0.21</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter4_local_document_search_1</td><td>search</td><td>local_document_search: Q3 2024 defect distribution user experience inte...</td><td>214.22</td><td>0.11</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H3 choose docs</td><td>214.43</td><td>12.87</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>read:doc_02ef3058_1776278550</td><td>doc_read</td><td>QA-EV-Production-Optimization.docx</td><td>227.30</td><td>5.94</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;doc_id&quot;: &quot;doc_02ef3058_1776278550&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H3 resolve</td><td>233.24</td><td>6.74</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>report</td><td>report</td><td>Final report</td><td>239.98</td><td>0.00</td><td><pre>{
+  &quot;resolved_hops&quot;: 3
+}</pre></td></tr>
+    </tbody>
+  </table>
+</body>
+</html>

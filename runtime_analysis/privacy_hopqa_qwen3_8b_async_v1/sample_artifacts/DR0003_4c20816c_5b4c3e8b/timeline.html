@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>privacy_hopqa timeline</title>
+  <style>
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 24px;
+      color: #111827;
+      background: #f8fafc;
+    }
+    h1, h2 {
+      margin: 0 0 12px;
+    }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin: 0 0 24px;
+    }
+    .card {
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .card .label {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+    .card .value {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .lane-row {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .lane-label {
+      font-size: 13px;
+      color: #334155;
+      overflow-wrap: anywhere;
+    }
+    .lane-track {
+      position: relative;
+      height: 28px;
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .bar {
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      border-radius: 6px;
+      color: white;
+      font-size: 11px;
+      line-height: 22px;
+      padding: 0 6px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 18px;
+    }
+    th, td {
+      border-bottom: 1px solid #e2e8f0;
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 13px;
+    }
+    th {
+      background: #f1f5f9;
+    }
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>privacy_hopqa rollout timeline</h1>
+    <div class="summary">
+    <div class="card"><div class="label">Task</div><div class="value">DR0003</div></div>
+    <div class="card"><div class="label">Chain</div><div class="value">4c20816c</div></div>
+    <div class="card"><div class="label">Iterations</div><div class="value">6</div></div>
+    <div class="card"><div class="label">Resolved Hops</div><div class="value">0/2</div></div>
+    <div class="card"><div class="label">Searches</div><div class="value">23</div></div>
+    <div class="card"><div class="label">Docs Read</div><div class="value">18</div></div>
+    <div class="card"><div class="label">Parse Errors</div><div class="value">0</div></div>
+    <div class="card"><div class="label">Context Overflows</div><div class="value">0</div></div>
+    <div class="card"><div class="label">Duration (s)</div><div class="value">286.83</div></div>
+  </div>
+  <h2>Timeline</h2>
+  <div><div class='lane-row'><div class='lane-label'>plan</div><div class='lane-track'><div class="bar" style="left:0.000%;width:3.510%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 0.001, &quot;duration_s&quot;: 10.067, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 retrieval plan</div><div class="bar" style="left:15.307%;width:5.030%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 43.901, &quot;duration_s&quot;: 14.425, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 retrieval plan</div><div class="bar" style="left:31.461%;width:3.503%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 90.233, &quot;duration_s&quot;: 10.047, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 2}}">H1 retrieval plan</div><div class="bar" style="left:45.915%;width:5.010%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 131.688, &quot;duration_s&quot;: 14.368, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 3}}">H1 retrieval plan</div><div class="bar" style="left:60.886%;width:4.496%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 174.627, &quot;duration_s&quot;: 12.895, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 4}}">H1 retrieval plan</div><div class="bar" style="left:82.759%;width:4.859%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 237.36, &quot;duration_s&quot;: 13.936, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 5}}">H1 retrieval plan</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_0</div><div class='lane-track'><div class="bar" style="left:3.510%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market renewable energy usage percentage Q...&quot;, &quot;start_s&quot;: 10.068, &quot;duration_s&quot;: 0.405, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market renewable energy usage percentage Q...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_1</div><div class='lane-track'><div class="bar" style="left:3.510%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market sustainability report 2024 renewabl...&quot;, &quot;start_s&quot;: 10.068, &quot;duration_s&quot;: 0.5, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market sustainability report 2024 renewabl...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_2</div><div class='lane-track'><div class="bar" style="left:3.511%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market energy efficiency metrics 2024&quot;, &quot;start_s&quot;: 10.068, &quot;duration_s&quot;: 0.18, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market energy efficiency metrics 2024</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_3</div><div class='lane-track'><div class="bar" style="left:3.511%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market press release renewable energy 2024&quot;, &quot;start_s&quot;: 10.069, &quot;duration_s&quot;: 0.589, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market press release renewable energy 2024</div></div></div><div class='lane-row'><div class='lane-label'>choose</div><div class='lane-track'><div class="bar" style="left:3.716%;width:5.231%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 10.658, &quot;duration_s&quot;: 15.002, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 choose docs</div><div class="bar" style="left:20.416%;width:5.144%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 58.556, &quot;duration_s&quot;: 14.754, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 choose docs</div><div class="bar" style="left:35.189%;width:6.007%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 100.926, &quot;duration_s&quot;: 17.228, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 2}}">H1 choose docs</div><div class="bar" style="left:50.990%;width:4.767%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 146.244, &quot;duration_s&quot;: 13.672, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 3}}">H1 choose docs</div><div class="bar" style="left:66.024%;width:11.470%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 189.363, &quot;duration_s&quot;: 32.898, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 4}}">H1 choose docs</div><div class="bar" style="left:87.756%;width:7.616%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 251.694, &quot;duration_s&quot;: 21.844, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 5}}">H1 choose docs</div></div></div><div class='lane-row'><div class='lane-label'>read:web/drbench_urls/drbench_urls_36399166840a25a2</div><div class='lane-track'><div class="bar" style="left:8.947%;width:2.140%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://eagleeye.com/blog/grocery-loyalty-inflat...&quot;, &quot;start_s&quot;: 25.66, &quot;duration_s&quot;: 6.139, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/drbench_urls/drbench_urls_36399166840a25a2&quot;}}">https://eagleeye.com/blog/grocery-loyalty-inflat...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/23454</div><div class='lane-track'><div class="bar" style="left:8.947%;width:2.634%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.aes.com/&quot;, &quot;start_s&quot;: 25.662, &quot;duration_s&quot;: 7.555, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/23454&quot;}}">https://www.aes.com/</div></div></div><div class='lane-row'><div class='lane-label'>read:web/52219</div><div class='lane-track'><div class="bar" style="left:8.948%;width:4.647%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://corporate.walmart.com/purpose/esgreport/...&quot;, &quot;start_s&quot;: 25.665, &quot;duration_s&quot;: 13.328, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/52219&quot;}}">https://corporate.walmart.com/purpose/esgreport/...</div></div></div><div class='lane-row'><div class='lane-label'>resolve</div><div class='lane-track'><div class="bar" style="left:13.595%;width:1.711%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 38.993, &quot;duration_s&quot;: 4.908, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 resolve</div><div class="bar" style="left:28.175%;width:3.286%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 80.808, &quot;duration_s&quot;: 9.424, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 resolve</div><div class="bar" style="left:43.134%;width:2.781%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 123.712, &quot;duration_s&quot;: 7.976, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 2}}">H1 resolve</div><div class="bar" style="left:57.998%;width:2.888%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 166.343, &quot;duration_s&quot;: 8.283, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 3}}">H1 resolve</div><div class="bar" style="left:80.541%;width:2.218%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 230.999, &quot;duration_s&quot;: 6.362, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 4}}">H1 resolve</div><div class="bar" style="left:98.315%;width:1.685%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 281.977, &quot;duration_s&quot;: 4.832, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 5}}">H1 resolve</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_0</div><div class='lane-track'><div class="bar" style="left:20.336%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market Q1 2024 sustainability energy metri...&quot;, &quot;start_s&quot;: 58.326, &quot;duration_s&quot;: 0.158, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market Q1 2024 sustainability energy metri...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_1</div><div class='lane-track'><div class="bar" style="left:20.336%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market renewable energy goals 2024 progres...&quot;, &quot;start_s&quot;: 58.326, &quot;duration_s&quot;: 0.23, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market renewable energy goals 2024 progres...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_2</div><div class='lane-track'><div class="bar" style="left:20.336%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market environmental impact report 2024 en...&quot;, &quot;start_s&quot;: 58.326, &quot;duration_s&quot;: 0.214, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market environmental impact report 2024 en...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_3</div><div class='lane-track'><div class="bar" style="left:20.336%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market Q1 2024 energy efficiency updates&quot;, &quot;start_s&quot;: 58.326, &quot;duration_s&quot;: 0.184, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market Q1 2024 energy efficiency updates</div></div></div><div class='lane-row'><div class='lane-label'>read:web/53061</div><div class='lane-track'><div class="bar" style="left:25.562%;width:2.270%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.eec.org.au/events/awards/2014-awards&quot;, &quot;start_s&quot;: 73.313, &quot;duration_s&quot;: 6.51, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/53061&quot;}}">https://www.eec.org.au/events/awards/2014-awards</div></div></div><div class='lane-row'><div class='lane-label'>read:web/78414</div><div class='lane-track'><div class="bar" style="left:25.564%;width:2.464%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.constellationenergy.com/newsroom/202...&quot;, &quot;start_s&quot;: 73.321, &quot;duration_s&quot;: 7.068, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/78414&quot;}}">https://www.constellationenergy.com/newsroom/202...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/44827</div><div class='lane-track'><div class="bar" style="left:25.566%;width:2.609%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.wipo.int/web-publications/green-tech...&quot;, &quot;start_s&quot;: 73.326, &quot;duration_s&quot;: 7.482, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/44827&quot;}}">https://www.wipo.int/web-publications/green-tech...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_0</div><div class='lane-track'><div class="bar" style="left:34.964%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market 2024 sustainability report energy u...&quot;, &quot;start_s&quot;: 100.28, &quot;duration_s&quot;: 0.615, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market 2024 sustainability report energy u...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_1</div><div class='lane-track'><div class="bar" style="left:34.964%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market Q1 2024 renewable energy metrics&quot;, &quot;start_s&quot;: 100.28, &quot;duration_s&quot;: 0.645, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market Q1 2024 renewable energy metrics</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_2</div><div class='lane-track'><div class="bar" style="left:34.964%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market green energy initiatives 2024&quot;, &quot;start_s&quot;: 100.28, &quot;duration_s&quot;: 0.606, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market green energy initiatives 2024</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_3</div><div class='lane-track'><div class="bar" style="left:34.964%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market energy sustainability Q1 2024&quot;, &quot;start_s&quot;: 100.28, &quot;duration_s&quot;: 0.645, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market energy sustainability Q1 2024</div></div></div><div class='lane-row'><div class='lane-label'>read:web/64701</div><div class='lane-track'><div class="bar" style="left:41.196%;width:1.598%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://investor.eastgroup.net/2025-02-06-EastGr...&quot;, &quot;start_s&quot;: 118.153, &quot;duration_s&quot;: 4.583, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/64701&quot;}}">https://investor.eastgroup.net/2025-02-06-EastGr...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/96695</div><div class='lane-track'><div class="bar" style="left:41.197%;width:1.937%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://19january2021snapshot.epa.gov/greenpower...&quot;, &quot;start_s&quot;: 118.156, &quot;duration_s&quot;: 5.555, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/96695&quot;}}">https://19january2021snapshot.epa.gov/greenpower...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/25781</div><div class='lane-track'><div class="bar" style="left:41.198%;width:1.858%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.eni.com/en-IT/investors/our-reports....&quot;, &quot;start_s&quot;: 118.159, &quot;duration_s&quot;: 5.328, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/25781&quot;}}">https://www.eni.com/en-IT/investors/our-reports....</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_0</div><div class='lane-track'><div class="bar" style="left:50.925%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market Q1 2024 renewable energy usage perc...&quot;, &quot;start_s&quot;: 146.057, &quot;duration_s&quot;: 0.187, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market Q1 2024 renewable energy usage perc...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_2</div><div class='lane-track'><div class="bar" style="left:50.925%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market energy efficiency Q1 2024 updates&quot;, &quot;start_s&quot;: 146.057, &quot;duration_s&quot;: 0.143, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market energy efficiency Q1 2024 updates</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_3</div><div class='lane-track'><div class="bar" style="left:50.925%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market 2024 renewable energy goals progres...&quot;, &quot;start_s&quot;: 146.057, &quot;duration_s&quot;: 0.187, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market 2024 renewable energy goals progres...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/10714</div><div class='lane-track'><div class="bar" style="left:55.757%;width:1.548%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://en.wikipedia.org/wiki/Solar_power_in_the...&quot;, &quot;start_s&quot;: 159.917, &quot;duration_s&quot;: 4.44, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/10714&quot;}}">https://en.wikipedia.org/wiki/Solar_power_in_the...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/77555</div><div class='lane-track'><div class="bar" style="left:55.758%;width:2.070%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www2.deloitte.com/us/en/insights/industr...&quot;, &quot;start_s&quot;: 159.919, &quot;duration_s&quot;: 5.936, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/77555&quot;}}">https://www2.deloitte.com/us/en/insights/industr...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/98266</div><div class='lane-track'><div class="bar" style="left:55.759%;width:2.239%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.nature.com/articles/s41467-022-33531...&quot;, &quot;start_s&quot;: 159.921, &quot;duration_s&quot;: 6.422, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/98266&quot;}}">https://www.nature.com/articles/s41467-022-33531...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_0</div><div class='lane-track'><div class="bar" style="left:65.382%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market Q1 2024 renewable energy usage repo...&quot;, &quot;start_s&quot;: 187.521, &quot;duration_s&quot;: 1.841, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market Q1 2024 renewable energy usage repo...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_1</div><div class='lane-track'><div class="bar" style="left:65.382%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market 2024 Q1 energy efficiency press rel...&quot;, &quot;start_s&quot;: 187.522, &quot;duration_s&quot;: 1.105, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market 2024 Q1 energy efficiency press rel...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_2</div><div class='lane-track'><div class="bar" style="left:65.382%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market renewable energy percentage Q1 2024&quot;, &quot;start_s&quot;: 187.522, &quot;duration_s&quot;: 1.545, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market renewable energy percentage Q1 2024</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_3</div><div class='lane-track'><div class="bar" style="left:65.382%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market ESG report 2024 Q1 energy data&quot;, &quot;start_s&quot;: 187.522, &quot;duration_s&quot;: 1.557, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market ESG report 2024 Q1 energy data</div></div></div><div class='lane-row'><div class='lane-label'>read:web/20994</div><div class='lane-track'><div class="bar" style="left:77.494%;width:2.557%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://orsted.com/en/investors/ir-material/fina...&quot;, &quot;start_s&quot;: 222.261, &quot;duration_s&quot;: 7.334, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/20994&quot;}}">https://orsted.com/en/investors/ir-material/fina...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/73352</div><div class='lane-track'><div class="bar" style="left:77.495%;width:2.450%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.mercurynews.com/2010/02/25/fired-as-...&quot;, &quot;start_s&quot;: 222.264, &quot;duration_s&quot;: 7.026, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/73352&quot;}}">https://www.mercurynews.com/2010/02/25/fired-as-...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/27940</div><div class='lane-track'><div class="bar" style="left:77.496%;width:2.945%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.eia.gov/consumption/commercial/&quot;, &quot;start_s&quot;: 222.267, &quot;duration_s&quot;: 8.447, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/27940&quot;}}">https://www.eia.gov/consumption/commercial/</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_0</div><div class='lane-track'><div class="bar" style="left:87.618%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market Q1 2024 sustainability report renew...&quot;, &quot;start_s&quot;: 251.297, &quot;duration_s&quot;: 0.357, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market Q1 2024 sustainability report renew...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_1</div><div class='lane-track'><div class="bar" style="left:87.618%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market 2024 Q1 press release renewable ene...&quot;, &quot;start_s&quot;: 251.297, &quot;duration_s&quot;: 0.396, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market 2024 Q1 press release renewable ene...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_2</div><div class='lane-track'><div class="bar" style="left:87.618%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market ESG report 2024 Q1 energy metrics&quot;, &quot;start_s&quot;: 251.297, &quot;duration_s&quot;: 0.397, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market ESG report 2024 Q1 energy metrics</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_3</div><div class='lane-track'><div class="bar" style="left:87.618%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market energy sustainability analysis 2024&quot;, &quot;start_s&quot;: 251.297, &quot;duration_s&quot;: 0.309, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market energy sustainability analysis 2024</div></div></div><div class='lane-row'><div class='lane-label'>read:web/12905</div><div class='lane-track'><div class="bar" style="left:95.372%;width:2.942%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://sustain.appstate.edu/initiatives/energy-...&quot;, &quot;start_s&quot;: 273.537, &quot;duration_s&quot;: 8.439, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/12905&quot;}}">https://sustain.appstate.edu/initiatives/energy-...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/11197</div><div class='lane-track'><div class="bar" style="left:95.373%;width:2.399%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;http://www.edison.com/about-us/our-history&quot;, &quot;start_s&quot;: 273.54, &quot;duration_s&quot;: 6.88, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/11197&quot;}}">http://www.edison.com/about-us/our-history</div></div></div><div class='lane-row'><div class='lane-label'>read:web/54611</div><div class='lane-track'><div class="bar" style="left:95.374%;width:1.996%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.youtube.com/watch?v=xa7aWcfta38&quot;, &quot;start_s&quot;: 273.542, &quot;duration_s&quot;: 5.725, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/54611&quot;}}">https://www.youtube.com/watch?v=xa7aWcfta38</div></div></div><div class='lane-row'><div class='lane-label'>report</div><div class='lane-track'><div class="bar" style="left:100.000%;width:0.800%;background:#4c78a8;" title="{&quot;stage&quot;: &quot;report&quot;, &quot;label&quot;: &quot;Final report&quot;, &quot;start_s&quot;: 286.809, &quot;duration_s&quot;: 0.01, &quot;meta&quot;: {&quot;resolved_hops&quot;: 0}}">Final report</div></div></div></div>
+  <h2>Events</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Lane</th>
+        <th>Stage</th>
+        <th>Label</th>
+        <th>Start (s)</th>
+        <th>Duration (s)</th>
+        <th>Metadata</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>0.00</td><td>10.07</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>search:iter0_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market renewable energy usage percentage Q...</td><td>10.07</td><td>0.41</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market sustainability report 2024 renewabl...</td><td>10.07</td><td>0.50</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market energy efficiency metrics 2024</td><td>10.07</td><td>0.18</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_3</td><td>search</td><td>web_search: Lee&#x27;s Market press release renewable energy 2024</td><td>10.07</td><td>0.59</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>10.66</td><td>15.00</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>read:web/drbench_urls/drbench_urls_36399166840a25a2</td><td>doc_read</td><td>https://eagleeye.com/blog/grocery-loyalty-inflat...</td><td>25.66</td><td>6.14</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/drbench_urls/drbench_urls_36399166840a25a2&quot;
+}</pre></td></tr><tr><td>read:web/23454</td><td>doc_read</td><td>https://www.aes.com/</td><td>25.66</td><td>7.56</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/23454&quot;
+}</pre></td></tr><tr><td>read:web/52219</td><td>doc_read</td><td>https://corporate.walmart.com/purpose/esgreport/...</td><td>25.66</td><td>13.33</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/52219&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>38.99</td><td>4.91</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>43.90</td><td>14.43</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>search:iter1_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market Q1 2024 sustainability energy metri...</td><td>58.33</td><td>0.16</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market renewable energy goals 2024 progres...</td><td>58.33</td><td>0.23</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market environmental impact report 2024 en...</td><td>58.33</td><td>0.21</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_3</td><td>search</td><td>web_search: Lee&#x27;s Market Q1 2024 energy efficiency updates</td><td>58.33</td><td>0.18</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>58.56</td><td>14.75</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>read:web/53061</td><td>doc_read</td><td>https://www.eec.org.au/events/awards/2014-awards</td><td>73.31</td><td>6.51</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/53061&quot;
+}</pre></td></tr><tr><td>read:web/78414</td><td>doc_read</td><td>https://www.constellationenergy.com/newsroom/202...</td><td>73.32</td><td>7.07</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/78414&quot;
+}</pre></td></tr><tr><td>read:web/44827</td><td>doc_read</td><td>https://www.wipo.int/web-publications/green-tech...</td><td>73.33</td><td>7.48</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/44827&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>80.81</td><td>9.42</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>90.23</td><td>10.05</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>search:iter2_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market 2024 sustainability report energy u...</td><td>100.28</td><td>0.61</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market Q1 2024 renewable energy metrics</td><td>100.28</td><td>0.64</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market green energy initiatives 2024</td><td>100.28</td><td>0.61</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_3</td><td>search</td><td>web_search: Lee&#x27;s Market energy sustainability Q1 2024</td><td>100.28</td><td>0.65</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>100.93</td><td>17.23</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>read:web/64701</td><td>doc_read</td><td>https://investor.eastgroup.net/2025-02-06-EastGr...</td><td>118.15</td><td>4.58</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/64701&quot;
+}</pre></td></tr><tr><td>read:web/96695</td><td>doc_read</td><td>https://19january2021snapshot.epa.gov/greenpower...</td><td>118.16</td><td>5.56</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/96695&quot;
+}</pre></td></tr><tr><td>read:web/25781</td><td>doc_read</td><td>https://www.eni.com/en-IT/investors/our-reports....</td><td>118.16</td><td>5.33</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/25781&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>123.71</td><td>7.98</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>131.69</td><td>14.37</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>search:iter3_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market Q1 2024 renewable energy usage perc...</td><td>146.06</td><td>0.19</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market energy efficiency Q1 2024 updates</td><td>146.06</td><td>0.14</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_web_search_3</td><td>search</td><td>web_search: Lee&#x27;s Market 2024 renewable energy goals progres...</td><td>146.06</td><td>0.19</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>146.24</td><td>13.67</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>read:web/10714</td><td>doc_read</td><td>https://en.wikipedia.org/wiki/Solar_power_in_the...</td><td>159.92</td><td>4.44</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/10714&quot;
+}</pre></td></tr><tr><td>read:web/77555</td><td>doc_read</td><td>https://www2.deloitte.com/us/en/insights/industr...</td><td>159.92</td><td>5.94</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/77555&quot;
+}</pre></td></tr><tr><td>read:web/98266</td><td>doc_read</td><td>https://www.nature.com/articles/s41467-022-33531...</td><td>159.92</td><td>6.42</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/98266&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>166.34</td><td>8.28</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>174.63</td><td>12.89</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>search:iter4_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market Q1 2024 renewable energy usage repo...</td><td>187.52</td><td>1.84</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter4_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market 2024 Q1 energy efficiency press rel...</td><td>187.52</td><td>1.11</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter4_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market renewable energy percentage Q1 2024</td><td>187.52</td><td>1.55</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter4_web_search_3</td><td>search</td><td>web_search: Lee&#x27;s Market ESG report 2024 Q1 energy data</td><td>187.52</td><td>1.56</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>189.36</td><td>32.90</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>read:web/20994</td><td>doc_read</td><td>https://orsted.com/en/investors/ir-material/fina...</td><td>222.26</td><td>7.33</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/20994&quot;
+}</pre></td></tr><tr><td>read:web/73352</td><td>doc_read</td><td>https://www.mercurynews.com/2010/02/25/fired-as-...</td><td>222.26</td><td>7.03</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/73352&quot;
+}</pre></td></tr><tr><td>read:web/27940</td><td>doc_read</td><td>https://www.eia.gov/consumption/commercial/</td><td>222.27</td><td>8.45</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/27940&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>231.00</td><td>6.36</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>237.36</td><td>13.94</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market Q1 2024 sustainability report renew...</td><td>251.30</td><td>0.36</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market 2024 Q1 press release renewable ene...</td><td>251.30</td><td>0.40</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market ESG report 2024 Q1 energy metrics</td><td>251.30</td><td>0.40</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_3</td><td>search</td><td>web_search: Lee&#x27;s Market energy sustainability analysis 2024</td><td>251.30</td><td>0.31</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>251.69</td><td>21.84</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>read:web/12905</td><td>doc_read</td><td>https://sustain.appstate.edu/initiatives/energy-...</td><td>273.54</td><td>8.44</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/12905&quot;
+}</pre></td></tr><tr><td>read:web/11197</td><td>doc_read</td><td>http://www.edison.com/about-us/our-history</td><td>273.54</td><td>6.88</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/11197&quot;
+}</pre></td></tr><tr><td>read:web/54611</td><td>doc_read</td><td>https://www.youtube.com/watch?v=xa7aWcfta38</td><td>273.54</td><td>5.73</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/54611&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>281.98</td><td>4.83</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>report</td><td>report</td><td>Final report</td><td>286.81</td><td>0.00</td><td><pre>{
+  &quot;resolved_hops&quot;: 0
+}</pre></td></tr>
+    </tbody>
+  </table>
+</body>
+</html>

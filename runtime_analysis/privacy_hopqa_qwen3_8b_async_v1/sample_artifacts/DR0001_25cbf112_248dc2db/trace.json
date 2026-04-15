@@ -1,0 +1,2976 @@
+{
+  "summary": {
+    "task_id": "DR0001",
+    "chain_id": "25cbf112",
+    "iterations_used": 10,
+    "resolved_hops": 0,
+    "total_hops": 4,
+    "searches_total": 28,
+    "docs_read": 15,
+    "duration_s": 406.26343322498724,
+    "stalled": true,
+    "llm_calls_total": 44,
+    "prompt_tokens": 61267,
+    "output_tokens": 28713,
+    "total_tokens": 89980,
+    "total_errors": 0,
+    "parse_errors_total": 0,
+    "context_overflow_errors": 0,
+    "errors_by_stage": {},
+    "errors_by_kind": {},
+    "errors_by_stage_kind": {},
+    "parse_errors_by_stage": {}
+  },
+  "hop_states": [
+    {
+      "hop_number": 1,
+      "question": "In what year did Chaad complete a residency with the Contemporary Art?",
+      "status": "pending",
+      "attempts": 10,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": "Without access to the document content, we cannot verify the specific year or resolve any potential conflicts in the information.",
+      "search_history": [
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_web_search_0",
+          "type": "web_search",
+          "query": "Chaad residency Contemporary Art completion year",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/76533",
+            "web/34940",
+            "web/21203"
+          ]
+        },
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_web_search_1",
+          "type": "web_search",
+          "query": "Chaad art residency timeline",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/76533",
+            "web/34940",
+            "web/77710"
+          ]
+        },
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_web_search_2",
+          "type": "web_search",
+          "query": "Contemporary Art residency programs Chaad",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/76533",
+            "web/34940",
+            "web/77710"
+          ]
+        },
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_web_search_3",
+          "type": "web_search",
+          "query": "Chaad professional milestones art",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/80241",
+            "web/43663",
+            "web/98335"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 1,
+          "action_id": "iter1_local_document_search_0",
+          "type": "local_document_search",
+          "query": "Check documents from prior searches for mentions of Chaad's residency completion year",
+          "result_count": 5,
+          "top_doc_ids": [
+            "doc_19656322_1776278533",
+            "doc_b49e50d7_1776278533",
+            "doc_bb634550_1776278533"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 1,
+          "action_id": "iter1_web_search_1",
+          "type": "web_search",
+          "query": "Chaad Contemporary Art residency program completion year",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/76533",
+            "web/34940",
+            "web/77710"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 1,
+          "action_id": "iter1_web_search_2",
+          "type": "web_search",
+          "query": "Chaad art residency program milestones",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/81420",
+            "web/77710",
+            "web/76533"
+          ]
+        },
+        {
+          "iteration": 2,
+          "hop_number": 1,
+          "action_id": "iter2_web_search_0",
+          "type": "web_search",
+          "query": "Chaad Contemporary Art residency completion date",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/76533",
+            "web/34940",
+            "web/77710"
+          ]
+        },
+        {
+          "iteration": 2,
+          "hop_number": 1,
+          "action_id": "iter2_web_search_2",
+          "type": "web_search",
+          "query": "Chaad residency timeline Contemporary Art",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/76533",
+            "web/86391",
+            "web/21203"
+          ]
+        },
+        {
+          "iteration": 2,
+          "hop_number": 1,
+          "action_id": "iter2_web_search_3",
+          "type": "web_search",
+          "query": "Chaad art residency program end year",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/34940",
+            "web/77710",
+            "web/76533"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 1,
+          "action_id": "iter3_web_search_0",
+          "type": "web_search",
+          "query": "Chaad Contemporary Art residency program end year",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/34940",
+            "web/77710",
+            "web/76533"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 1,
+          "action_id": "iter3_web_search_1",
+          "type": "web_search",
+          "query": "Chaad art residency Contemporary Art milestones",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/76533",
+            "web/30370",
+            "web/81420"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 1,
+          "action_id": "iter3_web_search_2",
+          "type": "web_search",
+          "query": "Chaad residency timeline Contemporary Art organization",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/81420",
+            "web/76533",
+            "web/95556"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 1,
+          "action_id": "iter4_web_search_0",
+          "type": "web_search",
+          "query": "Chaad Contemporary Art residency completion year",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/76533",
+            "web/34940",
+            "web/30370"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 1,
+          "action_id": "iter4_web_search_1",
+          "type": "web_search",
+          "query": "Chaad art residency program end date",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/34940",
+            "web/76533",
+            "web/77710"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 1,
+          "action_id": "iter4_web_search_2",
+          "type": "web_search",
+          "query": "Chaad residency Contemporary Art organization",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/76533",
+            "web/86037",
+            "web/30370"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 1,
+          "action_id": "iter4_web_search_3",
+          "type": "web_search",
+          "query": "Chaad art residency timeline Contemporary Art",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/76533",
+            "web/34940",
+            "web/81420"
+          ]
+        },
+        {
+          "iteration": 5,
+          "hop_number": 1,
+          "action_id": "iter5_web_search_3",
+          "type": "web_search",
+          "query": "Chaad residency completion year Contemporary Art organization",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/76533",
+            "web/86037",
+            "web/81420"
+          ]
+        },
+        {
+          "iteration": 6,
+          "hop_number": 1,
+          "action_id": "iter6_web_search_1",
+          "type": "web_search",
+          "query": "Chaad art residency program end date Contemporary Art",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/34940",
+            "web/76533",
+            "web/77710"
+          ]
+        },
+        {
+          "iteration": 6,
+          "hop_number": 1,
+          "action_id": "iter6_web_search_3",
+          "type": "web_search",
+          "query": "Chaad residency completion year Contemporary Art context",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/76533",
+            "web/86391",
+            "web/11283"
+          ]
+        },
+        {
+          "iteration": 7,
+          "hop_number": 1,
+          "action_id": "iter7_web_search_1",
+          "type": "web_search",
+          "query": "Chaad Contemporary Art residency end date organization",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/76533",
+            "web/34940",
+            "web/77710"
+          ]
+        },
+        {
+          "iteration": 7,
+          "hop_number": 1,
+          "action_id": "iter7_web_search_2",
+          "type": "web_search",
+          "query": "Chaad art residency program conclusion year",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/34940",
+            "web/77710",
+            "web/76533"
+          ]
+        },
+        {
+          "iteration": 7,
+          "hop_number": 1,
+          "action_id": "iter7_web_search_3",
+          "type": "web_search",
+          "query": "Chaad Contemporary Art residency timeline",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/76533",
+            "web/34940",
+            "web/77710"
+          ]
+        },
+        {
+          "iteration": 8,
+          "hop_number": 1,
+          "action_id": "iter8_web_search_0",
+          "type": "web_search",
+          "query": "Chaad Contemporary Art residency end year",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/34940",
+            "web/76533",
+            "web/77710"
+          ]
+        },
+        {
+          "iteration": 8,
+          "hop_number": 1,
+          "action_id": "iter8_web_search_3",
+          "type": "web_search",
+          "query": "Chaad residency completion date Contemporary Art",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/76533",
+            "web/86391",
+            "web/34940"
+          ]
+        },
+        {
+          "iteration": 9,
+          "hop_number": 1,
+          "action_id": "iter9_web_search_0",
+          "type": "web_search",
+          "query": "Chaad Contemporary Art residency completion year",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/76533",
+            "web/34940",
+            "web/30370"
+          ]
+        },
+        {
+          "iteration": 9,
+          "hop_number": 1,
+          "action_id": "iter9_web_search_2",
+          "type": "web_search",
+          "query": "Chaad residency timeline Contemporary Art organization",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/81420",
+            "web/76533",
+            "web/95556"
+          ]
+        },
+        {
+          "iteration": 9,
+          "hop_number": 1,
+          "action_id": "iter9_web_search_3",
+          "type": "web_search",
+          "query": "Chaad residency program conclusion year Contemporary Art",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/76533",
+            "web/81420",
+            "web/77710"
+          ]
+        }
+      ],
+      "selected_doc_ids": [
+        "web/76533",
+        "web/81420",
+        "web/77710",
+        "web/34940",
+        "web/21203",
+        "web/95556",
+        "web/86037",
+        "web/30370",
+        "web/84535",
+        "web/80241",
+        "web/86391",
+        "web/11283",
+        "web/28797",
+        "web/33897",
+        "web/63206"
+      ],
+      "reader_results": [
+        {
+          "doc_id": "web/76533",
+          "source": "web",
+          "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+          "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Chaad or any specific artist completing a residency with Contemporary Art. It only outlines the INHABIT Artist-in-Residence Program's timeline and requirements [DOC:web/76533].",
+          "confidence": 0.18,
+          "missing_information": "Specific details about Chaad's residency completion year are absent from the text."
+        },
+        {
+          "doc_id": "web/81420",
+          "source": "web",
+          "title": "https://brandywineworkshopandarchives.org/history-and-achievements/",
+          "locator": "https://brandywineworkshopandarchives.org/history-and-achievements/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Chaad or a residency specifically tied to 'Contemporary Art' [DOC:web/81420].",
+          "confidence": 0.82,
+          "missing_information": "Specific details about Chaad's residency with Contemporary Art are absent from the provided text."
+        },
+        {
+          "doc_id": "web/77710",
+          "source": "web",
+          "title": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+          "locator": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention anyone named Chaad or their residency with Contemporary Art. The recipients listed are Liz Houchin, Nithy Kasa, Roisin Kelly, James Conor Paterson, and Molly Twomey, none of whom match the name Chaad [DOC:web/77710].",
+          "confidence": 0.95,
+          "missing_information": "The document lacks any information about Chaad or their residency program with Contemporary Art."
+        },
+        {
+          "doc_id": "web/34940",
+          "source": "web",
+          "title": "https://resartis.org/open-calls/",
+          "locator": "https://resartis.org/open-calls/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document lists multiple art residencies but does not mention Chaad or a residency program related to 'Contemporary Art' [DOC:web/34940].",
+          "confidence": 0.18,
+          "missing_information": "No information about Chaad's residency completion date with Contemporary Art is provided in the document."
+        },
+        {
+          "doc_id": "web/21203",
+          "source": "web",
+          "title": "https://www.studiomuseum.org/exhibitions/tenses",
+          "locator": "https://www.studiomuseum.org/exhibitions/tenses",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses the 2015–2016 Artist-in-Residence program at The Studio Museum in Harlem, listing artists like Jordan Casteel, EJ Hill, and Jibade-Khalil Huffman, but does not mention Chaad or any residency completion date related to them [DOC:web/21203].",
+          "confidence": 0.95,
+          "missing_information": "The document lacks any reference to Chaad or their residency timeline with Contemporary Art."
+        },
+        {
+          "doc_id": "web/95556",
+          "source": "web",
+          "title": "https://artjameel.org/about/history/",
+          "locator": "https://artjameel.org/about/history/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document provides no information about a 'Chaad residency' or any residency program associated with 'Contemporary Art' [DOC:web/95556].",
+          "confidence": 0.15,
+          "missing_information": "The document does not mention Chaad, a residency program, or any specific year related to such a residency."
+        },
+        {
+          "doc_id": "web/86037",
+          "source": "web",
+          "title": "https://www.curatorialleadership.org/programs/moma-program/moma-international-curatorial-institute-2016/participants/",
+          "locator": "https://www.curatorialleadership.org/programs/moma-program/moma-international-curatorial-institute-2016/participants/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document mentions Diana Campbell Betancourt's curatorial work and Sebastian Cichocki's role at the Museum of Modern Art in Warsaw, but there is no information about 'Chaad' completing a residency with 'Contemporary Art' [DOC:web/86037].",
+          "confidence": 0.25,
+          "missing_information": "The document lacks any mention of 'Chaad' or a residency program with 'Contemporary Art' that matches the query."
+        },
+        {
+          "doc_id": "web/30370",
+          "source": "web",
+          "title": "https://www.gagallery.com/news",
+          "locator": "https://www.gagallery.com/news",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document mentions Chaouki Choukini participating in Biennale Arte 2024 but does not reference Chaad or a residency with Contemporary Art. No completion year is provided for any residency related to Chaad [DOC:web/30370].",
+          "confidence": 0.65,
+          "missing_information": "Specific details about Chaad's residency completion year with Contemporary Art"
+        },
+        {
+          "doc_id": "web/84535",
+          "source": "web",
+          "title": "https://www.hartford.edu/academics/schools-colleges/art/academics/default.aspx",
+          "locator": "https://www.hartford.edu/academics/schools-colleges/art/academics/default.aspx",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses Hartford Art School's low-residency programs and their structure but does not mention Chaad or any specific residency completion year for an individual [DOC:web/84535].",
+          "confidence": 0.18,
+          "missing_information": "The document lacks information about Chaad's residency program details or completion year."
+        },
+        {
+          "doc_id": "web/80241",
+          "source": "web",
+          "title": "https://www.collegeart.org/news/category/students/",
+          "locator": "https://www.collegeart.org/news/category/students/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Chaad or any residency program with Contemporary Art [DOC:web/80241]. The content focuses on Lauren Sandler and Ellen Wetmore, but Chaad's activities are entirely absent.",
+          "confidence": 0.15,
+          "missing_information": "The document lacks any reference to Chaad's residency completion year or related details."
+        },
+        {
+          "doc_id": "web/86391",
+          "source": "web",
+          "title": "https://mandevilleartgallery.ucsd.edu/exhibitions/archive.html",
+          "locator": "https://mandevilleartgallery.ucsd.edu/exhibitions/archive.html",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Chaad or any residency program related to Contemporary Art. The content focuses on exhibitions curated by Tatiana Sizonenko, highlighting Visual Arts alumni and department history, but lacks information about Chaad's residency [DOC:web/86391]",
+          "confidence": 0.95,
+          "missing_information": "The document does not contain any information about Chaad's residency completion year or their association with Contemporary Art"
+        },
+        {
+          "doc_id": "web/11283",
+          "source": "web",
+          "title": "https://www.youtube.com/watch?v=4tK2e_mSSps&pp=0gcJCdgAo7VqN5tD",
+          "locator": "https://www.youtube.com/watch?v=4tK2e_mSSps&pp=0gcJCdgAo7VqN5tD",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Chaad or any residency program with Contemporary Art. The only date provided (2025-01-01) relates to an Art21 episode title and is unrelated to the query [DOC:web/11283].",
+          "confidence": 0.18,
+          "missing_information": "Specific information about Chaad's residency completion year with Contemporary Art is absent from the document."
+        },
+        {
+          "doc_id": "web/28797",
+          "source": "web",
+          "title": "https://wexarts.org/read-watch-listen/message-interim-directors",
+          "locator": "https://wexarts.org/read-watch-listen/message-interim-directors",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Chaad or specific residency program details related to Contemporary Art [DOC:web/28797].",
+          "confidence": 0.18,
+          "missing_information": "Specific information about Chaad's residency completion year with Contemporary Art is not present in the document."
+        },
+        {
+          "doc_id": "web/33897",
+          "source": "web",
+          "title": "https://www.artworkarchive.com/call-for-entry/complete-guide-to-2024-artist-grants-opportunities?opportunity_type_filter%5B%5D=5",
+          "locator": "https://www.artworkarchive.com/call-for-entry/complete-guide-to-2024-artist-grants-opportunities?opportunity_type_filter%5B%5D=5",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Chaad or any residency program related to Contemporary Art. It only discusses the NOT REAL ART Grant for Artists [DOC:web/33897].",
+          "confidence": 0.18,
+          "missing_information": "Information about Chaad's residency with Contemporary Art is not present in the document."
+        },
+        {
+          "doc_id": "web/63206",
+          "source": "web",
+          "title": "https://www.labiennale.org/en/news/biennale-arte-2024-stranieri-ovunque-foreigners-everywhere",
+          "locator": "https://www.labiennale.org/en/news/biennale-arte-2024-stranieri-ovunque-foreigners-everywhere",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Chaad or any residency program related to Contemporary Art. The content focuses on Biennale Arte 2024 details, sustainability initiatives, and exhibition structure [DOC:web/63206].",
+          "confidence": 0.15,
+          "missing_information": "Information about Chaad's residency completion date with Contemporary Art is not present in the provided document."
+        }
+      ],
+      "candidate_doc_ids": []
+    },
+    {
+      "hop_number": 2,
+      "question": "In what quarter of 2022 did Lee's Market launch its LED lighting retrofit program?",
+      "status": "pending",
+      "attempts": 0,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": null,
+      "search_history": [],
+      "selected_doc_ids": [],
+      "reader_results": [],
+      "candidate_doc_ids": []
+    },
+    {
+      "hop_number": 3,
+      "question": "What percentage reduction in overall lighting energy expenditure resulted from the initiative launched in Q3 2022?",
+      "status": "pending",
+      "attempts": 0,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": null,
+      "search_history": [],
+      "selected_doc_ids": [],
+      "reader_results": [],
+      "candidate_doc_ids": []
+    },
+    {
+      "hop_number": 4,
+      "question": "In which quarter did Lee's Market achieve a 12% reduction in transit times?",
+      "status": "pending",
+      "attempts": 0,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": null,
+      "search_history": [],
+      "selected_doc_ids": [],
+      "reader_results": [],
+      "candidate_doc_ids": []
+    }
+  ],
+  "actions": [
+    {
+      "id": "iter0_web_search_0",
+      "type": "web_search",
+      "description": "Search for Chaad's residency year with Contemporary Art",
+      "parameters": {
+        "query": "Chaad residency Contemporary Art completion year"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Chaad residency Contemporary Art completion year",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/76533",
+            "source": "web",
+            "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "rank": 1,
+            "score": 0.4857498109340668,
+            "queries": [
+              "Chaad residency Contemporary Art completion year",
+              "Chaad art residency timeline",
+              "Contemporary Art residency programs Chaad"
+            ],
+            "snippet": "---\ntitle: Contact Zones — Pamela Breda, Victoria Keddie, Sajan Mani\ndate: 2024-05-16\n---\nINHABIT // Artist-in-Residence\n\nThe INHABIT Artist-in-Residence Program of the Max Planck Institute for Empirical Aesthetics invites artists from various disciplines to collaborate with our team of scientists and researchers. The..."
+          },
+          {
+            "doc_id": "web/34940",
+            "source": "web",
+            "title": "https://resartis.org/open-calls/",
+            "locator": "https://resartis.org/open-calls/",
+            "rank": 2,
+            "score": 0.45507678389549255,
+            "queries": [
+              "Chaad residency Contemporary Art completion year",
+              "Chaad art residency timeline",
+              "Contemporary Art residency programs Chaad"
+            ],
+            "snippet": "---\ntitle: Open Calls\ndate: 2023-03-27\n---\nTo search current residency profiles only, click here >>\n\nTo search online/virtual residencies, please select 'Global' as your country option\n\nARTIST RESIDENCY 'MINIMAL TRAVELLING' BERLIN\n\nCountry: Germany\n\nWool and textile art and design residency (all art and design deciplin..."
+          },
+          {
+            "doc_id": "web/21203",
+            "source": "web",
+            "title": "https://www.studiomuseum.org/exhibitions/tenses",
+            "locator": "https://www.studiomuseum.org/exhibitions/tenses",
+            "rank": 3,
+            "score": 0.4531059265136719,
+            "queries": [
+              "Chaad residency Contemporary Art completion year"
+            ],
+            "snippet": "---\ntitle: Tenses: Artists in Residence 2015–2016\ndate: 2010-07-14\n---\nTenses presents recent works by 2015–16 artists in residence: painter Jordan Casteel (b. 1989), and multimedia artists EJ Hill (b. 1985) and Jibade-Khalil Huffman (b. 1981). The exhibition's title suggests the range of shifting possibilities in the..."
+          },
+          {
+            "doc_id": "web/86391",
+            "source": "web",
+            "title": "https://mandevilleartgallery.ucsd.edu/exhibitions/archive.html",
+            "locator": "https://mandevilleartgallery.ucsd.edu/exhibitions/archive.html",
+            "rank": 4,
+            "score": 0.45196250081062317,
+            "queries": [
+              "Chaad residency Contemporary Art completion year"
+            ],
+            "snippet": "---\ntitle: Exhibition Archive\ndate: 1996-03-23\n---\nExhibition Archive\n\nReview the Mandeville Art Gallery's exhibitions from 1966 to 2018 below.\n\nRead more about the Mandeville Art Gallery's full history here.2018 - 2016\n\n2018\n\nThe Agency of Art\n\nApril 12 – May 17, 2018\n\nCurated by Tatiana Sizonenko, Ph.D. '13\n\nIn the f..."
+          },
+          {
+            "doc_id": "web/30370",
+            "source": "web",
+            "title": "https://www.gagallery.com/news",
+            "locator": "https://www.gagallery.com/news",
+            "rank": 5,
+            "score": 0.4513709843158722,
+            "queries": [
+              "Chaad residency Contemporary Art completion year"
+            ],
+            "snippet": "---\ntitle: News\ndate: 2024-06-13\n---\n');\n\nSkip to contentMichael Rakowitz is one of the featured artists in the upcoming 25th edition of the Biennale of Sydney.\n\nAfra Al Dhaheri and Hera Büyüktaşcıyan will be part of the upcoming Taipei Biennial 2025.\n\nWhile our presence has become global, Green Art Gallery is forever..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.6518537339288741,
+      "iteration": 0
+    },
+    {
+      "id": "iter0_web_search_1",
+      "type": "web_search",
+      "description": "Search for Chaad's art residency timeline",
+      "parameters": {
+        "query": "Chaad art residency timeline"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Chaad art residency timeline",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/76533",
+            "source": "web",
+            "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "rank": 1,
+            "score": 0.5320379137992859,
+            "queries": [
+              "Chaad art residency timeline"
+            ],
+            "snippet": "---\ntitle: Contact Zones — Pamela Breda, Victoria Keddie, Sajan Mani\ndate: 2024-05-16\n---\nINHABIT // Artist-in-Residence\n\nThe INHABIT Artist-in-Residence Program of the Max Planck Institute for Empirical Aesthetics invites artists from various disciplines to collaborate with our team of scientists and researchers. The..."
+          },
+          {
+            "doc_id": "web/34940",
+            "source": "web",
+            "title": "https://resartis.org/open-calls/",
+            "locator": "https://resartis.org/open-calls/",
+            "rank": 2,
+            "score": 0.524968683719635,
+            "queries": [
+              "Chaad art residency timeline"
+            ],
+            "snippet": "---\ntitle: Open Calls\ndate: 2023-03-27\n---\nTo search current residency profiles only, click here >>\n\nTo search online/virtual residencies, please select 'Global' as your country option\n\nARTIST RESIDENCY 'MINIMAL TRAVELLING' BERLIN\n\nCountry: Germany\n\nWool and textile art and design residency (all art and design deciplin..."
+          },
+          {
+            "doc_id": "web/77710",
+            "source": "web",
+            "title": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "locator": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "rank": 3,
+            "score": 0.5078930258750916,
+            "queries": [
+              "Chaad art residency timeline",
+              "Contemporary Art residency programs Chaad"
+            ],
+            "snippet": "---\ntitle: Recipients of International Residency Scheme Announced\ndate: 2023-02-15\n---\nRecipients of International Residency Scheme Announced\n\nI bhFad i gCéin – Far Afield\n\nPoetry Ireland Announces Recipients of International Residency Scheme\n\nFunded by the Arts Council's International Residency Scheme 2022\n\nPoetry Ire..."
+          },
+          {
+            "doc_id": "web/81420",
+            "source": "web",
+            "title": "https://brandywineworkshopandarchives.org/history-and-achievements/",
+            "locator": "https://brandywineworkshopandarchives.org/history-and-achievements/",
+            "rank": 4,
+            "score": 0.5070492029190063,
+            "queries": [
+              "Chaad art residency timeline"
+            ],
+            "snippet": "---\ntitle: Our History\ndate: 2023-01-01\n---\nOur History\n\nNotable highlights include \"artpark\" collaborations with the Pennsylvania Horticultural Society, the River Bottom performance at the Aquarium mural project site with local seniors by Jonas Dos Santos in South Philadelphia's Point Breeze neighborhood.\n\nMany of the..."
+          },
+          {
+            "doc_id": "web/84535",
+            "source": "web",
+            "title": "https://www.hartford.edu/academics/schools-colleges/art/academics/default.aspx",
+            "locator": "https://www.hartford.edu/academics/schools-colleges/art/academics/default.aspx",
+            "rank": 5,
+            "score": 0.49162256717681885,
+            "queries": [
+              "Chaad art residency timeline"
+            ],
+            "snippet": "---\ntitle: Academics\ndate: 2025-02-01\n---\nYour Foundation Year\n\nYour foundation year introduces you to the fundamental processes and principles of art-making and design, and will help you determine your major. You will explore specific areas of interest and develop at a professional level from your very first day.\n\nLow..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.5134465778246522,
+      "iteration": 0
+    },
+    {
+      "id": "iter0_web_search_2",
+      "type": "web_search",
+      "description": "Search for Contemporary Art residency programs involving Chaad",
+      "parameters": {
+        "query": "Contemporary Art residency programs Chaad"
+      },
+      "priority": 0.6,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Contemporary Art residency programs Chaad",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/76533",
+            "source": "web",
+            "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "rank": 1,
+            "score": 0.5415500402450562,
+            "queries": [
+              "Contemporary Art residency programs Chaad"
+            ],
+            "snippet": "---\ntitle: Contact Zones — Pamela Breda, Victoria Keddie, Sajan Mani\ndate: 2024-05-16\n---\nINHABIT // Artist-in-Residence\n\nThe INHABIT Artist-in-Residence Program of the Max Planck Institute for Empirical Aesthetics invites artists from various disciplines to collaborate with our team of scientists and researchers. The..."
+          },
+          {
+            "doc_id": "web/34940",
+            "source": "web",
+            "title": "https://resartis.org/open-calls/",
+            "locator": "https://resartis.org/open-calls/",
+            "rank": 2,
+            "score": 0.5388342142105103,
+            "queries": [
+              "Contemporary Art residency programs Chaad"
+            ],
+            "snippet": "---\ntitle: Open Calls\ndate: 2023-03-27\n---\nTo search current residency profiles only, click here >>\n\nTo search online/virtual residencies, please select 'Global' as your country option\n\nARTIST RESIDENCY 'MINIMAL TRAVELLING' BERLIN\n\nCountry: Germany\n\nWool and textile art and design residency (all art and design deciplin..."
+          },
+          {
+            "doc_id": "web/77710",
+            "source": "web",
+            "title": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "locator": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "rank": 3,
+            "score": 0.5297391414642334,
+            "queries": [
+              "Contemporary Art residency programs Chaad"
+            ],
+            "snippet": "---\ntitle: Recipients of International Residency Scheme Announced\ndate: 2023-02-15\n---\nRecipients of International Residency Scheme Announced\n\nI bhFad i gCéin – Far Afield\n\nPoetry Ireland Announces Recipients of International Residency Scheme\n\nFunded by the Arts Council's International Residency Scheme 2022\n\nPoetry Ire..."
+          },
+          {
+            "doc_id": "web/28797",
+            "source": "web",
+            "title": "https://wexarts.org/read-watch-listen/message-interim-directors",
+            "locator": "https://wexarts.org/read-watch-listen/message-interim-directors",
+            "rank": 4,
+            "score": 0.5162081718444824,
+            "queries": [
+              "Contemporary Art residency programs Chaad"
+            ],
+            "snippet": "---\ntitle: A message from the Interim Directors\nauthor: Megan Cavanaugh; Kelly Stevelt\ndate: 2022-11-03\n---\nNovember 2022\n\nYou may have seen recent reports on how the museum space can serve as a resource for health and resilience programs. Here's a handy recap of some of that research from the folks at MuseumNext.\n\nThe..."
+          },
+          {
+            "doc_id": "web/80241",
+            "source": "web",
+            "title": "https://www.collegeart.org/news/category/students/",
+            "locator": "https://www.collegeart.org/news/category/students/",
+            "rank": 5,
+            "score": 0.5054950714111328,
+            "queries": [
+              "Contemporary Art residency programs Chaad",
+              "Chaad professional milestones art"
+            ],
+            "snippet": "---\ntitle: CAA News Today\ndate: 2023-03-07\n---\nCAA News Today\n\nMeet the Michael Aurbach Fellowship for Excellence in Visual Art Inaugural Recipient and Honorable Mentions\n\nposted by CAA — March 07, 2023\n\nCAA is pleased to announce the first ever recipient of the first Michael Aurbach Fellowship for Excellence in Visual..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.5132594469469041,
+      "iteration": 0
+    },
+    {
+      "id": "iter0_web_search_3",
+      "type": "web_search",
+      "description": "Search for Chaad's professional milestones in art",
+      "parameters": {
+        "query": "Chaad professional milestones art"
+      },
+      "priority": 0.5,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Chaad professional milestones art",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/80241",
+            "source": "web",
+            "title": "https://www.collegeart.org/news/category/students/",
+            "locator": "https://www.collegeart.org/news/category/students/",
+            "rank": 1,
+            "score": 0.5322777032852173,
+            "queries": [
+              "Chaad professional milestones art"
+            ],
+            "snippet": "---\ntitle: CAA News Today\ndate: 2023-03-07\n---\nCAA News Today\n\nMeet the Michael Aurbach Fellowship for Excellence in Visual Art Inaugural Recipient and Honorable Mentions\n\nposted by CAA — March 07, 2023\n\nCAA is pleased to announce the first ever recipient of the first Michael Aurbach Fellowship for Excellence in Visual..."
+          },
+          {
+            "doc_id": "web/43663",
+            "source": "web",
+            "title": "https://sfa.uconn.edu/notable-alumni/",
+            "locator": "https://sfa.uconn.edu/notable-alumni/",
+            "rank": 2,
+            "score": 0.48856422305107117,
+            "queries": [
+              "Chaad professional milestones art"
+            ],
+            "snippet": "---\ntitle: School of Fine Arts\ndate: 2022-02-21\n---\nNotable Alumni\n\nUConn School of Fine Arts has an incredible variety of alums graduated from programs in our Art & Art History, Dramatic Arts, Digital Media & Design, and Music departments. SFA alumni have careers as film makers, television producers, performers, actor..."
+          },
+          {
+            "doc_id": "web/98335",
+            "source": "web",
+            "title": "https://www.artsy.net/article/artsy-editorial-artsy-vanguard-2022",
+            "locator": "https://www.artsy.net/article/artsy-editorial-artsy-vanguard-2022",
+            "rank": 3,
+            "score": 0.4749026894569397,
+            "queries": [
+              "Chaad professional milestones art"
+            ],
+            "snippet": "---\ntitle: The Artsy Vanguard 2022\ndate: 2022-11-15\n---\nThe Artsy Vanguard 2022\n\nThe Artsy Vanguard, now in its fifth edition, is our annual feature spotlighting the most promising artists working today. The group of rising talents we feature this year is multigenerational, international, and multidisciplinary—their me..."
+          },
+          {
+            "doc_id": "web/71811",
+            "source": "web",
+            "title": "https://www.miad.edu/academic-programs/degree-programs/new-studio-practice/success",
+            "locator": "https://www.miad.edu/academic-programs/degree-programs/new-studio-practice/success",
+            "rank": 4,
+            "score": 0.47025370597839355,
+            "queries": [
+              "Chaad professional milestones art"
+            ],
+            "snippet": "---\ntitle: Fine Art + New Studio Practice: Success\ndate: 2004-05-01\n---\nFine Art + New Studio Practice: Success\n\nMIAD graduates are individuals whose lifelong passions have become lifelong careers. Many MIAD alumni have pursued directly related to their academic program, while others have taken their culmination of ski..."
+          },
+          {
+            "doc_id": "web/7564",
+            "source": "web",
+            "title": "https://cranbrookart.edu/alumni/award-winning-cranbrook-alumni-artists/",
+            "locator": "https://cranbrookart.edu/alumni/award-winning-cranbrook-alumni-artists/",
+            "rank": 5,
+            "score": 0.4528564512729645,
+            "queries": [
+              "Chaad professional milestones art"
+            ],
+            "snippet": "---\ntitle: Cranbrook Academy of Art\ndate: 2018-11-01\n---\nRow 1 from left to right: McArthur Binion, Annabeth Rosen, Peter Bohlin. Row 2 from left to right: Ruth Adler Schnee, Tiff Massey. Row 3 from left to right: Niels Diffrient, Nick Cave, Gere Kavanaugh.\n\nCranbrook Academy of Art\n\nCranbrook Academy of Art\n\nAward-Win..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.6515811560675502,
+      "iteration": 0
+    },
+    {
+      "id": "iter1_local_document_search_0",
+      "type": "local_document_search",
+      "description": "Check documents from prior searches for mentions of Chaad's residency completion year",
+      "parameters": {
+        "query": "Check documents from prior searches for mentions of Chaad's residency completion year"
+      },
+      "priority": 0.9,
+      "expected_output": "Specific details about Chaad's residency timeline or completion year",
+      "status": "completed",
+      "actual_output": {
+        "tool": "local_document_search",
+        "query": "Check documents from prior searches for mentions of Chaad's residency completion year",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "doc_19656322_1776278533",
+            "source": "local",
+            "title": "roundcube_email_20250818_112818.jsonl",
+            "locator": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0001/files/DI001_roundcube/roundcube_email_20250818_112818.jsonl",
+            "rank": 1,
+            "score": 0.22066802211949668,
+            "queries": [
+              "Check documents from prior searches for mentions of Chaad's residency completion year"
+            ],
+            "snippet": "\nEmail Message:\nFrom: olivia.hong@leesmarket.com\nTo: emily.patel@leesmarket.com, peter.tran@leesmarket.com\nSubject: Customer Feedback and Satisfaction Survey Results\nDate: 2023-07-18 14:30:00\nBody: Hi Emily and Peter,\n\nI wanted to share the results of our recent customer feedback and satisfaction survey. The survey was..."
+          },
+          {
+            "doc_id": "doc_b49e50d7_1776278533",
+            "source": "local",
+            "title": "food-safety-compliance.pdf",
+            "locator": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0001/files/IN002_pdf/food-safety-compliance.pdf",
+            "rank": 2,
+            "score": 0.21498244367624011,
+            "queries": [
+              "Check documents from prior searches for mentions of Chaad's residency completion year"
+            ],
+            "snippet": "Enhancing Food Safety through Regulatory\nCompliance\nIntroduction\nAs a leading Asian supermarket chain, Lee's Market prioritizes providing high-quality products to our\ncustomers while ensuring their safety . The FDA's Food Safety Modernization Act (FSMA) 204\nregulations have introduced new requirements for food traceabi..."
+          },
+          {
+            "doc_id": "doc_bb634550_1776278533",
+            "source": "local",
+            "title": "food-safety-regulatory-compliance.pdf",
+            "locator": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0001/files/IN001_pdf/food-safety-regulatory-compliance.pdf",
+            "rank": 3,
+            "score": 0.20063960660617985,
+            "queries": [
+              "Check documents from prior searches for mentions of Chaad's residency completion year"
+            ],
+            "snippet": "Enhancing Food Safety Through Regulatory\nCompliance\nIntroduction\nAs Lee's Market continues to expand its operations across the U.S. and Canada, ensuring compliance\nwith evolving regulatory requirements is crucial for maintaining customer trust and upholding our brand\nreputation. The FDA's Food Safety Modernization Act..."
+          },
+          {
+            "doc_id": "doc_2f00042c_1776278533",
+            "source": "local",
+            "title": "roundcube_email_20250818_112818.jsonl",
+            "locator": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0001/files/DI001_roundcube/roundcube_email_20250818_112818.jsonl",
+            "rank": 4,
+            "score": 0.18503778626443196,
+            "queries": [
+              "Check documents from prior searches for mentions of Chaad's residency completion year"
+            ],
+            "snippet": "\nEmail Message:\nFrom: david.chen@leesmarket.com\nTo: emily.patel@leesmarket.com, jason.kim@leesmarket.com\nSubject: Technology Implementation Update - New Inventory Management System\nDate: 2023-07-22 11:15:00\nBody: Hi Team,\n\nI wanted to provide an update on the implementation of our new inventory management system. The s..."
+          },
+          {
+            "doc_id": "doc_64f92912_1776278533",
+            "source": "local",
+            "title": "roundcube_email_20250818_112818.jsonl",
+            "locator": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0001/files/DI001_roundcube/roundcube_email_20250818_112818.jsonl",
+            "rank": 5,
+            "score": 0.18280009505139025,
+            "queries": [
+              "Check documents from prior searches for mentions of Chaad's residency completion year"
+            ],
+            "snippet": "\nEmail Message:\nFrom: emily.patel@leesmarket.com\nTo: jason.kim@leesmarket.com, sophia.lee@leesmarket.com\nSubject: Q2 Budget Review and Planning\nDate: 2023-07-20 10:00:00\nBody: Dear Team,\n\nI hope this email finds you well. As we approach the end of Q2, it's time to review our budget and plan for the next quarter. I've a..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.30045909411273897,
+      "iteration": 1
+    },
+    {
+      "id": "iter1_web_search_1",
+      "type": "web_search",
+      "description": "Search for Chaad's art residency completion date with additional specificity",
+      "parameters": {
+        "query": "Chaad Contemporary Art residency program completion year"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Chaad Contemporary Art residency program completion year",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/76533",
+            "source": "web",
+            "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "rank": 1,
+            "score": 0.5263861417770386,
+            "queries": [
+              "Chaad Contemporary Art residency program completion year"
+            ],
+            "snippet": "---\ntitle: Contact Zones — Pamela Breda, Victoria Keddie, Sajan Mani\ndate: 2024-05-16\n---\nINHABIT // Artist-in-Residence\n\nThe INHABIT Artist-in-Residence Program of the Max Planck Institute for Empirical Aesthetics invites artists from various disciplines to collaborate with our team of scientists and researchers. The..."
+          },
+          {
+            "doc_id": "web/34940",
+            "source": "web",
+            "title": "https://resartis.org/open-calls/",
+            "locator": "https://resartis.org/open-calls/",
+            "rank": 2,
+            "score": 0.5244143009185791,
+            "queries": [
+              "Chaad Contemporary Art residency program completion year",
+              "Chaad art residency program milestones"
+            ],
+            "snippet": "---\ntitle: Open Calls\ndate: 2023-03-27\n---\nTo search current residency profiles only, click here >>\n\nTo search online/virtual residencies, please select 'Global' as your country option\n\nARTIST RESIDENCY 'MINIMAL TRAVELLING' BERLIN\n\nCountry: Germany\n\nWool and textile art and design residency (all art and design deciplin..."
+          },
+          {
+            "doc_id": "web/77710",
+            "source": "web",
+            "title": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "locator": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "rank": 3,
+            "score": 0.5113739371299744,
+            "queries": [
+              "Chaad Contemporary Art residency program completion year",
+              "Chaad art residency program milestones"
+            ],
+            "snippet": "---\ntitle: Recipients of International Residency Scheme Announced\ndate: 2023-02-15\n---\nRecipients of International Residency Scheme Announced\n\nI bhFad i gCéin – Far Afield\n\nPoetry Ireland Announces Recipients of International Residency Scheme\n\nFunded by the Arts Council's International Residency Scheme 2022\n\nPoetry Ire..."
+          },
+          {
+            "doc_id": "web/84535",
+            "source": "web",
+            "title": "https://www.hartford.edu/academics/schools-colleges/art/academics/default.aspx",
+            "locator": "https://www.hartford.edu/academics/schools-colleges/art/academics/default.aspx",
+            "rank": 4,
+            "score": 0.5092880725860596,
+            "queries": [
+              "Chaad Contemporary Art residency program completion year",
+              "Chaad art residency program milestones"
+            ],
+            "snippet": "---\ntitle: Academics\ndate: 2025-02-01\n---\nYour Foundation Year\n\nYour foundation year introduces you to the fundamental processes and principles of art-making and design, and will help you determine your major. You will explore specific areas of interest and develop at a professional level from your very first day.\n\nLow..."
+          },
+          {
+            "doc_id": "web/30370",
+            "source": "web",
+            "title": "https://www.gagallery.com/news",
+            "locator": "https://www.gagallery.com/news",
+            "rank": 5,
+            "score": 0.49940454959869385,
+            "queries": [
+              "Chaad Contemporary Art residency program completion year"
+            ],
+            "snippet": "---\ntitle: News\ndate: 2024-06-13\n---\n');\n\nSkip to contentMichael Rakowitz is one of the featured artists in the upcoming 25th edition of the Biennale of Sydney.\n\nAfra Al Dhaheri and Hera Büyüktaşcıyan will be part of the upcoming Taipei Biennial 2025.\n\nWhile our presence has become global, Green Art Gallery is forever..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.47221864899620414,
+      "iteration": 1
+    },
+    {
+      "id": "iter1_web_search_2",
+      "type": "web_search",
+      "description": "Search for Chaad's professional timeline with art residency focus",
+      "parameters": {
+        "query": "Chaad art residency program milestones"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Chaad art residency program milestones",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/81420",
+            "source": "web",
+            "title": "https://brandywineworkshopandarchives.org/history-and-achievements/",
+            "locator": "https://brandywineworkshopandarchives.org/history-and-achievements/",
+            "rank": 1,
+            "score": 0.5329506397247314,
+            "queries": [
+              "Chaad art residency program milestones"
+            ],
+            "snippet": "---\ntitle: Our History\ndate: 2023-01-01\n---\nOur History\n\nNotable highlights include \"artpark\" collaborations with the Pennsylvania Horticultural Society, the River Bottom performance at the Aquarium mural project site with local seniors by Jonas Dos Santos in South Philadelphia's Point Breeze neighborhood.\n\nMany of the..."
+          },
+          {
+            "doc_id": "web/77710",
+            "source": "web",
+            "title": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "locator": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "rank": 2,
+            "score": 0.5270313024520874,
+            "queries": [
+              "Chaad art residency program milestones"
+            ],
+            "snippet": "---\ntitle: Recipients of International Residency Scheme Announced\ndate: 2023-02-15\n---\nRecipients of International Residency Scheme Announced\n\nI bhFad i gCéin – Far Afield\n\nPoetry Ireland Announces Recipients of International Residency Scheme\n\nFunded by the Arts Council's International Residency Scheme 2022\n\nPoetry Ire..."
+          },
+          {
+            "doc_id": "web/76533",
+            "source": "web",
+            "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "rank": 3,
+            "score": 0.5264468193054199,
+            "queries": [
+              "Chaad art residency program milestones"
+            ],
+            "snippet": "---\ntitle: Contact Zones — Pamela Breda, Victoria Keddie, Sajan Mani\ndate: 2024-05-16\n---\nINHABIT // Artist-in-Residence\n\nThe INHABIT Artist-in-Residence Program of the Max Planck Institute for Empirical Aesthetics invites artists from various disciplines to collaborate with our team of scientists and researchers. The..."
+          },
+          {
+            "doc_id": "web/84535",
+            "source": "web",
+            "title": "https://www.hartford.edu/academics/schools-colleges/art/academics/default.aspx",
+            "locator": "https://www.hartford.edu/academics/schools-colleges/art/academics/default.aspx",
+            "rank": 4,
+            "score": 0.5186545252799988,
+            "queries": [
+              "Chaad art residency program milestones"
+            ],
+            "snippet": "---\ntitle: Academics\ndate: 2025-02-01\n---\nYour Foundation Year\n\nYour foundation year introduces you to the fundamental processes and principles of art-making and design, and will help you determine your major. You will explore specific areas of interest and develop at a professional level from your very first day.\n\nLow..."
+          },
+          {
+            "doc_id": "web/34940",
+            "source": "web",
+            "title": "https://resartis.org/open-calls/",
+            "locator": "https://resartis.org/open-calls/",
+            "rank": 5,
+            "score": 0.5142602920532227,
+            "queries": [
+              "Chaad art residency program milestones"
+            ],
+            "snippet": "---\ntitle: Open Calls\ndate: 2023-03-27\n---\nTo search current residency profiles only, click here >>\n\nTo search online/virtual residencies, please select 'Global' as your country option\n\nARTIST RESIDENCY 'MINIMAL TRAVELLING' BERLIN\n\nCountry: Germany\n\nWool and textile art and design residency (all art and design deciplin..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.30394821893423796,
+      "iteration": 1
+    },
+    {
+      "id": "iter2_web_search_0",
+      "type": "web_search",
+      "description": "Search for Chaad's Contemporary Art residency completion date",
+      "parameters": {
+        "query": "Chaad Contemporary Art residency completion date"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Chaad Contemporary Art residency completion date",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/76533",
+            "source": "web",
+            "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "rank": 1,
+            "score": 0.5518795847892761,
+            "queries": [
+              "Chaad Contemporary Art residency completion date"
+            ],
+            "snippet": "---\ntitle: Contact Zones — Pamela Breda, Victoria Keddie, Sajan Mani\ndate: 2024-05-16\n---\nINHABIT // Artist-in-Residence\n\nThe INHABIT Artist-in-Residence Program of the Max Planck Institute for Empirical Aesthetics invites artists from various disciplines to collaborate with our team of scientists and researchers. The..."
+          },
+          {
+            "doc_id": "web/34940",
+            "source": "web",
+            "title": "https://resartis.org/open-calls/",
+            "locator": "https://resartis.org/open-calls/",
+            "rank": 2,
+            "score": 0.5357437133789062,
+            "queries": [
+              "Chaad Contemporary Art residency completion date",
+              "Chaad art residency program end year"
+            ],
+            "snippet": "---\ntitle: Open Calls\ndate: 2023-03-27\n---\nTo search current residency profiles only, click here >>\n\nTo search online/virtual residencies, please select 'Global' as your country option\n\nARTIST RESIDENCY 'MINIMAL TRAVELLING' BERLIN\n\nCountry: Germany\n\nWool and textile art and design residency (all art and design deciplin..."
+          },
+          {
+            "doc_id": "web/77710",
+            "source": "web",
+            "title": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "locator": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "rank": 3,
+            "score": 0.5035585165023804,
+            "queries": [
+              "Chaad Contemporary Art residency completion date"
+            ],
+            "snippet": "---\ntitle: Recipients of International Residency Scheme Announced\ndate: 2023-02-15\n---\nRecipients of International Residency Scheme Announced\n\nI bhFad i gCéin – Far Afield\n\nPoetry Ireland Announces Recipients of International Residency Scheme\n\nFunded by the Arts Council's International Residency Scheme 2022\n\nPoetry Ire..."
+          },
+          {
+            "doc_id": "web/30370",
+            "source": "web",
+            "title": "https://www.gagallery.com/news",
+            "locator": "https://www.gagallery.com/news",
+            "rank": 4,
+            "score": 0.502576470375061,
+            "queries": [
+              "Chaad Contemporary Art residency completion date",
+              "Chaad residency timeline Contemporary Art"
+            ],
+            "snippet": "---\ntitle: News\ndate: 2024-06-13\n---\n');\n\nSkip to contentMichael Rakowitz is one of the featured artists in the upcoming 25th edition of the Biennale of Sydney.\n\nAfra Al Dhaheri and Hera Büyüktaşcıyan will be part of the upcoming Taipei Biennial 2025.\n\nWhile our presence has become global, Green Art Gallery is forever..."
+          },
+          {
+            "doc_id": "web/21203",
+            "source": "web",
+            "title": "https://www.studiomuseum.org/exhibitions/tenses",
+            "locator": "https://www.studiomuseum.org/exhibitions/tenses",
+            "rank": 5,
+            "score": 0.4965294301509857,
+            "queries": [
+              "Chaad Contemporary Art residency completion date",
+              "Chaad residency timeline Contemporary Art"
+            ],
+            "snippet": "---\ntitle: Tenses: Artists in Residence 2015–2016\ndate: 2010-07-14\n---\nTenses presents recent works by 2015–16 artists in residence: painter Jordan Casteel (b. 1989), and multimedia artists EJ Hill (b. 1985) and Jibade-Khalil Huffman (b. 1981). The exhibition's title suggests the range of shifting possibilities in the..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.36634246492758393,
+      "iteration": 2
+    },
+    {
+      "id": "iter2_web_search_2",
+      "type": "web_search",
+      "description": "Search for Chaad's residency timeline with Contemporary Art",
+      "parameters": {
+        "query": "Chaad residency timeline Contemporary Art"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Chaad residency timeline Contemporary Art",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/76533",
+            "source": "web",
+            "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "rank": 1,
+            "score": 0.5016685128211975,
+            "queries": [
+              "Chaad residency timeline Contemporary Art"
+            ],
+            "snippet": "---\ntitle: Contact Zones — Pamela Breda, Victoria Keddie, Sajan Mani\ndate: 2024-05-16\n---\nINHABIT // Artist-in-Residence\n\nThe INHABIT Artist-in-Residence Program of the Max Planck Institute for Empirical Aesthetics invites artists from various disciplines to collaborate with our team of scientists and researchers. The..."
+          },
+          {
+            "doc_id": "web/86391",
+            "source": "web",
+            "title": "https://mandevilleartgallery.ucsd.edu/exhibitions/archive.html",
+            "locator": "https://mandevilleartgallery.ucsd.edu/exhibitions/archive.html",
+            "rank": 2,
+            "score": 0.47953110933303833,
+            "queries": [
+              "Chaad residency timeline Contemporary Art"
+            ],
+            "snippet": "---\ntitle: Exhibition Archive\ndate: 1996-03-23\n---\nExhibition Archive\n\nReview the Mandeville Art Gallery's exhibitions from 1966 to 2018 below.\n\nRead more about the Mandeville Art Gallery's full history here.2018 - 2016\n\n2018\n\nThe Agency of Art\n\nApril 12 – May 17, 2018\n\nCurated by Tatiana Sizonenko, Ph.D. '13\n\nIn the f..."
+          },
+          {
+            "doc_id": "web/21203",
+            "source": "web",
+            "title": "https://www.studiomuseum.org/exhibitions/tenses",
+            "locator": "https://www.studiomuseum.org/exhibitions/tenses",
+            "rank": 3,
+            "score": 0.47694599628448486,
+            "queries": [
+              "Chaad residency timeline Contemporary Art"
+            ],
+            "snippet": "---\ntitle: Tenses: Artists in Residence 2015–2016\ndate: 2010-07-14\n---\nTenses presents recent works by 2015–16 artists in residence: painter Jordan Casteel (b. 1989), and multimedia artists EJ Hill (b. 1985) and Jibade-Khalil Huffman (b. 1981). The exhibition's title suggests the range of shifting possibilities in the..."
+          },
+          {
+            "doc_id": "web/57381",
+            "source": "web",
+            "title": "https://www.eddiechambers.com/biography/",
+            "locator": "https://www.eddiechambers.com/biography/",
+            "rank": 4,
+            "score": 0.4735886752605438,
+            "queries": [
+              "Chaad residency timeline Contemporary Art"
+            ],
+            "snippet": "---\ntitle: Eddie Chambers: Biography\ndate: 2021-07-01\n---\nEddie Chambers\n\nEddie Chambers was born in Wolverhampton, and currently lives between Bristol, England, Edinburgh, Scotland, and Austin, Texas. His education includes a BA (Hons) in Fine Art from Sunderland Polytechnic, awarded in 1983, and a Ph.D in Art History..."
+          },
+          {
+            "doc_id": "web/30370",
+            "source": "web",
+            "title": "https://www.gagallery.com/news",
+            "locator": "https://www.gagallery.com/news",
+            "rank": 5,
+            "score": 0.4699631333351135,
+            "queries": [
+              "Chaad residency timeline Contemporary Art"
+            ],
+            "snippet": "---\ntitle: News\ndate: 2024-06-13\n---\n');\n\nSkip to contentMichael Rakowitz is one of the featured artists in the upcoming 25th edition of the Biennale of Sydney.\n\nAfra Al Dhaheri and Hera Büyüktaşcıyan will be part of the upcoming Taipei Biennial 2025.\n\nWhile our presence has become global, Green Art Gallery is forever..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.3589565921574831,
+      "iteration": 2
+    },
+    {
+      "id": "iter2_web_search_3",
+      "type": "web_search",
+      "description": "Search for Chaad's art residency program end year",
+      "parameters": {
+        "query": "Chaad art residency program end year"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Chaad art residency program end year",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/34940",
+            "source": "web",
+            "title": "https://resartis.org/open-calls/",
+            "locator": "https://resartis.org/open-calls/",
+            "rank": 1,
+            "score": 0.5403024554252625,
+            "queries": [
+              "Chaad art residency program end year"
+            ],
+            "snippet": "---\ntitle: Open Calls\ndate: 2023-03-27\n---\nTo search current residency profiles only, click here >>\n\nTo search online/virtual residencies, please select 'Global' as your country option\n\nARTIST RESIDENCY 'MINIMAL TRAVELLING' BERLIN\n\nCountry: Germany\n\nWool and textile art and design residency (all art and design deciplin..."
+          },
+          {
+            "doc_id": "web/77710",
+            "source": "web",
+            "title": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "locator": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "rank": 2,
+            "score": 0.5300191640853882,
+            "queries": [
+              "Chaad art residency program end year"
+            ],
+            "snippet": "---\ntitle: Recipients of International Residency Scheme Announced\ndate: 2023-02-15\n---\nRecipients of International Residency Scheme Announced\n\nI bhFad i gCéin – Far Afield\n\nPoetry Ireland Announces Recipients of International Residency Scheme\n\nFunded by the Arts Council's International Residency Scheme 2022\n\nPoetry Ire..."
+          },
+          {
+            "doc_id": "web/76533",
+            "source": "web",
+            "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "rank": 3,
+            "score": 0.5254865884780884,
+            "queries": [
+              "Chaad art residency program end year"
+            ],
+            "snippet": "---\ntitle: Contact Zones — Pamela Breda, Victoria Keddie, Sajan Mani\ndate: 2024-05-16\n---\nINHABIT // Artist-in-Residence\n\nThe INHABIT Artist-in-Residence Program of the Max Planck Institute for Empirical Aesthetics invites artists from various disciplines to collaborate with our team of scientists and researchers. The..."
+          },
+          {
+            "doc_id": "web/84535",
+            "source": "web",
+            "title": "https://www.hartford.edu/academics/schools-colleges/art/academics/default.aspx",
+            "locator": "https://www.hartford.edu/academics/schools-colleges/art/academics/default.aspx",
+            "rank": 4,
+            "score": 0.524065375328064,
+            "queries": [
+              "Chaad art residency program end year"
+            ],
+            "snippet": "---\ntitle: Academics\ndate: 2025-02-01\n---\nYour Foundation Year\n\nYour foundation year introduces you to the fundamental processes and principles of art-making and design, and will help you determine your major. You will explore specific areas of interest and develop at a professional level from your very first day.\n\nLow..."
+          },
+          {
+            "doc_id": "web/81420",
+            "source": "web",
+            "title": "https://brandywineworkshopandarchives.org/history-and-achievements/",
+            "locator": "https://brandywineworkshopandarchives.org/history-and-achievements/",
+            "rank": 5,
+            "score": 0.4990827441215515,
+            "queries": [
+              "Chaad art residency program end year"
+            ],
+            "snippet": "---\ntitle: Our History\ndate: 2023-01-01\n---\nOur History\n\nNotable highlights include \"artpark\" collaborations with the Pennsylvania Horticultural Society, the River Bottom performance at the Aquarium mural project site with local seniors by Jonas Dos Santos in South Philadelphia's Point Breeze neighborhood.\n\nMany of the..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.2763665250968188,
+      "iteration": 2
+    },
+    {
+      "id": "iter3_web_search_0",
+      "type": "web_search",
+      "description": "Search for Chaad's Contemporary Art residency completion year using alternative phrasings",
+      "parameters": {
+        "query": "Chaad Contemporary Art residency program end year"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Chaad Contemporary Art residency program end year",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/34940",
+            "source": "web",
+            "title": "https://resartis.org/open-calls/",
+            "locator": "https://resartis.org/open-calls/",
+            "rank": 1,
+            "score": 0.5378314852714539,
+            "queries": [
+              "Chaad Contemporary Art residency program end year"
+            ],
+            "snippet": "---\ntitle: Open Calls\ndate: 2023-03-27\n---\nTo search current residency profiles only, click here >>\n\nTo search online/virtual residencies, please select 'Global' as your country option\n\nARTIST RESIDENCY 'MINIMAL TRAVELLING' BERLIN\n\nCountry: Germany\n\nWool and textile art and design residency (all art and design deciplin..."
+          },
+          {
+            "doc_id": "web/77710",
+            "source": "web",
+            "title": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "locator": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "rank": 2,
+            "score": 0.5244013071060181,
+            "queries": [
+              "Chaad Contemporary Art residency program end year"
+            ],
+            "snippet": "---\ntitle: Recipients of International Residency Scheme Announced\ndate: 2023-02-15\n---\nRecipients of International Residency Scheme Announced\n\nI bhFad i gCéin – Far Afield\n\nPoetry Ireland Announces Recipients of International Residency Scheme\n\nFunded by the Arts Council's International Residency Scheme 2022\n\nPoetry Ire..."
+          },
+          {
+            "doc_id": "web/76533",
+            "source": "web",
+            "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "rank": 3,
+            "score": 0.5219535827636719,
+            "queries": [
+              "Chaad Contemporary Art residency program end year"
+            ],
+            "snippet": "---\ntitle: Contact Zones — Pamela Breda, Victoria Keddie, Sajan Mani\ndate: 2024-05-16\n---\nINHABIT // Artist-in-Residence\n\nThe INHABIT Artist-in-Residence Program of the Max Planck Institute for Empirical Aesthetics invites artists from various disciplines to collaborate with our team of scientists and researchers. The..."
+          },
+          {
+            "doc_id": "web/84535",
+            "source": "web",
+            "title": "https://www.hartford.edu/academics/schools-colleges/art/academics/default.aspx",
+            "locator": "https://www.hartford.edu/academics/schools-colleges/art/academics/default.aspx",
+            "rank": 4,
+            "score": 0.5049716234207153,
+            "queries": [
+              "Chaad Contemporary Art residency program end year"
+            ],
+            "snippet": "---\ntitle: Academics\ndate: 2025-02-01\n---\nYour Foundation Year\n\nYour foundation year introduces you to the fundamental processes and principles of art-making and design, and will help you determine your major. You will explore specific areas of interest and develop at a professional level from your very first day.\n\nLow..."
+          },
+          {
+            "doc_id": "web/28797",
+            "source": "web",
+            "title": "https://wexarts.org/read-watch-listen/message-interim-directors",
+            "locator": "https://wexarts.org/read-watch-listen/message-interim-directors",
+            "rank": 5,
+            "score": 0.5038362741470337,
+            "queries": [
+              "Chaad Contemporary Art residency program end year"
+            ],
+            "snippet": "---\ntitle: A message from the Interim Directors\nauthor: Megan Cavanaugh; Kelly Stevelt\ndate: 2022-11-03\n---\nNovember 2022\n\nYou may have seen recent reports on how the museum space can serve as a resource for health and resilience programs. Here's a handy recap of some of that research from the folks at MuseumNext.\n\nThe..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 1.069095625076443,
+      "iteration": 3
+    },
+    {
+      "id": "iter3_web_search_1",
+      "type": "web_search",
+      "description": "Search for Chaad's art residency milestones with Contemporary Art",
+      "parameters": {
+        "query": "Chaad art residency Contemporary Art milestones"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Chaad art residency Contemporary Art milestones",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/76533",
+            "source": "web",
+            "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "rank": 1,
+            "score": 0.5202035903930664,
+            "queries": [
+              "Chaad art residency Contemporary Art milestones"
+            ],
+            "snippet": "---\ntitle: Contact Zones — Pamela Breda, Victoria Keddie, Sajan Mani\ndate: 2024-05-16\n---\nINHABIT // Artist-in-Residence\n\nThe INHABIT Artist-in-Residence Program of the Max Planck Institute for Empirical Aesthetics invites artists from various disciplines to collaborate with our team of scientists and researchers. The..."
+          },
+          {
+            "doc_id": "web/30370",
+            "source": "web",
+            "title": "https://www.gagallery.com/news",
+            "locator": "https://www.gagallery.com/news",
+            "rank": 2,
+            "score": 0.5104917287826538,
+            "queries": [
+              "Chaad art residency Contemporary Art milestones"
+            ],
+            "snippet": "---\ntitle: News\ndate: 2024-06-13\n---\n');\n\nSkip to contentMichael Rakowitz is one of the featured artists in the upcoming 25th edition of the Biennale of Sydney.\n\nAfra Al Dhaheri and Hera Büyüktaşcıyan will be part of the upcoming Taipei Biennial 2025.\n\nWhile our presence has become global, Green Art Gallery is forever..."
+          },
+          {
+            "doc_id": "web/81420",
+            "source": "web",
+            "title": "https://brandywineworkshopandarchives.org/history-and-achievements/",
+            "locator": "https://brandywineworkshopandarchives.org/history-and-achievements/",
+            "rank": 3,
+            "score": 0.5096096992492676,
+            "queries": [
+              "Chaad art residency Contemporary Art milestones"
+            ],
+            "snippet": "---\ntitle: Our History\ndate: 2023-01-01\n---\nOur History\n\nNotable highlights include \"artpark\" collaborations with the Pennsylvania Horticultural Society, the River Bottom performance at the Aquarium mural project site with local seniors by Jonas Dos Santos in South Philadelphia's Point Breeze neighborhood.\n\nMany of the..."
+          },
+          {
+            "doc_id": "web/80241",
+            "source": "web",
+            "title": "https://www.collegeart.org/news/category/students/",
+            "locator": "https://www.collegeart.org/news/category/students/",
+            "rank": 4,
+            "score": 0.5065655708312988,
+            "queries": [
+              "Chaad art residency Contemporary Art milestones"
+            ],
+            "snippet": "---\ntitle: CAA News Today\ndate: 2023-03-07\n---\nCAA News Today\n\nMeet the Michael Aurbach Fellowship for Excellence in Visual Art Inaugural Recipient and Honorable Mentions\n\nposted by CAA — March 07, 2023\n\nCAA is pleased to announce the first ever recipient of the first Michael Aurbach Fellowship for Excellence in Visual..."
+          },
+          {
+            "doc_id": "web/86391",
+            "source": "web",
+            "title": "https://mandevilleartgallery.ucsd.edu/exhibitions/archive.html",
+            "locator": "https://mandevilleartgallery.ucsd.edu/exhibitions/archive.html",
+            "rank": 5,
+            "score": 0.5053696632385254,
+            "queries": [
+              "Chaad art residency Contemporary Art milestones",
+              "Chaad residency timeline Contemporary Art organization"
+            ],
+            "snippet": "---\ntitle: Exhibition Archive\ndate: 1996-03-23\n---\nExhibition Archive\n\nReview the Mandeville Art Gallery's exhibitions from 1966 to 2018 below.\n\nRead more about the Mandeville Art Gallery's full history here.2018 - 2016\n\n2018\n\nThe Agency of Art\n\nApril 12 – May 17, 2018\n\nCurated by Tatiana Sizonenko, Ph.D. '13\n\nIn the f..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.712662042118609,
+      "iteration": 3
+    },
+    {
+      "id": "iter3_web_search_2",
+      "type": "web_search",
+      "description": "Search for Chaad's residency timeline with Contemporary Art organization",
+      "parameters": {
+        "query": "Chaad residency timeline Contemporary Art organization"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Chaad residency timeline Contemporary Art organization",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/81420",
+            "source": "web",
+            "title": "https://brandywineworkshopandarchives.org/history-and-achievements/",
+            "locator": "https://brandywineworkshopandarchives.org/history-and-achievements/",
+            "rank": 1,
+            "score": 0.48886382579803467,
+            "queries": [
+              "Chaad residency timeline Contemporary Art organization"
+            ],
+            "snippet": "---\ntitle: Our History\ndate: 2023-01-01\n---\nOur History\n\nNotable highlights include \"artpark\" collaborations with the Pennsylvania Horticultural Society, the River Bottom performance at the Aquarium mural project site with local seniors by Jonas Dos Santos in South Philadelphia's Point Breeze neighborhood.\n\nMany of the..."
+          },
+          {
+            "doc_id": "web/76533",
+            "source": "web",
+            "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "rank": 2,
+            "score": 0.4841121435165405,
+            "queries": [
+              "Chaad residency timeline Contemporary Art organization"
+            ],
+            "snippet": "---\ntitle: Contact Zones — Pamela Breda, Victoria Keddie, Sajan Mani\ndate: 2024-05-16\n---\nINHABIT // Artist-in-Residence\n\nThe INHABIT Artist-in-Residence Program of the Max Planck Institute for Empirical Aesthetics invites artists from various disciplines to collaborate with our team of scientists and researchers. The..."
+          },
+          {
+            "doc_id": "web/95556",
+            "source": "web",
+            "title": "https://artjameel.org/about/history/",
+            "locator": "https://artjameel.org/about/history/",
+            "rank": 3,
+            "score": 0.47577667236328125,
+            "queries": [
+              "Chaad residency timeline Contemporary Art organization"
+            ],
+            "snippet": "---\ntitle: History of Art Jameel\ndate: 2025-01-01\n---\nArt Jameel was established in 2003 as part of Community Jameel, the organisation set up to continue the Jameel family's tradition of supporting the community — a tradition started in the 1940s by the late Abdul Latif Jameel, founder of the Abdul Latif Jameel busines..."
+          },
+          {
+            "doc_id": "web/86037",
+            "source": "web",
+            "title": "https://www.curatorialleadership.org/programs/moma-program/moma-international-curatorial-institute-2016/participants/",
+            "locator": "https://www.curatorialleadership.org/programs/moma-program/moma-international-curatorial-institute-2016/participants/",
+            "rank": 4,
+            "score": 0.4745013117790222,
+            "queries": [
+              "Chaad residency timeline Contemporary Art organization"
+            ],
+            "snippet": "---\ntitle: Participants from MoMA International Curatorial Institute 2016\ndate: 2025-01-01\n---\nOver the past four years Diana Campbell Betancourt has developed the Dhaka Art Summit to be the world's leading research and exhibitions platform for art from South Asia, and developed a new philanthropic platform to shift th..."
+          },
+          {
+            "doc_id": "web/86391",
+            "source": "web",
+            "title": "https://mandevilleartgallery.ucsd.edu/exhibitions/archive.html",
+            "locator": "https://mandevilleartgallery.ucsd.edu/exhibitions/archive.html",
+            "rank": 5,
+            "score": 0.46712177991867065,
+            "queries": [
+              "Chaad residency timeline Contemporary Art organization"
+            ],
+            "snippet": "---\ntitle: Exhibition Archive\ndate: 1996-03-23\n---\nExhibition Archive\n\nReview the Mandeville Art Gallery's exhibitions from 1966 to 2018 below.\n\nRead more about the Mandeville Art Gallery's full history here.2018 - 2016\n\n2018\n\nThe Agency of Art\n\nApril 12 – May 17, 2018\n\nCurated by Tatiana Sizonenko, Ph.D. '13\n\nIn the f..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 1.2244421581272036,
+      "iteration": 3
+    },
+    {
+      "id": "iter4_web_search_0",
+      "type": "web_search",
+      "description": "Search for Chaad's Contemporary Art residency completion year using alternative phrasing",
+      "parameters": {
+        "query": "Chaad Contemporary Art residency completion year"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Chaad Contemporary Art residency completion year",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/76533",
+            "source": "web",
+            "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "rank": 1,
+            "score": 0.5388308167457581,
+            "queries": [
+              "Chaad Contemporary Art residency completion year"
+            ],
+            "snippet": "---\ntitle: Contact Zones — Pamela Breda, Victoria Keddie, Sajan Mani\ndate: 2024-05-16\n---\nINHABIT // Artist-in-Residence\n\nThe INHABIT Artist-in-Residence Program of the Max Planck Institute for Empirical Aesthetics invites artists from various disciplines to collaborate with our team of scientists and researchers. The..."
+          },
+          {
+            "doc_id": "web/34940",
+            "source": "web",
+            "title": "https://resartis.org/open-calls/",
+            "locator": "https://resartis.org/open-calls/",
+            "rank": 2,
+            "score": 0.5235112309455872,
+            "queries": [
+              "Chaad Contemporary Art residency completion year"
+            ],
+            "snippet": "---\ntitle: Open Calls\ndate: 2023-03-27\n---\nTo search current residency profiles only, click here >>\n\nTo search online/virtual residencies, please select 'Global' as your country option\n\nARTIST RESIDENCY 'MINIMAL TRAVELLING' BERLIN\n\nCountry: Germany\n\nWool and textile art and design residency (all art and design deciplin..."
+          },
+          {
+            "doc_id": "web/30370",
+            "source": "web",
+            "title": "https://www.gagallery.com/news",
+            "locator": "https://www.gagallery.com/news",
+            "rank": 3,
+            "score": 0.5026361346244812,
+            "queries": [
+              "Chaad Contemporary Art residency completion year",
+              "Chaad residency Contemporary Art organization"
+            ],
+            "snippet": "---\ntitle: News\ndate: 2024-06-13\n---\n');\n\nSkip to contentMichael Rakowitz is one of the featured artists in the upcoming 25th edition of the Biennale of Sydney.\n\nAfra Al Dhaheri and Hera Büyüktaşcıyan will be part of the upcoming Taipei Biennial 2025.\n\nWhile our presence has become global, Green Art Gallery is forever..."
+          },
+          {
+            "doc_id": "web/80241",
+            "source": "web",
+            "title": "https://www.collegeart.org/news/category/students/",
+            "locator": "https://www.collegeart.org/news/category/students/",
+            "rank": 4,
+            "score": 0.49510520696640015,
+            "queries": [
+              "Chaad Contemporary Art residency completion year"
+            ],
+            "snippet": "---\ntitle: CAA News Today\ndate: 2023-03-07\n---\nCAA News Today\n\nMeet the Michael Aurbach Fellowship for Excellence in Visual Art Inaugural Recipient and Honorable Mentions\n\nposted by CAA — March 07, 2023\n\nCAA is pleased to announce the first ever recipient of the first Michael Aurbach Fellowship for Excellence in Visual..."
+          },
+          {
+            "doc_id": "web/77710",
+            "source": "web",
+            "title": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "locator": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "rank": 5,
+            "score": 0.4949321746826172,
+            "queries": [
+              "Chaad Contemporary Art residency completion year"
+            ],
+            "snippet": "---\ntitle: Recipients of International Residency Scheme Announced\ndate: 2023-02-15\n---\nRecipients of International Residency Scheme Announced\n\nI bhFad i gCéin – Far Afield\n\nPoetry Ireland Announces Recipients of International Residency Scheme\n\nFunded by the Arts Council's International Residency Scheme 2022\n\nPoetry Ire..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.5548172160051763,
+      "iteration": 4
+    },
+    {
+      "id": "iter4_web_search_1",
+      "type": "web_search",
+      "description": "Search for Chaad's art residency program end date",
+      "parameters": {
+        "query": "Chaad art residency program end date"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Chaad art residency program end date",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/34940",
+            "source": "web",
+            "title": "https://resartis.org/open-calls/",
+            "locator": "https://resartis.org/open-calls/",
+            "rank": 1,
+            "score": 0.5458803176879883,
+            "queries": [
+              "Chaad art residency program end date"
+            ],
+            "snippet": "---\ntitle: Open Calls\ndate: 2023-03-27\n---\nTo search current residency profiles only, click here >>\n\nTo search online/virtual residencies, please select 'Global' as your country option\n\nARTIST RESIDENCY 'MINIMAL TRAVELLING' BERLIN\n\nCountry: Germany\n\nWool and textile art and design residency (all art and design deciplin..."
+          },
+          {
+            "doc_id": "web/76533",
+            "source": "web",
+            "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "rank": 2,
+            "score": 0.5320085287094116,
+            "queries": [
+              "Chaad art residency program end date"
+            ],
+            "snippet": "---\ntitle: Contact Zones — Pamela Breda, Victoria Keddie, Sajan Mani\ndate: 2024-05-16\n---\nINHABIT // Artist-in-Residence\n\nThe INHABIT Artist-in-Residence Program of the Max Planck Institute for Empirical Aesthetics invites artists from various disciplines to collaborate with our team of scientists and researchers. The..."
+          },
+          {
+            "doc_id": "web/77710",
+            "source": "web",
+            "title": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "locator": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "rank": 3,
+            "score": 0.5296913385391235,
+            "queries": [
+              "Chaad art residency program end date"
+            ],
+            "snippet": "---\ntitle: Recipients of International Residency Scheme Announced\ndate: 2023-02-15\n---\nRecipients of International Residency Scheme Announced\n\nI bhFad i gCéin – Far Afield\n\nPoetry Ireland Announces Recipients of International Residency Scheme\n\nFunded by the Arts Council's International Residency Scheme 2022\n\nPoetry Ire..."
+          },
+          {
+            "doc_id": "web/84535",
+            "source": "web",
+            "title": "https://www.hartford.edu/academics/schools-colleges/art/academics/default.aspx",
+            "locator": "https://www.hartford.edu/academics/schools-colleges/art/academics/default.aspx",
+            "rank": 4,
+            "score": 0.5108283758163452,
+            "queries": [
+              "Chaad art residency program end date"
+            ],
+            "snippet": "---\ntitle: Academics\ndate: 2025-02-01\n---\nYour Foundation Year\n\nYour foundation year introduces you to the fundamental processes and principles of art-making and design, and will help you determine your major. You will explore specific areas of interest and develop at a professional level from your very first day.\n\nLow..."
+          },
+          {
+            "doc_id": "web/28797",
+            "source": "web",
+            "title": "https://wexarts.org/read-watch-listen/message-interim-directors",
+            "locator": "https://wexarts.org/read-watch-listen/message-interim-directors",
+            "rank": 5,
+            "score": 0.5028903484344482,
+            "queries": [
+              "Chaad art residency program end date"
+            ],
+            "snippet": "---\ntitle: A message from the Interim Directors\nauthor: Megan Cavanaugh; Kelly Stevelt\ndate: 2022-11-03\n---\nNovember 2022\n\nYou may have seen recent reports on how the museum space can serve as a resource for health and resilience programs. Here's a handy recap of some of that research from the folks at MuseumNext.\n\nThe..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.6108756810426712,
+      "iteration": 4
+    },
+    {
+      "id": "iter4_web_search_2",
+      "type": "web_search",
+      "description": "Search for Chaad's residency with Contemporary Art organization",
+      "parameters": {
+        "query": "Chaad residency Contemporary Art organization"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Chaad residency Contemporary Art organization",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/76533",
+            "source": "web",
+            "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "rank": 1,
+            "score": 0.4921858608722687,
+            "queries": [
+              "Chaad residency Contemporary Art organization"
+            ],
+            "snippet": "---\ntitle: Contact Zones — Pamela Breda, Victoria Keddie, Sajan Mani\ndate: 2024-05-16\n---\nINHABIT // Artist-in-Residence\n\nThe INHABIT Artist-in-Residence Program of the Max Planck Institute for Empirical Aesthetics invites artists from various disciplines to collaborate with our team of scientists and researchers. The..."
+          },
+          {
+            "doc_id": "web/86037",
+            "source": "web",
+            "title": "https://www.curatorialleadership.org/programs/moma-program/moma-international-curatorial-institute-2016/participants/",
+            "locator": "https://www.curatorialleadership.org/programs/moma-program/moma-international-curatorial-institute-2016/participants/",
+            "rank": 2,
+            "score": 0.48552870750427246,
+            "queries": [
+              "Chaad residency Contemporary Art organization"
+            ],
+            "snippet": "---\ntitle: Participants from MoMA International Curatorial Institute 2016\ndate: 2025-01-01\n---\nOver the past four years Diana Campbell Betancourt has developed the Dhaka Art Summit to be the world's leading research and exhibitions platform for art from South Asia, and developed a new philanthropic platform to shift th..."
+          },
+          {
+            "doc_id": "web/30370",
+            "source": "web",
+            "title": "https://www.gagallery.com/news",
+            "locator": "https://www.gagallery.com/news",
+            "rank": 3,
+            "score": 0.4808427393436432,
+            "queries": [
+              "Chaad residency Contemporary Art organization"
+            ],
+            "snippet": "---\ntitle: News\ndate: 2024-06-13\n---\n');\n\nSkip to contentMichael Rakowitz is one of the featured artists in the upcoming 25th edition of the Biennale of Sydney.\n\nAfra Al Dhaheri and Hera Büyüktaşcıyan will be part of the upcoming Taipei Biennial 2025.\n\nWhile our presence has become global, Green Art Gallery is forever..."
+          },
+          {
+            "doc_id": "web/77710",
+            "source": "web",
+            "title": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "locator": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "rank": 4,
+            "score": 0.47302234172821045,
+            "queries": [
+              "Chaad residency Contemporary Art organization"
+            ],
+            "snippet": "---\ntitle: Recipients of International Residency Scheme Announced\ndate: 2023-02-15\n---\nRecipients of International Residency Scheme Announced\n\nI bhFad i gCéin – Far Afield\n\nPoetry Ireland Announces Recipients of International Residency Scheme\n\nFunded by the Arts Council's International Residency Scheme 2022\n\nPoetry Ire..."
+          },
+          {
+            "doc_id": "web/32214",
+            "source": "web",
+            "title": "https://kathmandupost.com/movie-review/2023/04/26/jaari-could-ve-been-so-much-more-it-s-unfortunate-that-it-wasn-t",
+            "locator": "https://kathmandupost.com/movie-review/2023/04/26/jaari-could-ve-been-so-much-more-it-s-unfortunate-that-it-wasn-t",
+            "rank": 5,
+            "score": 0.4729878902435303,
+            "queries": [
+              "Chaad residency Contemporary Art organization"
+            ],
+            "snippet": "---\ndate: 2023-04-26\n---\nUrza AcharyaAcharya is an aspiring writer interested in arts, literature and cinema. Currently, she works as the media coordinator at Siddhartha Art Gallery.\n\nAcharya is an aspiring writer interested in arts, literature and cinema. Currently, she works as the media coordinator at Siddhartha Art..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.8162826150655746,
+      "iteration": 4
+    },
+    {
+      "id": "iter4_web_search_3",
+      "type": "web_search",
+      "description": "Search for Chaad's art residency timeline with Contemporary Art",
+      "parameters": {
+        "query": "Chaad art residency timeline Contemporary Art"
+      },
+      "priority": 0.65,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Chaad art residency timeline Contemporary Art",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/76533",
+            "source": "web",
+            "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "rank": 1,
+            "score": 0.5242747664451599,
+            "queries": [
+              "Chaad art residency timeline Contemporary Art"
+            ],
+            "snippet": "---\ntitle: Contact Zones — Pamela Breda, Victoria Keddie, Sajan Mani\ndate: 2024-05-16\n---\nINHABIT // Artist-in-Residence\n\nThe INHABIT Artist-in-Residence Program of the Max Planck Institute for Empirical Aesthetics invites artists from various disciplines to collaborate with our team of scientists and researchers. The..."
+          },
+          {
+            "doc_id": "web/34940",
+            "source": "web",
+            "title": "https://resartis.org/open-calls/",
+            "locator": "https://resartis.org/open-calls/",
+            "rank": 2,
+            "score": 0.5171133279800415,
+            "queries": [
+              "Chaad art residency timeline Contemporary Art"
+            ],
+            "snippet": "---\ntitle: Open Calls\ndate: 2023-03-27\n---\nTo search current residency profiles only, click here >>\n\nTo search online/virtual residencies, please select 'Global' as your country option\n\nARTIST RESIDENCY 'MINIMAL TRAVELLING' BERLIN\n\nCountry: Germany\n\nWool and textile art and design residency (all art and design deciplin..."
+          },
+          {
+            "doc_id": "web/81420",
+            "source": "web",
+            "title": "https://brandywineworkshopandarchives.org/history-and-achievements/",
+            "locator": "https://brandywineworkshopandarchives.org/history-and-achievements/",
+            "rank": 3,
+            "score": 0.501326858997345,
+            "queries": [
+              "Chaad art residency timeline Contemporary Art"
+            ],
+            "snippet": "---\ntitle: Our History\ndate: 2023-01-01\n---\nOur History\n\nNotable highlights include \"artpark\" collaborations with the Pennsylvania Horticultural Society, the River Bottom performance at the Aquarium mural project site with local seniors by Jonas Dos Santos in South Philadelphia's Point Breeze neighborhood.\n\nMany of the..."
+          },
+          {
+            "doc_id": "web/77710",
+            "source": "web",
+            "title": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "locator": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "rank": 4,
+            "score": 0.4965254068374634,
+            "queries": [
+              "Chaad art residency timeline Contemporary Art"
+            ],
+            "snippet": "---\ntitle: Recipients of International Residency Scheme Announced\ndate: 2023-02-15\n---\nRecipients of International Residency Scheme Announced\n\nI bhFad i gCéin – Far Afield\n\nPoetry Ireland Announces Recipients of International Residency Scheme\n\nFunded by the Arts Council's International Residency Scheme 2022\n\nPoetry Ire..."
+          },
+          {
+            "doc_id": "web/86391",
+            "source": "web",
+            "title": "https://mandevilleartgallery.ucsd.edu/exhibitions/archive.html",
+            "locator": "https://mandevilleartgallery.ucsd.edu/exhibitions/archive.html",
+            "rank": 5,
+            "score": 0.49480295181274414,
+            "queries": [
+              "Chaad art residency timeline Contemporary Art"
+            ],
+            "snippet": "---\ntitle: Exhibition Archive\ndate: 1996-03-23\n---\nExhibition Archive\n\nReview the Mandeville Art Gallery's exhibitions from 1966 to 2018 below.\n\nRead more about the Mandeville Art Gallery's full history here.2018 - 2016\n\n2018\n\nThe Agency of Art\n\nApril 12 – May 17, 2018\n\nCurated by Tatiana Sizonenko, Ph.D. '13\n\nIn the f..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.5130102608818561,
+      "iteration": 4
+    },
+    {
+      "id": "iter5_web_search_3",
+      "type": "web_search",
+      "description": "Search for Chaad's residency completion year with Contemporary Art organization",
+      "parameters": {
+        "query": "Chaad residency completion year Contemporary Art organization"
+      },
+      "priority": 0.65,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Chaad residency completion year Contemporary Art organization",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/76533",
+            "source": "web",
+            "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "rank": 1,
+            "score": 0.4900049567222595,
+            "queries": [
+              "Chaad residency completion year Contemporary Art organization"
+            ],
+            "snippet": "---\ntitle: Contact Zones — Pamela Breda, Victoria Keddie, Sajan Mani\ndate: 2024-05-16\n---\nINHABIT // Artist-in-Residence\n\nThe INHABIT Artist-in-Residence Program of the Max Planck Institute for Empirical Aesthetics invites artists from various disciplines to collaborate with our team of scientists and researchers. The..."
+          },
+          {
+            "doc_id": "web/86037",
+            "source": "web",
+            "title": "https://www.curatorialleadership.org/programs/moma-program/moma-international-curatorial-institute-2016/participants/",
+            "locator": "https://www.curatorialleadership.org/programs/moma-program/moma-international-curatorial-institute-2016/participants/",
+            "rank": 2,
+            "score": 0.485973060131073,
+            "queries": [
+              "Chaad residency completion year Contemporary Art organization"
+            ],
+            "snippet": "---\ntitle: Participants from MoMA International Curatorial Institute 2016\ndate: 2025-01-01\n---\nOver the past four years Diana Campbell Betancourt has developed the Dhaka Art Summit to be the world's leading research and exhibitions platform for art from South Asia, and developed a new philanthropic platform to shift th..."
+          },
+          {
+            "doc_id": "web/81420",
+            "source": "web",
+            "title": "https://brandywineworkshopandarchives.org/history-and-achievements/",
+            "locator": "https://brandywineworkshopandarchives.org/history-and-achievements/",
+            "rank": 3,
+            "score": 0.481825590133667,
+            "queries": [
+              "Chaad residency completion year Contemporary Art organization"
+            ],
+            "snippet": "---\ntitle: Our History\ndate: 2023-01-01\n---\nOur History\n\nNotable highlights include \"artpark\" collaborations with the Pennsylvania Horticultural Society, the River Bottom performance at the Aquarium mural project site with local seniors by Jonas Dos Santos in South Philadelphia's Point Breeze neighborhood.\n\nMany of the..."
+          },
+          {
+            "doc_id": "web/86391",
+            "source": "web",
+            "title": "https://mandevilleartgallery.ucsd.edu/exhibitions/archive.html",
+            "locator": "https://mandevilleartgallery.ucsd.edu/exhibitions/archive.html",
+            "rank": 4,
+            "score": 0.48062917590141296,
+            "queries": [
+              "Chaad residency completion year Contemporary Art organization"
+            ],
+            "snippet": "---\ntitle: Exhibition Archive\ndate: 1996-03-23\n---\nExhibition Archive\n\nReview the Mandeville Art Gallery's exhibitions from 1966 to 2018 below.\n\nRead more about the Mandeville Art Gallery's full history here.2018 - 2016\n\n2018\n\nThe Agency of Art\n\nApril 12 – May 17, 2018\n\nCurated by Tatiana Sizonenko, Ph.D. '13\n\nIn the f..."
+          },
+          {
+            "doc_id": "web/30370",
+            "source": "web",
+            "title": "https://www.gagallery.com/news",
+            "locator": "https://www.gagallery.com/news",
+            "rank": 5,
+            "score": 0.47287166118621826,
+            "queries": [
+              "Chaad residency completion year Contemporary Art organization"
+            ],
+            "snippet": "---\ntitle: News\ndate: 2024-06-13\n---\n');\n\nSkip to contentMichael Rakowitz is one of the featured artists in the upcoming 25th edition of the Biennale of Sydney.\n\nAfra Al Dhaheri and Hera Büyüktaşcıyan will be part of the upcoming Taipei Biennial 2025.\n\nWhile our presence has become global, Green Art Gallery is forever..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.32760299695655704,
+      "iteration": 5
+    },
+    {
+      "id": "iter6_web_search_1",
+      "type": "web_search",
+      "description": "Search for Chaad's art residency program end date with Contemporary Art",
+      "parameters": {
+        "query": "Chaad art residency program end date Contemporary Art"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Chaad art residency program end date Contemporary Art",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/34940",
+            "source": "web",
+            "title": "https://resartis.org/open-calls/",
+            "locator": "https://resartis.org/open-calls/",
+            "rank": 1,
+            "score": 0.5383785963058472,
+            "queries": [
+              "Chaad art residency program end date Contemporary Art"
+            ],
+            "snippet": "---\ntitle: Open Calls\ndate: 2023-03-27\n---\nTo search current residency profiles only, click here >>\n\nTo search online/virtual residencies, please select 'Global' as your country option\n\nARTIST RESIDENCY 'MINIMAL TRAVELLING' BERLIN\n\nCountry: Germany\n\nWool and textile art and design residency (all art and design deciplin..."
+          },
+          {
+            "doc_id": "web/76533",
+            "source": "web",
+            "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "rank": 2,
+            "score": 0.5262701511383057,
+            "queries": [
+              "Chaad art residency program end date Contemporary Art"
+            ],
+            "snippet": "---\ntitle: Contact Zones — Pamela Breda, Victoria Keddie, Sajan Mani\ndate: 2024-05-16\n---\nINHABIT // Artist-in-Residence\n\nThe INHABIT Artist-in-Residence Program of the Max Planck Institute for Empirical Aesthetics invites artists from various disciplines to collaborate with our team of scientists and researchers. The..."
+          },
+          {
+            "doc_id": "web/77710",
+            "source": "web",
+            "title": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "locator": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "rank": 3,
+            "score": 0.5197471380233765,
+            "queries": [
+              "Chaad art residency program end date Contemporary Art"
+            ],
+            "snippet": "---\ntitle: Recipients of International Residency Scheme Announced\ndate: 2023-02-15\n---\nRecipients of International Residency Scheme Announced\n\nI bhFad i gCéin – Far Afield\n\nPoetry Ireland Announces Recipients of International Residency Scheme\n\nFunded by the Arts Council's International Residency Scheme 2022\n\nPoetry Ire..."
+          },
+          {
+            "doc_id": "web/84535",
+            "source": "web",
+            "title": "https://www.hartford.edu/academics/schools-colleges/art/academics/default.aspx",
+            "locator": "https://www.hartford.edu/academics/schools-colleges/art/academics/default.aspx",
+            "rank": 4,
+            "score": 0.5156404972076416,
+            "queries": [
+              "Chaad art residency program end date Contemporary Art"
+            ],
+            "snippet": "---\ntitle: Academics\ndate: 2025-02-01\n---\nYour Foundation Year\n\nYour foundation year introduces you to the fundamental processes and principles of art-making and design, and will help you determine your major. You will explore specific areas of interest and develop at a professional level from your very first day.\n\nLow..."
+          },
+          {
+            "doc_id": "web/28797",
+            "source": "web",
+            "title": "https://wexarts.org/read-watch-listen/message-interim-directors",
+            "locator": "https://wexarts.org/read-watch-listen/message-interim-directors",
+            "rank": 5,
+            "score": 0.5152058601379395,
+            "queries": [
+              "Chaad art residency program end date Contemporary Art"
+            ],
+            "snippet": "---\ntitle: A message from the Interim Directors\nauthor: Megan Cavanaugh; Kelly Stevelt\ndate: 2022-11-03\n---\nNovember 2022\n\nYou may have seen recent reports on how the museum space can serve as a resource for health and resilience programs. Here's a handy recap of some of that research from the folks at MuseumNext.\n\nThe..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.4384258489590138,
+      "iteration": 6
+    },
+    {
+      "id": "iter6_web_search_3",
+      "type": "web_search",
+      "description": "Search for Chaad's residency completion year in Contemporary Art context",
+      "parameters": {
+        "query": "Chaad residency completion year Contemporary Art context"
+      },
+      "priority": 0.65,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Chaad residency completion year Contemporary Art context",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/76533",
+            "source": "web",
+            "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "rank": 1,
+            "score": 0.4929078221321106,
+            "queries": [
+              "Chaad residency completion year Contemporary Art context"
+            ],
+            "snippet": "---\ntitle: Contact Zones — Pamela Breda, Victoria Keddie, Sajan Mani\ndate: 2024-05-16\n---\nINHABIT // Artist-in-Residence\n\nThe INHABIT Artist-in-Residence Program of the Max Planck Institute for Empirical Aesthetics invites artists from various disciplines to collaborate with our team of scientists and researchers. The..."
+          },
+          {
+            "doc_id": "web/86391",
+            "source": "web",
+            "title": "https://mandevilleartgallery.ucsd.edu/exhibitions/archive.html",
+            "locator": "https://mandevilleartgallery.ucsd.edu/exhibitions/archive.html",
+            "rank": 2,
+            "score": 0.4883425831794739,
+            "queries": [
+              "Chaad residency completion year Contemporary Art context"
+            ],
+            "snippet": "---\ntitle: Exhibition Archive\ndate: 1996-03-23\n---\nExhibition Archive\n\nReview the Mandeville Art Gallery's exhibitions from 1966 to 2018 below.\n\nRead more about the Mandeville Art Gallery's full history here.2018 - 2016\n\n2018\n\nThe Agency of Art\n\nApril 12 – May 17, 2018\n\nCurated by Tatiana Sizonenko, Ph.D. '13\n\nIn the f..."
+          },
+          {
+            "doc_id": "web/11283",
+            "source": "web",
+            "title": "https://www.youtube.com/watch?v=4tK2e_mSSps&pp=0gcJCdgAo7VqN5tD",
+            "locator": "https://www.youtube.com/watch?v=4tK2e_mSSps&pp=0gcJCdgAo7VqN5tD",
+            "rank": 3,
+            "score": 0.4719700515270233,
+            "queries": [
+              "Chaad residency completion year Contemporary Art context"
+            ],
+            "snippet": "---\ntitle: El Anatsui in \"Change\" - Season 6 - \"Art in the Twenty-First Century\" | Art21\ndate: 2025-01-01\n---\nthis is a placeholder\n\nthis is a placeholder\n\nthis is a placeholder\n\nAbout\n\nPress\n\nCopyright\n\nContact us\n\nCreators\n\nAdvertise\n\nDevelopers\n\nTerms\n\nPrivacy\n\nPolicy & Safety\n\nHow YouTube works\n\nTest new features..."
+          },
+          {
+            "doc_id": "web/84535",
+            "source": "web",
+            "title": "https://www.hartford.edu/academics/schools-colleges/art/academics/default.aspx",
+            "locator": "https://www.hartford.edu/academics/schools-colleges/art/academics/default.aspx",
+            "rank": 4,
+            "score": 0.46840399503707886,
+            "queries": [
+              "Chaad residency completion year Contemporary Art context"
+            ],
+            "snippet": "---\ntitle: Academics\ndate: 2025-02-01\n---\nYour Foundation Year\n\nYour foundation year introduces you to the fundamental processes and principles of art-making and design, and will help you determine your major. You will explore specific areas of interest and develop at a professional level from your very first day.\n\nLow..."
+          },
+          {
+            "doc_id": "web/80241",
+            "source": "web",
+            "title": "https://www.collegeart.org/news/category/students/",
+            "locator": "https://www.collegeart.org/news/category/students/",
+            "rank": 5,
+            "score": 0.4663413166999817,
+            "queries": [
+              "Chaad residency completion year Contemporary Art context"
+            ],
+            "snippet": "---\ntitle: CAA News Today\ndate: 2023-03-07\n---\nCAA News Today\n\nMeet the Michael Aurbach Fellowship for Excellence in Visual Art Inaugural Recipient and Honorable Mentions\n\nposted by CAA — March 07, 2023\n\nCAA is pleased to announce the first ever recipient of the first Michael Aurbach Fellowship for Excellence in Visual..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.31805508700199425,
+      "iteration": 6
+    },
+    {
+      "id": "iter7_web_search_1",
+      "type": "web_search",
+      "description": "Search for Chaad's residency end date with Contemporary Art organization",
+      "parameters": {
+        "query": "Chaad Contemporary Art residency end date organization"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Chaad Contemporary Art residency end date organization",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/76533",
+            "source": "web",
+            "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "rank": 1,
+            "score": 0.5539565086364746,
+            "queries": [
+              "Chaad Contemporary Art residency end date organization"
+            ],
+            "snippet": "---\ntitle: Contact Zones — Pamela Breda, Victoria Keddie, Sajan Mani\ndate: 2024-05-16\n---\nINHABIT // Artist-in-Residence\n\nThe INHABIT Artist-in-Residence Program of the Max Planck Institute for Empirical Aesthetics invites artists from various disciplines to collaborate with our team of scientists and researchers. The..."
+          },
+          {
+            "doc_id": "web/34940",
+            "source": "web",
+            "title": "https://resartis.org/open-calls/",
+            "locator": "https://resartis.org/open-calls/",
+            "rank": 2,
+            "score": 0.5501174926757812,
+            "queries": [
+              "Chaad Contemporary Art residency end date organization"
+            ],
+            "snippet": "---\ntitle: Open Calls\ndate: 2023-03-27\n---\nTo search current residency profiles only, click here >>\n\nTo search online/virtual residencies, please select 'Global' as your country option\n\nARTIST RESIDENCY 'MINIMAL TRAVELLING' BERLIN\n\nCountry: Germany\n\nWool and textile art and design residency (all art and design deciplin..."
+          },
+          {
+            "doc_id": "web/77710",
+            "source": "web",
+            "title": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "locator": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "rank": 3,
+            "score": 0.5306485295295715,
+            "queries": [
+              "Chaad Contemporary Art residency end date organization"
+            ],
+            "snippet": "---\ntitle: Recipients of International Residency Scheme Announced\ndate: 2023-02-15\n---\nRecipients of International Residency Scheme Announced\n\nI bhFad i gCéin – Far Afield\n\nPoetry Ireland Announces Recipients of International Residency Scheme\n\nFunded by the Arts Council's International Residency Scheme 2022\n\nPoetry Ire..."
+          },
+          {
+            "doc_id": "web/30370",
+            "source": "web",
+            "title": "https://www.gagallery.com/news",
+            "locator": "https://www.gagallery.com/news",
+            "rank": 4,
+            "score": 0.5159226655960083,
+            "queries": [
+              "Chaad Contemporary Art residency end date organization"
+            ],
+            "snippet": "---\ntitle: News\ndate: 2024-06-13\n---\n');\n\nSkip to contentMichael Rakowitz is one of the featured artists in the upcoming 25th edition of the Biennale of Sydney.\n\nAfra Al Dhaheri and Hera Büyüktaşcıyan will be part of the upcoming Taipei Biennial 2025.\n\nWhile our presence has become global, Green Art Gallery is forever..."
+          },
+          {
+            "doc_id": "web/33897",
+            "source": "web",
+            "title": "https://www.artworkarchive.com/call-for-entry/complete-guide-to-2024-artist-grants-opportunities?opportunity_type_filter%5B%5D=5",
+            "locator": "https://www.artworkarchive.com/call-for-entry/complete-guide-to-2024-artist-grants-opportunities?opportunity_type_filter%5B%5D=5",
+            "rank": 5,
+            "score": 0.5106725096702576,
+            "queries": [
+              "Chaad Contemporary Art residency end date organization"
+            ],
+            "snippet": "---\ntitle: Guide to the Best Artist Grants and Opportunities in 2024\ndate: 2024-01-01\n---\nEach year the Artwork Archive team goes on a mission to find the best art opportunities, grants, and calls-for-entry for the upcoming year.\n\nBelow you will find a list of the top artist residencies, international open calls, artis..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.6244601949583739,
+      "iteration": 7
+    },
+    {
+      "id": "iter7_web_search_2",
+      "type": "web_search",
+      "description": "Search for Chaad's art residency program conclusion year",
+      "parameters": {
+        "query": "Chaad art residency program conclusion year"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Chaad art residency program conclusion year",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/34940",
+            "source": "web",
+            "title": "https://resartis.org/open-calls/",
+            "locator": "https://resartis.org/open-calls/",
+            "rank": 1,
+            "score": 0.527244508266449,
+            "queries": [
+              "Chaad art residency program conclusion year"
+            ],
+            "snippet": "---\ntitle: Open Calls\ndate: 2023-03-27\n---\nTo search current residency profiles only, click here >>\n\nTo search online/virtual residencies, please select 'Global' as your country option\n\nARTIST RESIDENCY 'MINIMAL TRAVELLING' BERLIN\n\nCountry: Germany\n\nWool and textile art and design residency (all art and design deciplin..."
+          },
+          {
+            "doc_id": "web/77710",
+            "source": "web",
+            "title": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "locator": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "rank": 2,
+            "score": 0.5194422006607056,
+            "queries": [
+              "Chaad art residency program conclusion year"
+            ],
+            "snippet": "---\ntitle: Recipients of International Residency Scheme Announced\ndate: 2023-02-15\n---\nRecipients of International Residency Scheme Announced\n\nI bhFad i gCéin – Far Afield\n\nPoetry Ireland Announces Recipients of International Residency Scheme\n\nFunded by the Arts Council's International Residency Scheme 2022\n\nPoetry Ire..."
+          },
+          {
+            "doc_id": "web/76533",
+            "source": "web",
+            "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "rank": 3,
+            "score": 0.5193923711776733,
+            "queries": [
+              "Chaad art residency program conclusion year"
+            ],
+            "snippet": "---\ntitle: Contact Zones — Pamela Breda, Victoria Keddie, Sajan Mani\ndate: 2024-05-16\n---\nINHABIT // Artist-in-Residence\n\nThe INHABIT Artist-in-Residence Program of the Max Planck Institute for Empirical Aesthetics invites artists from various disciplines to collaborate with our team of scientists and researchers. The..."
+          },
+          {
+            "doc_id": "web/84535",
+            "source": "web",
+            "title": "https://www.hartford.edu/academics/schools-colleges/art/academics/default.aspx",
+            "locator": "https://www.hartford.edu/academics/schools-colleges/art/academics/default.aspx",
+            "rank": 4,
+            "score": 0.5158774256706238,
+            "queries": [
+              "Chaad art residency program conclusion year"
+            ],
+            "snippet": "---\ntitle: Academics\ndate: 2025-02-01\n---\nYour Foundation Year\n\nYour foundation year introduces you to the fundamental processes and principles of art-making and design, and will help you determine your major. You will explore specific areas of interest and develop at a professional level from your very first day.\n\nLow..."
+          },
+          {
+            "doc_id": "web/81420",
+            "source": "web",
+            "title": "https://brandywineworkshopandarchives.org/history-and-achievements/",
+            "locator": "https://brandywineworkshopandarchives.org/history-and-achievements/",
+            "rank": 5,
+            "score": 0.5075442790985107,
+            "queries": [
+              "Chaad art residency program conclusion year"
+            ],
+            "snippet": "---\ntitle: Our History\ndate: 2023-01-01\n---\nOur History\n\nNotable highlights include \"artpark\" collaborations with the Pennsylvania Horticultural Society, the River Bottom performance at the Aquarium mural project site with local seniors by Jonas Dos Santos in South Philadelphia's Point Breeze neighborhood.\n\nMany of the..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.624433368910104,
+      "iteration": 7
+    },
+    {
+      "id": "iter7_web_search_3",
+      "type": "web_search",
+      "description": "Search for Chaad's residency timeline with Contemporary Art",
+      "parameters": {
+        "query": "Chaad Contemporary Art residency timeline"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Chaad Contemporary Art residency timeline",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/76533",
+            "source": "web",
+            "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "rank": 1,
+            "score": 0.5323061943054199,
+            "queries": [
+              "Chaad Contemporary Art residency timeline"
+            ],
+            "snippet": "---\ntitle: Contact Zones — Pamela Breda, Victoria Keddie, Sajan Mani\ndate: 2024-05-16\n---\nINHABIT // Artist-in-Residence\n\nThe INHABIT Artist-in-Residence Program of the Max Planck Institute for Empirical Aesthetics invites artists from various disciplines to collaborate with our team of scientists and researchers. The..."
+          },
+          {
+            "doc_id": "web/34940",
+            "source": "web",
+            "title": "https://resartis.org/open-calls/",
+            "locator": "https://resartis.org/open-calls/",
+            "rank": 2,
+            "score": 0.5252368450164795,
+            "queries": [
+              "Chaad Contemporary Art residency timeline"
+            ],
+            "snippet": "---\ntitle: Open Calls\ndate: 2023-03-27\n---\nTo search current residency profiles only, click here >>\n\nTo search online/virtual residencies, please select 'Global' as your country option\n\nARTIST RESIDENCY 'MINIMAL TRAVELLING' BERLIN\n\nCountry: Germany\n\nWool and textile art and design residency (all art and design deciplin..."
+          },
+          {
+            "doc_id": "web/77710",
+            "source": "web",
+            "title": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "locator": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "rank": 3,
+            "score": 0.5101549029350281,
+            "queries": [
+              "Chaad Contemporary Art residency timeline"
+            ],
+            "snippet": "---\ntitle: Recipients of International Residency Scheme Announced\ndate: 2023-02-15\n---\nRecipients of International Residency Scheme Announced\n\nI bhFad i gCéin – Far Afield\n\nPoetry Ireland Announces Recipients of International Residency Scheme\n\nFunded by the Arts Council's International Residency Scheme 2022\n\nPoetry Ire..."
+          },
+          {
+            "doc_id": "web/30370",
+            "source": "web",
+            "title": "https://www.gagallery.com/news",
+            "locator": "https://www.gagallery.com/news",
+            "rank": 4,
+            "score": 0.49821382761001587,
+            "queries": [
+              "Chaad Contemporary Art residency timeline"
+            ],
+            "snippet": "---\ntitle: News\ndate: 2024-06-13\n---\n');\n\nSkip to contentMichael Rakowitz is one of the featured artists in the upcoming 25th edition of the Biennale of Sydney.\n\nAfra Al Dhaheri and Hera Büyüktaşcıyan will be part of the upcoming Taipei Biennial 2025.\n\nWhile our presence has become global, Green Art Gallery is forever..."
+          },
+          {
+            "doc_id": "web/21203",
+            "source": "web",
+            "title": "https://www.studiomuseum.org/exhibitions/tenses",
+            "locator": "https://www.studiomuseum.org/exhibitions/tenses",
+            "rank": 5,
+            "score": 0.49278488755226135,
+            "queries": [
+              "Chaad Contemporary Art residency timeline"
+            ],
+            "snippet": "---\ntitle: Tenses: Artists in Residence 2015–2016\ndate: 2010-07-14\n---\nTenses presents recent works by 2015–16 artists in residence: painter Jordan Casteel (b. 1989), and multimedia artists EJ Hill (b. 1985) and Jibade-Khalil Huffman (b. 1981). The exhibition's title suggests the range of shifting possibilities in the..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.3930033929646015,
+      "iteration": 7
+    },
+    {
+      "id": "iter8_web_search_0",
+      "type": "web_search",
+      "description": "Search for Chaad's Contemporary Art residency completion year",
+      "parameters": {
+        "query": "Chaad Contemporary Art residency end year"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Chaad Contemporary Art residency end year",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/34940",
+            "source": "web",
+            "title": "https://resartis.org/open-calls/",
+            "locator": "https://resartis.org/open-calls/",
+            "rank": 1,
+            "score": 0.5490139722824097,
+            "queries": [
+              "Chaad Contemporary Art residency end year"
+            ],
+            "snippet": "---\ntitle: Open Calls\ndate: 2023-03-27\n---\nTo search current residency profiles only, click here >>\n\nTo search online/virtual residencies, please select 'Global' as your country option\n\nARTIST RESIDENCY 'MINIMAL TRAVELLING' BERLIN\n\nCountry: Germany\n\nWool and textile art and design residency (all art and design deciplin..."
+          },
+          {
+            "doc_id": "web/76533",
+            "source": "web",
+            "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "rank": 2,
+            "score": 0.5441488027572632,
+            "queries": [
+              "Chaad Contemporary Art residency end year"
+            ],
+            "snippet": "---\ntitle: Contact Zones — Pamela Breda, Victoria Keddie, Sajan Mani\ndate: 2024-05-16\n---\nINHABIT // Artist-in-Residence\n\nThe INHABIT Artist-in-Residence Program of the Max Planck Institute for Empirical Aesthetics invites artists from various disciplines to collaborate with our team of scientists and researchers. The..."
+          },
+          {
+            "doc_id": "web/77710",
+            "source": "web",
+            "title": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "locator": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "rank": 3,
+            "score": 0.5223756432533264,
+            "queries": [
+              "Chaad Contemporary Art residency end year"
+            ],
+            "snippet": "---\ntitle: Recipients of International Residency Scheme Announced\ndate: 2023-02-15\n---\nRecipients of International Residency Scheme Announced\n\nI bhFad i gCéin – Far Afield\n\nPoetry Ireland Announces Recipients of International Residency Scheme\n\nFunded by the Arts Council's International Residency Scheme 2022\n\nPoetry Ire..."
+          },
+          {
+            "doc_id": "web/30370",
+            "source": "web",
+            "title": "https://www.gagallery.com/news",
+            "locator": "https://www.gagallery.com/news",
+            "rank": 4,
+            "score": 0.5101071000099182,
+            "queries": [
+              "Chaad Contemporary Art residency end year"
+            ],
+            "snippet": "---\ntitle: News\ndate: 2024-06-13\n---\n');\n\nSkip to contentMichael Rakowitz is one of the featured artists in the upcoming 25th edition of the Biennale of Sydney.\n\nAfra Al Dhaheri and Hera Büyüktaşcıyan will be part of the upcoming Taipei Biennial 2025.\n\nWhile our presence has become global, Green Art Gallery is forever..."
+          },
+          {
+            "doc_id": "web/21203",
+            "source": "web",
+            "title": "https://www.studiomuseum.org/exhibitions/tenses",
+            "locator": "https://www.studiomuseum.org/exhibitions/tenses",
+            "rank": 5,
+            "score": 0.49173271656036377,
+            "queries": [
+              "Chaad Contemporary Art residency end year"
+            ],
+            "snippet": "---\ntitle: Tenses: Artists in Residence 2015–2016\ndate: 2010-07-14\n---\nTenses presents recent works by 2015–16 artists in residence: painter Jordan Casteel (b. 1989), and multimedia artists EJ Hill (b. 1985) and Jibade-Khalil Huffman (b. 1981). The exhibition's title suggests the range of shifting possibilities in the..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.21279695304110646,
+      "iteration": 8
+    },
+    {
+      "id": "iter8_web_search_3",
+      "type": "web_search",
+      "description": "Search for Chaad's residency completion date with Contemporary Art",
+      "parameters": {
+        "query": "Chaad residency completion date Contemporary Art"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Chaad residency completion date Contemporary Art",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/76533",
+            "source": "web",
+            "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "rank": 1,
+            "score": 0.5014137625694275,
+            "queries": [
+              "Chaad residency completion date Contemporary Art"
+            ],
+            "snippet": "---\ntitle: Contact Zones — Pamela Breda, Victoria Keddie, Sajan Mani\ndate: 2024-05-16\n---\nINHABIT // Artist-in-Residence\n\nThe INHABIT Artist-in-Residence Program of the Max Planck Institute for Empirical Aesthetics invites artists from various disciplines to collaborate with our team of scientists and researchers. The..."
+          },
+          {
+            "doc_id": "web/86391",
+            "source": "web",
+            "title": "https://mandevilleartgallery.ucsd.edu/exhibitions/archive.html",
+            "locator": "https://mandevilleartgallery.ucsd.edu/exhibitions/archive.html",
+            "rank": 2,
+            "score": 0.47748011350631714,
+            "queries": [
+              "Chaad residency completion date Contemporary Art"
+            ],
+            "snippet": "---\ntitle: Exhibition Archive\ndate: 1996-03-23\n---\nExhibition Archive\n\nReview the Mandeville Art Gallery's exhibitions from 1966 to 2018 below.\n\nRead more about the Mandeville Art Gallery's full history here.2018 - 2016\n\n2018\n\nThe Agency of Art\n\nApril 12 – May 17, 2018\n\nCurated by Tatiana Sizonenko, Ph.D. '13\n\nIn the f..."
+          },
+          {
+            "doc_id": "web/34940",
+            "source": "web",
+            "title": "https://resartis.org/open-calls/",
+            "locator": "https://resartis.org/open-calls/",
+            "rank": 3,
+            "score": 0.47013360261917114,
+            "queries": [
+              "Chaad residency completion date Contemporary Art"
+            ],
+            "snippet": "---\ntitle: Open Calls\ndate: 2023-03-27\n---\nTo search current residency profiles only, click here >>\n\nTo search online/virtual residencies, please select 'Global' as your country option\n\nARTIST RESIDENCY 'MINIMAL TRAVELLING' BERLIN\n\nCountry: Germany\n\nWool and textile art and design residency (all art and design deciplin..."
+          },
+          {
+            "doc_id": "web/63206",
+            "source": "web",
+            "title": "https://www.labiennale.org/en/news/biennale-arte-2024-stranieri-ovunque-foreigners-everywhere",
+            "locator": "https://www.labiennale.org/en/news/biennale-arte-2024-stranieri-ovunque-foreigners-everywhere",
+            "rank": 4,
+            "score": 0.46941617131233215,
+            "queries": [
+              "Chaad residency completion date Contemporary Art"
+            ],
+            "snippet": "---\ntitle: Biennale Arte 2024: Stranieri Ovunque - Foreigners Everywhere\ndate: 2025-05-27\n---\nBiennale Arte 2024: Stranieri Ovunque - Foreigners Everywhere\n\nThe 60th International Art Exhibition, curated by Adriano Pedrosa, is open from Saturday 20 April to Sunday 24 November at the Giardini and Arsenale venues.\n\nBienn..."
+          },
+          {
+            "doc_id": "web/30370",
+            "source": "web",
+            "title": "https://www.gagallery.com/news",
+            "locator": "https://www.gagallery.com/news",
+            "rank": 5,
+            "score": 0.46563464403152466,
+            "queries": [
+              "Chaad residency completion date Contemporary Art"
+            ],
+            "snippet": "---\ntitle: News\ndate: 2024-06-13\n---\n');\n\nSkip to contentMichael Rakowitz is one of the featured artists in the upcoming 25th edition of the Biennale of Sydney.\n\nAfra Al Dhaheri and Hera Büyüktaşcıyan will be part of the upcoming Taipei Biennial 2025.\n\nWhile our presence has become global, Green Art Gallery is forever..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.21357758389785886,
+      "iteration": 8
+    },
+    {
+      "id": "iter9_web_search_0",
+      "type": "web_search",
+      "description": "Search for Chaad's residency completion year with Contemporary Art organization",
+      "parameters": {
+        "query": "Chaad Contemporary Art residency completion year"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Chaad Contemporary Art residency completion year",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/76533",
+            "source": "web",
+            "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "rank": 1,
+            "score": 0.5410549640655518,
+            "queries": [
+              "Chaad Contemporary Art residency completion year"
+            ],
+            "snippet": "---\ntitle: Contact Zones — Pamela Breda, Victoria Keddie, Sajan Mani\ndate: 2024-05-16\n---\nINHABIT // Artist-in-Residence\n\nThe INHABIT Artist-in-Residence Program of the Max Planck Institute for Empirical Aesthetics invites artists from various disciplines to collaborate with our team of scientists and researchers. The..."
+          },
+          {
+            "doc_id": "web/34940",
+            "source": "web",
+            "title": "https://resartis.org/open-calls/",
+            "locator": "https://resartis.org/open-calls/",
+            "rank": 2,
+            "score": 0.5253052711486816,
+            "queries": [
+              "Chaad Contemporary Art residency completion year"
+            ],
+            "snippet": "---\ntitle: Open Calls\ndate: 2023-03-27\n---\nTo search current residency profiles only, click here >>\n\nTo search online/virtual residencies, please select 'Global' as your country option\n\nARTIST RESIDENCY 'MINIMAL TRAVELLING' BERLIN\n\nCountry: Germany\n\nWool and textile art and design residency (all art and design deciplin..."
+          },
+          {
+            "doc_id": "web/30370",
+            "source": "web",
+            "title": "https://www.gagallery.com/news",
+            "locator": "https://www.gagallery.com/news",
+            "rank": 3,
+            "score": 0.5041822791099548,
+            "queries": [
+              "Chaad Contemporary Art residency completion year"
+            ],
+            "snippet": "---\ntitle: News\ndate: 2024-06-13\n---\n');\n\nSkip to contentMichael Rakowitz is one of the featured artists in the upcoming 25th edition of the Biennale of Sydney.\n\nAfra Al Dhaheri and Hera Büyüktaşcıyan will be part of the upcoming Taipei Biennial 2025.\n\nWhile our presence has become global, Green Art Gallery is forever..."
+          },
+          {
+            "doc_id": "web/77710",
+            "source": "web",
+            "title": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "locator": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "rank": 4,
+            "score": 0.497096985578537,
+            "queries": [
+              "Chaad Contemporary Art residency completion year"
+            ],
+            "snippet": "---\ntitle: Recipients of International Residency Scheme Announced\ndate: 2023-02-15\n---\nRecipients of International Residency Scheme Announced\n\nI bhFad i gCéin – Far Afield\n\nPoetry Ireland Announces Recipients of International Residency Scheme\n\nFunded by the Arts Council's International Residency Scheme 2022\n\nPoetry Ire..."
+          },
+          {
+            "doc_id": "web/80241",
+            "source": "web",
+            "title": "https://www.collegeart.org/news/category/students/",
+            "locator": "https://www.collegeart.org/news/category/students/",
+            "rank": 5,
+            "score": 0.49614962935447693,
+            "queries": [
+              "Chaad Contemporary Art residency completion year"
+            ],
+            "snippet": "---\ntitle: CAA News Today\ndate: 2023-03-07\n---\nCAA News Today\n\nMeet the Michael Aurbach Fellowship for Excellence in Visual Art Inaugural Recipient and Honorable Mentions\n\nposted by CAA — March 07, 2023\n\nCAA is pleased to announce the first ever recipient of the first Michael Aurbach Fellowship for Excellence in Visual..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.21683596400544047,
+      "iteration": 9
+    },
+    {
+      "id": "iter9_web_search_2",
+      "type": "web_search",
+      "description": "Search for Chaad's residency timeline with Contemporary Art organization",
+      "parameters": {
+        "query": "Chaad residency timeline Contemporary Art organization"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Chaad residency timeline Contemporary Art organization",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/81420",
+            "source": "web",
+            "title": "https://brandywineworkshopandarchives.org/history-and-achievements/",
+            "locator": "https://brandywineworkshopandarchives.org/history-and-achievements/",
+            "rank": 1,
+            "score": 0.48886382579803467,
+            "queries": [
+              "Chaad residency timeline Contemporary Art organization"
+            ],
+            "snippet": "---\ntitle: Our History\ndate: 2023-01-01\n---\nOur History\n\nNotable highlights include \"artpark\" collaborations with the Pennsylvania Horticultural Society, the River Bottom performance at the Aquarium mural project site with local seniors by Jonas Dos Santos in South Philadelphia's Point Breeze neighborhood.\n\nMany of the..."
+          },
+          {
+            "doc_id": "web/76533",
+            "source": "web",
+            "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "rank": 2,
+            "score": 0.4841121435165405,
+            "queries": [
+              "Chaad residency timeline Contemporary Art organization"
+            ],
+            "snippet": "---\ntitle: Contact Zones — Pamela Breda, Victoria Keddie, Sajan Mani\ndate: 2024-05-16\n---\nINHABIT // Artist-in-Residence\n\nThe INHABIT Artist-in-Residence Program of the Max Planck Institute for Empirical Aesthetics invites artists from various disciplines to collaborate with our team of scientists and researchers. The..."
+          },
+          {
+            "doc_id": "web/95556",
+            "source": "web",
+            "title": "https://artjameel.org/about/history/",
+            "locator": "https://artjameel.org/about/history/",
+            "rank": 3,
+            "score": 0.47577667236328125,
+            "queries": [
+              "Chaad residency timeline Contemporary Art organization"
+            ],
+            "snippet": "---\ntitle: History of Art Jameel\ndate: 2025-01-01\n---\nArt Jameel was established in 2003 as part of Community Jameel, the organisation set up to continue the Jameel family's tradition of supporting the community — a tradition started in the 1940s by the late Abdul Latif Jameel, founder of the Abdul Latif Jameel busines..."
+          },
+          {
+            "doc_id": "web/86037",
+            "source": "web",
+            "title": "https://www.curatorialleadership.org/programs/moma-program/moma-international-curatorial-institute-2016/participants/",
+            "locator": "https://www.curatorialleadership.org/programs/moma-program/moma-international-curatorial-institute-2016/participants/",
+            "rank": 4,
+            "score": 0.4745013117790222,
+            "queries": [
+              "Chaad residency timeline Contemporary Art organization"
+            ],
+            "snippet": "---\ntitle: Participants from MoMA International Curatorial Institute 2016\ndate: 2025-01-01\n---\nOver the past four years Diana Campbell Betancourt has developed the Dhaka Art Summit to be the world's leading research and exhibitions platform for art from South Asia, and developed a new philanthropic platform to shift th..."
+          },
+          {
+            "doc_id": "web/86391",
+            "source": "web",
+            "title": "https://mandevilleartgallery.ucsd.edu/exhibitions/archive.html",
+            "locator": "https://mandevilleartgallery.ucsd.edu/exhibitions/archive.html",
+            "rank": 5,
+            "score": 0.46712177991867065,
+            "queries": [
+              "Chaad residency timeline Contemporary Art organization"
+            ],
+            "snippet": "---\ntitle: Exhibition Archive\ndate: 1996-03-23\n---\nExhibition Archive\n\nReview the Mandeville Art Gallery's exhibitions from 1966 to 2018 below.\n\nRead more about the Mandeville Art Gallery's full history here.2018 - 2016\n\n2018\n\nThe Agency of Art\n\nApril 12 – May 17, 2018\n\nCurated by Tatiana Sizonenko, Ph.D. '13\n\nIn the f..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.1411583621520549,
+      "iteration": 9
+    },
+    {
+      "id": "iter9_web_search_3",
+      "type": "web_search",
+      "description": "Search for Chaad's residency program conclusion year with Contemporary Art",
+      "parameters": {
+        "query": "Chaad residency program conclusion year Contemporary Art"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Chaad residency program conclusion year Contemporary Art",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/76533",
+            "source": "web",
+            "title": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "locator": "https://www.aesthetics.mpg.de/en/research/inhabit-artist-in-residence.html",
+            "rank": 1,
+            "score": 0.4997985363006592,
+            "queries": [
+              "Chaad residency program conclusion year Contemporary Art"
+            ],
+            "snippet": "---\ntitle: Contact Zones — Pamela Breda, Victoria Keddie, Sajan Mani\ndate: 2024-05-16\n---\nINHABIT // Artist-in-Residence\n\nThe INHABIT Artist-in-Residence Program of the Max Planck Institute for Empirical Aesthetics invites artists from various disciplines to collaborate with our team of scientists and researchers. The..."
+          },
+          {
+            "doc_id": "web/81420",
+            "source": "web",
+            "title": "https://brandywineworkshopandarchives.org/history-and-achievements/",
+            "locator": "https://brandywineworkshopandarchives.org/history-and-achievements/",
+            "rank": 2,
+            "score": 0.49517759680747986,
+            "queries": [
+              "Chaad residency program conclusion year Contemporary Art"
+            ],
+            "snippet": "---\ntitle: Our History\ndate: 2023-01-01\n---\nOur History\n\nNotable highlights include \"artpark\" collaborations with the Pennsylvania Horticultural Society, the River Bottom performance at the Aquarium mural project site with local seniors by Jonas Dos Santos in South Philadelphia's Point Breeze neighborhood.\n\nMany of the..."
+          },
+          {
+            "doc_id": "web/77710",
+            "source": "web",
+            "title": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "locator": "https://www.poetryireland.ie/news/recipients-of-international-residency-scheme-announced",
+            "rank": 3,
+            "score": 0.49156227707862854,
+            "queries": [
+              "Chaad residency program conclusion year Contemporary Art"
+            ],
+            "snippet": "---\ntitle: Recipients of International Residency Scheme Announced\ndate: 2023-02-15\n---\nRecipients of International Residency Scheme Announced\n\nI bhFad i gCéin – Far Afield\n\nPoetry Ireland Announces Recipients of International Residency Scheme\n\nFunded by the Arts Council's International Residency Scheme 2022\n\nPoetry Ire..."
+          },
+          {
+            "doc_id": "web/84535",
+            "source": "web",
+            "title": "https://www.hartford.edu/academics/schools-colleges/art/academics/default.aspx",
+            "locator": "https://www.hartford.edu/academics/schools-colleges/art/academics/default.aspx",
+            "rank": 4,
+            "score": 0.48747074604034424,
+            "queries": [
+              "Chaad residency program conclusion year Contemporary Art"
+            ],
+            "snippet": "---\ntitle: Academics\ndate: 2025-02-01\n---\nYour Foundation Year\n\nYour foundation year introduces you to the fundamental processes and principles of art-making and design, and will help you determine your major. You will explore specific areas of interest and develop at a professional level from your very first day.\n\nLow..."
+          },
+          {
+            "doc_id": "web/28797",
+            "source": "web",
+            "title": "https://wexarts.org/read-watch-listen/message-interim-directors",
+            "locator": "https://wexarts.org/read-watch-listen/message-interim-directors",
+            "rank": 5,
+            "score": 0.48538893461227417,
+            "queries": [
+              "Chaad residency program conclusion year Contemporary Art"
+            ],
+            "snippet": "---\ntitle: A message from the Interim Directors\nauthor: Megan Cavanaugh; Kelly Stevelt\ndate: 2022-11-03\n---\nNovember 2022\n\nYou may have seen recent reports on how the museum space can serve as a resource for health and resilience programs. Here's a handy recap of some of that research from the folks at MuseumNext.\n\nThe..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.21678665303625166,
+      "iteration": 9
+    }
+  ],
+  "error_records": [],
+  "timeline_paths": {
+    "events_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v1/privacy_hopqa_runs/DR0001_25cbf112_248dc2db/timeline_events.json",
+    "summary_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v1/privacy_hopqa_runs/DR0001_25cbf112_248dc2db/timeline_summary.json",
+    "html_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v1/privacy_hopqa_runs/DR0001_25cbf112_248dc2db/timeline.html"
+  },
+  "report_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v1/privacy_hopqa_runs/DR0001_25cbf112_248dc2db/workspace/research_report_1776289042.md"
+}

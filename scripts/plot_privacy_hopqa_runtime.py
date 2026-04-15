@@ -10,6 +10,7 @@ import json
 import math
 import random
 import re
+import shutil
 from collections import Counter, defaultdict
 from pathlib import Path
 from statistics import mean, median
@@ -19,6 +20,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.ticker import FuncFormatter
 
 
 ANSWER_RE = re.compile(r"^ANSWER_(\w+):\s*(.+)$")
@@ -328,10 +330,21 @@ def load_rollouts(run_dir: Path, problem_lookup: dict[tuple[str, str], dict[str,
             if problem is not None:
                 score = score_chain_answers(problem, answers)
 
+        pattern = ""
+        hop_count = int(summary.get("total_hops") or 0)
+        if problem is not None:
+            pattern = str(problem.get("pattern") or "")
+            if not pattern:
+                pattern = "".join(str(hop.get("hop_type") or "?") for hop in (problem.get("hops") or []))
+            if not hop_count:
+                hop_count = int(problem.get("n_hops") or len(problem.get("hops") or []))
+
         rollout_row = {
             "rollout_id": rollout_id,
             "task_id": task_id,
             "chain_id": chain_id,
+            "hop_pattern": pattern,
+            "hop_count": hop_count,
             "duration_s": float(summary.get("duration_s") or 0.0),
             "iterations_used": int(summary.get("iterations_used") or 0),
             "resolved_hops": int(summary.get("resolved_hops") or 0),
@@ -350,6 +363,8 @@ def load_rollouts(run_dir: Path, problem_lookup: dict[tuple[str, str], dict[str,
             "report_uri": safe_uri(report_path),
             "timeline_html": timeline_html_path,
             "timeline_uri": safe_uri(timeline_html_path),
+            "events_path": str(events_path),
+            "events_uri": safe_uri(str(events_path)),
             "trace_path": str(trace_path),
             "trace_uri": safe_uri(str(trace_path)),
             "reward": score["reward"] if score is not None else "",
@@ -358,6 +373,13 @@ def load_rollouts(run_dir: Path, problem_lookup: dict[tuple[str, str], dict[str,
             "predicted_final_answer": answers.get("FINAL", ""),
             "ground_truth_final_answer": (problem or {}).get("global_answer", ""),
         }
+        if score is not None:
+            for hop_result in score.get("per_hop") or []:
+                hop_num = int(hop_result.get("hop") or 0)
+                rollout_row[f"hop_{hop_num}_correct"] = bool(hop_result.get("correct"))
+                rollout_row[f"hop_{hop_num}_match_score"] = float(hop_result.get("match_score") or 0.0)
+                rollout_row[f"hop_{hop_num}_answer"] = str(hop_result.get("agent_answer") or "")
+                rollout_row[f"hop_{hop_num}_gold"] = str(hop_result.get("ground_truth") or "")
         rollouts.append(rollout_row)
 
         for error in trace_errors:
@@ -397,6 +419,35 @@ def load_rollouts(run_dir: Path, problem_lookup: dict[tuple[str, str], dict[str,
         sequences.append(compress_stage_sequence(events, complete=complete))
 
     return rollouts, error_rows, event_rows, sequences
+
+
+def load_llm_call_rows(run_dir: Path) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    actor_log = run_dir / "actor" / "info.log"
+    marker = "privacy_hopqa llm call summary: "
+    if not actor_log.exists():
+        return rows
+    with actor_log.open("r", encoding="utf-8", errors="ignore") as handle:
+        for raw_line in handle:
+            if marker not in raw_line:
+                continue
+            try:
+                payload = json.loads(raw_line.split(marker, 1)[1].strip())
+            except json.JSONDecodeError:
+                continue
+            rows.append(
+                {
+                    "rollout_id": str(payload.get("rollout_id") or ""),
+                    "task_id": str(payload.get("task_id") or ""),
+                    "chain_id": str(payload.get("chain_id") or ""),
+                    "log_name": str(payload.get("log_name") or ""),
+                    "captured": bool(payload.get("captured")),
+                    "prompt_tokens": int(payload.get("prompt_tokens") or 0),
+                    "output_tokens": int(payload.get("output_tokens") or 0),
+                    "total_tokens": int(payload.get("total_tokens") or 0),
+                }
+            )
+    return rows
 
 
 def plot_hist(values: list[float], path: Path, *, title: str, xlabel: str, bins: int = 30) -> None:
@@ -443,7 +494,16 @@ def plot_grouped_boxplot(grouped: dict[str, list[float]], path: Path, *, title: 
     non_empty = [(label, values) for label, values in grouped.items() if values]
     if not non_empty:
         return
-    non_empty.sort(key=lambda item: FLOW_STAGE_ORDER.index(item[0]) if item[0] in FLOW_STAGE_ORDER else 999)
+
+    def _sort_key(label: str) -> tuple[int, float | str]:
+        if label in FLOW_STAGE_ORDER:
+            return (0, FLOW_STAGE_ORDER.index(label))
+        try:
+            return (1, float(label))
+        except ValueError:
+            return (2, label)
+
+    non_empty.sort(key=lambda item: _sort_key(item[0]))
     labels = [label for label, _ in non_empty]
     data = [values for _, values in non_empty]
     fig, ax = plt.subplots(figsize=(10, max(4.5, len(labels) * 0.55)))
@@ -496,6 +556,175 @@ def plot_error_bars(error_rows: list[dict[str, Any]], path: Path) -> None:
     fig.tight_layout()
     fig.savefig(path, dpi=180)
     plt.close(fig)
+
+
+def plot_named_values(
+    values: dict[str, float],
+    path: Path,
+    *,
+    title: str,
+    xlabel: str,
+    ylabel: str,
+    percentage: bool = False,
+) -> None:
+    items = [(label, value) for label, value in values.items() if value is not None]
+    if not items:
+        return
+
+    def _numeric_key(label: str) -> tuple[int, float | str]:
+        try:
+            return (0, float(label))
+        except ValueError:
+            return (1, label)
+
+    items.sort(key=lambda item: _numeric_key(str(item[0])))
+    labels = [str(label) for label, _ in items]
+    vals = [float(value) for _, value in items]
+    fig, ax = plt.subplots(figsize=(max(8, len(labels) * 0.8), 4.8))
+    ax.bar(range(len(labels)), vals, color="#4c78a8")
+    ax.set_xticks(range(len(labels)))
+    ax.set_xticklabels(labels, rotation=0)
+    ax.set_title(title)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    if percentage:
+        ax.set_ylim(0.0, 1.0)
+        ax.yaxis.set_major_formatter(FuncFormatter(lambda value, _pos: f"{100 * value:.0f}%"))
+    ax.grid(axis="y", alpha=0.25)
+    fig.tight_layout()
+    fig.savefig(path, dpi=180)
+    plt.close(fig)
+
+
+def plot_metric_by_group(
+    rows: list[dict[str, Any]],
+    value_key: str,
+    group_key: str,
+    path: Path,
+    *,
+    title: str,
+    xlabel: str,
+    ylabel: str,
+    top_n: int | None = None,
+) -> None:
+    grouped: dict[str, list[float]] = defaultdict(list)
+    for row in rows:
+        value = row.get(value_key)
+        group = str(row.get(group_key) or "")
+        if not group or value in ("", None):
+            continue
+        grouped[group].append(float(value))
+    if top_n is not None and len(grouped) > top_n:
+        counts = Counter({key: len(values) for key, values in grouped.items()})
+        keep = {key for key, _count in counts.most_common(top_n)}
+        grouped = {key: value for key, value in grouped.items() if key in keep}
+    plot_grouped_boxplot(grouped, path, title=title, xlabel=xlabel, ylabel=ylabel)
+
+
+def plot_rollout_roofline(events: list[dict[str, Any]], path: Path, *, title: str) -> None:
+    if not events:
+        return
+    lane_order = sorted(
+        {str(event.get("lane") or "") for event in events if str(event.get("lane") or "")},
+        key=lambda lane: min(float(event.get("start_s") or 0.0) for event in events if str(event.get("lane") or "") == lane),
+    )
+    lane_index = {lane: idx for idx, lane in enumerate(lane_order)}
+    fig_height = max(3.6, len(lane_order) * 0.38 + 1.2)
+    fig, ax = plt.subplots(figsize=(11.5, fig_height))
+
+    for event in sorted(events, key=lambda row: (float(row.get("start_s") or 0.0), str(row.get("lane") or ""))):
+        lane = str(event.get("lane") or "")
+        if lane not in lane_index:
+            continue
+        stage = str(event.get("stage") or "")
+        start_s = float(event.get("start_s") or 0.0)
+        end_s = float(event.get("end_s") or start_s)
+        duration = max(0.0, end_s - start_s)
+        y = lane_index[lane]
+        ax.barh(
+            y,
+            duration,
+            left=start_s,
+            height=0.72,
+            color=STAGE_COLORS.get(stage, "#94a3b8"),
+            edgecolor="white",
+            linewidth=0.6,
+        )
+
+    ax.set_title(title)
+    ax.set_xlabel("Elapsed time (seconds)")
+    ax.set_ylabel("Lane")
+    ax.set_yticks(range(len(lane_order)))
+    ax.set_yticklabels([lane[:44] + ("..." if len(lane) > 44 else "") for lane in lane_order], fontsize=8)
+    ax.invert_yaxis()
+    ax.grid(axis="x", alpha=0.25)
+    fig.tight_layout()
+    fig.savefig(path, dpi=180)
+    plt.close(fig)
+
+
+def select_representative_rollouts(rollouts: list[dict[str, Any]], *, limit: int = 12) -> list[dict[str, Any]]:
+    rng = random.Random(7)
+    eligible = [row for row in rollouts if row.get("reward") not in ("", None)]
+    if len(eligible) <= limit:
+        return sorted(eligible, key=lambda row: str(row.get("rollout_id") or ""))
+
+    def reward_bucket(value: float) -> str:
+        if value >= 0.999:
+            return "solved"
+        if value > 0.0:
+            return "partial"
+        return "zero"
+
+    grouped: dict[tuple[str, int], list[dict[str, Any]]] = defaultdict(list)
+    for row in eligible:
+        bucket = reward_bucket(float(row.get("reward") or 0.0))
+        hop_count = int(row.get("hop_count") or row.get("total_hops") or 0)
+        grouped[(bucket, hop_count)].append(row)
+
+    sampled: list[dict[str, Any]] = []
+    for key in sorted(grouped.keys()):
+        candidates = grouped[key]
+        sampled.append(rng.choice(candidates))
+        if len(sampled) >= limit:
+            break
+
+    if len(sampled) < limit:
+        sampled_ids = {str(row.get("rollout_id") or "") for row in sampled}
+        remaining = [row for row in eligible if str(row.get("rollout_id") or "") not in sampled_ids]
+        rng.shuffle(remaining)
+        sampled.extend(remaining[: max(0, limit - len(sampled))])
+
+    sampled = sampled[:limit]
+    sampled.sort(key=lambda row: (float(row.get("reward") or 0.0), int(row.get("hop_count") or 0), str(row.get("rollout_id") or "")))
+    return sampled
+
+
+def copy_sample_artifacts(output_dir: Path, sampled_rows: list[dict[str, Any]]) -> None:
+    sample_root = output_dir / "sample_artifacts"
+    sample_root.mkdir(parents=True, exist_ok=True)
+    for row in sampled_rows:
+        rollout_id = str(row.get("rollout_id") or "")
+        if not rollout_id:
+            continue
+        target_dir = sample_root / rollout_id
+        target_dir.mkdir(parents=True, exist_ok=True)
+        for key, filename in [
+            ("report_path", "report.md"),
+            ("timeline_html", "timeline.html"),
+            ("trace_path", "trace.json"),
+            ("events_path", "timeline_events.json"),
+        ]:
+            source = str(row.get(key) or "")
+            if not source:
+                continue
+            source_path = Path(source)
+            if source_path.exists():
+                shutil.copy2(source_path, target_dir / filename)
+                row[f"{key}_sample_rel"] = f"sample_artifacts/{rollout_id}/{filename}"
+        roofline_path = row.get("roofline_path")
+        if roofline_path:
+            row["roofline_rel"] = str(Path(roofline_path).relative_to(output_dir))
 
 
 def render_stage_flow_svg(sequences: list[list[str]]) -> str:
@@ -575,6 +804,12 @@ def html_table(rows: list[list[str]], headers: list[str]) -> str:
     )
 
 
+def display_value(value: Any) -> str:
+    if value is None:
+        return ""
+    return str(value)
+
+
 def render_index_html(
     output_dir: Path,
     run_name: str,
@@ -582,6 +817,9 @@ def render_index_html(
     plots: list[str],
     sampled_rows: list[dict[str, Any]],
     rollout_rows: list[dict[str, Any]],
+    hop_accuracy_rows: list[list[str]],
+    parse_rate_rows: list[list[str]],
+    llm_token_rows: list[list[str]],
 ) -> str:
     cards = [
         ("Rollouts", str(overview.get("rollout_count", 0))),
@@ -591,6 +829,7 @@ def render_index_html(
         ("Median Iterations", f"{float(overview.get('median_iterations') or 0.0):.1f}"),
         ("Median LLM Calls", f"{float(overview.get('median_llm_calls') or 0.0):.1f}"),
         ("Parse Errors", str(int(overview.get("parse_errors_total") or 0))),
+        ("Parse Error Rate", f"{100.0 * float(overview.get('parse_error_rate') or 0.0):.2f}%"),
         ("Context Overflows", str(int(overview.get("context_overflow_errors") or 0))),
     ]
     card_html = "".join(
@@ -602,24 +841,59 @@ def render_index_html(
     )
 
     plot_html = "".join(
-        f"<div class='plot-card'><img src='{html.escape(name)}' alt='{html.escape(name)}' /></div>" for name in plots
+        "<div class='plot-card'>"
+        f"<a href='{html.escape(name)}'><img src='{html.escape(name)}' alt='{html.escape(name)}' /></a>"
+        f"<div class='plot-label'><a href='{html.escape(name)}'>{html.escape(name)}</a></div>"
+        "</div>"
+        for name in plots
     )
+
+    roofline_cards: list[str] = []
+    for row in sampled_rows:
+        links = []
+        for key, label in [
+            ("report_path_sample_rel", "report"),
+            ("timeline_html_sample_rel", "timeline"),
+            ("trace_path_sample_rel", "trace"),
+            ("events_path_sample_rel", "events"),
+        ]:
+            if row.get(key):
+                links.append(f"<a href='{html.escape(str(row[key]))}'>{label}</a>")
+        roofline_img = ""
+        if row.get("roofline_rel"):
+            roofline_img = (
+                f"<a href='{html.escape(str(row['roofline_rel']))}'>"
+                f"<img src='{html.escape(str(row['roofline_rel']))}' alt='{html.escape(str(row.get('rollout_id') or ''))}' />"
+                "</a>"
+            )
+        roofline_cards.append(
+            "<div class='sample-card'>"
+            f"<div class='sample-title'>{html.escape(str(row.get('rollout_id') or ''))}</div>"
+            f"<div class='sample-meta'>reward={html.escape(display_value(row.get('reward')))}, hops={html.escape(display_value(row.get('hop_count') if row.get('hop_count') not in (None, '') else row.get('total_hops')))}, pattern={html.escape(display_value(row.get('hop_pattern') or ''))}, parse={html.escape(display_value(row.get('parse_errors_total')))}</div>"
+            f"{roofline_img}"
+            f"<div class='sample-links'>{' | '.join(links)}</div>"
+            "</div>"
+        )
 
     sample_table_rows: list[list[str]] = []
     for row in sampled_rows:
         links = []
-        if row.get("report_uri"):
-            links.append(f"<a href='{html.escape(str(row['report_uri']))}'>report</a>")
-        if row.get("timeline_uri"):
-            links.append(f"<a href='{html.escape(str(row['timeline_uri']))}'>timeline</a>")
-        if row.get("trace_uri"):
-            links.append(f"<a href='{html.escape(str(row['trace_uri']))}'>trace</a>")
+        for key, label in [
+            ("report_path_sample_rel", "report"),
+            ("timeline_html_sample_rel", "timeline"),
+            ("trace_path_sample_rel", "trace"),
+            ("events_path_sample_rel", "events"),
+        ]:
+            if row.get(key):
+                links.append(f"<a href='{html.escape(str(row[key]))}'>{label}</a>")
         sample_table_rows.append(
             [
                 html.escape(str(row.get("rollout_id") or "")),
                 html.escape(str(row.get("task_id") or "")),
                 html.escape(str(row.get("chain_id") or "")),
-                html.escape(str(row.get("reward") or "")),
+                html.escape(str(row.get("hop_pattern") or "")),
+                html.escape(display_value(row.get("hop_count") if row.get("hop_count") not in (None, "") else row.get("total_hops"))),
+                html.escape(display_value(row.get("reward"))),
                 html.escape(str(row.get("predicted_final_answer") or "")),
                 html.escape(str(row.get("ground_truth_final_answer") or "")),
                 "<br/>".join(links),
@@ -627,7 +901,7 @@ def render_index_html(
         )
     sampled_table = html_table(
         sample_table_rows,
-        ["Rollout", "Task", "Chain", "Reward", "Predicted Final", "Gold Final", "Artifacts"],
+        ["Rollout", "Task", "Chain", "Pattern", "Hops", "Reward", "Predicted Final", "Gold Final", "Artifacts"],
     )
 
     rollout_rows_sorted = sorted(
@@ -647,12 +921,12 @@ def render_index_html(
         rollout_table_rows.append(
             [
                 html.escape(str(row.get("rollout_id") or "")),
-                html.escape(str(row.get("reward") or "")),
-                html.escape(str(row.get("iterations_used") or "")),
-                html.escape(str(row.get("searches_total") or "")),
-                html.escape(str(row.get("docs_read") or "")),
-                html.escape(str(row.get("parse_errors_total") or "")),
-                html.escape(str(row.get("context_overflow_errors") or "")),
+                html.escape(display_value(row.get("reward"))),
+                html.escape(display_value(row.get("iterations_used"))),
+                html.escape(display_value(row.get("searches_total"))),
+                html.escape(display_value(row.get("docs_read"))),
+                html.escape(display_value(row.get("parse_errors_total"))),
+                html.escape(display_value(row.get("context_overflow_errors"))),
                 html.escape(f"{float(row.get('duration_s') or 0.0):.1f}"),
                 "<br/>".join(links),
             ]
@@ -663,6 +937,9 @@ def render_index_html(
     )
 
     flow_svg = (output_dir / "stage_flow.svg").read_text(encoding="utf-8") if (output_dir / "stage_flow.svg").exists() else ""
+    hop_accuracy_table = html_table(hop_accuracy_rows, ["Hop", "Accuracy", "Solved / Total"])
+    parse_rate_table = html_table(parse_rate_rows, ["Stage", "Parse Errors", "Attempts", "Rate"])
+    llm_token_table = html_table(llm_token_rows, ["Call Type", "Calls", "Median Prompt", "Median Output", "Median Total", "Mean Total"])
 
     return f"""<!doctype html>
 <html lang="en">
@@ -711,6 +988,11 @@ def render_index_html(
       height: auto;
       display: block;
     }}
+    .plot-label {{
+      margin-top: 8px;
+      font-size: 13px;
+      color: #475569;
+    }}
     .flow {{
       overflow-x: auto;
       background: white;
@@ -718,6 +1000,39 @@ def render_index_html(
       border-radius: 10px;
       padding: 8px;
       margin: 0 0 24px;
+    }}
+    .samples {{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 16px;
+      margin: 0 0 24px;
+    }}
+    .sample-card {{
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      padding: 12px;
+    }}
+    .sample-card img {{
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }}
+    .sample-title {{
+      font-weight: 700;
+      margin-bottom: 4px;
+    }}
+    .sample-meta {{
+      color: #475569;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }}
+    .sample-links {{
+      font-size: 13px;
+      color: #475569;
     }}
     table {{
       width: 100%;
@@ -751,10 +1066,18 @@ def render_index_html(
   <h1>privacy_hopqa runtime analysis</h1>
   <div class="panel"><strong>Run:</strong> {html.escape(run_name)}</div>
   <div class="cards">{card_html}</div>
-  <h2>Stage Flow</h2>
+  <h2>Representative Trace Rooflines</h2>
+  <div class="samples">{''.join(roofline_cards)}</div>
+  <h2>Aggregate Stage Flow</h2>
   <div class="flow">{flow_svg}</div>
   <h2>Plots</h2>
   <div class="plots">{plot_html}</div>
+  <h2>Per-Hop Accuracy</h2>
+  {hop_accuracy_table}
+  <h2>Parse Error Rates</h2>
+  {parse_rate_table}
+  <h2>LLM Token Totals by Call Type</h2>
+  {llm_token_table}
   <h2>Sampled Report Checks</h2>
   {sampled_table}
   <h2>Rollouts</h2>
@@ -777,15 +1100,18 @@ def main() -> None:
 
     problem_lookup = load_problem_lookup(run_dir)
     rollouts, error_rows, event_rows, sequences = load_rollouts(run_dir, problem_lookup)
+    llm_call_rows = load_llm_call_rows(run_dir)
 
     write_csv(output_dir / "rollouts.csv", rollouts)
     write_csv(output_dir / "errors.csv", error_rows)
     write_csv(output_dir / "events.csv", event_rows)
+    write_csv(output_dir / "llm_calls.csv", llm_call_rows)
 
     rewards = [float(row["reward"]) for row in rollouts if row.get("reward") not in ("", None)]
     durations = [float(row["duration_s"]) for row in rollouts if row.get("duration_s") not in ("", None)]
     iterations = [int(row["iterations_used"]) for row in rollouts if row.get("iterations_used") not in ("", None)]
     llm_calls = [int(row["llm_calls_total"]) for row in rollouts if row.get("llm_calls_total") not in ("", None)]
+    rollout_total_tokens = [int(row["total_tokens"]) for row in rollouts if row.get("total_tokens") not in ("", None)]
 
     stage_durations: dict[str, list[float]] = defaultdict(list)
     for row in event_rows:
@@ -797,6 +1123,16 @@ def main() -> None:
     reward_counter = Counter(f"{value:.2f}" for value in rewards)
     iteration_counter = Counter(str(value) for value in iterations)
     error_kind_counter = Counter(str(row.get("kind") or "other") for row in error_rows)
+    parse_errors_by_stage = Counter(str(row.get("stage") or "") for row in error_rows if str(row.get("kind") or "") == "parse_error")
+    llm_calls_by_stage = Counter(str(row.get("log_name") or "") for row in llm_call_rows)
+    prompt_tokens_by_stage: dict[str, list[float]] = defaultdict(list)
+    output_tokens_by_stage: dict[str, list[float]] = defaultdict(list)
+    total_tokens_by_stage: dict[str, list[float]] = defaultdict(list)
+    for row in llm_call_rows:
+        stage = str(row.get("log_name") or "")
+        prompt_tokens_by_stage[stage].append(float(row.get("prompt_tokens") or 0.0))
+        output_tokens_by_stage[stage].append(float(row.get("output_tokens") or 0.0))
+        total_tokens_by_stage[stage].append(float(row.get("total_tokens") or 0.0))
 
     plots: list[str] = []
     reward_plot = output_dir / "reward_distribution.png"
@@ -839,16 +1175,172 @@ def main() -> None:
     if kind_plot.exists():
         plots.append(kind_plot.name)
 
+    reward_by_hops_plot = output_dir / "reward_by_hop_length.png"
+    plot_metric_by_group(
+        rollouts,
+        "reward",
+        "hop_count",
+        reward_by_hops_plot,
+        title="Reward by Hop Length",
+        xlabel="Reward",
+        ylabel="Hop count",
+    )
+    if reward_by_hops_plot.exists():
+        plots.append(reward_by_hops_plot.name)
+
+    reward_by_pattern_plot = output_dir / "reward_by_hop_pattern.png"
+    plot_metric_by_group(
+        rollouts,
+        "reward",
+        "hop_pattern",
+        reward_by_pattern_plot,
+        title="Reward by Hop Pattern",
+        xlabel="Reward",
+        ylabel="Hop pattern",
+        top_n=12,
+    )
+    if reward_by_pattern_plot.exists():
+        plots.append(reward_by_pattern_plot.name)
+
+    hop_accuracy_values: dict[str, float] = {}
+    hop_accuracy_rows: list[list[str]] = []
+    max_hop = max(
+        [
+            int(key.split("_")[1])
+            for row in rollouts
+            for key in row.keys()
+            if key.startswith("hop_") and key.endswith("_correct")
+        ]
+        or [0]
+    )
+    for hop_num in range(1, max_hop + 1):
+        key = f"hop_{hop_num}_correct"
+        values = [bool(row[key]) for row in rollouts if key in row]
+        if not values:
+            continue
+        solved = sum(int(value) for value in values)
+        accuracy = solved / len(values)
+        hop_accuracy_values[str(hop_num)] = accuracy
+        hop_accuracy_rows.append([str(hop_num), f"{100.0 * accuracy:.1f}%", f"{solved} / {len(values)}"])
+
+    hop_accuracy_plot = output_dir / "hop_position_accuracy.png"
+    plot_named_values(
+        hop_accuracy_values,
+        hop_accuracy_plot,
+        title="Per-Hop Position Accuracy",
+        xlabel="Hop position",
+        ylabel="Accuracy",
+        percentage=True,
+    )
+    if hop_accuracy_plot.exists():
+        plots.append(hop_accuracy_plot.name)
+
+    parse_rate_values: dict[str, float] = {}
+    parse_rate_rows: list[list[str]] = []
+    for stage in sorted(set(parse_errors_by_stage) | set(llm_calls_by_stage), key=lambda value: FLOW_STAGE_ORDER.index(value) if value in FLOW_STAGE_ORDER else 999):
+        attempts = int(llm_calls_by_stage.get(stage, 0))
+        if attempts <= 0:
+            continue
+        parse_errors = int(parse_errors_by_stage.get(stage, 0))
+        rate = parse_errors / attempts
+        parse_rate_values[stage] = rate
+        parse_rate_rows.append([stage, str(parse_errors), str(attempts), f"{100.0 * rate:.2f}%"])
+
+    parse_rate_plot = output_dir / "parse_error_rate_by_stage.png"
+    plot_named_values(
+        parse_rate_values,
+        parse_rate_plot,
+        title="Parse Error Rate by Stage",
+        xlabel="Stage",
+        ylabel="Parse error rate",
+        percentage=True,
+    )
+    if parse_rate_plot.exists():
+        plots.append(parse_rate_plot.name)
+
+    total_tokens_rollout_plot = output_dir / "llm_total_tokens_per_rollout.png"
+    plot_hist(
+        [float(value) for value in rollout_total_tokens],
+        total_tokens_rollout_plot,
+        title="LLM Total Tokens per Rollout",
+        xlabel="Total tokens",
+    )
+    if total_tokens_rollout_plot.exists():
+        plots.append(total_tokens_rollout_plot.name)
+
+    prompt_tokens_plot = output_dir / "prompt_tokens_by_call_type.png"
+    plot_grouped_boxplot(
+        prompt_tokens_by_stage,
+        prompt_tokens_plot,
+        title="Prompt Tokens by LLM Call Type",
+        xlabel="Prompt tokens",
+        ylabel="Call type",
+    )
+    if prompt_tokens_plot.exists():
+        plots.append(prompt_tokens_plot.name)
+
+    output_tokens_plot = output_dir / "output_tokens_by_call_type.png"
+    plot_grouped_boxplot(
+        output_tokens_by_stage,
+        output_tokens_plot,
+        title="Output Tokens by LLM Call Type",
+        xlabel="Output tokens",
+        ylabel="Call type",
+    )
+    if output_tokens_plot.exists():
+        plots.append(output_tokens_plot.name)
+
+    total_tokens_plot = output_dir / "total_tokens_by_call_type.png"
+    plot_grouped_boxplot(
+        total_tokens_by_stage,
+        total_tokens_plot,
+        title="Total Tokens by LLM Call Type",
+        xlabel="Total tokens",
+        ylabel="Call type",
+    )
+    if total_tokens_plot.exists():
+        plots.append(total_tokens_plot.name)
+
     (output_dir / "stage_flow.svg").write_text(render_stage_flow_svg(sequences), encoding="utf-8")
 
-    sampled_rows = sorted(
-        [row for row in rollouts if row.get("reward") not in ("", None)],
-        key=lambda row: (float(row.get("reward") or 0.0), str(row.get("rollout_id") or "")),
-    )
-    rng = random.Random(7)
-    if len(sampled_rows) > 10:
-        sampled_rows = rng.sample(sampled_rows, 10)
-    sampled_rows.sort(key=lambda row: str(row.get("rollout_id") or ""))
+    sampled_rows = select_representative_rollouts(rollouts, limit=12)
+    roofline_dir = output_dir / "sample_rooflines"
+    roofline_dir.mkdir(parents=True, exist_ok=True)
+    for row in sampled_rows:
+        events_path = str(row.get("events_path") or "")
+        if not events_path:
+            continue
+        source = Path(events_path)
+        if not source.exists():
+            continue
+        events = load_json(source)
+        roofline_path = roofline_dir / f"{row['rollout_id']}.png"
+        plot_rollout_roofline(
+            events,
+            roofline_path,
+            title=f"{row['rollout_id']} ({row.get('hop_pattern') or ''}, reward={row.get('reward')})",
+        )
+        if roofline_path.exists():
+            row["roofline_path"] = str(roofline_path)
+    copy_sample_artifacts(output_dir, sampled_rows)
+
+    llm_token_rows: list[list[str]] = []
+    for stage in sorted(total_tokens_by_stage.keys(), key=lambda value: FLOW_STAGE_ORDER.index(value) if value in FLOW_STAGE_ORDER else 999):
+        totals = total_tokens_by_stage.get(stage) or []
+        prompts = prompt_tokens_by_stage.get(stage) or []
+        outputs = output_tokens_by_stage.get(stage) or []
+        if not totals:
+            continue
+        llm_token_rows.append(
+            [
+                stage,
+                str(len(totals)),
+                f"{median(prompts):.1f}",
+                f"{median(outputs):.1f}",
+                f"{median(totals):.1f}",
+                f"{mean(totals):.1f}",
+            ]
+        )
 
     overview = {
         "rollout_count": len(rollouts),
@@ -862,14 +1354,51 @@ def main() -> None:
         "median_iterations": median(iterations) if iterations else 0.0,
         "median_llm_calls": median(llm_calls) if llm_calls else 0.0,
         "parse_errors_total": sum(int(row.get("kind") == "parse_error") for row in error_rows),
+        "parse_error_rate": (
+            sum(int(row.get("kind") == "parse_error") for row in error_rows) / len(llm_call_rows)
+            if llm_call_rows
+            else 0.0
+        ),
         "context_overflow_errors": sum(int(row.get("kind") == "context_overflow") for row in error_rows),
         "reward_stats": numeric_stats(rewards),
         "duration_stats": numeric_stats(durations),
         "llm_call_stats": numeric_stats([float(value) for value in llm_calls]),
     }
     save_json(output_dir / "summary.json", overview)
+    write_csv(
+        output_dir / "hop_position_accuracy.csv",
+        [{"hop": row[0], "accuracy": row[1], "solved_total": row[2]} for row in hop_accuracy_rows],
+    )
+    write_csv(
+        output_dir / "parse_error_rates.csv",
+        [{"stage": row[0], "parse_errors": row[1], "attempts": row[2], "rate": row[3]} for row in parse_rate_rows],
+    )
+    write_csv(
+        output_dir / "llm_token_summary.csv",
+        [
+            {
+                "call_type": row[0],
+                "calls": row[1],
+                "median_prompt_tokens": row[2],
+                "median_output_tokens": row[3],
+                "median_total_tokens": row[4],
+                "mean_total_tokens": row[5],
+            }
+            for row in llm_token_rows
+        ],
+    )
 
-    html_doc = render_index_html(output_dir, run_dir.name, overview, plots, sampled_rows, rollouts)
+    html_doc = render_index_html(
+        output_dir,
+        run_dir.name,
+        overview,
+        plots,
+        sampled_rows,
+        rollouts,
+        hop_accuracy_rows,
+        parse_rate_rows,
+        llm_token_rows,
+    )
     (output_dir / "index.html").write_text(html_doc, encoding="utf-8")
 
 

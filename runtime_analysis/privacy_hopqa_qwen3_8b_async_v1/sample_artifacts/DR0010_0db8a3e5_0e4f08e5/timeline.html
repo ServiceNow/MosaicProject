@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>privacy_hopqa timeline</title>
+  <style>
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 24px;
+      color: #111827;
+      background: #f8fafc;
+    }
+    h1, h2 {
+      margin: 0 0 12px;
+    }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin: 0 0 24px;
+    }
+    .card {
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .card .label {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+    .card .value {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .lane-row {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .lane-label {
+      font-size: 13px;
+      color: #334155;
+      overflow-wrap: anywhere;
+    }
+    .lane-track {
+      position: relative;
+      height: 28px;
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .bar {
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      border-radius: 6px;
+      color: white;
+      font-size: 11px;
+      line-height: 22px;
+      padding: 0 6px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 18px;
+    }
+    th, td {
+      border-bottom: 1px solid #e2e8f0;
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 13px;
+    }
+    th {
+      background: #f1f5f9;
+    }
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>privacy_hopqa rollout timeline</h1>
+    <div class="summary">
+    <div class="card"><div class="label">Task</div><div class="value">DR0010</div></div>
+    <div class="card"><div class="label">Chain</div><div class="value">0db8a3e5</div></div>
+    <div class="card"><div class="label">Iterations</div><div class="value">10</div></div>
+    <div class="card"><div class="label">Resolved Hops</div><div class="value">0/5</div></div>
+    <div class="card"><div class="label">Searches</div><div class="value">35</div></div>
+    <div class="card"><div class="label">Docs Read</div><div class="value">19</div></div>
+    <div class="card"><div class="label">Parse Errors</div><div class="value">0</div></div>
+    <div class="card"><div class="label">Context Overflows</div><div class="value">0</div></div>
+    <div class="card"><div class="label">Duration (s)</div><div class="value">388.73</div></div>
+  </div>
+  <h2>Timeline</h2>
+  <div><div class='lane-row'><div class='lane-label'>plan</div><div class='lane-track'><div class="bar" style="left:0.000%;width:3.135%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 0.0, &quot;duration_s&quot;: 12.185, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 retrieval plan</div><div class="bar" style="left:9.674%;width:3.567%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 37.601, &quot;duration_s&quot;: 13.864, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 retrieval plan</div><div class="bar" style="left:21.502%;width:3.632%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 83.572, &quot;duration_s&quot;: 14.116, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 2}}">H1 retrieval plan</div><div class="bar" style="left:31.895%;width:2.861%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 123.969, &quot;duration_s&quot;: 11.119, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 3}}">H1 retrieval plan</div><div class="bar" style="left:42.223%;width:3.454%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 164.113, &quot;duration_s&quot;: 13.427, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 4}}">H1 retrieval plan</div><div class="bar" style="left:52.074%;width:3.377%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 202.4, &quot;duration_s&quot;: 13.126, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 5}}">H1 retrieval plan</div><div class="bar" style="left:64.343%;width:4.152%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 250.085, &quot;duration_s&quot;: 16.139, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 6}}">H1 retrieval plan</div><div class="bar" style="left:75.532%;width:4.085%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 293.576, &quot;duration_s&quot;: 15.879, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 7}}">H1 retrieval plan</div><div class="bar" style="left:85.735%;width:3.609%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 333.232, &quot;duration_s&quot;: 14.027, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 8}}">H1 retrieval plan</div><div class="bar" style="left:94.936%;width:3.357%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 368.995, &quot;duration_s&quot;: 13.049, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 9}}">H1 retrieval plan</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_0</div><div class='lane-track'><div class="bar" style="left:3.135%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions case study downloads healthca...&quot;, &quot;start_s&quot;: 12.185, &quot;duration_s&quot;: 0.229, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions case study downloads healthca...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_1</div><div class='lane-track'><div class="bar" style="left:3.135%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions case study download statistic...&quot;, &quot;start_s&quot;: 12.185, &quot;duration_s&quot;: 0.239, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions case study download statistic...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_2</div><div class='lane-track'><div class="bar" style="left:3.135%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions client data healthcare profes...&quot;, &quot;start_s&quot;: 12.186, &quot;duration_s&quot;: 0.284, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions client data healthcare profes...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_3</div><div class='lane-track'><div class="bar" style="left:3.135%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions case study download attributi...&quot;, &quot;start_s&quot;: 12.186, &quot;duration_s&quot;: 0.229, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions case study download attributi...</div></div></div><div class='lane-row'><div class='lane-label'>choose</div><div class='lane-track'><div class="bar" style="left:3.208%;width:3.847%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 12.47, &quot;duration_s&quot;: 14.951, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 choose docs</div><div class="bar" style="left:13.313%;width:5.224%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 51.746, &quot;duration_s&quot;: 20.305, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 choose docs</div><div class="bar" style="left:25.218%;width:3.827%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 98.017, &quot;duration_s&quot;: 14.877, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 2}}">H1 choose docs</div><div class="bar" style="left:34.814%;width:4.432%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 135.313, &quot;duration_s&quot;: 17.227, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 3}}">H1 choose docs</div><div class="bar" style="left:45.766%;width:2.803%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 177.883, &quot;duration_s&quot;: 10.894, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 4}}">H1 choose docs</div><div class="bar" style="left:55.625%;width:6.136%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 216.2, &quot;duration_s&quot;: 23.849, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 5}}">H1 choose docs</div><div class="bar" style="left:68.769%;width:3.800%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 267.29, &quot;duration_s&quot;: 14.77, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 6}}">H1 choose docs</div><div class="bar" style="left:79.683%;width:3.450%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 309.708, &quot;duration_s&quot;: 13.41, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 7}}">H1 choose docs</div><div class="bar" style="left:89.811%;width:2.564%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 349.076, &quot;duration_s&quot;: 9.965, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 8}}">H1 choose docs</div></div></div><div class='lane-row'><div class='lane-label'>read:web/drbench_urls/drbench_urls_fe9df6fc083415f1</div><div class='lane-track'><div class="bar" style="left:7.055%;width:1.493%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://marketinginsidergroup.com/marketing-stra...&quot;, &quot;start_s&quot;: 27.421, &quot;duration_s&quot;: 5.804, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/drbench_urls/drbench_urls_fe9df6fc083415f1&quot;}}">https://marketinginsidergroup.com/marketing-stra...</div></div></div><div class='lane-row'><div class='lane-label'>resolve</div><div class='lane-track'><div class="bar" style="left:8.548%;width:1.126%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 33.226, &quot;duration_s&quot;: 4.376, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 resolve</div><div class="bar" style="left:19.817%;width:1.685%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 77.023, &quot;duration_s&quot;: 6.549, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 resolve</div><div class="bar" style="left:30.337%;width:1.558%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 117.913, &quot;duration_s&quot;: 6.055, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 2}}">H1 resolve</div><div class="bar" style="left:40.789%;width:1.434%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 158.538, &quot;duration_s&quot;: 5.574, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 3}}">H1 resolve</div><div class="bar" style="left:50.098%;width:1.976%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 194.719, &quot;duration_s&quot;: 7.681, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 4}}">H1 resolve</div><div class="bar" style="left:63.176%;width:1.166%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 245.552, &quot;duration_s&quot;: 4.533, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 5}}">H1 resolve</div><div class="bar" style="left:73.817%;width:1.715%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 286.911, &quot;duration_s&quot;: 6.665, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 6}}">H1 resolve</div><div class="bar" style="left:84.384%;width:1.351%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 327.982, &quot;duration_s&quot;: 5.249, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 7}}">H1 resolve</div><div class="bar" style="left:93.631%;width:1.305%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 363.924, &quot;duration_s&quot;: 5.071, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 8}}">H1 resolve</div><div class="bar" style="left:98.425%;width:1.575%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 382.554, &quot;duration_s&quot;: 6.122, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 9}}">H1 resolve</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_0</div><div class='lane-track'><div class="bar" style="left:13.241%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions case study download sources h...&quot;, &quot;start_s&quot;: 51.466, &quot;duration_s&quot;: 0.278, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions case study download sources h...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_1</div><div class='lane-track'><div class="bar" style="left:13.241%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions case study engagement healthc...&quot;, &quot;start_s&quot;: 51.466, &quot;duration_s&quot;: 0.229, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions case study engagement healthc...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_2</div><div class='lane-track'><div class="bar" style="left:13.241%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions client data healthcare profes...&quot;, &quot;start_s&quot;: 51.466, &quot;duration_s&quot;: 0.279, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions client data healthcare profes...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_3</div><div class='lane-track'><div class="bar" style="left:13.241%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions case study attribution health...&quot;, &quot;start_s&quot;: 51.466, &quot;duration_s&quot;: 0.278, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions case study attribution health...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/52537</div><div class='lane-track'><div class="bar" style="left:18.538%;width:1.167%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://medfluencers.com/&quot;, &quot;start_s&quot;: 72.051, &quot;duration_s&quot;: 4.537, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/52537&quot;}}">https://medfluencers.com/</div></div></div><div class='lane-row'><div class='lane-label'>read:web/74595</div><div class='lane-track'><div class="bar" style="left:18.538%;width:1.190%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://thehealthcaretechnologyreport.com/the-to...&quot;, &quot;start_s&quot;: 72.053, &quot;duration_s&quot;: 4.623, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/74595&quot;}}">https://thehealthcaretechnologyreport.com/the-to...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/2211</div><div class='lane-track'><div class="bar" style="left:18.539%;width:1.267%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://pmc.ncbi.nlm.nih.gov/articles/PMC1034129...&quot;, &quot;start_s&quot;: 72.056, &quot;duration_s&quot;: 4.925, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/2211&quot;}}">https://pmc.ncbi.nlm.nih.gov/articles/PMC1034129...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_0</div><div class='lane-track'><div class="bar" style="left:25.134%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions case study download sources h...&quot;, &quot;start_s&quot;: 97.689, &quot;duration_s&quot;: 0.324, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions case study download sources h...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_1</div><div class='lane-track'><div class="bar" style="left:25.134%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions client engagement metrics hea...&quot;, &quot;start_s&quot;: 97.689, &quot;duration_s&quot;: 0.324, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions client engagement metrics hea...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_2</div><div class='lane-track'><div class="bar" style="left:25.134%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions case study attribution health...&quot;, &quot;start_s&quot;: 97.689, &quot;duration_s&quot;: 0.324, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions case study attribution health...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_3</div><div class='lane-track'><div class="bar" style="left:25.134%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions case study download statistic...&quot;, &quot;start_s&quot;: 97.689, &quot;duration_s&quot;: 0.324, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions case study download statistic...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/42059</div><div class='lane-track'><div class="bar" style="left:29.046%;width:1.141%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.bls.gov/spotlight/2023/healthcare-oc...&quot;, &quot;start_s&quot;: 112.894, &quot;duration_s&quot;: 4.434, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/42059&quot;}}">https://www.bls.gov/spotlight/2023/healthcare-oc...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/21083</div><div class='lane-track'><div class="bar" style="left:29.048%;width:1.089%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.facs.org/for-medical-professionals/n...&quot;, &quot;start_s&quot;: 112.901, &quot;duration_s&quot;: 4.233, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/21083&quot;}}">https://www.facs.org/for-medical-professionals/n...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/55091</div><div class='lane-track'><div class="bar" style="left:29.049%;width:1.289%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://thehealthcaretechnologyreport.com/the-to...&quot;, &quot;start_s&quot;: 112.905, &quot;duration_s&quot;: 5.008, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/55091&quot;}}">https://thehealthcaretechnologyreport.com/the-to...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_1</div><div class='lane-track'><div class="bar" style="left:34.756%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions client data case study source...&quot;, &quot;start_s&quot;: 135.088, &quot;duration_s&quot;: 0.186, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions client data case study source...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_2</div><div class='lane-track'><div class="bar" style="left:34.756%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions marketing metrics healthcare...&quot;, &quot;start_s&quot;: 135.088, &quot;duration_s&quot;: 0.19, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions marketing metrics healthcare...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_3</div><div class='lane-track'><div class="bar" style="left:34.756%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions case study download statistic...&quot;, &quot;start_s&quot;: 135.088, &quot;duration_s&quot;: 0.224, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions case study download statistic...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/50604</div><div class='lane-track'><div class="bar" style="left:39.247%;width:1.274%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://en.wikipedia.org/wiki/Health_professiona...&quot;, &quot;start_s&quot;: 152.544, &quot;duration_s&quot;: 4.952, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/50604&quot;}}">https://en.wikipedia.org/wiki/Health_professiona...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/35147</div><div class='lane-track'><div class="bar" style="left:39.248%;width:1.117%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://lovinghomecareinc.com/healthcare-influen...&quot;, &quot;start_s&quot;: 152.547, &quot;duration_s&quot;: 4.343, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/35147&quot;}}">https://lovinghomecareinc.com/healthcare-influen...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/77898</div><div class='lane-track'><div class="bar" style="left:39.248%;width:1.541%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://informationr.net/ir/25-4/paper876.html&quot;, &quot;start_s&quot;: 152.549, &quot;duration_s&quot;: 5.989, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/77898&quot;}}">https://informationr.net/ir/25-4/paper876.html</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_0</div><div class='lane-track'><div class="bar" style="left:45.678%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions case study download statistic...&quot;, &quot;start_s&quot;: 177.539, &quot;duration_s&quot;: 0.342, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions case study download statistic...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_1</div><div class='lane-track'><div class="bar" style="left:45.678%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions client engagement case study...&quot;, &quot;start_s&quot;: 177.54, &quot;duration_s&quot;: 0.343, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions client engagement case study...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_2</div><div class='lane-track'><div class="bar" style="left:45.678%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions case study attribution health...&quot;, &quot;start_s&quot;: 177.54, &quot;duration_s&quot;: 0.257, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions case study attribution health...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/45384</div><div class='lane-track'><div class="bar" style="left:48.569%;width:1.529%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://millenniumphysician.com/&quot;, &quot;start_s&quot;: 188.777, &quot;duration_s&quot;: 5.942, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/45384&quot;}}">https://millenniumphysician.com/</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_0</div><div class='lane-track'><div class="bar" style="left:55.451%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions case study download source st...&quot;, &quot;start_s&quot;: 215.525, &quot;duration_s&quot;: 0.291, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions case study download source st...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_1</div><div class='lane-track'><div class="bar" style="left:55.451%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions client segmentation healthcar...&quot;, &quot;start_s&quot;: 215.526, &quot;duration_s&quot;: 0.59, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions client segmentation healthcar...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_2</div><div class='lane-track'><div class="bar" style="left:55.451%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions case study engagement metrics...&quot;, &quot;start_s&quot;: 215.526, &quot;duration_s&quot;: 0.59, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions case study engagement metrics...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_3</div><div class='lane-track'><div class="bar" style="left:55.451%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions marketing report case study d...&quot;, &quot;start_s&quot;: 215.526, &quot;duration_s&quot;: 0.291, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions marketing report case study d...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/3302</div><div class='lane-track'><div class="bar" style="left:61.760%;width:1.123%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.oliverwyman.com/our-expertise/events...&quot;, &quot;start_s&quot;: 240.049, &quot;duration_s&quot;: 4.365, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/3302&quot;}}">https://www.oliverwyman.com/our-expertise/events...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/73268</div><div class='lane-track'><div class="bar" style="left:61.761%;width:1.415%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://pmc.ncbi.nlm.nih.gov/articles/PMC6996004...&quot;, &quot;start_s&quot;: 240.052, &quot;duration_s&quot;: 5.499, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/73268&quot;}}">https://pmc.ncbi.nlm.nih.gov/articles/PMC6996004...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter6_web_search_0</div><div class='lane-track'><div class="bar" style="left:68.495%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions case study source breakdown h...&quot;, &quot;start_s&quot;: 266.224, &quot;duration_s&quot;: 0.708, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions case study source breakdown h...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter6_web_search_1</div><div class='lane-track'><div class="bar" style="left:68.495%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions case study download origin st...&quot;, &quot;start_s&quot;: 266.224, &quot;duration_s&quot;: 1.066, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions case study download origin st...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter6_web_search_2</div><div class='lane-track'><div class="bar" style="left:68.495%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions client segmentation metrics h...&quot;, &quot;start_s&quot;: 266.224, &quot;duration_s&quot;: 0.708, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions client segmentation metrics h...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter6_web_search_3</div><div class='lane-track'><div class="bar" style="left:68.495%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions case study engagement analyti...&quot;, &quot;start_s&quot;: 266.224, &quot;duration_s&quot;: 1.066, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions case study engagement analyti...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/3033</div><div class='lane-track'><div class="bar" style="left:72.569%;width:1.128%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.influencer-hero.com/top-influencers/...&quot;, &quot;start_s&quot;: 282.06, &quot;duration_s&quot;: 4.386, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/3033&quot;}}">https://www.influencer-hero.com/top-influencers/...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/32603</div><div class='lane-track'><div class="bar" style="left:72.570%;width:1.235%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://intelligenthealth.ai/speakers/&quot;, &quot;start_s&quot;: 282.062, &quot;duration_s&quot;: 4.8, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/32603&quot;}}">https://intelligenthealth.ai/speakers/</div></div></div><div class='lane-row'><div class='lane-label'>search:iter7_web_search_0</div><div class='lane-track'><div class="bar" style="left:79.618%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions case study download demograph...&quot;, &quot;start_s&quot;: 309.455, &quot;duration_s&quot;: 0.253, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions case study download demograph...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter7_web_search_1</div><div class='lane-track'><div class="bar" style="left:79.618%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions client engagement analytics h...&quot;, &quot;start_s&quot;: 309.455, &quot;duration_s&quot;: 0.228, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions client engagement analytics h...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter7_web_search_2</div><div class='lane-track'><div class="bar" style="left:79.618%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions case study traffic sources he...&quot;, &quot;start_s&quot;: 309.455, &quot;duration_s&quot;: 0.182, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions case study traffic sources he...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter7_web_search_3</div><div class='lane-track'><div class="bar" style="left:79.618%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions case study user segmentation...&quot;, &quot;start_s&quot;: 309.455, &quot;duration_s&quot;: 0.19, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions case study user segmentation...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/58739</div><div class='lane-track'><div class="bar" style="left:83.133%;width:1.251%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.jmir.org/2009/4/e48/&quot;, &quot;start_s&quot;: 323.118, &quot;duration_s&quot;: 4.864, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/58739&quot;}}">https://www.jmir.org/2009/4/e48/</div></div></div><div class='lane-row'><div class='lane-label'>read:web/44117</div><div class='lane-track'><div class="bar" style="left:83.133%;width:0.837%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://en.wikipedia.org/wiki/Verywell&quot;, &quot;start_s&quot;: 323.121, &quot;duration_s&quot;: 3.251, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/44117&quot;}}">https://en.wikipedia.org/wiki/Verywell</div></div></div><div class='lane-row'><div class='lane-label'>search:iter8_web_search_0</div><div class='lane-track'><div class="bar" style="left:89.356%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions case study download source br...&quot;, &quot;start_s&quot;: 347.307, &quot;duration_s&quot;: 1.658, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions case study download source br...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter8_web_search_1</div><div class='lane-track'><div class="bar" style="left:89.356%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions marketing analytics healthcar...&quot;, &quot;start_s&quot;: 347.307, &quot;duration_s&quot;: 1.287, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions marketing analytics healthcar...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter8_web_search_2</div><div class='lane-track'><div class="bar" style="left:89.356%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions case study traffic sources us...&quot;, &quot;start_s&quot;: 347.307, &quot;duration_s&quot;: 0.742, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions case study traffic sources us...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter8_web_search_3</div><div class='lane-track'><div class="bar" style="left:89.356%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions client segmentation report he...&quot;, &quot;start_s&quot;: 347.307, &quot;duration_s&quot;: 1.768, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions client segmentation report he...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/5944</div><div class='lane-track'><div class="bar" style="left:92.375%;width:1.256%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://profiletree.com/revolutionary-streaming-...&quot;, &quot;start_s&quot;: 359.041, &quot;duration_s&quot;: 4.883, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/5944&quot;}}">https://profiletree.com/revolutionary-streaming-...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/6721</div><div class='lane-track'><div class="bar" style="left:92.376%;width:1.226%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://medialabgroup.co.uk/2019/11/25/new-clien...&quot;, &quot;start_s&quot;: 359.043, &quot;duration_s&quot;: 4.764, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/6721&quot;}}">https://medialabgroup.co.uk/2019/11/25/new-clien...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter9_web_search_0</div><div class='lane-track'><div class="bar" style="left:98.293%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions case study download percentag...&quot;, &quot;start_s&quot;: 382.044, &quot;duration_s&quot;: 0.51, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions case study download percentag...</div></div></div><div class='lane-row'><div class='lane-label'>report</div><div class='lane-track'><div class="bar" style="left:100.000%;width:0.800%;background:#4c78a8;" title="{&quot;stage&quot;: &quot;report&quot;, &quot;label&quot;: &quot;Final report&quot;, &quot;start_s&quot;: 388.676, &quot;duration_s&quot;: 0.01, &quot;meta&quot;: {&quot;resolved_hops&quot;: 0}}">Final report</div></div></div></div>
+  <h2>Events</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Lane</th>
+        <th>Stage</th>
+        <th>Label</th>
+        <th>Start (s)</th>
+        <th>Duration (s)</th>
+        <th>Metadata</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>0.00</td><td>12.19</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>search:iter0_web_search_0</td><td>search</td><td>web_search: MediConn Solutions case study downloads healthca...</td><td>12.19</td><td>0.23</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_1</td><td>search</td><td>web_search: MediConn Solutions case study download statistic...</td><td>12.19</td><td>0.24</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_2</td><td>search</td><td>web_search: MediConn Solutions client data healthcare profes...</td><td>12.19</td><td>0.28</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_3</td><td>search</td><td>web_search: MediConn Solutions case study download attributi...</td><td>12.19</td><td>0.23</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>12.47</td><td>14.95</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>read:web/drbench_urls/drbench_urls_fe9df6fc083415f1</td><td>doc_read</td><td>https://marketinginsidergroup.com/marketing-stra...</td><td>27.42</td><td>5.80</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/drbench_urls/drbench_urls_fe9df6fc083415f1&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>33.23</td><td>4.38</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>37.60</td><td>13.86</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>search:iter1_web_search_0</td><td>search</td><td>web_search: MediConn Solutions case study download sources h...</td><td>51.47</td><td>0.28</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_1</td><td>search</td><td>web_search: MediConn Solutions case study engagement healthc...</td><td>51.47</td><td>0.23</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_2</td><td>search</td><td>web_search: MediConn Solutions client data healthcare profes...</td><td>51.47</td><td>0.28</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_3</td><td>search</td><td>web_search: MediConn Solutions case study attribution health...</td><td>51.47</td><td>0.28</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>51.75</td><td>20.31</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>read:web/52537</td><td>doc_read</td><td>https://medfluencers.com/</td><td>72.05</td><td>4.54</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/52537&quot;
+}</pre></td></tr><tr><td>read:web/74595</td><td>doc_read</td><td>https://thehealthcaretechnologyreport.com/the-to...</td><td>72.05</td><td>4.62</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/74595&quot;
+}</pre></td></tr><tr><td>read:web/2211</td><td>doc_read</td><td>https://pmc.ncbi.nlm.nih.gov/articles/PMC1034129...</td><td>72.06</td><td>4.92</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/2211&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>77.02</td><td>6.55</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>83.57</td><td>14.12</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>search:iter2_web_search_0</td><td>search</td><td>web_search: MediConn Solutions case study download sources h...</td><td>97.69</td><td>0.32</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_1</td><td>search</td><td>web_search: MediConn Solutions client engagement metrics hea...</td><td>97.69</td><td>0.32</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_2</td><td>search</td><td>web_search: MediConn Solutions case study attribution health...</td><td>97.69</td><td>0.32</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_3</td><td>search</td><td>web_search: MediConn Solutions case study download statistic...</td><td>97.69</td><td>0.32</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>98.02</td><td>14.88</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>read:web/42059</td><td>doc_read</td><td>https://www.bls.gov/spotlight/2023/healthcare-oc...</td><td>112.89</td><td>4.43</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/42059&quot;
+}</pre></td></tr><tr><td>read:web/21083</td><td>doc_read</td><td>https://www.facs.org/for-medical-professionals/n...</td><td>112.90</td><td>4.23</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/21083&quot;
+}</pre></td></tr><tr><td>read:web/55091</td><td>doc_read</td><td>https://thehealthcaretechnologyreport.com/the-to...</td><td>112.90</td><td>5.01</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/55091&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>117.91</td><td>6.06</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>123.97</td><td>11.12</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>search:iter3_web_search_1</td><td>search</td><td>web_search: MediConn Solutions client data case study source...</td><td>135.09</td><td>0.19</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_web_search_2</td><td>search</td><td>web_search: MediConn Solutions marketing metrics healthcare...</td><td>135.09</td><td>0.19</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_web_search_3</td><td>search</td><td>web_search: MediConn Solutions case study download statistic...</td><td>135.09</td><td>0.22</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>135.31</td><td>17.23</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>read:web/50604</td><td>doc_read</td><td>https://en.wikipedia.org/wiki/Health_professiona...</td><td>152.54</td><td>4.95</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/50604&quot;
+}</pre></td></tr><tr><td>read:web/35147</td><td>doc_read</td><td>https://lovinghomecareinc.com/healthcare-influen...</td><td>152.55</td><td>4.34</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/35147&quot;
+}</pre></td></tr><tr><td>read:web/77898</td><td>doc_read</td><td>https://informationr.net/ir/25-4/paper876.html</td><td>152.55</td><td>5.99</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/77898&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>158.54</td><td>5.57</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>164.11</td><td>13.43</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>search:iter4_web_search_0</td><td>search</td><td>web_search: MediConn Solutions case study download statistic...</td><td>177.54</td><td>0.34</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter4_web_search_1</td><td>search</td><td>web_search: MediConn Solutions client engagement case study...</td><td>177.54</td><td>0.34</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter4_web_search_2</td><td>search</td><td>web_search: MediConn Solutions case study attribution health...</td><td>177.54</td><td>0.26</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>177.88</td><td>10.89</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>read:web/45384</td><td>doc_read</td><td>https://millenniumphysician.com/</td><td>188.78</td><td>5.94</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/45384&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>194.72</td><td>7.68</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>202.40</td><td>13.13</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_0</td><td>search</td><td>web_search: MediConn Solutions case study download source st...</td><td>215.53</td><td>0.29</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_1</td><td>search</td><td>web_search: MediConn Solutions client segmentation healthcar...</td><td>215.53</td><td>0.59</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_2</td><td>search</td><td>web_search: MediConn Solutions case study engagement metrics...</td><td>215.53</td><td>0.59</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_3</td><td>search</td><td>web_search: MediConn Solutions marketing report case study d...</td><td>215.53</td><td>0.29</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>216.20</td><td>23.85</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>read:web/3302</td><td>doc_read</td><td>https://www.oliverwyman.com/our-expertise/events...</td><td>240.05</td><td>4.37</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/3302&quot;
+}</pre></td></tr><tr><td>read:web/73268</td><td>doc_read</td><td>https://pmc.ncbi.nlm.nih.gov/articles/PMC6996004...</td><td>240.05</td><td>5.50</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/73268&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>245.55</td><td>4.53</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>250.08</td><td>16.14</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 6
+}</pre></td></tr><tr><td>search:iter6_web_search_0</td><td>search</td><td>web_search: MediConn Solutions case study source breakdown h...</td><td>266.22</td><td>0.71</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter6_web_search_1</td><td>search</td><td>web_search: MediConn Solutions case study download origin st...</td><td>266.22</td><td>1.07</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter6_web_search_2</td><td>search</td><td>web_search: MediConn Solutions client segmentation metrics h...</td><td>266.22</td><td>0.71</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter6_web_search_3</td><td>search</td><td>web_search: MediConn Solutions case study engagement analyti...</td><td>266.22</td><td>1.07</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>267.29</td><td>14.77</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 6
+}</pre></td></tr><tr><td>read:web/3033</td><td>doc_read</td><td>https://www.influencer-hero.com/top-influencers/...</td><td>282.06</td><td>4.39</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/3033&quot;
+}</pre></td></tr><tr><td>read:web/32603</td><td>doc_read</td><td>https://intelligenthealth.ai/speakers/</td><td>282.06</td><td>4.80</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/32603&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>286.91</td><td>6.67</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 6
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>293.58</td><td>15.88</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 7
+}</pre></td></tr><tr><td>search:iter7_web_search_0</td><td>search</td><td>web_search: MediConn Solutions case study download demograph...</td><td>309.46</td><td>0.25</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter7_web_search_1</td><td>search</td><td>web_search: MediConn Solutions client engagement analytics h...</td><td>309.46</td><td>0.23</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter7_web_search_2</td><td>search</td><td>web_search: MediConn Solutions case study traffic sources he...</td><td>309.46</td><td>0.18</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter7_web_search_3</td><td>search</td><td>web_search: MediConn Solutions case study user segmentation...</td><td>309.46</td><td>0.19</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>309.71</td><td>13.41</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 7
+}</pre></td></tr><tr><td>read:web/58739</td><td>doc_read</td><td>https://www.jmir.org/2009/4/e48/</td><td>323.12</td><td>4.86</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/58739&quot;
+}</pre></td></tr><tr><td>read:web/44117</td><td>doc_read</td><td>https://en.wikipedia.org/wiki/Verywell</td><td>323.12</td><td>3.25</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/44117&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>327.98</td><td>5.25</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 7
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>333.23</td><td>14.03</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 8
+}</pre></td></tr><tr><td>search:iter8_web_search_0</td><td>search</td><td>web_search: MediConn Solutions case study download source br...</td><td>347.31</td><td>1.66</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter8_web_search_1</td><td>search</td><td>web_search: MediConn Solutions marketing analytics healthcar...</td><td>347.31</td><td>1.29</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter8_web_search_2</td><td>search</td><td>web_search: MediConn Solutions case study traffic sources us...</td><td>347.31</td><td>0.74</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter8_web_search_3</td><td>search</td><td>web_search: MediConn Solutions client segmentation report he...</td><td>347.31</td><td>1.77</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>349.08</td><td>9.96</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 8
+}</pre></td></tr><tr><td>read:web/5944</td><td>doc_read</td><td>https://profiletree.com/revolutionary-streaming-...</td><td>359.04</td><td>4.88</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/5944&quot;
+}</pre></td></tr><tr><td>read:web/6721</td><td>doc_read</td><td>https://medialabgroup.co.uk/2019/11/25/new-clien...</td><td>359.04</td><td>4.76</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/6721&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>363.92</td><td>5.07</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 8
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>368.99</td><td>13.05</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 9
+}</pre></td></tr><tr><td>search:iter9_web_search_0</td><td>search</td><td>web_search: MediConn Solutions case study download percentag...</td><td>382.04</td><td>0.51</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>382.55</td><td>6.12</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 9
+}</pre></td></tr><tr><td>report</td><td>report</td><td>Final report</td><td>388.68</td><td>0.00</td><td><pre>{
+  &quot;resolved_hops&quot;: 0
+}</pre></td></tr>
+    </tbody>
+  </table>
+</body>
+</html>

@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>privacy_hopqa timeline</title>
+  <style>
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 24px;
+      color: #111827;
+      background: #f8fafc;
+    }
+    h1, h2 {
+      margin: 0 0 12px;
+    }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin: 0 0 24px;
+    }
+    .card {
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .card .label {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+    .card .value {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .lane-row {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .lane-label {
+      font-size: 13px;
+      color: #334155;
+      overflow-wrap: anywhere;
+    }
+    .lane-track {
+      position: relative;
+      height: 28px;
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .bar {
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      border-radius: 6px;
+      color: white;
+      font-size: 11px;
+      line-height: 22px;
+      padding: 0 6px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 18px;
+    }
+    th, td {
+      border-bottom: 1px solid #e2e8f0;
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 13px;
+    }
+    th {
+      background: #f1f5f9;
+    }
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>privacy_hopqa rollout timeline</h1>
+    <div class="summary">
+    <div class="card"><div class="label">Task</div><div class="value">DR0026</div></div>
+    <div class="card"><div class="label">Chain</div><div class="value">080d67f1</div></div>
+    <div class="card"><div class="label">Iterations</div><div class="value">10</div></div>
+    <div class="card"><div class="label">Resolved Hops</div><div class="value">1/5</div></div>
+    <div class="card"><div class="label">Searches</div><div class="value">30</div></div>
+    <div class="card"><div class="label">Docs Read</div><div class="value">15</div></div>
+    <div class="card"><div class="label">Parse Errors</div><div class="value">0</div></div>
+    <div class="card"><div class="label">Context Overflows</div><div class="value">0</div></div>
+    <div class="card"><div class="label">Duration (s)</div><div class="value">461.11</div></div>
+  </div>
+  <h2>Timeline</h2>
+  <div><div class='lane-row'><div class='lane-label'>plan</div><div class='lane-track'><div class="bar" style="left:0.000%;width:2.579%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 0.0, &quot;duration_s&quot;: 11.893, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 retrieval plan</div><div class="bar" style="left:16.715%;width:3.093%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 77.067, &quot;duration_s&quot;: 14.259, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 retrieval plan</div><div class="bar" style="left:30.493%;width:2.113%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H2 retrieval plan&quot;, &quot;start_s&quot;: 140.597, &quot;duration_s&quot;: 9.743, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 2}}">H2 retrieval plan</div><div class="bar" style="left:42.934%;width:3.631%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H2 retrieval plan&quot;, &quot;start_s&quot;: 197.957, &quot;duration_s&quot;: 16.741, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 3}}">H2 retrieval plan</div><div class="bar" style="left:51.949%;width:2.475%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H2 retrieval plan&quot;, &quot;start_s&quot;: 239.525, &quot;duration_s&quot;: 11.411, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 4}}">H2 retrieval plan</div><div class="bar" style="left:60.252%;width:2.203%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H2 retrieval plan&quot;, &quot;start_s&quot;: 277.808, &quot;duration_s&quot;: 10.158, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 5}}">H2 retrieval plan</div><div class="bar" style="left:69.654%;width:3.059%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H2 retrieval plan&quot;, &quot;start_s&quot;: 321.158, &quot;duration_s&quot;: 14.102, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 6}}">H2 retrieval plan</div><div class="bar" style="left:79.059%;width:2.739%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H2 retrieval plan&quot;, &quot;start_s&quot;: 364.52, &quot;duration_s&quot;: 12.629, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 7}}">H2 retrieval plan</div><div class="bar" style="left:87.732%;width:2.886%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H2 retrieval plan&quot;, &quot;start_s&quot;: 404.512, &quot;duration_s&quot;: 13.308, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 8}}">H2 retrieval plan</div><div class="bar" style="left:96.367%;width:2.428%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H2 retrieval plan&quot;, &quot;start_s&quot;: 444.324, &quot;duration_s&quot;: 11.197, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 9}}">H2 retrieval plan</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_0</div><div class='lane-track'><div class="bar" style="left:2.590%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Corporate Transparency Act 2024 filing deadline...&quot;, &quot;start_s&quot;: 11.944, &quot;duration_s&quot;: 1.219, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Corporate Transparency Act 2024 filing deadline...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_1</div><div class='lane-track'><div class="bar" style="left:2.590%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: FinCEN CTA beneficial ownership reporting deadli...&quot;, &quot;start_s&quot;: 11.944, &quot;duration_s&quot;: 1.317, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: FinCEN CTA beneficial ownership reporting deadli...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_2</div><div class='lane-track'><div class="bar" style="left:2.590%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: CTA filing year for entities registered before 2...&quot;, &quot;start_s&quot;: 11.944, &quot;duration_s&quot;: 1.802, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: CTA filing year for entities registered before 2...</div></div></div><div class='lane-row'><div class='lane-label'>choose</div><div class='lane-track'><div class="bar" style="left:2.981%;width:8.568%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 13.746, &quot;duration_s&quot;: 39.504, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 choose docs</div><div class="bar" style="left:19.955%;width:6.987%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 92.005, &quot;duration_s&quot;: 32.214, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 choose docs</div><div class="bar" style="left:32.837%;width:6.969%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H2 choose docs&quot;, &quot;start_s&quot;: 151.401, &quot;duration_s&quot;: 32.131, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 2}}">H2 choose docs</div><div class="bar" style="left:46.749%;width:2.300%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H2 choose docs&quot;, &quot;start_s&quot;: 215.548, &quot;duration_s&quot;: 10.603, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 3}}">H2 choose docs</div><div class="bar" style="left:54.759%;width:3.035%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H2 choose docs&quot;, &quot;start_s&quot;: 252.478, &quot;duration_s&quot;: 13.992, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 4}}">H2 choose docs</div><div class="bar" style="left:62.682%;width:3.749%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H2 choose docs&quot;, &quot;start_s&quot;: 289.011, &quot;duration_s&quot;: 17.284, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 5}}">H2 choose docs</div><div class="bar" style="left:72.787%;width:2.287%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H2 choose docs&quot;, &quot;start_s&quot;: 335.605, &quot;duration_s&quot;: 10.546, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 6}}">H2 choose docs</div><div class="bar" style="left:81.886%;width:2.772%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H2 choose docs&quot;, &quot;start_s&quot;: 377.556, &quot;duration_s&quot;: 12.781, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 7}}">H2 choose docs</div><div class="bar" style="left:90.707%;width:2.374%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H2 choose docs&quot;, &quot;start_s&quot;: 418.227, &quot;duration_s&quot;: 10.944, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 8}}">H2 choose docs</div></div></div><div class='lane-row'><div class='lane-label'>read:web/65261</div><div class='lane-track'><div class="bar" style="left:11.549%;width:1.792%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.fincen.gov/boi-faqs&quot;, &quot;start_s&quot;: 53.251, &quot;duration_s&quot;: 8.263, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/65261&quot;}}">https://www.fincen.gov/boi-faqs</div></div></div><div class='lane-row'><div class='lane-label'>read:web/73336</div><div class='lane-track'><div class="bar" style="left:11.550%;width:1.712%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://frostbrowntodd.com/corporate-transparenc...&quot;, &quot;start_s&quot;: 53.253, &quot;duration_s&quot;: 7.894, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/73336&quot;}}">https://frostbrowntodd.com/corporate-transparenc...</div></div></div><div class='lane-row'><div class='lane-label'>resolve</div><div class='lane-track'><div class="bar" style="left:13.341%;width:3.373%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 61.514, &quot;duration_s&quot;: 15.553, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 resolve</div><div class="bar" style="left:29.051%;width:1.442%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 133.948, &quot;duration_s&quot;: 6.649, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 resolve</div><div class="bar" style="left:41.200%;width:1.734%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H2 resolve&quot;, &quot;start_s&quot;: 189.963, &quot;duration_s&quot;: 7.994, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 2}}">H2 resolve</div><div class="bar" style="left:50.168%;width:1.781%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H2 resolve&quot;, &quot;start_s&quot;: 231.312, &quot;duration_s&quot;: 8.212, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 3}}">H2 resolve</div><div class="bar" style="left:59.049%;width:1.203%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H2 resolve&quot;, &quot;start_s&quot;: 272.259, &quot;duration_s&quot;: 5.548, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 4}}">H2 resolve</div><div class="bar" style="left:68.184%;width:1.470%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H2 resolve&quot;, &quot;start_s&quot;: 314.379, &quot;duration_s&quot;: 6.779, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 5}}">H2 resolve</div><div class="bar" style="left:77.186%;width:1.873%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H2 resolve&quot;, &quot;start_s&quot;: 355.885, &quot;duration_s&quot;: 8.635, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 6}}">H2 resolve</div><div class="bar" style="left:85.976%;width:1.756%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H2 resolve&quot;, &quot;start_s&quot;: 396.413, &quot;duration_s&quot;: 8.099, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 7}}">H2 resolve</div><div class="bar" style="left:95.072%;width:1.295%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H2 resolve&quot;, &quot;start_s&quot;: 438.354, &quot;duration_s&quot;: 5.969, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 8}}">H2 resolve</div><div class="bar" style="left:98.834%;width:1.165%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H2 resolve&quot;, &quot;start_s&quot;: 455.701, &quot;duration_s&quot;: 5.373, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 9}}">H2 resolve</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_0</div><div class='lane-track'><div class="bar" style="left:19.807%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Corporate Transparency Act initial BOI report de...&quot;, &quot;start_s&quot;: 91.326, &quot;duration_s&quot;: 0.679, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Corporate Transparency Act initial BOI report de...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_1</div><div class='lane-track'><div class="bar" style="left:19.807%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: CTA effective date 2024 vs. beneficial ownership...&quot;, &quot;start_s&quot;: 91.326, &quot;duration_s&quot;: 0.627, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: CTA effective date 2024 vs. beneficial ownership...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_2</div><div class='lane-track'><div class="bar" style="left:19.807%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: FinCEN CTA compliance deadline for entities crea...&quot;, &quot;start_s&quot;: 91.326, &quot;duration_s&quot;: 0.341, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: FinCEN CTA compliance deadline for entities crea...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/42939</div><div class='lane-track'><div class="bar" style="left:26.941%;width:1.047%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.cokinoslaw.com/corporate-transparenc...&quot;, &quot;start_s&quot;: 124.219, &quot;duration_s&quot;: 4.827, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/42939&quot;}}">https://www.cokinoslaw.com/corporate-transparenc...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/90198</div><div class='lane-track'><div class="bar" style="left:26.942%;width:1.814%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://news.mobar.org/the-corporate-transparenc...&quot;, &quot;start_s&quot;: 124.223, &quot;duration_s&quot;: 8.363, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/90198&quot;}}">https://news.mobar.org/the-corporate-transparenc...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/66881</div><div class='lane-track'><div class="bar" style="left:26.943%;width:2.105%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.paydayhcm.com/blog/what-is-beneficia...&quot;, &quot;start_s&quot;: 124.226, &quot;duration_s&quot;: 9.706, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/66881&quot;}}">https://www.paydayhcm.com/blog/what-is-beneficia...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_0</div><div class='lane-track'><div class="bar" style="left:32.606%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market customer service analysis report 20...&quot;, &quot;start_s&quot;: 150.34, &quot;duration_s&quot;: 0.563, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market customer service analysis report 20...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_1</div><div class='lane-track'><div class="bar" style="left:32.606%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: customer service analysis report first months 20...&quot;, &quot;start_s&quot;: 150.34, &quot;duration_s&quot;: 0.728, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: customer service analysis report first months 20...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_2</div><div class='lane-track'><div class="bar" style="left:32.606%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market 2025 report title&quot;, &quot;start_s&quot;: 150.34, &quot;duration_s&quot;: 1.052, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market 2025 report title</div></div></div><div class='lane-row'><div class='lane-label'>read:web/drbench_urls/drbench_urls_6d642c57f1812258</div><div class='lane-track'><div class="bar" style="left:39.805%;width:1.008%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.grocerydoppio.com/articles/chatbots-...&quot;, &quot;start_s&quot;: 183.533, &quot;duration_s&quot;: 4.648, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/drbench_urls/drbench_urls_6d642c57f1812258&quot;}}">https://www.grocerydoppio.com/articles/chatbots-...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/86685</div><div class='lane-track'><div class="bar" style="left:39.806%;width:1.394%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://assessmentresearch.arizona.edu/reports-a...&quot;, &quot;start_s&quot;: 183.536, &quot;duration_s&quot;: 6.427, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/86685&quot;}}">https://assessmentresearch.arizona.edu/reports-a...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_0</div><div class='lane-track'><div class="bar" style="left:46.565%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market customer service report Q1 2025&quot;, &quot;start_s&quot;: 214.698, &quot;duration_s&quot;: 0.789, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market customer service report Q1 2025</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_1</div><div class='lane-track'><div class="bar" style="left:46.565%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: customer service analysis report Lee&#x27;s Market 20...&quot;, &quot;start_s&quot;: 214.698, &quot;duration_s&quot;: 0.592, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: customer service analysis report Lee&#x27;s Market 20...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_2</div><div class='lane-track'><div class="bar" style="left:46.565%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market 2025 customer experience report&quot;, &quot;start_s&quot;: 214.698, &quot;duration_s&quot;: 0.66, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market 2025 customer experience report</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_3</div><div class='lane-track'><div class="bar" style="left:46.565%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: customer service performance report Lee&#x27;s Market...&quot;, &quot;start_s&quot;: 214.698, &quot;duration_s&quot;: 0.85, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: customer service performance report Lee&#x27;s Market...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/16976</div><div class='lane-track'><div class="bar" style="left:49.049%;width:1.119%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.bplans.com/personal-shopping-service...&quot;, &quot;start_s&quot;: 226.151, &quot;duration_s&quot;: 5.161, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/16976&quot;}}">https://www.bplans.com/personal-shopping-service...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_2</div><div class='lane-track'><div class="bar" style="left:54.429%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: customer service analysis report Lee&#x27;s Market 20...&quot;, &quot;start_s&quot;: 250.958, &quot;duration_s&quot;: 1.299, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: customer service analysis report Lee&#x27;s Market 20...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_3</div><div class='lane-track'><div class="bar" style="left:54.429%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market customer service performance report...&quot;, &quot;start_s&quot;: 250.958, &quot;duration_s&quot;: 1.52, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market customer service performance report...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/5527</div><div class='lane-track'><div class="bar" style="left:57.793%;width:1.255%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://oag.ca.gov/privacy/databreach/list&quot;, &quot;start_s&quot;: 266.471, &quot;duration_s&quot;: 5.788, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/5527&quot;}}">https://oag.ca.gov/privacy/databreach/list</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_0</div><div class='lane-track'><div class="bar" style="left:62.455%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market customer service report Q1 2025 tit...&quot;, &quot;start_s&quot;: 287.965, &quot;duration_s&quot;: 1.046, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market customer service report Q1 2025 tit...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_1</div><div class='lane-track'><div class="bar" style="left:62.455%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market 2025 customer experience report tit...&quot;, &quot;start_s&quot;: 287.965, &quot;duration_s&quot;: 0.996, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market 2025 customer experience report tit...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_2</div><div class='lane-track'><div class="bar" style="left:62.455%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market 2025 customer service performance r...&quot;, &quot;start_s&quot;: 287.965, &quot;duration_s&quot;: 0.504, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market 2025 customer service performance r...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_3</div><div class='lane-track'><div class="bar" style="left:62.455%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market 2025 internal customer service repo...&quot;, &quot;start_s&quot;: 287.965, &quot;duration_s&quot;: 0.27, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market 2025 internal customer service repo...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/57475</div><div class='lane-track'><div class="bar" style="left:66.431%;width:1.668%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://campaignme.com/campaign-middle-easts-jan...&quot;, &quot;start_s&quot;: 306.295, &quot;duration_s&quot;: 7.692, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/57475&quot;}}">https://campaignme.com/campaign-middle-easts-jan...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/4161</div><div class='lane-track'><div class="bar" style="left:66.431%;width:1.673%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.gourmetpro.co/blog/largest-grocery-c...&quot;, &quot;start_s&quot;: 306.298, &quot;duration_s&quot;: 7.713, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/4161&quot;}}">https://www.gourmetpro.co/blog/largest-grocery-c...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter6_web_search_0</div><div class='lane-track'><div class="bar" style="left:72.713%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market customer service report title 2025&quot;, &quot;start_s&quot;: 335.26, &quot;duration_s&quot;: 0.345, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market customer service report title 2025</div></div></div><div class='lane-row'><div class='lane-label'>search:iter6_web_search_1</div><div class='lane-track'><div class="bar" style="left:72.713%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market Q1 2025 customer experience report&quot;, &quot;start_s&quot;: 335.26, &quot;duration_s&quot;: 0.294, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market Q1 2025 customer experience report</div></div></div><div class='lane-row'><div class='lane-label'>read:web/72370</div><div class='lane-track'><div class="bar" style="left:75.075%;width:2.111%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://legalaidnyc.org/press-room-archive/&quot;, &quot;start_s&quot;: 346.152, &quot;duration_s&quot;: 9.733, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/72370&quot;}}">https://legalaidnyc.org/press-room-archive/</div></div></div><div class='lane-row'><div class='lane-label'>search:iter7_web_search_0</div><div class='lane-track'><div class="bar" style="left:81.798%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market Q1 2025 customer service report tit...&quot;, &quot;start_s&quot;: 377.149, &quot;duration_s&quot;: 0.406, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market Q1 2025 customer service report tit...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter7_web_search_1</div><div class='lane-track'><div class="bar" style="left:81.798%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: 2025 customer experience analysis Lee&#x27;s Market r...&quot;, &quot;start_s&quot;: 377.149, &quot;duration_s&quot;: 0.297, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: 2025 customer experience analysis Lee&#x27;s Market r...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter7_web_search_2</div><div class='lane-track'><div class="bar" style="left:81.798%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market customer service performance report...&quot;, &quot;start_s&quot;: 377.149, &quot;duration_s&quot;: 0.383, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market customer service performance report...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter7_web_search_3</div><div class='lane-track'><div class="bar" style="left:81.798%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market first quarter 2025 service evaluati...&quot;, &quot;start_s&quot;: 377.149, &quot;duration_s&quot;: 0.354, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market first quarter 2025 service evaluati...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/35326</div><div class='lane-track'><div class="bar" style="left:84.658%;width:1.318%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.brightlocal.com/research/local-consu...&quot;, &quot;start_s&quot;: 390.337, &quot;duration_s&quot;: 6.075, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/35326&quot;}}">https://www.brightlocal.com/research/local-consu...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter8_web_search_0</div><div class='lane-track'><div class="bar" style="left:90.619%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market customer service report title Q1 20...&quot;, &quot;start_s&quot;: 417.82, &quot;duration_s&quot;: 0.268, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market customer service report title Q1 20...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter8_web_search_1</div><div class='lane-track'><div class="bar" style="left:90.619%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market 2025 customer service analysis repo...&quot;, &quot;start_s&quot;: 417.82, &quot;duration_s&quot;: 0.402, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market 2025 customer service analysis repo...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter8_web_search_2</div><div class='lane-track'><div class="bar" style="left:90.619%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market internal customer service report 20...&quot;, &quot;start_s&quot;: 417.82, &quot;duration_s&quot;: 0.282, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market internal customer service report 20...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter8_web_search_3</div><div class='lane-track'><div class="bar" style="left:90.619%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market customer service evaluation report...&quot;, &quot;start_s&quot;: 417.82, &quot;duration_s&quot;: 0.407, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market customer service evaluation report...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/24095</div><div class='lane-track'><div class="bar" style="left:93.081%;width:1.990%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.amazon.com/Disney-Ran-Your-Hospital-...&quot;, &quot;start_s&quot;: 429.172, &quot;duration_s&quot;: 9.177, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/24095&quot;}}">https://www.amazon.com/Disney-Ran-Your-Hospital-...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/57542</div><div class='lane-track'><div class="bar" style="left:93.081%;width:1.568%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://lol.fandom.com/wiki/Larssen/Match_Histor...&quot;, &quot;start_s&quot;: 429.175, &quot;duration_s&quot;: 7.23, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;web/57542&quot;}}">https://lol.fandom.com/wiki/Larssen/Match_Histor...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter9_web_search_1</div><div class='lane-track'><div class="bar" style="left:98.795%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Lee&#x27;s Market 2025 customer experience analysis r...&quot;, &quot;start_s&quot;: 455.521, &quot;duration_s&quot;: 0.181, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: Lee&#x27;s Market 2025 customer experience analysis r...</div></div></div><div class='lane-row'><div class='lane-label'>report</div><div class='lane-track'><div class="bar" style="left:100.000%;width:0.800%;background:#4c78a8;" title="{&quot;stage&quot;: &quot;report&quot;, &quot;label&quot;: &quot;Final report&quot;, &quot;start_s&quot;: 461.075, &quot;duration_s&quot;: 0.01, &quot;meta&quot;: {&quot;resolved_hops&quot;: 1}}">Final report</div></div></div></div>
+  <h2>Events</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Lane</th>
+        <th>Stage</th>
+        <th>Label</th>
+        <th>Start (s)</th>
+        <th>Duration (s)</th>
+        <th>Metadata</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>0.00</td><td>11.89</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>search:iter0_web_search_0</td><td>search</td><td>web_search: Corporate Transparency Act 2024 filing deadline...</td><td>11.94</td><td>1.22</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_1</td><td>search</td><td>web_search: FinCEN CTA beneficial ownership reporting deadli...</td><td>11.94</td><td>1.32</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_2</td><td>search</td><td>web_search: CTA filing year for entities registered before 2...</td><td>11.94</td><td>1.80</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>13.75</td><td>39.50</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>read:web/65261</td><td>doc_read</td><td>https://www.fincen.gov/boi-faqs</td><td>53.25</td><td>8.26</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/65261&quot;
+}</pre></td></tr><tr><td>read:web/73336</td><td>doc_read</td><td>https://frostbrowntodd.com/corporate-transparenc...</td><td>53.25</td><td>7.89</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/73336&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>61.51</td><td>15.55</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>77.07</td><td>14.26</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>search:iter1_web_search_0</td><td>search</td><td>web_search: Corporate Transparency Act initial BOI report de...</td><td>91.33</td><td>0.68</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_1</td><td>search</td><td>web_search: CTA effective date 2024 vs. beneficial ownership...</td><td>91.33</td><td>0.63</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_2</td><td>search</td><td>web_search: FinCEN CTA compliance deadline for entities crea...</td><td>91.33</td><td>0.34</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>92.01</td><td>32.21</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>read:web/42939</td><td>doc_read</td><td>https://www.cokinoslaw.com/corporate-transparenc...</td><td>124.22</td><td>4.83</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/42939&quot;
+}</pre></td></tr><tr><td>read:web/90198</td><td>doc_read</td><td>https://news.mobar.org/the-corporate-transparenc...</td><td>124.22</td><td>8.36</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/90198&quot;
+}</pre></td></tr><tr><td>read:web/66881</td><td>doc_read</td><td>https://www.paydayhcm.com/blog/what-is-beneficia...</td><td>124.23</td><td>9.71</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/66881&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>133.95</td><td>6.65</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H2 retrieval plan</td><td>140.60</td><td>9.74</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>search:iter2_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market customer service analysis report 20...</td><td>150.34</td><td>0.56</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_1</td><td>search</td><td>web_search: customer service analysis report first months 20...</td><td>150.34</td><td>0.73</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market 2025 report title</td><td>150.34</td><td>1.05</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H2 choose docs</td><td>151.40</td><td>32.13</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>read:web/drbench_urls/drbench_urls_6d642c57f1812258</td><td>doc_read</td><td>https://www.grocerydoppio.com/articles/chatbots-...</td><td>183.53</td><td>4.65</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/drbench_urls/drbench_urls_6d642c57f1812258&quot;
+}</pre></td></tr><tr><td>read:web/86685</td><td>doc_read</td><td>https://assessmentresearch.arizona.edu/reports-a...</td><td>183.54</td><td>6.43</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/86685&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H2 resolve</td><td>189.96</td><td>7.99</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H2 retrieval plan</td><td>197.96</td><td>16.74</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>search:iter3_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market customer service report Q1 2025</td><td>214.70</td><td>0.79</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_web_search_1</td><td>search</td><td>web_search: customer service analysis report Lee&#x27;s Market 20...</td><td>214.70</td><td>0.59</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market 2025 customer experience report</td><td>214.70</td><td>0.66</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_web_search_3</td><td>search</td><td>web_search: customer service performance report Lee&#x27;s Market...</td><td>214.70</td><td>0.85</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H2 choose docs</td><td>215.55</td><td>10.60</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>read:web/16976</td><td>doc_read</td><td>https://www.bplans.com/personal-shopping-service...</td><td>226.15</td><td>5.16</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/16976&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H2 resolve</td><td>231.31</td><td>8.21</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H2 retrieval plan</td><td>239.52</td><td>11.41</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>search:iter4_web_search_2</td><td>search</td><td>web_search: customer service analysis report Lee&#x27;s Market 20...</td><td>250.96</td><td>1.30</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter4_web_search_3</td><td>search</td><td>web_search: Lee&#x27;s Market customer service performance report...</td><td>250.96</td><td>1.52</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H2 choose docs</td><td>252.48</td><td>13.99</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>read:web/5527</td><td>doc_read</td><td>https://oag.ca.gov/privacy/databreach/list</td><td>266.47</td><td>5.79</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/5527&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H2 resolve</td><td>272.26</td><td>5.55</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H2 retrieval plan</td><td>277.81</td><td>10.16</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market customer service report Q1 2025 tit...</td><td>287.97</td><td>1.05</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market 2025 customer experience report tit...</td><td>287.97</td><td>1.00</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market 2025 customer service performance r...</td><td>287.97</td><td>0.50</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_3</td><td>search</td><td>web_search: Lee&#x27;s Market 2025 internal customer service repo...</td><td>287.97</td><td>0.27</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H2 choose docs</td><td>289.01</td><td>17.28</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>read:web/57475</td><td>doc_read</td><td>https://campaignme.com/campaign-middle-easts-jan...</td><td>306.30</td><td>7.69</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/57475&quot;
+}</pre></td></tr><tr><td>read:web/4161</td><td>doc_read</td><td>https://www.gourmetpro.co/blog/largest-grocery-c...</td><td>306.30</td><td>7.71</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/4161&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H2 resolve</td><td>314.38</td><td>6.78</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H2 retrieval plan</td><td>321.16</td><td>14.10</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 6
+}</pre></td></tr><tr><td>search:iter6_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market customer service report title 2025</td><td>335.26</td><td>0.35</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter6_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market Q1 2025 customer experience report</td><td>335.26</td><td>0.29</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H2 choose docs</td><td>335.61</td><td>10.55</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 6
+}</pre></td></tr><tr><td>read:web/72370</td><td>doc_read</td><td>https://legalaidnyc.org/press-room-archive/</td><td>346.15</td><td>9.73</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/72370&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H2 resolve</td><td>355.89</td><td>8.63</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 6
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H2 retrieval plan</td><td>364.52</td><td>12.63</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 7
+}</pre></td></tr><tr><td>search:iter7_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market Q1 2025 customer service report tit...</td><td>377.15</td><td>0.41</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter7_web_search_1</td><td>search</td><td>web_search: 2025 customer experience analysis Lee&#x27;s Market r...</td><td>377.15</td><td>0.30</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter7_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market customer service performance report...</td><td>377.15</td><td>0.38</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter7_web_search_3</td><td>search</td><td>web_search: Lee&#x27;s Market first quarter 2025 service evaluati...</td><td>377.15</td><td>0.35</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H2 choose docs</td><td>377.56</td><td>12.78</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 7
+}</pre></td></tr><tr><td>read:web/35326</td><td>doc_read</td><td>https://www.brightlocal.com/research/local-consu...</td><td>390.34</td><td>6.08</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/35326&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H2 resolve</td><td>396.41</td><td>8.10</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 7
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H2 retrieval plan</td><td>404.51</td><td>13.31</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 8
+}</pre></td></tr><tr><td>search:iter8_web_search_0</td><td>search</td><td>web_search: Lee&#x27;s Market customer service report title Q1 20...</td><td>417.82</td><td>0.27</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter8_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market 2025 customer service analysis repo...</td><td>417.82</td><td>0.40</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter8_web_search_2</td><td>search</td><td>web_search: Lee&#x27;s Market internal customer service report 20...</td><td>417.82</td><td>0.28</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter8_web_search_3</td><td>search</td><td>web_search: Lee&#x27;s Market customer service evaluation report...</td><td>417.82</td><td>0.41</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H2 choose docs</td><td>418.23</td><td>10.94</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 8
+}</pre></td></tr><tr><td>read:web/24095</td><td>doc_read</td><td>https://www.amazon.com/Disney-Ran-Your-Hospital-...</td><td>429.17</td><td>9.18</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/24095&quot;
+}</pre></td></tr><tr><td>read:web/57542</td><td>doc_read</td><td>https://lol.fandom.com/wiki/Larssen/Match_Histor...</td><td>429.18</td><td>7.23</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;web/57542&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H2 resolve</td><td>438.35</td><td>5.97</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 8
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H2 retrieval plan</td><td>444.32</td><td>11.20</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 9
+}</pre></td></tr><tr><td>search:iter9_web_search_1</td><td>search</td><td>web_search: Lee&#x27;s Market 2025 customer experience analysis r...</td><td>455.52</td><td>0.18</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H2 resolve</td><td>455.70</td><td>5.37</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 9
+}</pre></td></tr><tr><td>report</td><td>report</td><td>Final report</td><td>461.07</td><td>0.00</td><td><pre>{
+  &quot;resolved_hops&quot;: 1
+}</pre></td></tr>
+    </tbody>
+  </table>
+</body>
+</html>

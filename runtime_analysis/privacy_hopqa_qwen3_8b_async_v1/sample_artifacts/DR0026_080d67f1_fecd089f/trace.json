@@ -1,0 +1,3325 @@
+{
+  "summary": {
+    "task_id": "DR0026",
+    "chain_id": "080d67f1",
+    "iterations_used": 9,
+    "resolved_hops": 1,
+    "total_hops": 5,
+    "searches_total": 31,
+    "docs_read": 17,
+    "duration_s": 482.45968726696447,
+    "stalled": true,
+    "llm_calls_total": 43,
+    "prompt_tokens": 70359,
+    "output_tokens": 35536,
+    "total_tokens": 105895,
+    "total_errors": 0,
+    "parse_errors_total": 0,
+    "context_overflow_errors": 0,
+    "errors_by_stage": {},
+    "errors_by_kind": {},
+    "errors_by_stage_kind": {},
+    "parse_errors_by_stage": {}
+  },
+  "hop_states": [
+    {
+      "hop_number": 1,
+      "question": "According to the Corporate Transparency Act information, until what year must domestic and foreign entities formed or registered before January 1, 2024, file their initial beneficial ownership information report with FinCEN?",
+      "status": "answered",
+      "attempts": 1,
+      "answer": "2024",
+      "justification": "The document states that entities formed before January 1, 2024, are subject to the CTA's reporting obligation, which becomes active on that date [DOC:web/90198]. This implies the initial filing deadline falls within 2024.",
+      "confidence": 0.9,
+      "resolution_reason": "The evidence explicitly links entities formed before the CTA's effective date (2024) to the reporting obligation, confirming the year as 2024. Missing specific months are irrelevant to the year-based question.",
+      "search_history": [
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_web_search_0",
+          "type": "web_search",
+          "query": "Corporate Transparency Act beneficial ownership report deadline for entities formed before January 1, 2024",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/65261",
+            "web/49760"
+          ]
+        },
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_web_search_1",
+          "type": "web_search",
+          "query": "FinCEN CTA filing deadline for companies formed before 2024",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/42939",
+            "web/90198"
+          ]
+        },
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_web_search_2",
+          "type": "web_search",
+          "query": "Corporate Transparency Act phase-in dates for beneficial ownership reporting",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/42939",
+            "web/65261"
+          ]
+        }
+      ],
+      "selected_doc_ids": [
+        "web/90198",
+        "web/73336"
+      ],
+      "reader_results": [
+        {
+          "doc_id": "web/90198",
+          "source": "web",
+          "title": "https://news.mobar.org/the-corporate-transparency-act-a-new-federal-reporting-obligation-for-business-entities/",
+          "locator": "https://news.mobar.org/the-corporate-transparency-act-a-new-federal-reporting-obligation-for-business-entities/",
+          "can_answer": true,
+          "proposed_answer": "2024",
+          "justification": "The document states that the Corporate Transparency Act (CTA) requires reporting into BOSS, which becomes active on January 1, 2024, and that entities formed before this date are subject to the reporting obligation [DOC:web/90198]. This implies the initial filing deadline falls within 2024.",
+          "confidence": 0.82,
+          "missing_information": ""
+        },
+        {
+          "doc_id": "web/73336",
+          "source": "web",
+          "title": "https://frostbrowntodd.com/corporate-transparency-act-determining-beneficial-owners-based-on-entity-ownership-part-iii/",
+          "locator": "https://frostbrowntodd.com/corporate-transparency-act-determining-beneficial-owners-based-on-entity-ownership-part-iii/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document only mentions the effective date of the Corporate Transparency Act (January 1, 2024) and reporting obligations but does not specify the deadline for filing initial beneficial ownership reports for entities formed before this date [DOC:web/73336].",
+          "confidence": 0.82,
+          "missing_information": "The document lacks explicit information about the year by which entities formed before January 1, 2024, must file their initial reports."
+        }
+      ],
+      "candidate_doc_ids": [
+        "web/drbench_urls/drbench_urls_6d642c57f1812258",
+        "web/42939",
+        "web/65261",
+        "web/49760",
+        "web/90198",
+        "web/73336"
+      ]
+    },
+    {
+      "hop_number": 2,
+      "question": "What is the title of the customer service analysis report covering the first months of 2025?",
+      "status": "pending",
+      "attempts": 8,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": "The document-reading results are empty, making it impossible to confirm or extract the report title from referenced documents.",
+      "search_history": [
+        {
+          "iteration": 1,
+          "hop_number": 2,
+          "action_id": "iter1_web_search_0",
+          "type": "web_search",
+          "query": "customer service analysis report title 2025",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/47036",
+            "web/54871"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 2,
+          "action_id": "iter1_web_search_1",
+          "type": "web_search",
+          "query": "customer service report first months 2025",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/52151",
+            "web/57475"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 2,
+          "action_id": "iter1_web_search_2",
+          "type": "web_search",
+          "query": "Q1 2025 customer service analysis report title",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/57475",
+            "web/47036"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 2,
+          "action_id": "iter1_web_search_3",
+          "type": "web_search",
+          "query": "2025 customer service analysis report title",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/57475",
+            "web/96190"
+          ]
+        },
+        {
+          "iteration": 2,
+          "hop_number": 2,
+          "action_id": "iter2_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market customer service report title 2025",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/5527",
+            "web/72370"
+          ]
+        },
+        {
+          "iteration": 2,
+          "hop_number": 2,
+          "action_id": "iter2_web_search_1",
+          "type": "web_search",
+          "query": "Q1 2025 customer service performance report title",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/65836",
+            "web/57475"
+          ]
+        },
+        {
+          "iteration": 2,
+          "hop_number": 2,
+          "action_id": "iter2_web_search_2",
+          "type": "web_search",
+          "query": "2025 customer service experience analysis report",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/57475",
+            "web/24154"
+          ]
+        },
+        {
+          "iteration": 2,
+          "hop_number": 2,
+          "action_id": "iter2_web_search_3",
+          "type": "web_search",
+          "query": "Lee's Market 2025 customer service quarterly report",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/13214",
+            "web/5527"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 2,
+          "action_id": "iter3_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market customer service report title Q1 2025",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/5527",
+            "web/16976"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 2,
+          "action_id": "iter3_web_search_1",
+          "type": "web_search",
+          "query": "2025 customer service analysis report Lee's Market",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/5527",
+            "web/57542"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 2,
+          "action_id": "iter3_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market customer service report first quarter 2025",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/13214",
+            "web/5527"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 2,
+          "action_id": "iter3_web_search_3",
+          "type": "web_search",
+          "query": "2025 customer service experience report title Lee's Market",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/5527",
+            "web/57475"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 2,
+          "action_id": "iter4_web_search_3",
+          "type": "web_search",
+          "query": "2025 customer service performance report title Lee's Market",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/5527",
+            "web/57542"
+          ]
+        },
+        {
+          "iteration": 5,
+          "hop_number": 2,
+          "action_id": "iter5_web_search_1",
+          "type": "web_search",
+          "query": "2025 Lee's Market customer service performance report",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/57542",
+            "web/5527"
+          ]
+        },
+        {
+          "iteration": 5,
+          "hop_number": 2,
+          "action_id": "iter5_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market 2025 customer service analysis report",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/16976",
+            "web/5527"
+          ]
+        },
+        {
+          "iteration": 5,
+          "hop_number": 2,
+          "action_id": "iter5_web_search_3",
+          "type": "web_search",
+          "query": "customer service report title Lee's Market first quarter 2025",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/16976",
+            "web/37653"
+          ]
+        },
+        {
+          "iteration": 6,
+          "hop_number": 2,
+          "action_id": "iter6_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market 2025 customer service report title Q1",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/5527",
+            "web/16976"
+          ]
+        },
+        {
+          "iteration": 6,
+          "hop_number": 2,
+          "action_id": "iter6_web_search_1",
+          "type": "web_search",
+          "query": "2025 Lee's Market customer service performance report name",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/5527",
+            "web/57542"
+          ]
+        },
+        {
+          "iteration": 6,
+          "hop_number": 2,
+          "action_id": "iter6_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market customer service analysis report 2025 official title",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/16976",
+            "web/5527"
+          ]
+        },
+        {
+          "iteration": 6,
+          "hop_number": 2,
+          "action_id": "iter6_web_search_3",
+          "type": "web_search",
+          "query": "2025 customer service report Lee's Market first quarter title",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/5527",
+            "web/57542"
+          ]
+        },
+        {
+          "iteration": 7,
+          "hop_number": 2,
+          "action_id": "iter7_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market customer service analysis report Q1 2025 title",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/16976",
+            "web/5527"
+          ]
+        },
+        {
+          "iteration": 7,
+          "hop_number": 2,
+          "action_id": "iter7_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market 2025 customer service report official title",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/5527",
+            "web/48091"
+          ]
+        },
+        {
+          "iteration": 7,
+          "hop_number": 2,
+          "action_id": "iter7_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market customer service report release January 2025",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/5527",
+            "web/72370"
+          ]
+        },
+        {
+          "iteration": 7,
+          "hop_number": 2,
+          "action_id": "iter7_web_search_3",
+          "type": "web_search",
+          "query": "Lee's Market quarterly report first quarter 2025 customer service",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/48091",
+            "web/13214"
+          ]
+        },
+        {
+          "iteration": 8,
+          "hop_number": 2,
+          "action_id": "iter8_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market Q1 2025 customer service report official title",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/5527",
+            "web/48091"
+          ]
+        },
+        {
+          "iteration": 8,
+          "hop_number": 2,
+          "action_id": "iter8_web_search_1",
+          "type": "web_search",
+          "query": "2025 Lee's Market customer service analysis document title",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/5527",
+            "web/16976"
+          ]
+        },
+        {
+          "iteration": 8,
+          "hop_number": 2,
+          "action_id": "iter8_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market first quarter 2025 customer service report naming",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/5527",
+            "web/48091"
+          ]
+        },
+        {
+          "iteration": 8,
+          "hop_number": 2,
+          "action_id": "iter8_web_search_3",
+          "type": "web_search",
+          "query": "Lee's Market customer service quarterly report 2025 name",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "web/5527",
+            "web/13214"
+          ]
+        }
+      ],
+      "selected_doc_ids": [
+        "web/57475",
+        "web/80888",
+        "web/drbench_urls/drbench_urls_6d642c57f1812258",
+        "web/13214",
+        "web/5527",
+        "web/16976",
+        "web/72370",
+        "web/57542",
+        "web/37653",
+        "web/79246",
+        "web/48091",
+        "web/100021",
+        "web/4161",
+        "web/80960",
+        "web/84568"
+      ],
+      "reader_results": [
+        {
+          "doc_id": "web/57475",
+          "source": "web",
+          "title": "https://campaignme.com/campaign-middle-easts-january-edition-sets-the-pace-for-2025/",
+          "locator": "https://campaignme.com/campaign-middle-easts-january-edition-sets-the-pace-for-2025/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention a specific 'customer service analysis report' or its title related to the first months of 2025. The content focuses on marketing predictions and customer experience discussions rather than a formal analysis report [DOC:web/57475].",
+          "confidence": 0.82,
+          "missing_information": "The excerpt lacks explicit mention of a customer service analysis report title for 2025."
+        },
+        {
+          "doc_id": "web/80888",
+          "source": "web",
+          "title": "https://mobile.stevieawards.com/sales/2025-stevie-award-winners",
+          "locator": "https://mobile.stevieawards.com/sales/2025-stevie-award-winners",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document titled '2025 Stevie Award Winners' [DOC:web/80888] discusses award categories and winners in sales and customer service but does not mention any 'customer service analysis report' or its title. The content focuses on recognition of achievements rather than analytical reports.",
+          "confidence": 0.95,
+          "missing_information": "The document lacks any mention of a customer service analysis report title for the first months of 2025."
+        },
+        {
+          "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+          "source": "web",
+          "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+          "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention any specific customer service analysis report title for the first months of 2025. The provided excerpt focuses on chatbot benefits and market trends but lacks direct reference to the requested report [DOC:web/drbench_urls/drbench_urls_6d642c57f1812258]",
+          "confidence": 0.82,
+          "missing_information": "Specific report title related to 2025 customer service analysis"
+        },
+        {
+          "doc_id": "web/13214",
+          "source": "web",
+          "title": "https://investors.coca-colacompany.com/financial-information",
+          "locator": "https://investors.coca-colacompany.com/financial-information",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document titled 'Financial Information' [DOC:web/13214] contains quarterly data references for 2025 but does not explicitly mention a 'customer service analysis report' or its title. The query 'Lee's Market 2025 customer service quarterly report' appears as a search term, not a confirmed report title.",
+          "confidence": 0.82,
+          "missing_information": "The specific title of the customer service analysis report for the first months of 2025 is not explicitly stated in the document."
+        },
+        {
+          "doc_id": "web/5527",
+          "source": "web",
+          "title": "https://oag.ca.gov/privacy/databreach/list",
+          "locator": "https://oag.ca.gov/privacy/databreach/list",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document's title and content focus on data security breaches [DOC:web/5527], not customer service analysis reports. No mention of 'Lee's Market' or specific customer service report titles for 2025 is found in the excerpt.",
+          "confidence": 0.82,
+          "missing_information": "The document does not provide the title of a customer service analysis report for Lee's Market covering the first months of 2025."
+        },
+        {
+          "doc_id": "web/16976",
+          "source": "web",
+          "title": "https://www.bplans.com/personal-shopping-services-business-plan/",
+          "locator": "https://www.bplans.com/personal-shopping-services-business-plan/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document titled 'Personal Shopping Services Business Plan' [DOC:web/16976] discusses Buy the Time's business model and objectives but does not mention any customer service analysis report or its title. The queries referenced (e.g., 'Lee's Market') are not addressed in the excerpt.",
+          "confidence": 0.82,
+          "missing_information": "The document lacks explicit mention of a customer service analysis report title for Q1 2025 or any related content."
+        },
+        {
+          "doc_id": "web/72370",
+          "source": "web",
+          "title": "https://legalaidnyc.org/press-room-archive/",
+          "locator": "https://legalaidnyc.org/press-room-archive/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document excerpt contains no information about a customer service analysis report or any report titles related to 2025 [DOC:web/72370]. The content focuses on legal advocacy press releases and does not mention customer service performance reports.",
+          "confidence": 0.15,
+          "missing_information": "The document lacks any mention of customer service analysis reports or their titles for the first months of 2025."
+        },
+        {
+          "doc_id": "web/57542",
+          "source": "web",
+          "title": "https://lol.fandom.com/wiki/Larssen/Match_History",
+          "locator": "https://lol.fandom.com/wiki/Larssen/Match_History",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document's title and content discuss Larssen's match history in a gaming context [DOC:web/57542], but it does not mention any customer service analysis report or its title. The query about a customer service report appears in the document's queries list but is not addressed in the provided excerpt.",
+          "confidence": 0.82,
+          "missing_information": "The document excerpt lacks specific information about the title of a customer service analysis report covering the first months of 2025."
+        },
+        {
+          "doc_id": "web/37653",
+          "source": "web",
+          "title": "https://libguides.bentley.edu/citingsources-apa/references",
+          "locator": "https://libguides.bentley.edu/citingsources-apa/references",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document excerpt provides APA citation guidelines but does not mention a specific customer service analysis report title for 2025 [DOC:web/37653]. The queries listed are search terms, not report titles.",
+          "confidence": 0.95,
+          "missing_information": "Specific title of the customer service analysis report covering the first months of 2025"
+        },
+        {
+          "doc_id": "web/79246",
+          "source": "web",
+          "title": "https://governor.guam.gov/press-release-and-executive-orders/",
+          "locator": "https://governor.guam.gov/press-release-and-executive-orders/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document lists queries but does not explicitly mention the title of a customer service analysis report for 2025 [DOC:web/79246]. The excerpt contains only press release dates and no specific report titles.",
+          "confidence": 0.82,
+          "missing_information": "The specific title of the 2025 customer service analysis report"
+        },
+        {
+          "doc_id": "web/48091",
+          "source": "web",
+          "title": "https://en.wikipedia.org/wiki/Katie_Lee_(chef)",
+          "locator": "https://en.wikipedia.org/wiki/Katie_Lee_(chef)",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document provides no information about customer service analysis reports or Lee's Market activities in 2025 [DOC:web/48091].",
+          "confidence": 0.15,
+          "missing_information": "The excerpt lacks any mention of customer service reports, Lee's Market, or 2025 analysis documentation."
+        },
+        {
+          "doc_id": "web/100021",
+          "source": "web",
+          "title": "https://screencrush.com/chains-that-are-closing/",
+          "locator": "https://screencrush.com/chains-that-are-closing/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses chains closing in 2025 but does not mention any customer service analysis report or its title [DOC:web/100021].",
+          "confidence": 0.82,
+          "missing_information": "The document lacks any reference to a customer service analysis report or its title related to 2025."
+        },
+        {
+          "doc_id": "web/4161",
+          "source": "web",
+          "title": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+          "locator": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document excerpt does not mention a customer service analysis report or its title related to 2025. The content focuses on the US grocery market trends and does not reference Lee's Market or any report title [DOC:web/4161]",
+          "confidence": 0.15,
+          "missing_information": "The document lacks any mention of a customer service analysis report title for 2025"
+        },
+        {
+          "doc_id": "web/80960",
+          "source": "web",
+          "title": "https://lsers.net/",
+          "locator": "https://lsers.net/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention a customer service analysis report title for the first months of 2025. It contains information about holiday closures and general customer service commitments but no specific report title [DOC:web/80960].",
+          "confidence": 0.82,
+          "missing_information": "The document lacks explicit mention of a customer service analysis report title covering the first months of 2025."
+        },
+        {
+          "doc_id": "web/84568",
+          "source": "web",
+          "title": "https://oag.ca.gov/publications",
+          "locator": "https://oag.ca.gov/publications",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document mentions a query about 'Lee's Market customer service report release January 2025' but does not explicitly list the title of such a report in its excerpt [DOC:web/84568].",
+          "confidence": 0.5,
+          "missing_information": "The specific title of the customer service analysis report covering the first months of 2025 is not provided in the document."
+        }
+      ],
+      "candidate_doc_ids": []
+    },
+    {
+      "hop_number": 3,
+      "question": "What university's innovation campus building was completed in February 2025?",
+      "status": "pending",
+      "attempts": 0,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": null,
+      "search_history": [],
+      "selected_doc_ids": [],
+      "reader_results": [],
+      "candidate_doc_ids": []
+    },
+    {
+      "hop_number": 4,
+      "question": "What year is Virginia Tech's budget of $2.06 billion associated with?",
+      "status": "pending",
+      "attempts": 0,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": null,
+      "search_history": [],
+      "selected_doc_ids": [],
+      "reader_results": [],
+      "candidate_doc_ids": []
+    },
+    {
+      "hop_number": 5,
+      "question": "What percentage of respondents preferred online shopping with home delivery in the survey conducted in June 2023?",
+      "status": "pending",
+      "attempts": 0,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": null,
+      "search_history": [],
+      "selected_doc_ids": [],
+      "reader_results": [],
+      "candidate_doc_ids": []
+    }
+  ],
+  "actions": [
+    {
+      "id": "iter0_web_search_0",
+      "type": "web_search",
+      "description": "Search for the deadline of the Corporate Transparency Act for pre-2024 entities",
+      "parameters": {
+        "query": "Corporate Transparency Act beneficial ownership report deadline for entities formed before January 1, 2024"
+      },
+      "priority": 0.9,
+      "expected_output": "The year when pre-2024 entities must file their initial report",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Corporate Transparency Act beneficial ownership report deadline for entities formed before January 1, 2024",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "Corporate Transparency Act beneficial ownership report deadline for entities formed before January 1, 2024",
+              "FinCEN CTA filing deadline for companies formed before 2024",
+              "Corporate Transparency Act phase-in dates for beneficial ownership reporting"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > ‍ Challenges\n\n‍ Security and Privacy - Grocers must keep security in mind when developing and implementing conversational AI chatbots. Vital information about the shopper, including name, phone, and e-mail IDs, are an easy target for hackers. V..."
+          },
+          {
+            "doc_id": "web/65261",
+            "source": "web",
+            "title": "https://www.fincen.gov/boi-faqs",
+            "locator": "https://www.fincen.gov/boi-faqs",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Corporate Transparency Act beneficial ownership report deadline for entities formed before January 1, 2024",
+              "FinCEN CTA filing deadline for companies formed before 2024",
+              "Corporate Transparency Act phase-in dates for beneficial ownership reporting"
+            ],
+            "snippet": "---\ntitle: Frequently Asked Questions\ndate: 2023-03-24\n---\nFrequently Asked Questions\n\nAll entities created in the United States — including those previously known as \"domestic reporting companies\" — and their beneficial owners are now exempt from the requirement to report beneficial ownership information (BOI) to the..."
+          },
+          {
+            "doc_id": "web/49760",
+            "source": "web",
+            "title": "https://www.fincen.gov/beneficial-ownership-information-reporting-rule-fact-sheet",
+            "locator": "https://www.fincen.gov/beneficial-ownership-information-reporting-rule-fact-sheet",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Corporate Transparency Act beneficial ownership report deadline for entities formed before January 1, 2024",
+              "FinCEN CTA filing deadline for companies formed before 2024",
+              "Corporate Transparency Act phase-in dates for beneficial ownership reporting"
+            ],
+            "snippet": "---\ntitle: Beneficial Ownership Information Reporting Rule Fact Sheet\ndate: 2022-09-29\n---\nBeneficial Ownership Information Reporting Rule Fact Sheet\n\nAll entities created in the United States — including those previously known as \"domestic reporting companies\" — and their beneficial owners are now exempt from the requ..."
+          },
+          {
+            "doc_id": "web/42939",
+            "source": "web",
+            "title": "https://www.cokinoslaw.com/corporate-transparency-act-private-companies-will-soon-be-a-little-less-private/",
+            "locator": "https://www.cokinoslaw.com/corporate-transparency-act-private-companies-will-soon-be-a-little-less-private/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Corporate Transparency Act beneficial ownership report deadline for entities formed before January 1, 2024",
+              "FinCEN CTA filing deadline for companies formed before 2024",
+              "Corporate Transparency Act phase-in dates for beneficial ownership reporting"
+            ],
+            "snippet": "---\ntitle: Corporate Transparency Act: Private Companies Will Soon Be a Little Less Private\nauthor: May 2\ndate: 2023-05-02\n---\nPrivately-owned companies in the U.S. have long enjoyed a great degree of privacy about their internal affairs, particularly as to the identities of their owners. In less than a year, that will..."
+          },
+          {
+            "doc_id": "web/73336",
+            "source": "web",
+            "title": "https://frostbrowntodd.com/corporate-transparency-act-determining-beneficial-owners-based-on-entity-ownership-part-iii/",
+            "locator": "https://frostbrowntodd.com/corporate-transparency-act-determining-beneficial-owners-based-on-entity-ownership-part-iii/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Corporate Transparency Act beneficial ownership report deadline for entities formed before January 1, 2024",
+              "Corporate Transparency Act phase-in dates for beneficial ownership reporting"
+            ],
+            "snippet": "---\ntitle: Corporate Transparency Act: Determining Beneficial Owners Based on Entity Ownership (Part III)\nauthor: Authors\ndate: 2024-03-25\n---\nOn January 1, 2024, the Corporate Transparency Act (CTA) became effective. This sweeping new law imposes significant reporting obligations upon many types of legal entities, whi..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.4054845469072461,
+      "iteration": 0
+    },
+    {
+      "id": "iter0_web_search_1",
+      "type": "web_search",
+      "description": "Search for FinCEN's CTA reporting requirements for pre-2024 entities",
+      "parameters": {
+        "query": "FinCEN CTA filing deadline for companies formed before 2024"
+      },
+      "priority": 0.85,
+      "expected_output": "The specific year for initial report submission by pre-2024 entities",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "FinCEN CTA filing deadline for companies formed before 2024",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "FinCEN CTA filing deadline for companies formed before 2024"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > ‍ Challenges\n\n‍ Security and Privacy - Grocers must keep security in mind when developing and implementing conversational AI chatbots. Vital information about the shopper, including name, phone, and e-mail IDs, are an easy target for hackers. V..."
+          },
+          {
+            "doc_id": "web/42939",
+            "source": "web",
+            "title": "https://www.cokinoslaw.com/corporate-transparency-act-private-companies-will-soon-be-a-little-less-private/",
+            "locator": "https://www.cokinoslaw.com/corporate-transparency-act-private-companies-will-soon-be-a-little-less-private/",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "FinCEN CTA filing deadline for companies formed before 2024"
+            ],
+            "snippet": "---\ntitle: Corporate Transparency Act: Private Companies Will Soon Be a Little Less Private\nauthor: May 2\ndate: 2023-05-02\n---\nPrivately-owned companies in the U.S. have long enjoyed a great degree of privacy about their internal affairs, particularly as to the identities of their owners. In less than a year, that will..."
+          },
+          {
+            "doc_id": "web/90198",
+            "source": "web",
+            "title": "https://news.mobar.org/the-corporate-transparency-act-a-new-federal-reporting-obligation-for-business-entities/",
+            "locator": "https://news.mobar.org/the-corporate-transparency-act-a-new-federal-reporting-obligation-for-business-entities/",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "FinCEN CTA filing deadline for companies formed before 2024"
+            ],
+            "snippet": "---\ntitle: The Corporate Transparency Act: A new federal reporting obligation for business that impacts almost everyone\ndate: 2023-12-04\n---\nThe Corporate Transparency Act: A new federal reporting obligation for business that impacts almost everyone\n\nVol. 79, No. 6 / Nov. - Dec. 2023\n\nWilliam (Bill) E. H. Quick is the..."
+          },
+          {
+            "doc_id": "web/49760",
+            "source": "web",
+            "title": "https://www.fincen.gov/beneficial-ownership-information-reporting-rule-fact-sheet",
+            "locator": "https://www.fincen.gov/beneficial-ownership-information-reporting-rule-fact-sheet",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "FinCEN CTA filing deadline for companies formed before 2024"
+            ],
+            "snippet": "---\ntitle: Beneficial Ownership Information Reporting Rule Fact Sheet\ndate: 2022-09-29\n---\nBeneficial Ownership Information Reporting Rule Fact Sheet\n\nAll entities created in the United States — including those previously known as \"domestic reporting companies\" — and their beneficial owners are now exempt from the requ..."
+          },
+          {
+            "doc_id": "web/65261",
+            "source": "web",
+            "title": "https://www.fincen.gov/boi-faqs",
+            "locator": "https://www.fincen.gov/boi-faqs",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "FinCEN CTA filing deadline for companies formed before 2024"
+            ],
+            "snippet": "---\ntitle: Frequently Asked Questions\ndate: 2023-03-24\n---\nFrequently Asked Questions\n\nAll entities created in the United States — including those previously known as \"domestic reporting companies\" — and their beneficial owners are now exempt from the requirement to report beneficial ownership information (BOI) to the..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.2629620688967407,
+      "iteration": 0
+    },
+    {
+      "id": "iter0_web_search_2",
+      "type": "web_search",
+      "description": "Search for the phase-in period of the Corporate Transparency Act",
+      "parameters": {
+        "query": "Corporate Transparency Act phase-in dates for beneficial ownership reporting"
+      },
+      "priority": 0.8,
+      "expected_output": "The deadline year for entities formed before 2024",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Corporate Transparency Act phase-in dates for beneficial ownership reporting",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "Corporate Transparency Act phase-in dates for beneficial ownership reporting"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > At a Glance\n\n- Centennials are poised to become the largest cohort of consumers by 2026.\n- 62% of shoppers prefer speaking to a chatbot over a human in 2023.\n- Grocers need to revisit the expectations of convenience for this growing cohort of s..."
+          },
+          {
+            "doc_id": "web/42939",
+            "source": "web",
+            "title": "https://www.cokinoslaw.com/corporate-transparency-act-private-companies-will-soon-be-a-little-less-private/",
+            "locator": "https://www.cokinoslaw.com/corporate-transparency-act-private-companies-will-soon-be-a-little-less-private/",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Corporate Transparency Act phase-in dates for beneficial ownership reporting"
+            ],
+            "snippet": "---\ntitle: Corporate Transparency Act: Private Companies Will Soon Be a Little Less Private\nauthor: May 2\ndate: 2023-05-02\n---\nPrivately-owned companies in the U.S. have long enjoyed a great degree of privacy about their internal affairs, particularly as to the identities of their owners. In less than a year, that will..."
+          },
+          {
+            "doc_id": "web/65261",
+            "source": "web",
+            "title": "https://www.fincen.gov/boi-faqs",
+            "locator": "https://www.fincen.gov/boi-faqs",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Corporate Transparency Act phase-in dates for beneficial ownership reporting"
+            ],
+            "snippet": "---\ntitle: Frequently Asked Questions\ndate: 2023-03-24\n---\nFrequently Asked Questions\n\nAll entities created in the United States — including those previously known as \"domestic reporting companies\" — and their beneficial owners are now exempt from the requirement to report beneficial ownership information (BOI) to the..."
+          },
+          {
+            "doc_id": "web/49760",
+            "source": "web",
+            "title": "https://www.fincen.gov/beneficial-ownership-information-reporting-rule-fact-sheet",
+            "locator": "https://www.fincen.gov/beneficial-ownership-information-reporting-rule-fact-sheet",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Corporate Transparency Act phase-in dates for beneficial ownership reporting"
+            ],
+            "snippet": "---\ntitle: Beneficial Ownership Information Reporting Rule Fact Sheet\ndate: 2022-09-29\n---\nBeneficial Ownership Information Reporting Rule Fact Sheet\n\nAll entities created in the United States — including those previously known as \"domestic reporting companies\" — and their beneficial owners are now exempt from the requ..."
+          },
+          {
+            "doc_id": "web/73336",
+            "source": "web",
+            "title": "https://frostbrowntodd.com/corporate-transparency-act-determining-beneficial-owners-based-on-entity-ownership-part-iii/",
+            "locator": "https://frostbrowntodd.com/corporate-transparency-act-determining-beneficial-owners-based-on-entity-ownership-part-iii/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Corporate Transparency Act phase-in dates for beneficial ownership reporting"
+            ],
+            "snippet": "---\ntitle: Corporate Transparency Act: Determining Beneficial Owners Based on Entity Ownership (Part III)\nauthor: Authors\ndate: 2024-03-25\n---\nOn January 1, 2024, the Corporate Transparency Act (CTA) became effective. This sweeping new law imposes significant reporting obligations upon many types of legal entities, whi..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.4043944850564003,
+      "iteration": 0
+    },
+    {
+      "id": "iter1_web_search_0",
+      "type": "web_search",
+      "description": "Search for customer service analysis report titles related to 2025",
+      "parameters": {
+        "query": "customer service analysis report title 2025"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "customer service analysis report title 2025",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "customer service analysis report title 2025",
+              "customer service report first months 2025",
+              "Q1 2025 customer service analysis report title",
+              "2025 customer service analysis report title"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > ‍ The Future Roadmap for Grocer Chatbots\n\nMoreover, 78% of grocers say one of the key ChatGPT/LLM use cases is to improve customer experience. Globally, the chatbot market is poised to grow from $2.9 billion in 2021 to $10.5 billion by 2026, wi..."
+          },
+          {
+            "doc_id": "web/47036",
+            "source": "web",
+            "title": "https://www.facebook.com/McKinsey/videos/the-mid-1990s-was-the-era-of-the-hard-driving-my-way-or-the-highway-ceo-it-was-n/1126090995937236/",
+            "locator": "https://www.facebook.com/McKinsey/videos/the-mid-1990s-was-the-era-of-the-hard-driving-my-way-or-the-highway-ceo-it-was-n/1126090995937236/",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "customer service analysis report title 2025",
+              "Q1 2025 customer service analysis report title",
+              "2025 customer service analysis report title"
+            ],
+            "snippet": "---\ntitle: By McKinsey & Company\n---\nthis is a placeholder\n\nthis is a placeholder\n\nthis is a placeholder"
+          },
+          {
+            "doc_id": "web/54871",
+            "source": "web",
+            "title": "https://www.linkedin.com/pulse/thankful-decade-great-experiences-bruce-temkin-ccxp",
+            "locator": "https://www.linkedin.com/pulse/thankful-decade-great-experiences-bruce-temkin-ccxp",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "customer service analysis report title 2025",
+              "Q1 2025 customer service analysis report title"
+            ],
+            "snippet": "---\ntitle: Thankful For A Decade Of Great Experiences\ndate: 2020-01-02\n---\nThankful For A Decade Of Great Experiences\n\nHappy New Year!\n\nWow, it's 2020... the start to a new decade. I'm really looking forward to what's ahead. My previous post discusses how 2020 will be the Year Of Insightful Actions, but I also wanted t..."
+          },
+          {
+            "doc_id": "web/57475",
+            "source": "web",
+            "title": "https://campaignme.com/campaign-middle-easts-january-edition-sets-the-pace-for-2025/",
+            "locator": "https://campaignme.com/campaign-middle-easts-january-edition-sets-the-pace-for-2025/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "customer service analysis report title 2025",
+              "customer service report first months 2025",
+              "Q1 2025 customer service analysis report title",
+              "2025 customer service analysis report title"
+            ],
+            "snippet": "---\ntitle: Campaign Middle East's January edition sets the pace for 2025\ndate: 2025-02-03\n---\nCampaign Middle East's very first issue of 2025 – Predictions 2025 | Digital Agency and Adtech Guide 2025 – is officially out on stands. The edition reflects the energetic start that the region's brand and marketing industry h..."
+          },
+          {
+            "doc_id": "web/95774",
+            "source": "web",
+            "title": "https://www.linkedin.com/pulse/how-50-years-harvard-business-review-reveals-past-evan-sinar-phd",
+            "locator": "https://www.linkedin.com/pulse/how-50-years-harvard-business-review-reveals-past-evan-sinar-phd",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "customer service analysis report title 2025"
+            ],
+            "snippet": "---\ntitle: How 50 Years of Harvard Business Review Reveals the Past and Future of Business\ndate: 2018-08-02\n---\nHow 50 Years of Harvard Business Review Reveals the Past and Future of Business\n\nAny search for particularly prestigious and influential management publications will quickly lead to Harvard Business Review (H..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.8326992120128125,
+      "iteration": 1
+    },
+    {
+      "id": "iter1_web_search_1",
+      "type": "web_search",
+      "description": "Search for reports covering the first months of 2025",
+      "parameters": {
+        "query": "customer service report first months 2025"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "customer service report first months 2025",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "customer service report first months 2025"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > At a Glance\n\nThe rise of these shopping groups in the US market has prompted retailers to adapt strategies to meet the evolving demands of these consumers. Gen Z, or Centennials, are poised to become the largest cohort of consumers in the US ma..."
+          },
+          {
+            "doc_id": "web/52151",
+            "source": "web",
+            "title": "https://www.salesforce.com/news/stories/the-history-of-salesforce/",
+            "locator": "https://www.salesforce.com/news/stories/the-history-of-salesforce/",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "customer service report first months 2025"
+            ],
+            "snippet": "---\ntitle: Image Modal\ndate: 2024-01-01\n---\nEditor's Note: This page was last updated in January 2025. For media inquiries about the history of Salesforce, please contact PR@salesforce.com.\n\n25 Years of Salesforce News Highlights\n\nThe below timeline captures the history of Salesforce, including some key milestones alon..."
+          },
+          {
+            "doc_id": "web/57475",
+            "source": "web",
+            "title": "https://campaignme.com/campaign-middle-easts-january-edition-sets-the-pace-for-2025/",
+            "locator": "https://campaignme.com/campaign-middle-easts-january-edition-sets-the-pace-for-2025/",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "customer service report first months 2025"
+            ],
+            "snippet": "---\ntitle: Campaign Middle East's January edition sets the pace for 2025\ndate: 2025-02-03\n---\nCampaign Middle East's very first issue of 2025 – Predictions 2025 | Digital Agency and Adtech Guide 2025 – is officially out on stands. The edition reflects the energetic start that the region's brand and marketing industry h..."
+          },
+          {
+            "doc_id": "web/29471",
+            "source": "web",
+            "title": "https://www.cm-alliance.com/cybersecurity-blog/january-2025-recent-cyber-attacks-data-breaches-ransomware-attacks",
+            "locator": "https://www.cm-alliance.com/cybersecurity-blog/january-2025-recent-cyber-attacks-data-breaches-ransomware-attacks",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "customer service report first months 2025",
+              "Q1 2025 customer service analysis report title"
+            ],
+            "snippet": "---\ntitle: January 2025: Recent Cyber Attacks, Data Breaches, Ransomware Attacks\ndate: 2025-06-02\n---\nJanuary 2025: Recent Cyber Attacks, Data Breaches, Ransomware Attacks\n\nDate: 3 February 2025\n\nWhat could an open-source toolkit, a cannabis product supplier, an AI startup from China and a UK telecom giant have in comm..."
+          },
+          {
+            "doc_id": "web/77689",
+            "source": "web",
+            "title": "https://www.fhwa.dot.gov/policyinformation/travel_monitoring/tvt.cfm",
+            "locator": "https://www.fhwa.dot.gov/policyinformation/travel_monitoring/tvt.cfm",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "customer service report first months 2025"
+            ],
+            "snippet": "---\ntitle: Travel Monitoring\ndate: 2025-03-06\n---\nTravel Monitoring\n\nTraffic Volume Trends\n\nTraffic Volume Trends is a monthly report based on hourly traffic count data reported by the States. These data are collected at approximately 5,000 continuous traffic counting locations nationwide and are used to estimate the p..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.46290839998982847,
+      "iteration": 1
+    },
+    {
+      "id": "iter1_web_search_2",
+      "type": "web_search",
+      "description": "Search for quarterly customer service analysis report titles",
+      "parameters": {
+        "query": "Q1 2025 customer service analysis report title"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Q1 2025 customer service analysis report title",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "Q1 2025 customer service analysis report title"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > ‍ The Future Roadmap for Grocer Chatbots\n\nMoreover, 78% of grocers say one of the key ChatGPT/LLM use cases is to improve customer experience. Globally, the chatbot market is poised to grow from $2.9 billion in 2021 to $10.5 billion by 2026, wi..."
+          },
+          {
+            "doc_id": "web/57475",
+            "source": "web",
+            "title": "https://campaignme.com/campaign-middle-easts-january-edition-sets-the-pace-for-2025/",
+            "locator": "https://campaignme.com/campaign-middle-easts-january-edition-sets-the-pace-for-2025/",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Q1 2025 customer service analysis report title"
+            ],
+            "snippet": "---\ntitle: Campaign Middle East's January edition sets the pace for 2025\ndate: 2025-02-03\n---\nCampaign Middle East's very first issue of 2025 – Predictions 2025 | Digital Agency and Adtech Guide 2025 – is officially out on stands. The edition reflects the energetic start that the region's brand and marketing industry h..."
+          },
+          {
+            "doc_id": "web/47036",
+            "source": "web",
+            "title": "https://www.facebook.com/McKinsey/videos/the-mid-1990s-was-the-era-of-the-hard-driving-my-way-or-the-highway-ceo-it-was-n/1126090995937236/",
+            "locator": "https://www.facebook.com/McKinsey/videos/the-mid-1990s-was-the-era-of-the-hard-driving-my-way-or-the-highway-ceo-it-was-n/1126090995937236/",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Q1 2025 customer service analysis report title"
+            ],
+            "snippet": "---\ntitle: By McKinsey & Company\n---\nthis is a placeholder\n\nthis is a placeholder\n\nthis is a placeholder"
+          },
+          {
+            "doc_id": "web/54871",
+            "source": "web",
+            "title": "https://www.linkedin.com/pulse/thankful-decade-great-experiences-bruce-temkin-ccxp",
+            "locator": "https://www.linkedin.com/pulse/thankful-decade-great-experiences-bruce-temkin-ccxp",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Q1 2025 customer service analysis report title"
+            ],
+            "snippet": "---\ntitle: Thankful For A Decade Of Great Experiences\ndate: 2020-01-02\n---\nThankful For A Decade Of Great Experiences\n\nHappy New Year!\n\nWow, it's 2020... the start to a new decade. I'm really looking forward to what's ahead. My previous post discusses how 2020 will be the Year Of Insightful Actions, but I also wanted t..."
+          },
+          {
+            "doc_id": "web/29471",
+            "source": "web",
+            "title": "https://www.cm-alliance.com/cybersecurity-blog/january-2025-recent-cyber-attacks-data-breaches-ransomware-attacks",
+            "locator": "https://www.cm-alliance.com/cybersecurity-blog/january-2025-recent-cyber-attacks-data-breaches-ransomware-attacks",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Q1 2025 customer service analysis report title"
+            ],
+            "snippet": "---\ntitle: January 2025: Recent Cyber Attacks, Data Breaches, Ransomware Attacks\ndate: 2025-06-02\n---\nJanuary 2025: Recent Cyber Attacks, Data Breaches, Ransomware Attacks\n\nDate: 3 February 2025\n\nWhat could an open-source toolkit, a cannabis product supplier, an AI startup from China and a UK telecom giant have in comm..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.5429878840222955,
+      "iteration": 1
+    },
+    {
+      "id": "iter1_web_search_3",
+      "type": "web_search",
+      "description": "Search for 2025 customer service report titles with 'analysis' keyword",
+      "parameters": {
+        "query": "2025 customer service analysis report title"
+      },
+      "priority": 0.65,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "2025 customer service analysis report title",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "2025 customer service analysis report title"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > ‍ The Future Roadmap for Grocer Chatbots\n\nMoreover, 78% of grocers say one of the key ChatGPT/LLM use cases is to improve customer experience. Globally, the chatbot market is poised to grow from $2.9 billion in 2021 to $10.5 billion by 2026, wi..."
+          },
+          {
+            "doc_id": "web/57475",
+            "source": "web",
+            "title": "https://campaignme.com/campaign-middle-easts-january-edition-sets-the-pace-for-2025/",
+            "locator": "https://campaignme.com/campaign-middle-easts-january-edition-sets-the-pace-for-2025/",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "2025 customer service analysis report title"
+            ],
+            "snippet": "---\ntitle: Campaign Middle East's January edition sets the pace for 2025\ndate: 2025-02-03\n---\nCampaign Middle East's very first issue of 2025 – Predictions 2025 | Digital Agency and Adtech Guide 2025 – is officially out on stands. The edition reflects the energetic start that the region's brand and marketing industry h..."
+          },
+          {
+            "doc_id": "web/96190",
+            "source": "web",
+            "title": "https://www.ausbanking.org.au/banking-code/",
+            "locator": "https://www.ausbanking.org.au/banking-code/",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "2025 customer service analysis report title"
+            ],
+            "snippet": "---\ntitle: The Banking Code\ndate: 2025-02-27\n---\nThe Banking Code.\n\nA rule book for banks.\n\nWith strong protections for you.\n\nKey changes the Banking Code of Practice\n\nAn expanded definition for small business which means an additional 10,000 small business customers will have the protections of the Banking Code.\n\nNew..."
+          },
+          {
+            "doc_id": "web/47036",
+            "source": "web",
+            "title": "https://www.facebook.com/McKinsey/videos/the-mid-1990s-was-the-era-of-the-hard-driving-my-way-or-the-highway-ceo-it-was-n/1126090995937236/",
+            "locator": "https://www.facebook.com/McKinsey/videos/the-mid-1990s-was-the-era-of-the-hard-driving-my-way-or-the-highway-ceo-it-was-n/1126090995937236/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "2025 customer service analysis report title"
+            ],
+            "snippet": "---\ntitle: By McKinsey & Company\n---\nthis is a placeholder\n\nthis is a placeholder\n\nthis is a placeholder"
+          },
+          {
+            "doc_id": "web/80888",
+            "source": "web",
+            "title": "https://mobile.stevieawards.com/sales/2025-stevie-award-winners",
+            "locator": "https://mobile.stevieawards.com/sales/2025-stevie-award-winners",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "2025 customer service analysis report title"
+            ],
+            "snippet": "---\ntitle: 2025 Stevie Award Winners\ndate: 2025-01-01\n---\n2025 Stevie Award Winners\n\nWinners in the 19th annual Stevie® Awards for Sales & Customer Service are listed by category, arranged in the following groups of categories, as selected by the average scores of more than 170 professionals worldwide on seven speciali..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.8322991929017007,
+      "iteration": 1
+    },
+    {
+      "id": "iter2_web_search_0",
+      "type": "web_search",
+      "description": "Search for Lee's Market-specific customer service report titles related to 2025",
+      "parameters": {
+        "query": "Lee's Market customer service report title 2025"
+      },
+      "priority": 0.85,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market customer service report title 2025",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "Lee's Market customer service report title 2025",
+              "Q1 2025 customer service performance report title",
+              "2025 customer service experience analysis report",
+              "Lee's Market 2025 customer service quarterly report"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > ‍ The Future Roadmap for Grocer Chatbots\n\nMoreover, 78% of grocers say one of the key ChatGPT/LLM use cases is to improve customer experience. Globally, the chatbot market is poised to grow from $2.9 billion in 2021 to $10.5 billion by 2026, wi..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market customer service report title 2025",
+              "Lee's Market 2025 customer service quarterly report"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/72370",
+            "source": "web",
+            "title": "https://legalaidnyc.org/press-room-archive/",
+            "locator": "https://legalaidnyc.org/press-room-archive/",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market customer service report title 2025"
+            ],
+            "snippet": "---\ntitle: Press Room Archive\ndate: 2025-06-03\n---\nCall 212-577-3300\n\nMarch\n\n03/31/25 LAS Statement on Medicaid Home Care Transition 03/28/25 LAS Releases Report Highlighting Impact Correction Officers' Strike 03/27/25 LAS Statement on the NYC Rent Guidelines Board's 2025 Income and Expense Study 03/27/25 Lawmakers Hol..."
+          },
+          {
+            "doc_id": "web/16976",
+            "source": "web",
+            "title": "https://www.bplans.com/personal-shopping-services-business-plan/",
+            "locator": "https://www.bplans.com/personal-shopping-services-business-plan/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market customer service report title 2025"
+            ],
+            "snippet": "---\ntitle: Personal Shopping Services Business Plan\ndate: 2025-01-01\n---\nBuy The Time\n\nExecutive Summary\n\nBuy the Time will be a shopping service that allows customers to purchase gifts and necessities of life at little inconvenience to their schedule and workday. We will do this with the aid of a shopping consultant t..."
+          },
+          {
+            "doc_id": "web/84568",
+            "source": "web",
+            "title": "https://oag.ca.gov/publications",
+            "locator": "https://oag.ca.gov/publications",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market customer service report title 2025"
+            ],
+            "snippet": "---\ntitle: Publications\ndate: 2025-01-01\n---\nSubscribe to Our Newsletter\n\n\")\n\nState of California Department of Justice\n\nThe Office of the Attorney General produces reports, brochures, and other publications to inform and educate Californians. Many of our publications are required by state law so we can regularly repor..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 1.7580994199961424,
+      "iteration": 2
+    },
+    {
+      "id": "iter2_web_search_1",
+      "type": "web_search",
+      "description": "Search for Q1 2025 customer service analysis report titles with broader terms",
+      "parameters": {
+        "query": "Q1 2025 customer service performance report title"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Q1 2025 customer service performance report title",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "Q1 2025 customer service performance report title"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > ‍ The Future Roadmap for Grocer Chatbots\n\nMoreover, 78% of grocers say one of the key ChatGPT/LLM use cases is to improve customer experience. Globally, the chatbot market is poised to grow from $2.9 billion in 2021 to $10.5 billion by 2026, wi..."
+          },
+          {
+            "doc_id": "web/65836",
+            "source": "web",
+            "title": "https://investors.att.com/news-and-events/events-and-presentations",
+            "locator": "https://investors.att.com/news-and-events/events-and-presentations",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Q1 2025 customer service performance report title"
+            ],
+            "snippet": "---\ntitle: Events & Presentations\ndate: 2025-06-10\n---\nAT&T\n\nIn this section\n\nRegister for email alerts.\n\nPlease check the \"Past\" tab for events that may have occurred earlier today.\n\nCFO Pascal Desroches at 2025 Mizuho Technology Conference\n\nJune 10, 2025\n\nAT&T 2Q25 Earnings Call\n\nJuly 23, 2025\n\nDate\n\nTitle\n\nDetails..."
+          },
+          {
+            "doc_id": "web/57475",
+            "source": "web",
+            "title": "https://campaignme.com/campaign-middle-easts-january-edition-sets-the-pace-for-2025/",
+            "locator": "https://campaignme.com/campaign-middle-easts-january-edition-sets-the-pace-for-2025/",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Q1 2025 customer service performance report title"
+            ],
+            "snippet": "---\ntitle: Campaign Middle East's January edition sets the pace for 2025\ndate: 2025-02-03\n---\nCampaign Middle East's very first issue of 2025 – Predictions 2025 | Digital Agency and Adtech Guide 2025 – is officially out on stands. The edition reflects the energetic start that the region's brand and marketing industry h..."
+          },
+          {
+            "doc_id": "web/80888",
+            "source": "web",
+            "title": "https://mobile.stevieawards.com/sales/2025-stevie-award-winners",
+            "locator": "https://mobile.stevieawards.com/sales/2025-stevie-award-winners",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Q1 2025 customer service performance report title"
+            ],
+            "snippet": "---\ntitle: 2025 Stevie Award Winners\ndate: 2025-01-01\n---\n2025 Stevie Award Winners\n\nWinners in the 19th annual Stevie® Awards for Sales & Customer Service are listed by category, arranged in the following groups of categories, as selected by the average scores of more than 170 professionals worldwide on seven speciali..."
+          },
+          {
+            "doc_id": "web/79246",
+            "source": "web",
+            "title": "https://governor.guam.gov/press-release-and-executive-orders/",
+            "locator": "https://governor.guam.gov/press-release-and-executive-orders/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Q1 2025 customer service performance report title"
+            ],
+            "snippet": "---\ntitle: Press Release and Executive Orders\ndate: 2013-02-09\n---\n| 2025-05-30 |\n\n2025-05-30, Press Release |\n\nView Details |\n\n| 2025-05-29 |\n\n2025-05-29, Press Release |\n\nView Details |\n\n| 2025-05-29 |\n\n2025-05-29, Press Release |\n\nView Details |\n\n| 2025-05-16 |\n\n2025-05-16, Press Release |\n\nView Details |\n\n| 2025-05..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 2.178968537831679,
+      "iteration": 2
+    },
+    {
+      "id": "iter2_web_search_2",
+      "type": "web_search",
+      "description": "Search for 2025 customer service survey report titles with alternative phrasing",
+      "parameters": {
+        "query": "2025 customer service experience analysis report"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "2025 customer service experience analysis report",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "2025 customer service experience analysis report"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > ‍ The Future Roadmap for Grocer Chatbots\n\nMoreover, 78% of grocers say one of the key ChatGPT/LLM use cases is to improve customer experience. Globally, the chatbot market is poised to grow from $2.9 billion in 2021 to $10.5 billion by 2026, wi..."
+          },
+          {
+            "doc_id": "web/57475",
+            "source": "web",
+            "title": "https://campaignme.com/campaign-middle-easts-january-edition-sets-the-pace-for-2025/",
+            "locator": "https://campaignme.com/campaign-middle-easts-january-edition-sets-the-pace-for-2025/",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "2025 customer service experience analysis report"
+            ],
+            "snippet": "---\ntitle: Campaign Middle East's January edition sets the pace for 2025\ndate: 2025-02-03\n---\nCampaign Middle East's very first issue of 2025 – Predictions 2025 | Digital Agency and Adtech Guide 2025 – is officially out on stands. The edition reflects the energetic start that the region's brand and marketing industry h..."
+          },
+          {
+            "doc_id": "web/24154",
+            "source": "web",
+            "title": "https://www.forbes.com/sites/blakemorgan/2019/06/30/100-of-the-most-customer-centric-companies/",
+            "locator": "https://www.forbes.com/sites/blakemorgan/2019/06/30/100-of-the-most-customer-centric-companies/",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "2025 customer service experience analysis report"
+            ],
+            "snippet": "---\ntitle: 100 Of The Most Customer-Centric Companies\ndate: 2019-06-30\n---\nBeing customer centric is about more than just offering a good product or staffing a contact center. It becomes a cultural way of life for the company and impacts everything from employee engagement to customer experience. Customer-centric compa..."
+          },
+          {
+            "doc_id": "web/54871",
+            "source": "web",
+            "title": "https://www.linkedin.com/pulse/thankful-decade-great-experiences-bruce-temkin-ccxp",
+            "locator": "https://www.linkedin.com/pulse/thankful-decade-great-experiences-bruce-temkin-ccxp",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "2025 customer service experience analysis report"
+            ],
+            "snippet": "---\ntitle: Thankful For A Decade Of Great Experiences\ndate: 2020-01-02\n---\nThankful For A Decade Of Great Experiences\n\nHappy New Year!\n\nWow, it's 2020... the start to a new decade. I'm really looking forward to what's ahead. My previous post discusses how 2020 will be the Year Of Insightful Actions, but I also wanted t..."
+          },
+          {
+            "doc_id": "web/54815",
+            "source": "web",
+            "title": "https://www.mcorpcx.com/our-story",
+            "locator": "https://www.mcorpcx.com/our-story",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "2025 customer service experience analysis report"
+            ],
+            "snippet": "---\ntitle: The McorpCX Story\ndate: 2024-01-01\n---\nUsing the tools used and lessons learned in the Canadian wheat belt, McorpCX was founded in 2002 on a simple premise: find opportunities to eliminate friction, meet unmet needs, and drive greater value by helping companies better understand their customers, their relati..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 1.2273925950285047,
+      "iteration": 2
+    },
+    {
+      "id": "iter2_web_search_3",
+      "type": "web_search",
+      "description": "Search for 2025 customer service report titles with company-specific context",
+      "parameters": {
+        "query": "Lee's Market 2025 customer service quarterly report"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market 2025 customer service quarterly report",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "Lee's Market 2025 customer service quarterly report"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > ‍ The Future Roadmap for Grocer Chatbots\n\nMoreover, 78% of grocers say one of the key ChatGPT/LLM use cases is to improve customer experience. Globally, the chatbot market is poised to grow from $2.9 billion in 2021 to $10.5 billion by 2026, wi..."
+          },
+          {
+            "doc_id": "web/13214",
+            "source": "web",
+            "title": "https://investors.coca-colacompany.com/financial-information",
+            "locator": "https://investors.coca-colacompany.com/financial-information",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market 2025 customer service quarterly report"
+            ],
+            "snippet": "---\ntitle: Financial Information\ndate: 2025-03-28\n---\nQ1 2025\n\nQuarter Ended Mar 28, 2025\n\nQuarter Ended Mar 28, 2025\n\nFiscal Year Ended Dec 31, 2024\n\nQuarter Ended Sep 27, 2024\n\nQuarter Ended Jun 28, 2024\n\nQuarter Ended Mar 29, 2024\n\nFiscal Year Ended Dec 31, 2023\n\nQuarter Ended Sep 29, 2023\n\nQuarter Ended Jun 30, 202..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market 2025 customer service quarterly report"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/32383",
+            "source": "web",
+            "title": "https://ww2.arb.ca.gov/resources/documents/low-carbon-fuel-standard-reporting-tool-quarterly-summaries",
+            "locator": "https://ww2.arb.ca.gov/resources/documents/low-carbon-fuel-standard-reporting-tool-quarterly-summaries",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market 2025 customer service quarterly report"
+            ],
+            "snippet": "---\ntitle: California Air Resources Board\ndate: 2025-01-01\n---\nLow Carbon Fuel Standard Reporting Tool Quarterly Summaries\n\nQuarterly Data Summary and Spreadsheet\n\nCategories\n\nPrograms\n\nThis page provides Low Carbon Fuel Standard (LCFS) quarterly reports published every quarter. Each quarterly report summarizes the inf..."
+          },
+          {
+            "doc_id": "web/57542",
+            "source": "web",
+            "title": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "locator": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market 2025 customer service quarterly report"
+            ],
+            "snippet": "---\ntitle: Larssen/Match History\ndate: 2025-06-01\n---\n|\n\nToggle columns:\n\n| Player: Larssen; Limit: 50 - Open As Query | |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 2.6025069679599255,
+      "iteration": 2
+    },
+    {
+      "id": "iter3_web_search_0",
+      "type": "web_search",
+      "description": "Search for Lee's Market customer service report title Q1 2025",
+      "parameters": {
+        "query": "Lee's Market customer service report title Q1 2025"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market customer service report title Q1 2025",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "Lee's Market customer service report title Q1 2025"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > ‍ The Future Roadmap for Grocer Chatbots\n\nMoreover, 78% of grocers say one of the key ChatGPT/LLM use cases is to improve customer experience. Globally, the chatbot market is poised to grow from $2.9 billion in 2021 to $10.5 billion by 2026, wi..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market customer service report title Q1 2025"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/16976",
+            "source": "web",
+            "title": "https://www.bplans.com/personal-shopping-services-business-plan/",
+            "locator": "https://www.bplans.com/personal-shopping-services-business-plan/",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market customer service report title Q1 2025",
+              "2025 customer service analysis report Lee's Market"
+            ],
+            "snippet": "---\ntitle: Personal Shopping Services Business Plan\ndate: 2025-01-01\n---\nBuy The Time\n\nExecutive Summary\n\nBuy the Time will be a shopping service that allows customers to purchase gifts and necessities of life at little inconvenience to their schedule and workday. We will do this with the aid of a shopping consultant t..."
+          },
+          {
+            "doc_id": "web/72370",
+            "source": "web",
+            "title": "https://legalaidnyc.org/press-room-archive/",
+            "locator": "https://legalaidnyc.org/press-room-archive/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market customer service report title Q1 2025"
+            ],
+            "snippet": "---\ntitle: Press Room Archive\ndate: 2025-06-03\n---\nCall 212-577-3300\n\nMarch\n\n03/31/25 LAS Statement on Medicaid Home Care Transition 03/28/25 LAS Releases Report Highlighting Impact Correction Officers' Strike 03/27/25 LAS Statement on the NYC Rent Guidelines Board's 2025 Income and Expense Study 03/27/25 Lawmakers Hol..."
+          },
+          {
+            "doc_id": "web/57542",
+            "source": "web",
+            "title": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "locator": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market customer service report title Q1 2025",
+              "2025 customer service analysis report Lee's Market"
+            ],
+            "snippet": "---\ntitle: Larssen/Match History\ndate: 2025-06-01\n---\n|\n\nToggle columns:\n\n| Player: Larssen; Limit: 50 - Open As Query | |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 1.4251496258657426,
+      "iteration": 3
+    },
+    {
+      "id": "iter3_web_search_1",
+      "type": "web_search",
+      "description": "Search for 2025 customer service analysis report Lee's Market",
+      "parameters": {
+        "query": "2025 customer service analysis report Lee's Market"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "2025 customer service analysis report Lee's Market",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "2025 customer service analysis report Lee's Market"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > ‍ The Future Roadmap for Grocer Chatbots\n\nMoreover, 78% of grocers say one of the key ChatGPT/LLM use cases is to improve customer experience. Globally, the chatbot market is poised to grow from $2.9 billion in 2021 to $10.5 billion by 2026, wi..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "2025 customer service analysis report Lee's Market"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/57542",
+            "source": "web",
+            "title": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "locator": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "2025 customer service analysis report Lee's Market"
+            ],
+            "snippet": "---\ntitle: Larssen/Match History\ndate: 2025-06-01\n---\n|\n\nToggle columns:\n\n| Player: Larssen; Limit: 50 - Open As Query | |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---..."
+          },
+          {
+            "doc_id": "web/16976",
+            "source": "web",
+            "title": "https://www.bplans.com/personal-shopping-services-business-plan/",
+            "locator": "https://www.bplans.com/personal-shopping-services-business-plan/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "2025 customer service analysis report Lee's Market"
+            ],
+            "snippet": "---\ntitle: Personal Shopping Services Business Plan\ndate: 2025-01-01\n---\nBuy The Time\n\nExecutive Summary\n\nBuy the Time will be a shopping service that allows customers to purchase gifts and necessities of life at little inconvenience to their schedule and workday. We will do this with the aid of a shopping consultant t..."
+          },
+          {
+            "doc_id": "web/4161",
+            "source": "web",
+            "title": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+            "locator": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "2025 customer service analysis report Lee's Market",
+              "Lee's Market customer service report first quarter 2025",
+              "2025 customer service experience report title Lee's Market"
+            ],
+            "snippet": "---\ntitle: We have solutions to reach them\nauthor: No items found No items found\ndate: 2024-01-31\n---\nKey Takeaways: Overview of The US Retail Grocery Market in 2025\n\nThe US grocery retail market is a key part of the country's retail industry. It has a rich history, evolving from small, family-owned stores to large, di..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 1.39620370301418,
+      "iteration": 3
+    },
+    {
+      "id": "iter3_web_search_2",
+      "type": "web_search",
+      "description": "Search for Lee's Market customer service report first quarter 2025",
+      "parameters": {
+        "query": "Lee's Market customer service report first quarter 2025"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market customer service report first quarter 2025",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "Lee's Market customer service report first quarter 2025"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > At a Glance\n\nThe rise of these shopping groups in the US market has prompted retailers to adapt strategies to meet the evolving demands of these consumers. Gen Z, or Centennials, are poised to become the largest cohort of consumers in the US ma..."
+          },
+          {
+            "doc_id": "web/13214",
+            "source": "web",
+            "title": "https://investors.coca-colacompany.com/financial-information",
+            "locator": "https://investors.coca-colacompany.com/financial-information",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market customer service report first quarter 2025"
+            ],
+            "snippet": "---\ntitle: Financial Information\ndate: 2025-03-28\n---\nQ1 2025\n\nQuarter Ended Mar 28, 2025\n\nQuarter Ended Mar 28, 2025\n\nFiscal Year Ended Dec 31, 2024\n\nQuarter Ended Sep 27, 2024\n\nQuarter Ended Jun 28, 2024\n\nQuarter Ended Mar 29, 2024\n\nFiscal Year Ended Dec 31, 2023\n\nQuarter Ended Sep 29, 2023\n\nQuarter Ended Jun 30, 202..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market customer service report first quarter 2025"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/4161",
+            "source": "web",
+            "title": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+            "locator": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market customer service report first quarter 2025"
+            ],
+            "snippet": "---\ntitle: We have solutions to reach them\nauthor: No items found No items found\ndate: 2024-01-31\n---\nKey Takeaways: Overview of The US Retail Grocery Market in 2025\n\nThe US grocery retail market is a key part of the country's retail industry. It has a rich history, evolving from small, family-owned stores to large, di..."
+          },
+          {
+            "doc_id": "web/27145",
+            "source": "web",
+            "title": "https://comptroller.nyc.gov/newsroom/newsletter/new-york-by-the-numbers-monthly-economic-and-fiscal-outlook-no-100-april-2025/",
+            "locator": "https://comptroller.nyc.gov/newsroom/newsletter/new-york-by-the-numbers-monthly-economic-and-fiscal-outlook-no-100-april-2025/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market customer service report first quarter 2025"
+            ],
+            "snippet": "---\ntitle: New York by the Numbers Monthly Economic and Fiscal Outlook\ndate: 2025-06-09\n---\nNew York by the Numbers\n\nMonthly Economic and Fiscal Outlook\n\nBy NYC Comptroller Brad Lander\n\nFrancesco Brindisi, Executive Deputy Comptroller for Budget and Finance\n\nKrista Olson, Deputy Comptroller for Budget\n\nJonathan Siegel,..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.9882035690825433,
+      "iteration": 3
+    },
+    {
+      "id": "iter3_web_search_3",
+      "type": "web_search",
+      "description": "Search for 2025 customer service experience report title Lee's Market",
+      "parameters": {
+        "query": "2025 customer service experience report title Lee's Market"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "2025 customer service experience report title Lee's Market",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "2025 customer service experience report title Lee's Market"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > ‍ The Future Roadmap for Grocer Chatbots\n\nMoreover, 78% of grocers say one of the key ChatGPT/LLM use cases is to improve customer experience. Globally, the chatbot market is poised to grow from $2.9 billion in 2021 to $10.5 billion by 2026, wi..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "2025 customer service experience report title Lee's Market"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/57475",
+            "source": "web",
+            "title": "https://campaignme.com/campaign-middle-easts-january-edition-sets-the-pace-for-2025/",
+            "locator": "https://campaignme.com/campaign-middle-easts-january-edition-sets-the-pace-for-2025/",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "2025 customer service experience report title Lee's Market"
+            ],
+            "snippet": "---\ntitle: Campaign Middle East's January edition sets the pace for 2025\ndate: 2025-02-03\n---\nCampaign Middle East's very first issue of 2025 – Predictions 2025 | Digital Agency and Adtech Guide 2025 – is officially out on stands. The edition reflects the energetic start that the region's brand and marketing industry h..."
+          },
+          {
+            "doc_id": "web/4161",
+            "source": "web",
+            "title": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+            "locator": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "2025 customer service experience report title Lee's Market"
+            ],
+            "snippet": "---\ntitle: We have solutions to reach them\nauthor: No items found No items found\ndate: 2024-01-31\n---\nKey Takeaways: Overview of The US Retail Grocery Market in 2025\n\nThe US grocery retail market is a key part of the country's retail industry. It has a rich history, evolving from small, family-owned stores to large, di..."
+          },
+          {
+            "doc_id": "web/24095",
+            "source": "web",
+            "title": "https://www.amazon.com/Disney-Ran-Your-Hospital-Differently/dp/0974386014",
+            "locator": "https://www.amazon.com/Disney-Ran-Your-Hospital-Differently/dp/0974386014",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "2025 customer service experience report title Lee's Market"
+            ],
+            "snippet": "---\ntitle: If Disney Ran Your Hospital: 9 1/2 Things You Would Do Differently Paperback – January 1, 2004\nauthor: Fred Lee\ndate: 2004-01-01\n---\n$27.00$27.00\n\nDelivery Sunday, June 15\n\nShips from: Amazon Sold by: LEG Bookseller\n\n$9.50$9.50\n\nDelivery Thursday, June 12\n\nShips from: Amazon Sold by: Jenson Books Inc\n\nReturn..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 1.2772200121544302,
+      "iteration": 3
+    },
+    {
+      "id": "iter4_web_search_3",
+      "type": "web_search",
+      "description": "Search for 2025 customer service performance report title Lee's Market",
+      "parameters": {
+        "query": "2025 customer service performance report title Lee's Market"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "2025 customer service performance report title Lee's Market",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "2025 customer service performance report title Lee's Market"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > ‍ The Future Roadmap for Grocer Chatbots\n\nMoreover, 78% of grocers say one of the key ChatGPT/LLM use cases is to improve customer experience. Globally, the chatbot market is poised to grow from $2.9 billion in 2021 to $10.5 billion by 2026, wi..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "2025 customer service performance report title Lee's Market"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/57542",
+            "source": "web",
+            "title": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "locator": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "2025 customer service performance report title Lee's Market"
+            ],
+            "snippet": "---\ntitle: Larssen/Match History\ndate: 2025-06-01\n---\n|\n\nToggle columns:\n\n| Player: Larssen; Limit: 50 - Open As Query | |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---..."
+          },
+          {
+            "doc_id": "web/72370",
+            "source": "web",
+            "title": "https://legalaidnyc.org/press-room-archive/",
+            "locator": "https://legalaidnyc.org/press-room-archive/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "2025 customer service performance report title Lee's Market"
+            ],
+            "snippet": "---\ntitle: Press Room Archive\ndate: 2025-06-03\n---\nCall 212-577-3300\n\nMarch\n\n03/31/25 LAS Statement on Medicaid Home Care Transition 03/28/25 LAS Releases Report Highlighting Impact Correction Officers' Strike 03/27/25 LAS Statement on the NYC Rent Guidelines Board's 2025 Income and Expense Study 03/27/25 Lawmakers Hol..."
+          },
+          {
+            "doc_id": "web/79246",
+            "source": "web",
+            "title": "https://governor.guam.gov/press-release-and-executive-orders/",
+            "locator": "https://governor.guam.gov/press-release-and-executive-orders/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "2025 customer service performance report title Lee's Market"
+            ],
+            "snippet": "---\ntitle: Press Release and Executive Orders\ndate: 2013-02-09\n---\n| 2025-05-30 |\n\n2025-05-30, Press Release |\n\nView Details |\n\n| 2025-05-29 |\n\n2025-05-29, Press Release |\n\nView Details |\n\n| 2025-05-29 |\n\n2025-05-29, Press Release |\n\nView Details |\n\n| 2025-05-16 |\n\n2025-05-16, Press Release |\n\nView Details |\n\n| 2025-05..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.18621705891564488,
+      "iteration": 4
+    },
+    {
+      "id": "iter5_web_search_1",
+      "type": "web_search",
+      "description": "Search for 2025 Lee's Market customer service performance report",
+      "parameters": {
+        "query": "2025 Lee's Market customer service performance report"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "2025 Lee's Market customer service performance report",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "2025 Lee's Market customer service performance report"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > ‍ The Future Roadmap for Grocer Chatbots\n\nMoreover, 78% of grocers say one of the key ChatGPT/LLM use cases is to improve customer experience. Globally, the chatbot market is poised to grow from $2.9 billion in 2021 to $10.5 billion by 2026, wi..."
+          },
+          {
+            "doc_id": "web/57542",
+            "source": "web",
+            "title": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "locator": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "2025 Lee's Market customer service performance report"
+            ],
+            "snippet": "---\ntitle: Larssen/Match History\ndate: 2025-06-01\n---\n|\n\nToggle columns:\n\n| Player: Larssen; Limit: 50 - Open As Query | |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "2025 Lee's Market customer service performance report"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/79246",
+            "source": "web",
+            "title": "https://governor.guam.gov/press-release-and-executive-orders/",
+            "locator": "https://governor.guam.gov/press-release-and-executive-orders/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "2025 Lee's Market customer service performance report"
+            ],
+            "snippet": "---\ntitle: Press Release and Executive Orders\ndate: 2013-02-09\n---\n| 2025-05-30 |\n\n2025-05-30, Press Release |\n\nView Details |\n\n| 2025-05-29 |\n\n2025-05-29, Press Release |\n\nView Details |\n\n| 2025-05-29 |\n\n2025-05-29, Press Release |\n\nView Details |\n\n| 2025-05-16 |\n\n2025-05-16, Press Release |\n\nView Details |\n\n| 2025-05..."
+          },
+          {
+            "doc_id": "web/72370",
+            "source": "web",
+            "title": "https://legalaidnyc.org/press-room-archive/",
+            "locator": "https://legalaidnyc.org/press-room-archive/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "2025 Lee's Market customer service performance report"
+            ],
+            "snippet": "---\ntitle: Press Room Archive\ndate: 2025-06-03\n---\nCall 212-577-3300\n\nMarch\n\n03/31/25 LAS Statement on Medicaid Home Care Transition 03/28/25 LAS Releases Report Highlighting Impact Correction Officers' Strike 03/27/25 LAS Statement on the NYC Rent Guidelines Board's 2025 Income and Expense Study 03/27/25 Lawmakers Hol..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.4617089261300862,
+      "iteration": 5
+    },
+    {
+      "id": "iter5_web_search_2",
+      "type": "web_search",
+      "description": "Search for Lee's Market 2025 customer service analysis report",
+      "parameters": {
+        "query": "Lee's Market 2025 customer service analysis report"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market 2025 customer service analysis report",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "Lee's Market 2025 customer service analysis report"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > ‍ The Future Roadmap for Grocer Chatbots\n\nMoreover, 78% of grocers say one of the key ChatGPT/LLM use cases is to improve customer experience. Globally, the chatbot market is poised to grow from $2.9 billion in 2021 to $10.5 billion by 2026, wi..."
+          },
+          {
+            "doc_id": "web/16976",
+            "source": "web",
+            "title": "https://www.bplans.com/personal-shopping-services-business-plan/",
+            "locator": "https://www.bplans.com/personal-shopping-services-business-plan/",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market 2025 customer service analysis report"
+            ],
+            "snippet": "---\ntitle: Personal Shopping Services Business Plan\ndate: 2025-01-01\n---\nBuy The Time\n\nExecutive Summary\n\nBuy the Time will be a shopping service that allows customers to purchase gifts and necessities of life at little inconvenience to their schedule and workday. We will do this with the aid of a shopping consultant t..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market 2025 customer service analysis report"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/4161",
+            "source": "web",
+            "title": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+            "locator": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market 2025 customer service analysis report"
+            ],
+            "snippet": "---\ntitle: We have solutions to reach them\nauthor: No items found No items found\ndate: 2024-01-31\n---\nKey Takeaways: Overview of The US Retail Grocery Market in 2025\n\nThe US grocery retail market is a key part of the country's retail industry. It has a rich history, evolving from small, family-owned stores to large, di..."
+          },
+          {
+            "doc_id": "web/24095",
+            "source": "web",
+            "title": "https://www.amazon.com/Disney-Ran-Your-Hospital-Differently/dp/0974386014",
+            "locator": "https://www.amazon.com/Disney-Ran-Your-Hospital-Differently/dp/0974386014",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market 2025 customer service analysis report"
+            ],
+            "snippet": "---\ntitle: If Disney Ran Your Hospital: 9 1/2 Things You Would Do Differently Paperback – January 1, 2004\nauthor: Fred Lee\ndate: 2004-01-01\n---\n$27.00$27.00\n\nDelivery Sunday, June 15\n\nShips from: Amazon Sold by: LEG Bookseller\n\n$9.50$9.50\n\nDelivery Thursday, June 12\n\nShips from: Amazon Sold by: Jenson Books Inc\n\nReturn..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.3642090449575335,
+      "iteration": 5
+    },
+    {
+      "id": "iter5_web_search_3",
+      "type": "web_search",
+      "description": "Search for customer service report title Lee's Market first quarter 2025",
+      "parameters": {
+        "query": "customer service report title Lee's Market first quarter 2025"
+      },
+      "priority": 0.65,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "customer service report title Lee's Market first quarter 2025",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "customer service report title Lee's Market first quarter 2025"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > At a Glance\n\nThe rise of these shopping groups in the US market has prompted retailers to adapt strategies to meet the evolving demands of these consumers. Gen Z, or Centennials, are poised to become the largest cohort of consumers in the US ma..."
+          },
+          {
+            "doc_id": "web/16976",
+            "source": "web",
+            "title": "https://www.bplans.com/personal-shopping-services-business-plan/",
+            "locator": "https://www.bplans.com/personal-shopping-services-business-plan/",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "customer service report title Lee's Market first quarter 2025"
+            ],
+            "snippet": "---\ntitle: Personal Shopping Services Business Plan\ndate: 2025-01-01\n---\nBuy The Time\n\nExecutive Summary\n\nBuy the Time will be a shopping service that allows customers to purchase gifts and necessities of life at little inconvenience to their schedule and workday. We will do this with the aid of a shopping consultant t..."
+          },
+          {
+            "doc_id": "web/37653",
+            "source": "web",
+            "title": "https://libguides.bentley.edu/citingsources-apa/references",
+            "locator": "https://libguides.bentley.edu/citingsources-apa/references",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "customer service report title Lee's Market first quarter 2025"
+            ],
+            "snippet": "---\ntitle: Citing Online Business Resources using APA Style (7th Edition)\ndate: 2025-03-24\n---\n');\n\nSkip to Main Content\n\nTips and examples for citing online resources, including articles, reports, webpages, library databases. The examples provided on this guide follow the Publication Manual of the American Psychologic..."
+          },
+          {
+            "doc_id": "web/13214",
+            "source": "web",
+            "title": "https://investors.coca-colacompany.com/financial-information",
+            "locator": "https://investors.coca-colacompany.com/financial-information",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "customer service report title Lee's Market first quarter 2025"
+            ],
+            "snippet": "---\ntitle: Financial Information\ndate: 2025-03-28\n---\nQ1 2025\n\nQuarter Ended Mar 28, 2025\n\nQuarter Ended Mar 28, 2025\n\nFiscal Year Ended Dec 31, 2024\n\nQuarter Ended Sep 27, 2024\n\nQuarter Ended Jun 28, 2024\n\nQuarter Ended Mar 29, 2024\n\nFiscal Year Ended Dec 31, 2023\n\nQuarter Ended Sep 29, 2023\n\nQuarter Ended Jun 30, 202..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "customer service report title Lee's Market first quarter 2025"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.49912101379595697,
+      "iteration": 5
+    },
+    {
+      "id": "iter6_web_search_0",
+      "type": "web_search",
+      "description": "Search for Lee's Market 2025 customer service report title Q1",
+      "parameters": {
+        "query": "Lee's Market 2025 customer service report title Q1"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market 2025 customer service report title Q1",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "Lee's Market 2025 customer service report title Q1"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > ‍ The Future Roadmap for Grocer Chatbots\n\nMoreover, 78% of grocers say one of the key ChatGPT/LLM use cases is to improve customer experience. Globally, the chatbot market is poised to grow from $2.9 billion in 2021 to $10.5 billion by 2026, wi..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market 2025 customer service report title Q1"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/16976",
+            "source": "web",
+            "title": "https://www.bplans.com/personal-shopping-services-business-plan/",
+            "locator": "https://www.bplans.com/personal-shopping-services-business-plan/",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market 2025 customer service report title Q1"
+            ],
+            "snippet": "---\ntitle: Personal Shopping Services Business Plan\ndate: 2025-01-01\n---\nBuy The Time\n\nExecutive Summary\n\nBuy the Time will be a shopping service that allows customers to purchase gifts and necessities of life at little inconvenience to their schedule and workday. We will do this with the aid of a shopping consultant t..."
+          },
+          {
+            "doc_id": "web/72370",
+            "source": "web",
+            "title": "https://legalaidnyc.org/press-room-archive/",
+            "locator": "https://legalaidnyc.org/press-room-archive/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market 2025 customer service report title Q1"
+            ],
+            "snippet": "---\ntitle: Press Room Archive\ndate: 2025-06-03\n---\nCall 212-577-3300\n\nMarch\n\n03/31/25 LAS Statement on Medicaid Home Care Transition 03/28/25 LAS Releases Report Highlighting Impact Correction Officers' Strike 03/27/25 LAS Statement on the NYC Rent Guidelines Board's 2025 Income and Expense Study 03/27/25 Lawmakers Hol..."
+          },
+          {
+            "doc_id": "web/57542",
+            "source": "web",
+            "title": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "locator": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market 2025 customer service report title Q1"
+            ],
+            "snippet": "---\ntitle: Larssen/Match History\ndate: 2025-06-01\n---\n|\n\nToggle columns:\n\n| Player: Larssen; Limit: 50 - Open As Query | |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.89576958399266,
+      "iteration": 6
+    },
+    {
+      "id": "iter6_web_search_1",
+      "type": "web_search",
+      "description": "Search for 2025 Lee's Market customer service performance report name",
+      "parameters": {
+        "query": "2025 Lee's Market customer service performance report name"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "2025 Lee's Market customer service performance report name",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "2025 Lee's Market customer service performance report name"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > ‍ The Future Roadmap for Grocer Chatbots\n\nMoreover, 78% of grocers say one of the key ChatGPT/LLM use cases is to improve customer experience. Globally, the chatbot market is poised to grow from $2.9 billion in 2021 to $10.5 billion by 2026, wi..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "2025 Lee's Market customer service performance report name"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/57542",
+            "source": "web",
+            "title": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "locator": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "2025 Lee's Market customer service performance report name"
+            ],
+            "snippet": "---\ntitle: Larssen/Match History\ndate: 2025-06-01\n---\n|\n\nToggle columns:\n\n| Player: Larssen; Limit: 50 - Open As Query | |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---..."
+          },
+          {
+            "doc_id": "web/79246",
+            "source": "web",
+            "title": "https://governor.guam.gov/press-release-and-executive-orders/",
+            "locator": "https://governor.guam.gov/press-release-and-executive-orders/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "2025 Lee's Market customer service performance report name"
+            ],
+            "snippet": "---\ntitle: Press Release and Executive Orders\ndate: 2013-02-09\n---\n| 2025-05-30 |\n\n2025-05-30, Press Release |\n\nView Details |\n\n| 2025-05-29 |\n\n2025-05-29, Press Release |\n\nView Details |\n\n| 2025-05-29 |\n\n2025-05-29, Press Release |\n\nView Details |\n\n| 2025-05-16 |\n\n2025-05-16, Press Release |\n\nView Details |\n\n| 2025-05..."
+          },
+          {
+            "doc_id": "web/100021",
+            "source": "web",
+            "title": "https://screencrush.com/chains-that-are-closing/",
+            "locator": "https://screencrush.com/chains-that-are-closing/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "2025 Lee's Market customer service performance report name"
+            ],
+            "snippet": "---\ntitle: 21 Big-Name Chains That Are Closing or Closed Locations in 2025\ndate: 2025-03-05\n---\nSome, like Advance Auto Parts and Dollar General, are both closing and opening locations as they look for fresh approaches to win back customers. Unfortunately, the closings way outnumber the openings.\n\nOther chains have clo..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.89496437786147,
+      "iteration": 6
+    },
+    {
+      "id": "iter6_web_search_2",
+      "type": "web_search",
+      "description": "Search for Lee's Market customer service analysis report 2025 official title",
+      "parameters": {
+        "query": "Lee's Market customer service analysis report 2025 official title"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market customer service analysis report 2025 official title",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "Lee's Market customer service analysis report 2025 official title"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > ‍ The Future Roadmap for Grocer Chatbots\n\nMoreover, 78% of grocers say one of the key ChatGPT/LLM use cases is to improve customer experience. Globally, the chatbot market is poised to grow from $2.9 billion in 2021 to $10.5 billion by 2026, wi..."
+          },
+          {
+            "doc_id": "web/16976",
+            "source": "web",
+            "title": "https://www.bplans.com/personal-shopping-services-business-plan/",
+            "locator": "https://www.bplans.com/personal-shopping-services-business-plan/",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market customer service analysis report 2025 official title"
+            ],
+            "snippet": "---\ntitle: Personal Shopping Services Business Plan\ndate: 2025-01-01\n---\nBuy The Time\n\nExecutive Summary\n\nBuy the Time will be a shopping service that allows customers to purchase gifts and necessities of life at little inconvenience to their schedule and workday. We will do this with the aid of a shopping consultant t..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market customer service analysis report 2025 official title"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/48091",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Katie_Lee_(chef)",
+            "locator": "https://en.wikipedia.org/wiki/Katie_Lee_(chef)",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market customer service analysis report 2025 official title"
+            ],
+            "snippet": "---\ntitle: Katie Lee (chef) - Wikipedia\nauthor: Authority control databases International ISNI VIAF WorldCat National United States\ndate: 2006-05-21\n---\nbirth_name: Katherine Lee\nbirth_date: 14 September 1981\nbirth_place: Huntington, West Virginia, US\nspouse: |}}\nchildren: 1\nalma_mater: Miami University\ntelevision: * B..."
+          },
+          {
+            "doc_id": "web/4161",
+            "source": "web",
+            "title": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+            "locator": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market customer service analysis report 2025 official title"
+            ],
+            "snippet": "---\ntitle: We have solutions to reach them\nauthor: No items found No items found\ndate: 2024-01-31\n---\nKey Takeaways: Overview of The US Retail Grocery Market in 2025\n\nThe US grocery retail market is a key part of the country's retail industry. It has a rich history, evolving from small, family-owned stores to large, di..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 1.1986565790139139,
+      "iteration": 6
+    },
+    {
+      "id": "iter6_web_search_3",
+      "type": "web_search",
+      "description": "Search for 2025 customer service report Lee's Market first quarter title",
+      "parameters": {
+        "query": "2025 customer service report Lee's Market first quarter title"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "2025 customer service report Lee's Market first quarter title",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "2025 customer service report Lee's Market first quarter title"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > At a Glance\n\nThe rise of these shopping groups in the US market has prompted retailers to adapt strategies to meet the evolving demands of these consumers. Gen Z, or Centennials, are poised to become the largest cohort of consumers in the US ma..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "2025 customer service report Lee's Market first quarter title"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/57542",
+            "source": "web",
+            "title": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "locator": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "2025 customer service report Lee's Market first quarter title"
+            ],
+            "snippet": "---\ntitle: Larssen/Match History\ndate: 2025-06-01\n---\n|\n\nToggle columns:\n\n| Player: Larssen; Limit: 50 - Open As Query | |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---..."
+          },
+          {
+            "doc_id": "web/79246",
+            "source": "web",
+            "title": "https://governor.guam.gov/press-release-and-executive-orders/",
+            "locator": "https://governor.guam.gov/press-release-and-executive-orders/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "2025 customer service report Lee's Market first quarter title"
+            ],
+            "snippet": "---\ntitle: Press Release and Executive Orders\ndate: 2013-02-09\n---\n| 2025-05-30 |\n\n2025-05-30, Press Release |\n\nView Details |\n\n| 2025-05-29 |\n\n2025-05-29, Press Release |\n\nView Details |\n\n| 2025-05-29 |\n\n2025-05-29, Press Release |\n\nView Details |\n\n| 2025-05-16 |\n\n2025-05-16, Press Release |\n\nView Details |\n\n| 2025-05..."
+          },
+          {
+            "doc_id": "web/13214",
+            "source": "web",
+            "title": "https://investors.coca-colacompany.com/financial-information",
+            "locator": "https://investors.coca-colacompany.com/financial-information",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "2025 customer service report Lee's Market first quarter title"
+            ],
+            "snippet": "---\ntitle: Financial Information\ndate: 2025-03-28\n---\nQ1 2025\n\nQuarter Ended Mar 28, 2025\n\nQuarter Ended Mar 28, 2025\n\nFiscal Year Ended Dec 31, 2024\n\nQuarter Ended Sep 27, 2024\n\nQuarter Ended Jun 28, 2024\n\nQuarter Ended Mar 29, 2024\n\nFiscal Year Ended Dec 31, 2023\n\nQuarter Ended Sep 29, 2023\n\nQuarter Ended Jun 30, 202..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 1.2508077858947217,
+      "iteration": 6
+    },
+    {
+      "id": "iter7_web_search_0",
+      "type": "web_search",
+      "description": "Search for Lee's Market customer service report title related to Q1 2025",
+      "parameters": {
+        "query": "Lee's Market customer service analysis report Q1 2025 title"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market customer service analysis report Q1 2025 title",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "Lee's Market customer service analysis report Q1 2025 title"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > ‍ The Future Roadmap for Grocer Chatbots\n\nMoreover, 78% of grocers say one of the key ChatGPT/LLM use cases is to improve customer experience. Globally, the chatbot market is poised to grow from $2.9 billion in 2021 to $10.5 billion by 2026, wi..."
+          },
+          {
+            "doc_id": "web/16976",
+            "source": "web",
+            "title": "https://www.bplans.com/personal-shopping-services-business-plan/",
+            "locator": "https://www.bplans.com/personal-shopping-services-business-plan/",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market customer service analysis report Q1 2025 title"
+            ],
+            "snippet": "---\ntitle: Personal Shopping Services Business Plan\ndate: 2025-01-01\n---\nBuy The Time\n\nExecutive Summary\n\nBuy the Time will be a shopping service that allows customers to purchase gifts and necessities of life at little inconvenience to their schedule and workday. We will do this with the aid of a shopping consultant t..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market customer service analysis report Q1 2025 title"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/4161",
+            "source": "web",
+            "title": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+            "locator": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market customer service analysis report Q1 2025 title"
+            ],
+            "snippet": "---\ntitle: We have solutions to reach them\nauthor: No items found No items found\ndate: 2024-01-31\n---\nKey Takeaways: Overview of The US Retail Grocery Market in 2025\n\nThe US grocery retail market is a key part of the country's retail industry. It has a rich history, evolving from small, family-owned stores to large, di..."
+          },
+          {
+            "doc_id": "web/57542",
+            "source": "web",
+            "title": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "locator": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market customer service analysis report Q1 2025 title"
+            ],
+            "snippet": "---\ntitle: Larssen/Match History\ndate: 2025-06-01\n---\n|\n\nToggle columns:\n\n| Player: Larssen; Limit: 50 - Open As Query | |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.4116929220035672,
+      "iteration": 7
+    },
+    {
+      "id": "iter7_web_search_1",
+      "type": "web_search",
+      "description": "Search for official 2025 customer service report titles from Lee's Market",
+      "parameters": {
+        "query": "Lee's Market 2025 customer service report official title"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market 2025 customer service report official title",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "Lee's Market 2025 customer service report official title"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > ‍ The Future Roadmap for Grocer Chatbots\n\nMoreover, 78% of grocers say one of the key ChatGPT/LLM use cases is to improve customer experience. Globally, the chatbot market is poised to grow from $2.9 billion in 2021 to $10.5 billion by 2026, wi..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market 2025 customer service report official title"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/48091",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Katie_Lee_(chef)",
+            "locator": "https://en.wikipedia.org/wiki/Katie_Lee_(chef)",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market 2025 customer service report official title"
+            ],
+            "snippet": "---\ntitle: Katie Lee (chef) - Wikipedia\nauthor: Authority control databases International ISNI VIAF WorldCat National United States\ndate: 2006-05-21\n---\nbirth_name: Katherine Lee\nbirth_date: 14 September 1981\nbirth_place: Huntington, West Virginia, US\nspouse: |}}\nchildren: 1\nalma_mater: Miami University\ntelevision: * B..."
+          },
+          {
+            "doc_id": "web/80960",
+            "source": "web",
+            "title": "https://lsers.net/",
+            "locator": "https://lsers.net/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market 2025 customer service report official title"
+            ],
+            "snippet": "---\ntitle: Holiday Office Closure\ndate: 2025-01-01\n---\nLSERS' office will be closed on Thursday, June 19, 2025, in observance ... Read more\n\nStriving for Excellence in Customer Service\n\nThis website provides information about the Louisiana School Employees' Retirement System (LSERS), including an overview of provisions..."
+          },
+          {
+            "doc_id": "web/72370",
+            "source": "web",
+            "title": "https://legalaidnyc.org/press-room-archive/",
+            "locator": "https://legalaidnyc.org/press-room-archive/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market 2025 customer service report official title"
+            ],
+            "snippet": "---\ntitle: Press Room Archive\ndate: 2025-06-03\n---\nCall 212-577-3300\n\nMarch\n\n03/31/25 LAS Statement on Medicaid Home Care Transition 03/28/25 LAS Releases Report Highlighting Impact Correction Officers' Strike 03/27/25 LAS Statement on the NYC Rent Guidelines Board's 2025 Income and Expense Study 03/27/25 Lawmakers Hol..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.29557409905828536,
+      "iteration": 7
+    },
+    {
+      "id": "iter7_web_search_2",
+      "type": "web_search",
+      "description": "Search for Lee's Market customer service report releases in early 2025",
+      "parameters": {
+        "query": "Lee's Market customer service report release January 2025"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market customer service report release January 2025",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "Lee's Market customer service report release January 2025"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > ‍ The Future Roadmap for Grocer Chatbots\n\nMoreover, 78% of grocers say one of the key ChatGPT/LLM use cases is to improve customer experience. Globally, the chatbot market is poised to grow from $2.9 billion in 2021 to $10.5 billion by 2026, wi..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market customer service report release January 2025"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/72370",
+            "source": "web",
+            "title": "https://legalaidnyc.org/press-room-archive/",
+            "locator": "https://legalaidnyc.org/press-room-archive/",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market customer service report release January 2025"
+            ],
+            "snippet": "---\ntitle: Press Room Archive\ndate: 2025-06-03\n---\nCall 212-577-3300\n\nMarch\n\n03/31/25 LAS Statement on Medicaid Home Care Transition 03/28/25 LAS Releases Report Highlighting Impact Correction Officers' Strike 03/27/25 LAS Statement on the NYC Rent Guidelines Board's 2025 Income and Expense Study 03/27/25 Lawmakers Hol..."
+          },
+          {
+            "doc_id": "web/84568",
+            "source": "web",
+            "title": "https://oag.ca.gov/publications",
+            "locator": "https://oag.ca.gov/publications",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market customer service report release January 2025"
+            ],
+            "snippet": "---\ntitle: Publications\ndate: 2025-01-01\n---\nSubscribe to Our Newsletter\n\n\")\n\nState of California Department of Justice\n\nThe Office of the Attorney General produces reports, brochures, and other publications to inform and educate Californians. Many of our publications are required by state law so we can regularly repor..."
+          },
+          {
+            "doc_id": "web/48091",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Katie_Lee_(chef)",
+            "locator": "https://en.wikipedia.org/wiki/Katie_Lee_(chef)",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market customer service report release January 2025"
+            ],
+            "snippet": "---\ntitle: Katie Lee (chef) - Wikipedia\nauthor: Authority control databases International ISNI VIAF WorldCat National United States\ndate: 2006-05-21\n---\nbirth_name: Katherine Lee\nbirth_date: 14 September 1981\nbirth_place: Huntington, West Virginia, US\nspouse: |}}\nchildren: 1\nalma_mater: Miami University\ntelevision: * B..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.42759948316961527,
+      "iteration": 7
+    },
+    {
+      "id": "iter7_web_search_3",
+      "type": "web_search",
+      "description": "Search for Lee's Market quarterly reports covering first months of 2025",
+      "parameters": {
+        "query": "Lee's Market quarterly report first quarter 2025 customer service"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market quarterly report first quarter 2025 customer service",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "Lee's Market quarterly report first quarter 2025 customer service"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > At a Glance\n\nThe rise of these shopping groups in the US market has prompted retailers to adapt strategies to meet the evolving demands of these consumers. Gen Z, or Centennials, are poised to become the largest cohort of consumers in the US ma..."
+          },
+          {
+            "doc_id": "web/48091",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Katie_Lee_(chef)",
+            "locator": "https://en.wikipedia.org/wiki/Katie_Lee_(chef)",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market quarterly report first quarter 2025 customer service"
+            ],
+            "snippet": "---\ntitle: Katie Lee (chef) - Wikipedia\nauthor: Authority control databases International ISNI VIAF WorldCat National United States\ndate: 2006-05-21\n---\nbirth_name: Katherine Lee\nbirth_date: 14 September 1981\nbirth_place: Huntington, West Virginia, US\nspouse: |}}\nchildren: 1\nalma_mater: Miami University\ntelevision: * B..."
+          },
+          {
+            "doc_id": "web/13214",
+            "source": "web",
+            "title": "https://investors.coca-colacompany.com/financial-information",
+            "locator": "https://investors.coca-colacompany.com/financial-information",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market quarterly report first quarter 2025 customer service"
+            ],
+            "snippet": "---\ntitle: Financial Information\ndate: 2025-03-28\n---\nQ1 2025\n\nQuarter Ended Mar 28, 2025\n\nQuarter Ended Mar 28, 2025\n\nFiscal Year Ended Dec 31, 2024\n\nQuarter Ended Sep 27, 2024\n\nQuarter Ended Jun 28, 2024\n\nQuarter Ended Mar 29, 2024\n\nFiscal Year Ended Dec 31, 2023\n\nQuarter Ended Sep 29, 2023\n\nQuarter Ended Jun 30, 202..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market quarterly report first quarter 2025 customer service"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/24109",
+            "source": "web",
+            "title": "https://www.mlb.com/giants/player/jung-hoo-lee-808982",
+            "locator": "https://www.mlb.com/giants/player/jung-hoo-lee-808982",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market quarterly report first quarter 2025 customer service"
+            ],
+            "snippet": "---\ntitle: Jung Hoo Lee #51\ndate: 2025-05-06\n---\n2025 Regular Season\n\n| AB | AVG | HR | RBI | SB | OPS |\n\n|---|---|---|---|---|---|\n\n| 243 | .276 | 6 | 32 | 6 | .766 |\n\nCareer Regular Season\n\n| AB | AVG | HR | RBI | SB | OPS |\n\n|---|---|---|---|---|---|\n\n| 388 | .271 | 8 | 40 | 8 | .719 |\n\nJung Hoo Lee Bio\n\n- Fullname:..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.2953035419341177,
+      "iteration": 7
+    },
+    {
+      "id": "iter8_web_search_0",
+      "type": "web_search",
+      "description": "Search for Lee's Market Q1 2025 customer service report official title",
+      "parameters": {
+        "query": "Lee's Market Q1 2025 customer service report official title"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market Q1 2025 customer service report official title",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "Lee's Market Q1 2025 customer service report official title"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > ‍ The Future Roadmap for Grocer Chatbots\n\nMoreover, 78% of grocers say one of the key ChatGPT/LLM use cases is to improve customer experience. Globally, the chatbot market is poised to grow from $2.9 billion in 2021 to $10.5 billion by 2026, wi..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market Q1 2025 customer service report official title"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/48091",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Katie_Lee_(chef)",
+            "locator": "https://en.wikipedia.org/wiki/Katie_Lee_(chef)",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market Q1 2025 customer service report official title"
+            ],
+            "snippet": "---\ntitle: Katie Lee (chef) - Wikipedia\nauthor: Authority control databases International ISNI VIAF WorldCat National United States\ndate: 2006-05-21\n---\nbirth_name: Katherine Lee\nbirth_date: 14 September 1981\nbirth_place: Huntington, West Virginia, US\nspouse: |}}\nchildren: 1\nalma_mater: Miami University\ntelevision: * B..."
+          },
+          {
+            "doc_id": "web/16976",
+            "source": "web",
+            "title": "https://www.bplans.com/personal-shopping-services-business-plan/",
+            "locator": "https://www.bplans.com/personal-shopping-services-business-plan/",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market Q1 2025 customer service report official title"
+            ],
+            "snippet": "---\ntitle: Personal Shopping Services Business Plan\ndate: 2025-01-01\n---\nBuy The Time\n\nExecutive Summary\n\nBuy the Time will be a shopping service that allows customers to purchase gifts and necessities of life at little inconvenience to their schedule and workday. We will do this with the aid of a shopping consultant t..."
+          },
+          {
+            "doc_id": "web/80960",
+            "source": "web",
+            "title": "https://lsers.net/",
+            "locator": "https://lsers.net/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market Q1 2025 customer service report official title"
+            ],
+            "snippet": "---\ntitle: Holiday Office Closure\ndate: 2025-01-01\n---\nLSERS' office will be closed on Thursday, June 19, 2025, in observance ... Read more\n\nStriving for Excellence in Customer Service\n\nThis website provides information about the Louisiana School Employees' Retirement System (LSERS), including an overview of provisions..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.5479377082083374,
+      "iteration": 8
+    },
+    {
+      "id": "iter8_web_search_1",
+      "type": "web_search",
+      "description": "Search for 2025 Lee's Market customer service analysis document title",
+      "parameters": {
+        "query": "2025 Lee's Market customer service analysis document title"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "2025 Lee's Market customer service analysis document title",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "2025 Lee's Market customer service analysis document title"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > ‍ The Future Roadmap for Grocer Chatbots\n\nMoreover, 78% of grocers say one of the key ChatGPT/LLM use cases is to improve customer experience. Globally, the chatbot market is poised to grow from $2.9 billion in 2021 to $10.5 billion by 2026, wi..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "2025 Lee's Market customer service analysis document title"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/16976",
+            "source": "web",
+            "title": "https://www.bplans.com/personal-shopping-services-business-plan/",
+            "locator": "https://www.bplans.com/personal-shopping-services-business-plan/",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "2025 Lee's Market customer service analysis document title"
+            ],
+            "snippet": "---\ntitle: Personal Shopping Services Business Plan\ndate: 2025-01-01\n---\nBuy The Time\n\nExecutive Summary\n\nBuy the Time will be a shopping service that allows customers to purchase gifts and necessities of life at little inconvenience to their schedule and workday. We will do this with the aid of a shopping consultant t..."
+          },
+          {
+            "doc_id": "web/57542",
+            "source": "web",
+            "title": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "locator": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "2025 Lee's Market customer service analysis document title"
+            ],
+            "snippet": "---\ntitle: Larssen/Match History\ndate: 2025-06-01\n---\n|\n\nToggle columns:\n\n| Player: Larssen; Limit: 50 - Open As Query | |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---..."
+          },
+          {
+            "doc_id": "web/100021",
+            "source": "web",
+            "title": "https://screencrush.com/chains-that-are-closing/",
+            "locator": "https://screencrush.com/chains-that-are-closing/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "2025 Lee's Market customer service analysis document title"
+            ],
+            "snippet": "---\ntitle: 21 Big-Name Chains That Are Closing or Closed Locations in 2025\ndate: 2025-03-05\n---\nSome, like Advance Auto Parts and Dollar General, are both closing and opening locations as they look for fresh approaches to win back customers. Unfortunately, the closings way outnumber the openings.\n\nOther chains have clo..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.6003143528942019,
+      "iteration": 8
+    },
+    {
+      "id": "iter8_web_search_2",
+      "type": "web_search",
+      "description": "Search for Lee's Market first quarter 2025 customer service report naming",
+      "parameters": {
+        "query": "Lee's Market first quarter 2025 customer service report naming"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market first quarter 2025 customer service report naming",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "Lee's Market first quarter 2025 customer service report naming"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > At a Glance\n\nThe rise of these shopping groups in the US market has prompted retailers to adapt strategies to meet the evolving demands of these consumers. Gen Z, or Centennials, are poised to become the largest cohort of consumers in the US ma..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market first quarter 2025 customer service report naming"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/48091",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Katie_Lee_(chef)",
+            "locator": "https://en.wikipedia.org/wiki/Katie_Lee_(chef)",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market first quarter 2025 customer service report naming"
+            ],
+            "snippet": "---\ntitle: Katie Lee (chef) - Wikipedia\nauthor: Authority control databases International ISNI VIAF WorldCat National United States\ndate: 2006-05-21\n---\nbirth_name: Katherine Lee\nbirth_date: 14 September 1981\nbirth_place: Huntington, West Virginia, US\nspouse: |}}\nchildren: 1\nalma_mater: Miami University\ntelevision: * B..."
+          },
+          {
+            "doc_id": "web/4161",
+            "source": "web",
+            "title": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+            "locator": "https://www.gourmetpro.co/blog/largest-grocery-chains-usa",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market first quarter 2025 customer service report naming"
+            ],
+            "snippet": "---\ntitle: We have solutions to reach them\nauthor: No items found No items found\ndate: 2024-01-31\n---\nKey Takeaways: Overview of The US Retail Grocery Market in 2025\n\nThe US grocery retail market is a key part of the country's retail industry. It has a rich history, evolving from small, family-owned stores to large, di..."
+          },
+          {
+            "doc_id": "web/16976",
+            "source": "web",
+            "title": "https://www.bplans.com/personal-shopping-services-business-plan/",
+            "locator": "https://www.bplans.com/personal-shopping-services-business-plan/",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market first quarter 2025 customer service report naming"
+            ],
+            "snippet": "---\ntitle: Personal Shopping Services Business Plan\ndate: 2025-01-01\n---\nBuy The Time\n\nExecutive Summary\n\nBuy the Time will be a shopping service that allows customers to purchase gifts and necessities of life at little inconvenience to their schedule and workday. We will do this with the aid of a shopping consultant t..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.37855403684079647,
+      "iteration": 8
+    },
+    {
+      "id": "iter8_web_search_3",
+      "type": "web_search",
+      "description": "Search for Lee's Market customer service quarterly report 2025 name",
+      "parameters": {
+        "query": "Lee's Market customer service quarterly report 2025 name"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market customer service quarterly report 2025 name",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+            "source": "web",
+            "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "locator": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+            "rank": 1,
+            "score": 0.1588102122772932,
+            "queries": [
+              "Lee's Market customer service quarterly report 2025 name"
+            ],
+            "snippet": "Chatbots: Improving Seamless Interactions between Grocers and Centennials > ‍ The Future Roadmap for Grocer Chatbots\n\n‍ Happy Customers - A study by Salesforce reports that 69% of shoppers prefer to use chatbots as they have instant responses. Chatbots with advanced capabilities can mimic human interactions and result..."
+          },
+          {
+            "doc_id": "web/5527",
+            "source": "web",
+            "title": "https://oag.ca.gov/privacy/databreach/list",
+            "locator": "https://oag.ca.gov/privacy/databreach/list",
+            "rank": 2,
+            "score": 0.01639344262295082,
+            "queries": [
+              "Lee's Market customer service quarterly report 2025 name"
+            ],
+            "snippet": "---\ntitle: Search Data Security Breaches\ndate: 2025-03-28\n---\n|\n\nSensata Technologies, Inc. |\n\n03/28/2025, 04/06/2025 |\n\n06/05/2025 |\n\n|\n\nPrenovost, Normandin, Dawe & Rocha, A.P.C. |\n\n11/19/2024 |\n\n06/04/2025 |\n\n|\n\nLee Enterprises |\n\n02/03/2025 |\n\n06/04/2025 |\n\n|\n\nArrowhead Evaluation Services, Inc. |\n\n06/14/2024 |\n\n06..."
+          },
+          {
+            "doc_id": "web/13214",
+            "source": "web",
+            "title": "https://investors.coca-colacompany.com/financial-information",
+            "locator": "https://investors.coca-colacompany.com/financial-information",
+            "rank": 3,
+            "score": 0.016129032258064516,
+            "queries": [
+              "Lee's Market customer service quarterly report 2025 name"
+            ],
+            "snippet": "---\ntitle: Financial Information\ndate: 2025-03-28\n---\nQ1 2025\n\nQuarter Ended Mar 28, 2025\n\nQuarter Ended Mar 28, 2025\n\nFiscal Year Ended Dec 31, 2024\n\nQuarter Ended Sep 27, 2024\n\nQuarter Ended Jun 28, 2024\n\nQuarter Ended Mar 29, 2024\n\nFiscal Year Ended Dec 31, 2023\n\nQuarter Ended Sep 29, 2023\n\nQuarter Ended Jun 30, 202..."
+          },
+          {
+            "doc_id": "web/48091",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Katie_Lee_(chef)",
+            "locator": "https://en.wikipedia.org/wiki/Katie_Lee_(chef)",
+            "rank": 4,
+            "score": 0.015873015873015872,
+            "queries": [
+              "Lee's Market customer service quarterly report 2025 name"
+            ],
+            "snippet": "---\ntitle: Katie Lee (chef) - Wikipedia\nauthor: Authority control databases International ISNI VIAF WorldCat National United States\ndate: 2006-05-21\n---\nbirth_name: Katherine Lee\nbirth_date: 14 September 1981\nbirth_place: Huntington, West Virginia, US\nspouse: |}}\nchildren: 1\nalma_mater: Miami University\ntelevision: * B..."
+          },
+          {
+            "doc_id": "web/57542",
+            "source": "web",
+            "title": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "locator": "https://lol.fandom.com/wiki/Larssen/Match_History",
+            "rank": 5,
+            "score": 0.015625,
+            "queries": [
+              "Lee's Market customer service quarterly report 2025 name"
+            ],
+            "snippet": "---\ntitle: Larssen/Match History\ndate: 2025-06-01\n---\n|\n\nToggle columns:\n\n| Player: Larssen; Limit: 50 - Open As Query | |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.5465612979605794,
+      "iteration": 8
+    }
+  ],
+  "error_records": [],
+  "timeline_paths": {
+    "events_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v1/privacy_hopqa_runs/DR0026_080d67f1_fecd089f/timeline_events.json",
+    "summary_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v1/privacy_hopqa_runs/DR0026_080d67f1_fecd089f/timeline_summary.json",
+    "html_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v1/privacy_hopqa_runs/DR0026_080d67f1_fecd089f/timeline.html"
+  },
+  "report_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v1/privacy_hopqa_runs/DR0026_080d67f1_fecd089f/workspace/research_report_1776288513.md"
+}

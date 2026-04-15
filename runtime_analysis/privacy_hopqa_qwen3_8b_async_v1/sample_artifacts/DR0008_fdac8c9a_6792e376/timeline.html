@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>privacy_hopqa timeline</title>
+  <style>
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 24px;
+      color: #111827;
+      background: #f8fafc;
+    }
+    h1, h2 {
+      margin: 0 0 12px;
+    }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin: 0 0 24px;
+    }
+    .card {
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .card .label {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+    .card .value {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .lane-row {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .lane-label {
+      font-size: 13px;
+      color: #334155;
+      overflow-wrap: anywhere;
+    }
+    .lane-track {
+      position: relative;
+      height: 28px;
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .bar {
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      border-radius: 6px;
+      color: white;
+      font-size: 11px;
+      line-height: 22px;
+      padding: 0 6px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 18px;
+    }
+    th, td {
+      border-bottom: 1px solid #e2e8f0;
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 13px;
+    }
+    th {
+      background: #f1f5f9;
+    }
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>privacy_hopqa rollout timeline</h1>
+    <div class="summary">
+    <div class="card"><div class="label">Task</div><div class="value">DR0008</div></div>
+    <div class="card"><div class="label">Chain</div><div class="value">fdac8c9a</div></div>
+    <div class="card"><div class="label">Iterations</div><div class="value">8</div></div>
+    <div class="card"><div class="label">Resolved Hops</div><div class="value">2/3</div></div>
+    <div class="card"><div class="label">Searches</div><div class="value">27</div></div>
+    <div class="card"><div class="label">Docs Read</div><div class="value">19</div></div>
+    <div class="card"><div class="label">Parse Errors</div><div class="value">0</div></div>
+    <div class="card"><div class="label">Context Overflows</div><div class="value">0</div></div>
+    <div class="card"><div class="label">Duration (s)</div><div class="value">404.28</div></div>
+  </div>
+  <h2>Timeline</h2>
+  <div><div class='lane-row'><div class='lane-label'>plan</div><div class='lane-track'><div class="bar" style="left:0.000%;width:2.063%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 0.0, &quot;duration_s&quot;: 8.337, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 retrieval plan</div><div class="bar" style="left:16.330%;width:3.876%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 66.011, &quot;duration_s&quot;: 15.67, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 retrieval plan</div><div class="bar" style="left:28.980%;width:3.131%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 117.147, &quot;duration_s&quot;: 12.656, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 2}}">H1 retrieval plan</div><div class="bar" style="left:41.489%;width:2.247%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 167.713, &quot;duration_s&quot;: 9.084, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 3}}">H1 retrieval plan</div><div class="bar" style="left:51.427%;width:2.266%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 207.887, &quot;duration_s&quot;: 9.159, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 4}}">H1 retrieval plan</div><div class="bar" style="left:61.137%;width:4.558%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 247.141, &quot;duration_s&quot;: 18.424, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 5}}">H1 retrieval plan</div><div class="bar" style="left:77.861%;width:2.766%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H2 retrieval plan&quot;, &quot;start_s&quot;: 314.746, &quot;duration_s&quot;: 11.18, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 6}}">H2 retrieval plan</div><div class="bar" style="left:89.000%;width:2.653%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H3 retrieval plan&quot;, &quot;start_s&quot;: 359.772, &quot;duration_s&quot;: 10.726, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;iteration&quot;: 7}}">H3 retrieval plan</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_0</div><div class='lane-track'><div class="bar" style="left:2.063%;width:3.383%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions vendor compliance rate Q3 202...&quot;, &quot;start_s&quot;: 8.338, &quot;duration_s&quot;: 13.677, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions vendor compliance rate Q3 202...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_1</div><div class='lane-track'><div class="bar" style="left:2.063%;width:3.740%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions compliance report Q3 2025&quot;, &quot;start_s&quot;: 8.338, &quot;duration_s&quot;: 15.12, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions compliance report Q3 2025</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_2</div><div class='lane-track'><div class="bar" style="left:2.063%;width:5.357%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions vendor compliance statistics...&quot;, &quot;start_s&quot;: 8.338, &quot;duration_s&quot;: 21.655, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions vendor compliance statistics...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_3</div><div class='lane-track'><div class="bar" style="left:2.063%;width:4.861%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions healthcare compliance rate th...&quot;, &quot;start_s&quot;: 8.338, &quot;duration_s&quot;: 19.651, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions healthcare compliance rate th...</div></div></div><div class='lane-row'><div class='lane-label'>choose</div><div class='lane-track'><div class="bar" style="left:7.420%;width:5.573%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 29.993, &quot;duration_s&quot;: 22.529, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 choose docs</div><div class="bar" style="left:20.942%;width:4.824%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 84.657, &quot;duration_s&quot;: 19.501, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 choose docs</div><div class="bar" style="left:32.181%;width:5.286%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 130.088, &quot;duration_s&quot;: 21.369, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 2}}">H1 choose docs</div><div class="bar" style="left:44.075%;width:4.013%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 178.169, &quot;duration_s&quot;: 16.223, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 3}}">H1 choose docs</div><div class="bar" style="left:53.761%;width:3.950%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 217.323, &quot;duration_s&quot;: 15.968, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 4}}">H1 choose docs</div><div class="bar" style="left:66.168%;width:6.825%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 267.475, &quot;duration_s&quot;: 27.59, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 5}}">H1 choose docs</div><div class="bar" style="left:80.732%;width:2.689%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H2 choose docs&quot;, &quot;start_s&quot;: 326.348, &quot;duration_s&quot;: 10.87, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 6}}">H2 choose docs</div><div class="bar" style="left:91.697%;width:4.053%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H3 choose docs&quot;, &quot;start_s&quot;: 370.676, &quot;duration_s&quot;: 16.384, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;iteration&quot;: 7}}">H3 choose docs</div></div></div><div class='lane-row'><div class='lane-label'>read:web/drbench_urls/drbench_urls_9ade7a9ecba08b74</div><div class='lane-track'><div class="bar" style="left:12.993%;width:1.852%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.aha.org/news/aha-cyber-intel/2024-10...&quot;, &quot;start_s&quot;: 52.522, &quot;duration_s&quot;: 7.485, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/drbench_urls/drbench_urls_9ade7a9ecba08b74&quot;}}">https://www.aha.org/news/aha-cyber-intel/2024-10...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/9037</div><div class='lane-track'><div class="bar" style="left:12.993%;width:2.168%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://jamanetwork.com/journals/jamanetworkopen...&quot;, &quot;start_s&quot;: 52.524, &quot;duration_s&quot;: 8.764, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/9037&quot;}}">https://jamanetwork.com/journals/jamanetworkopen...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/85543</div><div class='lane-track'><div class="bar" style="left:12.994%;width:2.083%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.kff.org/medicaid/issue-brief/a-close...&quot;, &quot;start_s&quot;: 52.527, &quot;duration_s&quot;: 8.419, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/85543&quot;}}">https://www.kff.org/medicaid/issue-brief/a-close...</div></div></div><div class='lane-row'><div class='lane-label'>resolve</div><div class='lane-track'><div class="bar" style="left:15.161%;width:1.168%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 61.288, &quot;duration_s&quot;: 4.723, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 resolve</div><div class="bar" style="left:27.235%;width:1.744%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 110.095, &quot;duration_s&quot;: 7.052, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 resolve</div><div class="bar" style="left:39.815%;width:1.674%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 160.947, &quot;duration_s&quot;: 6.766, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 2}}">H1 resolve</div><div class="bar" style="left:50.286%;width:1.140%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 203.277, &quot;duration_s&quot;: 4.61, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 3}}">H1 resolve</div><div class="bar" style="left:59.254%;width:1.884%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 239.526, &quot;duration_s&quot;: 7.615, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 4}}">H1 resolve</div><div class="bar" style="left:75.079%;width:2.782%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 303.499, &quot;duration_s&quot;: 11.248, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 5}}">H1 resolve</div><div class="bar" style="left:85.043%;width:3.957%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H2 resolve&quot;, &quot;start_s&quot;: 343.776, &quot;duration_s&quot;: 15.996, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;iteration&quot;: 6}}">H2 resolve</div><div class="bar" style="left:97.585%;width:2.414%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H3 resolve&quot;, &quot;start_s&quot;: 394.478, &quot;duration_s&quot;: 9.76, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;iteration&quot;: 7}}">H3 resolve</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_0</div><div class='lane-track'><div class="bar" style="left:20.206%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions Q3 2025 compliance report&quot;, &quot;start_s&quot;: 81.681, &quot;duration_s&quot;: 2.961, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions Q3 2025 compliance report</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_1</div><div class='lane-track'><div class="bar" style="left:20.206%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions vendor compliance metrics 202...&quot;, &quot;start_s&quot;: 81.681, &quot;duration_s&quot;: 2.137, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions vendor compliance metrics 202...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_2</div><div class='lane-track'><div class="bar" style="left:20.206%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions healthcare vendor compliance...&quot;, &quot;start_s&quot;: 81.681, &quot;duration_s&quot;: 2.957, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions healthcare vendor compliance...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_3</div><div class='lane-track'><div class="bar" style="left:20.206%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions third-party compliance audit...&quot;, &quot;start_s&quot;: 81.681, &quot;duration_s&quot;: 2.342, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions third-party compliance audit...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/85854</div><div class='lane-track'><div class="bar" style="left:25.767%;width:1.468%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://oig.hhs.gov/coronavirus/reports.asp&quot;, &quot;start_s&quot;: 104.159, &quot;duration_s&quot;: 5.935, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/85854&quot;}}">https://oig.hhs.gov/coronavirus/reports.asp</div></div></div><div class='lane-row'><div class='lane-label'>read:web/48862</div><div class='lane-track'><div class="bar" style="left:25.767%;width:1.351%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.ncqa.org/hedis/measures/&quot;, &quot;start_s&quot;: 104.161, &quot;duration_s&quot;: 5.463, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/48862&quot;}}">https://www.ncqa.org/hedis/measures/</div></div></div><div class='lane-row'><div class='lane-label'>read:web/28588</div><div class='lane-track'><div class="bar" style="left:25.768%;width:1.383%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.jointcommission.org/&quot;, &quot;start_s&quot;: 104.163, &quot;duration_s&quot;: 5.591, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/28588&quot;}}">https://www.jointcommission.org/</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_0</div><div class='lane-track'><div class="bar" style="left:32.110%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions Q3 2025 vendor compliance rep...&quot;, &quot;start_s&quot;: 129.803, &quot;duration_s&quot;: 0.24, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions Q3 2025 vendor compliance rep...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_1</div><div class='lane-track'><div class="bar" style="left:32.110%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions third-party compliance audit...&quot;, &quot;start_s&quot;: 129.803, &quot;duration_s&quot;: 0.249, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions third-party compliance audit...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_2</div><div class='lane-track'><div class="bar" style="left:32.110%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions annual compliance rate 2025&quot;, &quot;start_s&quot;: 129.803, &quot;duration_s&quot;: 0.204, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions annual compliance rate 2025</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_3</div><div class='lane-track'><div class="bar" style="left:32.110%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions healthcare vendor compliance...&quot;, &quot;start_s&quot;: 129.803, &quot;duration_s&quot;: 0.285, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions healthcare vendor compliance...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/87157</div><div class='lane-track'><div class="bar" style="left:37.467%;width:1.778%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.greenlight.guru/blog/top-medical-dev...&quot;, &quot;start_s&quot;: 151.457, &quot;duration_s&quot;: 7.189, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/87157&quot;}}">https://www.greenlight.guru/blog/top-medical-dev...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/4872</div><div class='lane-track'><div class="bar" style="left:37.468%;width:2.347%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://pcaobus.org/about/rules-rulemaking/rules...&quot;, &quot;start_s&quot;: 151.459, &quot;duration_s&quot;: 9.487, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/4872&quot;}}">https://pcaobus.org/about/rules-rulemaking/rules...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/77540</div><div class='lane-track'><div class="bar" style="left:37.468%;width:1.874%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.proclinical.com/blogs/2025-3/top-10-...&quot;, &quot;start_s&quot;: 151.461, &quot;duration_s&quot;: 7.577, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/77540&quot;}}">https://www.proclinical.com/blogs/2025-3/top-10-...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_0</div><div class='lane-track'><div class="bar" style="left:43.736%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions Q3 2025 compliance report ven...&quot;, &quot;start_s&quot;: 176.797, &quot;duration_s&quot;: 1.176, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions Q3 2025 compliance report ven...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_1</div><div class='lane-track'><div class="bar" style="left:43.736%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions third-party compliance audit...&quot;, &quot;start_s&quot;: 176.798, &quot;duration_s&quot;: 1.178, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions third-party compliance audit...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_2</div><div class='lane-track'><div class="bar" style="left:43.736%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions annual compliance rate 2025 Q...&quot;, &quot;start_s&quot;: 176.798, &quot;duration_s&quot;: 1.359, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions annual compliance rate 2025 Q...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_3</div><div class='lane-track'><div class="bar" style="left:43.736%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions vendor compliance statistics...&quot;, &quot;start_s&quot;: 176.798, &quot;duration_s&quot;: 1.175, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions vendor compliance statistics...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/63952</div><div class='lane-track'><div class="bar" style="left:48.088%;width:1.918%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.health.ny.gov/health_care/managed_ca...&quot;, &quot;start_s&quot;: 194.392, &quot;duration_s&quot;: 7.754, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/63952&quot;}}">https://www.health.ny.gov/health_care/managed_ca...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/89519</div><div class='lane-track'><div class="bar" style="left:48.089%;width:1.973%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.greenlight.guru/blog/top-100-medical...&quot;, &quot;start_s&quot;: 194.394, &quot;duration_s&quot;: 7.976, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/89519&quot;}}">https://www.greenlight.guru/blog/top-100-medical...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/90192</div><div class='lane-track'><div class="bar" style="left:48.089%;width:2.197%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.health.ny.gov/health_care/medicaid/p...&quot;, &quot;start_s&quot;: 194.396, &quot;duration_s&quot;: 8.881, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/90192&quot;}}">https://www.health.ny.gov/health_care/medicaid/p...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_0</div><div class='lane-track'><div class="bar" style="left:53.692%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions Q3 2025 vendor compliance rat...&quot;, &quot;start_s&quot;: 217.046, &quot;duration_s&quot;: 0.277, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions Q3 2025 vendor compliance rat...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_1</div><div class='lane-track'><div class="bar" style="left:53.692%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions Q3 2025 compliance performanc...&quot;, &quot;start_s&quot;: 217.046, &quot;duration_s&quot;: 0.258, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions Q3 2025 compliance performanc...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_2</div><div class='lane-track'><div class="bar" style="left:53.693%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions vendor compliance audit Canad...&quot;, &quot;start_s&quot;: 217.046, &quot;duration_s&quot;: 0.234, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions vendor compliance audit Canad...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/60478</div><div class='lane-track'><div class="bar" style="left:57.722%;width:1.531%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.massdevice.com/medtech-layoffs-compa...&quot;, &quot;start_s&quot;: 233.336, &quot;duration_s&quot;: 6.19, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/60478&quot;}}">https://www.massdevice.com/medtech-layoffs-compa...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/14186</div><div class='lane-track'><div class="bar" style="left:57.723%;width:0.916%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.cyberlands.io/topsecuritybreachescan...&quot;, &quot;start_s&quot;: 233.338, &quot;duration_s&quot;: 3.701, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/14186&quot;}}">https://www.cyberlands.io/topsecuritybreachescan...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/61246</div><div class='lane-track'><div class="bar" style="left:57.723%;width:1.147%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.indivior.com/en/media/press-releases...&quot;, &quot;start_s&quot;: 233.34, &quot;duration_s&quot;: 4.637, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/61246&quot;}}">https://www.indivior.com/en/media/press-releases...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_fallback</div><div class='lane-track'><div class="bar" style="left:65.742%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: What was the vendor compliance rate at MediConn...&quot;, &quot;start_s&quot;: 265.754, &quot;duration_s&quot;: 1.721, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: What was the vendor compliance rate at MediConn...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_local_fallback</div><div class='lane-track'><div class="bar" style="left:65.742%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;local_document_search: What was the vendor compliance rate at MediConn...&quot;, &quot;start_s&quot;: 265.754, &quot;duration_s&quot;: 0.838, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">local_document_search: What was the vendor compliance rate at MediConn...</div></div></div><div class='lane-row'><div class='lane-label'>read:doc_614621df_1776278544</div><div class='lane-track'><div class="bar" style="left:72.993%;width:1.998%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;MediConn_Third_Party_Compliance_Insights.xlsx&quot;, &quot;start_s&quot;: 295.065, &quot;duration_s&quot;: 8.075, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;doc_614621df_1776278544&quot;}}">MediConn_Third_Party_Compliance_Insights.xlsx</div><div class="bar" style="left:83.421%;width:1.622%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;MediConn_Third_Party_Compliance_Insights.xlsx&quot;, &quot;start_s&quot;: 337.219, &quot;duration_s&quot;: 6.557, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;doc_id&quot;: &quot;doc_614621df_1776278544&quot;}}">MediConn_Third_Party_Compliance_Insights.xlsx</div></div></div><div class='lane-row'><div class='lane-label'>read:doc_2cf2bf84_1776278544</div><div class='lane-track'><div class="bar" style="left:72.993%;width:2.086%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;mattermost_chat_20250819_104852.jsonl&quot;, &quot;start_s&quot;: 295.066, &quot;duration_s&quot;: 8.432, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;doc_2cf2bf84_1776278544&quot;}}">mattermost_chat_20250819_104852.jsonl</div></div></div><div class='lane-row'><div class='lane-label'>search:iter6_web_search_0</div><div class='lane-track'><div class="bar" style="left:80.627%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions vendor compliance rate 45% pe...&quot;, &quot;start_s&quot;: 325.926, &quot;duration_s&quot;: 0.281, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions vendor compliance rate 45% pe...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter6_web_search_1</div><div class='lane-track'><div class="bar" style="left:80.627%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions compliance rate 45% timeframe&quot;, &quot;start_s&quot;: 325.926, &quot;duration_s&quot;: 0.417, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions compliance rate 45% timeframe</div></div></div><div class='lane-row'><div class='lane-label'>search:iter6_local_document_search_2</div><div class='lane-track'><div class="bar" style="left:80.627%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;local_document_search: 45% compliance rate period&quot;, &quot;start_s&quot;: 325.926, &quot;duration_s&quot;: 0.254, &quot;meta&quot;: {&quot;hop_number&quot;: 2, &quot;result_count&quot;: 5}}">local_document_search: 45% compliance rate period</div></div></div><div class='lane-row'><div class='lane-label'>search:iter7_web_search_0</div><div class='lane-track'><div class="bar" style="left:91.653%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: gaming revenue Q3 2025 company&quot;, &quot;start_s&quot;: 370.499, &quot;duration_s&quot;: 0.176, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;result_count&quot;: 5}}">web_search: gaming revenue Q3 2025 company</div></div></div><div class='lane-row'><div class='lane-label'>search:iter7_web_search_1</div><div class='lane-track'><div class="bar" style="left:91.653%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: MediConn Solutions gaming revenue Q3 2025&quot;, &quot;start_s&quot;: 370.499, &quot;duration_s&quot;: 0.138, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;result_count&quot;: 5}}">web_search: MediConn Solutions gaming revenue Q3 2025</div></div></div><div class='lane-row'><div class='lane-label'>search:iter7_web_search_2</div><div class='lane-track'><div class="bar" style="left:91.653%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: fiscal Q3 2025 gaming revenue report&quot;, &quot;start_s&quot;: 370.499, &quot;duration_s&quot;: 0.176, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;result_count&quot;: 5}}">web_search: fiscal Q3 2025 gaming revenue report</div></div></div><div class='lane-row'><div class='lane-label'>read:web/16906</div><div class='lane-track'><div class="bar" style="left:95.750%;width:1.835%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.statista.com/outlook/dmo/digital-med...&quot;, &quot;start_s&quot;: 387.06, &quot;duration_s&quot;: 7.418, &quot;meta&quot;: {&quot;hop_number&quot;: 3, &quot;doc_id&quot;: &quot;web/16906&quot;}}">https://www.statista.com/outlook/dmo/digital-med...</div></div></div><div class='lane-row'><div class='lane-label'>report</div><div class='lane-track'><div class="bar" style="left:100.000%;width:0.800%;background:#4c78a8;" title="{&quot;stage&quot;: &quot;report&quot;, &quot;label&quot;: &quot;Final report&quot;, &quot;start_s&quot;: 404.238, &quot;duration_s&quot;: 0.01, &quot;meta&quot;: {&quot;resolved_hops&quot;: 2}}">Final report</div></div></div></div>
+  <h2>Events</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Lane</th>
+        <th>Stage</th>
+        <th>Label</th>
+        <th>Start (s)</th>
+        <th>Duration (s)</th>
+        <th>Metadata</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>0.00</td><td>8.34</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>search:iter0_web_search_0</td><td>search</td><td>web_search: MediConn Solutions vendor compliance rate Q3 202...</td><td>8.34</td><td>13.68</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_1</td><td>search</td><td>web_search: MediConn Solutions compliance report Q3 2025</td><td>8.34</td><td>15.12</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_2</td><td>search</td><td>web_search: MediConn Solutions vendor compliance statistics...</td><td>8.34</td><td>21.65</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_3</td><td>search</td><td>web_search: MediConn Solutions healthcare compliance rate th...</td><td>8.34</td><td>19.65</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>29.99</td><td>22.53</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>read:web/drbench_urls/drbench_urls_9ade7a9ecba08b74</td><td>doc_read</td><td>https://www.aha.org/news/aha-cyber-intel/2024-10...</td><td>52.52</td><td>7.48</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/drbench_urls/drbench_urls_9ade7a9ecba08b74&quot;
+}</pre></td></tr><tr><td>read:web/9037</td><td>doc_read</td><td>https://jamanetwork.com/journals/jamanetworkopen...</td><td>52.52</td><td>8.76</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/9037&quot;
+}</pre></td></tr><tr><td>read:web/85543</td><td>doc_read</td><td>https://www.kff.org/medicaid/issue-brief/a-close...</td><td>52.53</td><td>8.42</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/85543&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>61.29</td><td>4.72</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>66.01</td><td>15.67</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>search:iter1_web_search_0</td><td>search</td><td>web_search: MediConn Solutions Q3 2025 compliance report</td><td>81.68</td><td>2.96</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_1</td><td>search</td><td>web_search: MediConn Solutions vendor compliance metrics 202...</td><td>81.68</td><td>2.14</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_2</td><td>search</td><td>web_search: MediConn Solutions healthcare vendor compliance...</td><td>81.68</td><td>2.96</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_3</td><td>search</td><td>web_search: MediConn Solutions third-party compliance audit...</td><td>81.68</td><td>2.34</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>84.66</td><td>19.50</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>read:web/85854</td><td>doc_read</td><td>https://oig.hhs.gov/coronavirus/reports.asp</td><td>104.16</td><td>5.94</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/85854&quot;
+}</pre></td></tr><tr><td>read:web/48862</td><td>doc_read</td><td>https://www.ncqa.org/hedis/measures/</td><td>104.16</td><td>5.46</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/48862&quot;
+}</pre></td></tr><tr><td>read:web/28588</td><td>doc_read</td><td>https://www.jointcommission.org/</td><td>104.16</td><td>5.59</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/28588&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>110.09</td><td>7.05</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>117.15</td><td>12.66</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>search:iter2_web_search_0</td><td>search</td><td>web_search: MediConn Solutions Q3 2025 vendor compliance rep...</td><td>129.80</td><td>0.24</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_1</td><td>search</td><td>web_search: MediConn Solutions third-party compliance audit...</td><td>129.80</td><td>0.25</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_2</td><td>search</td><td>web_search: MediConn Solutions annual compliance rate 2025</td><td>129.80</td><td>0.20</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_3</td><td>search</td><td>web_search: MediConn Solutions healthcare vendor compliance...</td><td>129.80</td><td>0.28</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>130.09</td><td>21.37</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>read:web/87157</td><td>doc_read</td><td>https://www.greenlight.guru/blog/top-medical-dev...</td><td>151.46</td><td>7.19</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/87157&quot;
+}</pre></td></tr><tr><td>read:web/4872</td><td>doc_read</td><td>https://pcaobus.org/about/rules-rulemaking/rules...</td><td>151.46</td><td>9.49</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/4872&quot;
+}</pre></td></tr><tr><td>read:web/77540</td><td>doc_read</td><td>https://www.proclinical.com/blogs/2025-3/top-10-...</td><td>151.46</td><td>7.58</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/77540&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>160.95</td><td>6.77</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>167.71</td><td>9.08</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>search:iter3_web_search_0</td><td>search</td><td>web_search: MediConn Solutions Q3 2025 compliance report ven...</td><td>176.80</td><td>1.18</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_web_search_1</td><td>search</td><td>web_search: MediConn Solutions third-party compliance audit...</td><td>176.80</td><td>1.18</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_web_search_2</td><td>search</td><td>web_search: MediConn Solutions annual compliance rate 2025 Q...</td><td>176.80</td><td>1.36</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_web_search_3</td><td>search</td><td>web_search: MediConn Solutions vendor compliance statistics...</td><td>176.80</td><td>1.18</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>178.17</td><td>16.22</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>read:web/63952</td><td>doc_read</td><td>https://www.health.ny.gov/health_care/managed_ca...</td><td>194.39</td><td>7.75</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/63952&quot;
+}</pre></td></tr><tr><td>read:web/89519</td><td>doc_read</td><td>https://www.greenlight.guru/blog/top-100-medical...</td><td>194.39</td><td>7.98</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/89519&quot;
+}</pre></td></tr><tr><td>read:web/90192</td><td>doc_read</td><td>https://www.health.ny.gov/health_care/medicaid/p...</td><td>194.40</td><td>8.88</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/90192&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>203.28</td><td>4.61</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>207.89</td><td>9.16</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>search:iter4_web_search_0</td><td>search</td><td>web_search: MediConn Solutions Q3 2025 vendor compliance rat...</td><td>217.05</td><td>0.28</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter4_web_search_1</td><td>search</td><td>web_search: MediConn Solutions Q3 2025 compliance performanc...</td><td>217.05</td><td>0.26</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter4_web_search_2</td><td>search</td><td>web_search: MediConn Solutions vendor compliance audit Canad...</td><td>217.05</td><td>0.23</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>217.32</td><td>15.97</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>read:web/60478</td><td>doc_read</td><td>https://www.massdevice.com/medtech-layoffs-compa...</td><td>233.34</td><td>6.19</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/60478&quot;
+}</pre></td></tr><tr><td>read:web/14186</td><td>doc_read</td><td>https://www.cyberlands.io/topsecuritybreachescan...</td><td>233.34</td><td>3.70</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/14186&quot;
+}</pre></td></tr><tr><td>read:web/61246</td><td>doc_read</td><td>https://www.indivior.com/en/media/press-releases...</td><td>233.34</td><td>4.64</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/61246&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>239.53</td><td>7.61</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>247.14</td><td>18.42</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_fallback</td><td>search</td><td>web_search: What was the vendor compliance rate at MediConn...</td><td>265.75</td><td>1.72</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_local_fallback</td><td>search</td><td>local_document_search: What was the vendor compliance rate at MediConn...</td><td>265.75</td><td>0.84</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>267.47</td><td>27.59</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>read:doc_614621df_1776278544</td><td>doc_read</td><td>MediConn_Third_Party_Compliance_Insights.xlsx</td><td>295.07</td><td>8.08</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;doc_614621df_1776278544&quot;
+}</pre></td></tr><tr><td>read:doc_2cf2bf84_1776278544</td><td>doc_read</td><td>mattermost_chat_20250819_104852.jsonl</td><td>295.07</td><td>8.43</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;doc_2cf2bf84_1776278544&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>303.50</td><td>11.25</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H2 retrieval plan</td><td>314.75</td><td>11.18</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 6
+}</pre></td></tr><tr><td>search:iter6_web_search_0</td><td>search</td><td>web_search: MediConn Solutions vendor compliance rate 45% pe...</td><td>325.93</td><td>0.28</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter6_web_search_1</td><td>search</td><td>web_search: MediConn Solutions compliance rate 45% timeframe</td><td>325.93</td><td>0.42</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter6_local_document_search_2</td><td>search</td><td>local_document_search: 45% compliance rate period</td><td>325.93</td><td>0.25</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H2 choose docs</td><td>326.35</td><td>10.87</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 6
+}</pre></td></tr><tr><td>read:doc_614621df_1776278544</td><td>doc_read</td><td>MediConn_Third_Party_Compliance_Insights.xlsx</td><td>337.22</td><td>6.56</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;doc_id&quot;: &quot;doc_614621df_1776278544&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H2 resolve</td><td>343.78</td><td>16.00</td><td><pre>{
+  &quot;hop_number&quot;: 2,
+  &quot;iteration&quot;: 6
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H3 retrieval plan</td><td>359.77</td><td>10.73</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;iteration&quot;: 7
+}</pre></td></tr><tr><td>search:iter7_web_search_0</td><td>search</td><td>web_search: gaming revenue Q3 2025 company</td><td>370.50</td><td>0.18</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter7_web_search_1</td><td>search</td><td>web_search: MediConn Solutions gaming revenue Q3 2025</td><td>370.50</td><td>0.14</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter7_web_search_2</td><td>search</td><td>web_search: fiscal Q3 2025 gaming revenue report</td><td>370.50</td><td>0.18</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H3 choose docs</td><td>370.68</td><td>16.38</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;iteration&quot;: 7
+}</pre></td></tr><tr><td>read:web/16906</td><td>doc_read</td><td>https://www.statista.com/outlook/dmo/digital-med...</td><td>387.06</td><td>7.42</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;doc_id&quot;: &quot;web/16906&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H3 resolve</td><td>394.48</td><td>9.76</td><td><pre>{
+  &quot;hop_number&quot;: 3,
+  &quot;iteration&quot;: 7
+}</pre></td></tr><tr><td>report</td><td>report</td><td>Final report</td><td>404.24</td><td>0.00</td><td><pre>{
+  &quot;resolved_hops&quot;: 2
+}</pre></td></tr>
+    </tbody>
+  </table>
+</body>
+</html>

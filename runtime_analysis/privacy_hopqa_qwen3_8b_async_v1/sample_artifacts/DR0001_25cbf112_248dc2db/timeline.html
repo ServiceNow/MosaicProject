@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>privacy_hopqa timeline</title>
+  <style>
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 24px;
+      color: #111827;
+      background: #f8fafc;
+    }
+    h1, h2 {
+      margin: 0 0 12px;
+    }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin: 0 0 24px;
+    }
+    .card {
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .card .label {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+    .card .value {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .lane-row {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .lane-label {
+      font-size: 13px;
+      color: #334155;
+      overflow-wrap: anywhere;
+    }
+    .lane-track {
+      position: relative;
+      height: 28px;
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .bar {
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      border-radius: 6px;
+      color: white;
+      font-size: 11px;
+      line-height: 22px;
+      padding: 0 6px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border: 1px solid #dbe3ef;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 18px;
+    }
+    th, td {
+      border-bottom: 1px solid #e2e8f0;
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 13px;
+    }
+    th {
+      background: #f1f5f9;
+    }
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>privacy_hopqa rollout timeline</h1>
+    <div class="summary">
+    <div class="card"><div class="label">Task</div><div class="value">DR0001</div></div>
+    <div class="card"><div class="label">Chain</div><div class="value">25cbf112</div></div>
+    <div class="card"><div class="label">Iterations</div><div class="value">10</div></div>
+    <div class="card"><div class="label">Resolved Hops</div><div class="value">0/4</div></div>
+    <div class="card"><div class="label">Searches</div><div class="value">28</div></div>
+    <div class="card"><div class="label">Docs Read</div><div class="value">15</div></div>
+    <div class="card"><div class="label">Parse Errors</div><div class="value">0</div></div>
+    <div class="card"><div class="label">Context Overflows</div><div class="value">0</div></div>
+    <div class="card"><div class="label">Duration (s)</div><div class="value">406.26</div></div>
+  </div>
+  <h2>Timeline</h2>
+  <div><div class='lane-row'><div class='lane-label'>plan</div><div class='lane-track'><div class="bar" style="left:0.000%;width:3.187%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 0.0, &quot;duration_s&quot;: 12.948, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 retrieval plan</div><div class="bar" style="left:10.541%;width:4.922%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 42.821, &quot;duration_s&quot;: 19.995, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 retrieval plan</div><div class="bar" style="left:24.062%;width:2.284%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 97.745, &quot;duration_s&quot;: 9.279, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 2}}">H1 retrieval plan</div><div class="bar" style="left:33.656%;width:2.292%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 136.716, &quot;duration_s&quot;: 9.312, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 3}}">H1 retrieval plan</div><div class="bar" style="left:42.900%;width:4.373%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 174.266, &quot;duration_s&quot;: 17.762, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 4}}">H1 retrieval plan</div><div class="bar" style="left:56.238%;width:3.612%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 228.45, &quot;duration_s&quot;: 14.673, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 5}}">H1 retrieval plan</div><div class="bar" style="left:67.169%;width:4.483%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 272.854, &quot;duration_s&quot;: 18.21, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 6}}">H1 retrieval plan</div><div class="bar" style="left:78.006%;width:4.067%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 316.872, &quot;duration_s&quot;: 16.522, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 7}}">H1 retrieval plan</div><div class="bar" style="left:86.814%;width:3.802%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 352.654, &quot;duration_s&quot;: 15.444, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 8}}">H1 retrieval plan</div><div class="bar" style="left:95.255%;width:3.186%;background:#2f6fed;" title="{&quot;stage&quot;: &quot;hop_plan&quot;, &quot;label&quot;: &quot;H1 retrieval plan&quot;, &quot;start_s&quot;: 386.944, &quot;duration_s&quot;: 12.941, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 9}}">H1 retrieval plan</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_0</div><div class='lane-track'><div class="bar" style="left:3.193%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Chaad residency Contemporary Art completion year&quot;, &quot;start_s&quot;: 12.97, &quot;duration_s&quot;: 0.652, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Chaad residency Contemporary Art completion year</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_1</div><div class='lane-track'><div class="bar" style="left:3.193%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Chaad art residency timeline&quot;, &quot;start_s&quot;: 12.97, &quot;duration_s&quot;: 0.513, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Chaad art residency timeline</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_2</div><div class='lane-track'><div class="bar" style="left:3.193%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Contemporary Art residency programs Chaad&quot;, &quot;start_s&quot;: 12.97, &quot;duration_s&quot;: 0.513, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Contemporary Art residency programs Chaad</div></div></div><div class='lane-row'><div class='lane-label'>search:iter0_web_search_3</div><div class='lane-track'><div class="bar" style="left:3.193%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Chaad professional milestones art&quot;, &quot;start_s&quot;: 12.97, &quot;duration_s&quot;: 0.652, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Chaad professional milestones art</div></div></div><div class='lane-row'><div class='lane-label'>choose</div><div class='lane-track'><div class="bar" style="left:3.354%;width:4.346%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 13.623, &quot;duration_s&quot;: 17.654, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 choose docs</div><div class="bar" style="left:15.580%;width:4.006%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 63.289, &quot;duration_s&quot;: 16.274, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 choose docs</div><div class="bar" style="left:26.437%;width:3.147%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 107.39, &quot;duration_s&quot;: 12.784, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 2}}">H1 choose docs</div><div class="bar" style="left:36.250%;width:2.850%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 147.254, &quot;duration_s&quot;: 11.578, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 3}}">H1 choose docs</div><div class="bar" style="left:47.473%;width:5.127%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 192.844, &quot;duration_s&quot;: 20.828, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 4}}">H1 choose docs</div><div class="bar" style="left:59.931%;width:2.953%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 243.451, &quot;duration_s&quot;: 11.995, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 5}}">H1 choose docs</div><div class="bar" style="left:71.761%;width:3.358%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 291.506, &quot;duration_s&quot;: 13.642, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 6}}">H1 choose docs</div><div class="bar" style="left:82.227%;width:1.352%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 334.019, &quot;duration_s&quot;: 5.492, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 7}}">H1 choose docs</div><div class="bar" style="left:90.669%;width:1.958%;background:#9467bd;" title="{&quot;stage&quot;: &quot;doc_choose&quot;, &quot;label&quot;: &quot;H1 choose docs&quot;, &quot;start_s&quot;: 368.312, &quot;duration_s&quot;: 7.953, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 8}}">H1 choose docs</div></div></div><div class='lane-row'><div class='lane-label'>read:web/76533</div><div class='lane-track'><div class="bar" style="left:7.699%;width:1.268%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.aesthetics.mpg.de/en/research/inhabi...&quot;, &quot;start_s&quot;: 31.276, &quot;duration_s&quot;: 5.151, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/76533&quot;}}">https://www.aesthetics.mpg.de/en/research/inhabi...</div></div></div><div class='lane-row'><div class='lane-label'>resolve</div><div class='lane-track'><div class="bar" style="left:8.967%;width:1.574%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 36.427, &quot;duration_s&quot;: 6.393, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 0}}">H1 resolve</div><div class="bar" style="left:21.433%;width:2.630%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 87.063, &quot;duration_s&quot;: 10.682, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 1}}">H1 resolve</div><div class="bar" style="left:31.277%;width:2.379%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 127.053, &quot;duration_s&quot;: 9.662, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 2}}">H1 resolve</div><div class="bar" style="left:41.280%;width:1.620%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 167.685, &quot;duration_s&quot;: 6.58, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 3}}">H1 resolve</div><div class="bar" style="left:54.753%;width:1.485%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 222.416, &quot;duration_s&quot;: 6.034, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 4}}">H1 resolve</div><div class="bar" style="left:65.035%;width:2.135%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 264.183, &quot;duration_s&quot;: 8.671, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 5}}">H1 resolve</div><div class="bar" style="left:76.532%;width:1.474%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 310.884, &quot;duration_s&quot;: 5.988, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 6}}">H1 resolve</div><div class="bar" style="left:85.130%;width:1.684%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 345.811, &quot;duration_s&quot;: 6.842, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 7}}">H1 resolve</div><div class="bar" style="left:93.748%;width:1.507%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 380.822, &quot;duration_s&quot;: 6.122, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 8}}">H1 resolve</div><div class="bar" style="left:98.495%;width:1.505%;background:#d62728;" title="{&quot;stage&quot;: &quot;hop_resolve&quot;, &quot;label&quot;: &quot;H1 resolve&quot;, &quot;start_s&quot;: 400.102, &quot;duration_s&quot;: 6.114, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;iteration&quot;: 9}}">H1 resolve</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_local_document_search_0</div><div class='lane-track'><div class="bar" style="left:15.464%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;local_document_search: Check documents from prior searches for mentions...&quot;, &quot;start_s&quot;: 62.816, &quot;duration_s&quot;: 0.3, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">local_document_search: Check documents from prior searches for mentions...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_1</div><div class='lane-track'><div class="bar" style="left:15.464%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Chaad Contemporary Art residency program complet...&quot;, &quot;start_s&quot;: 62.816, &quot;duration_s&quot;: 0.472, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Chaad Contemporary Art residency program complet...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter1_web_search_2</div><div class='lane-track'><div class="bar" style="left:15.464%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Chaad art residency program milestones&quot;, &quot;start_s&quot;: 62.817, &quot;duration_s&quot;: 0.304, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Chaad art residency program milestones</div></div></div><div class='lane-row'><div class='lane-label'>read:web/81420</div><div class='lane-track'><div class="bar" style="left:19.586%;width:1.800%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://brandywineworkshopandarchives.org/histor...&quot;, &quot;start_s&quot;: 79.564, &quot;duration_s&quot;: 7.313, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/81420&quot;}}">https://brandywineworkshopandarchives.org/histor...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/77710</div><div class='lane-track'><div class="bar" style="left:19.587%;width:1.845%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.poetryireland.ie/news/recipients-of-...&quot;, &quot;start_s&quot;: 79.567, &quot;duration_s&quot;: 7.496, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/77710&quot;}}">https://www.poetryireland.ie/news/recipients-of-...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_0</div><div class='lane-track'><div class="bar" style="left:26.346%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Chaad Contemporary Art residency completion date&quot;, &quot;start_s&quot;: 107.024, &quot;duration_s&quot;: 0.366, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Chaad Contemporary Art residency completion date</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_2</div><div class='lane-track'><div class="bar" style="left:26.346%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Chaad residency timeline Contemporary Art&quot;, &quot;start_s&quot;: 107.024, &quot;duration_s&quot;: 0.359, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Chaad residency timeline Contemporary Art</div></div></div><div class='lane-row'><div class='lane-label'>search:iter2_web_search_3</div><div class='lane-track'><div class="bar" style="left:26.346%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Chaad art residency program end year&quot;, &quot;start_s&quot;: 107.024, &quot;duration_s&quot;: 0.276, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Chaad art residency program end year</div></div></div><div class='lane-row'><div class='lane-label'>read:web/34940</div><div class='lane-track'><div class="bar" style="left:29.584%;width:1.673%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://resartis.org/open-calls/&quot;, &quot;start_s&quot;: 120.174, &quot;duration_s&quot;: 6.797, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/34940&quot;}}">https://resartis.org/open-calls/</div></div></div><div class='lane-row'><div class='lane-label'>read:web/21203</div><div class='lane-track'><div class="bar" style="left:29.584%;width:1.672%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.studiomuseum.org/exhibitions/tenses&quot;, &quot;start_s&quot;: 120.177, &quot;duration_s&quot;: 6.793, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/21203&quot;}}">https://www.studiomuseum.org/exhibitions/tenses</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_0</div><div class='lane-track'><div class="bar" style="left:35.948%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Chaad Contemporary Art residency program end yea...&quot;, &quot;start_s&quot;: 146.029, &quot;duration_s&quot;: 1.069, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Chaad Contemporary Art residency program end yea...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_1</div><div class='lane-track'><div class="bar" style="left:35.949%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Chaad art residency Contemporary Art milestones&quot;, &quot;start_s&quot;: 146.029, &quot;duration_s&quot;: 0.713, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Chaad art residency Contemporary Art milestones</div></div></div><div class='lane-row'><div class='lane-label'>search:iter3_web_search_2</div><div class='lane-track'><div class="bar" style="left:35.949%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Chaad residency timeline Contemporary Art organi...&quot;, &quot;start_s&quot;: 146.029, &quot;duration_s&quot;: 1.224, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Chaad residency timeline Contemporary Art organi...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/95556</div><div class='lane-track'><div class="bar" style="left:39.100%;width:1.864%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://artjameel.org/about/history/&quot;, &quot;start_s&quot;: 158.833, &quot;duration_s&quot;: 7.572, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/95556&quot;}}">https://artjameel.org/about/history/</div></div></div><div class='lane-row'><div class='lane-label'>read:web/86037</div><div class='lane-track'><div class="bar" style="left:39.101%;width:2.179%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.curatorialleadership.org/programs/mo...&quot;, &quot;start_s&quot;: 158.835, &quot;duration_s&quot;: 8.849, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/86037&quot;}}">https://www.curatorialleadership.org/programs/mo...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_0</div><div class='lane-track'><div class="bar" style="left:47.272%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Chaad Contemporary Art residency completion year&quot;, &quot;start_s&quot;: 192.027, &quot;duration_s&quot;: 0.555, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Chaad Contemporary Art residency completion year</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_1</div><div class='lane-track'><div class="bar" style="left:47.272%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Chaad art residency program end date&quot;, &quot;start_s&quot;: 192.028, &quot;duration_s&quot;: 0.611, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Chaad art residency program end date</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_2</div><div class='lane-track'><div class="bar" style="left:47.272%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Chaad residency Contemporary Art organization&quot;, &quot;start_s&quot;: 192.028, &quot;duration_s&quot;: 0.816, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Chaad residency Contemporary Art organization</div></div></div><div class='lane-row'><div class='lane-label'>search:iter4_web_search_3</div><div class='lane-track'><div class="bar" style="left:47.272%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Chaad art residency timeline Contemporary Art&quot;, &quot;start_s&quot;: 192.028, &quot;duration_s&quot;: 0.513, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Chaad art residency timeline Contemporary Art</div></div></div><div class='lane-row'><div class='lane-label'>read:web/30370</div><div class='lane-track'><div class="bar" style="left:52.601%;width:2.152%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.gagallery.com/news&quot;, &quot;start_s&quot;: 213.673, &quot;duration_s&quot;: 8.743, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/30370&quot;}}">https://www.gagallery.com/news</div></div></div><div class='lane-row'><div class='lane-label'>read:web/84535</div><div class='lane-track'><div class="bar" style="left:52.601%;width:1.724%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.hartford.edu/academics/schools-colle...&quot;, &quot;start_s&quot;: 213.675, &quot;duration_s&quot;: 7.001, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/84535&quot;}}">https://www.hartford.edu/academics/schools-colle...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/80241</div><div class='lane-track'><div class="bar" style="left:52.601%;width:1.935%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.collegeart.org/news/category/student...&quot;, &quot;start_s&quot;: 213.676, &quot;duration_s&quot;: 7.86, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/80241&quot;}}">https://www.collegeart.org/news/category/student...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter5_web_search_3</div><div class='lane-track'><div class="bar" style="left:59.851%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Chaad residency completion year Contemporary Art...&quot;, &quot;start_s&quot;: 243.123, &quot;duration_s&quot;: 0.328, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Chaad residency completion year Contemporary Art...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/86391</div><div class='lane-track'><div class="bar" style="left:62.884%;width:2.151%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://mandevilleartgallery.ucsd.edu/exhibition...&quot;, &quot;start_s&quot;: 255.446, &quot;duration_s&quot;: 8.737, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/86391&quot;}}">https://mandevilleartgallery.ucsd.edu/exhibition...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter6_web_search_1</div><div class='lane-track'><div class="bar" style="left:71.652%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Chaad art residency program end date Contemporar...&quot;, &quot;start_s&quot;: 291.064, &quot;duration_s&quot;: 0.438, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Chaad art residency program end date Contemporar...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter6_web_search_3</div><div class='lane-track'><div class="bar" style="left:71.652%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Chaad residency completion year Contemporary Art...&quot;, &quot;start_s&quot;: 291.064, &quot;duration_s&quot;: 0.318, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Chaad residency completion year Contemporary Art...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/11283</div><div class='lane-track'><div class="bar" style="left:75.120%;width:1.283%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.youtube.com/watch?v=4tK2e_mSSps&amp;pp=0...&quot;, &quot;start_s&quot;: 305.148, &quot;duration_s&quot;: 5.213, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/11283&quot;}}">https://www.youtube.com/watch?v=4tK2e_mSSps&amp;pp=0...</div></div></div><div class='lane-row'><div class='lane-label'>read:web/28797</div><div class='lane-track'><div class="bar" style="left:75.120%;width:1.412%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://wexarts.org/read-watch-listen/message-in...&quot;, &quot;start_s&quot;: 305.15, &quot;duration_s&quot;: 5.734, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/28797&quot;}}">https://wexarts.org/read-watch-listen/message-in...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter7_web_search_1</div><div class='lane-track'><div class="bar" style="left:82.073%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Chaad Contemporary Art residency end date organi...&quot;, &quot;start_s&quot;: 333.394, &quot;duration_s&quot;: 0.624, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Chaad Contemporary Art residency end date organi...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter7_web_search_2</div><div class='lane-track'><div class="bar" style="left:82.073%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Chaad art residency program conclusion year&quot;, &quot;start_s&quot;: 333.394, &quot;duration_s&quot;: 0.624, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Chaad art residency program conclusion year</div></div></div><div class='lane-row'><div class='lane-label'>search:iter7_web_search_3</div><div class='lane-track'><div class="bar" style="left:82.073%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Chaad Contemporary Art residency timeline&quot;, &quot;start_s&quot;: 333.394, &quot;duration_s&quot;: 0.393, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Chaad Contemporary Art residency timeline</div></div></div><div class='lane-row'><div class='lane-label'>read:web/33897</div><div class='lane-track'><div class="bar" style="left:83.579%;width:1.551%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.artworkarchive.com/call-for-entry/co...&quot;, &quot;start_s&quot;: 339.51, &quot;duration_s&quot;: 6.301, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/33897&quot;}}">https://www.artworkarchive.com/call-for-entry/co...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter8_web_search_0</div><div class='lane-track'><div class="bar" style="left:90.616%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Chaad Contemporary Art residency end year&quot;, &quot;start_s&quot;: 368.098, &quot;duration_s&quot;: 0.213, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Chaad Contemporary Art residency end year</div></div></div><div class='lane-row'><div class='lane-label'>search:iter8_web_search_3</div><div class='lane-track'><div class="bar" style="left:90.616%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Chaad residency completion date Contemporary Art&quot;, &quot;start_s&quot;: 368.098, &quot;duration_s&quot;: 0.214, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Chaad residency completion date Contemporary Art</div></div></div><div class='lane-row'><div class='lane-label'>read:web/63206</div><div class='lane-track'><div class="bar" style="left:92.627%;width:1.122%;background:#e17c05;" title="{&quot;stage&quot;: &quot;doc_read&quot;, &quot;label&quot;: &quot;https://www.labiennale.org/en/news/biennale-arte...&quot;, &quot;start_s&quot;: 376.265, &quot;duration_s&quot;: 4.556, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;doc_id&quot;: &quot;web/63206&quot;}}">https://www.labiennale.org/en/news/biennale-arte...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter9_web_search_0</div><div class='lane-track'><div class="bar" style="left:98.441%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Chaad Contemporary Art residency completion year&quot;, &quot;start_s&quot;: 399.885, &quot;duration_s&quot;: 0.217, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Chaad Contemporary Art residency completion year</div></div></div><div class='lane-row'><div class='lane-label'>search:iter9_web_search_2</div><div class='lane-track'><div class="bar" style="left:98.441%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Chaad residency timeline Contemporary Art organi...&quot;, &quot;start_s&quot;: 399.885, &quot;duration_s&quot;: 0.141, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Chaad residency timeline Contemporary Art organi...</div></div></div><div class='lane-row'><div class='lane-label'>search:iter9_web_search_3</div><div class='lane-track'><div class="bar" style="left:98.441%;width:0.800%;background:#14866d;" title="{&quot;stage&quot;: &quot;search&quot;, &quot;label&quot;: &quot;web_search: Chaad residency program conclusion year Contempo...&quot;, &quot;start_s&quot;: 399.885, &quot;duration_s&quot;: 0.217, &quot;meta&quot;: {&quot;hop_number&quot;: 1, &quot;result_count&quot;: 5}}">web_search: Chaad residency program conclusion year Contempo...</div></div></div><div class='lane-row'><div class='lane-label'>report</div><div class='lane-track'><div class="bar" style="left:100.000%;width:0.800%;background:#4c78a8;" title="{&quot;stage&quot;: &quot;report&quot;, &quot;label&quot;: &quot;Final report&quot;, &quot;start_s&quot;: 406.216, &quot;duration_s&quot;: 0.01, &quot;meta&quot;: {&quot;resolved_hops&quot;: 0}}">Final report</div></div></div></div>
+  <h2>Events</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Lane</th>
+        <th>Stage</th>
+        <th>Label</th>
+        <th>Start (s)</th>
+        <th>Duration (s)</th>
+        <th>Metadata</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>0.00</td><td>12.95</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>search:iter0_web_search_0</td><td>search</td><td>web_search: Chaad residency Contemporary Art completion year</td><td>12.97</td><td>0.65</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_1</td><td>search</td><td>web_search: Chaad art residency timeline</td><td>12.97</td><td>0.51</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_2</td><td>search</td><td>web_search: Contemporary Art residency programs Chaad</td><td>12.97</td><td>0.51</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter0_web_search_3</td><td>search</td><td>web_search: Chaad professional milestones art</td><td>12.97</td><td>0.65</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>13.62</td><td>17.65</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>read:web/76533</td><td>doc_read</td><td>https://www.aesthetics.mpg.de/en/research/inhabi...</td><td>31.28</td><td>5.15</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/76533&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>36.43</td><td>6.39</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 0
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>42.82</td><td>20.00</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>search:iter1_local_document_search_0</td><td>search</td><td>local_document_search: Check documents from prior searches for mentions...</td><td>62.82</td><td>0.30</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_1</td><td>search</td><td>web_search: Chaad Contemporary Art residency program complet...</td><td>62.82</td><td>0.47</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter1_web_search_2</td><td>search</td><td>web_search: Chaad art residency program milestones</td><td>62.82</td><td>0.30</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>63.29</td><td>16.27</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>read:web/81420</td><td>doc_read</td><td>https://brandywineworkshopandarchives.org/histor...</td><td>79.56</td><td>7.31</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/81420&quot;
+}</pre></td></tr><tr><td>read:web/77710</td><td>doc_read</td><td>https://www.poetryireland.ie/news/recipients-of-...</td><td>79.57</td><td>7.50</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/77710&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>87.06</td><td>10.68</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 1
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>97.74</td><td>9.28</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>search:iter2_web_search_0</td><td>search</td><td>web_search: Chaad Contemporary Art residency completion date</td><td>107.02</td><td>0.37</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_2</td><td>search</td><td>web_search: Chaad residency timeline Contemporary Art</td><td>107.02</td><td>0.36</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter2_web_search_3</td><td>search</td><td>web_search: Chaad art residency program end year</td><td>107.02</td><td>0.28</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>107.39</td><td>12.78</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>read:web/34940</td><td>doc_read</td><td>https://resartis.org/open-calls/</td><td>120.17</td><td>6.80</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/34940&quot;
+}</pre></td></tr><tr><td>read:web/21203</td><td>doc_read</td><td>https://www.studiomuseum.org/exhibitions/tenses</td><td>120.18</td><td>6.79</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/21203&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>127.05</td><td>9.66</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 2
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>136.72</td><td>9.31</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>search:iter3_web_search_0</td><td>search</td><td>web_search: Chaad Contemporary Art residency program end yea...</td><td>146.03</td><td>1.07</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_web_search_1</td><td>search</td><td>web_search: Chaad art residency Contemporary Art milestones</td><td>146.03</td><td>0.71</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter3_web_search_2</td><td>search</td><td>web_search: Chaad residency timeline Contemporary Art organi...</td><td>146.03</td><td>1.22</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>147.25</td><td>11.58</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>read:web/95556</td><td>doc_read</td><td>https://artjameel.org/about/history/</td><td>158.83</td><td>7.57</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/95556&quot;
+}</pre></td></tr><tr><td>read:web/86037</td><td>doc_read</td><td>https://www.curatorialleadership.org/programs/mo...</td><td>158.84</td><td>8.85</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/86037&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>167.69</td><td>6.58</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 3
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>174.27</td><td>17.76</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>search:iter4_web_search_0</td><td>search</td><td>web_search: Chaad Contemporary Art residency completion year</td><td>192.03</td><td>0.55</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter4_web_search_1</td><td>search</td><td>web_search: Chaad art residency program end date</td><td>192.03</td><td>0.61</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter4_web_search_2</td><td>search</td><td>web_search: Chaad residency Contemporary Art organization</td><td>192.03</td><td>0.82</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter4_web_search_3</td><td>search</td><td>web_search: Chaad art residency timeline Contemporary Art</td><td>192.03</td><td>0.51</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>192.84</td><td>20.83</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>read:web/30370</td><td>doc_read</td><td>https://www.gagallery.com/news</td><td>213.67</td><td>8.74</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/30370&quot;
+}</pre></td></tr><tr><td>read:web/84535</td><td>doc_read</td><td>https://www.hartford.edu/academics/schools-colle...</td><td>213.67</td><td>7.00</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/84535&quot;
+}</pre></td></tr><tr><td>read:web/80241</td><td>doc_read</td><td>https://www.collegeart.org/news/category/student...</td><td>213.68</td><td>7.86</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/80241&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>222.42</td><td>6.03</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 4
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>228.45</td><td>14.67</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>search:iter5_web_search_3</td><td>search</td><td>web_search: Chaad residency completion year Contemporary Art...</td><td>243.12</td><td>0.33</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>243.45</td><td>11.99</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>read:web/86391</td><td>doc_read</td><td>https://mandevilleartgallery.ucsd.edu/exhibition...</td><td>255.45</td><td>8.74</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/86391&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>264.18</td><td>8.67</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 5
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>272.85</td><td>18.21</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 6
+}</pre></td></tr><tr><td>search:iter6_web_search_1</td><td>search</td><td>web_search: Chaad art residency program end date Contemporar...</td><td>291.06</td><td>0.44</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter6_web_search_3</td><td>search</td><td>web_search: Chaad residency completion year Contemporary Art...</td><td>291.06</td><td>0.32</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>291.51</td><td>13.64</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 6
+}</pre></td></tr><tr><td>read:web/11283</td><td>doc_read</td><td>https://www.youtube.com/watch?v=4tK2e_mSSps&amp;pp=0...</td><td>305.15</td><td>5.21</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/11283&quot;
+}</pre></td></tr><tr><td>read:web/28797</td><td>doc_read</td><td>https://wexarts.org/read-watch-listen/message-in...</td><td>305.15</td><td>5.73</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/28797&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>310.88</td><td>5.99</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 6
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>316.87</td><td>16.52</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 7
+}</pre></td></tr><tr><td>search:iter7_web_search_1</td><td>search</td><td>web_search: Chaad Contemporary Art residency end date organi...</td><td>333.39</td><td>0.62</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter7_web_search_2</td><td>search</td><td>web_search: Chaad art residency program conclusion year</td><td>333.39</td><td>0.62</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter7_web_search_3</td><td>search</td><td>web_search: Chaad Contemporary Art residency timeline</td><td>333.39</td><td>0.39</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>334.02</td><td>5.49</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 7
+}</pre></td></tr><tr><td>read:web/33897</td><td>doc_read</td><td>https://www.artworkarchive.com/call-for-entry/co...</td><td>339.51</td><td>6.30</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/33897&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>345.81</td><td>6.84</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 7
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>352.65</td><td>15.44</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 8
+}</pre></td></tr><tr><td>search:iter8_web_search_0</td><td>search</td><td>web_search: Chaad Contemporary Art residency end year</td><td>368.10</td><td>0.21</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter8_web_search_3</td><td>search</td><td>web_search: Chaad residency completion date Contemporary Art</td><td>368.10</td><td>0.21</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>choose</td><td>doc_choose</td><td>H1 choose docs</td><td>368.31</td><td>7.95</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 8
+}</pre></td></tr><tr><td>read:web/63206</td><td>doc_read</td><td>https://www.labiennale.org/en/news/biennale-arte...</td><td>376.27</td><td>4.56</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;doc_id&quot;: &quot;web/63206&quot;
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>380.82</td><td>6.12</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 8
+}</pre></td></tr><tr><td>plan</td><td>hop_plan</td><td>H1 retrieval plan</td><td>386.94</td><td>12.94</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 9
+}</pre></td></tr><tr><td>search:iter9_web_search_0</td><td>search</td><td>web_search: Chaad Contemporary Art residency completion year</td><td>399.89</td><td>0.22</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter9_web_search_2</td><td>search</td><td>web_search: Chaad residency timeline Contemporary Art organi...</td><td>399.89</td><td>0.14</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>search:iter9_web_search_3</td><td>search</td><td>web_search: Chaad residency program conclusion year Contempo...</td><td>399.89</td><td>0.22</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;result_count&quot;: 5
+}</pre></td></tr><tr><td>resolve</td><td>hop_resolve</td><td>H1 resolve</td><td>400.10</td><td>6.11</td><td><pre>{
+  &quot;hop_number&quot;: 1,
+  &quot;iteration&quot;: 9
+}</pre></td></tr><tr><td>report</td><td>report</td><td>Final report</td><td>406.22</td><td>0.00</td><td><pre>{
+  &quot;resolved_hops&quot;: 0
+}</pre></td></tr>
+    </tbody>
+  </table>
+</body>
+</html>
