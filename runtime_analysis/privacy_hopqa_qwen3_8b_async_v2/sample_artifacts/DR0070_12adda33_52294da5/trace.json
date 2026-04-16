@@ -1,0 +1,2572 @@
+{
+  "summary": {
+    "task_id": "DR0070",
+    "chain_id": "12adda33",
+    "iterations_used": 8,
+    "resolved_hops": 1,
+    "total_hops": 5,
+    "searches_total": 23,
+    "docs_read": 24,
+    "duration_s": 516.824447167106,
+    "stalled": true,
+    "llm_calls_total": 46,
+    "prompt_tokens": 67363,
+    "output_tokens": 36426,
+    "total_tokens": 103789,
+    "total_errors": 0,
+    "parse_errors_total": 0,
+    "context_overflow_errors": 0,
+    "errors_by_stage": {},
+    "errors_by_kind": {},
+    "errors_by_stage_kind": {},
+    "parse_errors_by_stage": {}
+  },
+  "hop_states": [
+    {
+      "hop_number": 1,
+      "question": "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?",
+      "status": "answered",
+      "attempts": 3,
+      "answer": "16%",
+      "justification": "The document [DOC:doc_fb9ebed3_1776306873] explicitly states that the cybersecurity team represented 16% of Elexion Automotive's total workforce in 2020.",
+      "confidence": 0.9,
+      "resolution_reason": "The answer is directly supported by a local document explicitly citing the 2020 percentage. Other candidate documents reference later years (2025, 2026) and do not provide 2020 data.",
+      "search_history": [
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_web_search_0",
+          "type": "web_search",
+          "query": "Elexion Automotive 2020 annual report cybersecurity team percentage",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/88213",
+            "web/30161"
+          ]
+        },
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_web_search_1",
+          "type": "web_search",
+          "query": "Elexion Automotive 2020 workforce cybersecurity team size",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/88213",
+            "web/77758"
+          ]
+        },
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_web_search_2",
+          "type": "web_search",
+          "query": "Elexion Automotive cybersecurity team percentage 2020",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/88213",
+            "web/30161"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 1,
+          "action_id": "iter1_web_search_0",
+          "type": "web_search",
+          "query": "Elexion Automotive 2020 cybersecurity team workforce percentage",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/88213",
+            "web/30161"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 1,
+          "action_id": "iter1_web_search_1",
+          "type": "web_search",
+          "query": "Elexion Automotive 2020 employee statistics cybersecurity team",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/88213",
+            "web/30161"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 1,
+          "action_id": "iter1_web_search_2",
+          "type": "web_search",
+          "query": "Elexion Automotive annual report 2020 cybersecurity team size",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/88213",
+            "web/30161"
+          ]
+        },
+        {
+          "iteration": 2,
+          "hop_number": 1,
+          "action_id": "iter2_web_fallback",
+          "type": "web_search",
+          "query": "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/88213",
+            "web/91890"
+          ]
+        },
+        {
+          "iteration": 2,
+          "hop_number": 1,
+          "action_id": "iter2_local_fallback",
+          "type": "local_document_search",
+          "query": "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?",
+          "result_count": 5,
+          "top_doc_ids": [
+            "doc_fb9ebed3_1776306873",
+            "doc_da37b440_1776306872",
+            "doc_64ed5b3f_1776306873"
+          ]
+        }
+      ],
+      "selected_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/88213",
+        "web/30161",
+        "web/77758",
+        "web/4912",
+        "web/91890",
+        "web/12200",
+        "web/33651",
+        "doc_fb9ebed3_1776306873"
+      ],
+      "reader_results": [
+        {
+          "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+          "source": "web",
+          "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+          "locator": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Elexion Automotive or provide any data about their workforce composition or cybersecurity team percentages in 2020 [DOC:web/drbench_urls/drbench_urls_5b611c3b7adbdcb4].",
+          "confidence": 0.18,
+          "missing_information": "Specific information about Elexion Automotive's workforce and cybersecurity team size/percentage in 2020 is required but not provided in the document."
+        },
+        {
+          "doc_id": "web/88213",
+          "source": "web",
+          "title": "https://cybersecurityventures.com/cybersecurity-almanac-2023/",
+          "locator": "https://cybersecurityventures.com/cybersecurity-almanac-2023/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:web/88213] does not mention Elexion Automotive or provide data about their cybersecurity team workforce percentage in 2020. It focuses on global cybersecurity statistics and trends rather than specific company data.",
+          "confidence": 0.15,
+          "missing_information": "Specific information about Elexion Automotive's workforce composition in 2020 is absent from the document."
+        },
+        {
+          "doc_id": "web/30161",
+          "source": "web",
+          "title": "https://cybersecurityventures.com/cybersecurity-almanac-2022/",
+          "locator": "https://cybersecurityventures.com/cybersecurity-almanac-2022/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:web/30161] contains general cybersecurity statistics and does not mention Elexion Automotive or provide workforce data for any specific company in 2020.",
+          "confidence": 0.15,
+          "missing_information": "Specific information about Elexion Automotive's workforce composition or cybersecurity team size in 2020 is not present in the document."
+        },
+        {
+          "doc_id": "web/77758",
+          "source": "web",
+          "title": "https://cybersecurityventures.com/jobs/",
+          "locator": "https://cybersecurityventures.com/jobs/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Elexion Automotive or provide data on their cybersecurity team size or workforce percentages in 2020 [DOC:web/77758].",
+          "confidence": 0.15,
+          "missing_information": "Specific data about Elexion Automotive's workforce composition in 2020 is required to answer this question."
+        },
+        {
+          "doc_id": "web/4912",
+          "source": "web",
+          "title": "https://purplesec.us/resources/cybersecurity-statistics/",
+          "locator": "https://purplesec.us/resources/cybersecurity-statistics/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document contains general cybersecurity statistics but does not mention Elexion Automotive or provide workforce percentage data for any specific organization in 2020 [DOC:web/4912].",
+          "confidence": 0.18,
+          "missing_information": "Specific data about Elexion Automotive's cybersecurity team size relative to their total workforce in 2020"
+        },
+        {
+          "doc_id": "web/91890",
+          "source": "web",
+          "title": "https://www.varonis.com/blog/cybersecurity-statistics",
+          "locator": "https://www.varonis.com/blog/cybersecurity-statistics",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:web/91890] contains general cybersecurity statistics but does not mention Elexion Automotive or provide workforce data for any specific company in 2020.",
+          "confidence": 0.18,
+          "missing_information": "Specific information about Elexion Automotive's workforce cybersecurity team percentage in 2020 is not present in the document."
+        },
+        {
+          "doc_id": "web/12200",
+          "source": "web",
+          "title": "https://www.cm-alliance.com/cybersecurity-blog/january-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+          "locator": "https://www.cm-alliance.com/cybersecurity-blog/january-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses cybersecurity incidents in January 2024 but does not mention Elexion Automotive or any workforce statistics related to cybersecurity teams in 2020 [DOC:web/12200].",
+          "confidence": 0.15,
+          "missing_information": "Specific data about Elexion Automotive's cybersecurity team size and total workforce percentage for 2020"
+        },
+        {
+          "doc_id": "web/33651",
+          "source": "web",
+          "title": "https://www.itgovernance.co.uk/blog/list-of-data-breaches-and-cyber-attacks-in-2023",
+          "locator": "https://www.itgovernance.co.uk/blog/list-of-data-breaches-and-cyber-attacks-in-2023",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses data breaches and cyber attacks in 2023 but contains no information about Elexion Automotive's workforce statistics or cybersecurity team size in 2020 [DOC:web/33651].",
+          "confidence": 0.95,
+          "missing_information": "Specific data about Elexion Automotive's 2020 workforce demographics or cybersecurity team proportions is not present in the document."
+        },
+        {
+          "doc_id": "doc_fb9ebed3_1776306873",
+          "source": "local",
+          "title": "elexion-cybersecurity-framework.pdf",
+          "locator": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0070/files/DI0007/elexion-cybersecurity-framework.pdf",
+          "can_answer": true,
+          "proposed_answer": "16%",
+          "justification": "The document states that in 2020, the cybersecurity team represented 16% of Elexion Automotive's total workforce [DOC:doc_fb9ebed3_1776306873].",
+          "confidence": 0.82,
+          "missing_information": ""
+        }
+      ],
+      "candidate_doc_ids": [
+        "doc_fb9ebed3_1776306873",
+        "doc_da37b440_1776306872",
+        "doc_64ed5b3f_1776306873",
+        "doc_72a85a9c_1776306874",
+        "doc_63e9443c_1776306873",
+        "web/41836"
+      ],
+      "candidate_cards": [
+        {
+          "doc_id": "doc_fb9ebed3_1776306873",
+          "source": "local",
+          "title": "elexion-cybersecurity-framework.pdf",
+          "best_rank": 1,
+          "hit_count": 1,
+          "top_queries": [
+            "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?"
+          ],
+          "snippet": "Elexion Automotive's Cybersecurity Framework\nIntroduction\nAs Elexion Automotive continues to innovate in the electric ve..."
+        },
+        {
+          "doc_id": "doc_da37b440_1776306872",
+          "source": "local",
+          "title": "cybersecurity-review-2025.pdf",
+          "best_rank": 2,
+          "hit_count": 1,
+          "top_queries": [
+            "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?"
+          ],
+          "snippet": "Cybersecurity Incident Review FY  2025\nIntroduction\nAs part of our commitment to maintaining robust cybersecurity measur..."
+        },
+        {
+          "doc_id": "doc_64ed5b3f_1776306873",
+          "source": "local",
+          "title": "cybersecurity-strategy-Q1-2026.pdf",
+          "best_rank": 3,
+          "hit_count": 1,
+          "top_queries": [
+            "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?"
+          ],
+          "snippet": "Remote Cybersecurity Threats: Strategy for Q1\n2026\nIntroduction\nGiven the evolving nature of cyber threats, it is essent..."
+        },
+        {
+          "doc_id": "doc_72a85a9c_1776306874",
+          "source": "local",
+          "title": "cybersecurity-strategies-q1-2026.pdf",
+          "best_rank": 4,
+          "hit_count": 1,
+          "top_queries": [
+            "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?"
+          ],
+          "snippet": "Cybersecurity Strategies for Consumer\nProtection\nIntroduction\nAs Elexion Automotive continues to revolutionize the elect..."
+        },
+        {
+          "doc_id": "doc_63e9443c_1776306873",
+          "source": "local",
+          "title": "2025-phishing-simulation-report.docx",
+          "best_rank": 5,
+          "hit_count": 1,
+          "top_queries": [
+            "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?"
+          ],
+          "snippet": "2025 Internal Phishing Simulation Report\nIntroduction\nThe increasing sophistication of cyber threats necessitates regula..."
+        },
+        {
+          "doc_id": "web/41836",
+          "source": "web",
+          "title": "https://www.processunity.com/resources/blogs/evolution-of-cybersecurity-how-we-progressed/",
+          "best_rank": 5,
+          "hit_count": 1,
+          "top_queries": [
+            "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?"
+          ],
+          "snippet": "---\ntitle: Cybersecurity Through the Years and How We've Progressed\nauthor: Cybergrx\ndate: 2024-07-19\n---\n\"Security is a..."
+        }
+      ]
+    },
+    {
+      "hop_number": 2,
+      "question": "What country do single fathers make up 16% of single-parent families in?",
+      "status": "pending",
+      "attempts": 5,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": "No candidates were retrieved for this hop.",
+      "search_history": [
+        {
+          "iteration": 3,
+          "hop_number": 2,
+          "action_id": "iter3_web_search_0",
+          "type": "web_search",
+          "query": "country with 16% single fathers in single-parent families",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/90973",
+            "web/74902"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 2,
+          "action_id": "iter3_web_search_1",
+          "type": "web_search",
+          "query": "percentage of single fathers in single-parent families by country",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/90973",
+            "web/74902"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 2,
+          "action_id": "iter3_local_document_search_2",
+          "type": "local_document_search",
+          "query": "16% single fathers country",
+          "result_count": 5,
+          "top_doc_ids": [
+            "doc_7e43729e_1776306873",
+            "doc_960c3f72_1776306874",
+            "doc_b40f2bee_1776306873"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 2,
+          "action_id": "iter4_web_search_0",
+          "type": "web_search",
+          "query": "country where single fathers account for 16% of single-parent families",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/90973",
+            "web/74902"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 2,
+          "action_id": "iter4_web_search_1",
+          "type": "web_search",
+          "query": "single-parent families headed by fathers 16% country",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/90973",
+            "web/31111"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 2,
+          "action_id": "iter4_local_document_search_2",
+          "type": "local_document_search",
+          "query": "16% single fathers national statistics",
+          "result_count": 5,
+          "top_doc_ids": [
+            "doc_960c3f72_1776306874",
+            "doc_7e43729e_1776306873",
+            "doc_4e6c7373_1776306873"
+          ]
+        },
+        {
+          "iteration": 5,
+          "hop_number": 2,
+          "action_id": "iter5_web_search_0",
+          "type": "web_search",
+          "query": "country with 16% single-father single-parent families",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/90973",
+            "web/74902"
+          ]
+        },
+        {
+          "iteration": 5,
+          "hop_number": 2,
+          "action_id": "iter5_web_search_1",
+          "type": "web_search",
+          "query": "single-parent family demographics by country with 16% father percentage",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/90973",
+            "web/31111"
+          ]
+        },
+        {
+          "iteration": 5,
+          "hop_number": 2,
+          "action_id": "iter5_local_document_search_2",
+          "type": "local_document_search",
+          "query": "16% single-father single-parent family country",
+          "result_count": 5,
+          "top_doc_ids": [
+            "doc_7e43729e_1776306873",
+            "doc_960c3f72_1776306874",
+            "doc_4e6c7373_1776306873"
+          ]
+        },
+        {
+          "iteration": 6,
+          "hop_number": 2,
+          "action_id": "iter6_web_search_0",
+          "type": "web_search",
+          "query": "country single-father households percentage 16%",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/90973",
+            "web/21529"
+          ]
+        },
+        {
+          "iteration": 6,
+          "hop_number": 2,
+          "action_id": "iter6_web_search_1",
+          "type": "web_search",
+          "query": "global single-parent families father percentage 16%",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/90973",
+            "web/7893"
+          ]
+        },
+        {
+          "iteration": 6,
+          "hop_number": 2,
+          "action_id": "iter6_local_document_search_2",
+          "type": "local_document_search",
+          "query": "single-parent family statistics 16% country",
+          "result_count": 5,
+          "top_doc_ids": [
+            "doc_960c3f72_1776306874",
+            "doc_7e43729e_1776306873",
+            "doc_4e6c7373_1776306873"
+          ]
+        },
+        {
+          "iteration": 7,
+          "hop_number": 2,
+          "action_id": "iter7_web_search_0",
+          "type": "web_search",
+          "query": "single-father households 16% country statistics",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/90973",
+            "web/21529"
+          ]
+        },
+        {
+          "iteration": 7,
+          "hop_number": 2,
+          "action_id": "iter7_web_search_1",
+          "type": "web_search",
+          "query": "global single-parent family demographics 16% father percentage country",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/90973",
+            "web/7893"
+          ]
+        },
+        {
+          "iteration": 7,
+          "hop_number": 2,
+          "action_id": "iter7_local_document_search_2",
+          "type": "local_document_search",
+          "query": "16% single-father households country",
+          "result_count": 5,
+          "top_doc_ids": [
+            "doc_7e43729e_1776306873",
+            "doc_960c3f72_1776306874",
+            "doc_b40f2bee_1776306873"
+          ]
+        }
+      ],
+      "selected_doc_ids": [
+        "web/90973",
+        "web/74902",
+        "web/31111",
+        "web/12570",
+        "web/7893",
+        "web/86581",
+        "doc_7e43729e_1776306873",
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "doc_960c3f72_1776306874",
+        "doc_4e6c7373_1776306873",
+        "doc_b40f2bee_1776306873",
+        "doc_03d0bc0d_1776306874",
+        "doc_19d697a0_1776306873",
+        "web/74587",
+        "web/21529"
+      ],
+      "reader_results": [
+        {
+          "doc_id": "web/90973",
+          "source": "web",
+          "title": "https://en.wikipedia.org/wiki/Single_parents_in_the_United_States",
+          "locator": "https://en.wikipedia.org/wiki/Single_parents_in_the_United_States",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:web/90973] discusses single-parent families in the United States but does not mention any country where single fathers make up 16% of single-parent families. It only states that 80% of single-parent families are headed by mothers, implying 20% are headed by fathers, not 16%.",
+          "confidence": 0.82,
+          "missing_information": "Specific percentage of 16% for single fathers in single-parent families by country is not provided in the document."
+        },
+        {
+          "doc_id": "web/74902",
+          "source": "web",
+          "title": "https://www.aecf.org/blog/child-well-being-in-single-parent-families",
+          "locator": "https://www.aecf.org/blog/child-well-being-in-single-parent-families",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:web/74902] discusses statistics about children in single-parent families in the U.S., including 16% of Asian and Pacific Islander children living in single-parent households. However, it does not explicitly state that 16% of single-parent families are headed by fathers or identify a country where this percentage occurs. The question requires specific data about the proportion of single-parent families led by fathers, which is not directly provided.",
+          "confidence": 0.82,
+          "missing_information": "The document lacks explicit information about the percentage of single-parent families headed by fathers in any country, instead focusing on the prevalence of single-parent households among children of different racial/ethnic groups."
+        },
+        {
+          "doc_id": "web/31111",
+          "source": "web",
+          "title": "https://actforyouth.org/adolescence/demographics/family.cfm",
+          "locator": "https://actforyouth.org/adolescence/demographics/family.cfm",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:web/31111] discusses family structures in the U.S. but does not explicitly state which country has single fathers making up 16% of single-parent families. The percentage of children living with fathers only (3%) is mentioned, but this does not directly answer the question about the country or the specific 16% figure for single fathers in single-parent families.",
+          "confidence": 0.5,
+          "missing_information": "The document does not specify the country or explicitly link the 16% figure to single fathers in single-parent families."
+        },
+        {
+          "doc_id": "web/12570",
+          "source": "web",
+          "title": "https://www.psychologytoday.com/us/blog/singletons/202311/free-to-have-only-one-child",
+          "locator": "https://www.psychologytoday.com/us/blog/singletons/202311/free-to-have-only-one-child",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:web/12570] discusses single-child households but does not mention single fathers or provide percentages of single-parent families by country. It only states statistics about the number of children per household, not the gender composition of single-parent families.",
+          "confidence": 0.82,
+          "missing_information": "The document lacks data on the percentage of single-parent families headed by fathers in any country."
+        },
+        {
+          "doc_id": "web/7893",
+          "source": "web",
+          "title": "https://www.census.gov/newsroom/press-releases/2022/americas-families-and-living-arrangements.html",
+          "locator": "https://www.census.gov/newsroom/press-releases/2022/americas-families-and-living-arrangements.html",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:web/7893] discusses single-parent families in the U.S. but does not explicitly state that single fathers make up 16% of single-parent families. The 16% mentioned in the document relates to adults ages 25-34 living in their parental homes, not the proportion of single fathers in single-parent families.",
+          "confidence": 0.6,
+          "missing_information": "The document does not specify the percentage of single fathers within single-parent families or identify a country where this percentage is 16%."
+        },
+        {
+          "doc_id": "web/86581",
+          "source": "web",
+          "title": "https://adoptioncouncil.org/publications/single-parent-adoption-the-process-and-experience-of-adopting-unpartnered/",
+          "locator": "https://adoptioncouncil.org/publications/single-parent-adoption-the-process-and-experience-of-adopting-unpartnered/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:web/86581] does not explicitly state which country has 16% single fathers in single-parent families. It discusses adoption trends in the U.S. and international policies but lacks specific statistical data linking a country to the 16% figure.",
+          "confidence": 0.82,
+          "missing_information": "The document does not provide the specific country associated with the 16% single fathers statistic."
+        },
+        {
+          "doc_id": "doc_7e43729e_1776306873",
+          "source": "local",
+          "title": "mattermost_chat_20251120_020616.jsonl",
+          "locator": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0070/files/DI0005/mattermost_chat_20251120_020616.jsonl",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The provided document [DOC:doc_7e43729e_1776306873] contains no information about single fathers, single-parent families, or country-specific statistics. It only references a cybersecurity team meeting in a Mattermost chat.",
+          "confidence": 0.15,
+          "missing_information": "The document lacks data about single fathers, single-parent family demographics, or country-specific statistics required to answer the question."
+        },
+        {
+          "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+          "source": "web",
+          "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+          "locator": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:web/drbench_urls/drbench_urls_5b611c3b7adbdcb4] focuses on cybersecurity risks in connected cars and regulatory approaches, but contains no data about single fathers or single-parent family demographics. The queries mentioned (e.g., \"country with 16% single fathers\") are not addressed in the excerpt.",
+          "confidence": 0.15,
+          "missing_information": "The document lacks any statistics or references to single-parent family compositions or single fathers' percentages in any country."
+        },
+        {
+          "doc_id": "doc_960c3f72_1776306874",
+          "source": "local",
+          "title": "mattermost_chat_20251120_020717.jsonl",
+          "locator": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0070/files/DI0006/mattermost_chat_20251120_020717.jsonl",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:doc_960c3f72_1776306874] does not mention any country or data about single fathers making up 16% of single-parent families. The only percentage referenced is about cybersecurity team workforce representation, not single-parent family demographics.",
+          "confidence": 0.15,
+          "missing_information": "The document lacks information about countries and single-parent family statistics, which are required to answer the question."
+        },
+        {
+          "doc_id": "doc_4e6c7373_1776306873",
+          "source": "local",
+          "title": "mattermost_chat_20251120_020510.jsonl",
+          "locator": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0070/files/DI0003/mattermost_chat_20251120_020510.jsonl",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:doc_4e6c7373_1776306873] contains no information about single fathers, single-parent families, or national statistics related to this topic. The excerpt only includes irrelevant system maintenance chat logs.",
+          "confidence": 0.15,
+          "missing_information": "The document lacks data about single fathers' percentages in single-parent families across countries, which is required to answer the question."
+        },
+        {
+          "doc_id": "doc_b40f2bee_1776306873",
+          "source": "local",
+          "title": "mattermost_chat_20251120_020717.jsonl",
+          "locator": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0070/files/DI0006/mattermost_chat_20251120_020717.jsonl",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:doc_b40f2bee_1776306873] contains no information about single fathers, single-parent families, or country-specific statistics. The only number mentioned (16%) relates to an IT team's workforce percentage, not the question's context.",
+          "confidence": 0.15,
+          "missing_information": "The document lacks data on single fathers' prevalence in single-parent families across countries."
+        },
+        {
+          "doc_id": "doc_03d0bc0d_1776306874",
+          "source": "local",
+          "title": "mattermost_chat_20251120_020717.jsonl",
+          "locator": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0070/files/DI0006/mattermost_chat_20251120_020717.jsonl",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The provided document [DOC:doc_03d0bc0d_1776306874] contains no information about single fathers, single-parent families, or country-specific statistics related to these demographics.",
+          "confidence": 0.15,
+          "missing_information": "The document lacks data on single fathers, single-parent family statistics, or country-specific context required to answer the question."
+        },
+        {
+          "doc_id": "doc_19d697a0_1776306873",
+          "source": "local",
+          "title": "mattermost_chat_20251120_020510.jsonl",
+          "locator": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0070/files/DI0003/mattermost_chat_20251120_020510.jsonl",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:doc_19d697a0_1776306873] contains no information about countries or percentages of single-parent families. The only data provided relates to a cybersecurity team's workforce percentage at Elexion Automotive, which is unrelated to the question about single fathers and single-parent families.",
+          "confidence": 0.15,
+          "missing_information": "The document lacks data about countries, single-parent families, or demographic statistics related to single fathers."
+        },
+        {
+          "doc_id": "web/74587",
+          "source": "web",
+          "title": "https://www.betterhelp.com/advice/family/there-are-6-different-family-types-and-each-one-has-a-unique-family-dynamic/",
+          "locator": "https://www.betterhelp.com/advice/family/there-are-6-different-family-types-and-each-one-has-a-unique-family-dynamic/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:web/74587] does not mention any specific country or provide data linking single fathers to a 16% share of single-parent families. While the document discusses single-parent families generally, it lacks country-specific statistics or references to the 16% figure in the context of a nation.",
+          "confidence": 0.82,
+          "missing_information": "The document does not specify a country or provide quantitative data connecting single fathers to a 16% share of single-parent families."
+        },
+        {
+          "doc_id": "web/21529",
+          "source": "web",
+          "title": "https://usafacts.org/articles/how-has-the-structure-of-american-households-changed-over-time/",
+          "locator": "https://usafacts.org/articles/how-has-the-structure-of-american-households-changed-over-time/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:web/21529] discusses single-parent households in the United States but only mentions 7.4% of households being single-parent families in 2023, not 16%. There is no mention of a country where single fathers make up 16% of single-parent families.",
+          "confidence": 0.82,
+          "missing_information": "The document does not provide data linking single fathers to a 16% share of single-parent families in any country."
+        }
+      ],
+      "candidate_doc_ids": [],
+      "candidate_cards": []
+    },
+    {
+      "hop_number": 3,
+      "question": "In what year were 40.7% of births to unmarried women in the United States?",
+      "status": "pending",
+      "attempts": 0,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": null,
+      "search_history": [],
+      "selected_doc_ids": [],
+      "reader_results": [],
+      "candidate_doc_ids": [],
+      "candidate_cards": []
+    },
+    {
+      "hop_number": 4,
+      "question": "Which employee stated that Elexion was founded in 2010?",
+      "status": "pending",
+      "attempts": 0,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": null,
+      "search_history": [],
+      "selected_doc_ids": [],
+      "reader_results": [],
+      "candidate_doc_ids": [],
+      "candidate_cards": []
+    },
+    {
+      "hop_number": 5,
+      "question": "Who co-edited the book \"How to Watch TV\" with Ethan Thompson?",
+      "status": "pending",
+      "attempts": 0,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": null,
+      "search_history": [],
+      "selected_doc_ids": [],
+      "reader_results": [],
+      "candidate_doc_ids": [],
+      "candidate_cards": []
+    }
+  ],
+  "actions": [
+    {
+      "id": "iter0_web_search_0",
+      "type": "web_search",
+      "description": "Search for Elexion Automotive's 2020 annual report or workforce statistics",
+      "parameters": {
+        "query": "Elexion Automotive 2020 annual report cybersecurity team percentage"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Elexion Automotive 2020 annual report cybersecurity team percentage",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 annual report cybersecurity team percentage"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis\n\nTechnology has entered all areas of life, and our cars are no exceptio..."
+          },
+          {
+            "doc_id": "web/88213",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2023/",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 annual report cybersecurity team percentage"
+            ],
+            "snippet": "---\ntitle: 24 May 2023 Cybersecurity Almanac: 100 Facts, Figures, Predictions, And Statistics\ndate: 2023-05-24\n---\n24 Ma..."
+          },
+          {
+            "doc_id": "web/30161",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2022/",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 annual report cybersecurity team percentage"
+            ],
+            "snippet": "---\ntitle: 19 Jan 2022 Cybersecurity Almanac: 100 Facts, Figures, Predictions And Statistics\ndate: 2024-01-01\n---\n19 Jan..."
+          },
+          {
+            "doc_id": "web/12200",
+            "source": "web",
+            "title": "https://www.cm-alliance.com/cybersecurity-blog/january-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 annual report cybersecurity team percentage"
+            ],
+            "snippet": "---\ntitle: January 2024: Biggest Cyber Attacks, Data Breaches, Ransomware Attacks\ndate: 2025-06-02\n---\nJanuary 2024: Big..."
+          },
+          {
+            "doc_id": "web/4912",
+            "source": "web",
+            "title": "https://purplesec.us/resources/cybersecurity-statistics/",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 annual report cybersecurity team percentage"
+            ],
+            "snippet": "---\ntitle: 2024 Cybersecurity Statistics\nauthor: Jason Firch; MBA\ndate: 2025-05-24\n---\n2024 Cybersecurity Statistics\n\nTh..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.1910183960571885,
+      "iteration": 0
+    },
+    {
+      "id": "iter0_web_search_1",
+      "type": "web_search",
+      "description": "Search for workforce composition details of Elexion Automotive in 2020",
+      "parameters": {
+        "query": "Elexion Automotive 2020 workforce cybersecurity team size"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Elexion Automotive 2020 workforce cybersecurity team size",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 workforce cybersecurity team size"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > Cyber awareness behind the wheel\n\nCars are now also equipped with app..."
+          },
+          {
+            "doc_id": "web/88213",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2023/",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 workforce cybersecurity team size"
+            ],
+            "snippet": "---\ntitle: 24 May 2023 Cybersecurity Almanac: 100 Facts, Figures, Predictions, And Statistics\ndate: 2023-05-24\n---\n24 Ma..."
+          },
+          {
+            "doc_id": "web/77758",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/jobs/",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 workforce cybersecurity team size"
+            ],
+            "snippet": "---\ntitle: 23 Feb Cybersecurity Jobs Report: 3.5 Million Unfilled Positions In 2025\ndate: 2024-01-01\n---\n23 Feb Cybersec..."
+          },
+          {
+            "doc_id": "web/30161",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2022/",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 workforce cybersecurity team size"
+            ],
+            "snippet": "---\ntitle: 19 Jan 2022 Cybersecurity Almanac: 100 Facts, Figures, Predictions And Statistics\ndate: 2024-01-01\n---\n19 Jan..."
+          },
+          {
+            "doc_id": "web/91890",
+            "source": "web",
+            "title": "https://www.varonis.com/blog/cybersecurity-statistics",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 workforce cybersecurity team size"
+            ],
+            "snippet": "---\ntitle: 157 Cybersecurity Statistics and Trends [updated 2024]\nauthor: Rob Sobers\ndate: 2024-09-13\n---\nCybersecurity..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.1733474312350154,
+      "iteration": 0
+    },
+    {
+      "id": "iter0_web_search_2",
+      "type": "web_search",
+      "description": "Search for direct mentions of cybersecurity team percentage in Elexion Automotive 2020 data",
+      "parameters": {
+        "query": "Elexion Automotive cybersecurity team percentage 2020"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Elexion Automotive cybersecurity team percentage 2020",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity team percentage 2020"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > Cyber awareness behind the wheel\n\nCars are now also equipped with app..."
+          },
+          {
+            "doc_id": "web/88213",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2023/",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity team percentage 2020"
+            ],
+            "snippet": "---\ntitle: 24 May 2023 Cybersecurity Almanac: 100 Facts, Figures, Predictions, And Statistics\ndate: 2023-05-24\n---\n24 Ma..."
+          },
+          {
+            "doc_id": "web/30161",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2022/",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity team percentage 2020"
+            ],
+            "snippet": "---\ntitle: 19 Jan 2022 Cybersecurity Almanac: 100 Facts, Figures, Predictions And Statistics\ndate: 2024-01-01\n---\n19 Jan..."
+          },
+          {
+            "doc_id": "web/4912",
+            "source": "web",
+            "title": "https://purplesec.us/resources/cybersecurity-statistics/",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity team percentage 2020"
+            ],
+            "snippet": "---\ntitle: 2024 Cybersecurity Statistics\nauthor: Jason Firch; MBA\ndate: 2025-05-24\n---\n2024 Cybersecurity Statistics\n\nTh..."
+          },
+          {
+            "doc_id": "web/91890",
+            "source": "web",
+            "title": "https://www.varonis.com/blog/cybersecurity-statistics",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity team percentage 2020"
+            ],
+            "snippet": "---\ntitle: 157 Cybersecurity Statistics and Trends [updated 2024]\nauthor: Rob Sobers\ndate: 2024-09-13\n---\nCybersecurity..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.20023059379309416,
+      "iteration": 0
+    },
+    {
+      "id": "iter1_web_search_0",
+      "type": "web_search",
+      "description": "Search for Elexion Automotive's 2020 workforce cybersecurity team percentage",
+      "parameters": {
+        "query": "Elexion Automotive 2020 cybersecurity team workforce percentage"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Elexion Automotive 2020 cybersecurity team workforce percentage",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 cybersecurity team workforce percentage"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > Cyber awareness behind the wheel\n\nCars are now also equipped with app..."
+          },
+          {
+            "doc_id": "web/88213",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2023/",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 cybersecurity team workforce percentage"
+            ],
+            "snippet": "---\ntitle: 24 May 2023 Cybersecurity Almanac: 100 Facts, Figures, Predictions, And Statistics\ndate: 2023-05-24\n---\n24 Ma..."
+          },
+          {
+            "doc_id": "web/30161",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2022/",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 cybersecurity team workforce percentage"
+            ],
+            "snippet": "---\ntitle: 19 Jan 2022 Cybersecurity Almanac: 100 Facts, Figures, Predictions And Statistics\ndate: 2024-01-01\n---\n19 Jan..."
+          },
+          {
+            "doc_id": "web/91890",
+            "source": "web",
+            "title": "https://www.varonis.com/blog/cybersecurity-statistics",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 cybersecurity team workforce percentage"
+            ],
+            "snippet": "---\ntitle: 157 Cybersecurity Statistics and Trends [updated 2024]\nauthor: Rob Sobers\ndate: 2024-09-13\n---\nCybersecurity..."
+          },
+          {
+            "doc_id": "web/77758",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/jobs/",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 cybersecurity team workforce percentage"
+            ],
+            "snippet": "---\ntitle: 23 Feb Cybersecurity Jobs Report: 3.5 Million Unfilled Positions In 2025\ndate: 2024-01-01\n---\n23 Feb Cybersec..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.177328335121274,
+      "iteration": 1
+    },
+    {
+      "id": "iter1_web_search_1",
+      "type": "web_search",
+      "description": "Search for Elexion Automotive 2020 employee statistics",
+      "parameters": {
+        "query": "Elexion Automotive 2020 employee statistics cybersecurity team"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Elexion Automotive 2020 employee statistics cybersecurity team",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 employee statistics cybersecurity team"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > Cyber awareness behind the wheel\n\nCars are now also equipped with app..."
+          },
+          {
+            "doc_id": "web/88213",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2023/",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 employee statistics cybersecurity team"
+            ],
+            "snippet": "---\ntitle: 24 May 2023 Cybersecurity Almanac: 100 Facts, Figures, Predictions, And Statistics\ndate: 2023-05-24\n---\n24 Ma..."
+          },
+          {
+            "doc_id": "web/30161",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2022/",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 employee statistics cybersecurity team"
+            ],
+            "snippet": "---\ntitle: 19 Jan 2022 Cybersecurity Almanac: 100 Facts, Figures, Predictions And Statistics\ndate: 2024-01-01\n---\n19 Jan..."
+          },
+          {
+            "doc_id": "web/91890",
+            "source": "web",
+            "title": "https://www.varonis.com/blog/cybersecurity-statistics",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 employee statistics cybersecurity team"
+            ],
+            "snippet": "---\ntitle: 157 Cybersecurity Statistics and Trends [updated 2024]\nauthor: Rob Sobers\ndate: 2024-09-13\n---\nCybersecurity..."
+          },
+          {
+            "doc_id": "web/33651",
+            "source": "web",
+            "title": "https://www.itgovernance.co.uk/blog/list-of-data-breaches-and-cyber-attacks-in-2023",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 employee statistics cybersecurity team"
+            ],
+            "snippet": "---\ntitle: List of Data Breaches and Cyber Attacks in 2023 – 8,214,886,660 records breached\ndate: 2024-01-05\n---\nWelcome..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.24943248368799686,
+      "iteration": 1
+    },
+    {
+      "id": "iter1_web_search_2",
+      "type": "web_search",
+      "description": "Search for Elexion Automotive annual report 2020 cybersecurity team data",
+      "parameters": {
+        "query": "Elexion Automotive annual report 2020 cybersecurity team size"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Elexion Automotive annual report 2020 cybersecurity team size",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive annual report 2020 cybersecurity team size"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis\n\nTechnology has entered all areas of life, and our cars are no exceptio..."
+          },
+          {
+            "doc_id": "web/88213",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2023/",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive annual report 2020 cybersecurity team size"
+            ],
+            "snippet": "---\ntitle: 24 May 2023 Cybersecurity Almanac: 100 Facts, Figures, Predictions, And Statistics\ndate: 2023-05-24\n---\n24 Ma..."
+          },
+          {
+            "doc_id": "web/30161",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2022/",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive annual report 2020 cybersecurity team size"
+            ],
+            "snippet": "---\ntitle: 19 Jan 2022 Cybersecurity Almanac: 100 Facts, Figures, Predictions And Statistics\ndate: 2024-01-01\n---\n19 Jan..."
+          },
+          {
+            "doc_id": "web/33651",
+            "source": "web",
+            "title": "https://www.itgovernance.co.uk/blog/list-of-data-breaches-and-cyber-attacks-in-2023",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive annual report 2020 cybersecurity team size"
+            ],
+            "snippet": "---\ntitle: List of Data Breaches and Cyber Attacks in 2023 – 8,214,886,660 records breached\ndate: 2024-01-05\n---\nWelcome..."
+          },
+          {
+            "doc_id": "web/12200",
+            "source": "web",
+            "title": "https://www.cm-alliance.com/cybersecurity-blog/january-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive annual report 2020 cybersecurity team size"
+            ],
+            "snippet": "---\ntitle: January 2024: Biggest Cyber Attacks, Data Breaches, Ransomware Attacks\ndate: 2025-06-02\n---\nJanuary 2024: Big..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.2479874175041914,
+      "iteration": 1
+    },
+    {
+      "id": "iter2_web_fallback",
+      "type": "web_search",
+      "description": "Search the web for hop 1",
+      "parameters": {
+        "query": "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate web evidence",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > Cyber awareness behind the wheel\n\nCars are now also equipped with app..."
+          },
+          {
+            "doc_id": "web/88213",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2023/",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?"
+            ],
+            "snippet": "---\ntitle: 24 May 2023 Cybersecurity Almanac: 100 Facts, Figures, Predictions, And Statistics\ndate: 2023-05-24\n---\n24 Ma..."
+          },
+          {
+            "doc_id": "web/91890",
+            "source": "web",
+            "title": "https://www.varonis.com/blog/cybersecurity-statistics",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?"
+            ],
+            "snippet": "---\ntitle: 157 Cybersecurity Statistics and Trends [updated 2024]\nauthor: Rob Sobers\ndate: 2024-09-13\n---\nCybersecurity..."
+          },
+          {
+            "doc_id": "web/30161",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2022/",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?"
+            ],
+            "snippet": "---\ntitle: 19 Jan 2022 Cybersecurity Almanac: 100 Facts, Figures, Predictions And Statistics\ndate: 2024-01-01\n---\n19 Jan..."
+          },
+          {
+            "doc_id": "web/41836",
+            "source": "web",
+            "title": "https://www.processunity.com/resources/blogs/evolution-of-cybersecurity-how-we-progressed/",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?"
+            ],
+            "snippet": "---\ntitle: Cybersecurity Through the Years and How We've Progressed\nauthor: Cybergrx\ndate: 2024-07-19\n---\n\"Security is a..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 2.231996199116111,
+      "iteration": 2
+    },
+    {
+      "id": "iter2_local_fallback",
+      "type": "local_document_search",
+      "description": "Search local documents for hop 1",
+      "parameters": {
+        "query": "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate local evidence",
+      "status": "completed",
+      "actual_output": {
+        "tool": "local_document_search",
+        "query": "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "doc_fb9ebed3_1776306873",
+            "source": "local",
+            "title": "elexion-cybersecurity-framework.pdf",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?"
+            ],
+            "snippet": "Elexion Automotive's Cybersecurity Framework\nIntroduction\nAs Elexion Automotive continues to innovate in the electric ve..."
+          },
+          {
+            "doc_id": "doc_da37b440_1776306872",
+            "source": "local",
+            "title": "cybersecurity-review-2025.pdf",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?"
+            ],
+            "snippet": "Cybersecurity Incident Review FY  2025\nIntroduction\nAs part of our commitment to maintaining robust cybersecurity measur..."
+          },
+          {
+            "doc_id": "doc_64ed5b3f_1776306873",
+            "source": "local",
+            "title": "cybersecurity-strategy-Q1-2026.pdf",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?"
+            ],
+            "snippet": "Remote Cybersecurity Threats: Strategy for Q1\n2026\nIntroduction\nGiven the evolving nature of cyber threats, it is essent..."
+          },
+          {
+            "doc_id": "doc_72a85a9c_1776306874",
+            "source": "local",
+            "title": "cybersecurity-strategies-q1-2026.pdf",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?"
+            ],
+            "snippet": "Cybersecurity Strategies for Consumer\nProtection\nIntroduction\nAs Elexion Automotive continues to revolutionize the elect..."
+          },
+          {
+            "doc_id": "doc_63e9443c_1776306873",
+            "source": "local",
+            "title": "2025-phishing-simulation-report.docx",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?"
+            ],
+            "snippet": "2025 Internal Phishing Simulation Report\nIntroduction\nThe increasing sophistication of cyber threats necessitates regula..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 2.6283521447330713,
+      "iteration": 2
+    },
+    {
+      "id": "iter3_web_search_0",
+      "type": "web_search",
+      "description": "Search for the country associated with 16% single fathers in single-parent families",
+      "parameters": {
+        "query": "country with 16% single fathers in single-parent families"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "country with 16% single fathers in single-parent families",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "country with 16% single fathers in single-parent families"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > The regulatory landscape\n\nThe problem might lie in differing regulato..."
+          },
+          {
+            "doc_id": "web/90973",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Single_parents_in_the_United_States",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "country with 16% single fathers in single-parent families"
+            ],
+            "snippet": "---\ntitle: Single parents in the United States - Wikipedia\ndate: 2020-04-18\n---\nSingle parents in the United States have..."
+          },
+          {
+            "doc_id": "web/74902",
+            "source": "web",
+            "title": "https://www.aecf.org/blog/child-well-being-in-single-parent-families",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "country with 16% single fathers in single-parent families"
+            ],
+            "snippet": "---\ntitle: Child Well-Being in Single-Parent Families\ndate: 2021-01-12\n---\nChild Well-Being in Single-Parent Families\n\nT..."
+          },
+          {
+            "doc_id": "web/31111",
+            "source": "web",
+            "title": "https://actforyouth.org/adolescence/demographics/family.cfm",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "country with 16% single fathers in single-parent families"
+            ],
+            "snippet": "---\ntitle: Youth Statistics: Family Structure and Relationships\ndate: 2018-01-08\n---\nYouth Statistics: Family Structure..."
+          },
+          {
+            "doc_id": "web/86581",
+            "source": "web",
+            "title": "https://adoptioncouncil.org/publications/single-parent-adoption-the-process-and-experience-of-adopting-unpartnered/",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "country with 16% single fathers in single-parent families"
+            ],
+            "snippet": "---\ntitle: Single Parent Adoption: The Process and Experience of Adopting Unpartnered\nauthor: Abigail Lindner\ndate: 2021..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.2886449443176389,
+      "iteration": 3
+    },
+    {
+      "id": "iter3_web_search_1",
+      "type": "web_search",
+      "description": "Search for statistical data on single-parent families and single fathers",
+      "parameters": {
+        "query": "percentage of single fathers in single-parent families by country"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "percentage of single fathers in single-parent families by country",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "percentage of single fathers in single-parent families by country"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > Future security concerns\n\nVehicle-to-Everything ( V2X ) communication..."
+          },
+          {
+            "doc_id": "web/90973",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Single_parents_in_the_United_States",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "percentage of single fathers in single-parent families by country"
+            ],
+            "snippet": "---\ntitle: Single parents in the United States - Wikipedia\ndate: 2020-04-18\n---\nSingle parents in the United States have..."
+          },
+          {
+            "doc_id": "web/74902",
+            "source": "web",
+            "title": "https://www.aecf.org/blog/child-well-being-in-single-parent-families",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "percentage of single fathers in single-parent families by country"
+            ],
+            "snippet": "---\ntitle: Child Well-Being in Single-Parent Families\ndate: 2021-01-12\n---\nChild Well-Being in Single-Parent Families\n\nT..."
+          },
+          {
+            "doc_id": "web/12570",
+            "source": "web",
+            "title": "https://www.psychologytoday.com/us/blog/singletons/202311/free-to-have-only-one-child",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "percentage of single fathers in single-parent families by country"
+            ],
+            "snippet": "---\ntitle: The Well-Kept Secret About Only Children\nauthor: Online Susan Newman; Ph D; Facebook; X; LinkedIn; Instagram..."
+          },
+          {
+            "doc_id": "web/7893",
+            "source": "web",
+            "title": "https://www.census.gov/newsroom/press-releases/2022/americas-families-and-living-arrangements.html",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "percentage of single fathers in single-parent families by country"
+            ],
+            "snippet": "---\ntitle: Census Bureau Releases New Estimates on America's Families and Living Arrangements\ndate: 2022-11-17\n---\nPress..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.30203727912157774,
+      "iteration": 3
+    },
+    {
+      "id": "iter3_local_document_search_2",
+      "type": "local_document_search",
+      "description": "Check if documents mention 16% single fathers in relation to a country",
+      "parameters": {
+        "query": "16% single fathers country"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "local_document_search",
+        "query": "16% single fathers country",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "doc_7e43729e_1776306873",
+            "source": "local",
+            "title": "mattermost_chat_20251120_020616.jsonl",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "16% single fathers country"
+            ],
+            "snippet": "\nMattermost Message:\nUser: ethan_thompson\nChannel: cybersecurity_budget\nTeam: cybersecurity\nTime: unknown\nMessage: Thank..."
+          },
+          {
+            "doc_id": "doc_960c3f72_1776306874",
+            "source": "local",
+            "title": "mattermost_chat_20251120_020717.jsonl",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "16% single fathers country"
+            ],
+            "snippet": "\nMattermost Message:\nUser: ethan_thompson\nChannel: avoidable_attacks\nTeam: cybersecurity\nTime: 2021-05-08T18:53:22\nMessa..."
+          },
+          {
+            "doc_id": "doc_b40f2bee_1776306873",
+            "source": "local",
+            "title": "mattermost_chat_20251120_020717.jsonl",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "16% single fathers country"
+            ],
+            "snippet": "\nMattermost Message:\nUser: jane_doe\nChannel: it_budget\nTeam: it_department\nTime: unknown\nMessage: Hi team, we need to pl..."
+          },
+          {
+            "doc_id": "doc_19d697a0_1776306873",
+            "source": "local",
+            "title": "mattermost_chat_20251120_020510.jsonl",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "16% single fathers country"
+            ],
+            "snippet": "\nMattermost Message:\nUser: ethan_t\nChannel: cybersecurity_updates\nTeam: IT_Security\nTime: unknown\nMessage: Sure, Mary. I..."
+          },
+          {
+            "doc_id": "doc_4e6c7373_1776306873",
+            "source": "local",
+            "title": "mattermost_chat_20251120_020510.jsonl",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "16% single fathers country"
+            ],
+            "snippet": "\nMattermost Message:\nUser: chris_s\nChannel: system_maintenance\nTeam: System_Updates\nTime: unknown\nMessage: Thanks, Ethan..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.028027329593896866,
+      "iteration": 3
+    },
+    {
+      "id": "iter4_web_search_0",
+      "type": "web_search",
+      "description": "Search for the specific country associated with 16% single fathers in single-parent families",
+      "parameters": {
+        "query": "country where single fathers account for 16% of single-parent families"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "country where single fathers account for 16% of single-parent families",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "country where single fathers account for 16% of single-parent families"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > The regulatory landscape\n\nThe problem might lie in differing regulato..."
+          },
+          {
+            "doc_id": "web/90973",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Single_parents_in_the_United_States",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "country where single fathers account for 16% of single-parent families"
+            ],
+            "snippet": "---\ntitle: Single parents in the United States - Wikipedia\ndate: 2020-04-18\n---\nSingle parents in the United States have..."
+          },
+          {
+            "doc_id": "web/74902",
+            "source": "web",
+            "title": "https://www.aecf.org/blog/child-well-being-in-single-parent-families",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "country where single fathers account for 16% of single-parent families"
+            ],
+            "snippet": "---\ntitle: Child Well-Being in Single-Parent Families\ndate: 2021-01-12\n---\nChild Well-Being in Single-Parent Families\n\nT..."
+          },
+          {
+            "doc_id": "web/31111",
+            "source": "web",
+            "title": "https://actforyouth.org/adolescence/demographics/family.cfm",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "country where single fathers account for 16% of single-parent families"
+            ],
+            "snippet": "---\ntitle: Youth Statistics: Family Structure and Relationships\ndate: 2018-01-08\n---\nYouth Statistics: Family Structure..."
+          },
+          {
+            "doc_id": "web/7893",
+            "source": "web",
+            "title": "https://www.census.gov/newsroom/press-releases/2022/americas-families-and-living-arrangements.html",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "country where single fathers account for 16% of single-parent families"
+            ],
+            "snippet": "---\ntitle: Census Bureau Releases New Estimates on America's Families and Living Arrangements\ndate: 2022-11-17\n---\nPress..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.4779060399159789,
+      "iteration": 4
+    },
+    {
+      "id": "iter4_web_search_1",
+      "type": "web_search",
+      "description": "Search for demographic data linking 16% single fathers to a specific country",
+      "parameters": {
+        "query": "single-parent families headed by fathers 16% country"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "single-parent families headed by fathers 16% country",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "single-parent families headed by fathers 16% country"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > Future security concerns\n\nVehicle-to-Everything ( V2X ) communication..."
+          },
+          {
+            "doc_id": "web/90973",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Single_parents_in_the_United_States",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "single-parent families headed by fathers 16% country"
+            ],
+            "snippet": "---\ntitle: Single parents in the United States - Wikipedia\ndate: 2020-04-18\n---\nSingle parents in the United States have..."
+          },
+          {
+            "doc_id": "web/31111",
+            "source": "web",
+            "title": "https://actforyouth.org/adolescence/demographics/family.cfm",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "single-parent families headed by fathers 16% country"
+            ],
+            "snippet": "---\ntitle: Youth Statistics: Family Structure and Relationships\ndate: 2018-01-08\n---\nYouth Statistics: Family Structure..."
+          },
+          {
+            "doc_id": "web/74902",
+            "source": "web",
+            "title": "https://www.aecf.org/blog/child-well-being-in-single-parent-families",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "single-parent families headed by fathers 16% country"
+            ],
+            "snippet": "---\ntitle: Child Well-Being in Single-Parent Families\ndate: 2021-01-12\n---\nChild Well-Being in Single-Parent Families\n\nT..."
+          },
+          {
+            "doc_id": "web/7893",
+            "source": "web",
+            "title": "https://www.census.gov/newsroom/press-releases/2022/americas-families-and-living-arrangements.html",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "single-parent families headed by fathers 16% country"
+            ],
+            "snippet": "---\ntitle: Census Bureau Releases New Estimates on America's Families and Living Arrangements\ndate: 2022-11-17\n---\nPress..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.4255645936354995,
+      "iteration": 4
+    },
+    {
+      "id": "iter4_local_document_search_2",
+      "type": "local_document_search",
+      "description": "Check local documents for any mention of 16% single fathers in national contexts",
+      "parameters": {
+        "query": "16% single fathers national statistics"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "local_document_search",
+        "query": "16% single fathers national statistics",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "doc_960c3f72_1776306874",
+            "source": "local",
+            "title": "mattermost_chat_20251120_020717.jsonl",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "16% single fathers national statistics"
+            ],
+            "snippet": "\nMattermost Message:\nUser: ethan_thompson\nChannel: avoidable_attacks\nTeam: cybersecurity\nTime: 2021-05-08T18:53:22\nMessa..."
+          },
+          {
+            "doc_id": "doc_7e43729e_1776306873",
+            "source": "local",
+            "title": "mattermost_chat_20251120_020616.jsonl",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "16% single fathers national statistics"
+            ],
+            "snippet": "\nMattermost Message:\nUser: ethan_thompson\nChannel: cybersecurity_budget\nTeam: cybersecurity\nTime: unknown\nMessage: Thank..."
+          },
+          {
+            "doc_id": "doc_4e6c7373_1776306873",
+            "source": "local",
+            "title": "mattermost_chat_20251120_020510.jsonl",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "16% single fathers national statistics"
+            ],
+            "snippet": "\nMattermost Message:\nUser: chris_s\nChannel: system_maintenance\nTeam: System_Updates\nTime: unknown\nMessage: Thanks, Ethan..."
+          },
+          {
+            "doc_id": "doc_b40f2bee_1776306873",
+            "source": "local",
+            "title": "mattermost_chat_20251120_020717.jsonl",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "16% single fathers national statistics"
+            ],
+            "snippet": "\nMattermost Message:\nUser: jane_doe\nChannel: it_budget\nTeam: it_department\nTime: unknown\nMessage: Hi team, we need to pl..."
+          },
+          {
+            "doc_id": "doc_03d0bc0d_1776306874",
+            "source": "local",
+            "title": "mattermost_chat_20251120_020717.jsonl",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "16% single fathers national statistics"
+            ],
+            "snippet": "\nMattermost Message:\nUser: ethan_thompson\nChannel: avoidable_attacks\nTeam: cybersecurity\nTime: 2021-05-08T18:53:20\nMessa..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.30626771319657564,
+      "iteration": 4
+    },
+    {
+      "id": "iter5_web_search_0",
+      "type": "web_search",
+      "description": "Search for country with 16% single-father single-parent families",
+      "parameters": {
+        "query": "country with 16% single-father single-parent families"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "country with 16% single-father single-parent families",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "country with 16% single-father single-parent families"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > The regulatory landscape\n\nThe problem might lie in differing regulato..."
+          },
+          {
+            "doc_id": "web/90973",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Single_parents_in_the_United_States",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "country with 16% single-father single-parent families"
+            ],
+            "snippet": "---\ntitle: Single parents in the United States - Wikipedia\ndate: 2020-04-18\n---\nSingle parents in the United States have..."
+          },
+          {
+            "doc_id": "web/74902",
+            "source": "web",
+            "title": "https://www.aecf.org/blog/child-well-being-in-single-parent-families",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "country with 16% single-father single-parent families"
+            ],
+            "snippet": "---\ntitle: Child Well-Being in Single-Parent Families\ndate: 2021-01-12\n---\nChild Well-Being in Single-Parent Families\n\nT..."
+          },
+          {
+            "doc_id": "web/31111",
+            "source": "web",
+            "title": "https://actforyouth.org/adolescence/demographics/family.cfm",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "country with 16% single-father single-parent families"
+            ],
+            "snippet": "---\ntitle: Youth Statistics: Family Structure and Relationships\ndate: 2018-01-08\n---\nYouth Statistics: Family Structure..."
+          },
+          {
+            "doc_id": "web/74587",
+            "source": "web",
+            "title": "https://www.betterhelp.com/advice/family/there-are-6-different-family-types-and-each-one-has-a-unique-family-dynamic/",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "country with 16% single-father single-parent families"
+            ],
+            "snippet": "---\ntitle: Takeaway\ndate: 2004-01-01\n---\nWant to work with an expert to improve your family dynamics?\n\n- Financially sta..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.24746680445969105,
+      "iteration": 5
+    },
+    {
+      "id": "iter5_web_search_1",
+      "type": "web_search",
+      "description": "Search for single-parent family demographics by country with 16% father percentage",
+      "parameters": {
+        "query": "single-parent family demographics by country with 16% father percentage"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "single-parent family demographics by country with 16% father percentage",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "single-parent family demographics by country with 16% father percentage"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > Future security concerns\n\nVehicle-to-Everything ( V2X ) communication..."
+          },
+          {
+            "doc_id": "web/90973",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Single_parents_in_the_United_States",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "single-parent family demographics by country with 16% father percentage"
+            ],
+            "snippet": "---\ntitle: Single parents in the United States - Wikipedia\ndate: 2020-04-18\n---\nSingle parents in the United States have..."
+          },
+          {
+            "doc_id": "web/31111",
+            "source": "web",
+            "title": "https://actforyouth.org/adolescence/demographics/family.cfm",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "single-parent family demographics by country with 16% father percentage"
+            ],
+            "snippet": "---\ntitle: Youth Statistics: Family Structure and Relationships\ndate: 2018-01-08\n---\nYouth Statistics: Family Structure..."
+          },
+          {
+            "doc_id": "web/7893",
+            "source": "web",
+            "title": "https://www.census.gov/newsroom/press-releases/2022/americas-families-and-living-arrangements.html",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "single-parent family demographics by country with 16% father percentage"
+            ],
+            "snippet": "---\ntitle: Census Bureau Releases New Estimates on America's Families and Living Arrangements\ndate: 2022-11-17\n---\nPress..."
+          },
+          {
+            "doc_id": "web/74902",
+            "source": "web",
+            "title": "https://www.aecf.org/blog/child-well-being-in-single-parent-families",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "single-parent family demographics by country with 16% father percentage"
+            ],
+            "snippet": "---\ntitle: Child Well-Being in Single-Parent Families\ndate: 2021-01-12\n---\nChild Well-Being in Single-Parent Families\n\nT..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.24541051033884287,
+      "iteration": 5
+    },
+    {
+      "id": "iter5_local_document_search_2",
+      "type": "local_document_search",
+      "description": "Search local documents for 16% single-father single-parent family country",
+      "parameters": {
+        "query": "16% single-father single-parent family country"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "local_document_search",
+        "query": "16% single-father single-parent family country",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "doc_7e43729e_1776306873",
+            "source": "local",
+            "title": "mattermost_chat_20251120_020616.jsonl",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "16% single-father single-parent family country"
+            ],
+            "snippet": "\nMattermost Message:\nUser: ethan_thompson\nChannel: cybersecurity_budget\nTeam: cybersecurity\nTime: unknown\nMessage: Thank..."
+          },
+          {
+            "doc_id": "doc_960c3f72_1776306874",
+            "source": "local",
+            "title": "mattermost_chat_20251120_020717.jsonl",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "16% single-father single-parent family country"
+            ],
+            "snippet": "\nMattermost Message:\nUser: ethan_thompson\nChannel: avoidable_attacks\nTeam: cybersecurity\nTime: 2021-05-08T18:53:22\nMessa..."
+          },
+          {
+            "doc_id": "doc_4e6c7373_1776306873",
+            "source": "local",
+            "title": "mattermost_chat_20251120_020510.jsonl",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "16% single-father single-parent family country"
+            ],
+            "snippet": "\nMattermost Message:\nUser: chris_s\nChannel: system_maintenance\nTeam: System_Updates\nTime: unknown\nMessage: Thanks, Ethan..."
+          },
+          {
+            "doc_id": "doc_19d697a0_1776306873",
+            "source": "local",
+            "title": "mattermost_chat_20251120_020510.jsonl",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "16% single-father single-parent family country"
+            ],
+            "snippet": "\nMattermost Message:\nUser: ethan_t\nChannel: cybersecurity_updates\nTeam: IT_Security\nTime: unknown\nMessage: Sure, Mary. I..."
+          },
+          {
+            "doc_id": "doc_b40f2bee_1776306873",
+            "source": "local",
+            "title": "mattermost_chat_20251120_020717.jsonl",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "16% single-father single-parent family country"
+            ],
+            "snippet": "\nMattermost Message:\nUser: jane_doe\nChannel: it_budget\nTeam: it_department\nTime: unknown\nMessage: Hi team, we need to pl..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.031458161771297455,
+      "iteration": 5
+    },
+    {
+      "id": "iter6_web_search_0",
+      "type": "web_search",
+      "description": "Search for country statistics on single-father households",
+      "parameters": {
+        "query": "country single-father households percentage 16%"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "country single-father households percentage 16%",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "country single-father households percentage 16%"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > The regulatory landscape\n\nThe problem might lie in differing regulato..."
+          },
+          {
+            "doc_id": "web/90973",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Single_parents_in_the_United_States",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "country single-father households percentage 16%"
+            ],
+            "snippet": "---\ntitle: Single parents in the United States - Wikipedia\ndate: 2020-04-18\n---\nSingle parents in the United States have..."
+          },
+          {
+            "doc_id": "web/21529",
+            "source": "web",
+            "title": "https://usafacts.org/articles/how-has-the-structure-of-american-households-changed-over-time/",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "country single-father households percentage 16%"
+            ],
+            "snippet": "---\ntitle: What is the most common household makeup in the United States?\ndate: 2024-01-01\n---\nIn 2023, more than half o..."
+          },
+          {
+            "doc_id": "web/7893",
+            "source": "web",
+            "title": "https://www.census.gov/newsroom/press-releases/2022/americas-families-and-living-arrangements.html",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "country single-father households percentage 16%"
+            ],
+            "snippet": "---\ntitle: Census Bureau Releases New Estimates on America's Families and Living Arrangements\ndate: 2022-11-17\n---\nPress..."
+          },
+          {
+            "doc_id": "web/31111",
+            "source": "web",
+            "title": "https://actforyouth.org/adolescence/demographics/family.cfm",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "country single-father households percentage 16%"
+            ],
+            "snippet": "---\ntitle: Youth Statistics: Family Structure and Relationships\ndate: 2018-01-08\n---\nYouth Statistics: Family Structure..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.22803105879575014,
+      "iteration": 6
+    },
+    {
+      "id": "iter6_web_search_1",
+      "type": "web_search",
+      "description": "Search for global demographic data on single-parent families",
+      "parameters": {
+        "query": "global single-parent families father percentage 16%"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "global single-parent families father percentage 16%",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "global single-parent families father percentage 16%"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > The regulatory landscape\n\nThe problem might lie in differing regulato..."
+          },
+          {
+            "doc_id": "web/90973",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Single_parents_in_the_United_States",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "global single-parent families father percentage 16%"
+            ],
+            "snippet": "---\ntitle: Single parents in the United States - Wikipedia\ndate: 2020-04-18\n---\nSingle parents in the United States have..."
+          },
+          {
+            "doc_id": "web/7893",
+            "source": "web",
+            "title": "https://www.census.gov/newsroom/press-releases/2022/americas-families-and-living-arrangements.html",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "global single-parent families father percentage 16%"
+            ],
+            "snippet": "---\ntitle: Census Bureau Releases New Estimates on America's Families and Living Arrangements\ndate: 2022-11-17\n---\nPress..."
+          },
+          {
+            "doc_id": "web/31111",
+            "source": "web",
+            "title": "https://actforyouth.org/adolescence/demographics/family.cfm",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "global single-parent families father percentage 16%"
+            ],
+            "snippet": "---\ntitle: Youth Statistics: Family Structure and Relationships\ndate: 2018-01-08\n---\nYouth Statistics: Family Structure..."
+          },
+          {
+            "doc_id": "web/74902",
+            "source": "web",
+            "title": "https://www.aecf.org/blog/child-well-being-in-single-parent-families",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "global single-parent families father percentage 16%"
+            ],
+            "snippet": "---\ntitle: Child Well-Being in Single-Parent Families\ndate: 2021-01-12\n---\nChild Well-Being in Single-Parent Families\n\nT..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.22090494725853205,
+      "iteration": 6
+    },
+    {
+      "id": "iter6_local_document_search_2",
+      "type": "local_document_search",
+      "description": "Search local documents for demographic statistics",
+      "parameters": {
+        "query": "single-parent family statistics 16% country"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "local_document_search",
+        "query": "single-parent family statistics 16% country",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "doc_960c3f72_1776306874",
+            "source": "local",
+            "title": "mattermost_chat_20251120_020717.jsonl",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "single-parent family statistics 16% country"
+            ],
+            "snippet": "\nMattermost Message:\nUser: ethan_thompson\nChannel: avoidable_attacks\nTeam: cybersecurity\nTime: 2021-05-08T18:53:22\nMessa..."
+          },
+          {
+            "doc_id": "doc_7e43729e_1776306873",
+            "source": "local",
+            "title": "mattermost_chat_20251120_020616.jsonl",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "single-parent family statistics 16% country"
+            ],
+            "snippet": "\nMattermost Message:\nUser: ethan_thompson\nChannel: cybersecurity_budget\nTeam: cybersecurity\nTime: unknown\nMessage: Thank..."
+          },
+          {
+            "doc_id": "doc_4e6c7373_1776306873",
+            "source": "local",
+            "title": "mattermost_chat_20251120_020510.jsonl",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "single-parent family statistics 16% country"
+            ],
+            "snippet": "\nMattermost Message:\nUser: chris_s\nChannel: system_maintenance\nTeam: System_Updates\nTime: unknown\nMessage: Thanks, Ethan..."
+          },
+          {
+            "doc_id": "doc_03d0bc0d_1776306874",
+            "source": "local",
+            "title": "mattermost_chat_20251120_020717.jsonl",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "single-parent family statistics 16% country"
+            ],
+            "snippet": "\nMattermost Message:\nUser: ethan_thompson\nChannel: avoidable_attacks\nTeam: cybersecurity\nTime: 2021-05-08T18:53:20\nMessa..."
+          },
+          {
+            "doc_id": "doc_19d697a0_1776306873",
+            "source": "local",
+            "title": "mattermost_chat_20251120_020510.jsonl",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "single-parent family statistics 16% country"
+            ],
+            "snippet": "\nMattermost Message:\nUser: ethan_t\nChannel: cybersecurity_updates\nTeam: IT_Security\nTime: unknown\nMessage: Sure, Mary. I..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.12039772234857082,
+      "iteration": 6
+    },
+    {
+      "id": "iter7_web_search_0",
+      "type": "web_search",
+      "description": "Search for country-specific statistics on single-father households with 16% prevalence",
+      "parameters": {
+        "query": "single-father households 16% country statistics"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "single-father households 16% country statistics",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "single-father households 16% country statistics"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > The regulatory landscape\n\nThe problem might lie in differing regulato..."
+          },
+          {
+            "doc_id": "web/90973",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Single_parents_in_the_United_States",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "single-father households 16% country statistics"
+            ],
+            "snippet": "---\ntitle: Single parents in the United States - Wikipedia\ndate: 2020-04-18\n---\nSingle parents in the United States have..."
+          },
+          {
+            "doc_id": "web/21529",
+            "source": "web",
+            "title": "https://usafacts.org/articles/how-has-the-structure-of-american-households-changed-over-time/",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "single-father households 16% country statistics"
+            ],
+            "snippet": "---\ntitle: What is the most common household makeup in the United States?\ndate: 2024-01-01\n---\nIn 2023, more than half o..."
+          },
+          {
+            "doc_id": "web/74902",
+            "source": "web",
+            "title": "https://www.aecf.org/blog/child-well-being-in-single-parent-families",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "single-father households 16% country statistics"
+            ],
+            "snippet": "---\ntitle: Child Well-Being in Single-Parent Families\ndate: 2021-01-12\n---\nChild Well-Being in Single-Parent Families\n\nT..."
+          },
+          {
+            "doc_id": "web/31111",
+            "source": "web",
+            "title": "https://actforyouth.org/adolescence/demographics/family.cfm",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "single-father households 16% country statistics"
+            ],
+            "snippet": "---\ntitle: Youth Statistics: Family Structure and Relationships\ndate: 2018-01-08\n---\nYouth Statistics: Family Structure..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.3789843497797847,
+      "iteration": 7
+    },
+    {
+      "id": "iter7_web_search_1",
+      "type": "web_search",
+      "description": "Search for global demographic reports linking 16% single-father single-parent families to a country",
+      "parameters": {
+        "query": "global single-parent family demographics 16% father percentage country"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "global single-parent family demographics 16% father percentage country",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "global single-parent family demographics 16% father percentage country"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > The regulatory landscape\n\nThe problem might lie in differing regulato..."
+          },
+          {
+            "doc_id": "web/90973",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Single_parents_in_the_United_States",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "global single-parent family demographics 16% father percentage country"
+            ],
+            "snippet": "---\ntitle: Single parents in the United States - Wikipedia\ndate: 2020-04-18\n---\nSingle parents in the United States have..."
+          },
+          {
+            "doc_id": "web/7893",
+            "source": "web",
+            "title": "https://www.census.gov/newsroom/press-releases/2022/americas-families-and-living-arrangements.html",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "global single-parent family demographics 16% father percentage country"
+            ],
+            "snippet": "---\ntitle: Census Bureau Releases New Estimates on America's Families and Living Arrangements\ndate: 2022-11-17\n---\nPress..."
+          },
+          {
+            "doc_id": "web/74902",
+            "source": "web",
+            "title": "https://www.aecf.org/blog/child-well-being-in-single-parent-families",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "global single-parent family demographics 16% father percentage country"
+            ],
+            "snippet": "---\ntitle: Child Well-Being in Single-Parent Families\ndate: 2021-01-12\n---\nChild Well-Being in Single-Parent Families\n\nT..."
+          },
+          {
+            "doc_id": "web/31111",
+            "source": "web",
+            "title": "https://actforyouth.org/adolescence/demographics/family.cfm",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "global single-parent family demographics 16% father percentage country"
+            ],
+            "snippet": "---\ntitle: Youth Statistics: Family Structure and Relationships\ndate: 2018-01-08\n---\nYouth Statistics: Family Structure..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.46329404693096876,
+      "iteration": 7
+    },
+    {
+      "id": "iter7_local_document_search_2",
+      "type": "local_document_search",
+      "description": "Search local documents for any mention of 16% single-father household data by country",
+      "parameters": {
+        "query": "16% single-father households country"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "local_document_search",
+        "query": "16% single-father households country",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "doc_7e43729e_1776306873",
+            "source": "local",
+            "title": "mattermost_chat_20251120_020616.jsonl",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "16% single-father households country"
+            ],
+            "snippet": "\nMattermost Message:\nUser: ethan_thompson\nChannel: cybersecurity_budget\nTeam: cybersecurity\nTime: unknown\nMessage: Thank..."
+          },
+          {
+            "doc_id": "doc_960c3f72_1776306874",
+            "source": "local",
+            "title": "mattermost_chat_20251120_020717.jsonl",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "16% single-father households country"
+            ],
+            "snippet": "\nMattermost Message:\nUser: ethan_thompson\nChannel: avoidable_attacks\nTeam: cybersecurity\nTime: 2021-05-08T18:53:22\nMessa..."
+          },
+          {
+            "doc_id": "doc_b40f2bee_1776306873",
+            "source": "local",
+            "title": "mattermost_chat_20251120_020717.jsonl",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "16% single-father households country"
+            ],
+            "snippet": "\nMattermost Message:\nUser: jane_doe\nChannel: it_budget\nTeam: it_department\nTime: unknown\nMessage: Hi team, we need to pl..."
+          },
+          {
+            "doc_id": "doc_19d697a0_1776306873",
+            "source": "local",
+            "title": "mattermost_chat_20251120_020510.jsonl",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "16% single-father households country"
+            ],
+            "snippet": "\nMattermost Message:\nUser: ethan_t\nChannel: cybersecurity_updates\nTeam: IT_Security\nTime: unknown\nMessage: Sure, Mary. I..."
+          },
+          {
+            "doc_id": "doc_4e6c7373_1776306873",
+            "source": "local",
+            "title": "mattermost_chat_20251120_020510.jsonl",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "16% single-father households country"
+            ],
+            "snippet": "\nMattermost Message:\nUser: chris_s\nChannel: system_maintenance\nTeam: System_Updates\nTime: unknown\nMessage: Thanks, Ethan..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.21097322553396225,
+      "iteration": 7
+    }
+  ],
+  "error_records": [],
+  "timeline_paths": {
+    "events_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0070_12adda33_52294da5/timeline_events.json",
+    "summary_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0070_12adda33_52294da5/timeline_summary.json",
+    "html_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0070_12adda33_52294da5/timeline.html",
+    "report_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0070_12adda33_52294da5/workspace/research_report_1776341032.md"
+  },
+  "report_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0070_12adda33_52294da5/workspace/research_report_1776341032.md"
+}

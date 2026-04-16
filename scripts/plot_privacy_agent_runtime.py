@@ -1147,6 +1147,7 @@ def write_html_viewer(
     reward_stats = summary["rollout_reward"]
     rollout_stats = summary["completed_rollout_duration_s"]
     action_stats = summary["completed_action_execution_s"]
+    llm_calls_per_rollout_stats = summary.get("llm_calls_per_completed_rollout", {"count": 0})
 
     latest_findings_share = summary.get("median_latest_findings_share", 0.0)
     top_prompt_counts = dict(list(summary["prompt_count_by_log_name"].items())[:12])
@@ -1175,9 +1176,16 @@ def write_html_viewer(
         ("LLM call summaries", counts["llm_call_records"]),
         ("Prompt summaries", counts["prompt_records"]),
         ("Evaluated rewards", counts["reward_records"]),
+        ("Mean LLM calls / rollout", format_scalar(llm_calls_per_rollout_stats.get("mean"))),
+        ("Median LLM calls / rollout", format_scalar(llm_calls_per_rollout_stats.get("median"))),
+        ("Mean prompt tokens", format_scalar(prompt_stats.get("mean"))),
+        ("Median prompt tokens", format_scalar(prompt_stats.get("median"))),
+        ("Mean response tokens", format_scalar(response_token_stats.get("mean"))),
         ("Median LLM latency", f"{format_scalar(llm_stats.get('median'))} s"),
         ("Median response tokens", format_scalar(response_token_stats.get("median"))),
+        ("Mean reward", format_scalar(reward_stats.get("mean"))),
         ("Median reward", format_scalar(reward_stats.get("median"))),
+        ("Mean rollout duration", f"{format_scalar(rollout_stats.get('mean'))} s"),
         ("Median rollout duration", f"{format_scalar(rollout_stats.get('median'))} s"),
         ("Completed rollouts / s", format_scalar(summary.get("completed_rollouts_per_s"))),
         ("Median tool execution", f"{format_scalar(action_stats.get('median'))} s"),
@@ -1817,6 +1825,9 @@ def main() -> None:
         "logged_prompt_tokens": numeric_stats(prompt_tokens),
         "logged_response_tokens": numeric_stats(response_tokens),
         "logged_total_tokens": numeric_stats(total_tokens),
+        "llm_calls_per_completed_rollout": numeric_stats(
+            [float(stats["call_count"]) for stats in llm_token_usage_by_rollout.values()]
+        ),
         "rollout_reward": numeric_stats(reward_values),
         "completed_rollout_duration_s": numeric_stats(completed_rollout_durations),
         "completed_action_execution_s": numeric_stats(tool_exec_values),

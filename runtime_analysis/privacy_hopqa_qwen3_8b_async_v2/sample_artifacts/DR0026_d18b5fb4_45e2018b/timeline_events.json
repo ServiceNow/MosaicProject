@@ -1,0 +1,797 @@
+[
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 5.7e-05,
+    "end_s": 11.078893,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "planned_actions": [
+        {
+          "action_id": "iter0_web_search_0",
+          "type": "web_search",
+          "query": "percentage of URM first-time college students interested in STEM fields"
+        },
+        {
+          "action_id": "iter0_web_search_1",
+          "type": "web_search",
+          "query": "URM students STEM interest survey results"
+        },
+        {
+          "action_id": "iter0_web_search_2",
+          "type": "web_search",
+          "query": "academic report URM students STEM field interest percentage"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_2",
+    "label": "web_search: academic report URM students STEM field interest...",
+    "start_s": 11.079169,
+    "end_s": 11.492583,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_2",
+      "action_type": "web_search",
+      "query": "academic report URM students STEM field interest percentage",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/68598",
+        "web/13821",
+        "web/56961"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_1",
+    "label": "web_search: URM students STEM interest survey results",
+    "start_s": 11.0791,
+    "end_s": 11.509589,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_1",
+      "action_type": "web_search",
+      "query": "URM students STEM interest survey results",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/68598",
+        "web/70244",
+        "web/86685"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_0",
+    "label": "web_search: percentage of URM first-time college students in...",
+    "start_s": 11.078952,
+    "end_s": 11.635452,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_0",
+      "action_type": "web_search",
+      "query": "percentage of URM first-time college students interested in STEM fields",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_6d642c57f1812258",
+        "web/68598",
+        "web/87044"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs",
+    "start_s": 11.63589,
+    "end_s": 28.577722,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "candidate_count": 8,
+      "selected_doc_ids": [
+        "web/68598",
+        "web/13821",
+        "web/70244"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/68598",
+    "label": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9508910...",
+    "start_s": 28.605071,
+    "end_s": 37.173825,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/68598",
+      "source": "web",
+      "title": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9508910/",
+      "can_answer": false,
+      "confidence": 0.5
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/13821",
+    "label": "https://stemeducationjournal.springeropen.com/ar...",
+    "start_s": 28.608412,
+    "end_s": 38.054951,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/13821",
+      "source": "web",
+      "title": "https://stemeducationjournal.springeropen.com/articles/10.1186/s40594-024-00472-9",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/70244",
+    "label": "https://heri.ucla.edu/publications/",
+    "start_s": 28.611503,
+    "end_s": 38.591527,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/70244",
+      "source": "web",
+      "title": "https://heri.ucla.edu/publications/",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 38.591819,
+    "end_s": 50.867573,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.6,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/87044",
+        "web/56961",
+        "web/68268"
+      ],
+      "unread_candidate_count": 5
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/68268",
+    "label": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9593045...",
+    "start_s": 50.874667,
+    "end_s": 57.571335,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/68268",
+      "source": "web",
+      "title": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9593045/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/56961",
+    "label": "https://link.springer.com/article/10.1007/s41979...",
+    "start_s": 50.871538,
+    "end_s": 57.82953,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/56961",
+      "source": "web",
+      "title": "https://link.springer.com/article/10.1007/s41979-023-00096-8",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/87044",
+    "label": "https://stemeducationjournal.springeropen.com/ar...",
+    "start_s": 50.867843,
+    "end_s": 58.503942,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/87044",
+      "source": "web",
+      "title": "https://stemeducationjournal.springeropen.com/articles/10.1186/s40594-022-00387-3",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 58.504282,
+    "end_s": 69.453866,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.9,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 2
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 69.454111,
+    "end_s": 77.945464,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "planned_actions": [
+        {
+          "action_id": "iter1_web_search_0",
+          "type": "web_search",
+          "query": "URM first-time college students STEM interest percentage surveys"
+        },
+        {
+          "action_id": "iter1_web_search_1",
+          "type": "web_search",
+          "query": "academic studies URM students STEM interest first-time enrollment"
+        },
+        {
+          "action_id": "iter1_web_search_2",
+          "type": "web_search",
+          "query": "statistical data URM students STEM interest demographics"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_2",
+    "label": "web_search: statistical data URM students STEM interest demo...",
+    "start_s": 77.954134,
+    "end_s": 78.145531,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "action_id": "iter1_web_search_2",
+      "action_type": "web_search",
+      "query": "statistical data URM students STEM interest demographics",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_6d642c57f1812258",
+        "web/68598",
+        "web/13821"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_1",
+    "label": "web_search: academic studies URM students STEM interest firs...",
+    "start_s": 77.954075,
+    "end_s": 78.187095,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "action_id": "iter1_web_search_1",
+      "action_type": "web_search",
+      "query": "academic studies URM students STEM interest first-time enrollment",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_6d642c57f1812258",
+        "web/68598",
+        "web/56961"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_0",
+    "label": "web_search: URM first-time college students STEM interest pe...",
+    "start_s": 77.953962,
+    "end_s": 78.239107,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "action_id": "iter1_web_search_0",
+      "action_type": "web_search",
+      "query": "URM first-time college students STEM interest percentage surveys",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_6d642c57f1812258",
+        "web/68598",
+        "web/70244"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs (skipped)",
+    "start_s": 78.239208,
+    "end_s": 78.239208,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "candidate_count": 3,
+      "selected_doc_ids": [
+        "web/drbench_urls/drbench_urls_6d642c57f1812258",
+        "web/92276",
+        "web/28777"
+      ],
+      "skipped": true
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/drbench_urls/drbench_urls_6d642c57f1812258",
+    "label": "https://www.grocerydoppio.com/articles/chatbots-...",
+    "start_s": 78.239321,
+    "end_s": 86.389802,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "web/drbench_urls/drbench_urls_6d642c57f1812258",
+      "source": "web",
+      "title": "https://www.grocerydoppio.com/articles/chatbots-improving-seamless-interactions-between-grocers-and-centennials",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/92276",
+    "label": "https://nces.ed.gov/pubs2018/2018434/index.asp",
+    "start_s": 78.242072,
+    "end_s": 86.935006,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "web/92276",
+      "source": "web",
+      "title": "https://nces.ed.gov/pubs2018/2018434/index.asp",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/28777",
+    "label": "https://ncses.nsf.gov/pubs/nsb20223/demographic-...",
+    "start_s": 78.244437,
+    "end_s": 88.919879,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "web/28777",
+      "source": "web",
+      "title": "https://ncses.nsf.gov/pubs/nsb20223/demographic-attributes-of-s-e-degree-recipients",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 88.920218,
+    "end_s": 94.599857,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "answered": false,
+      "confidence": 0.3,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 94.600092,
+    "end_s": 105.480443,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "planned_actions": [
+        {
+          "action_id": "iter2_web_search_0",
+          "type": "web_search",
+          "query": "URM first-time college students STEM interest statistics"
+        },
+        {
+          "action_id": "iter2_web_search_1",
+          "type": "web_search",
+          "query": "surveys URM student STEM interest first-time enrollment"
+        },
+        {
+          "action_id": "iter2_web_search_2",
+          "type": "web_search",
+          "query": "demographic data URM STEM interest new college students"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_0",
+    "label": "web_search: URM first-time college students STEM interest st...",
+    "start_s": 105.48051,
+    "end_s": 105.705245,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "action_id": "iter2_web_search_0",
+      "action_type": "web_search",
+      "query": "URM first-time college students STEM interest statistics",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_6d642c57f1812258",
+        "web/68598",
+        "web/87044"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_2",
+    "label": "web_search: demographic data URM STEM interest new college s...",
+    "start_s": 105.48079,
+    "end_s": 105.892453,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "action_id": "iter2_web_search_2",
+      "action_type": "web_search",
+      "query": "demographic data URM STEM interest new college students",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_6d642c57f1812258",
+        "web/68598",
+        "web/70244"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_1",
+    "label": "web_search: surveys URM student STEM interest first-time enr...",
+    "start_s": 105.48066,
+    "end_s": 105.933546,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "action_id": "iter2_web_search_1",
+      "action_type": "web_search",
+      "query": "surveys URM student STEM interest first-time enrollment",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_6d642c57f1812258",
+        "web/68598",
+        "web/70244"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs (skipped)",
+    "start_s": 105.93362,
+    "end_s": 105.93362,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "candidate_count": 2,
+      "selected_doc_ids": [
+        "web/86685",
+        "web/17392"
+      ],
+      "skipped": true
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/86685",
+    "label": "https://assessmentresearch.arizona.edu/reports-a...",
+    "start_s": 105.933724,
+    "end_s": 111.862582,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "doc_id": "web/86685",
+      "source": "web",
+      "title": "https://assessmentresearch.arizona.edu/reports-and-summaries",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/17392",
+    "label": "https://educationdata.org/college-enrollment-sta...",
+    "start_s": 105.936683,
+    "end_s": 114.773575,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "doc_id": "web/17392",
+      "source": "web",
+      "title": "https://educationdata.org/college-enrollment-statistics",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 114.894306,
+    "end_s": 120.383968,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "answered": false,
+      "confidence": 0.3,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 120.384264,
+    "end_s": 131.332762,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "planned_actions": [
+        {
+          "action_id": "iter3_web_search_0",
+          "type": "web_search",
+          "query": "URM first-time college students STEM interest survey percentages"
+        },
+        {
+          "action_id": "iter3_web_search_1",
+          "type": "web_search",
+          "query": "academic report URM college enrollment STEM interest statistics"
+        },
+        {
+          "action_id": "iter3_web_search_2",
+          "type": "web_search",
+          "query": "demographic data URM students STEM field preferences enrollment"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_web_search_2",
+    "label": "web_search: demographic data URM students STEM field prefere...",
+    "start_s": 131.332975,
+    "end_s": 131.792776,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "action_id": "iter3_web_search_2",
+      "action_type": "web_search",
+      "query": "demographic data URM students STEM field preferences enrollment",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_6d642c57f1812258",
+        "web/68598",
+        "web/17392"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_web_search_1",
+    "label": "web_search: academic report URM college enrollment STEM inte...",
+    "start_s": 131.332917,
+    "end_s": 131.792936,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "action_id": "iter3_web_search_1",
+      "action_type": "web_search",
+      "query": "academic report URM college enrollment STEM interest statistics",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/68598",
+        "web/87044",
+        "web/67766"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_web_search_0",
+    "label": "web_search: URM first-time college students STEM interest su...",
+    "start_s": 131.33281,
+    "end_s": 131.801759,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "action_id": "iter3_web_search_0",
+      "action_type": "web_search",
+      "query": "URM first-time college students STEM interest survey percentages",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_6d642c57f1812258",
+        "web/68598",
+        "web/70244"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs (skipped)",
+    "start_s": 132.033215,
+    "end_s": 132.033215,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "candidate_count": 1,
+      "selected_doc_ids": [
+        "web/67766"
+      ],
+      "skipped": true
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/67766",
+    "label": "https://www.cpajournal.com/2025/02/05/increasing...",
+    "start_s": 132.033274,
+    "end_s": 137.388572,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "doc_id": "web/67766",
+      "source": "web",
+      "title": "https://www.cpajournal.com/2025/02/05/increasing-student-interest-in-accounting/",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 137.388762,
+    "end_s": 145.885995,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "answered": false,
+      "confidence": 0.3,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 145.886212,
+    "end_s": 153.947477,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 4,
+      "planned_actions": [
+        {
+          "action_id": "iter4_web_search_0",
+          "type": "web_search",
+          "query": "recent studies URM first-time college students STEM interest percentages"
+        },
+        {
+          "action_id": "iter4_web_search_1",
+          "type": "web_search",
+          "query": "demographic reports URM enrollment STEM field interest"
+        },
+        {
+          "action_id": "iter4_web_search_2",
+          "type": "web_search",
+          "query": "academic surveys URM students STEM interest first-year enrollment"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter4_web_search_0",
+    "label": "web_search: recent studies URM first-time college students S...",
+    "start_s": 153.953665,
+    "end_s": 154.574658,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 4,
+      "action_id": "iter4_web_search_0",
+      "action_type": "web_search",
+      "query": "recent studies URM first-time college students STEM interest percentages",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_6d642c57f1812258",
+        "web/68598",
+        "web/87044"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter4_web_search_1",
+    "label": "web_search: demographic reports URM enrollment STEM field in...",
+    "start_s": 153.95374,
+    "end_s": 154.592874,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 4,
+      "action_id": "iter4_web_search_1",
+      "action_type": "web_search",
+      "query": "demographic reports URM enrollment STEM field interest",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_6d642c57f1812258",
+        "web/68598",
+        "web/17392"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter4_web_search_2",
+    "label": "web_search: academic surveys URM students STEM interest firs...",
+    "start_s": 153.953797,
+    "end_s": 154.592991,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 4,
+      "action_id": "iter4_web_search_2",
+      "action_type": "web_search",
+      "query": "academic surveys URM students STEM interest first-year enrollment",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_6d642c57f1812258",
+        "web/68598",
+        "web/70244"
+      ]
+    }
+  },
+  {
+    "stage": "report",
+    "lane": "report",
+    "label": "Final report",
+    "start_s": 154.593054,
+    "end_s": 154.624811,
+    "meta": {
+      "resolved_hops": 0,
+      "report_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0026_d18b5fb4_45e2018b/workspace/research_report_1776312752.md"
+    }
+  }
+]

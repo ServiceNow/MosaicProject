@@ -1,0 +1,1365 @@
+[
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 5.8e-05,
+    "end_s": 12.487625,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "planned_actions": [
+        {
+          "action_id": "iter0_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market energy-efficient lighting retrofit percentage 2024"
+        },
+        {
+          "action_id": "iter0_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market sustainability report 2024"
+        },
+        {
+          "action_id": "iter0_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market retrofitting stores energy-efficient lighting 2024"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_1",
+    "label": "web_search: Lee's Market sustainability report 2024",
+    "start_s": 12.487775,
+    "end_s": 12.711815,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_1",
+      "action_type": "web_search",
+      "query": "Lee's Market sustainability report 2024",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/48550",
+        "web/26590",
+        "web/45702"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_0",
+    "label": "web_search: Lee's Market energy-efficient lighting retrofit...",
+    "start_s": 12.487667,
+    "end_s": 12.711974,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_0",
+      "action_type": "web_search",
+      "query": "Lee's Market energy-efficient lighting retrofit percentage 2024",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/73352",
+        "web/53061",
+        "web/44827"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_2",
+    "label": "web_search: Lee's Market retrofitting stores energy-efficien...",
+    "start_s": 12.487839,
+    "end_s": 12.743606,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_2",
+      "action_type": "web_search",
+      "query": "Lee's Market retrofitting stores energy-efficient lighting 2024",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/73352",
+        "web/44827",
+        "web/53061"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs",
+    "start_s": 12.743809,
+    "end_s": 32.790845,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "candidate_count": 12,
+      "selected_doc_ids": [
+        "web/73352",
+        "web/48550",
+        "web/44827"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/73352",
+    "label": "https://www.mercurynews.com/2010/02/25/fired-as-...",
+    "start_s": 32.790958,
+    "end_s": 42.947683,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/73352",
+      "source": "web",
+      "title": "https://www.mercurynews.com/2010/02/25/fired-as-seagate-ceo-bill-watkins-finds-a-comeback-in-led/",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/48550",
+    "label": "https://www.unh.edu/sustainability/sustainabilit...",
+    "start_s": 32.794054,
+    "end_s": 43.717891,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/48550",
+      "source": "web",
+      "title": "https://www.unh.edu/sustainability/sustainability-fellowships",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/44827",
+    "label": "https://www.wipo.int/web-publications/green-tech...",
+    "start_s": 32.796839,
+    "end_s": 43.926803,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/44827",
+      "source": "web",
+      "title": "https://www.wipo.int/web-publications/green-technology-book-energy-solutions-for-climate-change/en/4-green-energy-solutions-for-essential-services.html",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 43.927133,
+    "end_s": 65.778355,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.3,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/53061",
+        "web/26590",
+        "web/64701"
+      ],
+      "unread_candidate_count": 9
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/26590",
+    "label": "https://www.menke.com/esop-archives/olivers-mark...",
+    "start_s": 65.781601,
+    "end_s": 73.37191,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/26590",
+      "source": "web",
+      "title": "https://www.menke.com/esop-archives/olivers-market-becomes-100-employee-owned-a-commitment-to-independence-and-community/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/64701",
+    "label": "https://investor.eastgroup.net/2025-02-06-EastGr...",
+    "start_s": 65.784519,
+    "end_s": 74.446932,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/64701",
+      "source": "web",
+      "title": "https://investor.eastgroup.net/2025-02-06-EastGroup-Properties-Announces-Fourth-Quarter-and-Full-Year-2024-Results",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/53061",
+    "label": "https://www.eec.org.au/events/awards/2014-awards",
+    "start_s": 65.778479,
+    "end_s": 75.295137,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/53061",
+      "source": "web",
+      "title": "https://www.eec.org.au/events/awards/2014-awards",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 75.295482,
+    "end_s": 99.419182,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.1,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/45702",
+        "web/21925",
+        "web/39920"
+      ],
+      "unread_candidate_count": 6
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/39920",
+    "label": "https://www.levinmgt.com/press/new-shoprite-of-w...",
+    "start_s": 99.424052,
+    "end_s": 103.779101,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/39920",
+      "source": "web",
+      "title": "https://www.levinmgt.com/press/new-shoprite-of-watchung-to-open-doors-april-9-and-host-grand-opening-celebration-april-13/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/45702",
+    "label": "https://farmersmarketla.com/index.html",
+    "start_s": 99.419306,
+    "end_s": 104.516844,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/45702",
+      "source": "web",
+      "title": "https://farmersmarketla.com/index.html",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/21925",
+    "label": "https://www.forumforthefuture.org/25-years-of-vi...",
+    "start_s": 99.420741,
+    "end_s": 104.526393,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/21925",
+      "source": "web",
+      "title": "https://www.forumforthefuture.org/25-years-of-visionary-collaboration-with-unilever",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 104.626884,
+    "end_s": 119.496162,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.15,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/3887",
+        "web/87559",
+        "web/25989"
+      ],
+      "unread_candidate_count": 3
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/87559",
+    "label": "https://www.businessinsider.com/oldest-mall-in-e...",
+    "start_s": 120.050505,
+    "end_s": 125.35235,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/87559",
+      "source": "web",
+      "title": "https://www.businessinsider.com/oldest-mall-in-every-state",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/3887",
+    "label": "https://www.portofbellingham.com/1002/Bellingham...",
+    "start_s": 120.047408,
+    "end_s": 127.488192,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/3887",
+      "source": "web",
+      "title": "https://www.portofbellingham.com/1002/Bellingham-Dockside-Market",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/25989",
+    "label": "https://www.energy.gov/eere/buildings/179d-energ...",
+    "start_s": 120.053372,
+    "end_s": 127.777404,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/25989",
+      "source": "web",
+      "title": "https://www.energy.gov/eere/buildings/179d-energy-efficient-commercial-buildings-tax-deduction",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 127.778671,
+    "end_s": 146.818114,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.15,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 146.818314,
+    "end_s": 163.170702,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "planned_actions": [
+        {
+          "action_id": "iter1_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market 2024 sustainability report energy-efficient lighting retrofit percentage"
+        },
+        {
+          "action_id": "iter1_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market Richmond BC 2024 energy-efficient lighting retrofit stores"
+        },
+        {
+          "action_id": "iter1_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market 2024 store retrofitting percentage lighting efficiency"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_2",
+    "label": "web_search: Lee's Market 2024 store retrofitting percentage...",
+    "start_s": 163.171024,
+    "end_s": 163.346747,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "action_id": "iter1_web_search_2",
+      "action_type": "web_search",
+      "query": "Lee's Market 2024 store retrofitting percentage lighting efficiency",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/73352",
+        "web/44827",
+        "web/39920"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_0",
+    "label": "web_search: Lee's Market 2024 sustainability report energy-e...",
+    "start_s": 163.170758,
+    "end_s": 163.369443,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "action_id": "iter1_web_search_0",
+      "action_type": "web_search",
+      "query": "Lee's Market 2024 sustainability report energy-efficient lighting retrofit percentage",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/73352",
+        "web/53061",
+        "web/44827"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_1",
+    "label": "web_search: Lee's Market Richmond BC 2024 energy-efficient l...",
+    "start_s": 163.170945,
+    "end_s": 163.397694,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "action_id": "iter1_web_search_1",
+      "action_type": "web_search",
+      "query": "Lee's Market Richmond BC 2024 energy-efficient lighting retrofit stores",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/53061",
+        "web/73352",
+        "web/44827"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs (skipped)",
+    "start_s": 163.397798,
+    "end_s": 163.397798,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "candidate_count": 3,
+      "selected_doc_ids": [
+        "web/75196",
+        "web/52219",
+        "web/45101"
+      ],
+      "skipped": true
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/75196",
+    "label": "https://en.wikipedia.org/wiki/Green_building",
+    "start_s": 163.397917,
+    "end_s": 170.127063,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "web/75196",
+      "source": "web",
+      "title": "https://en.wikipedia.org/wiki/Green_building",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/45101",
+    "label": "https://www.businesswire.com/news/home/202412105...",
+    "start_s": 163.404809,
+    "end_s": 170.127972,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "web/45101",
+      "source": "web",
+      "title": "https://www.businesswire.com/news/home/20241210579395/en/Gridmatic-Surpasses-1GWh-of-Energy-Storage-Under-Management-and-Sees-Major-Growth-in-Retail-Business",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/52219",
+    "label": "https://corporate.walmart.com/purpose/esgreport/...",
+    "start_s": 163.401173,
+    "end_s": 172.378493,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "web/52219",
+      "source": "web",
+      "title": "https://corporate.walmart.com/purpose/esgreport/environmental/climate-change",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 172.379141,
+    "end_s": 181.243087,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "answered": false,
+      "confidence": 0.3,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 181.243337,
+    "end_s": 196.625323,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "planned_actions": [
+        {
+          "action_id": "iter2_web_fallback",
+          "type": "web_search",
+          "query": "What percentage of Lee's Market stores were retrofitted with energy-efficient lighting in 2024?"
+        },
+        {
+          "action_id": "iter2_local_fallback",
+          "type": "local_document_search",
+          "query": "What percentage of Lee's Market stores were retrofitted with energy-efficient lighting in 2024?"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_local_fallback",
+    "label": "local_document_search: What percentage of Lee's Market stores were retr...",
+    "start_s": 196.625552,
+    "end_s": 196.733305,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "action_id": "iter2_local_fallback",
+      "action_type": "local_document_search",
+      "query": "What percentage of Lee's Market stores were retrofitted with energy-efficient lighting in 2024?",
+      "result_count": 5,
+      "top_doc_ids": [
+        "doc_6823c959_1776306886",
+        "doc_386129d5_1776306886",
+        "doc_4a781712_1776306886"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_fallback",
+    "label": "web_search: What percentage of Lee's Market stores were retr...",
+    "start_s": 196.625432,
+    "end_s": 196.92239,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "action_id": "iter2_web_fallback",
+      "action_type": "web_search",
+      "query": "What percentage of Lee's Market stores were retrofitted with energy-efficient lighting in 2024?",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/73352",
+        "web/44827",
+        "web/53061"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs",
+    "start_s": 196.922562,
+    "end_s": 229.497493,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "candidate_count": 6,
+      "selected_doc_ids": [
+        "doc_6823c959_1776306886",
+        "doc_386129d5_1776306886",
+        "doc_4a781712_1776306886"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_4a781712_1776306886",
+    "label": "2024-carbon-footprint-report.docx",
+    "start_s": 229.506408,
+    "end_s": 235.294352,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "doc_id": "doc_4a781712_1776306886",
+      "source": "local",
+      "title": "2024-carbon-footprint-report.docx",
+      "can_answer": true,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_386129d5_1776306886",
+    "label": "energy-efficiency-overview.pptx",
+    "start_s": 229.503229,
+    "end_s": 236.756796,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "doc_id": "doc_386129d5_1776306886",
+      "source": "local",
+      "title": "energy-efficiency-overview.pptx",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_6823c959_1776306886",
+    "label": "energy-efficiency-report-2025.pdf",
+    "start_s": 229.499296,
+    "end_s": 244.997048,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "doc_id": "doc_6823c959_1776306886",
+      "source": "local",
+      "title": "energy-efficiency-report-2025.pdf",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 245.127736,
+    "end_s": 250.860601,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "answered": true,
+      "confidence": 0.95,
+      "next_step": "done",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 3
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 250.860673,
+    "end_s": 263.271704,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "planned_actions": [
+        {
+          "action_id": "iter3_web_search_0",
+          "type": "web_search",
+          "query": "School Census 75% coverage secondary schools date"
+        },
+        {
+          "action_id": "iter3_web_search_1",
+          "type": "web_search",
+          "query": "School Census 75% secondary schools year"
+        },
+        {
+          "action_id": "iter3_web_search_2",
+          "type": "web_search",
+          "query": "School Census 75% coverage month year"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_web_search_2",
+    "label": "web_search: School Census 75% coverage month year",
+    "start_s": 263.271959,
+    "end_s": 263.459056,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "action_id": "iter3_web_search_2",
+      "action_type": "web_search",
+      "query": "School Census 75% coverage month year",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/27960",
+        "web/13133",
+        "web/16719"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_web_search_1",
+    "label": "web_search: School Census 75% secondary schools year",
+    "start_s": 263.271899,
+    "end_s": 263.506545,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "action_id": "iter3_web_search_1",
+      "action_type": "web_search",
+      "query": "School Census 75% secondary schools year",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/94797",
+        "web/27960",
+        "web/11999"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_web_search_0",
+    "label": "web_search: School Census 75% coverage secondary schools dat...",
+    "start_s": 263.271762,
+    "end_s": 263.535963,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "action_id": "iter3_web_search_0",
+      "action_type": "web_search",
+      "query": "School Census 75% coverage secondary schools date",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/94797",
+        "web/27960",
+        "web/16719"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs",
+    "start_s": 263.536208,
+    "end_s": 295.819558,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "candidate_count": 9,
+      "selected_doc_ids": [
+        "web/94797",
+        "web/27960",
+        "web/13133"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/94797",
+    "label": "https://www.nationalarchives.gov.uk/help-with-yo...",
+    "start_s": 295.819697,
+    "end_s": 305.771634,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "doc_id": "web/94797",
+      "source": "web",
+      "title": "https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/secondary-schools/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/27960",
+    "label": "https://www150.statcan.gc.ca/n1/pub/11-516-x/sec...",
+    "start_s": 295.823415,
+    "end_s": 306.846842,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "doc_id": "web/27960",
+      "source": "web",
+      "title": "https://www150.statcan.gc.ca/n1/pub/11-516-x/sectionw/4147445-eng.htm",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/13133",
+    "label": "https://nces.ed.gov/ipeds/use-the-data/timing-of...",
+    "start_s": 295.827098,
+    "end_s": 307.800531,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "doc_id": "web/13133",
+      "source": "web",
+      "title": "https://nces.ed.gov/ipeds/use-the-data/timing-of-ipeds-data-collection",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 307.847329,
+    "end_s": 331.628669,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "answered": false,
+      "confidence": 0.7,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/11999",
+        "web/45972",
+        "web/44938"
+      ],
+      "unread_candidate_count": 6
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/11999",
+    "label": "https://www.coursmos.com/how-many-schools-are-in...",
+    "start_s": 331.628819,
+    "end_s": 343.902031,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "doc_id": "web/11999",
+      "source": "web",
+      "title": "https://www.coursmos.com/how-many-schools-are-in-the-us/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/44938",
+    "label": "https://nces.ed.gov/fastfacts/display.asp?id=372",
+    "start_s": 331.635173,
+    "end_s": 344.609176,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "doc_id": "web/44938",
+      "source": "web",
+      "title": "https://nces.ed.gov/fastfacts/display.asp?id=372",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/45972",
+    "label": "https://nces.ed.gov/programs/digest/d22/tables/d...",
+    "start_s": 331.631731,
+    "end_s": 351.906855,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "doc_id": "web/45972",
+      "source": "web",
+      "title": "https://nces.ed.gov/programs/digest/d22/tables/dt22_209.22.asp",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 351.913151,
+    "end_s": 369.650617,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "answered": false,
+      "confidence": 0.7,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/16719",
+        "web/41080",
+        "web/17618"
+      ],
+      "unread_candidate_count": 3
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/41080",
+    "label": "https://www.nationalarchives.gov.uk/help-with-yo...",
+    "start_s": 369.654191,
+    "end_s": 377.231566,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "doc_id": "web/41080",
+      "source": "web",
+      "title": "https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/schools/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/16719",
+    "label": "https://nces.ed.gov/fastfacts/display.asp?id=334",
+    "start_s": 369.650764,
+    "end_s": 378.540548,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "doc_id": "web/16719",
+      "source": "web",
+      "title": "https://nces.ed.gov/fastfacts/display.asp?id=334",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/17618",
+    "label": "https://nces.ed.gov/programs/coe/indicator/cge/r...",
+    "start_s": 369.657465,
+    "end_s": 383.639008,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "doc_id": "web/17618",
+      "source": "web",
+      "title": "https://nces.ed.gov/programs/coe/indicator/cge/racial-ethnic-enrollment",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 383.649614,
+    "end_s": 398.938614,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "answered": false,
+      "confidence": 0.7,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 398.938845,
+    "end_s": 422.667576,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "planned_actions": [
+        {
+          "action_id": "iter4_web_search_0",
+          "type": "web_search",
+          "query": "School Census 75% coverage England secondary schools date"
+        },
+        {
+          "action_id": "iter4_web_search_1",
+          "type": "web_search",
+          "query": "School Census 75% secondary schools participation year"
+        },
+        {
+          "action_id": "iter4_local_document_search_2",
+          "type": "local_document_search",
+          "query": "School Census 75% coverage secondary schools"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter4_local_document_search_2",
+    "label": "local_document_search: School Census 75% coverage secondary schools",
+    "start_s": 422.667838,
+    "end_s": 422.812457,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "action_id": "iter4_local_document_search_2",
+      "action_type": "local_document_search",
+      "query": "School Census 75% coverage secondary schools",
+      "result_count": 5,
+      "top_doc_ids": [
+        "doc_b9a56c39_1776306887",
+        "doc_ddcf1001_1776306886",
+        "doc_566149e1_1776306886"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter4_web_search_1",
+    "label": "web_search: School Census 75% secondary schools participatio...",
+    "start_s": 422.66776,
+    "end_s": 422.967264,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "action_id": "iter4_web_search_1",
+      "action_type": "web_search",
+      "query": "School Census 75% secondary schools participation year",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/27960",
+        "web/61708",
+        "web/94797"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter4_web_search_0",
+    "label": "web_search: School Census 75% coverage England secondary sch...",
+    "start_s": 422.667626,
+    "end_s": 423.001598,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "action_id": "iter4_web_search_0",
+      "action_type": "web_search",
+      "query": "School Census 75% coverage England secondary schools date",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/94797",
+        "web/27960",
+        "web/41080"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs",
+    "start_s": 423.001874,
+    "end_s": 462.509991,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "candidate_count": 9,
+      "selected_doc_ids": [
+        "web/82954",
+        "web/29023"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/82954",
+    "label": "https://www.ons.gov.uk/peoplepopulationandcommun...",
+    "start_s": 462.615543,
+    "end_s": 470.721461,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "doc_id": "web/82954",
+      "source": "web",
+      "title": "https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/internationalmigration/articles/internationalmigrationandtheeducationsectorwhatdoesthecurrentevidenceshow/2019-05-03",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/29023",
+    "label": "https://www.education-uk.org/history/timeline.ht...",
+    "start_s": 462.619178,
+    "end_s": 471.745011,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "doc_id": "web/29023",
+      "source": "web",
+      "title": "https://www.education-uk.org/history/timeline.html",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 471.745328,
+    "end_s": 492.868548,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "answered": false,
+      "confidence": 0.65,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "doc_b9a56c39_1776306887",
+        "web/61708",
+        "doc_ddcf1001_1776306886"
+      ],
+      "unread_candidate_count": 7
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_ddcf1001_1776306886",
+    "label": "mattermost_chat_20251121_120457.jsonl",
+    "start_s": 492.874029,
+    "end_s": 499.398005,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "doc_id": "doc_ddcf1001_1776306886",
+      "source": "local",
+      "title": "mattermost_chat_20251121_120457.jsonl",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/61708",
+    "label": "https://www.bls.gov/opub/mlr/2017/article/teen-l...",
+    "start_s": 492.870994,
+    "end_s": 499.814649,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "doc_id": "web/61708",
+      "source": "web",
+      "title": "https://www.bls.gov/opub/mlr/2017/article/teen-labor-force-participation-before-and-after-the-great-recession.htm",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_b9a56c39_1776306887",
+    "label": "Lees_Market_Richmond_Service_Coverage_Analysis.x...",
+    "start_s": 492.868663,
+    "end_s": 500.169819,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "doc_id": "doc_b9a56c39_1776306887",
+      "source": "local",
+      "title": "Lees_Market_Richmond_Service_Coverage_Analysis.xlsx",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 500.170159,
+    "end_s": 513.508557,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "answered": false,
+      "confidence": 0.6,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "doc_566149e1_1776306886",
+        "web/15266",
+        "doc_fe0b419e_1776306886"
+      ],
+      "unread_candidate_count": 4
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/15266",
+    "label": "https://www.dcpolicycenter.org/publications/scho...",
+    "start_s": 513.623836,
+    "end_s": 518.468844,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "doc_id": "web/15266",
+      "source": "web",
+      "title": "https://www.dcpolicycenter.org/publications/school-boundaries/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_566149e1_1776306886",
+    "label": "mattermost_chat_20251121_120457.jsonl",
+    "start_s": 513.622254,
+    "end_s": 520.713566,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "doc_id": "doc_566149e1_1776306886",
+      "source": "local",
+      "title": "mattermost_chat_20251121_120457.jsonl",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_fe0b419e_1776306886",
+    "label": "mattermost_chat_20251121_120457.jsonl",
+    "start_s": 513.627058,
+    "end_s": 523.748664,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "doc_id": "doc_fe0b419e_1776306886",
+      "source": "local",
+      "title": "mattermost_chat_20251121_120457.jsonl",
+      "can_answer": false,
+      "confidence": 0.3
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 523.748993,
+    "end_s": 536.499766,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "answered": false,
+      "confidence": 0.3,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "doc_fa65e8bb_1776306886"
+      ],
+      "unread_candidate_count": 1
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_fa65e8bb_1776306886",
+    "label": "mattermost_chat_20251121_120457.jsonl",
+    "start_s": 536.499852,
+    "end_s": 541.582972,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "doc_id": "doc_fa65e8bb_1776306886",
+      "source": "local",
+      "title": "mattermost_chat_20251121_120457.jsonl",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 541.583315,
+    "end_s": 554.414447,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "answered": false,
+      "confidence": 0.15,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 554.414698,
+    "end_s": 570.719776,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "planned_actions": [
+        {
+          "action_id": "iter5_web_search_1",
+          "type": "web_search",
+          "query": "School Census 75% secondary schools conducted year"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter5_web_search_1",
+    "label": "web_search: School Census 75% secondary schools conducted ye...",
+    "start_s": 570.719795,
+    "end_s": 571.131933,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "action_id": "iter5_web_search_1",
+      "action_type": "web_search",
+      "query": "School Census 75% secondary schools conducted year",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/94797",
+        "web/27960",
+        "web/44938"
+      ]
+    }
+  },
+  {
+    "stage": "report",
+    "lane": "report",
+    "label": "Final report",
+    "start_s": 571.132042,
+    "end_s": 571.161981,
+    "meta": {
+      "resolved_hops": 1,
+      "report_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0098_d02e9696_144013a6/workspace/research_report_1776338628.md"
+    }
+  }
+]

@@ -1,0 +1,664 @@
+[
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 7.1e-05,
+    "end_s": 10.08245,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "planned_actions": [
+        {
+          "action_id": "iter0_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market IT support requests Q2 2025"
+        },
+        {
+          "action_id": "iter0_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market Q2 2025 operational report IT support"
+        },
+        {
+          "action_id": "iter0_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market IT support issues Q2 2025"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_1",
+    "label": "web_search: Lee's Market Q2 2025 operational report IT suppo...",
+    "start_s": 10.082611,
+    "end_s": 10.446831,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_1",
+      "action_type": "web_search",
+      "query": "Lee's Market Q2 2025 operational report IT support",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_ad620716a89aca05",
+        "web/5527",
+        "web/7128"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_0",
+    "label": "web_search: Lee's Market IT support requests Q2 2025",
+    "start_s": 10.082495,
+    "end_s": 10.460879,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_0",
+      "action_type": "web_search",
+      "query": "Lee's Market IT support requests Q2 2025",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_ad620716a89aca05",
+        "web/5527",
+        "web/57542"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_2",
+    "label": "web_search: Lee's Market IT support issues Q2 2025",
+    "start_s": 10.082675,
+    "end_s": 10.52115,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_2",
+      "action_type": "web_search",
+      "query": "Lee's Market IT support issues Q2 2025",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_ad620716a89aca05",
+        "web/5527",
+        "web/29471"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs",
+    "start_s": 10.521339,
+    "end_s": 30.32427,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "candidate_count": 10,
+      "selected_doc_ids": [
+        "web/drbench_urls/drbench_urls_ad620716a89aca05",
+        "web/5527"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/drbench_urls/drbench_urls_ad620716a89aca05",
+    "label": "https://www.thirdera.com/insights/retailer-drive...",
+    "start_s": 30.324373,
+    "end_s": 41.802545,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/drbench_urls/drbench_urls_ad620716a89aca05",
+      "source": "web",
+      "title": "https://www.thirdera.com/insights/retailer-drives-enterprise-wide-transformation-through-strategic-it-optimization",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/5527",
+    "label": "https://oag.ca.gov/privacy/databreach/list",
+    "start_s": 30.327779,
+    "end_s": 41.985919,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/5527",
+      "source": "web",
+      "title": "https://oag.ca.gov/privacy/databreach/list",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 42.572288,
+    "end_s": 51.792086,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.35,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/29471",
+        "web/57542",
+        "web/7128"
+      ],
+      "unread_candidate_count": 8
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/29471",
+    "label": "https://www.cm-alliance.com/cybersecurity-blog/j...",
+    "start_s": 51.792217,
+    "end_s": 57.313309,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/29471",
+      "source": "web",
+      "title": "https://www.cm-alliance.com/cybersecurity-blog/january-2025-recent-cyber-attacks-data-breaches-ransomware-attacks",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/57542",
+    "label": "https://lol.fandom.com/wiki/Larssen/Match_Histor...",
+    "start_s": 51.795326,
+    "end_s": 57.588821,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/57542",
+      "source": "web",
+      "title": "https://lol.fandom.com/wiki/Larssen/Match_History",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/7128",
+    "label": "https://en.wikipedia.org/wiki/Fort_Gregg-Adams",
+    "start_s": 51.79801,
+    "end_s": 58.576795,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/7128",
+      "source": "web",
+      "title": "https://en.wikipedia.org/wiki/Fort_Gregg-Adams",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 58.577095,
+    "end_s": 70.418129,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.18,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/63715",
+        "web/66146",
+        "web/27570"
+      ],
+      "unread_candidate_count": 5
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/66146",
+    "label": "https://techcrunch.com/2025/02/13/tech-layoffs-2...",
+    "start_s": 70.422192,
+    "end_s": 75.876141,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/66146",
+      "source": "web",
+      "title": "https://techcrunch.com/2025/02/13/tech-layoffs-2024-list/",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/63715",
+    "label": "https://eere-exchange.energy.gov/",
+    "start_s": 70.418256,
+    "end_s": 76.857234,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/63715",
+      "source": "web",
+      "title": "https://eere-exchange.energy.gov/",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/27570",
+    "label": "https://snma.org/page/AMEC2025",
+    "start_s": 70.425964,
+    "end_s": 77.063378,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/27570",
+      "source": "web",
+      "title": "https://snma.org/page/AMEC2025",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 77.063757,
+    "end_s": 97.648935,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.15,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/11230",
+        "web/66256"
+      ],
+      "unread_candidate_count": 2
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/11230",
+    "label": "https://fraym.io/leadership/",
+    "start_s": 97.649043,
+    "end_s": 104.310187,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/11230",
+      "source": "web",
+      "title": "https://fraym.io/leadership/",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/66256",
+    "label": "https://en.wikipedia.org/wiki/Boston_Market",
+    "start_s": 97.652137,
+    "end_s": 105.526524,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/66256",
+      "source": "web",
+      "title": "https://en.wikipedia.org/wiki/Boston_Market",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 105.568255,
+    "end_s": 115.518323,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.1,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 115.518541,
+    "end_s": 121.153596,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "planned_actions": [
+        {
+          "action_id": "iter1_web_fallback",
+          "type": "web_search",
+          "query": "What was the total number of IT support requests at Lee's Market in Q2 2025?"
+        },
+        {
+          "action_id": "iter1_local_fallback",
+          "type": "local_document_search",
+          "query": "What was the total number of IT support requests at Lee's Market in Q2 2025?"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_local_fallback",
+    "label": "local_document_search: What was the total number of IT support requests...",
+    "start_s": 121.153743,
+    "end_s": 121.195423,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "action_id": "iter1_local_fallback",
+      "action_type": "local_document_search",
+      "query": "What was the total number of IT support requests at Lee's Market in Q2 2025?",
+      "result_count": 5,
+      "top_doc_ids": [
+        "doc_05b7f22d_1776305589",
+        "doc_73798de5_1776305589",
+        "doc_3a523eff_1776305588"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_fallback",
+    "label": "web_search: What was the total number of IT support requests...",
+    "start_s": 121.153639,
+    "end_s": 121.417902,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "action_id": "iter1_web_fallback",
+      "action_type": "web_search",
+      "query": "What was the total number of IT support requests at Lee's Market in Q2 2025?",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_ad620716a89aca05",
+        "web/5527",
+        "web/57542"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs",
+    "start_s": 121.418135,
+    "end_s": 150.049024,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "candidate_count": 7,
+      "selected_doc_ids": [
+        "doc_05b7f22d_1776305589",
+        "doc_3a523eff_1776305588"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_05b7f22d_1776305589",
+    "label": "Q2-IT-Assistance-Report.docx",
+    "start_s": 150.04933,
+    "end_s": 157.791622,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "doc_05b7f22d_1776305589",
+      "source": "local",
+      "title": "Q2-IT-Assistance-Report.docx",
+      "can_answer": true,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "error",
+    "lane": "error:read:doc_3a523eff_1776305588",
+    "label": "read error doc_3a523eff_1776305588",
+    "start_s": 208.845656,
+    "end_s": 208.846656,
+    "meta": {
+      "stage": "doc_read",
+      "kind": "parse_error",
+      "hop_number": 1,
+      "iteration": 1,
+      "message": "No valid JSON found in response: line 1 column 1 (char 0)",
+      "doc_id": "doc_3a523eff_1776305588",
+      "source": "local"
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_3a523eff_1776305588",
+    "label": "Lees_Market_IT_Complaints_Record.xlsx",
+    "start_s": 150.052286,
+    "end_s": 208.845665,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "doc_3a523eff_1776305588",
+      "source": "local",
+      "title": "Lees_Market_IT_Complaints_Record.xlsx",
+      "can_answer": false,
+      "confidence": 0.0
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 208.846026,
+    "end_s": 219.438843,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "answered": true,
+      "confidence": 0.9,
+      "next_step": "done",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 5
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 219.438907,
+    "end_s": 232.901712,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "planned_actions": [
+        {
+          "action_id": "iter2_web_search_0",
+          "type": "web_search",
+          "query": "country received 300 armored medical treatment vehicles and 300 armored utility trucks"
+        },
+        {
+          "action_id": "iter2_web_search_1",
+          "type": "web_search",
+          "query": "military aid country armored medical vehicles utility trucks"
+        },
+        {
+          "action_id": "iter2_web_search_2",
+          "type": "web_search",
+          "query": "humanitarian aid armored medical treatment vehicles country"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_1",
+    "label": "web_search: military aid country armored medical vehicles ut...",
+    "start_s": 232.901872,
+    "end_s": 233.190239,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "action_id": "iter2_web_search_1",
+      "action_type": "web_search",
+      "query": "military aid country armored medical vehicles utility trucks",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/23634",
+        "web/21932",
+        "web/93872"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_2",
+    "label": "web_search: humanitarian aid armored medical treatment vehic...",
+    "start_s": 232.901947,
+    "end_s": 233.290167,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "action_id": "iter2_web_search_2",
+      "action_type": "web_search",
+      "query": "humanitarian aid armored medical treatment vehicles country",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/19316",
+        "web/65521",
+        "web/65713"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_0",
+    "label": "web_search: country received 300 armored medical treatment v...",
+    "start_s": 232.90176,
+    "end_s": 233.35632,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "action_id": "iter2_web_search_0",
+      "action_type": "web_search",
+      "query": "country received 300 armored medical treatment vehicles and 300 armored utility trucks",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_ad620716a89aca05",
+        "web/23634",
+        "web/21932"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs",
+    "start_s": 233.356594,
+    "end_s": 248.606873,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "candidate_count": 11,
+      "selected_doc_ids": [
+        "web/23634",
+        "web/21932",
+        "web/77376"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/23634",
+    "label": "https://www.state.gov/bureau-of-political-milita...",
+    "start_s": 248.607003,
+    "end_s": 254.383434,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "doc_id": "web/23634",
+      "source": "web",
+      "title": "https://www.state.gov/bureau-of-political-military-affairs/releases/2025/01/u-s-security-cooperation-with-ukraine/",
+      "can_answer": true,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/21932",
+    "label": "https://afsc.org/gaza-genocide-companies",
+    "start_s": 248.610475,
+    "end_s": 255.203529,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "doc_id": "web/21932",
+      "source": "web",
+      "title": "https://afsc.org/gaza-genocide-companies",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/77376",
+    "label": "https://www.stripes.com/branches/army/2024-03-12...",
+    "start_s": 248.613637,
+    "end_s": 256.010838,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "doc_id": "web/77376",
+      "source": "web",
+      "title": "https://www.stripes.com/branches/army/2024-03-12/gaza-port-humanitarian-aid-palestinians-israel-13297894.html",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 256.0112,
+    "end_s": 264.518883,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "answered": true,
+      "confidence": 0.9,
+      "next_step": "done",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 8
+    }
+  },
+  {
+    "stage": "report",
+    "lane": "report",
+    "label": "Final report",
+    "start_s": 264.518905,
+    "end_s": 264.524879,
+    "meta": {
+      "resolved_hops": 2,
+      "report_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0023_b6c5568b_d9da616e/workspace/research_report_1776341538.md"
+    }
+  }
+]

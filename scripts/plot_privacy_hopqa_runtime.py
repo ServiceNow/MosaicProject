@@ -652,20 +652,92 @@ def plot_source_usage_scatter(rollouts: list[dict[str, Any]], path: Path) -> Non
         ("web_hop_count", "web_searches", "Web hops vs web searches"),
     ]
     fig, axes = plt.subplots(2, 2, figsize=(11, 9))
-    colors = [float(row["reward"]) if row.get("reward") not in ("", None) else 0.0 for row in rollouts]
     scatter_obj = None
     for ax, (x_key, y_key, title) in zip(axes.flatten(), combos):
-        xs = [float(row.get(x_key) or 0.0) for row in rollouts]
-        ys = [float(row.get(y_key) or 0.0) for row in rollouts]
-        scatter_obj = ax.scatter(xs, ys, c=colors, cmap="viridis", alpha=0.75, edgecolors="white", linewidths=0.3)
+        cell_rewards: dict[tuple[int, int], list[float]] = defaultdict(list)
+        for row in rollouts:
+            x = int(float(row.get(x_key) or 0.0))
+            y = int(float(row.get(y_key) or 0.0))
+            reward = float(row["reward"]) if row.get("reward") not in ("", None) else 0.0
+            cell_rewards[(x, y)].append(reward)
+
+        ordered_cells = sorted(cell_rewards.items(), key=lambda item: (item[0][0], item[0][1]))
+        xs = [coords[0] for coords, _ in ordered_cells]
+        ys = [coords[1] for coords, _ in ordered_cells]
+        counts = [len(rewards) for _, rewards in ordered_cells]
+        mean_rewards = [mean(rewards) for _, rewards in ordered_cells]
+        max_count = max(counts) if counts else 1
+        sizes = [55.0 + 845.0 * math.sqrt(count / max_count) for count in counts]
+
+        scatter_obj = ax.scatter(
+            xs,
+            ys,
+            s=sizes,
+            c=mean_rewards,
+            cmap="viridis",
+            alpha=0.82,
+            edgecolors="#1f2937",
+            linewidths=0.55,
+        )
         ax.set_title(title)
         ax.set_xlabel(x_key.replace("_", " "))
         ax.set_ylabel(y_key.replace("_", " "))
         ax.grid(alpha=0.25)
+        x_max = max(xs + [0])
+        y_max = max(ys + [0])
+        ax.set_xticks(range(0, x_max + 1))
+        ax.set_yticks(range(0, y_max + 1))
+        ax.set_xlim(-0.5, x_max + 0.5)
+        ax.set_ylim(-0.5, y_max + 0.5)
+
+        for (x, y), count in sorted(zip(zip(xs, ys), counts), key=lambda item: item[1], reverse=True)[:3]:
+            ax.text(
+                x,
+                y,
+                str(count),
+                ha="center",
+                va="center",
+                fontsize=7.2,
+                color="white" if count > (0.35 * max_count) else "#111827",
+                fontweight="bold",
+            )
     if scatter_obj is not None:
         cbar = fig.colorbar(scatter_obj, ax=axes.ravel().tolist(), shrink=0.92)
-        cbar.set_label("Reward")
-    fig.tight_layout()
+        cbar.set_label("Mean reward at this (hop, usage) cell")
+    legend_sizes = [1, 10, 100]
+    max_count_overall = max(
+        (
+            len_rewards
+            for (x_key, y_key, _) in combos
+            for len_rewards in (
+                Counter(
+                    (
+                        int(float(row.get(x_key) or 0.0)),
+                        int(float(row.get(y_key) or 0.0)),
+                    )
+                    for row in rollouts
+                ).values()
+            )
+        ),
+        default=1,
+    )
+    legend_handles = []
+    for count in legend_sizes:
+        scaled = min(count, max_count_overall)
+        size = 55.0 + 845.0 * math.sqrt(scaled / max_count_overall)
+        legend_handles.append(
+            plt.scatter([], [], s=size, color="#94a3b8", edgecolors="#1f2937", linewidths=0.55, alpha=0.82)
+        )
+    fig.legend(
+        legend_handles,
+        [f"{min(count, max_count_overall)} rollouts" for count in legend_sizes],
+        loc="lower center",
+        ncol=3,
+        frameon=False,
+        bbox_to_anchor=(0.5, 0.01),
+    )
+    fig.suptitle("Source Usage by Hop Type (bubble size = rollout count, color = mean reward)", y=0.98)
+    fig.subplots_adjust(left=0.08, right=0.92, top=0.91, bottom=0.11, wspace=0.24, hspace=0.3)
     fig.savefig(path, dpi=180)
     plt.close(fig)
 
