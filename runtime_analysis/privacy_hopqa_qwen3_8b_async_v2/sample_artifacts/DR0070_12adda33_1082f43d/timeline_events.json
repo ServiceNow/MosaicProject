@@ -1,0 +1,891 @@
+[
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 7.8e-05,
+    "end_s": 14.78339,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "planned_actions": [
+        {
+          "action_id": "iter0_web_search_0",
+          "type": "web_search",
+          "query": "Elexion Automotive cybersecurity team percentage of workforce 2020"
+        },
+        {
+          "action_id": "iter0_web_search_1",
+          "type": "web_search",
+          "query": "Elexion Automotive 2020 annual report cybersecurity team size"
+        },
+        {
+          "action_id": "iter0_web_search_2",
+          "type": "web_search",
+          "query": "Elexion Automotive cybersecurity workforce statistics 2020"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_2",
+    "label": "web_search: Elexion Automotive cybersecurity workforce stati...",
+    "start_s": 14.783651,
+    "end_s": 15.077108,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_2",
+      "action_type": "web_search",
+      "query": "Elexion Automotive cybersecurity workforce statistics 2020",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/88213",
+        "web/91890"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_1",
+    "label": "web_search: Elexion Automotive 2020 annual report cybersecur...",
+    "start_s": 14.783584,
+    "end_s": 15.077327,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_1",
+      "action_type": "web_search",
+      "query": "Elexion Automotive 2020 annual report cybersecurity team size",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/88213",
+        "web/30161"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_0",
+    "label": "web_search: Elexion Automotive cybersecurity team percentage...",
+    "start_s": 14.783443,
+    "end_s": 15.077929,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_0",
+      "action_type": "web_search",
+      "query": "Elexion Automotive cybersecurity team percentage of workforce 2020",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/88213",
+        "web/91890"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs",
+    "start_s": 15.078114,
+    "end_s": 30.18751,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "candidate_count": 7,
+      "selected_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/88213",
+        "web/30161"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+    "label": "https://www.helpnetsecurity.com/2025/04/04/cyber...",
+    "start_s": 30.187625,
+    "end_s": 37.503834,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+      "source": "web",
+      "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/88213",
+    "label": "https://cybersecurityventures.com/cybersecurity-...",
+    "start_s": 30.190046,
+    "end_s": 37.732097,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/88213",
+      "source": "web",
+      "title": "https://cybersecurityventures.com/cybersecurity-almanac-2023/",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/30161",
+    "label": "https://cybersecurityventures.com/cybersecurity-...",
+    "start_s": 30.192863,
+    "end_s": 39.407112,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/30161",
+      "source": "web",
+      "title": "https://cybersecurityventures.com/cybersecurity-almanac-2022/",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 39.407396,
+    "end_s": 48.503809,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.5,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/91890",
+        "web/77758"
+      ],
+      "unread_candidate_count": 4
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/77758",
+    "label": "https://cybersecurityventures.com/jobs/",
+    "start_s": 48.506991,
+    "end_s": 52.91967,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/77758",
+      "source": "web",
+      "title": "https://cybersecurityventures.com/jobs/",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/91890",
+    "label": "https://www.varonis.com/blog/cybersecurity-stati...",
+    "start_s": 48.503943,
+    "end_s": 54.285844,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/91890",
+      "source": "web",
+      "title": "https://www.varonis.com/blog/cybersecurity-statistics",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 54.286284,
+    "end_s": 64.693534,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.15,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/33651",
+        "web/12200"
+      ],
+      "unread_candidate_count": 2
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/33651",
+    "label": "https://www.itgovernance.co.uk/blog/list-of-data...",
+    "start_s": 64.693645,
+    "end_s": 69.869036,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/33651",
+      "source": "web",
+      "title": "https://www.itgovernance.co.uk/blog/list-of-data-breaches-and-cyber-attacks-in-2023",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/12200",
+    "label": "https://www.cm-alliance.com/cybersecurity-blog/j...",
+    "start_s": 64.696793,
+    "end_s": 70.879077,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/12200",
+      "source": "web",
+      "title": "https://www.cm-alliance.com/cybersecurity-blog/january-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 70.879408,
+    "end_s": 79.18954,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.9,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 79.189694,
+    "end_s": 90.677522,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "planned_actions": [
+        {
+          "action_id": "iter1_web_search_0",
+          "type": "web_search",
+          "query": "Elexion Automotive 2020 workforce breakdown cybersecurity team size"
+        },
+        {
+          "action_id": "iter1_web_search_1",
+          "type": "web_search",
+          "query": "Elexion Automotive 2020 annual report cybersecurity workforce percentage"
+        },
+        {
+          "action_id": "iter1_web_search_2",
+          "type": "web_search",
+          "query": "Elexion Automotive cybersecurity team 2020 news articles"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_1",
+    "label": "web_search: Elexion Automotive 2020 annual report cybersecur...",
+    "start_s": 90.677719,
+    "end_s": 91.209749,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "action_id": "iter1_web_search_1",
+      "action_type": "web_search",
+      "query": "Elexion Automotive 2020 annual report cybersecurity workforce percentage",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/88213",
+        "web/91890"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_2",
+    "label": "web_search: Elexion Automotive cybersecurity team 2020 news...",
+    "start_s": 90.677781,
+    "end_s": 91.237799,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "action_id": "iter1_web_search_2",
+      "action_type": "web_search",
+      "query": "Elexion Automotive cybersecurity team 2020 news articles",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/12200",
+        "web/30967"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_0",
+    "label": "web_search: Elexion Automotive 2020 workforce breakdown cybe...",
+    "start_s": 90.677581,
+    "end_s": 91.240277,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "action_id": "iter1_web_search_0",
+      "action_type": "web_search",
+      "query": "Elexion Automotive 2020 workforce breakdown cybersecurity team size",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/88213",
+        "web/50680"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs",
+    "start_s": 91.245719,
+    "end_s": 103.531425,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "candidate_count": 4,
+      "selected_doc_ids": [
+        "web/30967",
+        "web/50680",
+        "web/29471"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/50680",
+    "label": "https://pentera.io/leadership/",
+    "start_s": 103.53689,
+    "end_s": 108.609311,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "web/50680",
+      "source": "web",
+      "title": "https://pentera.io/leadership/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/30967",
+    "label": "https://www.cm-alliance.com/cybersecurity-blog/m...",
+    "start_s": 103.531556,
+    "end_s": 109.059354,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "web/30967",
+      "source": "web",
+      "title": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/29471",
+    "label": "https://www.cm-alliance.com/cybersecurity-blog/j...",
+    "start_s": 103.54071,
+    "end_s": 109.529025,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "web/29471",
+      "source": "web",
+      "title": "https://www.cm-alliance.com/cybersecurity-blog/january-2025-recent-cyber-attacks-data-breaches-ransomware-attacks",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 109.633081,
+    "end_s": 116.224685,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "answered": false,
+      "confidence": 0.3,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 1
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 116.224957,
+    "end_s": 136.111867,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "planned_actions": [
+        {
+          "action_id": "iter2_web_search_0",
+          "type": "web_search",
+          "query": "Elexion Automotive 2020 workforce cybersecurity statistics"
+        },
+        {
+          "action_id": "iter2_web_search_2",
+          "type": "web_search",
+          "query": "Elexion Automotive 2020 employee distribution cybersecurity"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_2",
+    "label": "web_search: Elexion Automotive 2020 employee distribution cy...",
+    "start_s": 136.112063,
+    "end_s": 136.379833,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "action_id": "iter2_web_search_2",
+      "action_type": "web_search",
+      "query": "Elexion Automotive 2020 employee distribution cybersecurity",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/88213",
+        "web/12200"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_0",
+    "label": "web_search: Elexion Automotive 2020 workforce cybersecurity...",
+    "start_s": 136.111953,
+    "end_s": 136.379981,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "action_id": "iter2_web_search_0",
+      "action_type": "web_search",
+      "query": "Elexion Automotive 2020 workforce cybersecurity statistics",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/91890",
+        "web/88213"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs (skipped)",
+    "start_s": 136.380152,
+    "end_s": 136.380152,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "candidate_count": 2,
+      "selected_doc_ids": [
+        "web/14186",
+        "web/4912"
+      ],
+      "skipped": true
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/14186",
+    "label": "https://www.cyberlands.io/topsecuritybreachescan...",
+    "start_s": 136.38024,
+    "end_s": 144.124488,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "doc_id": "web/14186",
+      "source": "web",
+      "title": "https://www.cyberlands.io/topsecuritybreachescanada",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/4912",
+    "label": "https://purplesec.us/resources/cybersecurity-sta...",
+    "start_s": 136.383549,
+    "end_s": 144.813842,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "doc_id": "web/4912",
+      "source": "web",
+      "title": "https://purplesec.us/resources/cybersecurity-statistics/",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 144.814084,
+    "end_s": 151.618353,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "answered": false,
+      "confidence": 0.3,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 151.618604,
+    "end_s": 161.128661,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "planned_actions": [
+        {
+          "action_id": "iter3_web_search_0",
+          "type": "web_search",
+          "query": "Elexion Automotive 2020 annual report cybersecurity team workforce percentage"
+        },
+        {
+          "action_id": "iter3_web_search_1",
+          "type": "web_search",
+          "query": "Elexion Automotive cybersecurity team size 2020 news articles"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_web_search_0",
+    "label": "web_search: Elexion Automotive 2020 annual report cybersecur...",
+    "start_s": 161.128707,
+    "end_s": 161.289357,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "action_id": "iter3_web_search_0",
+      "action_type": "web_search",
+      "query": "Elexion Automotive 2020 annual report cybersecurity team workforce percentage",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/88213",
+        "web/30161"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_web_search_1",
+    "label": "web_search: Elexion Automotive cybersecurity team size 2020...",
+    "start_s": 161.128817,
+    "end_s": 161.312773,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "action_id": "iter3_web_search_1",
+      "action_type": "web_search",
+      "query": "Elexion Automotive cybersecurity team size 2020 news articles",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/88213",
+        "web/84260"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs (skipped)",
+    "start_s": 161.312835,
+    "end_s": 161.312835,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "candidate_count": 1,
+      "selected_doc_ids": [
+        "web/84260"
+      ],
+      "skipped": true
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/84260",
+    "label": "https://www.butzel.com/services-automotive-indus...",
+    "start_s": 161.312909,
+    "end_s": 167.719418,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "doc_id": "web/84260",
+      "source": "web",
+      "title": "https://www.butzel.com/services-automotive-industry-teams",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 167.719657,
+    "end_s": 179.123209,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "answered": false,
+      "confidence": 0.3,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 179.123561,
+    "end_s": 196.134258,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 4,
+      "planned_actions": [
+        {
+          "action_id": "iter4_web_search_1",
+          "type": "web_search",
+          "query": "Elexion Automotive cybersecurity team size relative to total workforce 2020"
+        },
+        {
+          "action_id": "iter4_web_search_2",
+          "type": "web_search",
+          "query": "Elexion Automotive 2020 workforce distribution by department cybersecurity"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter4_web_search_2",
+    "label": "web_search: Elexion Automotive 2020 workforce distribution b...",
+    "start_s": 196.134456,
+    "end_s": 196.441992,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 4,
+      "action_id": "iter4_web_search_2",
+      "action_type": "web_search",
+      "query": "Elexion Automotive 2020 workforce distribution by department cybersecurity",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/88213",
+        "web/31545"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter4_web_search_1",
+    "label": "web_search: Elexion Automotive cybersecurity team size relat...",
+    "start_s": 196.13435,
+    "end_s": 196.501243,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 4,
+      "action_id": "iter4_web_search_1",
+      "action_type": "web_search",
+      "query": "Elexion Automotive cybersecurity team size relative to total workforce 2020",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/88213",
+        "web/91890"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs (skipped)",
+    "start_s": 196.501312,
+    "end_s": 196.501312,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 4,
+      "candidate_count": 1,
+      "selected_doc_ids": [
+        "web/31545"
+      ],
+      "skipped": true
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/31545",
+    "label": "https://verifiedvoting.org/team/",
+    "start_s": 196.501374,
+    "end_s": 205.450032,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 4,
+      "doc_id": "web/31545",
+      "source": "web",
+      "title": "https://verifiedvoting.org/team/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 205.450231,
+    "end_s": 212.035772,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 4,
+      "answered": false,
+      "confidence": 0.5,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 212.036043,
+    "end_s": 224.69549,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 5,
+      "planned_actions": [
+        {
+          "action_id": "iter5_web_search_0",
+          "type": "web_search",
+          "query": "\"Elexion Automotive\" 2020 annual report cybersecurity workforce percentage"
+        },
+        {
+          "action_id": "iter5_web_search_1",
+          "type": "web_search",
+          "query": "\"Elexion Automotive\" cybersecurity team size 2020 total workforce percentage"
+        },
+        {
+          "action_id": "iter5_web_search_2",
+          "type": "web_search",
+          "query": "\"Elexion Automotive\" 2020 employee distribution cybersecurity department"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter5_web_search_1",
+    "label": "web_search: \"Elexion Automotive\" cybersecurity team size 202...",
+    "start_s": 224.695656,
+    "end_s": 224.880453,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 5,
+      "action_id": "iter5_web_search_1",
+      "action_type": "web_search",
+      "query": "\"Elexion Automotive\" cybersecurity team size 2020 total workforce percentage",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/88213",
+        "web/91890"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter5_web_search_2",
+    "label": "web_search: \"Elexion Automotive\" 2020 employee distribution...",
+    "start_s": 224.695725,
+    "end_s": 224.880607,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 5,
+      "action_id": "iter5_web_search_2",
+      "action_type": "web_search",
+      "query": "\"Elexion Automotive\" 2020 employee distribution cybersecurity department",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/88213",
+        "web/30161"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter5_web_search_0",
+    "label": "web_search: \"Elexion Automotive\" 2020 annual report cybersec...",
+    "start_s": 224.695542,
+    "end_s": 224.914509,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 5,
+      "action_id": "iter5_web_search_0",
+      "action_type": "web_search",
+      "query": "\"Elexion Automotive\" 2020 annual report cybersecurity workforce percentage",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/88213",
+        "web/91890"
+      ]
+    }
+  },
+  {
+    "stage": "report",
+    "lane": "report",
+    "label": "Final report",
+    "start_s": 224.914742,
+    "end_s": 224.979977,
+    "meta": {
+      "resolved_hops": 0,
+      "report_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0070_12adda33_1082f43d/workspace/research_report_1776316987.md"
+    }
+  }
+]

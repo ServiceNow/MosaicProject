@@ -1,0 +1,1667 @@
+[
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 8.3e-05,
+    "end_s": 8.325793,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "planned_actions": [
+        {
+          "action_id": "iter0_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market customer recognition program establishment year"
+        },
+        {
+          "action_id": "iter0_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market rewards program launch date"
+        },
+        {
+          "action_id": "iter0_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market corporate milestones customer program"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_2",
+    "label": "web_search: Lee's Market corporate milestones customer progr...",
+    "start_s": 8.326039,
+    "end_s": 8.517701,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_2",
+      "action_type": "web_search",
+      "query": "Lee's Market corporate milestones customer program",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/95440",
+        "web/67038",
+        "web/26590"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_1",
+    "label": "web_search: Lee's Market rewards program launch date",
+    "start_s": 8.325987,
+    "end_s": 8.526127,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_1",
+      "action_type": "web_search",
+      "query": "Lee's Market rewards program launch date",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/16351",
+        "web/73693",
+        "web/48091"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_0",
+    "label": "web_search: Lee's Market customer recognition program establ...",
+    "start_s": 8.325845,
+    "end_s": 8.555391,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_0",
+      "action_type": "web_search",
+      "query": "Lee's Market customer recognition program establishment year",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/73693",
+        "web/95440",
+        "web/67038"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs",
+    "start_s": 8.555588,
+    "end_s": 32.559089,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "candidate_count": 10,
+      "selected_doc_ids": [
+        "web/95440",
+        "web/73693",
+        "web/67038"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/73693",
+    "label": "https://www.lewistonmaine.gov/1253/Lewiston-Lead...",
+    "start_s": 32.561677,
+    "end_s": 41.070118,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/73693",
+      "source": "web",
+      "title": "https://www.lewistonmaine.gov/1253/Lewiston-Leads",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/95440",
+    "label": "https://www.wholefoodsmarket.com/company-info/wh...",
+    "start_s": 32.559199,
+    "end_s": 41.627177,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/95440",
+      "source": "web",
+      "title": "https://www.wholefoodsmarket.com/company-info/whole-foods-market-history",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/67038",
+    "label": "https://www.hy-vee.com/corporate/our-company/our...",
+    "start_s": 32.563877,
+    "end_s": 42.168906,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/67038",
+      "source": "web",
+      "title": "https://www.hy-vee.com/corporate/our-company/our-history/?srsltid=AfmBOorx8fTx1hZpdz8TOjEUMsSRTmyVcQAf6ER5mHoBx0BUOjprPKPh",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 42.190661,
+    "end_s": 52.237294,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.15,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/26590",
+        "web/48091",
+        "web/9928"
+      ],
+      "unread_candidate_count": 7
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/48091",
+    "label": "https://en.wikipedia.org/wiki/Katie_Lee_(chef)",
+    "start_s": 52.241025,
+    "end_s": 57.282039,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/48091",
+      "source": "web",
+      "title": "https://en.wikipedia.org/wiki/Katie_Lee_(chef)",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/9928",
+    "label": "https://shop.commissaries.com/",
+    "start_s": 52.244524,
+    "end_s": 57.941687,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/9928",
+      "source": "web",
+      "title": "https://shop.commissaries.com/",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/26590",
+    "label": "https://www.menke.com/esop-archives/olivers-mark...",
+    "start_s": 52.237409,
+    "end_s": 58.261232,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/26590",
+      "source": "web",
+      "title": "https://www.menke.com/esop-archives/olivers-market-becomes-100-employee-owned-a-commitment-to-independence-and-community/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 58.261589,
+    "end_s": 69.874559,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.15,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/16351",
+        "web/56059",
+        "web/39920"
+      ],
+      "unread_candidate_count": 4
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/16351",
+    "label": "https://www.travismathew.com/",
+    "start_s": 69.874687,
+    "end_s": 77.076395,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/16351",
+      "source": "web",
+      "title": "https://www.travismathew.com/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/56059",
+    "label": "https://www.theupsstore.com/about/history",
+    "start_s": 69.877619,
+    "end_s": 77.875602,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/56059",
+      "source": "web",
+      "title": "https://www.theupsstore.com/about/history",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/39920",
+    "label": "https://www.levinmgt.com/press/new-shoprite-of-w...",
+    "start_s": 69.880761,
+    "end_s": 78.393054,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/39920",
+      "source": "web",
+      "title": "https://www.levinmgt.com/press/new-shoprite-of-watchung-to-open-doors-april-9-and-host-grand-opening-celebration-april-13/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 78.393433,
+    "end_s": 97.650967,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.15,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/87245"
+      ],
+      "unread_candidate_count": 1
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/87245",
+    "label": "https://corp.7-eleven.com/corp/our-brand-story",
+    "start_s": 97.651061,
+    "end_s": 106.881782,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/87245",
+      "source": "web",
+      "title": "https://corp.7-eleven.com/corp/our-brand-story",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 106.882059,
+    "end_s": 120.375174,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.1,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 120.375432,
+    "end_s": 137.426925,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "planned_actions": [
+        {
+          "action_id": "iter1_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market Richmond British Columbia customer rewards program establishment year"
+        },
+        {
+          "action_id": "iter1_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market corporate milestones customer recognition program year"
+        },
+        {
+          "action_id": "iter1_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market employee program timelines rewards recognition"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_2",
+    "label": "web_search: Lee's Market employee program timelines rewards...",
+    "start_s": 137.496881,
+    "end_s": 138.644943,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "action_id": "iter1_web_search_2",
+      "action_type": "web_search",
+      "query": "Lee's Market employee program timelines rewards recognition",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/60306",
+        "web/11764",
+        "web/72628"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_1",
+    "label": "web_search: Lee's Market corporate milestones customer recog...",
+    "start_s": 137.496843,
+    "end_s": 139.072091,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "action_id": "iter1_web_search_1",
+      "action_type": "web_search",
+      "query": "Lee's Market corporate milestones customer recognition program year",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/56059",
+        "web/11764",
+        "web/10344"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_0",
+    "label": "web_search: Lee's Market Richmond British Columbia customer...",
+    "start_s": 137.496802,
+    "end_s": 139.161272,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "action_id": "iter1_web_search_0",
+      "action_type": "web_search",
+      "query": "Lee's Market Richmond British Columbia customer rewards program establishment year",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/95440",
+        "web/3887",
+        "web/73693"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs",
+    "start_s": 139.161468,
+    "end_s": 154.792966,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "candidate_count": 8,
+      "selected_doc_ids": [
+        "web/11764",
+        "web/10344"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/10344",
+    "label": "https://multco.us/news/meet-2014-county-employee...",
+    "start_s": 154.797329,
+    "end_s": 159.217255,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "web/10344",
+      "source": "web",
+      "title": "https://multco.us/news/meet-2014-county-employee-recognition-award-winners",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/11764",
+    "label": "https://hr.risd.edu/working-at-risd/community/em...",
+    "start_s": 154.793074,
+    "end_s": 161.64285,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "web/11764",
+      "source": "web",
+      "title": "https://hr.risd.edu/working-at-risd/community/employee-recognition/2014-15-recognition/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 161.643152,
+    "end_s": 172.745585,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "answered": false,
+      "confidence": 0.7,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/60306",
+        "web/3887",
+        "web/89765"
+      ],
+      "unread_candidate_count": 6
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/60306",
+    "label": "https://www.octanner.com/articles/employee-servi...",
+    "start_s": 172.745726,
+    "end_s": 180.459586,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "web/60306",
+      "source": "web",
+      "title": "https://www.octanner.com/articles/employee-service-award-guide",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/3887",
+    "label": "https://www.portofbellingham.com/1002/Bellingham...",
+    "start_s": 172.748952,
+    "end_s": 181.765975,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "web/3887",
+      "source": "web",
+      "title": "https://www.portofbellingham.com/1002/Bellingham-Dockside-Market",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/89765",
+    "label": "https://www.wpb.org/Our-City/Awards-Recognitions",
+    "start_s": 172.752215,
+    "end_s": 183.168293,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "web/89765",
+      "source": "web",
+      "title": "https://www.wpb.org/Our-City/Awards-Recognitions",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 183.168639,
+    "end_s": 190.337868,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "answered": false,
+      "confidence": 0.25,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/72628",
+        "web/24277",
+        "web/22911"
+      ],
+      "unread_candidate_count": 3
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/24277",
+    "label": "https://inside.fpm.wisc.edu/employee-recognition...",
+    "start_s": 190.341498,
+    "end_s": 199.825911,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "web/24277",
+      "source": "web",
+      "title": "https://inside.fpm.wisc.edu/employee-recognition/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/72628",
+    "label": "https://hr.fiu.edu/employees-affiliates/apprecia...",
+    "start_s": 190.33801,
+    "end_s": 200.035012,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "web/72628",
+      "source": "web",
+      "title": "https://hr.fiu.edu/employees-affiliates/appreciation-recognition/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/22911",
+    "label": "https://projects.iq.harvard.edu/koreanalumnibiog...",
+    "start_s": 190.345108,
+    "end_s": 200.33693,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "web/22911",
+      "source": "web",
+      "title": "https://projects.iq.harvard.edu/koreanalumnibiographiesproject/people/kyunghoon-claude-lee",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 200.34615,
+    "end_s": 208.684119,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "answered": false,
+      "confidence": 0.15,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 208.684343,
+    "end_s": 226.804305,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "planned_actions": [
+        {
+          "action_id": "iter2_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market Richmond British Columbia customer rewards program launch year 5000 employees"
+        },
+        {
+          "action_id": "iter2_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market corporate milestones customer rewards program inception"
+        },
+        {
+          "action_id": "iter2_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market press release customer rewards program launch date"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_1",
+    "label": "web_search: Lee's Market corporate milestones customer rewar...",
+    "start_s": 226.804473,
+    "end_s": 227.133412,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "action_id": "iter2_web_search_1",
+      "action_type": "web_search",
+      "query": "Lee's Market corporate milestones customer rewards program inception",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/67038",
+        "web/95440",
+        "web/56059"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_0",
+    "label": "web_search: Lee's Market Richmond British Columbia customer...",
+    "start_s": 226.804361,
+    "end_s": 227.258652,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "action_id": "iter2_web_search_0",
+      "action_type": "web_search",
+      "query": "Lee's Market Richmond British Columbia customer rewards program launch year 5000 employees",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/73693",
+        "web/26590",
+        "web/95440"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_2",
+    "label": "web_search: Lee's Market press release customer rewards prog...",
+    "start_s": 226.804538,
+    "end_s": 227.556904,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "action_id": "iter2_web_search_2",
+      "action_type": "web_search",
+      "query": "Lee's Market press release customer rewards program launch date",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/16351",
+        "web/39920",
+        "web/62257"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs (skipped)",
+    "start_s": 227.634378,
+    "end_s": 227.634378,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "candidate_count": 2,
+      "selected_doc_ids": [
+        "web/62257",
+        "web/92235"
+      ],
+      "skipped": true
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/62257",
+    "label": "https://www.mcdonalds.com/us/en-us.html",
+    "start_s": 227.641025,
+    "end_s": 232.04511,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "doc_id": "web/62257",
+      "source": "web",
+      "title": "https://www.mcdonalds.com/us/en-us.html",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/92235",
+    "label": "https://www.dinersclub.com/about-us/history/",
+    "start_s": 227.644562,
+    "end_s": 235.5781,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "doc_id": "web/92235",
+      "source": "web",
+      "title": "https://www.dinersclub.com/about-us/history/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 235.578337,
+    "end_s": 243.944805,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "answered": false,
+      "confidence": 0.6,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 243.945161,
+    "end_s": 256.999974,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "planned_actions": [
+        {
+          "action_id": "iter3_web_fallback",
+          "type": "web_search",
+          "query": "In what year was Lee's Market's customer recognition and rewards program established?"
+        },
+        {
+          "action_id": "iter3_local_fallback",
+          "type": "local_document_search",
+          "query": "In what year was Lee's Market's customer recognition and rewards program established?"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_local_fallback",
+    "label": "local_document_search: In what year was Lee's Market's customer recogni...",
+    "start_s": 257.000586,
+    "end_s": 257.335244,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "action_id": "iter3_local_fallback",
+      "action_type": "local_document_search",
+      "query": "In what year was Lee's Market's customer recognition and rewards program established?",
+      "result_count": 5,
+      "top_doc_ids": [
+        "doc_a8956068_1776306882",
+        "doc_48818b85_1776306882",
+        "doc_58f7b8f1_1776306881"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_web_fallback",
+    "label": "web_search: In what year was Lee's Market's customer recogni...",
+    "start_s": 257.000522,
+    "end_s": 257.482155,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "action_id": "iter3_web_fallback",
+      "action_type": "web_search",
+      "query": "In what year was Lee's Market's customer recognition and rewards program established?",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/73693",
+        "web/56059",
+        "web/60306"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs",
+    "start_s": 257.482434,
+    "end_s": 272.288318,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "candidate_count": 5,
+      "selected_doc_ids": [
+        "doc_a8956068_1776306882",
+        "doc_48818b85_1776306882"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_a8956068_1776306882",
+    "label": "CS-Improvement-Plan-2026.docx",
+    "start_s": 272.288434,
+    "end_s": 278.411568,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "doc_id": "doc_a8956068_1776306882",
+      "source": "local",
+      "title": "CS-Improvement-Plan-2026.docx",
+      "can_answer": true,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_48818b85_1776306882",
+    "label": "customer-experience-strategy.docx",
+    "start_s": 272.291121,
+    "end_s": 281.063876,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "doc_id": "doc_48818b85_1776306882",
+      "source": "local",
+      "title": "customer-experience-strategy.docx",
+      "can_answer": false,
+      "confidence": 0.5
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 281.065367,
+    "end_s": 286.334771,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "answered": true,
+      "confidence": 0.95,
+      "next_step": "done",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 3
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 286.33487,
+    "end_s": 303.41885,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "planned_actions": [
+        {
+          "action_id": "iter4_web_search_0",
+          "type": "web_search",
+          "query": "U.S. states with 45 daily newspapers 2019"
+        },
+        {
+          "action_id": "iter4_web_search_1",
+          "type": "web_search",
+          "query": "newspaper count by state 2019"
+        },
+        {
+          "action_id": "iter4_web_search_2",
+          "type": "web_search",
+          "query": "daily newspapers per state 2019"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter4_web_search_1",
+    "label": "web_search: newspaper count by state 2019",
+    "start_s": 303.419107,
+    "end_s": 304.013179,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "action_id": "iter4_web_search_1",
+      "action_type": "web_search",
+      "query": "newspaper count by state 2019",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/13585",
+        "web/978",
+        "web/23317"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter4_web_search_2",
+    "label": "web_search: daily newspapers per state 2019",
+    "start_s": 303.419261,
+    "end_s": 304.194585,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "action_id": "iter4_web_search_2",
+      "action_type": "web_search",
+      "query": "daily newspapers per state 2019",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/70884",
+        "web/978",
+        "web/13585"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter4_web_search_0",
+    "label": "web_search: U.S. states with 45 daily newspapers 2019",
+    "start_s": 303.418917,
+    "end_s": 304.218959,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "action_id": "iter4_web_search_0",
+      "action_type": "web_search",
+      "query": "U.S. states with 45 daily newspapers 2019",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/70884",
+        "web/978",
+        "web/38965"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs",
+    "start_s": 304.219161,
+    "end_s": 328.859991,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "candidate_count": 6,
+      "selected_doc_ids": [
+        "web/70884",
+        "web/13585",
+        "web/23317"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/13585",
+    "label": "https://en.wikipedia.org/wiki/List_of_newspapers...",
+    "start_s": 328.866678,
+    "end_s": 336.664736,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "doc_id": "web/13585",
+      "source": "web",
+      "title": "https://en.wikipedia.org/wiki/List_of_newspapers_in_North_Carolina",
+      "can_answer": true,
+      "confidence": 0.92
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/70884",
+    "label": "https://www.meltwater.com/en/blog/largest-us-new...",
+    "start_s": 328.863436,
+    "end_s": 337.1485,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "doc_id": "web/70884",
+      "source": "web",
+      "title": "https://www.meltwater.com/en/blog/largest-us-newspapers",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/23317",
+    "label": "https://localnewsinitiative.northwestern.edu/pro...",
+    "start_s": 328.869571,
+    "end_s": 342.670134,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "doc_id": "web/23317",
+      "source": "web",
+      "title": "https://localnewsinitiative.northwestern.edu/projects/state-of-local-news/2024/report/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 342.670406,
+    "end_s": 351.547343,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "answered": true,
+      "confidence": 0.92,
+      "next_step": "done",
+      "selected_doc_ids": [
+        "web/13585"
+      ],
+      "unread_candidate_count": 3
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H3 retrieval plan",
+    "start_s": 351.547445,
+    "end_s": 367.333501,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 5,
+      "planned_actions": [
+        {
+          "action_id": "iter5_web_search_0",
+          "type": "web_search",
+          "query": "North Carolina newspaper count historical data"
+        },
+        {
+          "action_id": "iter5_web_search_1",
+          "type": "web_search",
+          "query": "North Carolina newspapers decline 2000s timeline"
+        },
+        {
+          "action_id": "iter5_web_search_2",
+          "type": "web_search",
+          "query": "North Carolina newspapers count 2010s"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter5_web_search_1",
+    "label": "web_search: North Carolina newspapers decline 2000s timeline",
+    "start_s": 367.333674,
+    "end_s": 367.472137,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 5,
+      "action_id": "iter5_web_search_1",
+      "action_type": "web_search",
+      "query": "North Carolina newspapers decline 2000s timeline",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/13585",
+        "web/37516",
+        "web/44445"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter5_web_search_0",
+    "label": "web_search: North Carolina newspaper count historical data",
+    "start_s": 367.333555,
+    "end_s": 367.560389,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 5,
+      "action_id": "iter5_web_search_0",
+      "action_type": "web_search",
+      "query": "North Carolina newspaper count historical data",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/13585",
+        "web/37516",
+        "web/44445"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter5_web_search_2",
+    "label": "web_search: North Carolina newspapers count 2010s",
+    "start_s": 367.333735,
+    "end_s": 367.560549,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 5,
+      "action_id": "iter5_web_search_2",
+      "action_type": "web_search",
+      "query": "North Carolina newspapers count 2010s",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/13585",
+        "web/37516",
+        "web/15922"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H3 choose docs",
+    "start_s": 367.560766,
+    "end_s": 392.162827,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 5,
+      "candidate_count": 8,
+      "selected_doc_ids": [
+        "web/13585",
+        "web/37516",
+        "web/15922"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/13585",
+    "label": "https://en.wikipedia.org/wiki/List_of_newspapers...",
+    "start_s": 392.162959,
+    "end_s": 399.056889,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 5,
+      "doc_id": "web/13585",
+      "source": "web",
+      "title": "https://en.wikipedia.org/wiki/List_of_newspapers_in_North_Carolina",
+      "can_answer": true,
+      "confidence": 0.9
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/15922",
+    "label": "https://carolinapublicpress.org/mission-2/",
+    "start_s": 392.168946,
+    "end_s": 400.828425,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 5,
+      "doc_id": "web/15922",
+      "source": "web",
+      "title": "https://carolinapublicpress.org/mission-2/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/37516",
+    "label": "https://www.digitalnc.org/newspapers/",
+    "start_s": 392.165826,
+    "end_s": 401.47256,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 5,
+      "doc_id": "web/37516",
+      "source": "web",
+      "title": "https://www.digitalnc.org/newspapers/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H3 resolve",
+    "start_s": 401.472837,
+    "end_s": 412.875656,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 5,
+      "answered": true,
+      "confidence": 0.9,
+      "next_step": "done",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 5
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H4 retrieval plan",
+    "start_s": 412.875748,
+    "end_s": 423.209388,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "planned_actions": [
+        {
+          "action_id": "iter6_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market full-time employee tenure increase 2020 quarter"
+        },
+        {
+          "action_id": "iter6_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market employee policy changes 2020 quarter reference"
+        },
+        {
+          "action_id": "iter6_local_document_search_2",
+          "type": "local_document_search",
+          "query": "employee tenure increase 2020 quarter"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter6_local_document_search_2",
+    "label": "local_document_search: employee tenure increase 2020 quarter",
+    "start_s": 423.209593,
+    "end_s": 423.326758,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "action_id": "iter6_local_document_search_2",
+      "action_type": "local_document_search",
+      "query": "employee tenure increase 2020 quarter",
+      "result_count": 5,
+      "top_doc_ids": [
+        "doc_18f71af7_1776306881",
+        "doc_f9c490d7_1776306881",
+        "doc_baf2fe03_1776306881"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter6_web_search_1",
+    "label": "web_search: Lee's Market employee policy changes 2020 quarte...",
+    "start_s": 423.209536,
+    "end_s": 423.712153,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "action_id": "iter6_web_search_1",
+      "action_type": "web_search",
+      "query": "Lee's Market employee policy changes 2020 quarter reference",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/64690",
+        "web/2522",
+        "web/25248"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter6_web_search_0",
+    "label": "web_search: Lee's Market full-time employee tenure increase...",
+    "start_s": 423.209432,
+    "end_s": 423.716548,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "action_id": "iter6_web_search_0",
+      "action_type": "web_search",
+      "query": "Lee's Market full-time employee tenure increase 2020 quarter",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/9762",
+        "web/1720",
+        "web/56108"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H4 choose docs",
+    "start_s": 423.845758,
+    "end_s": 466.263239,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "candidate_count": 13,
+      "selected_doc_ids": [
+        "doc_18f71af7_1776306881",
+        "web/9762",
+        "doc_48fc1df3_1776306881"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_18f71af7_1776306881",
+    "label": "mattermost_chat_20251120_152046.jsonl",
+    "start_s": 466.263412,
+    "end_s": 474.183172,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "doc_id": "doc_18f71af7_1776306881",
+      "source": "local",
+      "title": "mattermost_chat_20251120_152046.jsonl",
+      "can_answer": false,
+      "confidence": 0.1
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_48fc1df3_1776306881",
+    "label": "mattermost_chat_20251120_152046.jsonl",
+    "start_s": 466.269846,
+    "end_s": 475.095267,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "doc_id": "doc_48fc1df3_1776306881",
+      "source": "local",
+      "title": "mattermost_chat_20251120_152046.jsonl",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/9762",
+    "label": "https://www.bls.gov/opub/mlr/2021/article/unempl...",
+    "start_s": 466.265664,
+    "end_s": 476.039145,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "doc_id": "web/9762",
+      "source": "web",
+      "title": "https://www.bls.gov/opub/mlr/2021/article/unemployment-rises-in-2020-as-the-country-battles-the-covid-19-pandemic.htm",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H4 resolve",
+    "start_s": 476.039501,
+    "end_s": 490.057793,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "answered": false,
+      "confidence": 0.3,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/64690",
+        "doc_c2df362e_1776306881",
+        "web/2522"
+      ],
+      "unread_candidate_count": 10
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/64690",
+    "label": "https://www.aboutamazon.com/news/operations/upda...",
+    "start_s": 490.057979,
+    "end_s": 500.279453,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "doc_id": "web/64690",
+      "source": "web",
+      "title": "https://www.aboutamazon.com/news/operations/update-on-our-vision-to-be-earths-best-employer-and-earths-safest-place-to-work",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/2522",
+    "label": "https://doc.mo.gov/media-center/newsroom/staff-n...",
+    "start_s": 490.0618,
+    "end_s": 500.34701,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "doc_id": "web/2522",
+      "source": "web",
+      "title": "https://doc.mo.gov/media-center/newsroom/staff-news/local-news/frdc-ctcc",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_c2df362e_1776306881",
+    "label": "Lees_Market_Richmond_Daily_Foot_Traffic_Data.xls...",
+    "start_s": 490.065426,
+    "end_s": 500.58508,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "doc_id": "doc_c2df362e_1776306881",
+      "source": "local",
+      "title": "Lees_Market_Richmond_Daily_Foot_Traffic_Data.xlsx",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H4 resolve",
+    "start_s": 500.591943,
+    "end_s": 506.065613,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "answered": false,
+      "confidence": 0.1,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/1720",
+        "web/25248",
+        "web/56108"
+      ],
+      "unread_candidate_count": 7
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/1720",
+    "label": "https://www.bls.gov/cps/lfcharacteristics.htm",
+    "start_s": 506.065787,
+    "end_s": 511.782775,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "doc_id": "web/1720",
+      "source": "web",
+      "title": "https://www.bls.gov/cps/lfcharacteristics.htm",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/25248",
+    "label": "https://www.seiu26.org/commercial-janitor-cba-20...",
+    "start_s": 506.070767,
+    "end_s": 511.857267,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "doc_id": "web/25248",
+      "source": "web",
+      "title": "https://www.seiu26.org/commercial-janitor-cba-2024-2027",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/56108",
+    "label": "https://www.bls.gov/opub/mlr/2022/article/us-lab...",
+    "start_s": 506.075035,
+    "end_s": 513.575898,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "doc_id": "web/56108",
+      "source": "web",
+      "title": "https://www.bls.gov/opub/mlr/2022/article/us-labor-market-shows-improvement-in-2021-but-the-covid-19-pandemic-continues-to-weigh-on-the-economy.htm",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H4 resolve",
+    "start_s": 513.576338,
+    "end_s": 524.563384,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "answered": false,
+      "confidence": 0.3,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "doc_f9c490d7_1776306881",
+        "doc_baf2fe03_1776306881",
+        "web/56465"
+      ],
+      "unread_candidate_count": 4
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_baf2fe03_1776306881",
+    "label": "mattermost_chat_20251120_152046.jsonl",
+    "start_s": 524.565209,
+    "end_s": 533.134001,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "doc_id": "doc_baf2fe03_1776306881",
+      "source": "local",
+      "title": "mattermost_chat_20251120_152046.jsonl",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_f9c490d7_1776306881",
+    "label": "mattermost_chat_20251120_152046.jsonl",
+    "start_s": 524.563532,
+    "end_s": 533.302481,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "doc_id": "doc_f9c490d7_1776306881",
+      "source": "local",
+      "title": "mattermost_chat_20251120_152046.jsonl",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/56465",
+    "label": "https://www.dir.ca.gov/dlse/COVID19Resources/202...",
+    "start_s": 524.566839,
+    "end_s": 535.256484,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "doc_id": "web/56465",
+      "source": "web",
+      "title": "https://www.dir.ca.gov/dlse/COVID19Resources/2022-SPSL-FAQs.html",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H4 resolve",
+    "start_s": 535.256979,
+    "end_s": 542.016873,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "answered": false,
+      "confidence": 0.3,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/26590"
+      ],
+      "unread_candidate_count": 1
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/26590",
+    "label": "https://www.menke.com/esop-archives/olivers-mark...",
+    "start_s": 542.017011,
+    "end_s": 549.823189,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "doc_id": "web/26590",
+      "source": "web",
+      "title": "https://www.menke.com/esop-archives/olivers-market-becomes-100-employee-owned-a-commitment-to-independence-and-community/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H4 resolve",
+    "start_s": 549.823573,
+    "end_s": 557.689819,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "answered": true,
+      "confidence": 0.9,
+      "next_step": "done",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "report",
+    "lane": "report",
+    "label": "Final report",
+    "start_s": 557.689877,
+    "end_s": 557.715279,
+    "meta": {
+      "resolved_hops": 4,
+      "report_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0091_01ff9e71_aa63f117/workspace/research_report_1776325204.md"
+    }
+  }
+]

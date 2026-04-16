@@ -165,6 +165,83 @@ def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
             writer.writerow(row)
 
 
+def sample_rows_for_export(
+    rows: list[dict[str, Any]],
+    limit: int,
+    *,
+    group_key: str | None = None,
+    seed: int = 7,
+) -> list[dict[str, Any]]:
+    if len(rows) <= limit:
+        return list(rows)
+
+    indexed_rows = list(enumerate(rows))
+    rng = random.Random(seed)
+
+    def sample_bucket(bucket: list[tuple[int, dict[str, Any]]], quota: int) -> list[tuple[int, dict[str, Any]]]:
+        if quota <= 0:
+            return []
+        if len(bucket) <= quota:
+            return list(bucket)
+        if quota == 1:
+            return [bucket[0]]
+        if quota == 2:
+            return [bucket[0], bucket[-1]]
+        interior = bucket[1:-1]
+        need = quota - 2
+        chosen = [bucket[0], bucket[-1]]
+        if interior:
+            chosen.extend(interior if len(interior) <= need else rng.sample(interior, need))
+        return chosen
+
+    if not group_key:
+        head = min(100, limit // 4)
+        tail = min(100, max(0, limit - head))
+        middle_quota = max(0, limit - head - tail)
+        middle = indexed_rows[head : max(head, len(indexed_rows) - tail)]
+        sampled = indexed_rows[:head] + (
+            middle if len(middle) <= middle_quota else rng.sample(middle, middle_quota)
+        ) + indexed_rows[len(indexed_rows) - tail :]
+        sampled.sort(key=lambda item: item[0])
+        return [row for _, row in sampled[:limit]]
+
+    grouped: dict[str, list[tuple[int, dict[str, Any]]]] = defaultdict(list)
+    for item in indexed_rows:
+        grouped[str(item[1].get(group_key) or "unknown")].append(item)
+
+    total = len(indexed_rows)
+    quotas: dict[str, int] = {}
+    for group, bucket in grouped.items():
+        quotas[group] = min(len(bucket), max(1, int(round(limit * len(bucket) / total))))
+
+    quota_total = sum(quotas.values())
+    groups_by_size = sorted(grouped.keys(), key=lambda key: (len(grouped[key]), key), reverse=True)
+    while quota_total > limit:
+        for group in groups_by_size:
+            if quota_total <= limit:
+                break
+            if quotas[group] > 1:
+                quotas[group] -= 1
+                quota_total -= 1
+    while quota_total < limit:
+        grew = False
+        for group in groups_by_size:
+            if quota_total >= limit:
+                break
+            if quotas[group] < len(grouped[group]):
+                quotas[group] += 1
+                quota_total += 1
+                grew = True
+        if not grew:
+            break
+
+    sampled_items: list[tuple[int, dict[str, Any]]] = []
+    for group in sorted(grouped):
+        sampled_items.extend(sample_bucket(grouped[group], quotas[group]))
+    sampled_items.sort(key=lambda item: item[0])
+    return [row for _, row in sampled_items[:limit]]
+
+
 def save_json(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
@@ -1210,6 +1287,7 @@ def render_index_html(
         ("Rollouts", str(overview.get("rollout_count", 0))),
         ("Mean Reward", f"{float(overview.get('mean_reward') or 0.0):.3f}"),
         ("Solved Rate", f"{100.0 * float(overview.get('solved_fraction') or 0.0):.1f}%"),
+        ("Mean Rollout Duration", f"{float(overview.get('mean_duration_s') or 0.0):.1f}s"),
         ("Median Rollout Duration", f"{float(overview.get('median_duration_s') or 0.0):.1f}s"),
         (
             "Completed Rollouts / s",
@@ -1217,8 +1295,13 @@ def render_index_html(
             if overview.get("completed_rollouts_per_s") is not None
             else "n/a",
         ),
+        ("Mean LLM Calls", f"{float(overview.get('mean_llm_calls') or 0.0):.1f}"),
         ("Median Iterations", f"{float(overview.get('median_iterations') or 0.0):.1f}"),
         ("Median LLM Calls", f"{float(overview.get('median_llm_calls') or 0.0):.1f}"),
+        ("Mean Prompt Tokens", f"{float(overview.get('mean_prompt_tokens') or 0.0):.1f}"),
+        ("Median Prompt Tokens", f"{float(overview.get('median_prompt_tokens') or 0.0):.1f}"),
+        ("Mean Output Tokens", f"{float(overview.get('mean_output_tokens') or 0.0):.1f}"),
+        ("Median Output Tokens", f"{float(overview.get('median_output_tokens') or 0.0):.1f}"),
         ("Parse Errors", str(int(overview.get("parse_errors_total") or 0))),
         ("Parse Error Rate", f"{100.0 * float(overview.get('parse_error_rate') or 0.0):.2f}%"),
         ("Context Overflows", str(int(overview.get("context_overflow_errors") or 0))),
@@ -1505,10 +1588,10 @@ def render_index_html(
 
     raw_links = [
         "summary.json",
-        "rollouts.csv",
+        "rollouts_sample.csv",
         "errors.csv",
-        "events.csv",
-        "llm_calls.csv",
+        "events_sample.csv",
+        "llm_calls_sample.csv",
         "hop_position_accuracy.csv",
         "parse_error_rates.csv",
         "llm_token_summary.csv",
@@ -1522,6 +1605,7 @@ def render_index_html(
     caveats = [
         "Representative traces are a 12-rollout sample chosen for qualitative debugging across different outcomes and hop lengths; they are not aggregate statistics for the whole run.",
         "Current runs only show raw prompt text in the timeline when prompt logging is enabled. Otherwise the timeline falls back to structured trace state and tool outputs.",
+        "The raw CSV links in this bundle are capped samples rather than full dumps, to keep the exported viewer lightweight and git-friendly.",
     ]
 
     return f"""<!DOCTYPE html>
@@ -1953,10 +2037,10 @@ def main() -> None:
     llm_call_rows = load_llm_call_rows(run_dir)
     rollout_rate = compute_completed_rollout_rate(run_dir / "actor" / "info.log")
 
-    write_csv(output_dir / "rollouts.csv", rollouts)
+    write_csv(output_dir / "rollouts_sample.csv", sample_rows_for_export(rollouts, 2500, group_key="iterations_used"))
     write_csv(output_dir / "errors.csv", error_rows)
-    write_csv(output_dir / "events.csv", event_rows)
-    write_csv(output_dir / "llm_calls.csv", llm_call_rows)
+    write_csv(output_dir / "events_sample.csv", sample_rows_for_export(event_rows, 4000, group_key="stage"))
+    write_csv(output_dir / "llm_calls_sample.csv", sample_rows_for_export(llm_call_rows, 4000, group_key="log_name"))
 
     rewards = [float(row["reward"]) for row in rollouts if row.get("reward") not in ("", None)]
     durations = [float(row["duration_s"]) for row in rollouts if row.get("duration_s") not in ("", None)]
@@ -2239,9 +2323,15 @@ def main() -> None:
             if rollouts
             else 0.0
         ),
+        "mean_duration_s": mean(durations) if durations else 0.0,
         "median_duration_s": median(durations) if durations else 0.0,
         "median_iterations": median(iterations) if iterations else 0.0,
+        "mean_llm_calls": mean(llm_calls) if llm_calls else 0.0,
         "median_llm_calls": median(llm_calls) if llm_calls else 0.0,
+        "mean_prompt_tokens": mean([float(row.get("prompt_tokens") or 0.0) for row in llm_call_rows]) if llm_call_rows else 0.0,
+        "median_prompt_tokens": median([float(row.get("prompt_tokens") or 0.0) for row in llm_call_rows]) if llm_call_rows else 0.0,
+        "mean_output_tokens": mean([float(row.get("output_tokens") or 0.0) for row in llm_call_rows]) if llm_call_rows else 0.0,
+        "median_output_tokens": median([float(row.get("output_tokens") or 0.0) for row in llm_call_rows]) if llm_call_rows else 0.0,
         "completed_rollouts_per_s": rollout_rate.get("completed_rollouts_per_s"),
         "seconds_per_completed_rollout": rollout_rate.get("seconds_per_completed_rollout"),
         "parse_errors_total": sum(int(row.get("kind") == "parse_error") for row in error_rows),

@@ -154,7 +154,7 @@
     "rollouts_all": 20395,
     "rollouts_completed_with_report": 20372
   },
-  "generated_at_utc": "2026-04-16T12:22:14.890213+00:00",
+  "generated_at_utc": "2026-04-16T13:48:47.964137+00:00",
   "iteration_count_distribution": {
     "1": 5010,
     "2": 4773,
@@ -171,7 +171,8 @@
     "LLM duration logs do not include request IDs, so exact latency attribution to log_name is not possible under concurrency.",
     "Prompt summaries cover large prompts (>= 4096 tokens) or overflow cases, not every single LLM call.",
     "Prompt/response token by rollout and by call type requires the newer `privacy_agent llm call summary` log lines; older runs will show empty sections.",
-    "Rollout timing analysis is filtered to runs with a saved report to avoid in-progress session artifacts."
+    "Rollout timing analysis is filtered to runs with a saved report to avoid in-progress session artifacts.",
+    "The raw CSV links in this bundle are capped samples rather than full dumps, to keep the exported viewer lightweight and git-friendly."
   ],
   "llm_call_count_by_log_name": {},
   "llm_calls_per_completed_rollout": {

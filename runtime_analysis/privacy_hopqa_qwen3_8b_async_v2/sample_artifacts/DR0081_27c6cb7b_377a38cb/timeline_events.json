@@ -1,0 +1,948 @@
+[
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 0.000255,
+    "end_s": 13.180197,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "planned_actions": [
+        {
+          "action_id": "iter0_web_search_0",
+          "type": "web_search",
+          "query": "CAT Games and Tournaments weightage table"
+        },
+        {
+          "action_id": "iter0_web_search_1",
+          "type": "web_search",
+          "query": "CAT Games Tournaments weightage 1 year"
+        },
+        {
+          "action_id": "iter0_web_search_2",
+          "type": "web_search",
+          "query": "CAT exam weightage Games Tournaments"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_2",
+    "label": "web_search: CAT exam weightage Games Tournaments",
+    "start_s": 13.187659,
+    "end_s": 13.316929,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_2",
+      "action_type": "web_search",
+      "query": "CAT exam weightage Games Tournaments",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/98040",
+        "web/7829",
+        "web/97265"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_1",
+    "label": "web_search: CAT Games Tournaments weightage 1 year",
+    "start_s": 13.187601,
+    "end_s": 13.389651,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_1",
+      "action_type": "web_search",
+      "query": "CAT Games Tournaments weightage 1 year",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/98040",
+        "web/97265"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_0",
+    "label": "web_search: CAT Games and Tournaments weightage table",
+    "start_s": 13.187524,
+    "end_s": 13.403786,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_0",
+      "action_type": "web_search",
+      "query": "CAT Games and Tournaments weightage table",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/98040",
+        "web/7829"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs",
+    "start_s": 13.404381,
+    "end_s": 27.405099,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "candidate_count": 9,
+      "selected_doc_ids": [
+        "web/98040",
+        "web/7829"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/7829",
+    "label": "https://www.scribd.com/document/594920365/2-CATa...",
+    "start_s": 27.414149,
+    "end_s": 35.056703,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/7829",
+      "source": "web",
+      "title": "https://www.scribd.com/document/594920365/2-CATapult-Courseware-Module-3-DI-LR",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/98040",
+    "label": "https://cracku.in/cat-lr-games-and-tournaments-q...",
+    "start_s": 27.411208,
+    "end_s": 43.757136,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/98040",
+      "source": "web",
+      "title": "https://cracku.in/cat-lr-games-and-tournaments-questions",
+      "can_answer": true,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 43.757412,
+    "end_s": 53.497936,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": true,
+      "confidence": 0.9,
+      "next_step": "done",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 7
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 53.49801,
+    "end_s": 71.856089,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "planned_actions": [
+        {
+          "action_id": "iter1_web_search_0",
+          "type": "web_search",
+          "query": "average increase in production capacity by competitors in 2020"
+        },
+        {
+          "action_id": "iter1_web_search_1",
+          "type": "web_search",
+          "query": "Elexion Automotive competitors production capacity 2020"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_1",
+    "label": "web_search: Elexion Automotive competitors production capaci...",
+    "start_s": 71.85625,
+    "end_s": 72.014849,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "action_id": "iter1_web_search_1",
+      "action_type": "web_search",
+      "query": "Elexion Automotive competitors production capacity 2020",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/90300",
+        "web/42753"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_0",
+    "label": "web_search: average increase in production capacity by compe...",
+    "start_s": 71.856136,
+    "end_s": 72.069704,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "action_id": "iter1_web_search_0",
+      "action_type": "web_search",
+      "query": "average increase in production capacity by competitors in 2020",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/81410",
+        "web/63339"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs",
+    "start_s": 72.069926,
+    "end_s": 84.814877,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "candidate_count": 9,
+      "selected_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+    "label": "https://www.iea.org/reports/global-ev-outlook-20...",
+    "start_s": 84.81497,
+    "end_s": 93.334788,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "doc_id": "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+      "source": "web",
+      "title": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 93.334991,
+    "end_s": 109.831867,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "answered": false,
+      "confidence": 0.5,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 8
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 109.831968,
+    "end_s": 121.12755,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "planned_actions": [
+        {
+          "action_id": "iter2_web_search_0",
+          "type": "web_search",
+          "query": "EV competitors production capacity increase 2020 average"
+        },
+        {
+          "action_id": "iter2_web_search_1",
+          "type": "web_search",
+          "query": "automotive production capacity growth 2020 competitors"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_1",
+    "label": "web_search: automotive production capacity growth 2020 compe...",
+    "start_s": 121.127721,
+    "end_s": 121.274367,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "action_id": "iter2_web_search_1",
+      "action_type": "web_search",
+      "query": "automotive production capacity growth 2020 competitors",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/42753",
+        "web/90300"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_0",
+    "label": "web_search: EV competitors production capacity increase 2020...",
+    "start_s": 121.127604,
+    "end_s": 121.300978,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "action_id": "iter2_web_search_0",
+      "action_type": "web_search",
+      "query": "EV competitors production capacity increase 2020 average",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/67544",
+        "web/69320"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs",
+    "start_s": 121.301225,
+    "end_s": 146.359572,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "candidate_count": 7,
+      "selected_doc_ids": [
+        "web/67544",
+        "web/69320",
+        "web/90300"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/90300",
+    "label": "https://www.nissan-global.com/EN/COMPANY/PROFILE...",
+    "start_s": 146.366292,
+    "end_s": 150.78884,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "doc_id": "web/90300",
+      "source": "web",
+      "title": "https://www.nissan-global.com/EN/COMPANY/PROFILE/HERITAGE/2020/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/67544",
+    "label": "https://www.automotivemanufacturingsolutions.com...",
+    "start_s": 146.3597,
+    "end_s": 152.941092,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "doc_id": "web/67544",
+      "source": "web",
+      "title": "https://www.automotivemanufacturingsolutions.com/ev-battery-production/teslas-ev-battery-production-and-global-gigafactory-network/45873.article",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/69320",
+    "label": "https://itif.org/publications/2024/07/29/how-inn...",
+    "start_s": 146.363013,
+    "end_s": 153.702823,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "doc_id": "web/69320",
+      "source": "web",
+      "title": "https://itif.org/publications/2024/07/29/how-innovative-is-china-in-the-electric-vehicle-and-battery-industries/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 153.703129,
+    "end_s": 166.61097,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "answered": false,
+      "confidence": 0.7,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/42753",
+        "web/99952",
+        "web/80253"
+      ],
+      "unread_candidate_count": 4
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/42753",
+    "label": "https://www.cascade.app/studies/how-toyota-went-...",
+    "start_s": 166.611105,
+    "end_s": 174.186132,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "doc_id": "web/42753",
+      "source": "web",
+      "title": "https://www.cascade.app/studies/how-toyota-went-from-humble-beginnings-to-automotive-giant",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/80253",
+    "label": "https://mnacommunity.com/insights/automotive-mer...",
+    "start_s": 166.616156,
+    "end_s": 175.217402,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "doc_id": "web/80253",
+      "source": "web",
+      "title": "https://mnacommunity.com/insights/automotive-mergers-and-acquisitions/",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/99952",
+    "label": "https://www.samsungsdi.com/sdi-now/sdi-news/3942...",
+    "start_s": 166.613638,
+    "end_s": 175.738276,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "doc_id": "web/99952",
+      "source": "web",
+      "title": "https://www.samsungsdi.com/sdi-now/sdi-news/3942.html",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 175.738564,
+    "end_s": 187.449546,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "answered": false,
+      "confidence": 0.3,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 1
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 187.449749,
+    "end_s": 201.050851,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "planned_actions": [
+        {
+          "action_id": "iter3_web_search_0",
+          "type": "web_search",
+          "query": "EV industry production capacity increase 2020 average competitors"
+        },
+        {
+          "action_id": "iter3_web_search_1",
+          "type": "web_search",
+          "query": "Tesla Nissan Toyota production capacity 2020 increase"
+        },
+        {
+          "action_id": "iter3_web_search_2",
+          "type": "web_search",
+          "query": "McKinsey BCG 2020 EV production capacity growth report"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_web_search_2",
+    "label": "web_search: McKinsey BCG 2020 EV production capacity growth...",
+    "start_s": 201.051151,
+    "end_s": 201.241235,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "action_id": "iter3_web_search_2",
+      "action_type": "web_search",
+      "query": "McKinsey BCG 2020 EV production capacity growth report",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/69320",
+        "web/40718"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_web_search_1",
+    "label": "web_search: Tesla Nissan Toyota production capacity 2020 inc...",
+    "start_s": 201.051086,
+    "end_s": 201.241885,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "action_id": "iter3_web_search_1",
+      "action_type": "web_search",
+      "query": "Tesla Nissan Toyota production capacity 2020 increase",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/67544",
+        "web/90300"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_web_search_0",
+    "label": "web_search: EV industry production capacity increase 2020 av...",
+    "start_s": 201.050918,
+    "end_s": 201.258354,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "action_id": "iter3_web_search_0",
+      "action_type": "web_search",
+      "query": "EV industry production capacity increase 2020 average competitors",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/69320",
+        "web/67544"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs (skipped)",
+    "start_s": 201.258459,
+    "end_s": 201.258459,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "candidate_count": 3,
+      "selected_doc_ids": [
+        "web/40718",
+        "web/86744",
+        "web/47036"
+      ],
+      "skipped": true
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/86744",
+    "label": "https://en.wikipedia.org/wiki/History_of_Tesla,_...",
+    "start_s": 201.261371,
+    "end_s": 209.288332,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "doc_id": "web/86744",
+      "source": "web",
+      "title": "https://en.wikipedia.org/wiki/History_of_Tesla,_Inc.",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/40718",
+    "label": "https://www.iea.org/reports/global-ev-outlook-20...",
+    "start_s": 201.258574,
+    "end_s": 209.763916,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "doc_id": "web/40718",
+      "source": "web",
+      "title": "https://www.iea.org/reports/global-ev-outlook-2023",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/47036",
+    "label": "https://www.facebook.com/McKinsey/videos/the-mid...",
+    "start_s": 201.264571,
+    "end_s": 210.352406,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "doc_id": "web/47036",
+      "source": "web",
+      "title": "https://www.facebook.com/McKinsey/videos/the-mid-1990s-was-the-era-of-the-hard-driving-my-way-or-the-highway-ceo-it-was-n/1126090995937236/",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 210.352674,
+    "end_s": 222.114927,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "answered": false,
+      "confidence": 0.3,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 222.11524,
+    "end_s": 231.882603,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "planned_actions": [
+        {
+          "action_id": "iter4_web_search_0",
+          "type": "web_search",
+          "query": "automotive industry production capacity growth 2020 competitors average increase report"
+        },
+        {
+          "action_id": "iter4_web_search_1",
+          "type": "web_search",
+          "query": "EV industry production capacity increase 2020 competitors average statistics"
+        },
+        {
+          "action_id": "iter4_web_search_2",
+          "type": "web_search",
+          "query": "McKinsey BCG 2020 EV production capacity growth competitor analysis"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter4_web_search_2",
+    "label": "web_search: McKinsey BCG 2020 EV production capacity growth...",
+    "start_s": 231.903753,
+    "end_s": 232.314609,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "action_id": "iter4_web_search_2",
+      "action_type": "web_search",
+      "query": "McKinsey BCG 2020 EV production capacity growth competitor analysis",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/69320",
+        "web/67544"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter4_web_search_0",
+    "label": "web_search: automotive industry production capacity growth 2...",
+    "start_s": 231.90361,
+    "end_s": 232.325619,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "action_id": "iter4_web_search_0",
+      "action_type": "web_search",
+      "query": "automotive industry production capacity growth 2020 competitors average increase report",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/42753",
+        "web/56278"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter4_web_search_1",
+    "label": "web_search: EV industry production capacity increase 2020 co...",
+    "start_s": 231.903691,
+    "end_s": 232.391006,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "action_id": "iter4_web_search_1",
+      "action_type": "web_search",
+      "query": "EV industry production capacity increase 2020 competitors average statistics",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/69320",
+        "web/67544"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs",
+    "start_s": 232.391193,
+    "end_s": 259.68275,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "candidate_count": 4,
+      "selected_doc_ids": [
+        "web/56278",
+        "web/42024",
+        "web/95247"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/95247",
+    "label": "https://www.jpmorgan.com/insights/global-researc...",
+    "start_s": 259.690393,
+    "end_s": 267.096595,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "doc_id": "web/95247",
+      "source": "web",
+      "title": "https://www.jpmorgan.com/insights/global-research/supply-chain/chip-shortage",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/42024",
+    "label": "https://www.epi.org/publication/the-decline-and-...",
+    "start_s": 259.686874,
+    "end_s": 267.300077,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "doc_id": "web/42024",
+      "source": "web",
+      "title": "https://www.epi.org/publication/the-decline-and-resurgence-of-the-u-s-auto-industry/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/56278",
+    "label": "https://www.mckinsey.com/industries/semiconducto...",
+    "start_s": 259.682892,
+    "end_s": 267.832689,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "doc_id": "web/56278",
+      "source": "web",
+      "title": "https://www.mckinsey.com/industries/semiconductors/our-insights/the-semiconductor-decade-a-trillion-dollar-industry",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 267.833127,
+    "end_s": 276.995653,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "answered": false,
+      "confidence": 0.6,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/37780"
+      ],
+      "unread_candidate_count": 1
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/37780",
+    "label": "https://www.imd.org/ibyimd/asian-hub/chinas-auto...",
+    "start_s": 276.995787,
+    "end_s": 286.48944,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "doc_id": "web/37780",
+      "source": "web",
+      "title": "https://www.imd.org/ibyimd/asian-hub/chinas-automotive-odyssey-from-joint-ventures-to-global-ev-dominance/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 286.489749,
+    "end_s": 299.690164,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "answered": false,
+      "confidence": 0.7,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 299.690526,
+    "end_s": 312.339342,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "planned_actions": [
+        {
+          "action_id": "iter5_web_search_0",
+          "type": "web_search",
+          "query": "EV industry competitor production capacity growth statistics 2020"
+        },
+        {
+          "action_id": "iter5_web_search_1",
+          "type": "web_search",
+          "query": "average EV manufacturer production capacity increase 2020 metrics"
+        },
+        {
+          "action_id": "iter5_web_search_2",
+          "type": "web_search",
+          "query": "McKinsey BCG 2020 automotive production capacity expansion report"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter5_web_search_0",
+    "label": "web_search: EV industry competitor production capacity growt...",
+    "start_s": 312.3394,
+    "end_s": 312.505257,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "action_id": "iter5_web_search_0",
+      "action_type": "web_search",
+      "query": "EV industry competitor production capacity growth statistics 2020",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/69320",
+        "web/67544"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter5_web_search_1",
+    "label": "web_search: average EV manufacturer production capacity incr...",
+    "start_s": 312.339656,
+    "end_s": 312.545448,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "action_id": "iter5_web_search_1",
+      "action_type": "web_search",
+      "query": "average EV manufacturer production capacity increase 2020 metrics",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/67544",
+        "web/69320"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter5_web_search_2",
+    "label": "web_search: McKinsey BCG 2020 automotive production capacity...",
+    "start_s": 312.339734,
+    "end_s": 312.586466,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "action_id": "iter5_web_search_2",
+      "action_type": "web_search",
+      "query": "McKinsey BCG 2020 automotive production capacity expansion report",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/47036",
+        "web/95247"
+      ]
+    }
+  },
+  {
+    "stage": "report",
+    "lane": "report",
+    "label": "Final report",
+    "start_s": 312.586574,
+    "end_s": 312.603182,
+    "meta": {
+      "resolved_hops": 1,
+      "report_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0081_27c6cb7b_377a38cb/workspace/research_report_1776325185.md"
+    }
+  }
+]

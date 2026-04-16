@@ -111,6 +111,83 @@ def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
             writer.writerow(row)
 
 
+def sample_rows_for_export(
+    rows: list[dict[str, Any]],
+    limit: int,
+    *,
+    group_key: str | None = None,
+    seed: int = 7,
+) -> list[dict[str, Any]]:
+    if len(rows) <= limit:
+        return list(rows)
+
+    indexed_rows = list(enumerate(rows))
+    rng = random.Random(seed)
+
+    def sample_bucket(bucket: list[tuple[int, dict[str, Any]]], quota: int) -> list[tuple[int, dict[str, Any]]]:
+        if quota <= 0:
+            return []
+        if len(bucket) <= quota:
+            return list(bucket)
+        if quota == 1:
+            return [bucket[0]]
+        if quota == 2:
+            return [bucket[0], bucket[-1]]
+        interior = bucket[1:-1]
+        need = quota - 2
+        chosen = [bucket[0], bucket[-1]]
+        if interior:
+            chosen.extend(interior if len(interior) <= need else rng.sample(interior, need))
+        return chosen
+
+    if not group_key:
+        head = min(100, limit // 4)
+        tail = min(100, max(0, limit - head))
+        middle_quota = max(0, limit - head - tail)
+        middle = indexed_rows[head : max(head, len(indexed_rows) - tail)]
+        sampled = indexed_rows[:head] + (
+            middle if len(middle) <= middle_quota else rng.sample(middle, middle_quota)
+        ) + indexed_rows[len(indexed_rows) - tail :]
+        sampled.sort(key=lambda item: item[0])
+        return [row for _, row in sampled[:limit]]
+
+    grouped: dict[str, list[tuple[int, dict[str, Any]]]] = defaultdict(list)
+    for item in indexed_rows:
+        grouped[str(item[1].get(group_key) or "unknown")].append(item)
+
+    total = len(indexed_rows)
+    quotas: dict[str, int] = {}
+    for group, bucket in grouped.items():
+        quotas[group] = min(len(bucket), max(1, int(round(limit * len(bucket) / total))))
+
+    quota_total = sum(quotas.values())
+    groups_by_size = sorted(grouped.keys(), key=lambda key: (len(grouped[key]), key), reverse=True)
+    while quota_total > limit:
+        for group in groups_by_size:
+            if quota_total <= limit:
+                break
+            if quotas[group] > 1:
+                quotas[group] -= 1
+                quota_total -= 1
+    while quota_total < limit:
+        grew = False
+        for group in groups_by_size:
+            if quota_total >= limit:
+                break
+            if quotas[group] < len(grouped[group]):
+                quotas[group] += 1
+                quota_total += 1
+                grew = True
+        if not grew:
+            break
+
+    sampled_items: list[tuple[int, dict[str, Any]]] = []
+    for group in sorted(grouped):
+        sampled_items.extend(sample_bucket(grouped[group], quotas[group]))
+    sampled_items.sort(key=lambda item: item[0])
+    return [row for _, row in sampled_items[:limit]]
+
+
 def save_json(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=2, sort_keys=True))
@@ -1094,6 +1171,166 @@ def render_spot_check_samples(samples: list[dict[str, Any]]) -> str:
     return "\n".join(cards)
 
 
+def pick_legacy_timeline_examples(rollouts: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    completed = [row for row in rollouts if row.get("has_report")]
+    if not completed:
+        return []
+    single_iter = [
+        row for row in completed if int(float(row.get("current_iteration") or 0)) <= 1 and float(row.get("duration_s") or 0.0) > 0.0
+    ]
+    multi_iter = [row for row in completed if int(float(row.get("current_iteration") or 0)) >= 4]
+    chosen: list[dict[str, Any]] = []
+    if single_iter:
+        chosen.append(min(single_iter, key=lambda row: float(row.get("duration_s") or 0.0)))
+    if multi_iter:
+        chosen.append(min(multi_iter, key=lambda row: (abs(int(float(row.get("current_iteration") or 0)) - 6), float(row.get("duration_s") or 0.0))))
+    seen: set[str] = set()
+    deduped: list[dict[str, Any]] = []
+    for row in chosen:
+        rollout_id = str(row.get("rollout_id") or "")
+        if rollout_id and rollout_id not in seen:
+            deduped.append(row)
+            seen.add(rollout_id)
+    return deduped[:2]
+
+
+def build_legacy_timeline_html(
+    *,
+    rollout_row: dict[str, Any],
+    reward_row: dict[str, Any] | None,
+    action_plan: dict[str, Any],
+) -> str:
+    rollout_id = str(rollout_row.get("rollout_id") or "")
+    actions = list(action_plan.get("actions") or [])
+    actions.sort(key=lambda item: (int(item.get("iteration_completed") or 0), str(item.get("completion_time") or ""), str(item.get("id") or "")))
+    grouped: dict[int, list[dict[str, Any]]] = defaultdict(list)
+    for action in actions:
+        grouped[int(action.get("iteration_completed") or 0)].append(action)
+
+    max_exec = max([float(action.get("execution_time") or 0.0) for action in actions] + [0.001])
+    sections: list[str] = []
+    for iteration in sorted(grouped):
+        cards: list[str] = []
+        for action in grouped[iteration]:
+            output = action.get("actual_output") if isinstance(action.get("actual_output"), dict) else {}
+            query = str((action.get("parameters") or {}).get("query") or "")
+            summary = str(output.get("summary") or output.get("synthesis") or "")
+            results_count = output.get("results_count", "")
+            exec_s = float(action.get("execution_time") or 0.0)
+            width_pct = 12.0 + 88.0 * math.sqrt(exec_s / max_exec)
+            cards.append(
+                f"""
+                <div class="action-card">
+                  <div class="bar" style="width:{width_pct:.1f}%"></div>
+                  <div class="action-head">
+                    <strong>{html.escape(str(action.get('type') or 'action'))}</strong>
+                    <span>{html.escape(format_scalar(exec_s))} s</span>
+                  </div>
+                  <p><strong>ID:</strong> {html.escape(str(action.get('id') or ''))}</p>
+                  <p><strong>Description:</strong> {html.escape(str(action.get('description') or ''))}</p>
+                  <p><strong>Query:</strong> {html.escape(query)}</p>
+                  <p><strong>Status:</strong> {html.escape(str(action.get('status') or ''))} | <strong>Results:</strong> {html.escape(str(results_count))}</p>
+                  <details>
+                    <summary>Output preview</summary>
+                    <pre>{html.escape(summary or json.dumps(output, indent=2)[:2500])}</pre>
+                  </details>
+                </div>
+                """
+            )
+        sections.append(
+            f"""
+            <section class="iter-block">
+              <h2>Iteration {iteration}</h2>
+              <div class="action-grid">
+                {''.join(cards)}
+              </div>
+            </section>
+            """
+        )
+
+    report_path = str(rollout_row.get("report_path") or "")
+    report_preview = ""
+    if report_path and Path(report_path).exists():
+        report_preview = Path(report_path).read_text(encoding="utf-8", errors="ignore")[:3000]
+
+    reward_text = "n/a"
+    if reward_row is not None:
+        reward_text = f"{format_scalar(reward_row.get('reward'))} ({reward_row.get('correct_hops')}/{reward_row.get('total_hops')} hops)"
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Legacy Timeline - {html.escape(rollout_id)}</title>
+  <style>
+    body {{ margin:0; font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:#f6f7fb; color:#18212b; }}
+    .page {{ max-width: 1280px; margin: 0 auto; padding: 28px; }}
+    .hero, .iter-block, .table-card {{ background:#fff; border:1px solid #d8dee8; border-radius:18px; padding:18px 20px; box-shadow:0 10px 30px rgba(24,33,43,0.05); margin-bottom:18px; }}
+    .hero h1 {{ margin:0 0 8px; font-size:28px; }}
+    .hero p {{ margin:6px 0; color:#516172; }}
+    .action-grid {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:14px; }}
+    .action-card {{ border:1px solid #d8dee8; border-radius:14px; padding:14px; background:#fbfcff; position:relative; overflow:hidden; }}
+    .bar {{ height:8px; background:linear-gradient(90deg,#2f6fed,#4c78a8); border-radius:999px; margin-bottom:10px; }}
+    .action-head {{ display:flex; justify-content:space-between; gap:12px; align-items:baseline; }}
+    .action-card p {{ margin:8px 0; font-size:14px; }}
+    details {{ margin-top:10px; }}
+    pre {{ white-space:pre-wrap; word-break:break-word; background:#f7f9fc; border:1px solid #d8dee8; border-radius:12px; padding:10px; max-height:360px; overflow:auto; font-size:12px; }}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <h1>Legacy Privacy-Agent Timeline</h1>
+      <p><strong>Rollout:</strong> {html.escape(rollout_id)}</p>
+      <p><strong>Reward:</strong> {html.escape(reward_text)}</p>
+      <p><strong>Iterations:</strong> {html.escape(format_scalar(rollout_row.get('current_iteration')))} | <strong>Total actions:</strong> {html.escape(format_scalar(rollout_row.get('total_actions')))} | <strong>Duration:</strong> {html.escape(format_scalar(rollout_row.get('duration_s')))} s</p>
+      <p><strong>Research query:</strong> {html.escape(str(action_plan.get('research_query') or ''))}</p>
+    </section>
+    {''.join(sections)}
+    <section class="table-card">
+      <h2>Report Preview</h2>
+      <pre>{html.escape(report_preview)}</pre>
+    </section>
+  </div>
+</body>
+</html>"""
+
+
+def generate_legacy_timelines(
+    output_dir: Path,
+    rollouts: list[dict[str, Any]],
+    reward_records: list[dict[str, Any]],
+) -> list[dict[str, str]]:
+    reward_lookup = {str(row.get("rollout_id") or ""): row for row in reward_records}
+    timeline_dir = output_dir / "legacy_timelines"
+    timeline_dir.mkdir(parents=True, exist_ok=True)
+    links: list[dict[str, str]] = []
+    for rollout in pick_legacy_timeline_examples(rollouts):
+        rollout_id = str(rollout.get("rollout_id") or "")
+        report_path = Path(str(rollout.get("report_path") or ""))
+        plan_path = report_path.parents[1] / "session" / "action_plan_final.json"
+        if not plan_path.exists():
+            continue
+        action_plan = json.loads(plan_path.read_text(encoding="utf-8"))
+        html_doc = build_legacy_timeline_html(
+            rollout_row=rollout,
+            reward_row=reward_lookup.get(rollout_id),
+            action_plan=action_plan,
+        )
+        out_path = timeline_dir / f"{rollout_id}.html"
+        out_path.write_text(html_doc, encoding="utf-8")
+        links.append(
+            {
+                "rollout_id": rollout_id,
+                "filename": out_path.name,
+                "iterations": format_scalar(rollout.get("current_iteration")),
+                "duration_s": format_scalar(rollout.get("duration_s")),
+            }
+        )
+    return links
+
+
 def plot_card(
     title: str,
     filename: str,
@@ -1129,6 +1366,7 @@ def write_html_viewer(
     llm_call_records: list[dict[str, Any]],
     reward_records: list[dict[str, Any]],
     sampled_reward_records: list[dict[str, Any]],
+    legacy_timeline_links: list[dict[str, str]],
     rollouts: list[dict[str, Any]],
     actions: list[dict[str, Any]],
     iterations: list[dict[str, Any]],
@@ -1320,20 +1558,31 @@ def write_html_viewer(
     raw_links = [
         "summary.json",
         "README.md",
-        "rollouts.csv",
-        "actions.csv",
-        "iterations.csv",
-        "llm_requests.csv",
-        "llm_call_records.csv",
+        "rollouts_sample.csv",
+        "actions_sample.csv",
+        "iterations_sample.csv",
+        "llm_requests_sample.csv",
+        "llm_call_records_sample.csv",
         "llm_tokens_by_rollout.csv",
         "llm_tokens_by_log_name.csv",
-        "prompt_records.csv",
-        "reward_records.csv",
+        "prompt_records_sample.csv",
+        "reward_records_sample.csv",
     ]
     raw_links_html = "\n".join(
         f"<li><a href='{html.escape(name)}'>{html.escape(name)}</a></li>"
         for name in raw_links
         if (plot_dir / name).exists()
+    )
+    legacy_timelines_html = (
+        "<p>No reconstructed legacy timelines available.</p>"
+        if not legacy_timeline_links
+        else "<ul class='raw-links'>"
+        + "".join(
+            f"<li><a href='legacy_timelines/{html.escape(link['filename'])}'>{html.escape(link['rollout_id'])}</a> "
+            f"(iterations={html.escape(link['iterations'])}, duration={html.escape(link['duration_s'])} s)</li>"
+            for link in legacy_timeline_links
+        )
+        + "</ul>"
     )
 
     html_doc = f"""<!DOCTYPE html>
@@ -1580,6 +1829,11 @@ def write_html_viewer(
           <h3>Reward Distribution</h3>
           {mapping_table(reward_distribution, key_name="Reward", value_name="Rollouts")}
         </section>
+        <section class="table-card">
+          <h3>Representative Legacy Timelines</h3>
+          <p>These are reconstructed from saved action-plan artifacts for two old DRBench-style rollouts. They are less exact than the new hop-QA traces, but still useful for debugging iteration flow.</p>
+          {legacy_timelines_html}
+        </section>
       </div>
       {render_spot_check_samples(sampled_reward_records)}
     </section>
@@ -1737,6 +1991,7 @@ def main() -> None:
     llm_call_records = llm_call_records_enriched
 
     reward_records, sampled_reward_records = evaluate_rollout_reports(run_dir, rollouts)
+    legacy_timeline_links = generate_legacy_timelines(output_dir, rollouts, reward_records)
 
     completed_rollouts = [row for row in rollouts if row.get("has_report")]
     completed_actions = [row for row in actions if row.get("has_report") and row.get("status") == "completed"]
@@ -1744,13 +1999,13 @@ def main() -> None:
     completed_llm_call_records = [row for row in llm_call_records if row.get("has_report")]
     llm_call_records_for_rollout_analysis = completed_llm_call_records or llm_call_records
 
-    write_csv(output_dir / "llm_requests.csv", llm_requests)
-    write_csv(output_dir / "prompt_records.csv", prompt_records)
-    write_csv(output_dir / "llm_call_records.csv", llm_call_records)
-    write_csv(output_dir / "reward_records.csv", reward_records)
-    write_csv(output_dir / "rollouts.csv", rollouts)
-    write_csv(output_dir / "actions.csv", actions)
-    write_csv(output_dir / "iterations.csv", iterations)
+    write_csv(output_dir / "llm_requests_sample.csv", sample_rows_for_export(llm_requests, 3000))
+    write_csv(output_dir / "prompt_records_sample.csv", sample_rows_for_export(prompt_records, 3000, group_key="log_name"))
+    write_csv(output_dir / "llm_call_records_sample.csv", sample_rows_for_export(llm_call_records, 3000, group_key="log_name"))
+    write_csv(output_dir / "reward_records_sample.csv", sample_rows_for_export(reward_records, 300, group_key="reward"))
+    write_csv(output_dir / "rollouts_sample.csv", sample_rows_for_export(rollouts, 2500, group_key="current_iteration"))
+    write_csv(output_dir / "actions_sample.csv", sample_rows_for_export(actions, 4000, group_key="action_type"))
+    write_csv(output_dir / "iterations_sample.csv", sample_rows_for_export(iterations, 3000, group_key="iteration"))
 
     llm_durations = [float(row["duration_s"]) for row in llm_requests]
     prompt_tokens = [int(row["prompt_tokens"]) for row in prompt_records]
@@ -1848,6 +2103,7 @@ def main() -> None:
             "Prompt summaries cover large prompts (>= 4096 tokens) or overflow cases, not every single LLM call.",
             "Prompt/response token by rollout and by call type requires the newer `privacy_agent llm call summary` log lines; older runs will show empty sections.",
             "Rollout timing analysis is filtered to runs with a saved report to avoid in-progress session artifacts.",
+            "The raw CSV links in this bundle are capped samples rather than full dumps, to keep the exported viewer lightweight and git-friendly.",
         ],
     }
     save_json(output_dir / "summary.json", summary)
@@ -1974,6 +2230,7 @@ def main() -> None:
         llm_call_records=llm_call_records,
         reward_records=reward_records,
         sampled_reward_records=sampled_reward_records,
+        legacy_timeline_links=legacy_timeline_links,
         rollouts=rollouts,
         actions=actions,
         iterations=iterations,

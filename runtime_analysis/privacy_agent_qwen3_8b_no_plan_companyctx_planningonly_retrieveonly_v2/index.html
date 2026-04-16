@@ -355,6 +355,11 @@
 <tr><td>0.67</td><td>42</td></tr>
 <tr><td>1.00</td><td>89</td></tr></tbody></table>
         </section>
+        <section class="table-card">
+          <h3>Representative Legacy Timelines</h3>
+          <p>These are reconstructed from saved action-plan artifacts for two old DRBench-style rollouts. They are less exact than the new hop-QA traces, but still useful for debugging iteration flow.</p>
+          <ul class='raw-links'><li><a href='legacy_timelines/DR0077_b10de00c_e2fc40b1.html'>DR0077_b10de00c_e2fc40b1</a> (iterations=1, duration=0.425 s)</li><li><a href='legacy_timelines/DR0077_b10de00c_aaab958d.html'>DR0077_b10de00c_aaab958d</a> (iterations=6, duration=63.74 s)</li></ul>
+        </section>
       </div>
       
             <details class="sample-card">
@@ -1270,21 +1275,21 @@ JUSTIFICATION_FINAL: No documents provide data on supplier percentages or FSMA 2
           <ul class="raw-links">
             <li><a href='summary.json'>summary.json</a></li>
 <li><a href='README.md'>README.md</a></li>
-<li><a href='rollouts.csv'>rollouts.csv</a></li>
-<li><a href='actions.csv'>actions.csv</a></li>
-<li><a href='iterations.csv'>iterations.csv</a></li>
-<li><a href='llm_requests.csv'>llm_requests.csv</a></li>
-<li><a href='llm_call_records.csv'>llm_call_records.csv</a></li>
+<li><a href='rollouts_sample.csv'>rollouts_sample.csv</a></li>
+<li><a href='actions_sample.csv'>actions_sample.csv</a></li>
+<li><a href='iterations_sample.csv'>iterations_sample.csv</a></li>
+<li><a href='llm_requests_sample.csv'>llm_requests_sample.csv</a></li>
+<li><a href='llm_call_records_sample.csv'>llm_call_records_sample.csv</a></li>
 <li><a href='llm_tokens_by_rollout.csv'>llm_tokens_by_rollout.csv</a></li>
 <li><a href='llm_tokens_by_log_name.csv'>llm_tokens_by_log_name.csv</a></li>
-<li><a href='prompt_records.csv'>prompt_records.csv</a></li>
-<li><a href='reward_records.csv'>reward_records.csv</a></li>
+<li><a href='prompt_records_sample.csv'>prompt_records_sample.csv</a></li>
+<li><a href='reward_records_sample.csv'>reward_records_sample.csv</a></li>
           </ul>
         </section>
         <section class="table-card">
           <h3>Limitations</h3>
           <ul class="limitations">
-            <li>LLM duration logs do not include request IDs, so exact latency attribution to log_name is not possible under concurrency.</li><li>Prompt summaries cover large prompts (&gt;= 4096 tokens) or overflow cases, not every single LLM call.</li><li>Prompt/response token by rollout and by call type requires the newer `privacy_agent llm call summary` log lines; older runs will show empty sections.</li><li>Rollout timing analysis is filtered to runs with a saved report to avoid in-progress session artifacts.</li>
+            <li>LLM duration logs do not include request IDs, so exact latency attribution to log_name is not possible under concurrency.</li><li>Prompt summaries cover large prompts (&gt;= 4096 tokens) or overflow cases, not every single LLM call.</li><li>Prompt/response token by rollout and by call type requires the newer `privacy_agent llm call summary` log lines; older runs will show empty sections.</li><li>Rollout timing analysis is filtered to runs with a saved report to avoid in-progress session artifacts.</li><li>The raw CSV links in this bundle are capped samples rather than full dumps, to keep the exported viewer lightweight and git-friendly.</li>
           </ul>
         </section>
       </div>
