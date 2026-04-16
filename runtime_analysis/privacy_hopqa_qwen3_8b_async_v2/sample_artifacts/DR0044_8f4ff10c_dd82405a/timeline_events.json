@@ -1,0 +1,1335 @@
+[
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 6.2e-05,
+    "end_s": 13.755861,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "planned_actions": [
+        {
+          "action_id": "iter0_web_search_0",
+          "type": "web_search",
+          "query": "MediConn Solutions operating costs decrease 2025 financial report"
+        },
+        {
+          "action_id": "iter0_web_search_1",
+          "type": "web_search",
+          "query": "MediConn Solutions 2025 operating cost reduction"
+        },
+        {
+          "action_id": "iter0_local_document_search_2",
+          "type": "local_document_search",
+          "query": "MediConn Solutions 2025 operating costs"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_local_document_search_2",
+    "label": "local_document_search: MediConn Solutions 2025 operating costs",
+    "start_s": 13.756079,
+    "end_s": 13.849549,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_local_document_search_2",
+      "action_type": "local_document_search",
+      "query": "MediConn Solutions 2025 operating costs",
+      "result_count": 5,
+      "top_doc_ids": [
+        "doc_3ae26523_1776278555",
+        "doc_31b536e2_1776278555",
+        "doc_2e7f9e75_1776278555"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_1",
+    "label": "web_search: MediConn Solutions 2025 operating cost reduction",
+    "start_s": 13.756019,
+    "end_s": 13.93434,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_1",
+      "action_type": "web_search",
+      "query": "MediConn Solutions 2025 operating cost reduction",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_09992779000bc1fb",
+        "web/60478",
+        "web/33048"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_0",
+    "label": "web_search: MediConn Solutions operating costs decrease 2025...",
+    "start_s": 13.755903,
+    "end_s": 13.975678,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_0",
+      "action_type": "web_search",
+      "query": "MediConn Solutions operating costs decrease 2025 financial report",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_09992779000bc1fb",
+        "web/100097",
+        "web/60478"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs",
+    "start_s": 13.975916,
+    "end_s": 47.927842,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "candidate_count": 12,
+      "selected_doc_ids": [
+        "web/drbench_urls/drbench_urls_09992779000bc1fb",
+        "web/100097",
+        "web/60478"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/60478",
+    "label": "https://www.massdevice.com/medtech-layoffs-compa...",
+    "start_s": 47.932736,
+    "end_s": 53.800439,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/60478",
+      "source": "web",
+      "title": "https://www.massdevice.com/medtech-layoffs-companies-recently-reduced-workforce/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/drbench_urls/drbench_urls_09992779000bc1fb",
+    "label": "https://chghealthcare.com/blog/telehealth-the-fu...",
+    "start_s": 47.927951,
+    "end_s": 53.802653,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/drbench_urls/drbench_urls_09992779000bc1fb",
+      "source": "web",
+      "title": "https://chghealthcare.com/blog/telehealth-the-future-of-virtual-care",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/100097",
+    "label": "https://www.statista.com/statistics/1248339/cont...",
+    "start_s": 47.93019,
+    "end_s": 54.34106,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/100097",
+      "source": "web",
+      "title": "https://www.statista.com/statistics/1248339/content-spend-media-streaming-companies-worldwide/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 54.344048,
+    "end_s": 65.50688,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.3,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "doc_3ae26523_1776278555",
+        "doc_31b536e2_1776278555",
+        "doc_2e7f9e75_1776278555"
+      ],
+      "unread_candidate_count": 9
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_2e7f9e75_1776278555",
+    "label": "mattermost_chat_20251119_221800.jsonl",
+    "start_s": 65.510579,
+    "end_s": 73.046212,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "doc_2e7f9e75_1776278555",
+      "source": "local",
+      "title": "mattermost_chat_20251119_221800.jsonl",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_31b536e2_1776278555",
+    "label": "mattermost_chat_20251119_221800.jsonl",
+    "start_s": 65.509112,
+    "end_s": 73.220363,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "doc_31b536e2_1776278555",
+      "source": "local",
+      "title": "mattermost_chat_20251119_221800.jsonl",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_3ae26523_1776278555",
+    "label": "MediConn_Website_Navigation_Insights_Data.xlsx",
+    "start_s": 65.506992,
+    "end_s": 73.5045,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "doc_3ae26523_1776278555",
+      "source": "local",
+      "title": "MediConn_Website_Navigation_Insights_Data.xlsx",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 73.504821,
+    "end_s": 83.99551,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.15,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/33048",
+        "web/87157",
+        "web/34844"
+      ],
+      "unread_candidate_count": 6
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/87157",
+    "label": "https://www.greenlight.guru/blog/top-medical-dev...",
+    "start_s": 83.99947,
+    "end_s": 88.263129,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/87157",
+      "source": "web",
+      "title": "https://www.greenlight.guru/blog/top-medical-device-conferences",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/34844",
+    "label": "https://www.cbo.gov/publication/61155",
+    "start_s": 84.00213,
+    "end_s": 89.90854,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/34844",
+      "source": "web",
+      "title": "https://www.cbo.gov/publication/61155",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/33048",
+    "label": "https://jamanetwork.com/journals/jamasurgery/ful...",
+    "start_s": 83.995643,
+    "end_s": 90.803435,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/33048",
+      "source": "web",
+      "title": "https://jamanetwork.com/journals/jamasurgery/fullarticle/2673385",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 90.803777,
+    "end_s": 101.350005,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.15,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "doc_6c5878ce_1776278555",
+        "doc_bc5e8431_1776278555",
+        "web/41612"
+      ],
+      "unread_candidate_count": 3
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_6c5878ce_1776278555",
+    "label": "mattermost_chat_20251119_221800.jsonl",
+    "start_s": 101.350099,
+    "end_s": 108.976817,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "doc_6c5878ce_1776278555",
+      "source": "local",
+      "title": "mattermost_chat_20251119_221800.jsonl",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/41612",
+    "label": "https://www.ers.usda.gov/topics/farm-economy/far...",
+    "start_s": 101.353145,
+    "end_s": 109.418259,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/41612",
+      "source": "web",
+      "title": "https://www.ers.usda.gov/topics/farm-economy/farm-sector-income-finances/farm-sector-income-forecast",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_bc5e8431_1776278555",
+    "label": "mattermost_chat_20251119_221800.jsonl",
+    "start_s": 101.351695,
+    "end_s": 109.452415,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "doc_bc5e8431_1776278555",
+      "source": "local",
+      "title": "mattermost_chat_20251119_221800.jsonl",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 109.725708,
+    "end_s": 122.117873,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.15,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 122.118087,
+    "end_s": 135.368844,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "planned_actions": [
+        {
+          "action_id": "iter1_web_search_0",
+          "type": "web_search",
+          "query": "MediConn Solutions 2025 financial report operating costs"
+        },
+        {
+          "action_id": "iter1_local_document_search_1",
+          "type": "local_document_search",
+          "query": "MediConn Solutions 2025 cost reduction initiative"
+        },
+        {
+          "action_id": "iter1_web_search_2",
+          "type": "web_search",
+          "query": "MediConn Solutions 2025 cost cut announcement"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_local_document_search_1",
+    "label": "local_document_search: MediConn Solutions 2025 cost reduction initiativ...",
+    "start_s": 135.36903,
+    "end_s": 135.434814,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "action_id": "iter1_local_document_search_1",
+      "action_type": "local_document_search",
+      "query": "MediConn Solutions 2025 cost reduction initiative",
+      "result_count": 5,
+      "top_doc_ids": [
+        "doc_3ae26523_1776278555",
+        "doc_31b536e2_1776278555",
+        "doc_2e7f9e75_1776278555"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_0",
+    "label": "web_search: MediConn Solutions 2025 financial report operati...",
+    "start_s": 135.368889,
+    "end_s": 135.57079,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "action_id": "iter1_web_search_0",
+      "action_type": "web_search",
+      "query": "MediConn Solutions 2025 financial report operating costs",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_09992779000bc1fb",
+        "web/100097",
+        "web/33048"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_2",
+    "label": "web_search: MediConn Solutions 2025 cost cut announcement",
+    "start_s": 135.369108,
+    "end_s": 135.593445,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "action_id": "iter1_web_search_2",
+      "action_type": "web_search",
+      "query": "MediConn Solutions 2025 cost cut announcement",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_09992779000bc1fb",
+        "web/60478",
+        "web/66146"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs",
+    "start_s": 135.593619,
+    "end_s": 163.873534,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "candidate_count": 5,
+      "selected_doc_ids": [
+        "web/66146",
+        "web/99927"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/66146",
+    "label": "https://techcrunch.com/2025/02/13/tech-layoffs-2...",
+    "start_s": 163.873643,
+    "end_s": 169.271836,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "web/66146",
+      "source": "web",
+      "title": "https://techcrunch.com/2025/02/13/tech-layoffs-2024-list/",
+      "can_answer": false,
+      "confidence": 0.1
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/99927",
+    "label": "https://tech.co/news/tech-companies-layoffs",
+    "start_s": 163.876634,
+    "end_s": 171.685445,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "web/99927",
+      "source": "web",
+      "title": "https://tech.co/news/tech-companies-layoffs",
+      "can_answer": false,
+      "confidence": 0.2
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 171.685741,
+    "end_s": 180.043966,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "answered": false,
+      "confidence": 0.3,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/11205",
+        "doc_20bf9310_1776278555",
+        "web/89519"
+      ],
+      "unread_candidate_count": 3
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/11205",
+    "label": "https://www.businessinsider.com/layoffs-sweeping...",
+    "start_s": 180.044097,
+    "end_s": 184.14728,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "web/11205",
+      "source": "web",
+      "title": "https://www.businessinsider.com/layoffs-sweeping-us-these-are-companies-making-cuts-2024",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/89519",
+    "label": "https://www.greenlight.guru/blog/top-100-medical...",
+    "start_s": 180.048578,
+    "end_s": 186.279433,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "web/89519",
+      "source": "web",
+      "title": "https://www.greenlight.guru/blog/top-100-medical-device-companies",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_20bf9310_1776278555",
+    "label": "mattermost_chat_20251119_222220.jsonl",
+    "start_s": 180.047203,
+    "end_s": 188.163613,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "doc_20bf9310_1776278555",
+      "source": "local",
+      "title": "mattermost_chat_20251119_222220.jsonl",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 188.163903,
+    "end_s": 212.689888,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "answered": false,
+      "confidence": 0.3,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "error",
+    "lane": "error:hop_plan",
+    "label": "hop_plan parse_error",
+    "start_s": 223.634948,
+    "end_s": 223.635948,
+    "meta": {
+      "stage": "hop_plan",
+      "kind": "parse_error",
+      "hop_number": 1,
+      "iteration": 2,
+      "message": "No valid JSON found in response: line 1 column 1 (char 0)"
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 212.69017,
+    "end_s": 223.634983,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "planned_actions": [
+        {
+          "action_id": "iter2_web_fallback",
+          "type": "web_search",
+          "query": "What was the decrease in operating costs for MediConn Solutions in 2025?"
+        },
+        {
+          "action_id": "iter2_local_fallback",
+          "type": "local_document_search",
+          "query": "What was the decrease in operating costs for MediConn Solutions in 2025?"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_local_fallback",
+    "label": "local_document_search: What was the decrease in operating costs for Med...",
+    "start_s": 223.635168,
+    "end_s": 223.681356,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "action_id": "iter2_local_fallback",
+      "action_type": "local_document_search",
+      "query": "What was the decrease in operating costs for MediConn Solutions in 2025?",
+      "result_count": 5,
+      "top_doc_ids": [
+        "doc_68e3fdc7_1776278554",
+        "doc_5e2418c6_1776278554",
+        "doc_7ede905f_1776278554"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_fallback",
+    "label": "web_search: What was the decrease in operating costs for Med...",
+    "start_s": 223.635038,
+    "end_s": 223.858366,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "action_id": "iter2_web_fallback",
+      "action_type": "web_search",
+      "query": "What was the decrease in operating costs for MediConn Solutions in 2025?",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_09992779000bc1fb",
+        "web/60478",
+        "web/33048"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs",
+    "start_s": 223.858549,
+    "end_s": 239.300468,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "candidate_count": 5,
+      "selected_doc_ids": [
+        "doc_7ede905f_1776278554"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_7ede905f_1776278554",
+    "label": "2025-Marketing-Expense-Analysis.pdf",
+    "start_s": 239.300545,
+    "end_s": 250.784611,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "doc_id": "doc_7ede905f_1776278554",
+      "source": "local",
+      "title": "2025-Marketing-Expense-Analysis.pdf",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 250.784867,
+    "end_s": 257.469987,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "answered": false,
+      "confidence": 0.7,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "doc_68e3fdc7_1776278554",
+        "doc_5e2418c6_1776278554",
+        "doc_e19eb24c_1776278554"
+      ],
+      "unread_candidate_count": 4
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_68e3fdc7_1776278554",
+    "label": "annual-marketing-budget.pdf",
+    "start_s": 257.470119,
+    "end_s": 262.918047,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "doc_id": "doc_68e3fdc7_1776278554",
+      "source": "local",
+      "title": "annual-marketing-budget.pdf",
+      "can_answer": true,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_5e2418c6_1776278554",
+    "label": "market-research-expenditure.docx",
+    "start_s": 257.473509,
+    "end_s": 263.992851,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "doc_id": "doc_5e2418c6_1776278554",
+      "source": "local",
+      "title": "market-research-expenditure.docx",
+      "can_answer": false,
+      "confidence": 0.6
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_e19eb24c_1776278554",
+    "label": "Competitor-Pricing-Analysis.pdf",
+    "start_s": 257.476433,
+    "end_s": 264.255028,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "doc_id": "doc_e19eb24c_1776278554",
+      "source": "local",
+      "title": "Competitor-Pricing-Analysis.pdf",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 264.255312,
+    "end_s": 277.762777,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "answered": true,
+      "confidence": 0.85,
+      "next_step": "done",
+      "selected_doc_ids": [
+        "doc_68e3fdc7_1776278554"
+      ],
+      "unread_candidate_count": 1
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 277.762899,
+    "end_s": 289.033445,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "planned_actions": [
+        {
+          "action_id": "iter3_web_search_0",
+          "type": "web_search",
+          "query": "global console sales 2013 5% market share company"
+        },
+        {
+          "action_id": "iter3_web_search_1",
+          "type": "web_search",
+          "query": "fiscal year 2013 global console sales 5% share"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_web_search_1",
+    "label": "web_search: fiscal year 2013 global console sales 5% share",
+    "start_s": 289.033659,
+    "end_s": 289.218667,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "action_id": "iter3_web_search_1",
+      "action_type": "web_search",
+      "query": "fiscal year 2013 global console sales 5% share",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_09992779000bc1fb",
+        "web/82592",
+        "web/89736"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_web_search_0",
+    "label": "web_search: global console sales 2013 5% market share compan...",
+    "start_s": 289.033498,
+    "end_s": 289.218801,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "action_id": "iter3_web_search_0",
+      "action_type": "web_search",
+      "query": "global console sales 2013 5% market share company",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_09992779000bc1fb",
+        "web/89736",
+        "web/82592"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs",
+    "start_s": 289.219007,
+    "end_s": 320.318781,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "candidate_count": 6,
+      "selected_doc_ids": [
+        "web/89736",
+        "web/67505"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/89736",
+    "label": "https://www.statista.com/topics/868/video-games/",
+    "start_s": 320.319061,
+    "end_s": 327.08511,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "doc_id": "web/89736",
+      "source": "web",
+      "title": "https://www.statista.com/topics/868/video-games/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/67505",
+    "label": "https://en.wikipedia.org/wiki/Seventh_generation...",
+    "start_s": 320.321818,
+    "end_s": 328.413175,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "doc_id": "web/67505",
+      "source": "web",
+      "title": "https://en.wikipedia.org/wiki/Seventh_generation_of_video_game_consoles",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 328.414459,
+    "end_s": 340.526581,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "answered": false,
+      "confidence": 0.7,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/drbench_urls/drbench_urls_09992779000bc1fb",
+        "web/82592",
+        "web/8660"
+      ],
+      "unread_candidate_count": 4
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/drbench_urls/drbench_urls_09992779000bc1fb",
+    "label": "https://chghealthcare.com/blog/telehealth-the-fu...",
+    "start_s": 340.526697,
+    "end_s": 347.027126,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "doc_id": "web/drbench_urls/drbench_urls_09992779000bc1fb",
+      "source": "web",
+      "title": "https://chghealthcare.com/blog/telehealth-the-future-of-virtual-care",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/82592",
+    "label": "https://en.wikipedia.org/wiki/2015_in_video_game...",
+    "start_s": 340.529236,
+    "end_s": 347.891483,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "doc_id": "web/82592",
+      "source": "web",
+      "title": "https://en.wikipedia.org/wiki/2015_in_video_games",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/8660",
+    "label": "https://en.wikipedia.org/wiki/2010s_in_video_gam...",
+    "start_s": 340.532521,
+    "end_s": 348.426004,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "doc_id": "web/8660",
+      "source": "web",
+      "title": "https://en.wikipedia.org/wiki/2010s_in_video_games",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 348.426247,
+    "end_s": 370.707688,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "answered": false,
+      "confidence": 0.7,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/79819"
+      ],
+      "unread_candidate_count": 1
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/79819",
+    "label": "https://sonyinteractive.com/en/our-company/busin...",
+    "start_s": 370.707779,
+    "end_s": 386.576996,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "doc_id": "web/79819",
+      "source": "web",
+      "title": "https://sonyinteractive.com/en/our-company/business-data-sales/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 386.577227,
+    "end_s": 412.752665,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "answered": false,
+      "confidence": 0.85,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 412.752863,
+    "end_s": 426.670252,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "planned_actions": [
+        {
+          "action_id": "iter4_web_search_0",
+          "type": "web_search",
+          "query": "global console sales market share 2013 5% company"
+        },
+        {
+          "action_id": "iter4_web_search_1",
+          "type": "web_search",
+          "query": "Nintendo console sales market share 2013 fiscal year"
+        },
+        {
+          "action_id": "iter4_web_search_2",
+          "type": "web_search",
+          "query": "Sony console sales market share 2013 fiscal year"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter4_web_search_1",
+    "label": "web_search: Nintendo console sales market share 2013 fiscal...",
+    "start_s": 426.672445,
+    "end_s": 427.076346,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "action_id": "iter4_web_search_1",
+      "action_type": "web_search",
+      "query": "Nintendo console sales market share 2013 fiscal year",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_09992779000bc1fb",
+        "web/39100",
+        "web/89736"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter4_web_search_2",
+    "label": "web_search: Sony console sales market share 2013 fiscal year",
+    "start_s": 426.672515,
+    "end_s": 427.076488,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "action_id": "iter4_web_search_2",
+      "action_type": "web_search",
+      "query": "Sony console sales market share 2013 fiscal year",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_09992779000bc1fb",
+        "web/79819",
+        "web/67505"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter4_web_search_0",
+    "label": "web_search: global console sales market share 2013 5% compan...",
+    "start_s": 426.672312,
+    "end_s": 427.733551,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "action_id": "iter4_web_search_0",
+      "action_type": "web_search",
+      "query": "global console sales market share 2013 5% company",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_09992779000bc1fb",
+        "web/89736",
+        "web/67505"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs (skipped)",
+    "start_s": 427.855553,
+    "end_s": 427.855553,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "candidate_count": 3,
+      "selected_doc_ids": [
+        "web/39100",
+        "web/21219",
+        "web/52137"
+      ],
+      "skipped": true
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/21219",
+    "label": "https://www.ebsco.com/research-starters/sports-a...",
+    "start_s": 427.883015,
+    "end_s": 436.685439,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "doc_id": "web/21219",
+      "source": "web",
+      "title": "https://www.ebsco.com/research-starters/sports-and-leisure/nintendo-wii",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/39100",
+    "label": "https://www.acquired.fm/episodes/nintendo-the-co...",
+    "start_s": 427.879313,
+    "end_s": 438.481472,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "doc_id": "web/39100",
+      "source": "web",
+      "title": "https://www.acquired.fm/episodes/nintendo-the-console-wars",
+      "can_answer": false,
+      "confidence": 0.65
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/52137",
+    "label": "https://vgsales.fandom.com/wiki/Fourth_generatio...",
+    "start_s": 427.886281,
+    "end_s": 439.772123,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "doc_id": "web/52137",
+      "source": "web",
+      "title": "https://vgsales.fandom.com/wiki/Fourth_generation_of_video_games",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 439.772393,
+    "end_s": 454.230043,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "answered": false,
+      "confidence": 0.3,
+      "next_step": "read_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 454.230261,
+    "end_s": 468.545247,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "planned_actions": [
+        {
+          "action_id": "iter5_web_search_0",
+          "type": "web_search",
+          "query": "Nintendo console market share fiscal year 2013 global sales"
+        },
+        {
+          "action_id": "iter5_web_search_1",
+          "type": "web_search",
+          "query": "Sony console sales market share 2013 fiscal year global"
+        },
+        {
+          "action_id": "iter5_web_search_2",
+          "type": "web_search",
+          "query": "Microsoft console market share 2013 global sales fiscal year"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter5_web_search_1",
+    "label": "web_search: Sony console sales market share 2013 fiscal year...",
+    "start_s": 468.545412,
+    "end_s": 468.738451,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "action_id": "iter5_web_search_1",
+      "action_type": "web_search",
+      "query": "Sony console sales market share 2013 fiscal year global",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_09992779000bc1fb",
+        "web/79819",
+        "web/67505"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter5_web_search_2",
+    "label": "web_search: Microsoft console market share 2013 global sales...",
+    "start_s": 468.545477,
+    "end_s": 468.79918,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "action_id": "iter5_web_search_2",
+      "action_type": "web_search",
+      "query": "Microsoft console market share 2013 global sales fiscal year",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_09992779000bc1fb",
+        "web/67505",
+        "web/92374"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter5_web_search_0",
+    "label": "web_search: Nintendo console market share fiscal year 2013 g...",
+    "start_s": 468.545292,
+    "end_s": 468.80964,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "action_id": "iter5_web_search_0",
+      "action_type": "web_search",
+      "query": "Nintendo console market share fiscal year 2013 global sales",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_09992779000bc1fb",
+        "web/39100",
+        "web/89736"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs (skipped)",
+    "start_s": 468.809695,
+    "end_s": 468.809695,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "candidate_count": 1,
+      "selected_doc_ids": [
+        "web/92374"
+      ],
+      "skipped": true
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/92374",
+    "label": "https://en.wikipedia.org/wiki/Xbox",
+    "start_s": 468.809768,
+    "end_s": 477.799634,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "doc_id": "web/92374",
+      "source": "web",
+      "title": "https://en.wikipedia.org/wiki/Xbox",
+      "can_answer": false,
+      "confidence": 0.65
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 477.799794,
+    "end_s": 502.529425,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "answered": true,
+      "confidence": 0.9,
+      "next_step": "done",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "report",
+    "lane": "report",
+    "label": "Final report",
+    "start_s": 502.529443,
+    "end_s": 502.54845,
+    "meta": {
+      "resolved_hops": 2,
+      "report_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0044_8f4ff10c_dd82405a/workspace/research_report_1776338570.md"
+    }
+  }
+]

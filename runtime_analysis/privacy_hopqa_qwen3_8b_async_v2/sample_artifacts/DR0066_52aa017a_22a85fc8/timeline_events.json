@@ -1,0 +1,645 @@
+[
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 0.000266,
+    "end_s": 12.150168,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "planned_actions": [
+        {
+          "action_id": "iter0_web_search_0",
+          "type": "web_search",
+          "query": "Elexion Automotive 2024 CRM software licensing maintenance expenditure"
+        },
+        {
+          "action_id": "iter0_web_search_1",
+          "type": "web_search",
+          "query": "Elexion Automotive 2024 budget CRM software licensing maintenance"
+        },
+        {
+          "action_id": "iter0_web_search_2",
+          "type": "web_search",
+          "query": "Elexion Automotive CRM software cost 2024 industry report"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_1",
+    "label": "web_search: Elexion Automotive 2024 budget CRM software lice...",
+    "start_s": 12.150334,
+    "end_s": 12.289381,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_1",
+      "action_type": "web_search",
+      "query": "Elexion Automotive 2024 budget CRM software licensing maintenance",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_04de0b28488d8d6d",
+        "web/98451",
+        "web/21869"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_0",
+    "label": "web_search: Elexion Automotive 2024 CRM software licensing m...",
+    "start_s": 12.15022,
+    "end_s": 12.317812,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_0",
+      "action_type": "web_search",
+      "query": "Elexion Automotive 2024 CRM software licensing maintenance expenditure",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/98451",
+        "web/8007",
+        "web/57416"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_2",
+    "label": "web_search: Elexion Automotive CRM software cost 2024 indust...",
+    "start_s": 12.150458,
+    "end_s": 12.339414,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_2",
+      "action_type": "web_search",
+      "query": "Elexion Automotive CRM software cost 2024 industry report",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_04de0b28488d8d6d",
+        "web/58940",
+        "web/76940"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs",
+    "start_s": 12.339637,
+    "end_s": 33.673445,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "candidate_count": 10,
+      "selected_doc_ids": [
+        "web/drbench_urls/drbench_urls_04de0b28488d8d6d",
+        "web/98451",
+        "web/74786"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/drbench_urls/drbench_urls_04de0b28488d8d6d",
+    "label": "https://theweek.com/us/1024416/tesla-vs-car-deal...",
+    "start_s": 33.673554,
+    "end_s": 38.854695,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/drbench_urls/drbench_urls_04de0b28488d8d6d",
+      "source": "web",
+      "title": "https://theweek.com/us/1024416/tesla-vs-car-dealerships",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/98451",
+    "label": "https://www.cisco.com/site/us/en/products/collat...",
+    "start_s": 33.676952,
+    "end_s": 41.10767,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/98451",
+      "source": "web",
+      "title": "https://www.cisco.com/site/us/en/products/collateral/networking/switches/catalyst-9600-series-switches/nb-06-cat9600-series-data-sheet-cte-en.html",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/74786",
+    "label": "https://berla.co/ive-software-v4-8-release/",
+    "start_s": 33.6801,
+    "end_s": 43.169991,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/74786",
+      "source": "web",
+      "title": "https://berla.co/ive-software-v4-8-release/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 43.170283,
+    "end_s": 51.684393,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.15,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/58940",
+        "web/76940",
+        "web/57416"
+      ],
+      "unread_candidate_count": 7
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/58940",
+    "label": "https://www.grandviewresearch.com/industry-analy...",
+    "start_s": 51.684525,
+    "end_s": 59.390936,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/58940",
+      "source": "web",
+      "title": "https://www.grandviewresearch.com/industry-analysis/artificial-intelligence-ai-market",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/76940",
+    "label": "https://www.fec.gov/updates/statistical-summary-...",
+    "start_s": 51.688173,
+    "end_s": 59.944994,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/76940",
+      "source": "web",
+      "title": "https://www.fec.gov/updates/statistical-summary-of-21-month-campaign-activity-of-the-2023-2024-election-cycle/",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/57416",
+    "label": "https://learn.microsoft.com/en-us/lifecycle/faq/...",
+    "start_s": 51.691279,
+    "end_s": 60.527382,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/57416",
+      "source": "web",
+      "title": "https://learn.microsoft.com/en-us/lifecycle/faq/extended-security-updates",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 60.527684,
+    "end_s": 71.04032,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.15,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/8007",
+        "web/21869",
+        "web/52703"
+      ],
+      "unread_candidate_count": 4
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/52703",
+    "label": "https://www.thesoftwarereport.com/the-top-50-saa...",
+    "start_s": 71.04627,
+    "end_s": 77.375686,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/52703",
+      "source": "web",
+      "title": "https://www.thesoftwarereport.com/the-top-50-saas-ceos-of-2021/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/21869",
+    "label": "https://www.calhr.ca.gov/state-hr-professionals/...",
+    "start_s": 71.043378,
+    "end_s": 78.075171,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/21869",
+      "source": "web",
+      "title": "https://www.calhr.ca.gov/state-hr-professionals/Pages/benefits-administration-manual-flexelect.aspx",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/8007",
+    "label": "https://www.sap.com/investors/en/why-invest/acqu...",
+    "start_s": 71.040483,
+    "end_s": 79.164317,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/8007",
+      "source": "web",
+      "title": "https://www.sap.com/investors/en/why-invest/acquisitions.html",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 79.164735,
+    "end_s": 105.738676,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.1,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/4912"
+      ],
+      "unread_candidate_count": 1
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/4912",
+    "label": "https://purplesec.us/resources/cybersecurity-sta...",
+    "start_s": 105.738775,
+    "end_s": 111.463514,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/4912",
+      "source": "web",
+      "title": "https://purplesec.us/resources/cybersecurity-statistics/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 111.463794,
+    "end_s": 120.736354,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": true,
+      "confidence": 0.9,
+      "next_step": "done",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 120.736423,
+    "end_s": 137.506713,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "planned_actions": [
+        {
+          "action_id": "iter1_web_search_0",
+          "type": "web_search",
+          "query": "Elexion Automotive Automotive Industry Conference 2022 CRM expenditure email"
+        },
+        {
+          "action_id": "iter1_web_search_1",
+          "type": "web_search",
+          "query": "$108,000 CRM expenditure Elexion Automotive conference email CC"
+        },
+        {
+          "action_id": "iter1_web_search_2",
+          "type": "web_search",
+          "query": "Automotive Industry Conference 2022 email sender Elexion Automotive"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_1",
+    "label": "web_search: $108,000 CRM expenditure Elexion Automotive conf...",
+    "start_s": 137.506886,
+    "end_s": 137.65154,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "action_id": "iter1_web_search_1",
+      "action_type": "web_search",
+      "query": "$108,000 CRM expenditure Elexion Automotive conference email CC",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_04de0b28488d8d6d",
+        "web/16512",
+        "web/1099"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_0",
+    "label": "web_search: Elexion Automotive Automotive Industry Conferenc...",
+    "start_s": 137.506771,
+    "end_s": 137.697379,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "action_id": "iter1_web_search_0",
+      "action_type": "web_search",
+      "query": "Elexion Automotive Automotive Industry Conference 2022 CRM expenditure email",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_04de0b28488d8d6d",
+        "web/52366",
+        "web/50435"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_2",
+    "label": "web_search: Automotive Industry Conference 2022 email sender...",
+    "start_s": 137.506949,
+    "end_s": 137.698037,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "action_id": "iter1_web_search_2",
+      "action_type": "web_search",
+      "query": "Automotive Industry Conference 2022 email sender Elexion Automotive",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_04de0b28488d8d6d",
+        "web/52366",
+        "web/81092"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs",
+    "start_s": 137.698309,
+    "end_s": 160.862337,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "candidate_count": 8,
+      "selected_doc_ids": [
+        "web/drbench_urls/drbench_urls_04de0b28488d8d6d",
+        "web/52366",
+        "web/50435"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/drbench_urls/drbench_urls_04de0b28488d8d6d",
+    "label": "https://theweek.com/us/1024416/tesla-vs-car-deal...",
+    "start_s": 160.862468,
+    "end_s": 168.96535,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "doc_id": "web/drbench_urls/drbench_urls_04de0b28488d8d6d",
+      "source": "web",
+      "title": "https://theweek.com/us/1024416/tesla-vs-car-dealerships",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/50435",
+    "label": "https://www.jpmorgan.com/about-us/events-confere...",
+    "start_s": 160.869522,
+    "end_s": 169.728215,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "doc_id": "web/50435",
+      "source": "web",
+      "title": "https://www.jpmorgan.com/about-us/events-conferences",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/52366",
+    "label": "https://www.stellantis.com/en/investors/events-a...",
+    "start_s": 160.865451,
+    "end_s": 170.522766,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "doc_id": "web/52366",
+      "source": "web",
+      "title": "https://www.stellantis.com/en/investors/events-and-presentations",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 170.523059,
+    "end_s": 184.586417,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "answered": true,
+      "confidence": 0.5,
+      "next_step": "done",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 5
+    }
+  },
+  {
+    "stage": "error",
+    "lane": "error:hop_plan",
+    "label": "hop_plan parse_error",
+    "start_s": 200.070179,
+    "end_s": 200.071179,
+    "meta": {
+      "stage": "hop_plan",
+      "kind": "parse_error",
+      "hop_number": 3,
+      "iteration": 2,
+      "message": "No valid JSON found in response: line 1 column 1 (char 0)"
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H3 retrieval plan",
+    "start_s": 184.586491,
+    "end_s": 200.070205,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "planned_actions": [
+        {
+          "action_id": "iter2_web_fallback",
+          "type": "web_search",
+          "query": "Who sent the email that included Lisa Henderson as a recipient?"
+        },
+        {
+          "action_id": "iter2_local_fallback",
+          "type": "local_document_search",
+          "query": "Who sent the email that included Lisa Henderson as a recipient?"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_local_fallback",
+    "label": "local_document_search: Who sent the email that included Lisa Henderson...",
+    "start_s": 200.070367,
+    "end_s": 200.150717,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "action_id": "iter2_local_fallback",
+      "action_type": "local_document_search",
+      "query": "Who sent the email that included Lisa Henderson as a recipient?",
+      "result_count": 5,
+      "top_doc_ids": [
+        "doc_1e3c34d6_1776306870",
+        "doc_037435ba_1776306870",
+        "doc_bdc78121_1776306871"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_fallback",
+    "label": "web_search: Who sent the email that included Lisa Henderson...",
+    "start_s": 200.070249,
+    "end_s": 200.310623,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "action_id": "iter2_web_fallback",
+      "action_type": "web_search",
+      "query": "Who sent the email that included Lisa Henderson as a recipient?",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_04de0b28488d8d6d",
+        "web/98204",
+        "web/70379"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H3 choose docs",
+    "start_s": 200.310882,
+    "end_s": 224.157126,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "candidate_count": 10,
+      "selected_doc_ids": [
+        "doc_037435ba_1776306870"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_037435ba_1776306870",
+    "label": "roundcube_email_20251120_003439.jsonl",
+    "start_s": 224.157208,
+    "end_s": 245.275759,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "doc_id": "doc_037435ba_1776306870",
+      "source": "local",
+      "title": "roundcube_email_20251120_003439.jsonl",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H3 resolve",
+    "start_s": 245.276002,
+    "end_s": 253.763238,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "answered": true,
+      "confidence": 0.9,
+      "next_step": "done",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 9
+    }
+  },
+  {
+    "stage": "report",
+    "lane": "report",
+    "label": "Final report",
+    "start_s": 253.763258,
+    "end_s": 253.781525,
+    "meta": {
+      "resolved_hops": 3,
+      "report_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0066_52aa017a_22a85fc8/workspace/research_report_1776337461.md"
+    }
+  }
+]

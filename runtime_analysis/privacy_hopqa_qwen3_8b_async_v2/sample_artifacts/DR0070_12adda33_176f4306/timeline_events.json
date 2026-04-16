@@ -1,0 +1,2202 @@
+[
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 7.1e-05,
+    "end_s": 13.902617,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "planned_actions": [
+        {
+          "action_id": "iter0_web_search_0",
+          "type": "web_search",
+          "query": "Elexion Automotive cybersecurity team percentage workforce 2020"
+        },
+        {
+          "action_id": "iter0_web_search_1",
+          "type": "web_search",
+          "query": "Elexion Automotive annual report 2020 workforce composition"
+        },
+        {
+          "action_id": "iter0_web_search_2",
+          "type": "web_search",
+          "query": "Elexion Automotive cybersecurity team size 2020"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_0",
+    "label": "web_search: Elexion Automotive cybersecurity team percentage...",
+    "start_s": 13.902673,
+    "end_s": 14.054407,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_0",
+      "action_type": "web_search",
+      "query": "Elexion Automotive cybersecurity team percentage workforce 2020",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/88213",
+        "web/91890"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_1",
+    "label": "web_search: Elexion Automotive annual report 2020 workforce...",
+    "start_s": 13.902791,
+    "end_s": 14.092603,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_1",
+      "action_type": "web_search",
+      "query": "Elexion Automotive annual report 2020 workforce composition",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/55488",
+        "web/7747"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_2",
+    "label": "web_search: Elexion Automotive cybersecurity team size 2020",
+    "start_s": 13.902851,
+    "end_s": 14.134778,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_2",
+      "action_type": "web_search",
+      "query": "Elexion Automotive cybersecurity team size 2020",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/88213",
+        "web/30161"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs",
+    "start_s": 14.134994,
+    "end_s": 36.531075,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "candidate_count": 11,
+      "selected_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/88213",
+        "web/30161"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/88213",
+    "label": "https://cybersecurityventures.com/cybersecurity-...",
+    "start_s": 36.53453,
+    "end_s": 42.813634,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/88213",
+      "source": "web",
+      "title": "https://cybersecurityventures.com/cybersecurity-almanac-2023/",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/30161",
+    "label": "https://cybersecurityventures.com/cybersecurity-...",
+    "start_s": 36.537665,
+    "end_s": 43.062424,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/30161",
+      "source": "web",
+      "title": "https://cybersecurityventures.com/cybersecurity-almanac-2022/",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+    "label": "https://www.helpnetsecurity.com/2025/04/04/cyber...",
+    "start_s": 36.531174,
+    "end_s": 43.30838,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+      "source": "web",
+      "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 43.308659,
+    "end_s": 52.152023,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.3,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/55488",
+        "web/7747",
+        "web/91890"
+      ],
+      "unread_candidate_count": 8
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/91890",
+    "label": "https://www.varonis.com/blog/cybersecurity-stati...",
+    "start_s": 52.157852,
+    "end_s": 58.932772,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/91890",
+      "source": "web",
+      "title": "https://www.varonis.com/blog/cybersecurity-statistics",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/7747",
+    "label": "https://ourpublicservice.org/fed-figures/a-profi...",
+    "start_s": 52.155209,
+    "end_s": 59.1102,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/7747",
+      "source": "web",
+      "title": "https://ourpublicservice.org/fed-figures/a-profile-of-the-2023-federal-workforce/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/55488",
+    "label": "https://www.dpeaflcio.org/factsheets/the-profess...",
+    "start_s": 52.152153,
+    "end_s": 59.401087,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/55488",
+      "source": "web",
+      "title": "https://www.dpeaflcio.org/factsheets/the-professional-and-technical-workforce-by-the-numbers",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 59.401445,
+    "end_s": 68.404372,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.15,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/22986",
+        "web/50680",
+        "web/77758"
+      ],
+      "unread_candidate_count": 5
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/77758",
+    "label": "https://cybersecurityventures.com/jobs/",
+    "start_s": 68.420726,
+    "end_s": 74.068569,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/77758",
+      "source": "web",
+      "title": "https://cybersecurityventures.com/jobs/",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/50680",
+    "label": "https://pentera.io/leadership/",
+    "start_s": 68.418103,
+    "end_s": 74.178358,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/50680",
+      "source": "web",
+      "title": "https://pentera.io/leadership/",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/22986",
+    "label": "https://agenciadenoticias.ibge.gov.br/en/agencia...",
+    "start_s": 68.414973,
+    "end_s": 76.513597,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/22986",
+      "source": "web",
+      "title": "https://agenciadenoticias.ibge.gov.br/en/agencia-news/2184-news-agency/news/40444-companies-comprising-only-partners-and-owners-were-majority-paid-lowest-salaries-in-2022",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 76.5314,
+    "end_s": 83.33523,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.3,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/33651",
+        "web/48928"
+      ],
+      "unread_candidate_count": 2
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/33651",
+    "label": "https://www.itgovernance.co.uk/blog/list-of-data...",
+    "start_s": 83.340543,
+    "end_s": 91.22097,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/33651",
+      "source": "web",
+      "title": "https://www.itgovernance.co.uk/blog/list-of-data-breaches-and-cyber-attacks-in-2023",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/48928",
+    "label": "https://www.greatplacetowork.com/best-workplaces...",
+    "start_s": 83.343454,
+    "end_s": 91.351592,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/48928",
+      "source": "web",
+      "title": "https://www.greatplacetowork.com/best-workplaces/100-best/2024",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 91.352016,
+    "end_s": 99.893287,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.1,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 99.89351,
+    "end_s": 114.386465,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "planned_actions": [
+        {
+          "action_id": "iter1_web_search_0",
+          "type": "web_search",
+          "query": "Elexion Automotive total workforce 2020"
+        },
+        {
+          "action_id": "iter1_web_search_2",
+          "type": "web_search",
+          "query": "Elexion Automotive workforce composition 2020 report"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_0",
+    "label": "web_search: Elexion Automotive total workforce 2020",
+    "start_s": 114.386512,
+    "end_s": 115.849482,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "action_id": "iter1_web_search_0",
+      "action_type": "web_search",
+      "query": "Elexion Automotive total workforce 2020",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/66146",
+        "web/60478"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_2",
+    "label": "web_search: Elexion Automotive workforce composition 2020 re...",
+    "start_s": 114.386625,
+    "end_s": 116.141331,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "action_id": "iter1_web_search_2",
+      "action_type": "web_search",
+      "query": "Elexion Automotive workforce composition 2020 report",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/55488",
+        "web/42024"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs",
+    "start_s": 116.141522,
+    "end_s": 128.378584,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "candidate_count": 5,
+      "selected_doc_ids": [
+        "web/42024"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/42024",
+    "label": "https://www.epi.org/publication/the-decline-and-...",
+    "start_s": 128.378656,
+    "end_s": 136.262144,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "web/42024",
+      "source": "web",
+      "title": "https://www.epi.org/publication/the-decline-and-resurgence-of-the-u-s-auto-industry/",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 136.262381,
+    "end_s": 143.63292,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "answered": false,
+      "confidence": 0.3,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 4
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 143.633163,
+    "end_s": 161.383905,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "planned_actions": [
+        {
+          "action_id": "iter2_web_search_0",
+          "type": "web_search",
+          "query": "Elexion Automotive 2020 cybersecurity team workforce percentage"
+        },
+        {
+          "action_id": "iter2_web_search_1",
+          "type": "web_search",
+          "query": "Elexion Automotive workforce composition report 2020"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_1",
+    "label": "web_search: Elexion Automotive workforce composition report...",
+    "start_s": 161.384231,
+    "end_s": 161.719211,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "action_id": "iter2_web_search_1",
+      "action_type": "web_search",
+      "query": "Elexion Automotive workforce composition report 2020",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/55488",
+        "web/42024"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_0",
+    "label": "web_search: Elexion Automotive 2020 cybersecurity team workf...",
+    "start_s": 161.38411,
+    "end_s": 161.771486,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "action_id": "iter2_web_search_0",
+      "action_type": "web_search",
+      "query": "Elexion Automotive 2020 cybersecurity team workforce percentage",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/88213",
+        "web/30161"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs (skipped)",
+    "start_s": 161.771635,
+    "end_s": 161.771635,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "candidate_count": 1,
+      "selected_doc_ids": [
+        "web/70715"
+      ],
+      "skipped": true
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/70715",
+    "label": "https://www.iea.org/reports/world-energy-employm...",
+    "start_s": 161.771703,
+    "end_s": 168.749969,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "doc_id": "web/70715",
+      "source": "web",
+      "title": "https://www.iea.org/reports/world-energy-employment-2022/overview",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 168.750127,
+    "end_s": 179.49563,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 2,
+      "answered": false,
+      "confidence": 0.5,
+      "next_step": "read_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 179.495961,
+    "end_s": 193.927347,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "planned_actions": [
+        {
+          "action_id": "iter3_web_search_0",
+          "type": "web_search",
+          "query": "Elexion Automotive cybersecurity team size total workforce 2020"
+        },
+        {
+          "action_id": "iter3_web_search_1",
+          "type": "web_search",
+          "query": "Elexion Automotive annual report 2020 workforce statistics"
+        },
+        {
+          "action_id": "iter3_web_search_2",
+          "type": "web_search",
+          "query": "Elexion Automotive cybersecurity workforce percentage 2020"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_web_search_1",
+    "label": "web_search: Elexion Automotive annual report 2020 workforce...",
+    "start_s": 193.927586,
+    "end_s": 194.072733,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "action_id": "iter3_web_search_1",
+      "action_type": "web_search",
+      "query": "Elexion Automotive annual report 2020 workforce statistics",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/66146",
+        "web/60478"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_web_search_2",
+    "label": "web_search: Elexion Automotive cybersecurity workforce perce...",
+    "start_s": 193.927653,
+    "end_s": 194.094157,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "action_id": "iter3_web_search_2",
+      "action_type": "web_search",
+      "query": "Elexion Automotive cybersecurity workforce percentage 2020",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/88213",
+        "web/30161"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_web_search_0",
+    "label": "web_search: Elexion Automotive cybersecurity team size total...",
+    "start_s": 193.927448,
+    "end_s": 194.136246,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "action_id": "iter3_web_search_0",
+      "action_type": "web_search",
+      "query": "Elexion Automotive cybersecurity team size total workforce 2020",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/66146",
+        "web/88213"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs (skipped)",
+    "start_s": 194.149615,
+    "end_s": 194.149615,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "candidate_count": 3,
+      "selected_doc_ids": [
+        "web/66146",
+        "web/60478",
+        "web/11205"
+      ],
+      "skipped": true
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/11205",
+    "label": "https://www.businessinsider.com/layoffs-sweeping...",
+    "start_s": 194.504128,
+    "end_s": 199.501105,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "doc_id": "web/11205",
+      "source": "web",
+      "title": "https://www.businessinsider.com/layoffs-sweeping-us-these-are-companies-making-cuts-2024",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/60478",
+    "label": "https://www.massdevice.com/medtech-layoffs-compa...",
+    "start_s": 194.499819,
+    "end_s": 199.679374,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "doc_id": "web/60478",
+      "source": "web",
+      "title": "https://www.massdevice.com/medtech-layoffs-companies-recently-reduced-workforce/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/66146",
+    "label": "https://techcrunch.com/2025/02/13/tech-layoffs-2...",
+    "start_s": 194.49484,
+    "end_s": 199.937861,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "doc_id": "web/66146",
+      "source": "web",
+      "title": "https://techcrunch.com/2025/02/13/tech-layoffs-2024-list/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 199.938184,
+    "end_s": 213.074764,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 3,
+      "answered": false,
+      "confidence": 0.15,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 213.075126,
+    "end_s": 233.972342,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 4,
+      "planned_actions": [
+        {
+          "action_id": "iter4_web_fallback",
+          "type": "web_search",
+          "query": "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?"
+        },
+        {
+          "action_id": "iter4_local_fallback",
+          "type": "local_document_search",
+          "query": "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter4_local_fallback",
+    "label": "local_document_search: What percentage of Elexion Automotive's total wo...",
+    "start_s": 233.983464,
+    "end_s": 234.571425,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 4,
+      "action_id": "iter4_local_fallback",
+      "action_type": "local_document_search",
+      "query": "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?",
+      "result_count": 5,
+      "top_doc_ids": [
+        "doc_fb9ebed3_1776306873",
+        "doc_da37b440_1776306872",
+        "doc_64ed5b3f_1776306873"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter4_web_fallback",
+    "label": "web_search: What percentage of Elexion Automotive's total wo...",
+    "start_s": 233.983222,
+    "end_s": 234.962366,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 4,
+      "action_id": "iter4_web_fallback",
+      "action_type": "web_search",
+      "query": "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/88213",
+        "web/30161"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs",
+    "start_s": 234.963013,
+    "end_s": 248.598965,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 4,
+      "candidate_count": 6,
+      "selected_doc_ids": [
+        "doc_fb9ebed3_1776306873"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_fb9ebed3_1776306873",
+    "label": "elexion-cybersecurity-framework.pdf",
+    "start_s": 248.59903,
+    "end_s": 257.110268,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 4,
+      "doc_id": "doc_fb9ebed3_1776306873",
+      "source": "local",
+      "title": "elexion-cybersecurity-framework.pdf",
+      "can_answer": true,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 257.110618,
+    "end_s": 266.574614,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 4,
+      "answered": true,
+      "confidence": 0.95,
+      "next_step": "done",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 5
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 266.574716,
+    "end_s": 282.00591,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "planned_actions": [
+        {
+          "action_id": "iter5_web_search_0",
+          "type": "web_search",
+          "query": "country single fathers 16% single-parent families"
+        },
+        {
+          "action_id": "iter5_web_search_1",
+          "type": "web_search",
+          "query": "single-parent families 16% single fathers country"
+        },
+        {
+          "action_id": "iter5_web_search_2",
+          "type": "web_search",
+          "query": "percentage single fathers single-parent families by country 16%"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter5_web_search_2",
+    "label": "web_search: percentage single fathers single-parent families...",
+    "start_s": 282.006164,
+    "end_s": 282.223276,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "action_id": "iter5_web_search_2",
+      "action_type": "web_search",
+      "query": "percentage single fathers single-parent families by country 16%",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/90973",
+        "web/74902"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter5_web_search_0",
+    "label": "web_search: country single fathers 16% single-parent familie...",
+    "start_s": 282.005963,
+    "end_s": 282.223441,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "action_id": "iter5_web_search_0",
+      "action_type": "web_search",
+      "query": "country single fathers 16% single-parent families",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/90973",
+        "web/7893"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter5_web_search_1",
+    "label": "web_search: single-parent families 16% single fathers countr...",
+    "start_s": 282.0061,
+    "end_s": 282.254049,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "action_id": "iter5_web_search_1",
+      "action_type": "web_search",
+      "query": "single-parent families 16% single fathers country",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/90973",
+        "web/74902"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs",
+    "start_s": 282.25426,
+    "end_s": 305.489951,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "candidate_count": 6,
+      "selected_doc_ids": [
+        "web/90973",
+        "web/7893",
+        "web/31111"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/31111",
+    "label": "https://actforyouth.org/adolescence/demographics...",
+    "start_s": 305.498956,
+    "end_s": 318.992881,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "doc_id": "web/31111",
+      "source": "web",
+      "title": "https://actforyouth.org/adolescence/demographics/family.cfm",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/7893",
+    "label": "https://www.census.gov/newsroom/press-releases/2...",
+    "start_s": 305.494675,
+    "end_s": 324.67318,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "doc_id": "web/7893",
+      "source": "web",
+      "title": "https://www.census.gov/newsroom/press-releases/2022/americas-families-and-living-arrangements.html",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/90973",
+    "label": "https://en.wikipedia.org/wiki/Single_parents_in_...",
+    "start_s": 305.49008,
+    "end_s": 327.253243,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "doc_id": "web/90973",
+      "source": "web",
+      "title": "https://en.wikipedia.org/wiki/Single_parents_in_the_United_States",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 327.25358,
+    "end_s": 336.205133,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "answered": false,
+      "confidence": 0.65,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/74902",
+        "web/12570"
+      ],
+      "unread_candidate_count": 3
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+    "label": "https://www.helpnetsecurity.com/2025/04/04/cyber...",
+    "start_s": 336.205264,
+    "end_s": 346.225677,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+      "source": "web",
+      "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/12570",
+    "label": "https://www.psychologytoday.com/us/blog/singleto...",
+    "start_s": 336.21205,
+    "end_s": 351.208982,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "doc_id": "web/12570",
+      "source": "web",
+      "title": "https://www.psychologytoday.com/us/blog/singletons/202311/free-to-have-only-one-child",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/74902",
+    "label": "https://www.aecf.org/blog/child-well-being-in-si...",
+    "start_s": 336.208398,
+    "end_s": 360.988206,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "doc_id": "web/74902",
+      "source": "web",
+      "title": "https://www.aecf.org/blog/child-well-being-in-single-parent-families",
+      "can_answer": false,
+      "confidence": 0.65
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 360.991266,
+    "end_s": 372.994026,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "answered": false,
+      "confidence": 0.65,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 372.994202,
+    "end_s": 384.027892,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 6,
+      "planned_actions": [
+        {
+          "action_id": "iter6_web_search_0",
+          "type": "web_search",
+          "query": "single fathers 16% single-parent families country statistics"
+        },
+        {
+          "action_id": "iter6_web_search_1",
+          "type": "web_search",
+          "query": "demographic report single fathers 16% single-parent families country"
+        },
+        {
+          "action_id": "iter6_web_search_2",
+          "type": "web_search",
+          "query": "census data single-parent families father percentage 16% country"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter6_web_search_0",
+    "label": "web_search: single fathers 16% single-parent families countr...",
+    "start_s": 384.042712,
+    "end_s": 384.951872,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 6,
+      "action_id": "iter6_web_search_0",
+      "action_type": "web_search",
+      "query": "single fathers 16% single-parent families country statistics",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/90973",
+        "web/74902"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter6_web_search_2",
+    "label": "web_search: census data single-parent families father percen...",
+    "start_s": 384.042897,
+    "end_s": 384.952156,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 6,
+      "action_id": "iter6_web_search_2",
+      "action_type": "web_search",
+      "query": "census data single-parent families father percentage 16% country",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/90973",
+        "web/7893"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter6_web_search_1",
+    "label": "web_search: demographic report single fathers 16% single-par...",
+    "start_s": 384.042836,
+    "end_s": 384.954868,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 6,
+      "action_id": "iter6_web_search_1",
+      "action_type": "web_search",
+      "query": "demographic report single fathers 16% single-parent families country",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/90973",
+        "web/74902"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs (skipped)",
+    "start_s": 385.034172,
+    "end_s": 385.034172,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 6,
+      "candidate_count": 2,
+      "selected_doc_ids": [
+        "web/48035",
+        "web/75561"
+      ],
+      "skipped": true
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/75561",
+    "label": "https://www.census.gov/data/tables/2021/demo/fam...",
+    "start_s": 385.046073,
+    "end_s": 401.999461,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 6,
+      "doc_id": "web/75561",
+      "source": "web",
+      "title": "https://www.census.gov/data/tables/2021/demo/families/cps-2021.html",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/48035",
+    "label": "https://www.census.gov/newsroom/press-releases/2...",
+    "start_s": 385.042962,
+    "end_s": 405.58004,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 6,
+      "doc_id": "web/48035",
+      "source": "web",
+      "title": "https://www.census.gov/newsroom/press-releases/2024/families-living-arrangements.html",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 405.580397,
+    "end_s": 414.235424,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 6,
+      "answered": false,
+      "confidence": 0.5,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 414.235664,
+    "end_s": 425.771197,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 7,
+      "planned_actions": [
+        {
+          "action_id": "iter7_web_search_0",
+          "type": "web_search",
+          "query": "country single fathers 16% single-parent families exact match"
+        },
+        {
+          "action_id": "iter7_web_search_2",
+          "type": "web_search",
+          "query": "international family statistics single fathers 16% single-parent families"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter7_web_search_2",
+    "label": "web_search: international family statistics single fathers 1...",
+    "start_s": 425.771354,
+    "end_s": 427.158389,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 7,
+      "action_id": "iter7_web_search_2",
+      "action_type": "web_search",
+      "query": "international family statistics single fathers 16% single-parent families",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/90973",
+        "web/31111",
+        "web/74902"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter7_web_search_0",
+    "label": "web_search: country single fathers 16% single-parent familie...",
+    "start_s": 425.771257,
+    "end_s": 427.286536,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 7,
+      "action_id": "iter7_web_search_0",
+      "action_type": "web_search",
+      "query": "country single fathers 16% single-parent families exact match",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/90973",
+        "web/7893"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs (skipped)",
+    "start_s": 427.294654,
+    "end_s": 427.294654,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 7,
+      "candidate_count": 2,
+      "selected_doc_ids": [
+        "web/21529",
+        "web/71828"
+      ],
+      "skipped": true
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/71828",
+    "label": "https://www.ons.gov.uk/peoplepopulationandcommun...",
+    "start_s": 427.297869,
+    "end_s": 437.376943,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 7,
+      "doc_id": "web/71828",
+      "source": "web",
+      "title": "https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/families/bulletins/familiesandhouseholds/2022",
+      "can_answer": true,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/21529",
+    "label": "https://usafacts.org/articles/how-has-the-struct...",
+    "start_s": 427.295009,
+    "end_s": 445.52235,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 7,
+      "doc_id": "web/21529",
+      "source": "web",
+      "title": "https://usafacts.org/articles/how-has-the-structure-of-american-households-changed-over-time/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 445.52268,
+    "end_s": 453.517487,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 7,
+      "answered": true,
+      "confidence": 0.9,
+      "next_step": "done",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H3 retrieval plan",
+    "start_s": 453.517579,
+    "end_s": 467.74684,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 8,
+      "planned_actions": [
+        {
+          "action_id": "iter8_web_search_0",
+          "type": "web_search",
+          "query": "40.7% unmarried mothers births United States year"
+        },
+        {
+          "action_id": "iter8_web_search_1",
+          "type": "web_search",
+          "query": "US birth statistics unmarried women 40.7%"
+        },
+        {
+          "action_id": "iter8_web_search_2",
+          "type": "web_search",
+          "query": "US unmarried birth rate trend 40.7%"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter8_web_search_0",
+    "label": "web_search: 40.7% unmarried mothers births United States yea...",
+    "start_s": 467.901825,
+    "end_s": 469.173789,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 8,
+      "action_id": "iter8_web_search_0",
+      "action_type": "web_search",
+      "query": "40.7% unmarried mothers births United States year",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/90973",
+        "web/12599"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter8_web_search_2",
+    "label": "web_search: US unmarried birth rate trend 40.7%",
+    "start_s": 467.901899,
+    "end_s": 469.337419,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 8,
+      "action_id": "iter8_web_search_2",
+      "action_type": "web_search",
+      "query": "US unmarried birth rate trend 40.7%",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/12599",
+        "web/41841"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter8_web_search_1",
+    "label": "web_search: US birth statistics unmarried women 40.7%",
+    "start_s": 467.901863,
+    "end_s": 469.600387,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 8,
+      "action_id": "iter8_web_search_1",
+      "action_type": "web_search",
+      "query": "US birth statistics unmarried women 40.7%",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/12599",
+        "web/90973"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H3 choose docs",
+    "start_s": 469.600602,
+    "end_s": 505.058463,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 8,
+      "candidate_count": 7,
+      "selected_doc_ids": [
+        "web/12599",
+        "web/90973",
+        "web/87327"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/90973",
+    "label": "https://en.wikipedia.org/wiki/Single_parents_in_...",
+    "start_s": 505.063498,
+    "end_s": 512.133729,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 8,
+      "doc_id": "web/90973",
+      "source": "web",
+      "title": "https://en.wikipedia.org/wiki/Single_parents_in_the_United_States",
+      "can_answer": true,
+      "confidence": 0.92
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/12599",
+    "label": "https://ceousa.org/2020/02/26/percentage-of-birt...",
+    "start_s": 505.058625,
+    "end_s": 514.170756,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 8,
+      "doc_id": "web/12599",
+      "source": "web",
+      "title": "https://ceousa.org/2020/02/26/percentage-of-births-to-unmarried-women/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/87327",
+    "label": "https://www.cdc.gov/nchs/products/vsus/vsus_1980...",
+    "start_s": 505.067831,
+    "end_s": 515.040091,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 8,
+      "doc_id": "web/87327",
+      "source": "web",
+      "title": "https://www.cdc.gov/nchs/products/vsus/vsus_1980_2003.htm",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H3 resolve",
+    "start_s": 515.040437,
+    "end_s": 522.91775,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 8,
+      "answered": true,
+      "confidence": 0.92,
+      "next_step": "done",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 4
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H4 retrieval plan",
+    "start_s": 522.917837,
+    "end_s": 537.845795,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 9,
+      "planned_actions": [
+        {
+          "action_id": "iter9_web_search_0",
+          "type": "web_search",
+          "query": "Elexion Automotive founder 2010 employee statement"
+        },
+        {
+          "action_id": "iter9_web_search_1",
+          "type": "web_search",
+          "query": "Elexion Automotive employee 2010 founding year"
+        },
+        {
+          "action_id": "iter9_web_search_2",
+          "type": "web_search",
+          "query": "Elexion Automotive internal documents 2010 founding"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter9_web_search_0",
+    "label": "web_search: Elexion Automotive founder 2010 employee stateme...",
+    "start_s": 537.845845,
+    "end_s": 538.026811,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 9,
+      "action_id": "iter9_web_search_0",
+      "action_type": "web_search",
+      "query": "Elexion Automotive founder 2010 employee statement",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/96292",
+        "web/72477"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter9_web_search_2",
+    "label": "web_search: Elexion Automotive internal documents 2010 found...",
+    "start_s": 537.84601,
+    "end_s": 538.033207,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 9,
+      "action_id": "iter9_web_search_2",
+      "action_type": "web_search",
+      "query": "Elexion Automotive internal documents 2010 founding",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/97348",
+        "web/86744"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter9_web_search_1",
+    "label": "web_search: Elexion Automotive employee 2010 founding year",
+    "start_s": 537.845952,
+    "end_s": 538.043446,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 9,
+      "action_id": "iter9_web_search_1",
+      "action_type": "web_search",
+      "query": "Elexion Automotive employee 2010 founding year",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/97348",
+        "web/96292"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H4 choose docs",
+    "start_s": 538.043708,
+    "end_s": 551.290422,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 9,
+      "candidate_count": 9,
+      "selected_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/96292"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+    "label": "https://www.helpnetsecurity.com/2025/04/04/cyber...",
+    "start_s": 551.290567,
+    "end_s": 558.259616,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 9,
+      "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+      "source": "web",
+      "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/96292",
+    "label": "https://www.nisteceltek.com/about-us/leadership/",
+    "start_s": 551.293917,
+    "end_s": 559.688835,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 9,
+      "doc_id": "web/96292",
+      "source": "web",
+      "title": "https://www.nisteceltek.com/about-us/leadership/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H4 resolve",
+    "start_s": 559.695834,
+    "end_s": 567.973532,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 9,
+      "answered": false,
+      "confidence": 0.7,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/97348",
+        "web/70937",
+        "web/86744"
+      ],
+      "unread_candidate_count": 7
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/70937",
+    "label": "https://www.optica.org/optica_blog/2021/march_20...",
+    "start_s": 567.982011,
+    "end_s": 573.193304,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 9,
+      "doc_id": "web/70937",
+      "source": "web",
+      "title": "https://www.optica.org/optica_blog/2021/march_2021/luminar_technologies_co-founder_and_cto_jason_eich/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/97348",
+    "label": "https://newsroom.lexus.eu/lexus-history/",
+    "start_s": 567.973685,
+    "end_s": 573.716282,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 9,
+      "doc_id": "web/97348",
+      "source": "web",
+      "title": "https://newsroom.lexus.eu/lexus-history/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/86744",
+    "label": "https://en.wikipedia.org/wiki/History_of_Tesla,_...",
+    "start_s": 567.977928,
+    "end_s": 573.81587,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 9,
+      "doc_id": "web/86744",
+      "source": "web",
+      "title": "https://en.wikipedia.org/wiki/History_of_Tesla,_Inc.",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H4 resolve",
+    "start_s": 573.816215,
+    "end_s": 590.400737,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 9,
+      "answered": false,
+      "confidence": 0.0,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/72477",
+        "web/48245",
+        "web/84260"
+      ],
+      "unread_candidate_count": 4
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/48245",
+    "label": "https://www.waterlooedc.ca/blog/biggest-manufact...",
+    "start_s": 590.404519,
+    "end_s": 597.623966,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 9,
+      "doc_id": "web/48245",
+      "source": "web",
+      "title": "https://www.waterlooedc.ca/blog/biggest-manufacturing-companies-waterloo",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/72477",
+    "label": "https://investors.luminartech.com/corporate-gove...",
+    "start_s": 590.400909,
+    "end_s": 600.761247,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 9,
+      "doc_id": "web/72477",
+      "source": "web",
+      "title": "https://investors.luminartech.com/corporate-governance/board-of-directors",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/84260",
+    "label": "https://www.butzel.com/services-automotive-indus...",
+    "start_s": 590.407833,
+    "end_s": 600.80316,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 9,
+      "doc_id": "web/84260",
+      "source": "web",
+      "title": "https://www.butzel.com/services-automotive-industry-teams",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H4 resolve",
+    "start_s": 601.36409,
+    "end_s": 607.789132,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 9,
+      "answered": false,
+      "confidence": 0.7,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/62665"
+      ],
+      "unread_candidate_count": 1
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/62665",
+    "label": "https://en.wikipedia.org/wiki/List_of_chief_exec...",
+    "start_s": 607.789264,
+    "end_s": 615.169011,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 9,
+      "doc_id": "web/62665",
+      "source": "web",
+      "title": "https://en.wikipedia.org/wiki/List_of_chief_executive_officers",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H4 resolve",
+    "start_s": 615.169352,
+    "end_s": 630.257982,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 9,
+      "answered": false,
+      "confidence": 0.85,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H4 retrieval plan",
+    "start_s": 630.258206,
+    "end_s": 644.68755,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 10,
+      "planned_actions": [
+        {
+          "action_id": "iter10_web_search_0",
+          "type": "web_search",
+          "query": "Elexion Automotive employee statement 2010 founding"
+        },
+        {
+          "action_id": "iter10_web_search_1",
+          "type": "web_search",
+          "query": "Elexion Automotive internal documents 2010 founding statement"
+        },
+        {
+          "action_id": "iter10_web_search_2",
+          "type": "web_search",
+          "query": "Elexion Automotive 2010 press release founding employee"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter10_web_search_2",
+    "label": "web_search: Elexion Automotive 2010 press release founding e...",
+    "start_s": 644.687862,
+    "end_s": 644.848902,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 10,
+      "action_id": "iter10_web_search_2",
+      "action_type": "web_search",
+      "query": "Elexion Automotive 2010 press release founding employee",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/96292",
+        "web/72477"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter10_web_search_1",
+    "label": "web_search: Elexion Automotive internal documents 2010 found...",
+    "start_s": 644.687793,
+    "end_s": 644.920009,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 10,
+      "action_id": "iter10_web_search_1",
+      "action_type": "web_search",
+      "query": "Elexion Automotive internal documents 2010 founding statement",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/97348",
+        "web/86744"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter10_web_search_0",
+    "label": "web_search: Elexion Automotive employee statement 2010 found...",
+    "start_s": 644.687599,
+    "end_s": 644.931903,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 10,
+      "action_id": "iter10_web_search_0",
+      "action_type": "web_search",
+      "query": "Elexion Automotive employee statement 2010 founding",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/97348",
+        "web/96292"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H4 choose docs (skipped)",
+    "start_s": 644.931979,
+    "end_s": 644.931979,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 10,
+      "candidate_count": 2,
+      "selected_doc_ids": [
+        "web/62725",
+        "web/54871"
+      ],
+      "skipped": true
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/54871",
+    "label": "https://www.linkedin.com/pulse/thankful-decade-g...",
+    "start_s": 644.936511,
+    "end_s": 651.981382,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 10,
+      "doc_id": "web/54871",
+      "source": "web",
+      "title": "https://www.linkedin.com/pulse/thankful-decade-great-experiences-bruce-temkin-ccxp",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/62725",
+    "label": "https://inhibrx.com/team/",
+    "start_s": 644.932113,
+    "end_s": 652.727509,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 10,
+      "doc_id": "web/62725",
+      "source": "web",
+      "title": "https://inhibrx.com/team/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H4 resolve",
+    "start_s": 652.727734,
+    "end_s": 663.713823,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 10,
+      "answered": false,
+      "confidence": 0.7,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H4 retrieval plan",
+    "start_s": 663.714153,
+    "end_s": 680.740443,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 11,
+      "planned_actions": [
+        {
+          "action_id": "iter11_web_search_0",
+          "type": "web_search",
+          "query": "Elexion Automotive 2010 founding employee statement"
+        },
+        {
+          "action_id": "iter11_web_search_1",
+          "type": "web_search",
+          "query": "Elexion Automotive co-founder 2010 statement"
+        },
+        {
+          "action_id": "iter11_web_search_2",
+          "type": "web_search",
+          "query": "Elexion Automotive internal 2010 documentation"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter11_web_search_1",
+    "label": "web_search: Elexion Automotive co-founder 2010 statement",
+    "start_s": 680.740692,
+    "end_s": 682.295904,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 11,
+      "action_id": "iter11_web_search_1",
+      "action_type": "web_search",
+      "query": "Elexion Automotive co-founder 2010 statement",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/97348",
+        "web/70937"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter11_web_search_2",
+    "label": "web_search: Elexion Automotive internal 2010 documentation",
+    "start_s": 680.740759,
+    "end_s": 682.358145,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 11,
+      "action_id": "iter11_web_search_2",
+      "action_type": "web_search",
+      "query": "Elexion Automotive internal 2010 documentation",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/97348",
+        "web/20817"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter11_web_search_0",
+    "label": "web_search: Elexion Automotive 2010 founding employee statem...",
+    "start_s": 680.740496,
+    "end_s": 682.372715,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 11,
+      "action_id": "iter11_web_search_0",
+      "action_type": "web_search",
+      "query": "Elexion Automotive 2010 founding employee statement",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/96292",
+        "web/54871"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H4 choose docs (skipped)",
+    "start_s": 682.373232,
+    "end_s": 682.373232,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 11,
+      "candidate_count": 3,
+      "selected_doc_ids": [
+        "web/20817",
+        "web/2542",
+        "web/74786"
+      ],
+      "skipped": true
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/2542",
+    "label": "https://en.wikipedia.org/wiki/Automotive_design",
+    "start_s": 682.378485,
+    "end_s": 690.337648,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 11,
+      "doc_id": "web/2542",
+      "source": "web",
+      "title": "https://en.wikipedia.org/wiki/Automotive_design",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/74786",
+    "label": "https://berla.co/ive-software-v4-8-release/",
+    "start_s": 682.382277,
+    "end_s": 690.73411,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 11,
+      "doc_id": "web/74786",
+      "source": "web",
+      "title": "https://berla.co/ive-software-v4-8-release/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/20817",
+    "label": "https://edisonawards.com/2024-winners/",
+    "start_s": 682.373383,
+    "end_s": 691.502245,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 11,
+      "doc_id": "web/20817",
+      "source": "web",
+      "title": "https://edisonawards.com/2024-winners/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H4 resolve",
+    "start_s": 691.502576,
+    "end_s": 700.562023,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 11,
+      "answered": false,
+      "confidence": 0.7,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "report",
+    "lane": "report",
+    "label": "Final report",
+    "start_s": 700.562056,
+    "end_s": 700.56862,
+    "meta": {
+      "resolved_hops": 3,
+      "report_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0070_12adda33_176f4306/workspace/research_report_1776325335.md"
+    }
+  }
+]

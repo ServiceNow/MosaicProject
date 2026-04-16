@@ -1,0 +1,1779 @@
+{
+  "summary": {
+    "task_id": "DR0070",
+    "chain_id": "12adda33",
+    "iterations_used": 6,
+    "resolved_hops": 0,
+    "total_hops": 5,
+    "searches_total": 15,
+    "docs_read": 25,
+    "duration_s": 315.0905881235376,
+    "stalled": true,
+    "llm_calls_total": 44,
+    "prompt_tokens": 62853,
+    "output_tokens": 23006,
+    "total_tokens": 85859,
+    "total_errors": 0,
+    "parse_errors_total": 0,
+    "context_overflow_errors": 0,
+    "errors_by_stage": {},
+    "errors_by_kind": {},
+    "errors_by_stage_kind": {},
+    "parse_errors_by_stage": {}
+  },
+  "hop_states": [
+    {
+      "hop_number": 1,
+      "question": "What percentage of Elexion Automotive's total workforce did the cybersecurity team represent in 2020?",
+      "status": "pending",
+      "attempts": 6,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": "No candidates were retrieved for this hop.",
+      "search_history": [
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_web_search_0",
+          "type": "web_search",
+          "query": "Elexion Automotive cybersecurity team percentage 2020",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/88213",
+            "web/30161"
+          ]
+        },
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_web_search_1",
+          "type": "web_search",
+          "query": "Elexion Automotive workforce composition 2020",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/55488",
+            "web/7747"
+          ]
+        },
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_web_search_2",
+          "type": "web_search",
+          "query": "Elexion Automotive cybersecurity department size 2020",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/88213",
+            "web/30161"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 1,
+          "action_id": "iter1_web_search_0",
+          "type": "web_search",
+          "query": "Elexion Automotive workforce statistics 2020",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/66146",
+            "web/63171"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 1,
+          "action_id": "iter1_web_search_1",
+          "type": "web_search",
+          "query": "Elexion Automotive cybersecurity team size 2020",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/88213",
+            "web/30161"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 1,
+          "action_id": "iter1_web_search_2",
+          "type": "web_search",
+          "query": "Elexion Automotive employee demographics 2020",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/21869",
+            "web/79149"
+          ]
+        },
+        {
+          "iteration": 2,
+          "hop_number": 1,
+          "action_id": "iter2_web_search_2",
+          "type": "web_search",
+          "query": "Elexion Automotive cybersecurity department percentage 2020",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/88213",
+            "web/30161"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 1,
+          "action_id": "iter3_web_search_0",
+          "type": "web_search",
+          "query": "Elexion Automotive cybersecurity team size total workforce percentage 2020",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/88213",
+            "web/91890"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 1,
+          "action_id": "iter3_web_search_1",
+          "type": "web_search",
+          "query": "Elexion Automotive 2020 annual report workforce cybersecurity team",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/12200",
+            "web/88213"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 1,
+          "action_id": "iter3_web_search_2",
+          "type": "web_search",
+          "query": "Elexion Automotive workforce analysis 2020 cybersecurity team proportion",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/88213",
+            "web/91890"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 1,
+          "action_id": "iter4_web_search_0",
+          "type": "web_search",
+          "query": "Elexion Automotive 2020 annual report cybersecurity team percentage",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/88213",
+            "web/30161"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 1,
+          "action_id": "iter4_web_search_1",
+          "type": "web_search",
+          "query": "Elexion Automotive workforce breakdown 2020 cybersecurity",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/91890",
+            "web/88213"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 1,
+          "action_id": "iter4_web_search_2",
+          "type": "web_search",
+          "query": "Elexion Automotive security team size 2020 total employees",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/67372",
+            "web/66146"
+          ]
+        },
+        {
+          "iteration": 5,
+          "hop_number": 1,
+          "action_id": "iter5_web_search_1",
+          "type": "web_search",
+          "query": "Elexion Automotive cybersecurity workforce 2020 proportion",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/88213",
+            "web/91890"
+          ]
+        },
+        {
+          "iteration": 5,
+          "hop_number": 1,
+          "action_id": "iter5_web_search_2",
+          "type": "web_search",
+          "query": "Elexion Automotive cybersecurity team size total workforce 2020",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "web/66146",
+            "web/88213"
+          ]
+        }
+      ],
+      "selected_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/88213",
+        "web/30161",
+        "web/55488",
+        "web/42024",
+        "web/4912",
+        "web/7747",
+        "web/6397",
+        "web/91890",
+        "web/21869",
+        "web/66146",
+        "web/63171",
+        "web/79149",
+        "web/50680",
+        "web/48928",
+        "web/281",
+        "web/33651",
+        "web/41836",
+        "web/77758",
+        "web/12200",
+        "web/29471",
+        "web/30967",
+        "web/67372",
+        "web/81300",
+        "web/84260"
+      ],
+      "reader_results": [
+        {
+          "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+          "source": "web",
+          "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+          "locator": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The provided document discusses cybersecurity risks in connected cars but does not mention Elexion Automotive or any workforce composition data [DOC:web/drbench_urls/drbench_urls_5b611c3b7adbdcb4].",
+          "confidence": 0.18,
+          "missing_information": "Specific information about Elexion Automotive's workforce or cybersecurity team size in 2020"
+        },
+        {
+          "doc_id": "web/88213",
+          "source": "web",
+          "title": "https://cybersecurityventures.com/cybersecurity-almanac-2023/",
+          "locator": "https://cybersecurityventures.com/cybersecurity-almanac-2023/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:web/88213] contains general cybersecurity statistics but does not mention Elexion Automotive or any data about their workforce composition in 2020.",
+          "confidence": 0.18,
+          "missing_information": "Specific data about Elexion Automotive's cybersecurity team size and total workforce for 2020 is required to answer this question."
+        },
+        {
+          "doc_id": "web/30161",
+          "source": "web",
+          "title": "https://cybersecurityventures.com/cybersecurity-almanac-2022/",
+          "locator": "https://cybersecurityventures.com/cybersecurity-almanac-2022/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Elexion Automotive or provide any data about their cybersecurity team's workforce percentage in 2020 [DOC:web/30161].",
+          "confidence": 0.95,
+          "missing_information": "Specific data about Elexion Automotive's cybersecurity team size or workforce composition in 2020"
+        },
+        {
+          "doc_id": "web/55488",
+          "source": "web",
+          "title": "https://www.dpeaflcio.org/factsheets/the-professional-and-technical-workforce-by-the-numbers",
+          "locator": "https://www.dpeaflcio.org/factsheets/the-professional-and-technical-workforce-by-the-numbers",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses U.S. professional workforce statistics from 2023 but does not mention Elexion Automotive or provide cybersecurity team composition data for any organization in 2020 [DOC:web/55488].",
+          "confidence": 0.18,
+          "missing_information": "Specific data about Elexion Automotive's workforce composition and cybersecurity team percentage in 2020"
+        },
+        {
+          "doc_id": "web/42024",
+          "source": "web",
+          "title": "https://www.epi.org/publication/the-decline-and-resurgence-of-the-u-s-auto-industry/",
+          "locator": "https://www.epi.org/publication/the-decline-and-resurgence-of-the-u-s-auto-industry/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Elexion Automotive or provide workforce composition data for any company's cybersecurity team in 2020 [DOC:web/42024].",
+          "confidence": 0.18,
+          "missing_information": "Specific data about Elexion Automotive's cybersecurity team size and total workforce in 2020 is not present in the document."
+        },
+        {
+          "doc_id": "web/4912",
+          "source": "web",
+          "title": "https://purplesec.us/resources/cybersecurity-statistics/",
+          "locator": "https://purplesec.us/resources/cybersecurity-statistics/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:web/4912] contains general cybersecurity statistics but does not mention Elexion Automotive or provide workforce composition data for any specific organization.",
+          "confidence": 0.82,
+          "missing_information": "Specific information about Elexion Automotive's workforce structure or cybersecurity team size in 2020"
+        },
+        {
+          "doc_id": "web/7747",
+          "source": "web",
+          "title": "https://ourpublicservice.org/fed-figures/a-profile-of-the-2023-federal-workforce/",
+          "locator": "https://ourpublicservice.org/fed-figures/a-profile-of-the-2023-federal-workforce/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses federal workforce statistics but does not mention Elexion Automotive or cybersecurity team composition [DOC:web/7747].",
+          "confidence": 0.95,
+          "missing_information": "Specific data about Elexion Automotive's workforce composition, including cybersecurity team percentages, is not present in the document."
+        },
+        {
+          "doc_id": "web/6397",
+          "source": "web",
+          "title": "https://www.infosecurityeurope.com/",
+          "locator": "https://www.infosecurityeurope.com/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses Infosecurity Europe's event and anniversary but does not mention Elexion Automotive, its cybersecurity team size, or workforce percentages [DOC:web/6397].",
+          "confidence": 0.18,
+          "missing_information": "Data about Elexion Automotive's cybersecurity team size and total workforce percentage for 2020"
+        },
+        {
+          "doc_id": "web/91890",
+          "source": "web",
+          "title": "https://www.varonis.com/blog/cybersecurity-statistics",
+          "locator": "https://www.varonis.com/blog/cybersecurity-statistics",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Elexion Automotive or provide workforce statistics for any specific company's cybersecurity team [DOC:web/91890].",
+          "confidence": 0.95,
+          "missing_information": "Specific data about Elexion Automotive's cybersecurity team size or workforce composition in 2020"
+        },
+        {
+          "doc_id": "web/21869",
+          "source": "web",
+          "title": "https://www.calhr.ca.gov/state-hr-professionals/Pages/benefits-administration-manual-flexelect.aspx",
+          "locator": "https://www.calhr.ca.gov/state-hr-professionals/Pages/benefits-administration-manual-flexelect.aspx",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses FlexElect Program details and employee relief policies but contains no mention of Elexion Automotive, cybersecurity teams, or workforce demographics data for 2020 [DOC:web/21869].",
+          "confidence": 0.15,
+          "missing_information": "The document lacks any information about Elexion Automotive's workforce structure, cybersecurity team size, or 2020 employment statistics."
+        },
+        {
+          "doc_id": "web/66146",
+          "source": "web",
+          "title": "https://techcrunch.com/2025/02/13/tech-layoffs-2024-list/",
+          "locator": "https://techcrunch.com/2025/02/13/tech-layoffs-2024-list/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Elexion Automotive or any workforce statistics related to a cybersecurity team in 2020 [DOC:web/66146].",
+          "confidence": 0.1,
+          "missing_information": "The document lacks any data about Elexion Automotive's workforce composition or cybersecurity team size in 2020."
+        },
+        {
+          "doc_id": "web/63171",
+          "source": "web",
+          "title": "https://americanstaffing.net/research/fact-sheets-analysis-staffing-industry-trends/staffing-industry-statistics/",
+          "locator": "https://americanstaffing.net/research/fact-sheets-analysis-staffing-industry-trends/staffing-industry-statistics/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses general staffing industry statistics but does not mention Elexion Automotive or specific workforce demographics for any company [DOC:web/63171].",
+          "confidence": 0.18,
+          "missing_information": "Specific data about Elexion Automotive's workforce composition or cybersecurity team size in 2020"
+        },
+        {
+          "doc_id": "web/79149",
+          "source": "web",
+          "title": "https://www.bls.gov/cps/cpsaat11.htm",
+          "locator": "https://www.bls.gov/cps/cpsaat11.htm",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document provides demographic data for occupations in the U.S. workforce but does not mention Elexion Automotive or cybersecurity team statistics [DOC:web/79149].",
+          "confidence": 0.95,
+          "missing_information": "Specific data about Elexion Automotive's cybersecurity team workforce percentage in 2020."
+        },
+        {
+          "doc_id": "web/50680",
+          "source": "web",
+          "title": "https://pentera.io/leadership/",
+          "locator": "https://pentera.io/leadership/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses Pentera's leadership team and cybersecurity expertise but does not mention Elexion Automotive or provide workforce statistics for 2020 [DOC:web/50680].",
+          "confidence": 0.95,
+          "missing_information": "The document lacks any information about Elexion Automotive's workforce size or cybersecurity team composition in 2020."
+        },
+        {
+          "doc_id": "web/48928",
+          "source": "web",
+          "title": "https://www.greatplacetowork.com/best-workplaces/100-best/2024",
+          "locator": "https://www.greatplacetowork.com/best-workplaces/100-best/2024",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document excerpt does not mention Elexion Automotive or any cybersecurity team workforce statistics for 2020 [DOC:web/48928].",
+          "confidence": 0.15,
+          "missing_information": "The document lacks data about Elexion Automotive's workforce demographics or cybersecurity team size in 2020."
+        },
+        {
+          "doc_id": "web/281",
+          "source": "web",
+          "title": "https://www.ringover.com/blog/largest-employers-us",
+          "locator": "https://www.ringover.com/blog/largest-employers-us",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Elexion Automotive or any cybersecurity team workforce statistics for 2020 [DOC:web/281].",
+          "confidence": 0.15,
+          "missing_information": "The document lacks any data about Elexion Automotive's workforce composition or cybersecurity team size in 2020."
+        },
+        {
+          "doc_id": "web/33651",
+          "source": "web",
+          "title": "https://www.itgovernance.co.uk/blog/list-of-data-breaches-and-cyber-attacks-in-2023",
+          "locator": "https://www.itgovernance.co.uk/blog/list-of-data-breaches-and-cyber-attacks-in-2023",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Elexion Automotive or provide any data about their cybersecurity team size or total workforce in 2020 [DOC:web/33651].",
+          "confidence": 0.95,
+          "missing_information": "Specific information about Elexion Automotive's workforce composition and cybersecurity team size in 2020 is missing from the document."
+        },
+        {
+          "doc_id": "web/41836",
+          "source": "web",
+          "title": "https://www.processunity.com/resources/blogs/evolution-of-cybersecurity-how-we-progressed/",
+          "locator": "https://www.processunity.com/resources/blogs/evolution-of-cybersecurity-how-we-progressed/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses the evolution of cybersecurity but does not mention Elexion Automotive or provide workforce percentage data for any organization's cybersecurity team in 2020 [DOC:web/41836].",
+          "confidence": 0.18,
+          "missing_information": "Specific data about Elexion Automotive's cybersecurity team size and total workforce percentage in 2020"
+        },
+        {
+          "doc_id": "web/77758",
+          "source": "web",
+          "title": "https://cybersecurityventures.com/jobs/",
+          "locator": "https://cybersecurityventures.com/jobs/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document [DOC:web/77758] discusses cybersecurity job market trends and vacancy statistics but does not mention Elexion Automotive or provide data about their workforce composition or cybersecurity team size in 2020.",
+          "confidence": 0.18,
+          "missing_information": "Specific data about Elexion Automotive's workforce and cybersecurity team size/proportion in 2020"
+        },
+        {
+          "doc_id": "web/12200",
+          "source": "web",
+          "title": "https://www.cm-alliance.com/cybersecurity-blog/january-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+          "locator": "https://www.cm-alliance.com/cybersecurity-blog/january-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Elexion Automotive or any workforce statistics related to cybersecurity teams in 2020 [DOC:web/12200].",
+          "confidence": 0.15,
+          "missing_information": "The document lacks data about Elexion Automotive's workforce composition or cybersecurity team percentages for 2020."
+        },
+        {
+          "doc_id": "web/29471",
+          "source": "web",
+          "title": "https://www.cm-alliance.com/cybersecurity-blog/january-2025-recent-cyber-attacks-data-breaches-ransomware-attacks",
+          "locator": "https://www.cm-alliance.com/cybersecurity-blog/january-2025-recent-cyber-attacks-data-breaches-ransomware-attacks",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document excerpt discusses cybersecurity incidents in January 2025 but contains no information about Elexion Automotive's workforce or cybersecurity team size in 2020 [DOC:web/29471].",
+          "confidence": 0.15,
+          "missing_information": "Specific data about Elexion Automotive's workforce composition and cybersecurity team percentage in 2020 is required to answer this question."
+        },
+        {
+          "doc_id": "web/30967",
+          "source": "web",
+          "title": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+          "locator": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Elexion Automotive or provide any data about their workforce cybersecurity team percentage in 2020 [DOC:web/30967].",
+          "confidence": 0.95,
+          "missing_information": "Specific data about Elexion Automotive's workforce cybersecurity team percentage in 2020"
+        },
+        {
+          "doc_id": "web/67372",
+          "source": "web",
+          "title": "https://en.wikipedia.org/wiki/European_League_of_Football",
+          "locator": "https://en.wikipedia.org/wiki/European_League_of_Football",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses the European League of Football (ELF) and its history, but contains no information about Elexion Automotive, cybersecurity teams, or workforce statistics [DOC:web/67372].",
+          "confidence": 0.15,
+          "missing_information": "The document lacks data about Elexion Automotive's workforce composition or cybersecurity team size in 2020."
+        },
+        {
+          "doc_id": "web/81300",
+          "source": "web",
+          "title": "https://www.aus.com/our-people",
+          "locator": "https://www.aus.com/our-people",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses Allied Universal's leadership and workforce but does not mention Elexion Automotive or provide cybersecurity team size or total workforce data for 2020 [DOC:web/81300].",
+          "confidence": 0.95,
+          "missing_information": "The document lacks information about Elexion Automotive's cybersecurity team size and total workforce in 2020."
+        },
+        {
+          "doc_id": "web/84260",
+          "source": "web",
+          "title": "https://www.butzel.com/services-automotive-industry-teams",
+          "locator": "https://www.butzel.com/services-automotive-industry-teams",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Elexion Automotive or provide any data about cybersecurity team size or workforce percentages in 2020 [DOC:web/84260].",
+          "confidence": 0.18,
+          "missing_information": "Specific data about Elexion Automotive's cybersecurity team size and total workforce percentage for 2020 is absent from the document."
+        }
+      ],
+      "candidate_doc_ids": [],
+      "candidate_cards": []
+    },
+    {
+      "hop_number": 2,
+      "question": "What country do single fathers make up 16% of single-parent families in?",
+      "status": "pending",
+      "attempts": 0,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": null,
+      "search_history": [],
+      "selected_doc_ids": [],
+      "reader_results": [],
+      "candidate_doc_ids": [],
+      "candidate_cards": []
+    },
+    {
+      "hop_number": 3,
+      "question": "In what year were 40.7% of births to unmarried women in the United States?",
+      "status": "pending",
+      "attempts": 0,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": null,
+      "search_history": [],
+      "selected_doc_ids": [],
+      "reader_results": [],
+      "candidate_doc_ids": [],
+      "candidate_cards": []
+    },
+    {
+      "hop_number": 4,
+      "question": "Which employee stated that Elexion was founded in 2010?",
+      "status": "pending",
+      "attempts": 0,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": null,
+      "search_history": [],
+      "selected_doc_ids": [],
+      "reader_results": [],
+      "candidate_doc_ids": [],
+      "candidate_cards": []
+    },
+    {
+      "hop_number": 5,
+      "question": "Who co-edited the book \"How to Watch TV\" with Ethan Thompson?",
+      "status": "pending",
+      "attempts": 0,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": null,
+      "search_history": [],
+      "selected_doc_ids": [],
+      "reader_results": [],
+      "candidate_doc_ids": [],
+      "candidate_cards": []
+    }
+  ],
+  "actions": [
+    {
+      "id": "iter0_web_search_0",
+      "type": "web_search",
+      "description": "Search for Elexion Automotive cybersecurity team workforce percentage 2020",
+      "parameters": {
+        "query": "Elexion Automotive cybersecurity team percentage 2020"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Elexion Automotive cybersecurity team percentage 2020",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity team percentage 2020"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > Cyber awareness behind the wheel\n\nCars are now also equipped with app..."
+          },
+          {
+            "doc_id": "web/88213",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2023/",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity team percentage 2020"
+            ],
+            "snippet": "---\ntitle: 24 May 2023 Cybersecurity Almanac: 100 Facts, Figures, Predictions, And Statistics\ndate: 2023-05-24\n---\n24 Ma..."
+          },
+          {
+            "doc_id": "web/30161",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2022/",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity team percentage 2020"
+            ],
+            "snippet": "---\ntitle: 19 Jan 2022 Cybersecurity Almanac: 100 Facts, Figures, Predictions And Statistics\ndate: 2024-01-01\n---\n19 Jan..."
+          },
+          {
+            "doc_id": "web/4912",
+            "source": "web",
+            "title": "https://purplesec.us/resources/cybersecurity-statistics/",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity team percentage 2020"
+            ],
+            "snippet": "---\ntitle: 2024 Cybersecurity Statistics\nauthor: Jason Firch; MBA\ndate: 2025-05-24\n---\n2024 Cybersecurity Statistics\n\nTh..."
+          },
+          {
+            "doc_id": "web/91890",
+            "source": "web",
+            "title": "https://www.varonis.com/blog/cybersecurity-statistics",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity team percentage 2020"
+            ],
+            "snippet": "---\ntitle: 157 Cybersecurity Statistics and Trends [updated 2024]\nauthor: Rob Sobers\ndate: 2024-09-13\n---\nCybersecurity..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.332753942348063,
+      "iteration": 0
+    },
+    {
+      "id": "iter0_web_search_1",
+      "type": "web_search",
+      "description": "Search for Elexion Automotive workforce composition 2020",
+      "parameters": {
+        "query": "Elexion Automotive workforce composition 2020"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Elexion Automotive workforce composition 2020",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive workforce composition 2020"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > Cyber awareness behind the wheel\n\nCars are now also equipped with app..."
+          },
+          {
+            "doc_id": "web/55488",
+            "source": "web",
+            "title": "https://www.dpeaflcio.org/factsheets/the-professional-and-technical-workforce-by-the-numbers",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive workforce composition 2020"
+            ],
+            "snippet": "---\ntitle: The Professional and Technical Workforce: By the Numbers\nauthor: Katie Barrows\ndate: 2020-11-09\n---\nThe Profe..."
+          },
+          {
+            "doc_id": "web/7747",
+            "source": "web",
+            "title": "https://ourpublicservice.org/fed-figures/a-profile-of-the-2023-federal-workforce/",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive workforce composition 2020"
+            ],
+            "snippet": "---\ntitle: A Profile of the 2023 Federal Workforce\nauthor: Page\ndate: 2024-06-11\n---\nThe federal government currently em..."
+          },
+          {
+            "doc_id": "web/42024",
+            "source": "web",
+            "title": "https://www.epi.org/publication/the-decline-and-resurgence-of-the-u-s-auto-industry/",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive workforce composition 2020"
+            ],
+            "snippet": "---\ntitle: The Decline and Resurgence of the U.S. Auto Industry\nauthor: Report • By Joel Cutcher-Gershenfeld; Dan Brooks..."
+          },
+          {
+            "doc_id": "web/66146",
+            "source": "web",
+            "title": "https://techcrunch.com/2025/02/13/tech-layoffs-2024-list/",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive workforce composition 2020"
+            ],
+            "snippet": "---\ntitle: A comprehensive list of 2025 tech layoffs\nauthor: Cody Corrall Alyssa Stringer Kate Park\ndate: 2025-02-13\n---..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.1450721463188529,
+      "iteration": 0
+    },
+    {
+      "id": "iter0_web_search_2",
+      "type": "web_search",
+      "description": "Search for Elexion Automotive cybersecurity department size 2020",
+      "parameters": {
+        "query": "Elexion Automotive cybersecurity department size 2020"
+      },
+      "priority": 0.6,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Elexion Automotive cybersecurity department size 2020",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity department size 2020"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > Cyber awareness behind the wheel\n\nCars are now also equipped with app..."
+          },
+          {
+            "doc_id": "web/88213",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2023/",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity department size 2020"
+            ],
+            "snippet": "---\ntitle: 24 May 2023 Cybersecurity Almanac: 100 Facts, Figures, Predictions, And Statistics\ndate: 2023-05-24\n---\n24 Ma..."
+          },
+          {
+            "doc_id": "web/30161",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2022/",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity department size 2020"
+            ],
+            "snippet": "---\ntitle: 19 Jan 2022 Cybersecurity Almanac: 100 Facts, Figures, Predictions And Statistics\ndate: 2024-01-01\n---\n19 Jan..."
+          },
+          {
+            "doc_id": "web/33651",
+            "source": "web",
+            "title": "https://www.itgovernance.co.uk/blog/list-of-data-breaches-and-cyber-attacks-in-2023",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity department size 2020"
+            ],
+            "snippet": "---\ntitle: List of Data Breaches and Cyber Attacks in 2023 – 8,214,886,660 records breached\ndate: 2024-01-05\n---\nWelcome..."
+          },
+          {
+            "doc_id": "web/6397",
+            "source": "web",
+            "title": "https://www.infosecurityeurope.com/",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity department size 2020"
+            ],
+            "snippet": "---\ntitle: Powering the protection of people, assets and data\ndate: 2025-01-01\n---\nAt Infosecurity Europe, we're passion..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.234257185831666,
+      "iteration": 0
+    },
+    {
+      "id": "iter1_web_search_0",
+      "type": "web_search",
+      "description": "Search for Elexion Automotive workforce statistics 2020",
+      "parameters": {
+        "query": "Elexion Automotive workforce statistics 2020"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Elexion Automotive workforce statistics 2020",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive workforce statistics 2020"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > Cyber awareness behind the wheel\n\nCars are now also equipped with app..."
+          },
+          {
+            "doc_id": "web/66146",
+            "source": "web",
+            "title": "https://techcrunch.com/2025/02/13/tech-layoffs-2024-list/",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive workforce statistics 2020"
+            ],
+            "snippet": "---\ntitle: A comprehensive list of 2025 tech layoffs\nauthor: Cody Corrall Alyssa Stringer Kate Park\ndate: 2025-02-13\n---..."
+          },
+          {
+            "doc_id": "web/63171",
+            "source": "web",
+            "title": "https://americanstaffing.net/research/fact-sheets-analysis-staffing-industry-trends/staffing-industry-statistics/",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive workforce statistics 2020"
+            ],
+            "snippet": "---\ntitle: Staffing Industry Statistics\ndate: 2025-06-05\n---\nStaffing Industry Statistics\n\nThe staffing, recruiting, and..."
+          },
+          {
+            "doc_id": "web/281",
+            "source": "web",
+            "title": "https://www.ringover.com/blog/largest-employers-us",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive workforce statistics 2020"
+            ],
+            "snippet": "---\ntitle: Largest Employers in the U.S.\nauthor: Klarissa Fitzpatrick\ndate: 2024-09-20\n---\nSummary\n\nLet's take a look at..."
+          },
+          {
+            "doc_id": "web/42024",
+            "source": "web",
+            "title": "https://www.epi.org/publication/the-decline-and-resurgence-of-the-u-s-auto-industry/",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive workforce statistics 2020"
+            ],
+            "snippet": "---\ntitle: The Decline and Resurgence of the U.S. Auto Industry\nauthor: Report • By Joel Cutcher-Gershenfeld; Dan Brooks..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.3139227516949177,
+      "iteration": 1
+    },
+    {
+      "id": "iter1_web_search_1",
+      "type": "web_search",
+      "description": "Search for Elexion Automotive cybersecurity team size 2020",
+      "parameters": {
+        "query": "Elexion Automotive cybersecurity team size 2020"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Elexion Automotive cybersecurity team size 2020",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity team size 2020"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > Cyber awareness behind the wheel\n\nCars are now also equipped with app..."
+          },
+          {
+            "doc_id": "web/88213",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2023/",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity team size 2020"
+            ],
+            "snippet": "---\ntitle: 24 May 2023 Cybersecurity Almanac: 100 Facts, Figures, Predictions, And Statistics\ndate: 2023-05-24\n---\n24 Ma..."
+          },
+          {
+            "doc_id": "web/30161",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2022/",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity team size 2020"
+            ],
+            "snippet": "---\ntitle: 19 Jan 2022 Cybersecurity Almanac: 100 Facts, Figures, Predictions And Statistics\ndate: 2024-01-01\n---\n19 Jan..."
+          },
+          {
+            "doc_id": "web/50680",
+            "source": "web",
+            "title": "https://pentera.io/leadership/",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity team size 2020"
+            ],
+            "snippet": "---\ntitle: Meet the leaders who care about your security validation just as much as you do.\ndate: 2025-01-01\n---\nPentera..."
+          },
+          {
+            "doc_id": "web/33651",
+            "source": "web",
+            "title": "https://www.itgovernance.co.uk/blog/list-of-data-breaches-and-cyber-attacks-in-2023",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity team size 2020"
+            ],
+            "snippet": "---\ntitle: List of Data Breaches and Cyber Attacks in 2023 – 8,214,886,660 records breached\ndate: 2024-01-05\n---\nWelcome..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.34452991373836994,
+      "iteration": 1
+    },
+    {
+      "id": "iter1_web_search_2",
+      "type": "web_search",
+      "description": "Search for Elexion Automotive employee demographics 2020",
+      "parameters": {
+        "query": "Elexion Automotive employee demographics 2020"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Elexion Automotive employee demographics 2020",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive employee demographics 2020"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > Cyber awareness behind the wheel\n\nCars are now also equipped with app..."
+          },
+          {
+            "doc_id": "web/21869",
+            "source": "web",
+            "title": "https://www.calhr.ca.gov/state-hr-professionals/Pages/benefits-administration-manual-flexelect.aspx",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive employee demographics 2020"
+            ],
+            "snippet": "---\ntitle: FlexElect Program\ndate: 2017-02-08\n---\nFlexElect Program\n\n- 2020 and 2021 Employee Relief under the FlexElect..."
+          },
+          {
+            "doc_id": "web/79149",
+            "source": "web",
+            "title": "https://www.bls.gov/cps/cpsaat11.htm",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive employee demographics 2020"
+            ],
+            "snippet": "---\ntitle: Employed persons by detailed occupation, sex, race, and Hispanic or Latino ethnicity\ndate: 2025-01-29\n---\nAn..."
+          },
+          {
+            "doc_id": "web/55488",
+            "source": "web",
+            "title": "https://www.dpeaflcio.org/factsheets/the-professional-and-technical-workforce-by-the-numbers",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive employee demographics 2020"
+            ],
+            "snippet": "---\ntitle: The Professional and Technical Workforce: By the Numbers\nauthor: Katie Barrows\ndate: 2020-11-09\n---\nThe Profe..."
+          },
+          {
+            "doc_id": "web/48928",
+            "source": "web",
+            "title": "https://www.greatplacetowork.com/best-workplaces/100-best/2024",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive employee demographics 2020"
+            ],
+            "snippet": "---\ntitle: Fortune 100 Best Companies to Work For® 2024\ndate: 2024-08-20\n---\nFortune 100 Best Companies to Work For® 202..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.40674593299627304,
+      "iteration": 1
+    },
+    {
+      "id": "iter2_web_search_2",
+      "type": "web_search",
+      "description": "Search for Elexion Automotive cybersecurity department percentage 2020",
+      "parameters": {
+        "query": "Elexion Automotive cybersecurity department percentage 2020"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Elexion Automotive cybersecurity department percentage 2020",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity department percentage 2020"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > Cyber awareness behind the wheel\n\nCars are now also equipped with app..."
+          },
+          {
+            "doc_id": "web/88213",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2023/",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity department percentage 2020"
+            ],
+            "snippet": "---\ntitle: 24 May 2023 Cybersecurity Almanac: 100 Facts, Figures, Predictions, And Statistics\ndate: 2023-05-24\n---\n24 Ma..."
+          },
+          {
+            "doc_id": "web/30161",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2022/",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity department percentage 2020"
+            ],
+            "snippet": "---\ntitle: 19 Jan 2022 Cybersecurity Almanac: 100 Facts, Figures, Predictions And Statistics\ndate: 2024-01-01\n---\n19 Jan..."
+          },
+          {
+            "doc_id": "web/4912",
+            "source": "web",
+            "title": "https://purplesec.us/resources/cybersecurity-statistics/",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity department percentage 2020"
+            ],
+            "snippet": "---\ntitle: 2024 Cybersecurity Statistics\nauthor: Jason Firch; MBA\ndate: 2025-05-24\n---\n2024 Cybersecurity Statistics\n\nTh..."
+          },
+          {
+            "doc_id": "web/41836",
+            "source": "web",
+            "title": "https://www.processunity.com/resources/blogs/evolution-of-cybersecurity-how-we-progressed/",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity department percentage 2020"
+            ],
+            "snippet": "---\ntitle: Cybersecurity Through the Years and How We've Progressed\nauthor: Cybergrx\ndate: 2024-07-19\n---\n\"Security is a..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.13714324962347746,
+      "iteration": 2
+    },
+    {
+      "id": "iter3_web_search_0",
+      "type": "web_search",
+      "description": "Search for Elexion Automotive cybersecurity team size and total workforce percentage in 2020",
+      "parameters": {
+        "query": "Elexion Automotive cybersecurity team size total workforce percentage 2020"
+      },
+      "priority": 0.8,
+      "expected_output": "Direct mention of cybersecurity team size or workforce percentage for Elexion Automotive in 2020",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Elexion Automotive cybersecurity team size total workforce percentage 2020",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity team size total workforce percentage 2020"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > Cyber awareness behind the wheel\n\nCars are now also equipped with app..."
+          },
+          {
+            "doc_id": "web/88213",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2023/",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity team size total workforce percentage 2020"
+            ],
+            "snippet": "---\ntitle: 24 May 2023 Cybersecurity Almanac: 100 Facts, Figures, Predictions, And Statistics\ndate: 2023-05-24\n---\n24 Ma..."
+          },
+          {
+            "doc_id": "web/91890",
+            "source": "web",
+            "title": "https://www.varonis.com/blog/cybersecurity-statistics",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity team size total workforce percentage 2020"
+            ],
+            "snippet": "---\ntitle: 157 Cybersecurity Statistics and Trends [updated 2024]\nauthor: Rob Sobers\ndate: 2024-09-13\n---\nCybersecurity..."
+          },
+          {
+            "doc_id": "web/30161",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2022/",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity team size total workforce percentage 2020"
+            ],
+            "snippet": "---\ntitle: 19 Jan 2022 Cybersecurity Almanac: 100 Facts, Figures, Predictions And Statistics\ndate: 2024-01-01\n---\n19 Jan..."
+          },
+          {
+            "doc_id": "web/77758",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/jobs/",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity team size total workforce percentage 2020"
+            ],
+            "snippet": "---\ntitle: 23 Feb Cybersecurity Jobs Report: 3.5 Million Unfilled Positions In 2025\ndate: 2024-01-01\n---\n23 Feb Cybersec..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.9515852089971304,
+      "iteration": 3
+    },
+    {
+      "id": "iter3_web_search_1",
+      "type": "web_search",
+      "description": "Search for Elexion Automotive 2020 annual report or workforce statistics",
+      "parameters": {
+        "query": "Elexion Automotive 2020 annual report workforce cybersecurity team"
+      },
+      "priority": 0.75,
+      "expected_output": "Company-reported data on cybersecurity team composition or workforce percentages",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Elexion Automotive 2020 annual report workforce cybersecurity team",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 annual report workforce cybersecurity team"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis\n\nTechnology has entered all areas of life, and our cars are no exceptio..."
+          },
+          {
+            "doc_id": "web/12200",
+            "source": "web",
+            "title": "https://www.cm-alliance.com/cybersecurity-blog/january-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 annual report workforce cybersecurity team"
+            ],
+            "snippet": "---\ntitle: January 2024: Biggest Cyber Attacks, Data Breaches, Ransomware Attacks\ndate: 2025-06-02\n---\nJanuary 2024: Big..."
+          },
+          {
+            "doc_id": "web/88213",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2023/",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 annual report workforce cybersecurity team"
+            ],
+            "snippet": "---\ntitle: 24 May 2023 Cybersecurity Almanac: 100 Facts, Figures, Predictions, And Statistics\ndate: 2023-05-24\n---\n24 Ma..."
+          },
+          {
+            "doc_id": "web/29471",
+            "source": "web",
+            "title": "https://www.cm-alliance.com/cybersecurity-blog/january-2025-recent-cyber-attacks-data-breaches-ransomware-attacks",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 annual report workforce cybersecurity team"
+            ],
+            "snippet": "---\ntitle: January 2025: Recent Cyber Attacks, Data Breaches, Ransomware Attacks\ndate: 2025-06-02\n---\nJanuary 2025: Rece..."
+          },
+          {
+            "doc_id": "web/30967",
+            "source": "web",
+            "title": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 annual report workforce cybersecurity team"
+            ],
+            "snippet": "---\ntitle: May 2024: Biggest Cyber Attacks, Data Breaches & Ransomware Attacks\ndate: 2025-06-02\n---\nMay 2024: Biggest Cy..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.9414189271628857,
+      "iteration": 3
+    },
+    {
+      "id": "iter3_web_search_2",
+      "type": "web_search",
+      "description": "Search for third-party analyses of Elexion Automotive's workforce in 2020",
+      "parameters": {
+        "query": "Elexion Automotive workforce analysis 2020 cybersecurity team proportion"
+      },
+      "priority": 0.7,
+      "expected_output": "Third-party reports or industry analyses citing cybersecurity team percentages",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Elexion Automotive workforce analysis 2020 cybersecurity team proportion",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive workforce analysis 2020 cybersecurity team proportion"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > Cyber awareness behind the wheel\n\nCars are now also equipped with app..."
+          },
+          {
+            "doc_id": "web/88213",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2023/",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive workforce analysis 2020 cybersecurity team proportion"
+            ],
+            "snippet": "---\ntitle: 24 May 2023 Cybersecurity Almanac: 100 Facts, Figures, Predictions, And Statistics\ndate: 2023-05-24\n---\n24 Ma..."
+          },
+          {
+            "doc_id": "web/91890",
+            "source": "web",
+            "title": "https://www.varonis.com/blog/cybersecurity-statistics",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive workforce analysis 2020 cybersecurity team proportion"
+            ],
+            "snippet": "---\ntitle: 157 Cybersecurity Statistics and Trends [updated 2024]\nauthor: Rob Sobers\ndate: 2024-09-13\n---\nCybersecurity..."
+          },
+          {
+            "doc_id": "web/30161",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2022/",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive workforce analysis 2020 cybersecurity team proportion"
+            ],
+            "snippet": "---\ntitle: 19 Jan 2022 Cybersecurity Almanac: 100 Facts, Figures, Predictions And Statistics\ndate: 2024-01-01\n---\n19 Jan..."
+          },
+          {
+            "doc_id": "web/77758",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/jobs/",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive workforce analysis 2020 cybersecurity team proportion"
+            ],
+            "snippet": "---\ntitle: 23 Feb Cybersecurity Jobs Report: 3.5 Million Unfilled Positions In 2025\ndate: 2024-01-01\n---\n23 Feb Cybersec..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.941072640940547,
+      "iteration": 3
+    },
+    {
+      "id": "iter4_web_search_0",
+      "type": "web_search",
+      "description": "Search for Elexion Automotive 2020 annual report cybersecurity team percentage",
+      "parameters": {
+        "query": "Elexion Automotive 2020 annual report cybersecurity team percentage"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Elexion Automotive 2020 annual report cybersecurity team percentage",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 annual report cybersecurity team percentage"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis\n\nTechnology has entered all areas of life, and our cars are no exceptio..."
+          },
+          {
+            "doc_id": "web/88213",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2023/",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 annual report cybersecurity team percentage"
+            ],
+            "snippet": "---\ntitle: 24 May 2023 Cybersecurity Almanac: 100 Facts, Figures, Predictions, And Statistics\ndate: 2023-05-24\n---\n24 Ma..."
+          },
+          {
+            "doc_id": "web/30161",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2022/",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 annual report cybersecurity team percentage"
+            ],
+            "snippet": "---\ntitle: 19 Jan 2022 Cybersecurity Almanac: 100 Facts, Figures, Predictions And Statistics\ndate: 2024-01-01\n---\n19 Jan..."
+          },
+          {
+            "doc_id": "web/12200",
+            "source": "web",
+            "title": "https://www.cm-alliance.com/cybersecurity-blog/january-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 annual report cybersecurity team percentage"
+            ],
+            "snippet": "---\ntitle: January 2024: Biggest Cyber Attacks, Data Breaches, Ransomware Attacks\ndate: 2025-06-02\n---\nJanuary 2024: Big..."
+          },
+          {
+            "doc_id": "web/4912",
+            "source": "web",
+            "title": "https://purplesec.us/resources/cybersecurity-statistics/",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive 2020 annual report cybersecurity team percentage"
+            ],
+            "snippet": "---\ntitle: 2024 Cybersecurity Statistics\nauthor: Jason Firch; MBA\ndate: 2025-05-24\n---\n2024 Cybersecurity Statistics\n\nTh..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.18369906023144722,
+      "iteration": 4
+    },
+    {
+      "id": "iter4_web_search_1",
+      "type": "web_search",
+      "description": "Search for Elexion Automotive workforce breakdown 2020 cybersecurity",
+      "parameters": {
+        "query": "Elexion Automotive workforce breakdown 2020 cybersecurity"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Elexion Automotive workforce breakdown 2020 cybersecurity",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive workforce breakdown 2020 cybersecurity"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > Cyber awareness behind the wheel\n\nCars are now also equipped with app..."
+          },
+          {
+            "doc_id": "web/91890",
+            "source": "web",
+            "title": "https://www.varonis.com/blog/cybersecurity-statistics",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive workforce breakdown 2020 cybersecurity"
+            ],
+            "snippet": "---\ntitle: 157 Cybersecurity Statistics and Trends [updated 2024]\nauthor: Rob Sobers\ndate: 2024-09-13\n---\nCybersecurity..."
+          },
+          {
+            "doc_id": "web/88213",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2023/",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive workforce breakdown 2020 cybersecurity"
+            ],
+            "snippet": "---\ntitle: 24 May 2023 Cybersecurity Almanac: 100 Facts, Figures, Predictions, And Statistics\ndate: 2023-05-24\n---\n24 Ma..."
+          },
+          {
+            "doc_id": "web/30161",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2022/",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive workforce breakdown 2020 cybersecurity"
+            ],
+            "snippet": "---\ntitle: 19 Jan 2022 Cybersecurity Almanac: 100 Facts, Figures, Predictions And Statistics\ndate: 2024-01-01\n---\n19 Jan..."
+          },
+          {
+            "doc_id": "web/77758",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/jobs/",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive workforce breakdown 2020 cybersecurity"
+            ],
+            "snippet": "---\ntitle: 23 Feb Cybersecurity Jobs Report: 3.5 Million Unfilled Positions In 2025\ndate: 2024-01-01\n---\n23 Feb Cybersec..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.21092075388878584,
+      "iteration": 4
+    },
+    {
+      "id": "iter4_web_search_2",
+      "type": "web_search",
+      "description": "Search for Elexion Automotive security team size 2020 total employees",
+      "parameters": {
+        "query": "Elexion Automotive security team size 2020 total employees"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Elexion Automotive security team size 2020 total employees",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive security team size 2020 total employees"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > Cyber awareness behind the wheel\n\nCars are now also equipped with app..."
+          },
+          {
+            "doc_id": "web/67372",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/European_League_of_Football",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive security team size 2020 total employees"
+            ],
+            "snippet": "---\ntitle: European League of Football - Wikipedia\ndate: 2021-02-08\n---\ntitle: European League of Football\ncurrent_seaso..."
+          },
+          {
+            "doc_id": "web/66146",
+            "source": "web",
+            "title": "https://techcrunch.com/2025/02/13/tech-layoffs-2024-list/",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive security team size 2020 total employees"
+            ],
+            "snippet": "---\ntitle: A comprehensive list of 2025 tech layoffs\nauthor: Cody Corrall Alyssa Stringer Kate Park\ndate: 2025-02-13\n---..."
+          },
+          {
+            "doc_id": "web/81300",
+            "source": "web",
+            "title": "https://www.aus.com/our-people",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive security team size 2020 total employees"
+            ],
+            "snippet": "---\ntitle: Our People and Leadership\ndate: 2024-06-01\n---\nOur People and Leadership\n\nPeople are at the heart of what we..."
+          },
+          {
+            "doc_id": "web/84260",
+            "source": "web",
+            "title": "https://www.butzel.com/services-automotive-industry-teams",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive security team size 2020 total employees"
+            ],
+            "snippet": "---\ntitle: Automotive Industry Team\ndate: 2008-06-10\n---\nOverview\n\nWe're THE Automotive Supplier's Law Firm.\n\nButzel's c..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.2206978714093566,
+      "iteration": 4
+    },
+    {
+      "id": "iter5_web_search_1",
+      "type": "web_search",
+      "description": "Search for Elexion Automotive cybersecurity workforce 2020 proportion",
+      "parameters": {
+        "query": "Elexion Automotive cybersecurity workforce 2020 proportion"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Elexion Automotive cybersecurity workforce 2020 proportion",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity workforce 2020 proportion"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > Cyber awareness behind the wheel\n\nCars are now also equipped with app..."
+          },
+          {
+            "doc_id": "web/88213",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2023/",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity workforce 2020 proportion"
+            ],
+            "snippet": "---\ntitle: 24 May 2023 Cybersecurity Almanac: 100 Facts, Figures, Predictions, And Statistics\ndate: 2023-05-24\n---\n24 Ma..."
+          },
+          {
+            "doc_id": "web/91890",
+            "source": "web",
+            "title": "https://www.varonis.com/blog/cybersecurity-statistics",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity workforce 2020 proportion"
+            ],
+            "snippet": "---\ntitle: 157 Cybersecurity Statistics and Trends [updated 2024]\nauthor: Rob Sobers\ndate: 2024-09-13\n---\nCybersecurity..."
+          },
+          {
+            "doc_id": "web/30161",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2022/",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity workforce 2020 proportion"
+            ],
+            "snippet": "---\ntitle: 19 Jan 2022 Cybersecurity Almanac: 100 Facts, Figures, Predictions And Statistics\ndate: 2024-01-01\n---\n19 Jan..."
+          },
+          {
+            "doc_id": "web/77758",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/jobs/",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity workforce 2020 proportion"
+            ],
+            "snippet": "---\ntitle: 23 Feb Cybersecurity Jobs Report: 3.5 Million Unfilled Positions In 2025\ndate: 2024-01-01\n---\n23 Feb Cybersec..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.1419150410220027,
+      "iteration": 5
+    },
+    {
+      "id": "iter5_web_search_2",
+      "type": "web_search",
+      "description": "Search for Elexion Automotive cybersecurity team size total workforce 2020",
+      "parameters": {
+        "query": "Elexion Automotive cybersecurity team size total workforce 2020"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Elexion Automotive cybersecurity team size total workforce 2020",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+            "source": "web",
+            "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity team size total workforce 2020"
+            ],
+            "snippet": "Connected cars drive into a cybersecurity crisis > Cyber awareness behind the wheel\n\nCars are now also equipped with app..."
+          },
+          {
+            "doc_id": "web/66146",
+            "source": "web",
+            "title": "https://techcrunch.com/2025/02/13/tech-layoffs-2024-list/",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity team size total workforce 2020"
+            ],
+            "snippet": "---\ntitle: A comprehensive list of 2025 tech layoffs\nauthor: Cody Corrall Alyssa Stringer Kate Park\ndate: 2025-02-13\n---..."
+          },
+          {
+            "doc_id": "web/88213",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2023/",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity team size total workforce 2020"
+            ],
+            "snippet": "---\ntitle: 24 May 2023 Cybersecurity Almanac: 100 Facts, Figures, Predictions, And Statistics\ndate: 2023-05-24\n---\n24 Ma..."
+          },
+          {
+            "doc_id": "web/30161",
+            "source": "web",
+            "title": "https://cybersecurityventures.com/cybersecurity-almanac-2022/",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity team size total workforce 2020"
+            ],
+            "snippet": "---\ntitle: 19 Jan 2022 Cybersecurity Almanac: 100 Facts, Figures, Predictions And Statistics\ndate: 2024-01-01\n---\n19 Jan..."
+          },
+          {
+            "doc_id": "web/50680",
+            "source": "web",
+            "title": "https://pentera.io/leadership/",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Elexion Automotive cybersecurity team size total workforce 2020"
+            ],
+            "snippet": "---\ntitle: Meet the leaders who care about your security validation just as much as you do.\ndate: 2025-01-01\n---\nPentera..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.16857958678156137,
+      "iteration": 5
+    }
+  ],
+  "error_records": [],
+  "timeline_paths": {
+    "events_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0070_12adda33_b1a08e19/timeline_events.json",
+    "summary_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0070_12adda33_b1a08e19/timeline_summary.json",
+    "html_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0070_12adda33_b1a08e19/timeline.html",
+    "report_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0070_12adda33_b1a08e19/workspace/research_report_1776323900.md"
+  },
+  "report_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0070_12adda33_b1a08e19/workspace/research_report_1776323900.md"
+}

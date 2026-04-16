@@ -1,0 +1,1513 @@
+[
+  {
+    "stage": "error",
+    "lane": "error:hop_plan",
+    "label": "hop_plan parse_error",
+    "start_s": 9.692157,
+    "end_s": 9.693157,
+    "meta": {
+      "stage": "hop_plan",
+      "kind": "parse_error",
+      "hop_number": 1,
+      "iteration": 0,
+      "message": "No valid JSON found in response: line 1 column 1 (char 0)"
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 6.3e-05,
+    "end_s": 9.69218,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "planned_actions": [
+        {
+          "action_id": "iter0_web_fallback",
+          "type": "web_search",
+          "query": "In what year was Lee's Market's customer recognition and rewards program established?"
+        },
+        {
+          "action_id": "iter0_local_fallback",
+          "type": "local_document_search",
+          "query": "In what year was Lee's Market's customer recognition and rewards program established?"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_local_fallback",
+    "label": "local_document_search: In what year was Lee's Market's customer recogni...",
+    "start_s": 9.692366,
+    "end_s": 9.716395,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_local_fallback",
+      "action_type": "local_document_search",
+      "query": "In what year was Lee's Market's customer recognition and rewards program established?",
+      "result_count": 5,
+      "top_doc_ids": [
+        "doc_a8956068_1776306882",
+        "doc_48818b85_1776306882",
+        "doc_58f7b8f1_1776306881"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_fallback",
+    "label": "web_search: In what year was Lee's Market's customer recogni...",
+    "start_s": 9.692226,
+    "end_s": 9.928343,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_fallback",
+      "action_type": "web_search",
+      "query": "In what year was Lee's Market's customer recognition and rewards program established?",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/73693",
+        "web/56059",
+        "web/60306"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs",
+    "start_s": 9.945819,
+    "end_s": 33.126383,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "candidate_count": 10,
+      "selected_doc_ids": [
+        "doc_a8956068_1776306882",
+        "doc_48818b85_1776306882",
+        "doc_2387509c_1776306882"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_48818b85_1776306882",
+    "label": "customer-experience-strategy.docx",
+    "start_s": 33.128918,
+    "end_s": 41.176578,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "doc_48818b85_1776306882",
+      "source": "local",
+      "title": "customer-experience-strategy.docx",
+      "can_answer": false,
+      "confidence": 0.25
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_a8956068_1776306882",
+    "label": "CS-Improvement-Plan-2026.docx",
+    "start_s": 33.126487,
+    "end_s": 41.814898,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "doc_a8956068_1776306882",
+      "source": "local",
+      "title": "CS-Improvement-Plan-2026.docx",
+      "can_answer": true,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_2387509c_1776306882",
+    "label": "Lees_Market_Richmond_Checkout_Counters_Data.xlsx",
+    "start_s": 33.130937,
+    "end_s": 42.963835,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "doc_2387509c_1776306882",
+      "source": "local",
+      "title": "Lees_Market_Richmond_Checkout_Counters_Data.xlsx",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 42.964113,
+    "end_s": 50.626833,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": true,
+      "confidence": 0.95,
+      "next_step": "done",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 7
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 50.626895,
+    "end_s": 71.884022,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "planned_actions": [
+        {
+          "action_id": "iter1_web_search_0",
+          "type": "web_search",
+          "query": "number of daily newspapers by state 2019"
+        },
+        {
+          "action_id": "iter1_web_search_1",
+          "type": "web_search",
+          "query": "state with 45 daily newspapers 2019"
+        },
+        {
+          "action_id": "iter1_web_search_2",
+          "type": "web_search",
+          "query": "daily newspapers per state 2019 statistics"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_0",
+    "label": "web_search: number of daily newspapers by state 2019",
+    "start_s": 71.914659,
+    "end_s": 73.334134,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "action_id": "iter1_web_search_0",
+      "action_type": "web_search",
+      "query": "number of daily newspapers by state 2019",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/70884",
+        "web/978",
+        "web/13585"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_1",
+    "label": "web_search: state with 45 daily newspapers 2019",
+    "start_s": 71.914757,
+    "end_s": 73.503713,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "action_id": "iter1_web_search_1",
+      "action_type": "web_search",
+      "query": "state with 45 daily newspapers 2019",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/978",
+        "web/70884",
+        "web/13585"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_2",
+    "label": "web_search: daily newspapers per state 2019 statistics",
+    "start_s": 71.914823,
+    "end_s": 73.514768,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "action_id": "iter1_web_search_2",
+      "action_type": "web_search",
+      "query": "daily newspapers per state 2019 statistics",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/70884",
+        "web/978",
+        "web/13585"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs",
+    "start_s": 73.515022,
+    "end_s": 95.154327,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "candidate_count": 6,
+      "selected_doc_ids": [
+        "web/70884",
+        "web/23317",
+        "web/38965"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/70884",
+    "label": "https://www.meltwater.com/en/blog/largest-us-new...",
+    "start_s": 95.161948,
+    "end_s": 101.389977,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "doc_id": "web/70884",
+      "source": "web",
+      "title": "https://www.meltwater.com/en/blog/largest-us-newspapers",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/23317",
+    "label": "https://localnewsinitiative.northwestern.edu/pro...",
+    "start_s": 95.16492,
+    "end_s": 104.565659,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "doc_id": "web/23317",
+      "source": "web",
+      "title": "https://localnewsinitiative.northwestern.edu/projects/state-of-local-news/2024/report/",
+      "can_answer": false,
+      "confidence": 0.5
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/38965",
+    "label": "https://www.usnewsdeserts.com/reports/news-deser...",
+    "start_s": 95.167752,
+    "end_s": 105.64862,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "doc_id": "web/38965",
+      "source": "web",
+      "title": "https://www.usnewsdeserts.com/reports/news-deserts-and-ghost-newspapers-will-local-news-survive/the-news-landscape-in-2020-transformed-and-diminished/vanishing-newspapers/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 105.648873,
+    "end_s": 122.146405,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "answered": false,
+      "confidence": 0.6,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/978",
+        "web/13585",
+        "web/32422"
+      ],
+      "unread_candidate_count": 3
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/13585",
+    "label": "https://en.wikipedia.org/wiki/List_of_newspapers...",
+    "start_s": 123.118844,
+    "end_s": 127.145204,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "doc_id": "web/13585",
+      "source": "web",
+      "title": "https://en.wikipedia.org/wiki/List_of_newspapers_in_North_Carolina",
+      "can_answer": true,
+      "confidence": 0.98
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/978",
+    "label": "https://en.wikipedia.org/wiki/List_of_defunct_ne...",
+    "start_s": 123.112396,
+    "end_s": 128.733857,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "doc_id": "web/978",
+      "source": "web",
+      "title": "https://en.wikipedia.org/wiki/List_of_defunct_newspapers_of_the_United_States",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/32422",
+    "label": "https://www.businessinsider.com/first-newspaper-...",
+    "start_s": 123.124534,
+    "end_s": 129.651995,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "doc_id": "web/32422",
+      "source": "web",
+      "title": "https://www.businessinsider.com/first-newspaper-every-state-2018-8",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 129.658254,
+    "end_s": 138.705311,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "answered": true,
+      "confidence": 0.98,
+      "next_step": "done",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H3 retrieval plan",
+    "start_s": 138.705435,
+    "end_s": 157.222164,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "planned_actions": [
+        {
+          "action_id": "iter2_web_search_0",
+          "type": "web_search",
+          "query": "North Carolina newspaper count 2010s 1990s total"
+        },
+        {
+          "action_id": "iter2_web_search_1",
+          "type": "web_search",
+          "query": "Historical newspapers in North Carolina by year"
+        },
+        {
+          "action_id": "iter2_web_search_2",
+          "type": "web_search",
+          "query": "Total newspapers in North Carolina 1990s 2000s"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_1",
+    "label": "web_search: Historical newspapers in North Carolina by year",
+    "start_s": 157.22235,
+    "end_s": 157.735948,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "action_id": "iter2_web_search_1",
+      "action_type": "web_search",
+      "query": "Historical newspapers in North Carolina by year",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/13585",
+        "web/37516",
+        "web/72221"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_0",
+    "label": "web_search: North Carolina newspaper count 2010s 1990s total",
+    "start_s": 157.222222,
+    "end_s": 157.811029,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "action_id": "iter2_web_search_0",
+      "action_type": "web_search",
+      "query": "North Carolina newspaper count 2010s 1990s total",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/13585",
+        "web/37516",
+        "web/44445"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_2",
+    "label": "web_search: Total newspapers in North Carolina 1990s 2000s",
+    "start_s": 157.222413,
+    "end_s": 157.984855,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "action_id": "iter2_web_search_2",
+      "action_type": "web_search",
+      "query": "Total newspapers in North Carolina 1990s 2000s",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/13585",
+        "web/37516",
+        "web/44445"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H3 choose docs",
+    "start_s": 157.985244,
+    "end_s": 175.187729,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "candidate_count": 7,
+      "selected_doc_ids": [
+        "web/13585",
+        "web/21174",
+        "web/15922"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/13585",
+    "label": "https://en.wikipedia.org/wiki/List_of_newspapers...",
+    "start_s": 175.187867,
+    "end_s": 186.306247,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "doc_id": "web/13585",
+      "source": "web",
+      "title": "https://en.wikipedia.org/wiki/List_of_newspapers_in_North_Carolina",
+      "can_answer": true,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/21174",
+    "label": "https://statelibrary.ncdcr.gov/research/online-r...",
+    "start_s": 175.191622,
+    "end_s": 186.539121,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "doc_id": "web/21174",
+      "source": "web",
+      "title": "https://statelibrary.ncdcr.gov/research/online-resources",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/15922",
+    "label": "https://carolinapublicpress.org/mission-2/",
+    "start_s": 175.195149,
+    "end_s": 186.763711,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "doc_id": "web/15922",
+      "source": "web",
+      "title": "https://carolinapublicpress.org/mission-2/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H3 resolve",
+    "start_s": 186.763958,
+    "end_s": 197.60689,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "answered": true,
+      "confidence": 0.85,
+      "next_step": "done",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 4
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H4 retrieval plan",
+    "start_s": 197.60697,
+    "end_s": 212.835777,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 3,
+      "planned_actions": [
+        {
+          "action_id": "iter3_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market full-time employee tenure increase 2020 reference point"
+        },
+        {
+          "action_id": "iter3_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market 2020 employee policy changes quarter reference"
+        },
+        {
+          "action_id": "iter3_local_document_search_2",
+          "type": "local_document_search",
+          "query": "employee tenure increase 2020 reference quarter"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_local_document_search_2",
+    "label": "local_document_search: employee tenure increase 2020 reference quarter",
+    "start_s": 212.836117,
+    "end_s": 212.863536,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 3,
+      "action_id": "iter3_local_document_search_2",
+      "action_type": "local_document_search",
+      "query": "employee tenure increase 2020 reference quarter",
+      "result_count": 5,
+      "top_doc_ids": [
+        "doc_18f71af7_1776306881",
+        "doc_c2df362e_1776306881",
+        "doc_f9c490d7_1776306881"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_web_search_1",
+    "label": "web_search: Lee's Market 2020 employee policy changes quarte...",
+    "start_s": 212.836041,
+    "end_s": 213.048061,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 3,
+      "action_id": "iter3_web_search_1",
+      "action_type": "web_search",
+      "query": "Lee's Market 2020 employee policy changes quarter reference",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/64690",
+        "web/9762",
+        "web/56465"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_web_search_0",
+    "label": "web_search: Lee's Market full-time employee tenure increase...",
+    "start_s": 212.835835,
+    "end_s": 213.073784,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 3,
+      "action_id": "iter3_web_search_0",
+      "action_type": "web_search",
+      "query": "Lee's Market full-time employee tenure increase 2020 reference point",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/1720",
+        "web/56465",
+        "web/26590"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H4 choose docs",
+    "start_s": 213.074113,
+    "end_s": 254.266227,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 3,
+      "candidate_count": 13,
+      "selected_doc_ids": [
+        "doc_18f71af7_1776306881",
+        "doc_c2df362e_1776306881",
+        "web/56465"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_18f71af7_1776306881",
+    "label": "mattermost_chat_20251120_152046.jsonl",
+    "start_s": 254.266353,
+    "end_s": 263.397285,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 3,
+      "doc_id": "doc_18f71af7_1776306881",
+      "source": "local",
+      "title": "mattermost_chat_20251120_152046.jsonl",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_c2df362e_1776306881",
+    "label": "Lees_Market_Richmond_Daily_Foot_Traffic_Data.xls...",
+    "start_s": 254.268552,
+    "end_s": 265.512448,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 3,
+      "doc_id": "doc_c2df362e_1776306881",
+      "source": "local",
+      "title": "Lees_Market_Richmond_Daily_Foot_Traffic_Data.xlsx",
+      "can_answer": false,
+      "confidence": 0.92
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/56465",
+    "label": "https://www.dir.ca.gov/dlse/COVID19Resources/202...",
+    "start_s": 254.271819,
+    "end_s": 265.534071,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 3,
+      "doc_id": "web/56465",
+      "source": "web",
+      "title": "https://www.dir.ca.gov/dlse/COVID19Resources/2022-SPSL-FAQs.html",
+      "can_answer": false,
+      "confidence": 0.92
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H4 resolve",
+    "start_s": 265.534401,
+    "end_s": 280.028999,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 3,
+      "answered": false,
+      "confidence": 0.75,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/64690",
+        "web/9762",
+        "web/26590"
+      ],
+      "unread_candidate_count": 10
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/64690",
+    "label": "https://www.aboutamazon.com/news/operations/upda...",
+    "start_s": 280.029162,
+    "end_s": 289.905857,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 3,
+      "doc_id": "web/64690",
+      "source": "web",
+      "title": "https://www.aboutamazon.com/news/operations/update-on-our-vision-to-be-earths-best-employer-and-earths-safest-place-to-work",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/9762",
+    "label": "https://www.bls.gov/opub/mlr/2021/article/unempl...",
+    "start_s": 280.033042,
+    "end_s": 291.981683,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 3,
+      "doc_id": "web/9762",
+      "source": "web",
+      "title": "https://www.bls.gov/opub/mlr/2021/article/unemployment-rises-in-2020-as-the-country-battles-the-covid-19-pandemic.htm",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/26590",
+    "label": "https://www.menke.com/esop-archives/olivers-mark...",
+    "start_s": 280.038307,
+    "end_s": 294.111917,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 3,
+      "doc_id": "web/26590",
+      "source": "web",
+      "title": "https://www.menke.com/esop-archives/olivers-market-becomes-100-employee-owned-a-commitment-to-independence-and-community/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H4 resolve",
+    "start_s": 294.112271,
+    "end_s": 310.733912,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 3,
+      "answered": false,
+      "confidence": 0.75,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/1720",
+        "doc_f9c490d7_1776306881",
+        "web/71560"
+      ],
+      "unread_candidate_count": 7
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_f9c490d7_1776306881",
+    "label": "mattermost_chat_20251120_152046.jsonl",
+    "start_s": 310.739082,
+    "end_s": 316.707531,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 3,
+      "doc_id": "doc_f9c490d7_1776306881",
+      "source": "local",
+      "title": "mattermost_chat_20251120_152046.jsonl",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/71560",
+    "label": "https://www.bls.gov/opub/mlr/2021/article/covid-...",
+    "start_s": 310.741475,
+    "end_s": 319.480565,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 3,
+      "doc_id": "web/71560",
+      "source": "web",
+      "title": "https://www.bls.gov/opub/mlr/2021/article/covid-19-ends-longest-employment-expansion-in-ces-history.htm",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/1720",
+    "label": "https://www.bls.gov/cps/lfcharacteristics.htm",
+    "start_s": 310.734084,
+    "end_s": 319.760559,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 3,
+      "doc_id": "web/1720",
+      "source": "web",
+      "title": "https://www.bls.gov/cps/lfcharacteristics.htm",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H4 resolve",
+    "start_s": 319.760943,
+    "end_s": 334.762929,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 3,
+      "answered": false,
+      "confidence": 0.75,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "doc_baf2fe03_1776306881",
+        "web/55555",
+        "doc_48fc1df3_1776306881"
+      ],
+      "unread_candidate_count": 4
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_baf2fe03_1776306881",
+    "label": "mattermost_chat_20251120_152046.jsonl",
+    "start_s": 334.76314,
+    "end_s": 341.917105,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 3,
+      "doc_id": "doc_baf2fe03_1776306881",
+      "source": "local",
+      "title": "mattermost_chat_20251120_152046.jsonl",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_48fc1df3_1776306881",
+    "label": "mattermost_chat_20251120_152046.jsonl",
+    "start_s": 334.768861,
+    "end_s": 344.037518,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 3,
+      "doc_id": "doc_48fc1df3_1776306881",
+      "source": "local",
+      "title": "mattermost_chat_20251120_152046.jsonl",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/55555",
+    "label": "https://westliberty.edu/news/news/2022-retirees-...",
+    "start_s": 334.765144,
+    "end_s": 344.43226,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 3,
+      "doc_id": "web/55555",
+      "source": "web",
+      "title": "https://westliberty.edu/news/news/2022-retirees-say-bittersweet-goodbye/",
+      "can_answer": false,
+      "confidence": 0.98
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H4 resolve",
+    "start_s": 344.43263,
+    "end_s": 363.518235,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 3,
+      "answered": false,
+      "confidence": 0.5,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/2522"
+      ],
+      "unread_candidate_count": 1
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/2522",
+    "label": "https://doc.mo.gov/media-center/newsroom/staff-n...",
+    "start_s": 363.518367,
+    "end_s": 373.51885,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 3,
+      "doc_id": "web/2522",
+      "source": "web",
+      "title": "https://doc.mo.gov/media-center/newsroom/staff-news/local-news/frdc-ctcc",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H4 resolve",
+    "start_s": 373.519286,
+    "end_s": 381.763399,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 3,
+      "answered": false,
+      "confidence": 0.85,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H4 retrieval plan",
+    "start_s": 381.763673,
+    "end_s": 395.626799,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 4,
+      "planned_actions": [
+        {
+          "action_id": "iter4_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market full-time employee tenure increase 2020 reference quarter"
+        },
+        {
+          "action_id": "iter4_local_document_search_2",
+          "type": "local_document_search",
+          "query": "employee tenure increase 2020 reference quarter Lee's Market"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter4_local_document_search_2",
+    "label": "local_document_search: employee tenure increase 2020 reference quarter...",
+    "start_s": 395.628211,
+    "end_s": 395.733575,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 4,
+      "action_id": "iter4_local_document_search_2",
+      "action_type": "local_document_search",
+      "query": "employee tenure increase 2020 reference quarter Lee's Market",
+      "result_count": 5,
+      "top_doc_ids": [
+        "doc_2387509c_1776306882",
+        "doc_58f7b8f1_1776306881",
+        "doc_c2df362e_1776306881"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter4_web_search_0",
+    "label": "web_search: Lee's Market full-time employee tenure increase...",
+    "start_s": 395.628063,
+    "end_s": 395.896374,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 4,
+      "action_id": "iter4_web_search_0",
+      "action_type": "web_search",
+      "query": "Lee's Market full-time employee tenure increase 2020 reference quarter",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/9762",
+        "web/1720",
+        "web/56108"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H4 choose docs (skipped)",
+    "start_s": 395.896469,
+    "end_s": 395.896469,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 4,
+      "candidate_count": 3,
+      "selected_doc_ids": [
+        "doc_2387509c_1776306882",
+        "doc_58f7b8f1_1776306881",
+        "web/56108"
+      ],
+      "skipped": true
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_58f7b8f1_1776306881",
+    "label": "mattermost_chat_20251120_152046.jsonl",
+    "start_s": 395.900296,
+    "end_s": 403.436928,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 4,
+      "doc_id": "doc_58f7b8f1_1776306881",
+      "source": "local",
+      "title": "mattermost_chat_20251120_152046.jsonl",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_2387509c_1776306882",
+    "label": "Lees_Market_Richmond_Checkout_Counters_Data.xlsx",
+    "start_s": 395.896592,
+    "end_s": 406.024486,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 4,
+      "doc_id": "doc_2387509c_1776306882",
+      "source": "local",
+      "title": "Lees_Market_Richmond_Checkout_Counters_Data.xlsx",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/56108",
+    "label": "https://www.bls.gov/opub/mlr/2022/article/us-lab...",
+    "start_s": 395.903034,
+    "end_s": 406.190768,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 4,
+      "doc_id": "web/56108",
+      "source": "web",
+      "title": "https://www.bls.gov/opub/mlr/2022/article/us-labor-market-shows-improvement-in-2021-but-the-covid-19-pandemic-continues-to-weigh-on-the-economy.htm",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H4 resolve",
+    "start_s": 406.191081,
+    "end_s": 439.817597,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 4,
+      "answered": false,
+      "confidence": 0.6,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H4 retrieval plan",
+    "start_s": 439.817889,
+    "end_s": 454.169146,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 5,
+      "planned_actions": [
+        {
+          "action_id": "iter5_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market 2020 employee tenure reference quarter"
+        },
+        {
+          "action_id": "iter5_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market full-time employee policy 2020 quarter reference"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter5_web_search_0",
+    "label": "web_search: Lee's Market 2020 employee tenure reference quar...",
+    "start_s": 454.169192,
+    "end_s": 454.45321,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 5,
+      "action_id": "iter5_web_search_0",
+      "action_type": "web_search",
+      "query": "Lee's Market 2020 employee tenure reference quarter",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/1720",
+        "web/9762",
+        "web/98892"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter5_web_search_2",
+    "label": "web_search: Lee's Market full-time employee policy 2020 quar...",
+    "start_s": 454.169304,
+    "end_s": 454.461281,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 5,
+      "action_id": "iter5_web_search_2",
+      "action_type": "web_search",
+      "query": "Lee's Market full-time employee policy 2020 quarter reference",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/1720",
+        "web/9762",
+        "web/56465"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H4 choose docs (skipped)",
+    "start_s": 454.461374,
+    "end_s": 454.461374,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 5,
+      "candidate_count": 3,
+      "selected_doc_ids": [
+        "web/98892",
+        "web/8346",
+        "web/41330"
+      ],
+      "skipped": true
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/98892",
+    "label": "https://www.awardco.com/blog/employee-turnover-r...",
+    "start_s": 454.461521,
+    "end_s": 464.232603,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 5,
+      "doc_id": "web/98892",
+      "source": "web",
+      "title": "https://www.awardco.com/blog/employee-turnover-rates",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/41330",
+    "label": "https://www.leg.state.nv.us/nac/nac-284.html",
+    "start_s": 454.470365,
+    "end_s": 465.500562,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 5,
+      "doc_id": "web/41330",
+      "source": "web",
+      "title": "https://www.leg.state.nv.us/nac/nac-284.html",
+      "can_answer": false,
+      "confidence": 0.98
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/8346",
+    "label": "https://www.irs.gov/affordable-care-act/employer...",
+    "start_s": 454.466033,
+    "end_s": 465.705228,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 5,
+      "doc_id": "web/8346",
+      "source": "web",
+      "title": "https://www.irs.gov/affordable-care-act/employers/questions-and-answers-on-employer-shared-responsibility-provisions-under-the-affordable-care-act",
+      "can_answer": false,
+      "confidence": 0.9
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H4 resolve",
+    "start_s": 465.705592,
+    "end_s": 477.920667,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 5,
+      "answered": false,
+      "confidence": 0.7,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H4 retrieval plan",
+    "start_s": 477.920946,
+    "end_s": 495.653377,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "planned_actions": [
+        {
+          "action_id": "iter6_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market full-time employee tenure increase policy 2020 quarter reference"
+        },
+        {
+          "action_id": "iter6_local_document_search_1",
+          "type": "local_document_search",
+          "query": "Lee's Market 2020 employee tenure reference quarter"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter6_local_document_search_1",
+    "label": "local_document_search: Lee's Market 2020 employee tenure reference quar...",
+    "start_s": 495.65353,
+    "end_s": 495.680366,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "action_id": "iter6_local_document_search_1",
+      "action_type": "local_document_search",
+      "query": "Lee's Market 2020 employee tenure reference quarter",
+      "result_count": 5,
+      "top_doc_ids": [
+        "doc_2387509c_1776306882",
+        "doc_58f7b8f1_1776306881",
+        "doc_c2df362e_1776306881"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter6_web_search_0",
+    "label": "web_search: Lee's Market full-time employee tenure increase...",
+    "start_s": 495.653426,
+    "end_s": 495.937658,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "action_id": "iter6_web_search_0",
+      "action_type": "web_search",
+      "query": "Lee's Market full-time employee tenure increase policy 2020 quarter reference",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/9762",
+        "web/1720",
+        "web/56465"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H4 choose docs (skipped)",
+    "start_s": 495.937739,
+    "end_s": 495.937739,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "candidate_count": 1,
+      "selected_doc_ids": [
+        "web/4247"
+      ],
+      "skipped": true
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/4247",
+    "label": "https://allowances.state.gov/content.asp?content...",
+    "start_s": 495.937844,
+    "end_s": 503.88199,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "doc_id": "web/4247",
+      "source": "web",
+      "title": "https://allowances.state.gov/content.asp?content_id=239",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H4 resolve",
+    "start_s": 503.88217,
+    "end_s": 528.474313,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 6,
+      "answered": false,
+      "confidence": 0.5,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H4 retrieval plan",
+    "start_s": 528.474673,
+    "end_s": 544.919521,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 7,
+      "planned_actions": [
+        {
+          "action_id": "iter7_web_fallback",
+          "type": "web_search",
+          "query": "Which quarter of 2020 was used as the reference point for the full-time employee tenure increase at Lee's Market?"
+        },
+        {
+          "action_id": "iter7_local_fallback",
+          "type": "local_document_search",
+          "query": "Which quarter of 2020 was used as the reference point for the full-time employee tenure increase at Lee's Market?"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter7_local_fallback",
+    "label": "local_document_search: Which quarter of 2020 was used as the reference...",
+    "start_s": 544.919725,
+    "end_s": 544.944447,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 7,
+      "action_id": "iter7_local_fallback",
+      "action_type": "local_document_search",
+      "query": "Which quarter of 2020 was used as the reference point for the full-time employee tenure increase at Lee's Market?",
+      "result_count": 5,
+      "top_doc_ids": [
+        "doc_52b52251_1776306881",
+        "doc_58f7b8f1_1776306881",
+        "doc_2387509c_1776306882"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter7_web_fallback",
+    "label": "web_search: Which quarter of 2020 was used as the reference...",
+    "start_s": 544.919576,
+    "end_s": 545.228318,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 7,
+      "action_id": "iter7_web_fallback",
+      "action_type": "web_search",
+      "query": "Which quarter of 2020 was used as the reference point for the full-time employee tenure increase at Lee's Market?",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/9762",
+        "web/71560",
+        "web/1720"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H4 choose docs (skipped)",
+    "start_s": 545.228378,
+    "end_s": 545.228378,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 7,
+      "candidate_count": 2,
+      "selected_doc_ids": [
+        "doc_52b52251_1776306881",
+        "web/95225"
+      ],
+      "skipped": true
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_52b52251_1776306881",
+    "label": "Q4-Workforce-Analysis.pdf",
+    "start_s": 545.22851,
+    "end_s": 554.598212,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 7,
+      "doc_id": "doc_52b52251_1776306881",
+      "source": "local",
+      "title": "Q4-Workforce-Analysis.pdf",
+      "can_answer": true,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/95225",
+    "label": "https://www.bls.gov/opub/mlr/2022/article/telewo...",
+    "start_s": 545.232283,
+    "end_s": 556.104513,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 7,
+      "doc_id": "web/95225",
+      "source": "web",
+      "title": "https://www.bls.gov/opub/mlr/2022/article/telework-during-the-covid-19-pandemic.htm",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H4 resolve",
+    "start_s": 556.104835,
+    "end_s": 567.466845,
+    "meta": {
+      "hop_number": 4,
+      "iteration": 7,
+      "answered": true,
+      "confidence": 0.85,
+      "next_step": "done",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "report",
+    "lane": "report",
+    "label": "Final report",
+    "start_s": 567.466866,
+    "end_s": 567.555922,
+    "meta": {
+      "resolved_hops": 4,
+      "report_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0091_01ff9e71_1aea9c36/workspace/research_report_1776334209.md"
+    }
+  }
+]

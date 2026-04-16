@@ -1,0 +1,919 @@
+[
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 5.8e-05,
+    "end_s": 11.569354,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "planned_actions": [
+        {
+          "action_id": "iter0_web_search_0",
+          "type": "web_search",
+          "query": "origin of the month name February Roman festival Februa"
+        },
+        {
+          "action_id": "iter0_web_search_1",
+          "type": "web_search",
+          "query": "months named after Roman purification festivals"
+        },
+        {
+          "action_id": "iter0_web_search_2",
+          "type": "web_search",
+          "query": "Februa Roman festival connection to February"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_2",
+    "label": "web_search: Februa Roman festival connection to February",
+    "start_s": 11.569571,
+    "end_s": 11.877389,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_2",
+      "action_type": "web_search",
+      "query": "Februa Roman festival connection to February",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/76343",
+        "web/85124"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_0",
+    "label": "web_search: origin of the month name February Roman festival...",
+    "start_s": 11.569398,
+    "end_s": 11.9939,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_0",
+      "action_type": "web_search",
+      "query": "origin of the month name February Roman festival Februa",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/76343",
+        "web/85124"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_1",
+    "label": "web_search: months named after Roman purification festivals",
+    "start_s": 11.569509,
+    "end_s": 12.000556,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_1",
+      "action_type": "web_search",
+      "query": "months named after Roman purification festivals",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/76343",
+        "web/46050"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs",
+    "start_s": 12.000702,
+    "end_s": 20.009826,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "candidate_count": 7,
+      "selected_doc_ids": [
+        "web/76343"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/76343",
+    "label": "https://altalang.com/beyond-words/how-did-the-mo...",
+    "start_s": 20.009893,
+    "end_s": 24.553527,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/76343",
+      "source": "web",
+      "title": "https://altalang.com/beyond-words/how-did-the-months-get-their-names/",
+      "can_answer": true,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 24.553732,
+    "end_s": 33.658826,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": true,
+      "confidence": 0.9,
+      "next_step": "done",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 6
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 33.658895,
+    "end_s": 48.878969,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "planned_actions": [
+        {
+          "action_id": "iter1_web_search_0",
+          "type": "web_search",
+          "query": "Elexion Automotive service requests increase percentage from February to March 2024"
+        },
+        {
+          "action_id": "iter1_web_search_1",
+          "type": "web_search",
+          "query": "Elexion Automotive service request statistics 2024 Q1"
+        },
+        {
+          "action_id": "iter1_web_search_2",
+          "type": "web_search",
+          "query": "Elexion Automotive service request growth 2024 news"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_2",
+    "label": "web_search: Elexion Automotive service request growth 2024 n...",
+    "start_s": 48.879189,
+    "end_s": 49.102463,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "action_id": "iter1_web_search_2",
+      "action_type": "web_search",
+      "query": "Elexion Automotive service request growth 2024 news",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/97348",
+        "web/2865"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_1",
+    "label": "web_search: Elexion Automotive service request statistics 20...",
+    "start_s": 48.879128,
+    "end_s": 49.103094,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "action_id": "iter1_web_search_1",
+      "action_type": "web_search",
+      "query": "Elexion Automotive service request statistics 2024 Q1",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/64701",
+        "web/2865"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_0",
+    "label": "web_search: Elexion Automotive service requests increase per...",
+    "start_s": 48.87902,
+    "end_s": 49.215758,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "action_id": "iter1_web_search_0",
+      "action_type": "web_search",
+      "query": "Elexion Automotive service requests increase percentage from February to March 2024",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/27145",
+        "web/47620"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs",
+    "start_s": 49.215986,
+    "end_s": 75.133881,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "candidate_count": 11,
+      "selected_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/27145",
+        "web/77689"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/77689",
+    "label": "https://www.fhwa.dot.gov/policyinformation/trave...",
+    "start_s": 75.140131,
+    "end_s": 81.136278,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "doc_id": "web/77689",
+      "source": "web",
+      "title": "https://www.fhwa.dot.gov/policyinformation/travel_monitoring/tvt.cfm",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+    "label": "https://www.iea.org/reports/global-ev-outlook-20...",
+    "start_s": 75.13405,
+    "end_s": 81.501134,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "doc_id": "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+      "source": "web",
+      "title": "https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-cars",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/27145",
+    "label": "https://comptroller.nyc.gov/newsroom/newsletter/...",
+    "start_s": 75.13738,
+    "end_s": 81.639014,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "doc_id": "web/27145",
+      "source": "web",
+      "title": "https://comptroller.nyc.gov/newsroom/newsletter/new-york-by-the-numbers-monthly-economic-and-fiscal-outlook-no-100-april-2025/",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 81.639363,
+    "end_s": 93.907113,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "answered": false,
+      "confidence": 0.3,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 8
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 93.9073,
+    "end_s": 103.11013,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "planned_actions": [
+        {
+          "action_id": "iter2_web_search_0",
+          "type": "web_search",
+          "query": "Elexion Automotive service request Q1 2024 report"
+        },
+        {
+          "action_id": "iter2_web_search_2",
+          "type": "web_search",
+          "query": "Elexion Automotive service request statistics SEC filing 2024"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_0",
+    "label": "web_search: Elexion Automotive service request Q1 2024 repor...",
+    "start_s": 103.110183,
+    "end_s": 103.277132,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "action_id": "iter2_web_search_0",
+      "action_type": "web_search",
+      "query": "Elexion Automotive service request Q1 2024 report",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/64701",
+        "web/40938"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_2",
+    "label": "web_search: Elexion Automotive service request statistics SE...",
+    "start_s": 103.110323,
+    "end_s": 103.277382,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "action_id": "iter2_web_search_2",
+      "action_type": "web_search",
+      "query": "Elexion Automotive service request statistics SEC filing 2024",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/76940",
+        "web/64701"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs",
+    "start_s": 103.277662,
+    "end_s": 127.107136,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "candidate_count": 7,
+      "selected_doc_ids": [
+        "web/64701",
+        "web/95745"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/64701",
+    "label": "https://investor.eastgroup.net/2025-02-06-EastGr...",
+    "start_s": 127.107278,
+    "end_s": 135.402923,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "doc_id": "web/64701",
+      "source": "web",
+      "title": "https://investor.eastgroup.net/2025-02-06-EastGroup-Properties-Announces-Fourth-Quarter-and-Full-Year-2024-Results",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/95745",
+    "label": "https://ir.cbre.com/press-releases/detail/246/cb...",
+    "start_s": 127.110542,
+    "end_s": 136.278849,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "doc_id": "web/95745",
+      "source": "web",
+      "title": "https://ir.cbre.com/press-releases/detail/246/cbre-group-inc-reports-financial-results-for-q4-and-full",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 136.285835,
+    "end_s": 144.549611,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "answered": false,
+      "confidence": 0.7,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 5
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 144.549828,
+    "end_s": 160.599623,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "planned_actions": [
+        {
+          "action_id": "iter3_web_search_0",
+          "type": "web_search",
+          "query": "Elexion Automotive Q1 2024 service request report press release"
+        },
+        {
+          "action_id": "iter3_web_search_1",
+          "type": "web_search",
+          "query": "Elexion Automotive SEC filing 2024 service request growth"
+        },
+        {
+          "action_id": "iter3_web_search_2",
+          "type": "web_search",
+          "query": "Elexion Automotive 2024 financial summary service volume statistics"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_web_search_0",
+    "label": "web_search: Elexion Automotive Q1 2024 service request repor...",
+    "start_s": 160.599673,
+    "end_s": 160.851015,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "action_id": "iter3_web_search_0",
+      "action_type": "web_search",
+      "query": "Elexion Automotive Q1 2024 service request report press release",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/64701",
+        "web/2865"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_web_search_2",
+    "label": "web_search: Elexion Automotive 2024 financial summary servic...",
+    "start_s": 160.599872,
+    "end_s": 160.851225,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "action_id": "iter3_web_search_2",
+      "action_type": "web_search",
+      "query": "Elexion Automotive 2024 financial summary service volume statistics",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/76940",
+        "web/46328"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter3_web_search_1",
+    "label": "web_search: Elexion Automotive SEC filing 2024 service reque...",
+    "start_s": 160.59981,
+    "end_s": 160.864268,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "action_id": "iter3_web_search_1",
+      "action_type": "web_search",
+      "query": "Elexion Automotive SEC filing 2024 service request growth",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/64701",
+        "web/23007"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs",
+    "start_s": 160.872132,
+    "end_s": 181.262984,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "candidate_count": 9,
+      "selected_doc_ids": [
+        "web/23007",
+        "web/95049"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/95049",
+    "label": "https://www.loreal-finance.com/eng/news-release/...",
+    "start_s": 181.266243,
+    "end_s": 185.793863,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "doc_id": "web/95049",
+      "source": "web",
+      "title": "https://www.loreal-finance.com/eng/news-release/2024-annual-results",
+      "can_answer": false,
+      "confidence": 0.9
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/23007",
+    "label": "https://www.ucb.com/newsroom/press-releases/arti...",
+    "start_s": 181.2631,
+    "end_s": 186.221311,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "doc_id": "web/23007",
+      "source": "web",
+      "title": "https://www.ucb.com/newsroom/press-releases/article/on-growth-path-for-a-decade-plus-strong-launch-execution-driving-company-growth",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 186.221957,
+    "end_s": 194.888921,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "answered": false,
+      "confidence": 0.7,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/76940",
+        "web/46328",
+        "web/52366"
+      ],
+      "unread_candidate_count": 7
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/46328",
+    "label": "https://www.press.bmwgroup.com/global/article/de...",
+    "start_s": 194.892164,
+    "end_s": 202.052237,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "doc_id": "web/46328",
+      "source": "web",
+      "title": "https://www.press.bmwgroup.com/global/article/detail/T0448217EN/bmw-starts-2025-with-numerous-award-wins",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/76940",
+    "label": "https://www.fec.gov/updates/statistical-summary-...",
+    "start_s": 194.889052,
+    "end_s": 202.347204,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "doc_id": "web/76940",
+      "source": "web",
+      "title": "https://www.fec.gov/updates/statistical-summary-of-21-month-campaign-activity-of-the-2023-2024-election-cycle/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/52366",
+    "label": "https://www.stellantis.com/en/investors/events-a...",
+    "start_s": 194.894892,
+    "end_s": 203.508839,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "doc_id": "web/52366",
+      "source": "web",
+      "title": "https://www.stellantis.com/en/investors/events-and-presentations",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 203.509197,
+    "end_s": 212.716829,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 3,
+      "answered": false,
+      "confidence": 0.7,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 4
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 212.717077,
+    "end_s": 226.051628,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "planned_actions": [
+        {
+          "action_id": "iter4_web_search_1",
+          "type": "web_search",
+          "query": "Elexion Automotive SEC filing 2024 service volume statistics"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter4_web_search_1",
+    "label": "web_search: Elexion Automotive SEC filing 2024 service volum...",
+    "start_s": 226.051652,
+    "end_s": 226.389759,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "action_id": "iter4_web_search_1",
+      "action_type": "web_search",
+      "query": "Elexion Automotive SEC filing 2024 service volume statistics",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/64701",
+        "web/76940"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs (skipped)",
+    "start_s": 226.389833,
+    "end_s": 226.389833,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "candidate_count": 2,
+      "selected_doc_ids": [
+        "web/172",
+        "web/7176"
+      ],
+      "skipped": true
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/172",
+    "label": "https://www.fec.gov/updates/statistical-summary-...",
+    "start_s": 226.389935,
+    "end_s": 231.930988,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "doc_id": "web/172",
+      "source": "web",
+      "title": "https://www.fec.gov/updates/statistical-summary-of-12-month-campaign-activity-of-the-2023-2024-election-cycle/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/7176",
+    "label": "https://www.fec.gov/updates/statistical-summary-...",
+    "start_s": 226.392634,
+    "end_s": 234.587805,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "doc_id": "web/7176",
+      "source": "web",
+      "title": "https://www.fec.gov/updates/statistical-summary-of-18-month-campaign-activity-of-the-2023-2024-election-cycle/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 234.588052,
+    "end_s": 242.005698,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 4,
+      "answered": false,
+      "confidence": 0.5,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 242.005957,
+    "end_s": 256.82836,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "planned_actions": [
+        {
+          "action_id": "iter5_web_search_0",
+          "type": "web_search",
+          "query": "Elexion Automotive service request statistics Q1 2024 report"
+        },
+        {
+          "action_id": "iter5_web_search_1",
+          "type": "web_search",
+          "query": "Elexion Automotive service volume growth 2024 percentage"
+        },
+        {
+          "action_id": "iter5_web_search_2",
+          "type": "web_search",
+          "query": "Elexion Automotive service request trends February March 2024"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter5_web_search_2",
+    "label": "web_search: Elexion Automotive service request trends Februa...",
+    "start_s": 256.828591,
+    "end_s": 256.992453,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "action_id": "iter5_web_search_2",
+      "action_type": "web_search",
+      "query": "Elexion Automotive service request trends February March 2024",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/77689",
+        "web/47620"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter5_web_search_0",
+    "label": "web_search: Elexion Automotive service request statistics Q1...",
+    "start_s": 256.828407,
+    "end_s": 257.046821,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "action_id": "iter5_web_search_0",
+      "action_type": "web_search",
+      "query": "Elexion Automotive service request statistics Q1 2024 report",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/64701",
+        "web/40938"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter5_web_search_1",
+    "label": "web_search: Elexion Automotive service volume growth 2024 pe...",
+    "start_s": 256.828528,
+    "end_s": 257.047019,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "action_id": "iter5_web_search_1",
+      "action_type": "web_search",
+      "query": "Elexion Automotive service volume growth 2024 percentage",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_49d3ed5cb98384f9",
+        "web/64701",
+        "web/84414"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs",
+    "start_s": 257.047159,
+    "end_s": 304.134796,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "candidate_count": 6,
+      "selected_doc_ids": [
+        "web/40938",
+        "web/84414"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/40938",
+    "label": "https://www.southwestairlinesinvestorrelations.c...",
+    "start_s": 304.134903,
+    "end_s": 310.649218,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "doc_id": "web/40938",
+      "source": "web",
+      "title": "https://www.southwestairlinesinvestorrelations.com/news-and-events/news-releases/2024/01-25-2024-114521040",
+      "can_answer": false,
+      "confidence": 0.1
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/84414",
+    "label": "https://www.merck.com/news/merck-announces-fourt...",
+    "start_s": 304.137277,
+    "end_s": 311.145573,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "doc_id": "web/84414",
+      "source": "web",
+      "title": "https://www.merck.com/news/merck-announces-fourth-quarter-and-full-year-2024-financial-results/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 311.145893,
+    "end_s": 318.103482,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 5,
+      "answered": false,
+      "confidence": 0.3,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 4
+    }
+  },
+  {
+    "stage": "report",
+    "lane": "report",
+    "label": "Final report",
+    "start_s": 318.103497,
+    "end_s": 318.133593,
+    "meta": {
+      "resolved_hops": 1,
+      "report_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0079_944ef838_9d042414/workspace/research_report_1776311310.md"
+    }
+  }
+]
