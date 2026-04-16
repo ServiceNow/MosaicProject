@@ -11,14 +11,20 @@ JOB_NAME=${JOB_NAME:-privacy_hopqa_qwen3_8b}
 WANDB_PROJECT=${WANDB_PROJECT:-privacy_hopqa_qwen3_8b}
 WANDB_GROUP=${WANDB_GROUP:-}
 WANDB_NAME=${WANDB_NAME:-}
+STREAMS_BACKEND=${STREAMS_BACKEND:-files}
+FILTER_ZERO_ADVANTAGE_GROUPS=${FILTER_ZERO_ADVANTAGE_GROUPS:-true}
+REPLICAS=${REPLICAS:-4}
 LOCAL_INDEX_ROOT=${LOCAL_INDEX_ROOT:-/mnt/llmd/results/exps/alexg/privacy_agent/local_indices_fixeddeps_20260415}
 MODEL_PATH=${MODEL_PATH:-/mnt/llmd/base_models/Qwen3-8B}
-ANNOTATIONS_PATH=${ANNOTATIONS_PATH:-/home/toolkit/nice_code/drbench/chain_review/annotations_2026-04-06.json}
+ANNOTATIONS_PATH=${ANNOTATIONS_PATH:-/home/toolkit/nice_code/drbench/chain_review/annotations_2026-04-16.json}
 CURATED_PATH=${CURATED_PATH:-/home/toolkit/nice_code/drbench/chain_review/curated_chains.jsonl}
 TASK_DATA_ROOT=${TASK_DATA_ROOT:-/home/toolkit/nice_code/drbench/drbench/data/tasks}
-DATASET_PATH=${DATASET_PATH:-/mnt/llmd/results/exps/alexg/privacy_agent/datasets/seed20.jsonl}
-TRAIN_DATASET_PATH=${TRAIN_DATASET_PATH:-}
-VAL_DATASET_PATH=${VAL_DATASET_PATH:-}
+DATASET_SPLIT_ROOT=${DATASET_SPLIT_ROOT:-/home/toolkit/nice_code/drbench/chain_review/datasets/privacy_hopqa_userreviewed_bydocs_v1}
+DATASET_PATH=${DATASET_PATH:-}
+TRAIN_DATASET_PATH=${TRAIN_DATASET_PATH:-${DATASET_SPLIT_ROOT}/train.jsonl}
+VAL_DATASET_PATH=${VAL_DATASET_PATH:-${DATASET_SPLIT_ROOT}/val.jsonl}
+TEST_DATASET_PATH=${TEST_DATASET_PATH:-${DATASET_SPLIT_ROOT}/test.jsonl}
+LONG_HOLDOUT_DATASET_PATH=${LONG_HOLDOUT_DATASET_PATH:-${DATASET_SPLIT_ROOT}/long_holdout.jsonl}
 EXTRA_OVERRIDES=${EXTRA_OVERRIDES:-}
 
 PRIVACY_AGENT_HELPER_URL=${PRIVACY_AGENT_HELPER_URL:-}
@@ -62,12 +68,13 @@ privacy_hopqa.local_index_root=${LOCAL_INDEX_ROOT} \
 privacy_hopqa.helper_service_url=${PRIVACY_AGENT_HELPER_URL} \
 privacy_hopqa.embedding_provider=huggingface \
 privacy_hopqa.embedding_model=Qwen/Qwen3-Embedding-4B \
-privacy_hopqa.capture_mode=planning_only \
+privacy_hopqa.capture_mode=all_calls \
+finetune.rl.filter_zero_advantage_groups=${FILTER_ZERO_ADVANTAGE_GROUPS} \
 finetune.learning_rate=1e-6 \
 finetune.rl.policy_loss=gspo \
 finetune.rl.epsilon_low=3e-4 \
 finetune.rl.epsilon_high=4e-4 \
-actor.llm_max_rollouts=16 \
+actor.llm_max_rollouts=64 \
 actor.shared_memory_entry_size=50000000 \
 preprocess.chunk_n_groups=1 \
 finetune.seq_parallel=4 \
@@ -80,14 +87,14 @@ test_llm.parameters.max_tokens=4096 \
 world.actor_fraction=4 \
 world.preprocessor_fraction=0 \
 world.finetune_fraction=4 \
-streams=redis \
+streams=${STREAMS_BACKEND} \
 ${DATASET_OVERRIDES} \
 ${EXTRA_OVERRIDES} \
 --config-name privacy_hopqa \
 --config-dir ${PIPELINERL_ROOT}/conf"
 
 make -C "${SCRIPT_DIR}" multi-replica-job \
-    REPLICAS=2 \
+    REPLICAS="${REPLICAS}" \
     ENV="${CONDA_ENV}" \
     CONDA_EXE="${CONDA_EXE}" \
     SNAPSHOT=0 \
