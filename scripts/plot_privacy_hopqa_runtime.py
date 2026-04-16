@@ -405,12 +405,39 @@ def load_rollouts(run_dir: Path, problem_lookup: dict[tuple[str, str], dict[str,
 
         pattern = ""
         hop_count = int(summary.get("total_hops") or 0)
+        local_hop_count = 0
+        web_hop_count = 0
         if problem is not None:
             pattern = str(problem.get("pattern") or "")
             if not pattern:
-                pattern = "".join(str(hop.get("hop_type") or "?") for hop in (problem.get("hops") or []))
+                pattern = "".join(str(hop.get("hop_type") or hop.get("t") or "?") for hop in (problem.get("hops") or []))
             if not hop_count:
                 hop_count = int(problem.get("n_hops") or len(problem.get("hops") or []))
+            for hop in problem.get("hops") or []:
+                hop_type = str(hop.get("hop_type") or hop.get("t") or "").upper()
+                if hop_type == "L":
+                    local_hop_count += 1
+                elif hop_type == "W":
+                    web_hop_count += 1
+
+        web_searches = 0
+        local_searches = 0
+        for action in trace.get("actions") or []:
+            action_type = str(action.get("type") or "")
+            if action_type == "web_search":
+                web_searches += 1
+            elif action_type == "local_document_search":
+                local_searches += 1
+
+        web_docs_read = 0
+        local_docs_read = 0
+        for hop_state in trace.get("hop_states") or []:
+            for reader_result in hop_state.get("reader_results") or []:
+                source = str(reader_result.get("source") or "").lower()
+                if source == "web":
+                    web_docs_read += 1
+                elif source == "local":
+                    local_docs_read += 1
 
         rollout_row = {
             "rollout_id": rollout_id,
@@ -418,12 +445,18 @@ def load_rollouts(run_dir: Path, problem_lookup: dict[tuple[str, str], dict[str,
             "chain_id": chain_id,
             "hop_pattern": pattern,
             "hop_count": hop_count,
+            "local_hop_count": local_hop_count,
+            "web_hop_count": web_hop_count,
             "duration_s": float(summary.get("duration_s") or 0.0),
             "iterations_used": int(summary.get("iterations_used") or 0),
             "resolved_hops": int(summary.get("resolved_hops") or 0),
             "total_hops": int(summary.get("total_hops") or 0),
             "searches_total": int(summary.get("searches_total") or 0),
+            "web_searches": web_searches,
+            "local_searches": local_searches,
             "docs_read": int(summary.get("docs_read") or 0),
+            "web_docs_read": web_docs_read,
+            "local_docs_read": local_docs_read,
             "llm_calls_total": int(summary.get("llm_calls_total") or 0),
             "prompt_tokens": int(summary.get("prompt_tokens") or 0),
             "output_tokens": int(summary.get("output_tokens") or 0),
@@ -604,6 +637,69 @@ def plot_search_docs_scatter(rollouts: list[dict[str, Any]], path: Path) -> None
     ax.grid(alpha=0.25)
     cbar = fig.colorbar(scatter, ax=ax)
     cbar.set_label("Reward")
+    fig.tight_layout()
+    fig.savefig(path, dpi=180)
+    plt.close(fig)
+
+
+def plot_source_usage_scatter(rollouts: list[dict[str, Any]], path: Path) -> None:
+    if not rollouts:
+        return
+    combos = [
+        ("local_hop_count", "local_searches", "Local hops vs local searches"),
+        ("local_hop_count", "web_searches", "Local hops vs web searches"),
+        ("web_hop_count", "local_searches", "Web hops vs local searches"),
+        ("web_hop_count", "web_searches", "Web hops vs web searches"),
+    ]
+    fig, axes = plt.subplots(2, 2, figsize=(11, 9))
+    colors = [float(row["reward"]) if row.get("reward") not in ("", None) else 0.0 for row in rollouts]
+    scatter_obj = None
+    for ax, (x_key, y_key, title) in zip(axes.flatten(), combos):
+        xs = [float(row.get(x_key) or 0.0) for row in rollouts]
+        ys = [float(row.get(y_key) or 0.0) for row in rollouts]
+        scatter_obj = ax.scatter(xs, ys, c=colors, cmap="viridis", alpha=0.75, edgecolors="white", linewidths=0.3)
+        ax.set_title(title)
+        ax.set_xlabel(x_key.replace("_", " "))
+        ax.set_ylabel(y_key.replace("_", " "))
+        ax.grid(alpha=0.25)
+    if scatter_obj is not None:
+        cbar = fig.colorbar(scatter_obj, ax=axes.ravel().tolist(), shrink=0.92)
+        cbar.set_label("Reward")
+    fig.tight_layout()
+    fig.savefig(path, dpi=180)
+    plt.close(fig)
+
+
+def plot_source_usage_distributions(rollouts: list[dict[str, Any]], path: Path) -> None:
+    if not rollouts:
+        return
+    web_searches = [float(row.get("web_searches") or 0.0) for row in rollouts]
+    local_searches = [float(row.get("local_searches") or 0.0) for row in rollouts]
+    web_reads = [float(row.get("web_docs_read") or 0.0) for row in rollouts]
+    local_reads = [float(row.get("local_docs_read") or 0.0) for row in rollouts]
+
+    max_search = max(web_searches + local_searches + [1.0])
+    max_read = max(web_reads + local_reads + [1.0])
+    search_bins = min(30, max(10, int(max_search) + 1))
+    read_bins = min(30, max(10, int(max_read) + 1))
+
+    fig, axes = plt.subplots(1, 2, figsize=(11, 4.8))
+    axes[0].hist(web_searches, bins=search_bins, alpha=0.6, label="web_searches", color="#1f77b4")
+    axes[0].hist(local_searches, bins=search_bins, alpha=0.6, label="local_searches", color="#ff7f0e")
+    axes[0].set_title("Search Count Distribution by Source")
+    axes[0].set_xlabel("Searches per rollout")
+    axes[0].set_ylabel("Rollouts")
+    axes[0].grid(axis="y", alpha=0.25)
+    axes[0].legend()
+
+    axes[1].hist(web_reads, bins=read_bins, alpha=0.6, label="web_docs_read", color="#2ca02c")
+    axes[1].hist(local_reads, bins=read_bins, alpha=0.6, label="local_docs_read", color="#d62728")
+    axes[1].set_title("Doc Read Distribution by Source")
+    axes[1].set_xlabel("Docs read per rollout")
+    axes[1].set_ylabel("Rollouts")
+    axes[1].grid(axis="y", alpha=0.25)
+    axes[1].legend()
+
     fig.tight_layout()
     fig.savefig(path, dpi=180)
     plt.close(fig)
@@ -1089,6 +1185,18 @@ def render_index_html(
                 blurb="Search fanout versus how many candidate docs were actually selected for close reading.",
                 available=has_plot("searches_vs_docs_read.png"),
             ),
+            plot_card(
+                "Source Usage Scatter",
+                "source_usage_scatter.png",
+                blurb="Four pairings of local/web hop counts against local/web search counts. This makes it obvious when the agent is using the wrong source for a chain.",
+                available=has_plot("source_usage_scatter.png"),
+            ),
+            plot_card(
+                "Source Usage Distributions",
+                "source_usage_distributions.png",
+                blurb="Overlaid per-rollout distributions for web vs local searches and web vs local document reads.",
+                available=has_plot("source_usage_distributions.png"),
+            ),
         ]
     )
 
@@ -1294,6 +1402,14 @@ def render_index_html(
         "Parse error rate": f"{100.0 * float(overview.get('parse_error_rate') or 0.0):.2f}%",
         "Context overflows": int(overview.get("context_overflow_errors") or 0),
     }
+    source_usage_checks = {
+        "No-web-hop rollouts with web searches": f"{100.0 * float(overview.get('no_web_hops_with_web_search_fraction') or 0.0):.1f}%",
+        "No-local-hop rollouts with local searches": f"{100.0 * float(overview.get('no_local_hops_with_local_search_fraction') or 0.0):.1f}%",
+        "Mean web searches / rollout": format_decimal(overview.get("mean_web_searches")),
+        "Mean local searches / rollout": format_decimal(overview.get("mean_local_searches")),
+        "Mean web docs read / rollout": format_decimal(overview.get("mean_web_docs_read")),
+        "Mean local docs read / rollout": format_decimal(overview.get("mean_local_docs_read")),
+    }
     duration_stats = {key: format_decimal(value) for key, value in (overview.get("duration_stats") or {}).items()}
     reward_stats = {key: format_decimal(value) for key, value in (overview.get("reward_stats") or {}).items()}
     llm_stats = {key: format_decimal(value) for key, value in (overview.get("llm_call_stats") or {}).items()}
@@ -1304,6 +1420,16 @@ def render_index_html(
     )
     hop_accuracy_table = html_table(hop_accuracy_rows, ["Hop", "Accuracy", "Solved / Total"])
     parse_rate_table = html_table(parse_rate_rows, ["Stage", "Parse Errors", "Attempts", "Rate"])
+
+    reward_plumbing_html = """
+      <div class='mapping-list'>
+        <div><strong>Rollout reward:</strong> hop accuracy, computed as <code>correct_hops / total_hops</code>.</div>
+        <div><strong>Capture mode:</strong> training currently uses planning traces only, so <code>hop_plan</code>, <code>doc_choose</code>, and <code>hop_resolve</code> are trained; <code>doc_read</code> is not.</div>
+        <div><strong>Group size:</strong> the actor runs 8 attempts for the same problem under one RL comparison group.</div>
+        <div><strong>Advantage shape:</strong> every captured trace from one rollout gets the same scalar rollout reward, and therefore the same leave-one-out advantage relative to the other attempts in its group.</div>
+        <div><strong>Current limitation:</strong> this run's persisted trace bundle does not include <code>group_id</code> and <code>rollout_index</code>, so the viewer cannot reconstruct an exact per-group leave-one-out table after the fact.</div>
+      </div>
+    """
 
     raw_links = [
         "summary.json",
@@ -1482,6 +1608,20 @@ def render_index_html(
       margin: 0 0 10px;
       font-size: 18px;
     }}
+    .mapping-list {{
+      display: grid;
+      gap: 10px;
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.5;
+    }}
+    .mapping-list code {{
+      background: #f2f5fa;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 1px 5px;
+      font-size: 12px;
+    }}
     table {{
       width: 100%;
       border-collapse: collapse;
@@ -1621,6 +1761,10 @@ def render_index_html(
           {hop_accuracy_table}
         </section>
         <section class="table-card">
+          <h3>Reward Plumbing</h3>
+          {reward_plumbing_html}
+        </section>
+        <section class="table-card">
           <h3>Sampled Report Checks</h3>
           {sampled_table}
         </section>
@@ -1651,6 +1795,10 @@ def render_index_html(
         <section class="table-card">
           <h3>Counts</h3>
           {mapping_table(counts, key_name="Metric", value_name="Value")}
+        </section>
+        <section class="table-card">
+          <h3>Source Usage Checks</h3>
+          {mapping_table(source_usage_checks, key_name="Metric", value_name="Value")}
         </section>
         <section class="table-card">
           <h3>Reward</h3>
@@ -1803,6 +1951,16 @@ def main() -> None:
     plot_search_docs_scatter(rollouts, searches_docs_plot)
     if searches_docs_plot.exists():
         plots.append(searches_docs_plot.name)
+
+    source_usage_scatter_plot = output_dir / "source_usage_scatter.png"
+    plot_source_usage_scatter(rollouts, source_usage_scatter_plot)
+    if source_usage_scatter_plot.exists():
+        plots.append(source_usage_scatter_plot.name)
+
+    source_usage_dist_plot = output_dir / "source_usage_distributions.png"
+    plot_source_usage_distributions(rollouts, source_usage_dist_plot)
+    if source_usage_dist_plot.exists():
+        plots.append(source_usage_dist_plot.name)
 
     stage_duration_plot = output_dir / "stage_duration_boxplot.png"
     plot_grouped_boxplot(stage_durations, stage_duration_plot, title="Stage Duration Distribution", xlabel="Duration (seconds)", ylabel="Stage")
@@ -2021,6 +2179,18 @@ def main() -> None:
             else 0.0
         ),
         "context_overflow_errors": sum(int(row.get("kind") == "context_overflow") for row in error_rows),
+        "mean_web_searches": mean([float(row.get("web_searches") or 0.0) for row in rollouts]) if rollouts else 0.0,
+        "mean_local_searches": mean([float(row.get("local_searches") or 0.0) for row in rollouts]) if rollouts else 0.0,
+        "mean_web_docs_read": mean([float(row.get("web_docs_read") or 0.0) for row in rollouts]) if rollouts else 0.0,
+        "mean_local_docs_read": mean([float(row.get("local_docs_read") or 0.0) for row in rollouts]) if rollouts else 0.0,
+        "no_web_hops_with_web_search_fraction": (
+            sum(1 for row in rollouts if float(row.get("web_hop_count") or 0.0) == 0 and float(row.get("web_searches") or 0.0) > 0)
+            / max(1, sum(1 for row in rollouts if float(row.get("web_hop_count") or 0.0) == 0))
+        ) if rollouts else 0.0,
+        "no_local_hops_with_local_search_fraction": (
+            sum(1 for row in rollouts if float(row.get("local_hop_count") or 0.0) == 0 and float(row.get("local_searches") or 0.0) > 0)
+            / max(1, sum(1 for row in rollouts if float(row.get("local_hop_count") or 0.0) == 0))
+        ) if rollouts else 0.0,
         "reward_stats": numeric_stats(rewards),
         "duration_stats": numeric_stats(durations),
         "llm_call_stats": numeric_stats([float(value) for value in llm_calls]),

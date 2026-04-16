@@ -17,6 +17,8 @@ ANNOTATIONS_PATH=${ANNOTATIONS_PATH:-/home/toolkit/nice_code/drbench/chain_revie
 CURATED_PATH=${CURATED_PATH:-/home/toolkit/nice_code/drbench/chain_review/curated_chains.jsonl}
 TASK_DATA_ROOT=${TASK_DATA_ROOT:-/home/toolkit/nice_code/drbench/drbench/data/tasks}
 DATASET_PATH=${DATASET_PATH:-/mnt/llmd/results/exps/alexg/privacy_agent/datasets/seed20.jsonl}
+TRAIN_DATASET_PATH=${TRAIN_DATASET_PATH:-}
+VAL_DATASET_PATH=${VAL_DATASET_PATH:-}
 EXTRA_OVERRIDES=${EXTRA_OVERRIDES:-}
 
 PRIVACY_AGENT_HELPER_URL=${PRIVACY_AGENT_HELPER_URL:-}
@@ -29,7 +31,11 @@ if [[ -z "${PRIVACY_AGENT_HELPER_URL}" ]]; then
     exit 1
 fi
 
-if [[ -n "${DATASET_PATH}" ]]; then
+if [[ -n "${TRAIN_DATASET_PATH}" || -n "${VAL_DATASET_PATH}" ]]; then
+    EFFECTIVE_TRAIN_DATASET_PATH=${TRAIN_DATASET_PATH:-${DATASET_PATH}}
+    EFFECTIVE_VAL_DATASET_PATH=${VAL_DATASET_PATH:-${DATASET_PATH}}
+    DATASET_OVERRIDES="train_dataset_names=${EFFECTIVE_TRAIN_DATASET_PATH} test_dataset_names=${EFFECTIVE_VAL_DATASET_PATH}"
+elif [[ -n "${DATASET_PATH}" ]]; then
     DATASET_OVERRIDES="train_dataset_names=${DATASET_PATH} test_dataset_names=${DATASET_PATH}"
 else
     DATASET_OVERRIDES=""
@@ -64,9 +70,9 @@ finetune.rl.epsilon_high=4e-4 \
 actor.llm_max_rollouts=16 \
 actor.shared_memory_entry_size=50000000 \
 preprocess.chunk_n_groups=1 \
-finetune.seq_parallel=8 \
-finetune.seq_length=40960 \
-vllm_config.vllm_kwargs.max_model_len=40960 \
+finetune.seq_parallel=4 \
+finetune.seq_length=16384 \
+vllm_config.vllm_kwargs.max_model_len=16384 \
 vllm_config.vllm_kwargs.max-num-seqs=16 \
 vllm_config.vllm_kwargs.max-num-batched-tokens=8192 \
 llm.parameters.max_tokens=4096 \
