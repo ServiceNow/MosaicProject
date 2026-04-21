@@ -2,7 +2,10 @@
 """HTTP service for the privacy-agent retrieval helper."""
 
 import argparse
+from dataclasses import asdict
+import json
 import logging
+import os
 from pathlib import Path
 from typing import Any
 
@@ -17,6 +20,7 @@ from trajectory_generation.src.retrieval.privacy_helper_backend import (
 )
 
 logger = logging.getLogger(__name__)
+_CONFIG_ENV_VAR = "PRIVACY_HELPER_CONFIG_JSON"
 
 
 class EmbedRequest(BaseModel):
@@ -81,6 +85,12 @@ def add_helper_arguments(
 ) -> None:
     argument_target.add_argument("--host", default=default_host, help="Host to bind to.")
     argument_target.add_argument("--port", type=int, default=default_port, help="Port to bind to.")
+    argument_target.add_argument(
+        "--workers",
+        type=int,
+        default=1,
+        help="Number of helper worker processes to run.",
+    )
     argument_target.add_argument(
         "--local-index-root",
         default=str(Path.home() / "privacy_agent" / "local_indices"),
@@ -201,6 +211,13 @@ def config_from_args(args: argparse.Namespace) -> PrivacyHelperConfig:
     )
 
 
+def create_app_from_env() -> FastAPI:
+    payload = os.environ.get(_CONFIG_ENV_VAR)
+    if not payload:
+        raise RuntimeError(f"{_CONFIG_ENV_VAR} is not set")
+    return create_app(PrivacyHelperConfig(**json.loads(payload)))
+
+
 def create_app(config_obj: PrivacyHelperConfig) -> FastAPI:
     app = FastAPI(
         title="privacy-helper",
@@ -308,14 +325,27 @@ def main() -> int:
         format="%(asctime)s %(levelname)s %(name)s: %(message)s",
     )
 
-    app = create_app(config_from_args(args))
-    uvicorn.run(
-        app,
-        host=args.host,
-        port=args.port,
-        log_level="debug" if args.verbose else "info",
-        access_log=False,
-    )
+    config_obj = config_from_args(args)
+    if args.workers > 1:
+        os.environ[_CONFIG_ENV_VAR] = json.dumps(asdict(config_obj))
+        uvicorn.run(
+            "trajectory_generation.src.retrieval.privacy_helper_server:create_app_from_env",
+            host=args.host,
+            port=args.port,
+            log_level="debug" if args.verbose else "info",
+            access_log=False,
+            workers=args.workers,
+            factory=True,
+        )
+    else:
+        app = create_app(config_obj)
+        uvicorn.run(
+            app,
+            host=args.host,
+            port=args.port,
+            log_level="debug" if args.verbose else "info",
+            access_log=False,
+        )
     return 0
 
 

@@ -194,6 +194,9 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
         self.bm25: BM25Index | None = None
         self._bm25_idx_to_lookup_idx: dict[int, int] | None = None
         self._faiss_index = None
+        self._dense_backend = "faiss_cpu"
+        self._torch_device = None
+        self._torch_embeddings = None
 
         self._load_faiss_index()
         self.dataset, self.docid_to_idx, self.docid_to_url = _load_dataset(dataset_name)
@@ -202,6 +205,55 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
     @property
     def size(self) -> int:
         return len(self.lookup)
+
+    @property
+    def dense_backend(self) -> str:
+        return self._dense_backend
+
+    def _load_torch_dense_backend(self, embeddings: np.ndarray) -> None:
+        import torch
+
+        device = torch.device(self.index_device)
+        self._torch_device = device
+        with torch.no_grad():
+            self._torch_embeddings = torch.as_tensor(embeddings, device=device, dtype=torch.float32)
+        self._dense_backend = f"torch:{device}"
+
+    def _torch_query(self, query_vector: np.ndarray):
+        import torch
+
+        if self._torch_device is None:
+            raise RuntimeError("Torch dense backend requested before initialization")
+        return torch.as_tensor(query_vector, device=self._torch_device, dtype=torch.float32)
+
+    def _search_dense(self, query_vector: np.ndarray, dense_k: int) -> list[int]:
+        if self._dense_backend.startswith("torch:"):
+            import torch
+
+            if self._torch_embeddings is None:
+                raise RuntimeError("Torch dense backend is not initialized")
+            with torch.no_grad():
+                scores = torch.mv(self._torch_embeddings, self._torch_query(query_vector))
+                topk = torch.topk(scores, k=min(dense_k, scores.shape[0]), dim=0)
+            return [int(idx) for idx in topk.indices.detach().cpu().tolist()]
+
+        query_matrix = np.expand_dims(query_vector, axis=0)
+        _scores, dense_indices = self._faiss_index.search(query_matrix, dense_k)
+        return [int(idx) for idx in dense_indices[0] if int(idx) >= 0]
+
+    def _rerank_scores(self, candidate_list: list[int], query_vector: np.ndarray) -> np.ndarray:
+        if self._dense_backend.startswith("torch:"):
+            import torch
+
+            if self._torch_embeddings is None:
+                raise RuntimeError("Torch dense backend is not initialized")
+            with torch.no_grad():
+                candidate_embs = self._torch_embeddings[candidate_list]
+                scores = torch.mv(candidate_embs, self._torch_query(query_vector))
+            return scores.detach().cpu().numpy()
+
+        candidate_embs = self.embeddings[candidate_list]
+        return candidate_embs @ query_vector
 
     def _load_faiss_index(self) -> None:
         import faiss
@@ -230,10 +282,18 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
             gpu_id = 0
             if ":" in self.index_device:
                 gpu_id = int(self.index_device.split(":", 1)[1])
-            resources = faiss.StandardGpuResources()
-            options = faiss.GpuClonerOptions()
-            options.useFloat16 = True
-            index = faiss.index_cpu_to_gpu(resources, gpu_id, index, options)
+            if hasattr(faiss, "StandardGpuResources"):
+                resources = faiss.StandardGpuResources()
+                options = faiss.GpuClonerOptions()
+                options.useFloat16 = True
+                index = faiss.index_cpu_to_gpu(resources, gpu_id, index, options)
+                self._dense_backend = f"faiss_gpu:{gpu_id}"
+            else:
+                logger.warning(
+                    "faiss-gpu bindings are unavailable; using torch dense retrieval on %s",
+                    self.index_device,
+                )
+                self._load_torch_dense_backend(embeddings)
 
         self.lookup = shard_docids
         self.embeddings = embeddings
@@ -292,7 +352,6 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
             return []
 
         query_vector = self._encode_query(query).astype(np.float32, copy=False)
-        query_matrix = np.expand_dims(query_vector, axis=0)
         candidate_lookup_idxs: set[int] = set()
 
         if self.bm25 is not None and self._bm25_idx_to_lookup_idx is not None:
@@ -303,17 +362,15 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
 
         dense_k = min(self.dense_recall_k, len(self.lookup))
         if dense_k > 0:
-            _scores, dense_indices = self._faiss_index.search(query_matrix, dense_k)
-            for idx in dense_indices[0]:
-                if int(idx) >= 0:
-                    candidate_lookup_idxs.add(int(idx))
+            for idx in self._search_dense(query_vector, dense_k):
+                if idx >= 0:
+                    candidate_lookup_idxs.add(idx)
 
         if not candidate_lookup_idxs:
             return []
 
         candidate_list = sorted(candidate_lookup_idxs)
-        candidate_embs = self.embeddings[candidate_list]
-        rerank_scores = candidate_embs @ query_vector
+        rerank_scores = self._rerank_scores(candidate_list, query_vector)
         ranked = sorted(
             zip(candidate_list, rerank_scores),
             key=lambda item: float(item[1]),

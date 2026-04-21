@@ -339,6 +339,7 @@ class PrivacyHelperBackend:
             "loaded_local_tasks": self.local_indices.loaded_tasks,
             "browsecomp_size": self.browsecomp.size,
             "browsecomp_index_device": self.config.browsecomp_index_device,
+            "browsecomp_dense_backend": self.browsecomp.dense_backend,
             "curated_enabled": self.curated.enabled,
             "curated_doc_count": len(self.curated.curated_web_doc_ids),
             "curated_task_count": len(self.curated.doc_ids_by_task),
