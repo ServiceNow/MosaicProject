@@ -177,6 +177,8 @@ def build_helper_command(args: argparse.Namespace) -> list[str]:
         str(args.port),
         "--local-index-root",
         args.local_index_root,
+        "--workers",
+        str(args.workers),
         "--local-index-mmap-mode",
         args.local_index_mmap_mode,
         "--embedding-base-url",
