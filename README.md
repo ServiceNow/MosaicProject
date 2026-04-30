@@ -82,6 +82,7 @@ python -m trajectory_generation.scripts.view_generation \
 - [Architecture](./docs/architecture.md)
 - [Current System](./docs/system.md)
 - [Examples](./docs/examples.md)
+- [Privacy HopQA Training](./docs/privacy_hopqa_training.md)
 
 ## Repository Layout
 

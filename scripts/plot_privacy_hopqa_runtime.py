@@ -520,6 +520,7 @@ def load_rollouts(run_dir: Path, problem_lookup: dict[tuple[str, str], dict[str,
             "rollout_id": rollout_id,
             "task_id": task_id,
             "chain_id": chain_id,
+            "completed_at_s": trace_path.stat().st_mtime,
             "hop_pattern": pattern,
             "hop_count": hop_count,
             "local_hop_count": local_hop_count,
@@ -1571,7 +1572,7 @@ def render_index_html(
 
     llm_token_table = html_table(
         llm_token_rows,
-        ["Call Type", "Calls", "Median Prompt", "Median Output", "Median Total", "Mean Total"],
+        ["Call Type", "Calls", "Median Prompt", "Median Output", "Median Total", "Mean Prompt", "Mean Output", "Mean Total"],
     )
     hop_accuracy_table = html_table(hop_accuracy_rows, ["Hop", "Accuracy", "Solved / Total"])
     parse_rate_table = html_table(parse_rate_rows, ["Stage", "Parse Errors", "Attempts", "Rate"])
@@ -1592,6 +1593,7 @@ def render_index_html(
         "errors.csv",
         "events_sample.csv",
         "llm_calls_sample.csv",
+        "rollout_trends.csv",
         "hop_position_accuracy.csv",
         "parse_error_rates.csv",
         "llm_token_summary.csv",
@@ -2038,6 +2040,43 @@ def main() -> None:
     rollout_rate = compute_completed_rollout_rate(run_dir / "actor" / "info.log")
 
     write_csv(output_dir / "rollouts_sample.csv", sample_rows_for_export(rollouts, 2500, group_key="iterations_used"))
+    trend_columns = [
+        "completed_at_s",
+        "rollout_id",
+        "task_id",
+        "chain_id",
+        "hop_pattern",
+        "hop_count",
+        "web_hop_count",
+        "local_hop_count",
+        "correct_hops",
+        "final_correct",
+        "resolved_hops",
+        "total_hops",
+        "reward",
+        "duration_s",
+        "iterations_used",
+        "llm_calls_total",
+        "searches_total",
+        "web_searches",
+        "local_searches",
+        "docs_read",
+        "web_docs_read",
+        "local_docs_read",
+        "prompt_tokens",
+        "output_tokens",
+        "total_tokens",
+        "parse_errors_total",
+        "context_overflow_errors",
+        "total_errors",
+    ]
+    write_csv(
+        output_dir / "rollout_trends.csv",
+        [
+            {key: row.get(key, "") for key in trend_columns}
+            for row in sorted(rollouts, key=lambda item: float(item.get("completed_at_s") or 0.0))
+        ],
+    )
     write_csv(output_dir / "errors.csv", error_rows)
     write_csv(output_dir / "events_sample.csv", sample_rows_for_export(event_rows, 4000, group_key="stage"))
     write_csv(output_dir / "llm_calls_sample.csv", sample_rows_for_export(llm_call_rows, 4000, group_key="log_name"))
@@ -2311,6 +2350,8 @@ def main() -> None:
                 f"{median(prompts):.1f}",
                 f"{median(outputs):.1f}",
                 f"{median(totals):.1f}",
+                f"{mean(prompts):.1f}",
+                f"{mean(outputs):.1f}",
                 f"{mean(totals):.1f}",
             ]
         )
@@ -2375,7 +2416,9 @@ def main() -> None:
                 "median_prompt_tokens": row[2],
                 "median_output_tokens": row[3],
                 "median_total_tokens": row[4],
-                "mean_total_tokens": row[5],
+                "mean_prompt_tokens": row[5],
+                "mean_output_tokens": row[6],
+                "mean_total_tokens": row[7],
             }
             for row in llm_token_rows
         ],
