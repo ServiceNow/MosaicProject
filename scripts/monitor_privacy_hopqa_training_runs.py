@@ -7,6 +7,7 @@ import argparse
 import ast
 import base64
 import csv
+import heapq
 import html
 import json
 import math
@@ -70,6 +71,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--once", action="store_true", help="Refresh once and exit.")
     parser.add_argument("--tail-lines", type=int, default=8000, help="EAI log tail lines per run.")
     parser.add_argument("--rolling-window", type=int, default=8, help="Snapshot points for moving averages.")
+    parser.add_argument("--new-trace-limit", type=int, default=512, help="New rollout traces to parse per run per refresh.")
+    parser.add_argument("--trace-cache-limit", type=int, default=6000, help="Recent rollout traces to retain per run.")
     return parser.parse_args()
 
 
@@ -175,6 +178,13 @@ def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(rows)
+
+
+def read_csv_rows(path: Path) -> list[dict[str, Any]]:
+    if not path.exists() or path.stat().st_size == 0:
+        return []
+    with path.open("r", encoding="utf-8", newline="") as handle:
+        return list(csv.DictReader(handle))
 
 
 def rolling(values: list[float | None], window: int) -> list[float | None]:
@@ -331,6 +341,225 @@ def snapshot_eai_runs(output_dir: Path, runs: list[RunSpec], tail_lines: int, no
         rows.append(row)
         append_jsonl(output_dir / "run_snapshots.jsonl", row)
     return rows
+
+
+def newest_rollout_dirs(run: RunSpec, limit: int) -> list[tuple[float, Path]]:
+    root = run.run_dir / "privacy_hopqa_runs"
+    if not root.exists():
+        return []
+    candidates: list[tuple[float, Path]] = []
+    try:
+        for path in root.iterdir():
+            if not path.is_dir():
+                continue
+            summary = path / "timeline_summary.json"
+            events = path / "timeline_events.json"
+            if not summary.exists() or not events.exists():
+                continue
+            try:
+                mtime = max(summary.stat().st_mtime, events.stat().st_mtime)
+            except OSError:
+                continue
+            candidates.append((mtime, path))
+    except OSError:
+        return []
+    return sorted(heapq.nlargest(limit, candidates, key=lambda item: item[0]), key=lambda item: item[0])
+
+
+def event_duration_s(event: dict[str, Any]) -> float | None:
+    start = as_float(event.get("start_s"))
+    end = as_float(event.get("end_s"))
+    if start is None or end is None:
+        return None
+    duration = end - start
+    return duration if duration >= 0 else None
+
+
+def search_backend(event: dict[str, Any]) -> str:
+    meta = event.get("meta") if isinstance(event.get("meta"), dict) else {}
+    action_type = str(meta.get("action_type") or meta.get("tool") or event.get("label") or "").lower()
+    if "local" in action_type:
+        return "local"
+    if "web" in action_type or "browse" in action_type:
+        return "web"
+    return "unknown"
+
+
+def parse_trace_timings(
+    runs: list[RunSpec],
+    seen_rollouts: set[tuple[str, str]],
+    new_trace_limit: int,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+    stage_rows: list[dict[str, Any]] = []
+    rollout_rows: list[dict[str, Any]] = []
+    action_rows: list[dict[str, Any]] = []
+    for run in runs:
+        root = run.run_dir / "privacy_hopqa_runs"
+        if not root.exists():
+            continue
+        parsed_for_run = 0
+        try:
+            rollout_dirs = root.iterdir()
+        except OSError:
+            continue
+        for rollout_dir in rollout_dirs:
+            if parsed_for_run >= new_trace_limit:
+                break
+            if not rollout_dir.is_dir():
+                continue
+            rollout_id = rollout_dir.name
+            if (run.label, rollout_id) in seen_rollouts:
+                continue
+            summary_path = rollout_dir / "timeline_summary.json"
+            events_path = rollout_dir / "timeline_events.json"
+            trace_path = rollout_dir / "trace.json"
+            if not summary_path.exists() or not events_path.exists():
+                continue
+            try:
+                completed_at_s = max(summary_path.stat().st_mtime, events_path.stat().st_mtime)
+            except OSError:
+                continue
+            try:
+                summary = json.loads(summary_path.read_text(encoding="utf-8"))
+                events = json.loads(events_path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                continue
+            if not isinstance(summary, dict) or not isinstance(events, list):
+                continue
+
+            base = {
+                "label": run.label,
+                "job_id": run.job_id,
+                "run_dir": str(run.run_dir),
+                "rollout_id": rollout_id,
+                "task_id": summary.get("task_id"),
+                "chain_id": summary.get("chain_id"),
+                "completed_at_s": completed_at_s,
+                "timestamp": iso(datetime.fromtimestamp(completed_at_s, tz=timezone.utc)),
+            }
+
+            stage_values: dict[str, list[float]] = {}
+            search_values: dict[str, list[float]] = {"web": [], "local": [], "unknown": [], "all": []}
+            action_values: dict[str, list[float]] = {"web_search": [], "local_document_search": [], "all": []}
+            for event in events:
+                if not isinstance(event, dict):
+                    continue
+                duration = event_duration_s(event)
+                if duration is None:
+                    continue
+                stage = str(event.get("stage") or "unknown")
+                stage_values.setdefault(stage, []).append(duration)
+                row = {
+                    **base,
+                    "stage": stage,
+                    "duration_s": duration,
+                    "lane": event.get("lane"),
+                    "event_label": event.get("label"),
+                }
+                if stage == "search":
+                    backend = search_backend(event)
+                    row["search_backend"] = backend
+                    search_values.setdefault(backend, []).append(duration)
+                    search_values["all"].append(duration)
+                stage_rows.append(row)
+
+            try:
+                trace = json.loads(trace_path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                trace = {}
+            actions = trace.get("actions") if isinstance(trace, dict) else None
+            if isinstance(actions, list):
+                for action in actions:
+                    if not isinstance(action, dict):
+                        continue
+                    action_type = str(action.get("type") or "")
+                    if action_type not in {"web_search", "local_document_search"}:
+                        continue
+                    execution_time = as_float(action.get("execution_time"))
+                    if execution_time is None:
+                        execution_time = as_float(action.get("execution_time_s"))
+                    if execution_time is None:
+                        continue
+                    actual_output = action.get("actual_output") if isinstance(action.get("actual_output"), dict) else {}
+                    action_values.setdefault(action_type, []).append(execution_time)
+                    action_values["all"].append(execution_time)
+                    action_rows.append(
+                        {
+                            **base,
+                            "action_id": action.get("id"),
+                            "action_type": action_type,
+                            "tool": actual_output.get("tool"),
+                            "status": action.get("status"),
+                            "execution_time_s": execution_time,
+                            "query": actual_output.get("query")
+                            or (action.get("parameters") or {}).get("query")
+                            if isinstance(action.get("parameters"), dict)
+                            else actual_output.get("query"),
+                            "success": actual_output.get("success"),
+                            "results_count": actual_output.get("results_count"),
+                        }
+                    )
+
+            rollout_row: dict[str, Any] = {
+                **base,
+                "duration_s": summary.get("duration_s"),
+                "iterations_used": summary.get("iterations_used"),
+                "resolved_hops": summary.get("resolved_hops"),
+                "total_hops": summary.get("total_hops"),
+                "searches_total": summary.get("searches_total"),
+                "docs_read": summary.get("docs_read"),
+                "llm_calls_total": summary.get("llm_calls_total"),
+                "prompt_tokens": summary.get("prompt_tokens"),
+                "output_tokens": summary.get("output_tokens"),
+                "total_tokens": summary.get("total_tokens"),
+                "total_errors": summary.get("total_errors"),
+            }
+            for stage, values in stage_values.items():
+                safe_stage = re.sub(r"[^A-Za-z0-9]+", "_", stage).strip("_")
+                rollout_row[f"stage_{safe_stage}_count"] = len(values)
+                rollout_row[f"stage_{safe_stage}_mean_s"] = sum(values) / len(values)
+                rollout_row[f"stage_{safe_stage}_sum_s"] = sum(values)
+            for backend, values in search_values.items():
+                rollout_row[f"search_{backend}_count"] = len(values)
+                rollout_row[f"search_{backend}_mean_s"] = sum(values) / len(values) if values else None
+                rollout_row[f"search_{backend}_sum_s"] = sum(values) if values else None
+            for action_type, values in action_values.items():
+                safe_action = re.sub(r"[^A-Za-z0-9]+", "_", action_type).strip("_")
+                rollout_row[f"helper_action_{safe_action}_count"] = len(values)
+                rollout_row[f"helper_action_{safe_action}_mean_s"] = sum(values) / len(values) if values else None
+                rollout_row[f"helper_action_{safe_action}_sum_s"] = sum(values) if values else None
+            rollout_rows.append(rollout_row)
+            parsed_for_run += 1
+    return stage_rows, rollout_rows, action_rows
+
+
+def trim_trace_cache(
+    stage_rows: list[dict[str, Any]],
+    rollout_rows: list[dict[str, Any]],
+    action_rows: list[dict[str, Any]],
+    cache_limit: int,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+    kept_ids: set[tuple[str, str]] = set()
+    kept_rollouts: list[dict[str, Any]] = []
+    labels = sorted({str(row.get("label")) for row in rollout_rows if row.get("label")})
+    for label in labels:
+        rows = [row for row in rollout_rows if row.get("label") == label]
+        rows = sorted(rows, key=lambda row: as_float(row.get("completed_at_s")) or 0.0)
+        for row in rows[-cache_limit:]:
+            rollout_id = str(row.get("rollout_id") or "")
+            if not rollout_id:
+                continue
+            kept_ids.add((label, rollout_id))
+            kept_rollouts.append(row)
+
+    def keep(row: dict[str, Any]) -> bool:
+        label = str(row.get("label") or "")
+        rollout_id = str(row.get("rollout_id") or "")
+        return (label, rollout_id) in kept_ids
+
+    kept_stage = [row for row in stage_rows if keep(row)]
+    kept_actions = [row for row in action_rows if keep(row)]
+    return kept_stage, kept_rollouts, kept_actions
 
 
 def plot_setup() -> None:
@@ -512,6 +741,143 @@ def plot_helper_latency(output_dir: Path, helper_rows: list[dict[str, Any]], win
     return path.name
 
 
+def plot_trace_search_latency(output_dir: Path, rollout_rows: list[dict[str, Any]], window: int) -> str | None:
+    if not rollout_rows:
+        return None
+    plot_setup()
+    fig, axes = plt.subplots(2, 1, figsize=(11, 8), sharex=True)
+    labels = sorted({str(row.get("label")) for row in rollout_rows if row.get("label")})
+    plotted = False
+    for label in labels:
+        rows = sorted([row for row in rollout_rows if row.get("label") == label], key=lambda row: as_float(row.get("completed_at_s")) or 0.0)
+        paired = [
+            (datetime.fromtimestamp(float(row["completed_at_s"]), tz=timezone.utc), row)
+            for row in rows
+            if as_float(row.get("completed_at_s")) is not None
+        ]
+        if not paired:
+            continue
+        xs = [item[0] for item in paired]
+        web = rolling([as_float(item[1].get("search_web_mean_s")) for item in paired], window)
+        local = rolling([as_float(item[1].get("search_local_mean_s")) for item in paired], window)
+        all_search = rolling([as_float(item[1].get("search_all_mean_s")) for item in paired], window)
+        search_count = rolling([as_float(item[1].get("search_all_count")) for item in paired], window)
+        axes[0].plot(xs, all_search, linewidth=2.2, label=f"{label} all search")
+        axes[0].plot(xs, web, linestyle="--", linewidth=1.7, label=f"{label} web")
+        axes[0].plot(xs, local, linestyle=":", linewidth=2.0, label=f"{label} local")
+        axes[1].plot(xs, search_count, linewidth=2.0, label=label)
+        plotted = True
+    if not plotted:
+        plt.close(fig)
+        return None
+    axes[0].set_title(f"Trace search-stage latency moving average ({window} rollouts)")
+    axes[0].set_ylabel("seconds/search")
+    axes[1].set_title(f"Search calls per rollout moving average ({window} rollouts)")
+    axes[1].set_ylabel("search events/rollout")
+    for ax in axes:
+        ax.legend(loc="best")
+        finish_time_axis(ax)
+    path = output_dir / "trace_search_latency_ma.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path.name
+
+
+def plot_trace_helper_action_latency(output_dir: Path, action_rows: list[dict[str, Any]], window: int) -> str | None:
+    if not action_rows:
+        return None
+    plot_setup()
+    fig, axes = plt.subplots(2, 1, figsize=(11, 8), sharex=True)
+    labels = sorted({str(row.get("label")) for row in action_rows if row.get("label")})
+    plotted = False
+    for label in labels:
+        rows = sorted([row for row in action_rows if row.get("label") == label], key=lambda row: as_float(row.get("completed_at_s")) or 0.0)
+        for action_type, line_style in (("web_search", "-"), ("local_document_search", "--")):
+            action_specific = [row for row in rows if row.get("action_type") == action_type]
+            paired = [
+                (datetime.fromtimestamp(float(row["completed_at_s"]), tz=timezone.utc), row)
+                for row in action_specific
+                if as_float(row.get("completed_at_s")) is not None
+            ]
+            if not paired:
+                continue
+            xs = [item[0] for item in paired]
+            ys = rolling([as_float(item[1].get("execution_time_s")) for item in paired], window)
+            axes[0].plot(xs, ys, linestyle=line_style, linewidth=1.9, label=f"{label} {action_type}")
+            plotted = True
+
+        rollout_counts: dict[tuple[float, str], int] = {}
+        for row in rows:
+            completed_at = as_float(row.get("completed_at_s"))
+            action_type = str(row.get("action_type") or "")
+            if completed_at is None:
+                continue
+            rollout_counts[(completed_at, action_type)] = rollout_counts.get((completed_at, action_type), 0) + 1
+        for action_type, line_style in (("web_search", "-"), ("local_document_search", "--")):
+            pairs = sorted((completed_at, count) for (completed_at, kind), count in rollout_counts.items() if kind == action_type)
+            if not pairs:
+                continue
+            xs = [datetime.fromtimestamp(completed_at, tz=timezone.utc) for completed_at, _ in pairs]
+            ys = rolling([float(count) for _, count in pairs], window)
+            axes[1].plot(xs, ys, linestyle=line_style, linewidth=1.8, label=f"{label} {action_type}")
+    if not plotted:
+        plt.close(fig)
+        return None
+    axes[0].set_title(f"Trace helper action execution time moving average ({window} calls)")
+    axes[0].set_ylabel("seconds/call")
+    axes[1].set_title(f"Helper actions per rollout moving average ({window} rollouts)")
+    axes[1].set_ylabel("actions/rollout")
+    for ax in axes:
+        ax.legend(loc="best")
+        finish_time_axis(ax)
+    path = output_dir / "trace_helper_action_latency_ma.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path.name
+
+
+def plot_trace_stage_duration(output_dir: Path, stage_rows: list[dict[str, Any]], window: int) -> str | None:
+    if not stage_rows:
+        return None
+    wanted = ["hop_plan", "search", "doc_choose", "doc_read", "hop_resolve", "report"]
+    plot_setup()
+    fig, axes = plt.subplots(2, 1, figsize=(11, 9), sharex=True)
+    labels = sorted({str(row.get("label")) for row in stage_rows if row.get("label")})
+    plotted = False
+    for label in labels:
+        rows = sorted([row for row in stage_rows if row.get("label") == label], key=lambda row: as_float(row.get("completed_at_s")) or 0.0)
+        for stage in wanted:
+            stage_specific = [row for row in rows if row.get("stage") == stage]
+            if not stage_specific:
+                continue
+            paired = [
+                (datetime.fromtimestamp(float(row["completed_at_s"]), tz=timezone.utc), row)
+                for row in stage_specific
+                if as_float(row.get("completed_at_s")) is not None
+            ]
+            if not paired:
+                continue
+            xs = [item[0] for item in paired]
+            ys = rolling([as_float(item[1].get("duration_s")) for item in paired], window)
+            target_ax = axes[0] if stage in {"hop_plan", "doc_choose", "doc_read", "hop_resolve", "report"} else axes[1]
+            target_ax.plot(xs, ys, linewidth=1.7, label=f"{label} {stage}")
+            plotted = True
+    if not plotted:
+        plt.close(fig)
+        return None
+    axes[0].set_title(f"LLM-heavy stage duration moving average ({window} events)")
+    axes[0].set_ylabel("seconds/event")
+    axes[1].set_title(f"Search/helper stage duration moving average ({window} events)")
+    axes[1].set_ylabel("seconds/event")
+    for ax in axes:
+        ax.legend(loc="best", ncol=2)
+        finish_time_axis(ax)
+    path = output_dir / "trace_stage_duration_ma.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path.name
+
+
 def latest_by_label(rows: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     latest: dict[str, dict[str, Any]] = {}
     for row in rows:
@@ -558,17 +924,21 @@ def build_html(
     finetune_rows_by_run: dict[str, list[dict[str, Any]]],
     run_snapshots: list[dict[str, Any]],
     helper_flat_rows: list[dict[str, Any]],
+    trace_rollout_rows: list[dict[str, Any]],
+    trace_action_rows: list[dict[str, Any]],
     plot_names: list[str],
     now: datetime,
     helper_url: str,
 ) -> None:
     latest_snapshots = latest_by_label(run_snapshots)
     latest_helper = latest_helper_metrics(helper_flat_rows)
+    latest_trace = latest_by_label(trace_rollout_rows)
 
     run_cards: list[str] = []
     for run in runs:
         finetune_latest = finetune_rows_by_run.get(run.label, [])[-1] if finetune_rows_by_run.get(run.label) else {}
         snapshot = latest_snapshots.get(run.label, {})
+        trace_latest = latest_trace.get(run.label, {})
         run_cards.append(
             card(
                 run.label,
@@ -585,6 +955,13 @@ def build_html(
                     ("actor total", fmt_num(snapshot.get("latest_actor_total"))),
                     ("recent filter rate", fmt_pct(snapshot.get("recent_filter_rate"))),
                     ("recent zero-filtered", fmt_num(snapshot.get("recent_zero_advantage_filtered_samples"))),
+                    ("trace rollouts parsed", fmt_num(len([row for row in trace_rollout_rows if row.get("label") == run.label]))),
+                    ("trace search mean", fmt_num(trace_latest.get("search_all_mean_s"), 3) + "s"),
+                    ("trace web search mean", fmt_num(trace_latest.get("search_web_mean_s"), 3) + "s"),
+                    ("trace local search mean", fmt_num(trace_latest.get("search_local_mean_s"), 3) + "s"),
+                    ("helper action mean", fmt_num(trace_latest.get("helper_action_all_mean_s"), 3) + "s"),
+                    ("helper web action mean", fmt_num(trace_latest.get("helper_action_web_search_mean_s"), 3) + "s"),
+                    ("helper local action mean", fmt_num(trace_latest.get("helper_action_local_document_search_mean_s"), 3) + "s"),
                     ("tail errors", fmt_num(snapshot.get("error_count_in_tail"))),
                 ],
             )
@@ -754,10 +1131,11 @@ def build_html(
     <h1>privacy_hopqa live monitor</h1>
     <p class="subhead">
       Last refreshed {esc(iso(now))}. This dashboard tracks both scheduler-fix training runs, recent
-      zero-advantage filtering, finetune progress, and helper search latency sampled from
-      <code>{esc(helper_url.rstrip('/') + '/health')}</code>. The helper currently exposes count,
-      active, errors, p50, p95, and max latency, not a true arithmetic mean; the latency plot is a
-      moving average over sampled p50/p95 snapshots.
+      zero-advantage filtering, finetune progress, service-level helper latency sampled from
+      <code>{esc(helper_url.rstrip('/') + '/health')}</code>, and per-rollout search-stage timings
+      from <code>privacy_hopqa_runs/*/timeline_events.json</code>. It also reads
+      <code>trace.json/actions[*].execution_time</code> for the cleanest per-helper-call duration.
+      The helper service endpoint still exposes p50/p95/max rather than a true arithmetic mean.
     </p>
   </header>
   <main>
@@ -798,6 +1176,21 @@ def refresh(args: argparse.Namespace, runs: list[RunSpec]) -> None:
 
     snapshot_helper(output_dir, args.helper_url, now)
     snapshot_eai_runs(output_dir, runs, args.tail_lines, now)
+    cached_stage_rows = read_csv_rows(output_dir / "trace_stage_timings.csv")
+    cached_rollout_rows = read_csv_rows(output_dir / "trace_rollout_timings.csv")
+    cached_action_rows = read_csv_rows(output_dir / "trace_helper_actions.csv")
+    seen_rollouts = {
+        (str(row.get("label") or ""), str(row.get("rollout_id") or ""))
+        for row in cached_rollout_rows
+        if row.get("label") and row.get("rollout_id")
+    }
+    new_stage_rows, new_rollout_rows, new_action_rows = parse_trace_timings(runs, seen_rollouts, args.new_trace_limit)
+    trace_stage_rows, trace_rollout_rows, trace_action_rows = trim_trace_cache(
+        cached_stage_rows + new_stage_rows,
+        cached_rollout_rows + new_rollout_rows,
+        cached_action_rows + new_action_rows,
+        args.trace_cache_limit,
+    )
 
     finetune_rows_by_run: dict[str, list[dict[str, Any]]] = {}
     for run in runs:
@@ -811,12 +1204,18 @@ def refresh(args: argparse.Namespace, runs: list[RunSpec]) -> None:
     helper_flat = flatten_helper_snapshots(helper_snapshots)
     write_csv(output_dir / "run_snapshots.csv", run_snapshots)
     write_csv(output_dir / "helper_metrics.csv", helper_flat)
+    write_csv(output_dir / "trace_stage_timings.csv", trace_stage_rows)
+    write_csv(output_dir / "trace_rollout_timings.csv", trace_rollout_rows)
+    write_csv(output_dir / "trace_helper_actions.csv", trace_action_rows)
 
     plot_names = [
         plot_training_progress(output_dir, finetune_rows_by_run),
         plot_reward_throughput(output_dir, finetune_rows_by_run, args.rolling_window),
         plot_filtering(output_dir, run_snapshots, args.rolling_window),
         plot_helper_latency(output_dir, helper_flat, args.rolling_window),
+        plot_trace_helper_action_latency(output_dir, trace_action_rows, args.rolling_window),
+        plot_trace_search_latency(output_dir, trace_rollout_rows, args.rolling_window),
+        plot_trace_stage_duration(output_dir, trace_stage_rows, args.rolling_window),
     ]
     build_html(
         output_dir=output_dir,
@@ -824,6 +1223,8 @@ def refresh(args: argparse.Namespace, runs: list[RunSpec]) -> None:
         finetune_rows_by_run=finetune_rows_by_run,
         run_snapshots=run_snapshots,
         helper_flat_rows=helper_flat,
+        trace_rollout_rows=trace_rollout_rows,
+        trace_action_rows=trace_action_rows,
         plot_names=[name for name in plot_names if name],
         now=now,
         helper_url=args.helper_url,
