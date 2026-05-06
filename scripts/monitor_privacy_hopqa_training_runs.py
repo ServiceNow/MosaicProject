@@ -537,6 +537,9 @@ def parse_trace_timings(
                     "doc_source": meta.get("source"),
                     "doc_id": meta.get("doc_id"),
                     "result_count": meta.get("result_count"),
+                    "planned_action_count": len(meta.get("planned_actions") or [])
+                    if isinstance(meta.get("planned_actions"), list)
+                    else None,
                 }
                 if stage == "search":
                     backend = search_backend(event)
@@ -578,6 +581,13 @@ def parse_trace_timings(
                     if execution_time is None:
                         continue
                     actual_output = action.get("actual_output") if isinstance(action.get("actual_output"), dict) else {}
+                    results = actual_output.get("results") if isinstance(actual_output.get("results"), list) else []
+                    top_results: list[str] = []
+                    for result in results[:3]:
+                        if isinstance(result, dict):
+                            top_results.append(
+                                f"{result.get('doc_id') or ''} | {truncate_text(result.get('title') or result.get('snippet'), 180)}"
+                            )
                     action_id = str(action.get("id") or "")
                     mapped = action_hop.get(action_id, {})
                     actual_source = "web" if action_type == "web_search" else "local" if action_type == "local_document_search" else "unknown"
@@ -602,6 +612,7 @@ def parse_trace_timings(
                             or ((action.get("parameters") or {}).get("query") if isinstance(action.get("parameters"), dict) else None),
                             "success": actual_output.get("success"),
                             "results_count": actual_output.get("results_count"),
+                            "top_results": " || ".join(top_results),
                         }
                     )
 
@@ -1474,6 +1485,181 @@ def plot_classic_company_alignment(output_dir: Path, rollout_rows: list[dict[str
     return path.name
 
 
+def plot_classic_rollout_duration_by_iteration(output_dir: Path, rollout_rows: list[dict[str, Any]]) -> str | None:
+    rows = [row for row in rollout_rows if as_float(row.get("iterations_used")) is not None and as_float(row.get("duration_s")) is not None]
+    if not rows:
+        return None
+    labels = sorted({str(row.get("label")) for row in rows if row.get("label")})
+    plot_setup()
+    fig, ax = plt.subplots(figsize=(12, 6))
+    for label in labels:
+        buckets: dict[int, list[float]] = defaultdict(list)
+        for row in rows:
+            if row.get("label") != label:
+                continue
+            iteration = as_int(row.get("iterations_used"))
+            duration = as_float(row.get("duration_s"))
+            if iteration is not None and duration is not None:
+                buckets[iteration].append(duration)
+        xs = sorted(buckets)
+        ys = [mean_or_none(buckets[x]) for x in xs]
+        ax.plot(xs, ys, marker="o", linewidth=2.0, label=label)
+    ax.set_title("Mean rollout duration by final iteration")
+    ax.set_xlabel("iterations used")
+    ax.set_ylabel("seconds")
+    ax.legend(loc="best")
+    ax.grid(True, alpha=0.25)
+    path = output_dir / "classic_rollout_duration_by_iteration.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path.name
+
+
+def plot_classic_planning_yield(output_dir: Path, stage_rows: list[dict[str, Any]]) -> str | None:
+    plan_rows = [row for row in stage_rows if row.get("stage") == "hop_plan"]
+    if not plan_rows:
+        return None
+    labels = sorted({str(row.get("label")) for row in plan_rows if row.get("label")})
+    plot_setup()
+    fig, axes = plt.subplots(2, 1, figsize=(12, 9), sharex=True)
+    plotted = False
+    for label in labels:
+        rows = [row for row in plan_rows if row.get("label") == label]
+        iterations = sorted({as_int(row.get("iteration")) for row in rows if as_int(row.get("iteration")) is not None})
+        empty_rates: list[float | None] = []
+        planned_counts: list[float | None] = []
+        for iteration in iterations:
+            bucket = [row for row in rows if as_int(row.get("iteration")) == iteration]
+            counts = [as_float(row.get("planned_action_count")) for row in bucket if as_float(row.get("planned_action_count")) is not None]
+            empty_rates.append(sum(1 for value in counts if value == 0) / len(counts) if counts else None)
+            planned_counts.append(mean_or_none([value for value in counts if value is not None]))
+        axes[0].plot(iterations, empty_rates, marker="o", linewidth=2.0, label=label)
+        axes[1].plot(iterations, planned_counts, marker="o", linewidth=2.0, label=label)
+        plotted = True
+    if not plotted:
+        plt.close(fig)
+        return None
+    axes[0].set_title("Empty retrieval-plan rate by iteration")
+    axes[0].set_ylabel("fraction empty")
+    axes[0].set_ylim(0, 1)
+    axes[1].set_title("Planned retrieval actions by iteration")
+    axes[1].set_ylabel("mean planned actions")
+    axes[1].set_xlabel("iteration within rollout")
+    for ax in axes:
+        ax.legend(loc="best")
+        ax.grid(True, alpha=0.25)
+    path = output_dir / "classic_planning_yield_by_iteration.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path.name
+
+
+def plot_classic_resolved_hops(output_dir: Path, rollout_rows: list[dict[str, Any]]) -> str | None:
+    rows = [row for row in rollout_rows if as_float(row.get("resolved_hops")) is not None and as_float(row.get("total_hops")) is not None]
+    if not rows:
+        return None
+    labels = sorted({str(row.get("label")) for row in rows if row.get("label")})
+    plot_setup()
+    fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+    for label in labels:
+        values = [as_float(row.get("resolved_hops")) for row in rows if row.get("label") == label]
+        values = [value for value in values if value is not None]
+        fracs = [
+            resolved / total
+            for row in rows
+            if row.get("label") == label
+            and (resolved := as_float(row.get("resolved_hops"))) is not None
+            and (total := as_float(row.get("total_hops"))) is not None
+            and total > 0
+        ]
+        if values:
+            axes[0].hist(values, bins=range(0, int(max(values)) + 3), alpha=0.55, label=label)
+        if fracs:
+            axes[1].hist(fracs, bins=10, range=(0, 1), alpha=0.55, label=label)
+    axes[0].set_title("Resolved hops per rollout")
+    axes[0].set_xlabel("resolved hops")
+    axes[0].set_ylabel("rollouts")
+    axes[1].set_title("Resolved-hop fraction")
+    axes[1].set_xlabel("resolved / total")
+    for ax in axes:
+        ax.legend(loc="best")
+        ax.grid(True, axis="y", alpha=0.25)
+    path = output_dir / "classic_resolved_hops_distribution.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path.name
+
+
+def plot_classic_temporal_rollout_metrics(output_dir: Path, rollout_rows: list[dict[str, Any]], window: int) -> str | None:
+    rows = [row for row in rollout_rows if as_float(row.get("completed_at_s")) is not None]
+    if not rows:
+        return None
+    labels = sorted({str(row.get("label")) for row in rows if row.get("label")})
+    plot_setup()
+    fig, axes = plt.subplots(3, 1, figsize=(12, 11), sharex=True)
+    for label in labels:
+        label_rows = sorted([row for row in rows if row.get("label") == label], key=lambda row: as_float(row.get("completed_at_s")) or 0.0)
+        xs = [datetime.fromtimestamp(as_float(row.get("completed_at_s")) or 0.0, tz=timezone.utc) for row in label_rows]
+        alignment = rolling([as_float(row.get("source_alignment_rate")) for row in label_rows], window)
+        searches = rolling([as_float(row.get("searches_total")) for row in label_rows], window)
+        llm_calls = rolling([as_float(row.get("llm_calls_total")) for row in label_rows], window)
+        axes[0].plot(xs, alignment, linewidth=2.0, label=label)
+        axes[1].plot(xs, searches, linewidth=2.0, label=label)
+        axes[2].plot(xs, llm_calls, linewidth=2.0, label=label)
+    axes[0].set_title(f"Source alignment moving average ({window} rollouts)")
+    axes[0].set_ylabel("alignment")
+    axes[0].set_ylim(0, 1)
+    axes[1].set_title(f"Searches per rollout moving average ({window} rollouts)")
+    axes[1].set_ylabel("searches")
+    axes[2].set_title(f"LLM calls per rollout moving average ({window} rollouts)")
+    axes[2].set_ylabel("LLM calls")
+    for ax in axes:
+        ax.legend(loc="best")
+        finish_time_axis(ax)
+    path = output_dir / "classic_temporal_rollout_metrics.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path.name
+
+
+def plot_classic_early_middle_late(output_dir: Path, rollout_rows: list[dict[str, Any]]) -> str | None:
+    rows = [row for row in rollout_rows if as_float(row.get("completed_at_s")) is not None]
+    if not rows:
+        return None
+    labels = sorted({str(row.get("label")) for row in rows if row.get("label")})
+    metrics = [
+        ("source_alignment_rate", "source alignment"),
+        ("searches_total", "searches"),
+        ("docs_read", "docs read"),
+        ("llm_calls_total", "LLM calls"),
+    ]
+    plot_setup()
+    fig, axes = plt.subplots(2, 2, figsize=(12, 9))
+    for ax, (key, title) in zip(axes.flat, metrics):
+        xlabels: list[str] = []
+        means: list[float] = []
+        for label in labels:
+            label_rows = sorted([row for row in rows if row.get("label") == label], key=lambda row: as_float(row.get("completed_at_s")) or 0.0)
+            n = len(label_rows)
+            buckets = [
+                ("early", label_rows[: max(1, n // 3)]),
+                ("middle", label_rows[max(1, n // 3) : max(2, (2 * n) // 3)]),
+                ("late", label_rows[max(2, (2 * n) // 3) :]),
+            ]
+            for phase, bucket in buckets:
+                xlabels.append(f"{label}\n{phase}")
+                means.append(mean_or_none([value for row in bucket if (value := as_float(row.get(key))) is not None]) or 0.0)
+        ax.bar(range(len(means)), means)
+        ax.set_title(title)
+        ax.set_xticks(range(len(means)))
+        ax.set_xticklabels(xlabels, rotation=30, ha="right", fontsize=8)
+        ax.grid(True, axis="y", alpha=0.25)
+    path = output_dir / "classic_early_middle_late_metrics.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path.name
+
+
 def latest_by_label(rows: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     latest: dict[str, dict[str, Any]] = {}
     for row in rows:
@@ -1891,6 +2077,26 @@ def build_classic_html(
             "Company-level source alignment",
             "Whether retrieval source behavior differs by company/domain.",
         ),
+        "classic_rollout_duration_by_iteration.png": (
+            "Rollout duration by final iteration",
+            "Mean rollout wall time as a function of how long the agent kept looping.",
+        ),
+        "classic_planning_yield_by_iteration.png": (
+            "Planning yield by iteration",
+            "Empty-plan rate and mean planned retrieval actions; this makes the 4B repeated-planning failure visible.",
+        ),
+        "classic_resolved_hops_distribution.png": (
+            "Resolved-hop distribution",
+            "Resolved means the agent marked a hop as answered/resolved, not necessarily final correctness.",
+        ),
+        "classic_temporal_rollout_metrics.png": (
+            "Temporal moving averages",
+            "Source alignment, retrieval volume, and LLM-call volume over rollout completion time.",
+        ),
+        "classic_early_middle_late_metrics.png": (
+            "Early / middle / late metrics",
+            "Same run split into training-time thirds to catch drift across the run.",
+        ),
         "classic_error_breakdown.png": (
             "Error breakdown",
             "Trace summary errors by stage/kind. If empty, there were no emitted error records in the cache.",
@@ -1995,6 +2201,8 @@ def build_classic_html(
         <a href="#errors">Errors</a>
         <a href="#raw">Raw exports</a>
         <a href="privacy_hopqa_schedulerfix_rollout_samples.html">Rollout samples</a>
+        <a href="privacy_hopqa_schedulerfix_search_calls.html">Search calls</a>
+        {''.join(f'<a href="privacy_hopqa_schedulerfix_{safe_slug(run.label)}_detail.html">{esc(run.label)} detail</a>' for run in runs)}
       </div>
     </section>
     <section id="summary" class="section">
@@ -2024,7 +2232,7 @@ def build_classic_html(
       <ul class="raw-links">
         <li><code>trace_stage_timings.csv</code>: every parsed timeline stage event.</li>
         <li><code>trace_rollout_timings.csv</code>: rollout-level timing, search/doc counts, and source-alignment aggregates.</li>
-        <li><code>trace_helper_actions.csv</code>: helper-backed web/local search action execution times.</li>
+        <li><code>trace_helper_actions.csv</code>: helper-backed web/local search action execution times, queries, and top result summaries.</li>
         <li><code>trace_error_summary.csv</code>: error summaries and emitted trace error records.</li>
       </ul>
     </section>
@@ -2314,6 +2522,196 @@ def build_rollout_samples_html(
     (output_dir.parent / name).write_text(html_text, encoding="utf-8")
 
 
+def safe_slug(value: str) -> str:
+    return re.sub(r"[^A-Za-z0-9_.-]+", "_", value).strip("_").lower()
+
+
+def build_model_detail_html(
+    output_dir: Path,
+    run: RunSpec,
+    model_dir: Path,
+    plot_names: list[str],
+    rollout_rows: list[dict[str, Any]],
+    stage_rows: list[dict[str, Any]],
+    action_rows: list[dict[str, Any]],
+    error_rows: list[dict[str, Any]],
+    now: datetime,
+) -> str:
+    label = run.label
+    rollouts = [row for row in rollout_rows if row.get("label") == label]
+    stage_count = len([row for row in stage_rows if row.get("label") == label])
+    action_count = len([row for row in action_rows if row.get("label") == label])
+    plan_rows = [row for row in stage_rows if row.get("label") == label and row.get("stage") == "hop_plan"]
+    empty_plan_rate = (
+        sum(1 for row in plan_rows if as_float(row.get("planned_action_count")) == 0)
+        / len([row for row in plan_rows if as_float(row.get("planned_action_count")) is not None])
+        if any(as_float(row.get("planned_action_count")) is not None for row in plan_rows)
+        else None
+    )
+    plot_cards = [
+        ("classic_rollout_distributions.png", "Rollout distributions"),
+        ("classic_rollout_duration_by_iteration.png", "Duration by final iteration"),
+        ("classic_iteration_distribution.png", "Iteration distribution"),
+        ("classic_resolved_hops_distribution.png", "Resolved-hop distribution"),
+        ("classic_search_doc_counts.png", "Search/doc counts"),
+        ("classic_searches_vs_docs_read.png", "Searches vs docs read"),
+        ("classic_source_usage_distributions.png", "Source usage distributions"),
+        ("classic_stage_duration_boxplot.png", "Stage duration boxplots"),
+        ("classic_stage_event_mix.png", "Stage event mix"),
+        ("classic_token_usage.png", "Token and LLM-call usage"),
+        ("classic_planning_yield_by_iteration.png", "Planning yield"),
+        ("classic_source_alignment_by_hop.png", "Source alignment by hop"),
+        ("classic_source_calls_by_iteration.png", "Source calls by iteration"),
+        ("classic_pattern_alignment.png", "Pattern-level behavior"),
+        ("classic_company_alignment.png", "Company-level behavior"),
+        ("classic_temporal_rollout_metrics.png", "Temporal moving averages"),
+        ("classic_early_middle_late_metrics.png", "Early/middle/late split"),
+        ("classic_error_breakdown.png", "Error breakdown"),
+        ("trace_helper_action_latency_ma.png", "Helper action latency"),
+        ("trace_search_latency_ma.png", "Search-stage latency"),
+        ("trace_stage_duration_ma.png", "Stage duration moving average"),
+    ]
+    cards = "\n".join(
+        f"<div class='plot-card'><h3>{esc(title)}</h3>{embedded_image(model_dir, name)}</div>"
+        for name, title in plot_cards
+        if name in plot_names
+    )
+    stats = [
+        ("rollouts", fmt_num(len(rollouts))),
+        ("stage events", fmt_num(stage_count)),
+        ("search actions", fmt_num(action_count)),
+        ("mean duration s", fmt_num(mean_or_none(label_values(rollouts, label, "duration_s")), 1)),
+        ("mean LLM calls", fmt_num(mean_or_none(label_values(rollouts, label, "llm_calls_total")), 2)),
+        ("mean searches", fmt_num(mean_or_none(label_values(rollouts, label, "searches_total")), 2)),
+        ("empty plan rate", fmt_pct(empty_plan_rate)),
+        ("source alignment", fmt_pct(mean_or_none([value for row in rollouts if (value := as_float(row.get("source_alignment_rate"))) is not None]))),
+    ]
+    html_text = f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{esc(label)} privacy_hopqa detail</title>
+  <style>
+    :root {{ --bg:#f5f4ef; --panel:#fff; --ink:#1e2430; --muted:#5f6b7a; --line:#d7dbe2; --accent:#1f5da8; }}
+    * {{ box-sizing:border-box; }}
+    body {{ margin:0; font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:linear-gradient(180deg,#f8f7f2,#eef3f8); color:var(--ink); }}
+    .page {{ max-width:1600px; margin:0 auto; padding:28px; }}
+    .hero, .plot-card, .stat-card {{ background:var(--panel); border:1px solid var(--line); border-radius:18px; box-shadow:0 12px 32px rgba(30,36,48,.05); }}
+    .hero {{ padding:24px; margin-bottom:22px; }}
+    .hero h1 {{ margin:0 0 8px; }}
+    .hero p {{ color:var(--muted); }}
+    .nav {{ display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }}
+    .nav a {{ color:var(--accent); text-decoration:none; background:#e7f0fb; border:1px solid #cfe0f6; border-radius:999px; padding:7px 11px; }}
+    .stat-grid {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; margin:18px 0; }}
+    .stat-card {{ padding:14px; }}
+    .stat-label {{ color:var(--muted); text-transform:uppercase; font-size:11px; letter-spacing:.06em; }}
+    .stat-value {{ font-size:26px; font-weight:700; margin-top:6px; }}
+    .plot-grid {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(430px,1fr)); gap:18px; }}
+    .plot-card {{ padding:14px; overflow:auto; }}
+    .plot-card h3 {{ margin:3px 0 10px; }}
+    .plot-card img {{ width:100%; border:1px solid var(--line); border-radius:12px; background:white; }}
+    .missing-note {{ min-height:220px; display:grid; place-items:center; color:var(--muted); border:1px dashed var(--line); border-radius:12px; background:#f8fafc; }}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <h1>{esc(label)} detail viewer</h1>
+      <p>Generated {esc(iso(now))}. This page contains single-model distributions rather than mixed comparison plots.</p>
+      <div class="nav">
+        <a href="privacy_hopqa_schedulerfix_classic_viewer.html">Mixed viewer</a>
+        <a href="privacy_hopqa_schedulerfix_rollout_samples.html">Rollout samples</a>
+        <a href="privacy_hopqa_schedulerfix_search_calls.html">Search calls</a>
+      </div>
+    </section>
+    <div class="stat-grid">{''.join(stat_card_html(k, v) for k, v in stats)}</div>
+    <section class="plot-grid">{cards}</section>
+  </div>
+</body>
+</html>
+"""
+    name = f"privacy_hopqa_schedulerfix_{safe_slug(label)}_detail.html"
+    (output_dir / name).write_text(html_text, encoding="utf-8")
+    (output_dir.parent / name).write_text(html_text, encoding="utf-8")
+    return name
+
+
+def build_search_calls_html(
+    output_dir: Path,
+    action_rows: list[dict[str, Any]],
+    now: datetime,
+    max_rows: int = 8000,
+) -> None:
+    rows = sorted(action_rows, key=lambda row: (str(row.get("label") or ""), as_float(row.get("completed_at_s")) or 0.0))
+    total = len(rows)
+    rows = rows[-max_rows:]
+    table_rows = []
+    for row in rows:
+        table_rows.append(
+            "<tr>"
+            f"<td>{esc(row.get('label'))}</td>"
+            f"<td>{esc(row.get('rollout_id'))}</td>"
+            f"<td>{esc(row.get('action_type'))}</td>"
+            f"<td>{esc(row.get('expected_source'))}</td>"
+            f"<td>{esc(row.get('actual_source'))}</td>"
+            f"<td>{esc(row.get('hop_number'))}</td>"
+            f"<td>{esc(row.get('iteration'))}</td>"
+            f"<td>{fmt_num(row.get('execution_time_s'), 3)}s</td>"
+            f"<td>{esc(row.get('results_count'))}</td>"
+            f"<td>{esc(truncate_text(row.get('query'), 240))}</td>"
+            f"<td>{esc(truncate_text(row.get('top_results'), 520))}</td>"
+            "</tr>"
+        )
+    html_text = f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>privacy_hopqa search calls</title>
+  <style>
+    :root {{ --bg:#f5f4ef; --panel:#fff; --ink:#1e2430; --muted:#5f6b7a; --line:#d7dbe2; --accent:#1f5da8; }}
+    * {{ box-sizing:border-box; }}
+    body {{ margin:0; font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:linear-gradient(180deg,#f8f7f2,#eef3f8); color:var(--ink); }}
+    .page {{ max-width:1700px; margin:0 auto; padding:24px; }}
+    .hero, .table-card {{ background:var(--panel); border:1px solid var(--line); border-radius:18px; box-shadow:0 12px 32px rgba(30,36,48,.05); }}
+    .hero {{ padding:22px; margin-bottom:18px; }}
+    .hero p {{ color:var(--muted); }}
+    .nav {{ display:flex; gap:10px; flex-wrap:wrap; }}
+    .nav a {{ color:var(--accent); text-decoration:none; background:#e7f0fb; border:1px solid #cfe0f6; border-radius:999px; padding:7px 11px; }}
+    .table-card {{ padding:14px; overflow:auto; }}
+    table {{ width:100%; border-collapse:collapse; font-size:12px; }}
+    th, td {{ padding:7px 8px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }}
+    th {{ position:sticky; top:0; background:#f7f9fc; z-index:1; }}
+    code {{ background:#f2f5fa; border:1px solid var(--line); border-radius:6px; padding:1px 5px; }}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <h1>Search calls / helper actions</h1>
+      <p>Generated {esc(iso(now))}. Showing the latest {len(rows):,} cached search calls out of {total:,}. The full cached set is exported in <code>trace_helper_actions.csv</code>.</p>
+      <p>These are the web/local helper-backed search actions stored in <code>trace.json/actions[*]</code>, with query text and top retrieved results/snippets when present. Raw LLM completions are still not stored separately in these traces.</p>
+      <div class="nav">
+        <a href="privacy_hopqa_schedulerfix_classic_viewer.html">Mixed viewer</a>
+        <a href="privacy_hopqa_schedulerfix_rollout_samples.html">Rollout samples</a>
+      </div>
+    </section>
+    <section class="table-card">
+      <table>
+        <thead><tr><th>run</th><th>rollout</th><th>action</th><th>expected</th><th>actual</th><th>hop</th><th>iter</th><th>time</th><th>results</th><th>query</th><th>top results</th></tr></thead>
+        <tbody>{''.join(table_rows)}</tbody>
+      </table>
+    </section>
+  </div>
+</body>
+</html>
+"""
+    name = "privacy_hopqa_schedulerfix_search_calls.html"
+    (output_dir / name).write_text(html_text, encoding="utf-8")
+    (output_dir.parent / name).write_text(html_text, encoding="utf-8")
+
+
 def refresh(args: argparse.Namespace, runs: list[RunSpec]) -> None:
     now = utc_now()
     output_dir = Path(args.output_dir)
@@ -2379,6 +2777,11 @@ def refresh(args: argparse.Namespace, runs: list[RunSpec]) -> None:
         plot_classic_stage_event_mix(output_dir, trace_stage_rows),
         plot_classic_pattern_alignment(output_dir, trace_rollout_rows),
         plot_classic_company_alignment(output_dir, trace_rollout_rows),
+        plot_classic_rollout_duration_by_iteration(output_dir, trace_rollout_rows),
+        plot_classic_planning_yield(output_dir, trace_stage_rows),
+        plot_classic_resolved_hops(output_dir, trace_rollout_rows),
+        plot_classic_temporal_rollout_metrics(output_dir, trace_rollout_rows, args.rolling_window),
+        plot_classic_early_middle_late(output_dir, trace_rollout_rows),
         plot_classic_error_breakdown(output_dir, trace_error_rows),
     ]
     build_html(
@@ -2410,6 +2813,51 @@ def refresh(args: argparse.Namespace, runs: list[RunSpec]) -> None:
         samples_per_phase=args.samples_per_phase,
         now=now,
     )
+    model_pages: list[str] = []
+    for run in runs:
+        model_dir = output_dir / f"model_{safe_slug(run.label)}"
+        model_dir.mkdir(parents=True, exist_ok=True)
+        model_rollouts = [row for row in trace_rollout_rows if row.get("label") == run.label]
+        model_stages = [row for row in trace_stage_rows if row.get("label") == run.label]
+        model_actions = [row for row in trace_action_rows if row.get("label") == run.label]
+        model_errors = [row for row in trace_error_rows if row.get("label") == run.label]
+        model_plot_names = [
+            plot_classic_search_doc_counts(model_dir, model_rollouts, model_stages),
+            plot_classic_rollout_distributions(model_dir, model_rollouts),
+            plot_classic_stage_duration_boxplot(model_dir, model_stages),
+            plot_classic_source_usage_distributions(model_dir, model_rollouts, model_stages),
+            plot_classic_token_usage(model_dir, model_rollouts),
+            plot_classic_iteration_distribution(model_dir, model_rollouts),
+            plot_classic_searches_vs_docs(model_dir, model_rollouts),
+            plot_classic_stage_event_mix(model_dir, model_stages),
+            plot_classic_pattern_alignment(model_dir, model_rollouts),
+            plot_classic_company_alignment(model_dir, model_rollouts),
+            plot_classic_rollout_duration_by_iteration(model_dir, model_rollouts),
+            plot_classic_planning_yield(model_dir, model_stages),
+            plot_classic_resolved_hops(model_dir, model_rollouts),
+            plot_classic_temporal_rollout_metrics(model_dir, model_rollouts, args.rolling_window),
+            plot_classic_early_middle_late(model_dir, model_rollouts),
+            plot_classic_error_breakdown(model_dir, model_errors),
+            plot_trace_helper_action_latency(model_dir, model_actions, args.rolling_window),
+            plot_trace_search_latency(model_dir, model_rollouts, args.rolling_window),
+            plot_trace_stage_duration(model_dir, model_stages, args.rolling_window),
+            plot_source_alignment_by_hop(model_dir, model_stages),
+            plot_source_calls_by_iteration(model_dir, model_stages),
+        ]
+        model_pages.append(
+            build_model_detail_html(
+                output_dir=output_dir,
+                run=run,
+                model_dir=model_dir,
+                plot_names=[name for name in model_plot_names if name],
+                rollout_rows=trace_rollout_rows,
+                stage_rows=trace_stage_rows,
+                action_rows=trace_action_rows,
+                error_rows=trace_error_rows,
+                now=now,
+            )
+        )
+    build_search_calls_html(output_dir, trace_action_rows, now)
 
 
 def main() -> None:
