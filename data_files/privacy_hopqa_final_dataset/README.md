@@ -3,7 +3,7 @@
 Open `dataset_viewer.html` from a local HTTP server in this directory.
 
 ```bash
-cd /home/toolkit/my_code/MosaicProject/runtime_analysis/privacy_hopqa_final_dataset
+cd /home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset
 python3 -m http.server 8765
 ```
 
@@ -13,5 +13,7 @@ Files:
 
 - `privacy_hopqa_finalized_2026-05-05.jsonl`: finalized dataset rows.
 - `dataset_stats.json`: task/company/pattern/hop/doc statistics.
+- `dataset_analysis.json`: derived transition, effective-hop, and answer-variant statistics.
 - `question_uniqueness_stats.json`: approximate near-duplicate question clusters.
+- `plots/`: matplotlib/seaborn distribution plots used by the viewer.
 - `manifest.json`: publish provenance.

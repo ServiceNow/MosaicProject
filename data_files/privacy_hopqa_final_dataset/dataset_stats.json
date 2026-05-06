@@ -471,5 +471,132 @@
     "Lee's Market (Richmond, British Columbia, Canada, $500M - $600M, 5000 employees)": 50,
     "MediConn Solutions": 284,
     "MediConn Solutions (Vancouver, Canada, $50M - $100M, 250 employees)": 60
+  },
+  "derived_complexity": {
+    "effective_doc_hops_per_chain": {
+      "min": 1,
+      "median": 2,
+      "mean": 2.418,
+      "max": 5,
+      "distribution": {
+        "1": 6,
+        "2": 644,
+        "3": 279,
+        "4": 71,
+        "5": 1
+      }
+    },
+    "effective_type_hops_per_chain": {
+      "min": 1,
+      "median": 2,
+      "mean": 1.945,
+      "max": 5,
+      "distribution": {
+        "1": 211,
+        "2": 667,
+        "3": 91,
+        "4": 31,
+        "5": 1
+      }
+    },
+    "unique_docs_per_chain": {
+      "min": 1,
+      "median": 2,
+      "mean": 2.411,
+      "max": 5,
+      "distribution": {
+        "1": 2,
+        "2": 654,
+        "3": 278,
+        "4": 66,
+        "5": 1
+      }
+    },
+    "cross_doc_transitions_per_chain": {
+      "min": 0,
+      "median": 1,
+      "mean": 1.413,
+      "max": 4,
+      "distribution": {
+        "0": 2,
+        "1": 653,
+        "2": 278,
+        "3": 67,
+        "4": 1
+      }
+    },
+    "local_to_web_transitions_per_chain": {
+      "min": 0,
+      "median": 1,
+      "mean": 0.739,
+      "max": 2,
+      "distribution": {
+        "0": 291,
+        "1": 680,
+        "2": 30
+      }
+    },
+    "web_to_local_transitions_per_chain": {
+      "min": 0,
+      "median": 0,
+      "mean": 0.207,
+      "max": 2,
+      "distribution": {
+        "0": 797,
+        "1": 201,
+        "2": 3
+      }
+    },
+    "transition_summary": {
+      "has_local_to_web": 710,
+      "has_web_to_local": 204,
+      "has_both_lw_and_wl": 124,
+      "has_any_cross_doc_transition": 999,
+      "no_cross_doc_transition": 2
+    },
+    "transition_rates": {
+      "has_local_to_web": 0.7093,
+      "has_web_to_local": 0.2038,
+      "has_both_lw_and_wl": 0.1239,
+      "has_any_cross_doc_transition": 0.998,
+      "no_cross_doc_transition": 0.002
+    }
+  },
+  "answer_variant_stats": {
+    "answer_variants_per_hop": {
+      "min": 1,
+      "median": 2,
+      "mean": 2.671,
+      "max": 9,
+      "distribution": {
+        "1": 1132,
+        "2": 692,
+        "3": 167,
+        "4": 1219,
+        "5": 77,
+        "6": 24,
+        "7": 69,
+        "8": 21,
+        "9": 2
+      }
+    },
+    "alternate_valid_answers_per_hop": {
+      "min": 0,
+      "median": 1,
+      "mean": 1.671,
+      "max": 8,
+      "distribution": {
+        "0": 1132,
+        "1": 692,
+        "2": 167,
+        "3": 1219,
+        "4": 77,
+        "5": 24,
+        "6": 69,
+        "7": 21,
+        "8": 2
+      }
+    },
+    "n_hops_with_alternate_valid_answers": 2271
   }
 }
