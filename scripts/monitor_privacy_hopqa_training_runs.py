@@ -1163,6 +1163,202 @@ def plot_classic_error_breakdown(output_dir: Path, error_rows: list[dict[str, An
     return path.name
 
 
+def plot_classic_parse_and_empty_plan_breakdown(
+    output_dir: Path, stage_rows: list[dict[str, Any]], error_rows: list[dict[str, Any]]
+) -> str | None:
+    labels = sorted(
+        {
+            str(row.get("label"))
+            for row in list(stage_rows) + list(error_rows)
+            if row.get("label")
+        }
+    )
+    if not labels:
+        return None
+    counter: Counter[tuple[str, str]] = Counter()
+    for row in stage_rows:
+        if row.get("stage") != "hop_plan":
+            continue
+        label = str(row.get("label") or "unknown")
+        planned = as_float(row.get("planned_action_count"))
+        if planned == 0:
+            counter[(label, "empty hop-plan output accepted as []")] += 1
+    for row in error_rows:
+        if row.get("error_group") != "parse_errors_by_stage":
+            continue
+        count = as_int(row.get("count")) or 0
+        if count <= 0:
+            continue
+        label = str(row.get("label") or "unknown")
+        stage = str(row.get("error_key") or "unknown")
+        counter[(label, f"parse error in {stage}")] += count
+    if not counter:
+        return None
+    keys = [
+        "empty hop-plan output accepted as []",
+        "parse error in hop_plan",
+        "parse error in doc_choose",
+        "parse error in doc_read",
+        "parse error in hop_resolve",
+        "parse error in report",
+        "parse error in unknown",
+    ]
+    remaining = [
+        key
+        for _, key in counter
+        if key not in keys
+    ]
+    keys = [key for key in keys if any(counter.get((label, key), 0) for label in labels)]
+    keys.extend(sorted(set(remaining)))
+    plot_setup()
+    fig, axes = plt.subplots(1, 2, figsize=(15, max(5, 0.48 * len(keys))))
+    y = list(range(len(keys)))
+    width = 0.8 / max(1, len(labels))
+    for idx, label in enumerate(labels):
+        values = [counter.get((label, key), 0) for key in keys]
+        offsets = [pos - 0.4 + width / 2 + idx * width for pos in y]
+        axes[0].barh(offsets, values, height=width, label=label)
+    axes[0].set_title("Raw parser/planner failure counts")
+    axes[0].set_xlabel("events")
+    axes[0].set_yticks(y)
+    axes[0].set_yticklabels(keys)
+    axes[0].legend(loc="best")
+    axes[0].grid(True, axis="x", alpha=0.25)
+
+    rate_keys = ["empty hop-plan output accepted as []"]
+    rate_labels: list[str] = []
+    rates: list[float] = []
+    for label in labels:
+        plans = [
+            row
+            for row in stage_rows
+            if row.get("label") == label and row.get("stage") == "hop_plan"
+        ]
+        total = len(plans)
+        empty = counter.get((label, rate_keys[0]), 0)
+        if total:
+            rate_labels.append(f"{label}\n{empty}/{total}")
+            rates.append(empty / total)
+    axes[1].bar(range(len(rates)), rates, color="#b45f06")
+    axes[1].set_title("Empty hop-plan output rate")
+    axes[1].set_ylabel("empty hop_plan events / hop_plan events")
+    axes[1].set_ylim(0, 1)
+    axes[1].set_xticks(range(len(rate_labels)))
+    axes[1].set_xticklabels(rate_labels)
+    axes[1].grid(True, axis="y", alpha=0.25)
+    fig.suptitle("Hop parsing errors and accepted empty planner outputs by model")
+    path = output_dir / "classic_parse_and_empty_plan_breakdown.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path.name
+
+
+def plot_classic_search_source_confusion(output_dir: Path, stage_rows: list[dict[str, Any]]) -> str | None:
+    rows = [
+        row
+        for row in stage_rows
+        if row.get("stage") == "search"
+        and str(row.get("expected_source") or "unknown") in {"local", "web"}
+        and str(row.get("search_backend") or "unknown") in {"local", "web"}
+    ]
+    if not rows:
+        return None
+    labels = sorted({str(row.get("label")) for row in rows if row.get("label")})
+    categories = [
+        ("local", "local", "expected local -> local"),
+        ("local", "web", "expected local -> web"),
+        ("web", "local", "expected web -> local"),
+        ("web", "web", "expected web -> web"),
+    ]
+    counts: Counter[tuple[str, str, str]] = Counter()
+    for row in rows:
+        counts[(str(row.get("label")), str(row.get("expected_source")), str(row.get("search_backend")))] += 1
+    plot_setup()
+    fig, axes = plt.subplots(1, 2, figsize=(15, 6))
+    xs = list(range(len(categories)))
+    width = 0.8 / max(1, len(labels))
+    for idx, label in enumerate(labels):
+        values = [counts.get((label, expected, actual), 0) for expected, actual, _ in categories]
+        offsets = [x - 0.4 + width / 2 + idx * width for x in xs]
+        axes[0].bar(offsets, values, width=width, label=label)
+    axes[0].set_title("Search source confusion counts")
+    axes[0].set_ylabel("search events")
+    axes[0].set_xticks(xs)
+    axes[0].set_xticklabels([name for _, _, name in categories], rotation=25, ha="right")
+    axes[0].set_yscale("log")
+    axes[0].legend(loc="best")
+    axes[0].grid(True, axis="y", alpha=0.25)
+
+    frac_labels: list[str] = []
+    frac_values: list[float] = []
+    colors: list[str] = []
+    for label in labels:
+        for expected in ("local", "web"):
+            expected_total = sum(counts.get((label, expected, actual), 0) for actual in ("local", "web"))
+            for actual in ("local", "web"):
+                frac_labels.append(f"{label}\nexpected {expected}\nactual {actual}")
+                frac_values.append(counts.get((label, expected, actual), 0) / expected_total if expected_total else 0.0)
+                colors.append("#1f5da8" if expected == actual else "#b45f06")
+    axes[1].bar(range(len(frac_values)), frac_values, color=colors)
+    axes[1].set_title("Actual backend share within each expected source")
+    axes[1].set_ylabel("fraction of expected-source search events")
+    axes[1].set_ylim(0, 1)
+    axes[1].set_xticks(range(len(frac_labels)))
+    axes[1].set_xticklabels(frac_labels, rotation=30, ha="right", fontsize=8)
+    axes[1].grid(True, axis="y", alpha=0.25)
+    fig.suptitle("Expected hop source vs actual search backend")
+    path = output_dir / "classic_search_source_confusion.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path.name
+
+
+def plot_classic_doc_read_source_totals(output_dir: Path, stage_rows: list[dict[str, Any]]) -> str | None:
+    rows = [
+        row
+        for row in stage_rows
+        if row.get("stage") == "doc_read" and str(row.get("doc_source") or "unknown") in {"local", "web"}
+    ]
+    if not rows:
+        return None
+    labels = sorted({str(row.get("label")) for row in rows if row.get("label")})
+    sources = ["local", "web"]
+    counts: Counter[tuple[str, str]] = Counter((str(row.get("label")), str(row.get("doc_source"))) for row in rows)
+    plot_setup()
+    fig, axes = plt.subplots(1, 2, figsize=(13, 5))
+    width = 0.8 / max(1, len(labels))
+    xs = list(range(len(sources)))
+    for idx, label in enumerate(labels):
+        values = [counts.get((label, source), 0) for source in sources]
+        offsets = [x - 0.4 + width / 2 + idx * width for x in xs]
+        axes[0].bar(offsets, values, width=width, label=label)
+    axes[0].set_title("Document reads by source")
+    axes[0].set_ylabel("doc_read events")
+    axes[0].set_xticks(xs)
+    axes[0].set_xticklabels(["local docs read", "web docs read"])
+    axes[0].legend(loc="best")
+    axes[0].grid(True, axis="y", alpha=0.25)
+
+    frac_labels: list[str] = []
+    frac_values: list[float] = []
+    for label in labels:
+        total = sum(counts.get((label, source), 0) for source in sources)
+        for source in sources:
+            frac_labels.append(f"{label}\n{source}")
+            frac_values.append(counts.get((label, source), 0) / total if total else 0.0)
+    axes[1].bar(range(len(frac_values)), frac_values, color=["#1f5da8", "#14866d"] * len(labels))
+    axes[1].set_title("Document-read source share")
+    axes[1].set_ylabel("fraction of doc_read events")
+    axes[1].set_ylim(0, 1)
+    axes[1].set_xticks(range(len(frac_labels)))
+    axes[1].set_xticklabels(frac_labels)
+    axes[1].grid(True, axis="y", alpha=0.25)
+    path = output_dir / "classic_doc_read_source_totals.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path.name
+
+
 def plot_source_alignment_by_hop(output_dir: Path, stage_rows: list[dict[str, Any]]) -> str | None:
     search_rows = [row for row in stage_rows if row.get("stage") == "search"]
     if not search_rows:
@@ -1195,10 +1391,10 @@ def plot_source_alignment_by_hop(output_dir: Path, stage_rows: list[dict[str, An
     if not plotted:
         plt.close(fig)
         return None
-    axes[0].set_title("Search search calls that used the expected source by hop position")
+    axes[0].set_title("Executed search calls that used the expected source by hop position")
     axes[0].set_ylabel("fraction matching expected source")
     axes[0].set_ylim(0, 1)
-    axes[1].set_title("Actual local-search share vs expected local-hop share")
+    axes[1].set_title("Among executed searches: actual local-search share vs expected-local source share")
     axes[1].set_ylabel("local share")
     axes[1].set_ylim(0, 1)
     axes[1].set_xlabel("hop number within rollout")
@@ -1239,7 +1435,7 @@ def plot_source_calls_by_iteration(output_dir: Path, stage_rows: list[dict[str, 
     if not plotted:
         plt.close(fig)
         return None
-    axes[0].set_title("Local-search share by rollout iteration")
+    axes[0].set_title("Among executed searches: local-search share by rollout iteration")
     axes[0].set_ylabel("local share")
     axes[0].set_ylim(0, 1)
     axes[1].set_title("Search calls per active rollout by iteration")
@@ -1806,7 +2002,7 @@ def plot_classic_source_usage_scatter(output_dir: Path, rollout_rows: list[dict[
         ax.set_ylabel(ylabel)
         ax.grid(True, alpha=0.25)
     axes.flat[0].legend(loc="best")
-    fig.suptitle("Source usage scatter")
+    fig.suptitle("Source usage scatter (subset buckets vs rollout totals)")
     path = output_dir / "classic_source_usage_scatter.png"
     fig.savefig(path)
     plt.close(fig)
@@ -2138,6 +2334,13 @@ def aggregate_run_summary(
         label = run.label
         rollouts = [row for row in rollout_rows if row.get("label") == label]
         searches = [row for row in stage_rows if row.get("label") == label and row.get("stage") == "search"]
+        local_searches = [row for row in searches if row.get("search_backend") == "local"]
+        web_searches = [row for row in searches if row.get("search_backend") == "web"]
+        doc_reads = [row for row in stage_rows if row.get("label") == label and row.get("stage") == "doc_read"]
+        local_doc_reads = [row for row in doc_reads if row.get("doc_source") == "local"]
+        web_doc_reads = [row for row in doc_reads if row.get("doc_source") == "web"]
+        hop_plans = [row for row in stage_rows if row.get("label") == label and row.get("stage") == "hop_plan"]
+        empty_hop_plans = [row for row in hop_plans if as_float(row.get("planned_action_count")) == 0]
         known = [row for row in searches if str(row.get("expected_source") or "unknown") != "unknown"]
         matched = [row for row in known if str(row.get("source_matched_expected")).lower() == "true"]
         helpers = [row for row in action_rows if row.get("label") == label]
@@ -2150,6 +2353,12 @@ def aggregate_run_summary(
                 "mean searches": fmt_num(mean_or_none(label_values(rollouts, label, "searches_total")), 2),
                 "mean docs read": fmt_num(mean_or_none(label_values(rollouts, label, "docs_read")), 2),
                 "search calls that used the expected source": fmt_pct(len(matched) / len(known) if known else None),
+                "actual local searches": fmt_num(len(local_searches)),
+                "actual web searches": fmt_num(len(web_searches)),
+                "local docs read": fmt_num(len(local_doc_reads)),
+                "web docs read": fmt_num(len(web_doc_reads)),
+                "empty hop-plan outputs": fmt_num(len(empty_hop_plans)),
+                "empty hop-plan rate": fmt_pct(len(empty_hop_plans) / len(hop_plans) if hop_plans else None),
                 "mean helper call": fmt_num(mean_or_none([as_float(row.get("execution_time_s")) for row in helpers if as_float(row.get("execution_time_s")) is not None]), 3),
                 "errors": errors,
             }
@@ -2216,7 +2425,15 @@ def build_classic_html(
         ),
         "classic_source_usage_scatter.png": (
             "Source usage scatter",
-            "Expected-source search buckets versus actual local/web search volume.",
+            "Subset source buckets versus total actual local/web search volume; use the confusion plot for exact source-mismatch counts.",
+        ),
+        "classic_search_source_confusion.png": (
+            "Expected source vs actual search backend",
+            "Explicit confusion counts and fractions for local/web expected hops versus local/web executed searches.",
+        ),
+        "classic_doc_read_source_totals.png": (
+            "Document reads by source",
+            "Total local/web doc_read events and shares; this checks whether local documents were actually read.",
         ),
         "classic_stage_duration_boxplot.png": (
             "Stage duration boxplots",
@@ -2273,6 +2490,10 @@ def build_classic_html(
         "classic_error_breakdown.png": (
             "Error breakdown",
             "Trace summary errors by stage/kind. If empty, there were no emitted error records in the cache.",
+        ),
+        "classic_parse_and_empty_plan_breakdown.png": (
+            "Hop parse errors and empty planner outputs",
+            "Parse errors by stage plus accepted empty hop-plan outputs. Empty [] is valid JSON and is not counted as a parser error by the run.",
         ),
         "trace_stage_duration_ma.png": (
             "Stage duration moving averages",
@@ -2383,7 +2604,7 @@ def build_classic_html(
       <div class="stat-grid">{''.join(stat_card_html(label, value) for label, value in stats)}</div>
       <div class="table-card">
         <h3>Run comparison</h3>
-        {simple_table(summaries, [("run", "run"), ("rollouts parsed", "rollouts"), ("mean duration", "mean duration s"), ("mean searches", "mean searches"), ("mean docs read", "mean docs read"), ("search calls that used the expected source", "search calls that used the expected source"), ("mean helper call", "mean helper call s"), ("errors", "errors")])}
+        {simple_table(summaries, [("run", "run"), ("rollouts parsed", "rollouts"), ("mean duration", "mean duration s"), ("mean searches", "mean searches"), ("mean docs read", "mean docs read"), ("search calls that used the expected source", "expected-source search rate"), ("actual local searches", "local searches"), ("actual web searches", "web searches"), ("local docs read", "local docs read"), ("web docs read", "web docs read"), ("empty hop-plan outputs", "empty plans"), ("empty hop-plan rate", "empty plan rate"), ("mean helper call", "mean helper call s"), ("errors", "errors")])}
       </div>
     </section>
     <section id="source" class="section">
@@ -2987,6 +3208,8 @@ def refresh(args: argparse.Namespace, runs: list[RunSpec]) -> None:
         plot_classic_token_usage(output_dir, trace_rollout_rows),
         plot_classic_iteration_distribution(output_dir, trace_rollout_rows),
         plot_classic_searches_vs_docs(output_dir, trace_rollout_rows),
+        plot_classic_search_source_confusion(output_dir, trace_stage_rows),
+        plot_classic_doc_read_source_totals(output_dir, trace_stage_rows),
         plot_classic_stage_event_mix(output_dir, trace_stage_rows),
         plot_classic_pattern_alignment(output_dir, trace_rollout_rows),
         plot_classic_company_alignment(output_dir, trace_rollout_rows),
@@ -2996,6 +3219,7 @@ def refresh(args: argparse.Namespace, runs: list[RunSpec]) -> None:
         plot_classic_temporal_rollout_metrics(output_dir, trace_rollout_rows, args.rolling_window),
         plot_classic_early_middle_late(output_dir, trace_rollout_rows),
         plot_classic_error_breakdown(output_dir, trace_error_rows),
+        plot_classic_parse_and_empty_plan_breakdown(output_dir, trace_stage_rows, trace_error_rows),
     ]
     build_html(
         output_dir=output_dir,
@@ -3047,6 +3271,8 @@ def refresh(args: argparse.Namespace, runs: list[RunSpec]) -> None:
             plot_classic_token_usage(model_dir, model_rollouts),
             plot_classic_iteration_distribution(model_dir, model_rollouts),
             plot_classic_searches_vs_docs(model_dir, model_rollouts),
+            plot_classic_search_source_confusion(model_dir, model_stages),
+            plot_classic_doc_read_source_totals(model_dir, model_stages),
             plot_classic_stage_event_mix(model_dir, model_stages),
             plot_classic_pattern_alignment(model_dir, model_rollouts),
             plot_classic_company_alignment(model_dir, model_rollouts),
@@ -3056,6 +3282,7 @@ def refresh(args: argparse.Namespace, runs: list[RunSpec]) -> None:
             plot_classic_temporal_rollout_metrics(model_dir, model_rollouts, args.rolling_window),
             plot_classic_early_middle_late(model_dir, model_rollouts),
             plot_classic_error_breakdown(model_dir, model_errors),
+            plot_classic_parse_and_empty_plan_breakdown(model_dir, model_stages, model_errors),
             plot_trace_helper_action_latency(model_dir, model_actions, args.rolling_window),
             plot_trace_search_latency(model_dir, model_rollouts, args.rolling_window),
             plot_trace_stage_duration(model_dir, model_stages, args.rolling_window),
