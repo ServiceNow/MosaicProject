@@ -25,6 +25,7 @@ from typing import Any
 import matplotlib
 
 matplotlib.use("Agg")
+import matplotlib.colors as mcolors
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 
@@ -748,6 +749,47 @@ def plot_setup() -> None:
             "legend.fontsize": 9,
         }
     )
+
+
+def model_iteration_colormaps(labels: list[str], iteration_values: list[float]) -> tuple[mcolors.Normalize, dict[str, Any]]:
+    palettes = [
+        ("#d9ecff", "#184e77"),
+        ("#ffe1c2", "#d95d39"),
+        ("#d7f4ea", "#2a9d8f"),
+        ("#eadccf", "#7f4f24"),
+        ("#e4d8ff", "#5a189a"),
+    ]
+    vmin = min(iteration_values) if iteration_values else 0.0
+    vmax = max(iteration_values) if iteration_values else 1.0
+    if vmax <= vmin:
+        vmax = vmin + 1.0
+    norm = mcolors.Normalize(vmin=vmin, vmax=vmax)
+    cmaps = {
+        label: mcolors.LinearSegmentedColormap.from_list(
+            f"{safe_slug(label)}_iterations_light_to_dark",
+            palettes[idx % len(palettes)],
+        )
+        for idx, label in enumerate(labels)
+    }
+    return norm, cmaps
+
+
+def add_model_iteration_colorbars(fig: plt.Figure, axes: Any, labels: list[str], norm: mcolors.Normalize, cmaps: dict[str, Any]) -> None:
+    if not labels:
+        return
+    axes_arg = axes.ravel().tolist() if hasattr(axes, "ravel") else axes
+    for idx, label in enumerate(labels):
+        sm = plt.cm.ScalarMappable(norm=norm, cmap=cmaps[label])
+        sm.set_array([])
+        cbar = fig.colorbar(
+            sm,
+            ax=axes_arg,
+            orientation="horizontal",
+            fraction=0.045,
+            pad=0.10 + 0.075 * idx,
+            aspect=35,
+        )
+        cbar.set_label(f"{label}: iterations used (lighter to darker)")
 
 
 def datetimes(rows: list[dict[str, Any]]) -> list[datetime | None]:
@@ -1748,10 +1790,8 @@ def plot_classic_searches_vs_docs(output_dir: Path, rollout_rows: list[dict[str,
     plot_setup()
     fig, ax = plt.subplots(figsize=(11, 7.5), constrained_layout=True)
     iterations = [as_float(row.get("iterations_used")) for row in rollout_rows if as_float(row.get("iterations_used")) is not None]
-    vmin = min(iterations) if iterations else 0.0
-    vmax = max(iterations) if iterations else 1.0
+    norm, cmaps = model_iteration_colormaps(labels, iterations)
     markers = ["o", "s", "^", "D", "P"]
-    last_scatter = None
     for idx, label in enumerate(labels):
         rows = [row for row in rollout_rows if row.get("label") == label]
         triples = []
@@ -1760,15 +1800,14 @@ def plot_classic_searches_vs_docs(output_dir: Path, rollout_rows: list[dict[str,
             y = as_float(row.get("docs_read"))
             iteration = as_float(row.get("iterations_used"))
             if x is not None and y is not None:
-                triples.append((x, y, iteration if iteration is not None else vmin))
+                triples.append((x, y, iteration if iteration is not None else norm.vmin))
         if triples:
-            last_scatter = ax.scatter(
+            ax.scatter(
                 [x for x, _, _ in triples],
                 [y for _, y, _ in triples],
                 c=[iteration for _, _, iteration in triples],
-                cmap="viridis",
-                vmin=vmin,
-                vmax=vmax,
+                cmap=cmaps[label],
+                norm=norm,
                 marker=markers[idx % len(markers)],
                 s=18,
                 alpha=0.52,
@@ -1779,9 +1818,7 @@ def plot_classic_searches_vs_docs(output_dir: Path, rollout_rows: list[dict[str,
     ax.set_xlabel("searches")
     ax.set_ylabel("docs read")
     ax.legend(loc="best")
-    if last_scatter is not None:
-        cbar = fig.colorbar(last_scatter, ax=ax)
-        cbar.set_label("iterations used (point color)")
+    add_model_iteration_colorbars(fig, ax, labels, norm, cmaps)
     ax.grid(True, alpha=0.25)
     path = output_dir / "classic_searches_vs_docs_read.png"
     fig.savefig(path)
@@ -2184,10 +2221,8 @@ def plot_classic_source_usage_scatter(output_dir: Path, rollout_rows: list[dict[
     plot_setup()
     fig, axes = plt.subplots(2, 2, figsize=(13, 10.5), constrained_layout=True)
     iterations = [as_float(row.get("iterations_used")) for row in rollout_rows if as_float(row.get("iterations_used")) is not None]
-    vmin = min(iterations) if iterations else 0.0
-    vmax = max(iterations) if iterations else 1.0
+    norm, cmaps = model_iteration_colormaps(labels, iterations)
     markers = ["o", "s", "^", "D", "P"]
-    last_scatter = None
     for ax, (xkey, ykey, xlabel, ylabel) in zip(axes.flat, pairs):
         max_seen = 0.0
         for idx, label in enumerate(labels):
@@ -2198,16 +2233,15 @@ def plot_classic_source_usage_scatter(output_dir: Path, rollout_rows: list[dict[
                 y = as_float(row.get(ykey))
                 iteration = as_float(row.get("iterations_used"))
                 if x is not None and y is not None:
-                    triples.append((x, y, iteration if iteration is not None else vmin))
+                    triples.append((x, y, iteration if iteration is not None else norm.vmin))
                     max_seen = max(max_seen, x, y)
             if triples:
-                last_scatter = ax.scatter(
+                ax.scatter(
                     [x for x, _, _ in triples],
                     [y for _, y, _ in triples],
                     c=[iteration for _, _, iteration in triples],
-                    cmap="viridis",
-                    vmin=vmin,
-                    vmax=vmax,
+                    cmap=cmaps[label],
+                    norm=norm,
                     marker=markers[idx % len(markers)],
                     s=16,
                     alpha=0.5,
@@ -2220,9 +2254,7 @@ def plot_classic_source_usage_scatter(output_dir: Path, rollout_rows: list[dict[
         ax.set_ylabel(ylabel)
         ax.grid(True, alpha=0.25)
         ax.legend(loc="best")
-    if last_scatter is not None:
-        cbar = fig.colorbar(last_scatter, ax=axes.ravel().tolist(), shrink=0.86)
-        cbar.set_label("iterations used (point color)")
+    add_model_iteration_colorbars(fig, axes, labels, norm, cmaps)
     fig.suptitle("Source usage scatter (subset buckets vs rollout totals)")
     path = output_dir / "classic_source_usage_scatter.png"
     fig.savefig(path)
@@ -2646,7 +2678,7 @@ def build_classic_html(
         ),
         "classic_source_usage_scatter.png": (
             "Source usage scatter",
-            "Unit: rollout. x is a specific expected/actual source bucket, y is the rollout's total actual local or web search count. Marker shape identifies the model; point color is iterations_used; dotted line is y=x. Use the confusion plot for exact aggregate mismatch counts.",
+            "Unit: rollout. x is a specific expected/actual source bucket, y is the rollout's total actual local or web search count. Marker shape and hue identify the model; within each model, lighter-to-darker means lower-to-higher iterations_used. Dotted line is y=x. Use the confusion plot for exact aggregate mismatch counts.",
         ),
         "classic_search_source_confusion.png": (
             "Expected source vs actual search backend",
@@ -2674,7 +2706,7 @@ def build_classic_html(
         ),
         "classic_searches_vs_docs_read.png": (
             "Searches vs docs read",
-            "Unit: rollout. x is searches_total, y is docs_read. Marker shape identifies model; point color is iterations_used with the colorbar.",
+            "Unit: rollout. x is searches_total, y is docs_read. Marker shape and hue identify model; within each model, lighter-to-darker means lower-to-higher iterations_used using the per-model gradient keys.",
         ),
         "classic_stage_event_mix.png": (
             "Stage event mix",
