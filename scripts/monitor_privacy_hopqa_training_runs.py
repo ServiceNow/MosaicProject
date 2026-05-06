@@ -11,6 +11,7 @@ import heapq
 import html
 import json
 import math
+import random
 import re
 import subprocess
 import time
@@ -76,6 +77,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--new-trace-limit", type=int, default=512, help="New rollout traces to parse per run per refresh.")
     parser.add_argument("--trace-cache-limit", type=int, default=6000, help="Recent rollout traces to retain per run.")
     parser.add_argument("--dataset-path", default=DEFAULT_DATASET_PATH, help="Final privacy_hopqa JSONL dataset.")
+    parser.add_argument("--samples-per-phase", type=int, default=5, help="Random rollout samples per run per early/middle/late phase.")
     return parser.parse_args()
 
 
@@ -1222,6 +1224,256 @@ def plot_source_calls_by_iteration(output_dir: Path, stage_rows: list[dict[str, 
     return path.name
 
 
+def plot_classic_stage_duration_boxplot(output_dir: Path, stage_rows: list[dict[str, Any]]) -> str | None:
+    rows = [row for row in stage_rows if as_float(row.get("duration_s")) is not None]
+    if not rows:
+        return None
+    stages = ["hop_plan", "search", "doc_choose", "doc_read", "hop_resolve", "report"]
+    labels = sorted({str(row.get("label")) for row in rows if row.get("label")})
+    plot_setup()
+    fig, axes = plt.subplots(len(labels), 1, figsize=(12, max(4, 3.5 * len(labels))), squeeze=False)
+    for ax, label in zip(axes.flat, labels):
+        data = []
+        used_stages = []
+        for stage in stages:
+            values = [
+                as_float(row.get("duration_s"))
+                for row in rows
+                if row.get("label") == label and row.get("stage") == stage and as_float(row.get("duration_s")) is not None
+            ]
+            values = [value for value in values if value is not None]
+            if values:
+                data.append(values)
+                used_stages.append(stage)
+        if data:
+            ax.boxplot(data, tick_labels=used_stages, showfliers=False)
+        ax.set_title(f"{label}: stage duration distribution")
+        ax.set_ylabel("seconds")
+        ax.tick_params(axis="x", rotation=25)
+        ax.grid(True, axis="y", alpha=0.25)
+    path = output_dir / "classic_stage_duration_boxplot.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path.name
+
+
+def plot_classic_source_usage_distributions(
+    output_dir: Path, rollout_rows: list[dict[str, Any]], stage_rows: list[dict[str, Any]]
+) -> str | None:
+    if not rollout_rows:
+        return None
+    labels = sorted({str(row.get("label")) for row in rollout_rows if row.get("label")})
+    doc_counts: dict[tuple[str, str], Counter[str]] = defaultdict(Counter)
+    for row in stage_rows:
+        if row.get("stage") == "doc_read":
+            doc_counts[(str(row.get("label") or ""), str(row.get("rollout_id") or ""))][str(row.get("doc_source") or "unknown")] += 1
+    enriched = []
+    for row in rollout_rows:
+        copied = dict(row)
+        key = (str(row.get("label") or ""), str(row.get("rollout_id") or ""))
+        copied["web_docs_read_trace"] = doc_counts[key].get("web", 0)
+        copied["local_docs_read_trace"] = doc_counts[key].get("local", 0)
+        enriched.append(copied)
+    metrics = [
+        ("search_web_count", "web searches"),
+        ("search_local_count", "local searches"),
+        ("web_docs_read_trace", "web docs read"),
+        ("local_docs_read_trace", "local docs read"),
+    ]
+    plot_setup()
+    fig, axes = plt.subplots(2, 2, figsize=(12, 9))
+    for ax, (key, title) in zip(axes.flat, metrics):
+        data = [label_values(enriched, label, key) for label in labels]
+        used = [(label, values) for label, values in zip(labels, data) if values]
+        if used:
+            ax.boxplot([values for _, values in used], tick_labels=[label for label, _ in used], showfliers=False)
+        ax.set_title(title)
+        ax.tick_params(axis="x", rotation=20)
+        ax.grid(True, axis="y", alpha=0.25)
+    path = output_dir / "classic_source_usage_distributions.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path.name
+
+
+def plot_classic_token_usage(output_dir: Path, rollout_rows: list[dict[str, Any]]) -> str | None:
+    if not rollout_rows:
+        return None
+    labels = sorted({str(row.get("label")) for row in rollout_rows if row.get("label")})
+    metrics = [
+        ("prompt_tokens", "prompt tokens"),
+        ("output_tokens", "output tokens"),
+        ("total_tokens", "total tokens"),
+        ("llm_calls_total", "LLM calls"),
+    ]
+    plot_setup()
+    fig, axes = plt.subplots(2, 2, figsize=(12, 9))
+    for ax, (key, title) in zip(axes.flat, metrics):
+        data = [label_values(rollout_rows, label, key) for label in labels]
+        used = [(label, values) for label, values in zip(labels, data) if values]
+        if used:
+            ax.boxplot([values for _, values in used], tick_labels=[label for label, _ in used], showfliers=False)
+        ax.set_title(title)
+        ax.tick_params(axis="x", rotation=20)
+        ax.grid(True, axis="y", alpha=0.25)
+    path = output_dir / "classic_token_usage.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path.name
+
+
+def plot_classic_iteration_distribution(output_dir: Path, rollout_rows: list[dict[str, Any]]) -> str | None:
+    if not rollout_rows:
+        return None
+    labels = sorted({str(row.get("label")) for row in rollout_rows if row.get("label")})
+    plot_setup()
+    fig, ax = plt.subplots(figsize=(12, 6))
+    for label in labels:
+        values = label_values(rollout_rows, label, "iterations_used")
+        if values:
+            bins = range(0, int(max(values)) + 2)
+            ax.hist(values, bins=bins, alpha=0.55, label=label)
+    ax.set_title("Iteration count distribution")
+    ax.set_xlabel("iterations used")
+    ax.set_ylabel("rollouts")
+    ax.legend(loc="best")
+    ax.grid(True, axis="y", alpha=0.25)
+    path = output_dir / "classic_iteration_distribution.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path.name
+
+
+def plot_classic_searches_vs_docs(output_dir: Path, rollout_rows: list[dict[str, Any]]) -> str | None:
+    if not rollout_rows:
+        return None
+    labels = sorted({str(row.get("label")) for row in rollout_rows if row.get("label")})
+    plot_setup()
+    fig, ax = plt.subplots(figsize=(10, 7))
+    for label in labels:
+        rows = [row for row in rollout_rows if row.get("label") == label]
+        xs = [as_float(row.get("searches_total")) for row in rows]
+        ys = [as_float(row.get("docs_read")) for row in rows]
+        pairs = [(x, y) for x, y in zip(xs, ys) if x is not None and y is not None]
+        if pairs:
+            ax.scatter([x for x, _ in pairs], [y for _, y in pairs], s=12, alpha=0.35, label=label)
+    ax.set_title("Searches vs documents read per rollout")
+    ax.set_xlabel("searches")
+    ax.set_ylabel("docs read")
+    ax.legend(loc="best")
+    ax.grid(True, alpha=0.25)
+    path = output_dir / "classic_searches_vs_docs_read.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path.name
+
+
+def plot_classic_stage_event_mix(output_dir: Path, stage_rows: list[dict[str, Any]]) -> str | None:
+    if not stage_rows:
+        return None
+    labels = sorted({str(row.get("label")) for row in stage_rows if row.get("label")})
+    stages = ["hop_plan", "search", "doc_choose", "doc_read", "hop_resolve", "report"]
+    counts: Counter[tuple[str, str]] = Counter((str(row.get("label") or ""), str(row.get("stage") or "")) for row in stage_rows)
+    plot_setup()
+    fig, ax = plt.subplots(figsize=(12, 6))
+    xs = list(range(len(stages)))
+    width = 0.8 / max(1, len(labels))
+    for idx, label in enumerate(labels):
+        values = [counts.get((label, stage), 0) for stage in stages]
+        offsets = [x - 0.4 + width / 2 + idx * width for x in xs]
+        ax.bar(offsets, values, width=width, label=label)
+    ax.set_title("Stage event counts in parsed traces")
+    ax.set_ylabel("events")
+    ax.set_xticks(xs)
+    ax.set_xticklabels(stages, rotation=25, ha="right")
+    ax.legend(loc="best")
+    ax.grid(True, axis="y", alpha=0.25)
+    path = output_dir / "classic_stage_event_mix.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path.name
+
+
+def plot_classic_pattern_alignment(output_dir: Path, rollout_rows: list[dict[str, Any]]) -> str | None:
+    rows = [row for row in rollout_rows if row.get("hop_pattern")]
+    if not rows:
+        return None
+    pattern_counts = Counter(str(row.get("hop_pattern")) for row in rows)
+    patterns = [pattern for pattern, _ in pattern_counts.most_common(14)]
+    labels = sorted({str(row.get("label")) for row in rows if row.get("label")})
+    plot_setup()
+    fig, axes = plt.subplots(2, 1, figsize=(13, 9), sharex=True)
+    xs = list(range(len(patterns)))
+    width = 0.8 / max(1, len(labels))
+    for idx, label in enumerate(labels):
+        align_values = []
+        resolved_values = []
+        for pattern in patterns:
+            bucket = [row for row in rows if row.get("label") == label and row.get("hop_pattern") == pattern]
+            align_values.append(mean_or_none([value for row in bucket if (value := as_float(row.get("source_alignment_rate"))) is not None]) or 0.0)
+            resolved_values.append(
+                mean_or_none(
+                    [
+                        (resolved / total)
+                        for row in bucket
+                        if (resolved := as_float(row.get("resolved_hops"))) is not None
+                        and (total := as_float(row.get("total_hops"))) is not None
+                        and total > 0
+                    ]
+                )
+                or 0.0
+            )
+        offsets = [x - 0.4 + width / 2 + idx * width for x in xs]
+        axes[0].bar(offsets, align_values, width=width, label=label)
+        axes[1].bar(offsets, resolved_values, width=width, label=label)
+    axes[0].set_title("Source alignment by hop pattern")
+    axes[0].set_ylabel("alignment")
+    axes[0].set_ylim(0, 1)
+    axes[1].set_title("Resolved-hop fraction by hop pattern")
+    axes[1].set_ylabel("resolved / total")
+    axes[1].set_ylim(0, 1)
+    axes[1].set_xticks(xs)
+    axes[1].set_xticklabels(patterns, rotation=35, ha="right")
+    for ax in axes:
+        ax.legend(loc="best")
+        ax.grid(True, axis="y", alpha=0.25)
+    path = output_dir / "classic_pattern_alignment.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path.name
+
+
+def plot_classic_company_alignment(output_dir: Path, rollout_rows: list[dict[str, Any]]) -> str | None:
+    rows = [row for row in rollout_rows if row.get("company")]
+    if not rows:
+        return None
+    company_counts = Counter(str(row.get("company")) for row in rows)
+    companies = [company for company, _ in company_counts.most_common(12)]
+    labels = sorted({str(row.get("label")) for row in rows if row.get("label")})
+    plot_setup()
+    fig, ax = plt.subplots(figsize=(13, 6))
+    xs = list(range(len(companies)))
+    width = 0.8 / max(1, len(labels))
+    for idx, label in enumerate(labels):
+        values = []
+        for company in companies:
+            bucket = [row for row in rows if row.get("label") == label and row.get("company") == company]
+            values.append(mean_or_none([value for row in bucket if (value := as_float(row.get("source_alignment_rate"))) is not None]) or 0.0)
+        offsets = [x - 0.4 + width / 2 + idx * width for x in xs]
+        ax.bar(offsets, values, width=width, label=label)
+    ax.set_title("Source alignment by company")
+    ax.set_ylabel("alignment")
+    ax.set_ylim(0, 1)
+    ax.set_xticks(xs)
+    ax.set_xticklabels(companies, rotation=30, ha="right")
+    ax.legend(loc="best")
+    ax.grid(True, axis="y", alpha=0.25)
+    path = output_dir / "classic_company_alignment.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path.name
+
+
 def latest_by_label(rows: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     latest: dict[str, dict[str, Any]] = {}
     for row in rows:
@@ -1607,6 +1859,38 @@ def build_classic_html(
             "Rollout distributions",
             "Runtime, LLM-call, search, and document-read distributions for the sampled trace cache.",
         ),
+        "classic_stage_duration_boxplot.png": (
+            "Stage duration boxplots",
+            "Old runtime-viewer style distribution of hop planning, search, doc choice, doc read, resolver, and report timing.",
+        ),
+        "classic_source_usage_distributions.png": (
+            "Source usage distributions",
+            "Web/local search and document-read distributions across sampled rollouts.",
+        ),
+        "classic_token_usage.png": (
+            "Token and LLM-call usage",
+            "Prompt, output, total token, and LLM-call distributions; useful for comparing why 4B is much cheaper/faster.",
+        ),
+        "classic_iteration_distribution.png": (
+            "Iteration distribution",
+            "How many loop iterations rollouts use before completion/stalling.",
+        ),
+        "classic_searches_vs_docs_read.png": (
+            "Searches vs docs read",
+            "Scatter plot showing retrieval volume versus document-reading volume per rollout.",
+        ),
+        "classic_stage_event_mix.png": (
+            "Stage event mix",
+            "Counts of emitted timeline events by stage for each run.",
+        ),
+        "classic_pattern_alignment.png": (
+            "Pattern-level behavior",
+            "Source alignment and resolved-hop fraction by hop pattern.",
+        ),
+        "classic_company_alignment.png": (
+            "Company-level source alignment",
+            "Whether retrieval source behavior differs by company/domain.",
+        ),
         "classic_error_breakdown.png": (
             "Error breakdown",
             "Trace summary errors by stage/kind. If empty, there were no emitted error records in the cache.",
@@ -1710,6 +1994,7 @@ def build_classic_html(
         <a href="#runtime">Runtime</a>
         <a href="#errors">Errors</a>
         <a href="#raw">Raw exports</a>
+        <a href="privacy_hopqa_schedulerfix_rollout_samples.html">Rollout samples</a>
       </div>
     </section>
     <section id="summary" class="section">
@@ -1721,8 +2006,8 @@ def build_classic_html(
       </div>
     </section>
     <section id="source" class="section">
-      <h2>Source behavior over a rollout</h2>
-      <p class="section-note">Hop position and iteration are used as within-rollout progress axes. These plots answer whether the agent searches the expected source when working on local vs web hops.</p>
+      <h2>Runtime, retrieval, source behavior, and error plots</h2>
+      <p class="section-note">This restores the broader old-viewer style plot set, with extra source-alignment plots over hop position and rollout iteration.</p>
       <div class="plot-grid">{plot_html}</div>
     </section>
     <section id="errors" class="section">
@@ -1750,6 +2035,283 @@ def build_classic_html(
     classic_name = "privacy_hopqa_schedulerfix_classic_viewer.html"
     (output_dir / classic_name).write_text(html_text, encoding="utf-8")
     (output_dir.parent / classic_name).write_text(html_text, encoding="utf-8")
+
+
+def truncate_text(value: Any, limit: int = 900) -> str:
+    text = "" if value is None else str(value)
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
+    if len(text) <= limit:
+        return text
+    return text[:limit].rstrip() + "..."
+
+
+def read_json_safe(path: Path, default: Any) -> Any:
+    try:
+        return json.loads(path.read_text(encoding="utf-8", errors="ignore"))
+    except (OSError, json.JSONDecodeError):
+        return default
+
+
+def read_text_safe(path: Path, limit: int = 4500) -> str:
+    try:
+        return truncate_text(path.read_text(encoding="utf-8", errors="ignore"), limit)
+    except OSError:
+        return ""
+
+
+def choose_sample_rollouts(
+    runs: list[RunSpec], rollout_rows: list[dict[str, Any]], samples_per_phase: int
+) -> list[dict[str, Any]]:
+    rng = random.Random(20260506)
+    selected: list[dict[str, Any]] = []
+    for run in runs:
+        rows = [
+            row
+            for row in rollout_rows
+            if row.get("label") == run.label and as_float(row.get("completed_at_s")) is not None
+        ]
+        rows = sorted(rows, key=lambda row: as_float(row.get("completed_at_s")) or 0.0)
+        if not rows:
+            continue
+        n = len(rows)
+        phase_specs = [
+            ("early", rows[: max(1, n // 3)]),
+            ("middle", rows[max(1, n // 3) : max(2, (2 * n) // 3)]),
+            ("late", rows[max(2, (2 * n) // 3) :]),
+        ]
+        for phase, bucket in phase_specs:
+            if not bucket:
+                continue
+            count = min(samples_per_phase, len(bucket))
+            for row in sorted(rng.sample(bucket, count), key=lambda item: as_float(item.get("completed_at_s")) or 0.0):
+                copied = dict(row)
+                copied["phase"] = phase
+                selected.append(copied)
+    return selected
+
+
+def phase_rank(sample: dict[str, Any]) -> str:
+    return f"{sample.get('label')} / {sample.get('phase')} / {sample.get('rollout_id')}"
+
+
+def render_timeline_events(events: list[dict[str, Any]], max_events: int = 120) -> str:
+    usable = [event for event in events if isinstance(event, dict) and as_float(event.get("start_s")) is not None]
+    usable = sorted(usable, key=lambda event: as_float(event.get("start_s")) or 0.0)[:max_events]
+    if not usable:
+        return "<p class='muted'>No timeline events stored.</p>"
+    total = max(as_float(event.get("end_s")) or as_float(event.get("start_s")) or 0.0 for event in usable) or 1.0
+    colors = {
+        "hop_plan": "#1f5da8",
+        "search": "#14866d",
+        "doc_choose": "#9467bd",
+        "doc_read": "#e17c05",
+        "hop_resolve": "#d62728",
+        "report": "#0f766e",
+    }
+    rows = []
+    for event in usable:
+        start = as_float(event.get("start_s")) or 0.0
+        end = as_float(event.get("end_s")) or start
+        duration = max(0.0, end - start)
+        stage = str(event.get("stage") or "unknown")
+        meta = event.get("meta") if isinstance(event.get("meta"), dict) else {}
+        left = min(100.0, max(0.0, 100.0 * start / total))
+        width = max(0.35, min(100.0 - left, 100.0 * duration / total))
+        color = colors.get(stage, "#6b7280")
+        label = truncate_text(event.get("label"), 80)
+        rows.append(
+            "<tr>"
+            f"<td><code>{esc(stage)}</code></td>"
+            f"<td>{esc(meta.get('hop_number'))}</td>"
+            f"<td>{esc(meta.get('iteration'))}</td>"
+            f"<td>{fmt_num(duration, 2)}s</td>"
+            f"<td class='timeline-cell'><div class='bar-track'><span class='bar' style='left:{left:.3f}%;width:{width:.3f}%;background:{color}' title='{esc(label)}'></span></div></td>"
+            f"<td>{esc(label)}</td>"
+            "</tr>"
+        )
+    return (
+        "<table class='timeline-table'><thead><tr><th>stage</th><th>hop</th><th>iter</th><th>duration</th><th>timeline</th><th>label</th></tr></thead>"
+        f"<tbody>{''.join(rows)}</tbody></table>"
+    )
+
+
+def render_actions(actions: list[dict[str, Any]], max_actions: int = 40) -> str:
+    if not actions:
+        return "<p class='muted'>No actions stored.</p>"
+    rows = []
+    for action in actions[:max_actions]:
+        if not isinstance(action, dict):
+            continue
+        actual = action.get("actual_output") if isinstance(action.get("actual_output"), dict) else {}
+        results = actual.get("results") if isinstance(actual.get("results"), list) else []
+        top_results = []
+        for result in results[:3]:
+            if isinstance(result, dict):
+                top_results.append(
+                    f"{result.get('doc_id') or ''} {truncate_text(result.get('title') or result.get('snippet'), 120)}"
+                )
+        query = actual.get("query") or ((action.get("parameters") or {}).get("query") if isinstance(action.get("parameters"), dict) else "")
+        rows.append(
+            "<tr>"
+            f"<td><code>{esc(action.get('type'))}</code></td>"
+            f"<td>{esc(action.get('iteration'))}</td>"
+            f"<td>{fmt_num(action.get('execution_time'), 3)}s</td>"
+            f"<td>{esc(action.get('status'))}</td>"
+            f"<td>{esc(truncate_text(query, 180))}</td>"
+            f"<td>{esc('; '.join(top_results))}</td>"
+            "</tr>"
+        )
+    return (
+        "<table><thead><tr><th>type</th><th>iter</th><th>time</th><th>status</th><th>query</th><th>top results</th></tr></thead>"
+        f"<tbody>{''.join(rows)}</tbody></table>"
+    )
+
+
+def render_hop_states(hop_states: list[dict[str, Any]]) -> str:
+    if not hop_states:
+        return "<p class='muted'>No hop states stored.</p>"
+    blocks = []
+    for hop in hop_states:
+        if not isinstance(hop, dict):
+            continue
+        readers = hop.get("reader_results") if isinstance(hop.get("reader_results"), list) else []
+        reader_rows = []
+        for reader in readers[:5]:
+            if isinstance(reader, dict):
+                reader_rows.append(
+                    "<tr>"
+                    f"<td>{esc(reader.get('doc_id'))}</td>"
+                    f"<td>{esc(reader.get('source'))}</td>"
+                    f"<td>{esc(reader.get('can_answer'))}</td>"
+                    f"<td>{esc(truncate_text(reader.get('proposed_answer'), 120))}</td>"
+                    f"<td>{esc(truncate_text(reader.get('justification'), 240))}</td>"
+                    "</tr>"
+                )
+        reader_table = (
+            "<table><thead><tr><th>doc</th><th>source</th><th>can answer</th><th>proposed answer</th><th>reader justification</th></tr></thead>"
+            f"<tbody>{''.join(reader_rows)}</tbody></table>"
+            if reader_rows
+            else "<p class='muted'>No reader results for this hop.</p>"
+        )
+        blocks.append(
+            "<details open>"
+            f"<summary>Hop {esc(hop.get('hop_number'))}: {esc(truncate_text(hop.get('question'), 170))}</summary>"
+            "<div class='hop-grid'>"
+            f"<div><b>Status</b><br>{esc(hop.get('status'))}</div>"
+            f"<div><b>Answer</b><br>{esc(truncate_text(hop.get('answer'), 180))}</div>"
+            f"<div><b>Confidence</b><br>{esc(hop.get('confidence'))}</div>"
+            "</div>"
+            f"<p><b>Resolution reason</b><br>{esc(truncate_text(hop.get('resolution_reason'), 700))}</p>"
+            f"<p><b>Justification</b><br>{esc(truncate_text(hop.get('justification'), 700))}</p>"
+            f"{reader_table}"
+            "</details>"
+        )
+    return "".join(blocks)
+
+
+def build_rollout_samples_html(
+    output_dir: Path,
+    runs: list[RunSpec],
+    rollout_rows: list[dict[str, Any]],
+    samples_per_phase: int,
+    now: datetime,
+) -> None:
+    samples = choose_sample_rollouts(runs, rollout_rows, samples_per_phase)
+    nav_items = []
+    sample_sections = []
+    for idx, sample in enumerate(samples, start=1):
+        rollout_id = str(sample.get("rollout_id") or "")
+        run_dir = Path(str(sample.get("run_dir") or ""))
+        sample_dir = run_dir / "privacy_hopqa_runs" / rollout_id
+        trace = read_json_safe(sample_dir / "trace.json", {})
+        events = read_json_safe(sample_dir / "timeline_events.json", [])
+        summary = trace.get("summary") if isinstance(trace, dict) else {}
+        actions = trace.get("actions") if isinstance(trace, dict) else []
+        hop_states = trace.get("hop_states") if isinstance(trace, dict) else []
+        report_path = Path(str(trace.get("report_path") or "")) if isinstance(trace, dict) else Path("")
+        report = read_text_safe(report_path, 4500) if str(report_path) else ""
+        if not report:
+            report = read_text_safe(sample_dir / "workspace" / "research_report.md", 4500)
+        nav_label = f"{idx}. {sample.get('label')} {sample.get('phase')} {rollout_id[:18]}"
+        nav_items.append(f"<a href='#sample-{idx}'>{esc(nav_label)}</a>")
+        sample_sections.append(
+            f"""
+            <section class='sample' id='sample-{idx}'>
+              <h2>{esc(phase_rank(sample))}</h2>
+              <div class='sample-meta-grid'>
+                <div><b>task</b><br>{esc(sample.get('task_id'))}</div>
+                <div><b>chain</b><br>{esc(sample.get('chain_id'))}</div>
+                <div><b>company</b><br>{esc(sample.get('company'))}</div>
+                <div><b>pattern</b><br>{esc(sample.get('hop_pattern'))}</div>
+                <div><b>duration</b><br>{fmt_num(summary.get('duration_s') if isinstance(summary, dict) else sample.get('duration_s'), 1)}s</div>
+                <div><b>resolved</b><br>{esc(summary.get('resolved_hops') if isinstance(summary, dict) else sample.get('resolved_hops'))}/{esc(summary.get('total_hops') if isinstance(summary, dict) else sample.get('total_hops'))}</div>
+                <div><b>LLM calls</b><br>{fmt_num(summary.get('llm_calls_total') if isinstance(summary, dict) else sample.get('llm_calls_total'))}</div>
+                <div><b>search/doc</b><br>{fmt_num(summary.get('searches_total') if isinstance(summary, dict) else sample.get('searches_total'))} / {fmt_num(summary.get('docs_read') if isinstance(summary, dict) else sample.get('docs_read'))}</div>
+              </div>
+              <p class='muted'>Raw per-call LLM completions are not stored in these traces. This page shows stored LLM artifacts: hop states, reader decisions/justifications, resolver reasons, planned/search actions, retrieved result snippets, and final report excerpts.</p>
+              <h3>Horizontal timing timeline</h3>
+              {render_timeline_events(events if isinstance(events, list) else [])}
+              <h3>Stored final report excerpt</h3>
+              <pre>{esc(report or 'No report excerpt found.')}</pre>
+              <h3>Hop states and reader outputs</h3>
+              {render_hop_states(hop_states if isinstance(hop_states, list) else [])}
+              <h3>Search/action outputs</h3>
+              {render_actions(actions if isinstance(actions, list) else [])}
+            </section>
+            """
+        )
+    html_text = f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>privacy_hopqa rollout samples</title>
+  <style>
+    :root {{ --bg:#f5f4ef; --panel:#fff; --ink:#1e2430; --muted:#5f6b7a; --line:#d7dbe2; --accent:#1f5da8; }}
+    * {{ box-sizing:border-box; }}
+    body {{ margin:0; font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:linear-gradient(180deg,#f8f7f2,#eef3f8); color:var(--ink); }}
+    .layout {{ display:grid; grid-template-columns:310px 1fr; min-height:100vh; }}
+    aside {{ position:sticky; top:0; height:100vh; overflow:auto; padding:22px; border-right:1px solid var(--line); background:rgba(255,255,255,.82); }}
+    aside h1 {{ font-size:20px; margin:0 0 8px; }}
+    aside p {{ color:var(--muted); font-size:13px; line-height:1.45; }}
+    aside nav {{ display:grid; gap:7px; margin-top:16px; }}
+    aside a {{ color:var(--accent); text-decoration:none; padding:7px 9px; border:1px solid #cfe0f6; border-radius:10px; background:#e7f0fb; font-size:12px; }}
+    main {{ padding:24px; max-width:1500px; }}
+    .sample {{ background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:18px; margin-bottom:22px; box-shadow:0 12px 32px rgba(30,36,48,.05); }}
+    h2 {{ margin:0 0 12px; }}
+    h3 {{ margin:22px 0 10px; }}
+    .muted {{ color:var(--muted); }}
+    .sample-meta-grid, .hop-grid {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin:12px 0; }}
+    .sample-meta-grid div, .hop-grid div {{ border:1px solid var(--line); border-radius:12px; padding:10px; background:#f8fafc; }}
+    table {{ width:100%; border-collapse:collapse; font-size:12px; }}
+    th, td {{ padding:7px 8px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }}
+    th {{ background:#f7f9fc; position:sticky; top:0; }}
+    code {{ background:#f2f5fa; border:1px solid var(--line); border-radius:6px; padding:1px 5px; }}
+    pre {{ white-space:pre-wrap; word-break:break-word; background:#f7f9fc; border:1px solid var(--line); border-radius:12px; padding:12px; max-height:360px; overflow:auto; font-size:12px; }}
+    details {{ border:1px solid var(--line); border-radius:14px; padding:10px 12px; margin:10px 0; background:#fff; }}
+    summary {{ cursor:pointer; font-weight:700; }}
+    .timeline-cell {{ min-width:360px; }}
+    .bar-track {{ position:relative; height:18px; background:#eef2f7; border-radius:999px; border:1px solid var(--line); overflow:hidden; }}
+    .bar {{ position:absolute; top:1px; bottom:1px; border-radius:999px; min-width:2px; }}
+    @media (max-width:900px) {{ .layout {{ grid-template-columns:1fr; }} aside {{ position:relative; height:auto; }} }}
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside>
+      <h1>Rollout samples</h1>
+      <p>Generated {esc(iso(now))}. Up to {samples_per_phase} random rollouts per run from early, middle, and late portions of the parsed trace cache.</p>
+      <p><a href="privacy_hopqa_schedulerfix_classic_viewer.html">Back to classic viewer</a></p>
+      <nav>{''.join(nav_items)}</nav>
+    </aside>
+    <main>{''.join(sample_sections) if sample_sections else "<p>No samples available yet.</p>"}</main>
+  </div>
+</body>
+</html>
+"""
+    name = "privacy_hopqa_schedulerfix_rollout_samples.html"
+    (output_dir / name).write_text(html_text, encoding="utf-8")
+    (output_dir.parent / name).write_text(html_text, encoding="utf-8")
 
 
 def refresh(args: argparse.Namespace, runs: list[RunSpec]) -> None:
@@ -1809,6 +2371,14 @@ def refresh(args: argparse.Namespace, runs: list[RunSpec]) -> None:
         plot_source_calls_by_iteration(output_dir, trace_stage_rows),
         plot_classic_search_doc_counts(output_dir, trace_rollout_rows, trace_stage_rows),
         plot_classic_rollout_distributions(output_dir, trace_rollout_rows),
+        plot_classic_stage_duration_boxplot(output_dir, trace_stage_rows),
+        plot_classic_source_usage_distributions(output_dir, trace_rollout_rows, trace_stage_rows),
+        plot_classic_token_usage(output_dir, trace_rollout_rows),
+        plot_classic_iteration_distribution(output_dir, trace_rollout_rows),
+        plot_classic_searches_vs_docs(output_dir, trace_rollout_rows),
+        plot_classic_stage_event_mix(output_dir, trace_stage_rows),
+        plot_classic_pattern_alignment(output_dir, trace_rollout_rows),
+        plot_classic_company_alignment(output_dir, trace_rollout_rows),
         plot_classic_error_breakdown(output_dir, trace_error_rows),
     ]
     build_html(
@@ -1831,6 +2401,13 @@ def refresh(args: argparse.Namespace, runs: list[RunSpec]) -> None:
         action_rows=trace_action_rows,
         error_rows=trace_error_rows,
         plot_names=[name for name in plot_names if name],
+        now=now,
+    )
+    build_rollout_samples_html(
+        output_dir=output_dir,
+        runs=runs,
+        rollout_rows=trace_rollout_rows,
+        samples_per_phase=args.samples_per_phase,
         now=now,
     )
 
