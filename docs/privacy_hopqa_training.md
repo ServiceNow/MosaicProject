@@ -52,6 +52,14 @@ Important details:
 - The script intentionally uses `privacy_hopqa.capture_mode=all_calls` so
   retrieved documents remain available for debugging and reward review.
 
+## Why These Fixes Exist
+
+Privacy HopQA rollouts are much larger than ordinary single-answer rollouts because `capture_mode=all_calls` keeps every planner, chooser, reader, and resolver call, plus token ids, rewards, logprobs, reference logprobs, and metadata. Preprocessing expands those traces into RL rows and sends them through a shared-memory queue; one retry run produced a roughly 123 MB preprocessed payload for a 100 MB queue slot. The fixes were to raise the preprocess shared-memory entry size, split oversized preprocessed outputs into multiple queue messages, and filter before queue output when possible.
+
+A separate class of failures came from rollout infrastructure rather than agent behavior. We saw vLLM/backend symptoms including HTTP 500s, DNS/connect failures, helper disconnects, and an `AsyncEngineDeadError` caused by a CUDA unknown error inside a vLLM actor shard. Those should not become low-reward training trajectories, so the privacy HopQA adapter now treats transport errors, timeouts, HTTP 5xx, and `AsyncEngineDead` as infrastructure failures and re-raises them for PipelineRL to handle at the actor/job level.
+
+The empty-output path was also hardened. If a rollout group produces no training texts, the actor skips publishing that group instead of writing an empty list into the stream. Preprocessing also handles empty inputs and worker error messages before applying RL filtering, which avoids misleading dataframe or type errors.
+
 ## Run Record Template
 
 Keep run-specific identifiers in local notes or W&B, not in committed docs:

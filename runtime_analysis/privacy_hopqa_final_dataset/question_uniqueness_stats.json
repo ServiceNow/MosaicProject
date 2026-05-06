@@ -1,0 +1,725 @@
+{
+  "method": {
+    "unit": "hop questions",
+    "exact_normalization": "casefold, strip punctuation, replace markers/numbers/company names",
+    "approx_cluster_rule": "same hop number bucket plus token Jaccard >= 0.82, or Jaccard >= 0.55 and SequenceMatcher >= 0.88",
+    "note": "This is an estimate intended to collapse near-duplicate phrasings, not a semantic entailment judgment."
+  },
+  "n_questions_total": 3403,
+  "n_exact_normalized_unique": 3355,
+  "n_approx_unique_clusters": 3275,
+  "duplicate_rate_exact_normalized": 0.0141,
+  "duplicate_rate_approx": 0.0376,
+  "cluster_size_distribution": {
+    "1": 3179,
+    "2": 79,
+    "3": 11,
+    "4": 3,
+    "5": 2,
+    "11": 1
+  },
+  "largest_clusters": [
+    {
+      "size": 11,
+      "representative": "What was the employee training completion rate at Elexion Automotive in Q1 2025?",
+      "examples": [
+        {
+          "chain_id": "1096b20a",
+          "task_id": "DR0011",
+          "hop_number": 1,
+          "question": "What was the employee training completion rate at Elexion Automotive in Q1 2025?"
+        },
+        {
+          "chain_id": "07a95c23",
+          "task_id": "DR0004",
+          "hop_number": 1,
+          "question": "What was Lee's Market's compliance training completion rate in Q2 2024?"
+        },
+        {
+          "chain_id": "232e00f7",
+          "task_id": "DR0015",
+          "hop_number": 1,
+          "question": "What was Elexion Automotive's employee training completion rate in Q2 2024?"
+        },
+        {
+          "chain_id": "548287e2",
+          "task_id": "DR0006",
+          "hop_number": 1,
+          "question": "What was MediConn Solutions' employee turnover rate in Q1 2025?"
+        },
+        {
+          "chain_id": "d50c2529",
+          "task_id": "DR0007",
+          "hop_number": 1,
+          "question": "What was the employee retention rate at MediConn Solutions in Q3 2025?"
+        },
+        {
+          "chain_id": "ece373df",
+          "task_id": "DR0001",
+          "hop_number": 1,
+          "question": "What was the employee training completion rate at Lee's Market in Q1 2024?"
+        }
+      ]
+    },
+    {
+      "size": 5,
+      "representative": "Which cybersecurity firm reported a (2) increase in application-layer DDoS attacks in Q2 2023?",
+      "examples": [
+        {
+          "chain_id": "0fbd0a86",
+          "task_id": "DR0071",
+          "hop_number": 3,
+          "question": "Which cybersecurity firm reported a (2) increase in application-layer DDoS attacks in Q2 2023?"
+        },
+        {
+          "chain_id": "8f28505c",
+          "task_id": "DR0047",
+          "hop_number": 3,
+          "question": "What company recorded a (2) jump in application-layer DDoS attacks in Q2 2023?"
+        },
+        {
+          "chain_id": "f50806a4",
+          "task_id": "DR0077",
+          "hop_number": 3,
+          "question": "Which cybersecurity firm reported a (2) increase in application-layer DDoS attacks in Q2 2023?"
+        },
+        {
+          "chain_id": "92c85775",
+          "task_id": "DR0034",
+          "hop_number": 3,
+          "question": "Which company reported a (2) increase in application-layer DDoS attacks in Q2 2023?"
+        },
+        {
+          "chain_id": "fa19d49f",
+          "task_id": "DR0072",
+          "hop_number": 3,
+          "question": "Which company reported a (2) increase in application-layer DDoS attacks?"
+        }
+      ]
+    },
+    {
+      "size": 5,
+      "representative": "What is the estimated annual worldwide cybercrime cost by (2)?",
+      "examples": [
+        {
+          "chain_id": "b200acbf",
+          "task_id": "DR0072",
+          "hop_number": 3,
+          "question": "What is the estimated annual worldwide cybercrime cost by (2)?"
+        },
+        {
+          "chain_id": "514ed60a",
+          "task_id": "DR0058",
+          "hop_number": 3,
+          "question": "What is the estimated worldwide cybercrime cost by (2)?"
+        },
+        {
+          "chain_id": "bf97caf4",
+          "task_id": "DR0048",
+          "hop_number": 3,
+          "question": "What is the estimated annual worldwide cybercrime cost by (2)?"
+        },
+        {
+          "chain_id": "1834ae03",
+          "task_id": "DR0100",
+          "hop_number": 3,
+          "question": "What is the estimated worldwide cybercrime cost by (2)?"
+        },
+        {
+          "chain_id": "c767206d",
+          "task_id": "DR0098",
+          "hop_number": 3,
+          "question": "What is the estimated annual worldwide cybercrime cost by (2)?"
+        }
+      ]
+    },
+    {
+      "size": 4,
+      "representative": "What is the projected cost of HIPAA compliance for Q2 2024 at MediConn Solutions?",
+      "examples": [
+        {
+          "chain_id": "6ed712cc",
+          "task_id": "DR0006",
+          "hop_number": 1,
+          "question": "What is the projected cost of HIPAA compliance for Q2 2024 at MediConn Solutions?"
+        },
+        {
+          "chain_id": "1a1fc3c5",
+          "task_id": "DR0006",
+          "hop_number": 1,
+          "question": "What is MediConn's projected HIPAA compliance cost for Q2 2024?"
+        },
+        {
+          "chain_id": "234b4586",
+          "task_id": "DR0006",
+          "hop_number": 1,
+          "question": "What was the projected cost of HIPAA compliance for Q2 2024 at MediConn?"
+        },
+        {
+          "chain_id": "4d81ef48",
+          "task_id": "DR0006",
+          "hop_number": 1,
+          "question": "What was MediConn's projected HIPAA compliance cost for Q2 2024?"
+        }
+      ]
+    },
+    {
+      "size": 4,
+      "representative": "What percentage of service visits at Elexion Automotive in 2024 were related to infotainment system issues?",
+      "examples": [
+        {
+          "chain_id": "f64bd9c4",
+          "task_id": "DR0074",
+          "hop_number": 1,
+          "question": "What percentage of service visits at Elexion Automotive in 2024 were related to infotainment system issues?"
+        },
+        {
+          "chain_id": "8a0f781d",
+          "task_id": "DR0074",
+          "hop_number": 1,
+          "question": "What percentage of service visits at Elexion Automotive in 2024 were related to infotainment system issues?"
+        },
+        {
+          "chain_id": "a060d72b",
+          "task_id": "DR0074",
+          "hop_number": 1,
+          "question": "What percentage of service visits at Elexion Automotive in 2024 were related to infotainment system issues?"
+        },
+        {
+          "chain_id": "bf1db289",
+          "task_id": "DR0074",
+          "hop_number": 1,
+          "question": "What percentage of service visits at Elexion Automotive in 2024 were related to infotainment system issues?"
+        }
+      ]
+    },
+    {
+      "size": 4,
+      "representative": "How many vehicles did Tesla deliver in (2)?",
+      "examples": [
+        {
+          "chain_id": "e3460b2b",
+          "task_id": "DR0015",
+          "hop_number": 3,
+          "question": "How many vehicles did Tesla deliver in (2)?"
+        },
+        {
+          "chain_id": "fa757a11",
+          "task_id": "DR0079",
+          "hop_number": 3,
+          "question": "How many vehicles did Tesla deliver in (2)?"
+        },
+        {
+          "chain_id": "9bc7ebce",
+          "task_id": "DR0081",
+          "hop_number": 3,
+          "question": "How many vehicles did Tesla deliver in (2)?"
+        },
+        {
+          "chain_id": "e93f7168",
+          "task_id": "DR0077",
+          "hop_number": 3,
+          "question": "In (2), how many vehicles did Tesla deliver?"
+        }
+      ]
+    },
+    {
+      "size": 3,
+      "representative": "What percentage of children in state-funded secondary schools in England were born inside the UK in (2)?",
+      "examples": [
+        {
+          "chain_id": "0db8a3e5",
+          "task_id": "DR0010",
+          "hop_number": 3,
+          "question": "What percentage of children in state-funded secondary schools in England were born inside the UK in (2)?"
+        },
+        {
+          "chain_id": "ac916c2c",
+          "task_id": "DR0029",
+          "hop_number": 3,
+          "question": "In (2), what percentage of children in state-funded secondary schools in England were born outside the UK?"
+        },
+        {
+          "chain_id": "d02e9696",
+          "task_id": "DR0098",
+          "hop_number": 3,
+          "question": "What percentage of children in state-funded secondary schools in England were born outside the UK in (2)?"
+        }
+      ]
+    },
+    {
+      "size": 3,
+      "representative": "What was the patient satisfaction score for MediConn Solutions in Q4 2022?",
+      "examples": [
+        {
+          "chain_id": "9dc3022e",
+          "task_id": "DR0043",
+          "hop_number": 1,
+          "question": "What was the patient satisfaction score for MediConn Solutions in Q4 2022?"
+        },
+        {
+          "chain_id": "2094593a",
+          "task_id": "DR0008",
+          "hop_number": 1,
+          "question": "What was the patient satisfaction rate at MediConn Solutions in Q2 2024?"
+        },
+        {
+          "chain_id": "e1cfbb95",
+          "task_id": "DR0043",
+          "hop_number": 1,
+          "question": "What was the patient satisfaction score for MediConn Solutions in Q4 2022?"
+        }
+      ]
+    },
+    {
+      "size": 3,
+      "representative": "Since what year has Lee's Market's supplier qualification process been in effect?",
+      "examples": [
+        {
+          "chain_id": "e012abd3",
+          "task_id": "DR0016",
+          "hop_number": 1,
+          "question": "Since what year has Lee's Market's supplier qualification process been in effect?"
+        },
+        {
+          "chain_id": "301e32df",
+          "task_id": "DR0016",
+          "hop_number": 1,
+          "question": "Since what year has Lee's Market's supplier qualification process been in effect?"
+        },
+        {
+          "chain_id": "ba27bd41",
+          "task_id": "DR0016",
+          "hop_number": 1,
+          "question": "Since what year has Lee's Market's supplier qualification process been in effect?"
+        }
+      ]
+    },
+    {
+      "size": 3,
+      "representative": "What was Lee's Market's customer satisfaction rating in Q1 2024?",
+      "examples": [
+        {
+          "chain_id": "14e5882d",
+          "task_id": "DR0005",
+          "hop_number": 1,
+          "question": "What was Lee's Market's customer satisfaction rating in Q1 2024?"
+        },
+        {
+          "chain_id": "ab47f663",
+          "task_id": "DR0051",
+          "hop_number": 1,
+          "question": "What was MediConn Solutions' customer satisfaction target in 2024?"
+        },
+        {
+          "chain_id": "0b5f7701",
+          "task_id": "DR0062",
+          "hop_number": 1,
+          "question": "What was Elexion Automotive's customer satisfaction rating in 2024?"
+        }
+      ]
+    },
+    {
+      "size": 3,
+      "representative": "What was the workforce participation rate in workplace conduct training at MediConn in 2023?",
+      "examples": [
+        {
+          "chain_id": "a8cbd5d2",
+          "task_id": "DR0024",
+          "hop_number": 1,
+          "question": "What was the workforce participation rate in workplace conduct training at MediConn in 2023?"
+        },
+        {
+          "chain_id": "0d1e2d98",
+          "task_id": "DR0024",
+          "hop_number": 1,
+          "question": "What was MediConn's workforce participation rate in workplace conduct training?"
+        },
+        {
+          "chain_id": "1930c135",
+          "task_id": "DR0024",
+          "hop_number": 1,
+          "question": "What was MediConn's workforce participation rate in its workplace conduct training program?"
+        }
+      ]
+    },
+    {
+      "size": 3,
+      "representative": "What was the IT Department's operational cost reduction at Lee's Market in 2024?",
+      "examples": [
+        {
+          "chain_id": "149c5844",
+          "task_id": "DR0037",
+          "hop_number": 1,
+          "question": "What was the IT Department's operational cost reduction at Lee's Market in 2024?"
+        },
+        {
+          "chain_id": "dfc22594",
+          "task_id": "DR0037",
+          "hop_number": 1,
+          "question": "What was the IT Department's operational cost reduction at Lee's Market in 2024?"
+        },
+        {
+          "chain_id": "66e9d1a0",
+          "task_id": "DR0037",
+          "hop_number": 1,
+          "question": "What was the operational cost reduction percentage for the IT Department at Lee's Market in 2024?"
+        }
+      ]
+    },
+    {
+      "size": 3,
+      "representative": "In what month and year did Elexion Automotive launch its customer feedback initiative?",
+      "examples": [
+        {
+          "chain_id": "0c538b12",
+          "task_id": "DR0032",
+          "hop_number": 1,
+          "question": "In what month and year did Elexion Automotive launch its customer feedback initiative?"
+        },
+        {
+          "chain_id": "d1bb8f0f",
+          "task_id": "DR0032",
+          "hop_number": 1,
+          "question": "In what month and year did Elexion Automotive launch its customer feedback initiative?"
+        },
+        {
+          "chain_id": "94abb428",
+          "task_id": "DR0032",
+          "hop_number": 1,
+          "question": "In what month and year did Elexion Automotive launch its customer feedback initiative for the Orion 5M?"
+        }
+      ]
+    },
+    {
+      "size": 3,
+      "representative": "Which state created the (2) program?",
+      "examples": [
+        {
+          "chain_id": "86963ba2",
+          "task_id": "DR0011",
+          "hop_number": 3,
+          "question": "Which state created the (2) program?"
+        },
+        {
+          "chain_id": "c3af5b69",
+          "task_id": "DR0011",
+          "hop_number": 3,
+          "question": "Which state adopted the (2) program?"
+        },
+        {
+          "chain_id": "9661ff24",
+          "task_id": "DR0011",
+          "hop_number": 3,
+          "question": "Which state adopted the (2) program?"
+        }
+      ]
+    },
+    {
+      "size": 3,
+      "representative": "Which industry accounted for almost (2) of all third-party breaches in 2022?",
+      "examples": [
+        {
+          "chain_id": "273f57b0",
+          "task_id": "DR0071",
+          "hop_number": 3,
+          "question": "Which industry accounted for almost (2) of all third-party breaches in 2022?"
+        },
+        {
+          "chain_id": "64f668e8",
+          "task_id": "DR0058",
+          "hop_number": 3,
+          "question": "Which industry accounted for almost (2) of third-party breaches in 2022?"
+        },
+        {
+          "chain_id": "49943dc2",
+          "task_id": "DR0071",
+          "hop_number": 3,
+          "question": "Which industry accounted for almost (2) of third-party breaches in 2022?"
+        }
+      ]
+    },
+    {
+      "size": 3,
+      "representative": "Which company launched its rival to Tesla's Model S in (2)?",
+      "examples": [
+        {
+          "chain_id": "ef83048b",
+          "task_id": "DR0075",
+          "hop_number": 3,
+          "question": "Which company launched its rival to Tesla's Model S in (2)?"
+        },
+        {
+          "chain_id": "23f28b48",
+          "task_id": "DR0089",
+          "hop_number": 3,
+          "question": "Which company launched a rival to Tesla's Model S in (2)?"
+        },
+        {
+          "chain_id": "a54b5201",
+          "task_id": "DR0062",
+          "hop_number": 3,
+          "question": "Which company launched its rival to Tesla's Model S in (2)?"
+        }
+      ]
+    },
+    {
+      "size": 3,
+      "representative": "How many MediConn care team members completed the head and neck cancer management online training modules?",
+      "examples": [
+        {
+          "chain_id": "f34c3864",
+          "task_id": "DR0054",
+          "hop_number": 1,
+          "question": "How many MediConn care team members completed the head and neck cancer management online training modules?"
+        },
+        {
+          "chain_id": "8b0d9a1f",
+          "task_id": "DR0054",
+          "hop_number": 1,
+          "question": "How many MediConn care team members completed the head and neck cancer management online training modules?"
+        },
+        {
+          "chain_id": "021adc26",
+          "task_id": "DR0054",
+          "hop_number": 1,
+          "question": "How many care team members completed MediConn's head and neck cancer management training?"
+        }
+      ]
+    },
+    {
+      "size": 2,
+      "representative": "What was the average employee participation rate in MediConn's wellness platform by Q1 2025?",
+      "examples": [
+        {
+          "chain_id": "20361464",
+          "task_id": "DR0009",
+          "hop_number": 1,
+          "question": "What was the average employee participation rate in MediConn's wellness platform by Q1 2025?"
+        },
+        {
+          "chain_id": "2f46e670",
+          "task_id": "DR0009",
+          "hop_number": 1,
+          "question": "What was the average employee participation rate in MediConn's wellness platform?"
+        }
+      ]
+    },
+    {
+      "size": 2,
+      "representative": "What was the improvement in internal process efficiency at MediConn since Q2 2025?",
+      "examples": [
+        {
+          "chain_id": "23796749",
+          "task_id": "DR0052",
+          "hop_number": 1,
+          "question": "What was the improvement in internal process efficiency at MediConn since Q2 2025?"
+        },
+        {
+          "chain_id": "39203457",
+          "task_id": "DR0052",
+          "hop_number": 1,
+          "question": "What was the improvement in internal process efficiency at MediConn since Q2 2025?"
+        }
+      ]
+    },
+    {
+      "size": 2,
+      "representative": "What was Elexion Automotive's total expenditure on CRM software licensing and maintenance?",
+      "examples": [
+        {
+          "chain_id": "28872634",
+          "task_id": "DR0066",
+          "hop_number": 1,
+          "question": "What was Elexion Automotive's total expenditure on CRM software licensing and maintenance?"
+        },
+        {
+          "chain_id": "52aa017a",
+          "task_id": "DR0066",
+          "hop_number": 1,
+          "question": "What was the total expenditure on CRM software licensing and maintenance at Elexion Automotive in 2024?"
+        }
+      ]
+    },
+    {
+      "size": 2,
+      "representative": "Which brand's acquisition includes deferred payments beginning in (2)?",
+      "examples": [
+        {
+          "chain_id": "49252119",
+          "task_id": "DR0087",
+          "hop_number": 3,
+          "question": "Which brand's acquisition includes deferred payments beginning in (2)?"
+        },
+        {
+          "chain_id": "146437e5",
+          "task_id": "DR0065",
+          "hop_number": 3,
+          "question": "Which brand's acquisition has deferred payments due beginning in (2)?"
+        }
+      ]
+    },
+    {
+      "size": 2,
+      "representative": "In what quarter and year is Elexion Automotive's cloud-based CRM solution targeted for full implementation?",
+      "examples": [
+        {
+          "chain_id": "57473242",
+          "task_id": "DR0063",
+          "hop_number": 1,
+          "question": "In what quarter and year is Elexion Automotive's cloud-based CRM solution targeted for full implementation?"
+        },
+        {
+          "chain_id": "108fcf87",
+          "task_id": "DR0063",
+          "hop_number": 1,
+          "question": "By what quarter and year is the full implementation of Elexion Automotive's cloud-based CRM solution targeted?"
+        }
+      ]
+    },
+    {
+      "size": 2,
+      "representative": "In what year did Elexion Automotive start its Digital Transformation Strategy?",
+      "examples": [
+        {
+          "chain_id": "63768200",
+          "task_id": "DR0065",
+          "hop_number": 1,
+          "question": "In what year did Elexion Automotive start its Digital Transformation Strategy?"
+        },
+        {
+          "chain_id": "7f4b11a0",
+          "task_id": "DR0065",
+          "hop_number": 1,
+          "question": "In what year did Elexion Automotive launch its Digital Transformation Strategy?"
+        }
+      ]
+    },
+    {
+      "size": 2,
+      "representative": "What percent of MediConn's Q1 2023 mental-health consultations came from patients in their 20s?",
+      "examples": [
+        {
+          "chain_id": "81355921",
+          "task_id": "DR0043",
+          "hop_number": 1,
+          "question": "What percent of MediConn's Q1 2023 mental-health consultations came from patients in their 20s?"
+        },
+        {
+          "chain_id": "704b3ae3",
+          "task_id": "DR0043",
+          "hop_number": 1,
+          "question": "What percent of MediConn's Q1 2023 mental health consultations came from patients in their 20s?"
+        }
+      ]
+    },
+    {
+      "size": 2,
+      "representative": "What was the phone call response rate for Elexion Automotive's Sales Team in Q2 2025?",
+      "examples": [
+        {
+          "chain_id": "88597406",
+          "task_id": "DR0066",
+          "hop_number": 1,
+          "question": "What was the phone call response rate for Elexion Automotive's Sales Team in Q2 2025?"
+        },
+        {
+          "chain_id": "f5b204b6",
+          "task_id": "DR0066",
+          "hop_number": 1,
+          "question": "What was the text message response rate for Elexion Automotive's Sales Team in Q2 2025?"
+        }
+      ]
+    },
+    {
+      "size": 2,
+      "representative": "In what year did MediConn Solutions introduce a new virtual triage system?",
+      "examples": [
+        {
+          "chain_id": "95d06860",
+          "task_id": "DR0046",
+          "hop_number": 1,
+          "question": "In what year did MediConn Solutions introduce a new virtual triage system?"
+        },
+        {
+          "chain_id": "69bdb2ee",
+          "task_id": "DR0046",
+          "hop_number": 1,
+          "question": "In what year did MediConn Solutions introduce a new virtual triage system?"
+        }
+      ]
+    },
+    {
+      "size": 2,
+      "representative": "What was the participation rate in the Wellness Challenge in (2)?",
+      "examples": [
+        {
+          "chain_id": "1c429b8b",
+          "task_id": "DR0097",
+          "hop_number": 3,
+          "question": "What was the participation rate in the Wellness Challenge in (2)?"
+        },
+        {
+          "chain_id": "18133de2",
+          "task_id": "DR0097",
+          "hop_number": 3,
+          "question": "What was MediConn's wellness challenge participation rate in (2)?"
+        }
+      ]
+    },
+    {
+      "size": 2,
+      "representative": "By what year do over (1) of consumers intend to purchase from a DTC brand?",
+      "examples": [
+        {
+          "chain_id": "ee64ff89",
+          "task_id": "DR0009",
+          "hop_number": 2,
+          "question": "By what year do over (1) of consumers intend to purchase from a DTC brand?"
+        },
+        {
+          "chain_id": "53485a19",
+          "task_id": "DR0007",
+          "hop_number": 2,
+          "question": "By what year do over (1) of consumers intend to purchase from a DTC brand?"
+        }
+      ]
+    },
+    {
+      "size": 2,
+      "representative": "Which organization's compliance guidelines did (2) ask the team to review?",
+      "examples": [
+        {
+          "chain_id": "6ed712cc",
+          "task_id": "DR0006",
+          "hop_number": 3,
+          "question": "Which organization's compliance guidelines did (2) ask the team to review?"
+        },
+        {
+          "chain_id": "548287e2",
+          "task_id": "DR0006",
+          "hop_number": 3,
+          "question": "Which organization's compliance guidelines did (2) ask MediConn's team to review?"
+        }
+      ]
+    },
+    {
+      "size": 2,
+      "representative": "By what quarter and year had MediConn onboarded (1) new wellness platform clients?",
+      "examples": [
+        {
+          "chain_id": "9f64dc7e",
+          "task_id": "DR0009",
+          "hop_number": 2,
+          "question": "By what quarter and year had MediConn onboarded (1) new wellness platform clients?"
+        },
+        {
+          "chain_id": "b85d71bc",
+          "task_id": "DR0009",
+          "hop_number": 2,
+          "question": "By what quarter and year had MediConn onboarded (1) new clients to its wellness platform?"
+        }
+      ]
+    }
+  ]
+}
