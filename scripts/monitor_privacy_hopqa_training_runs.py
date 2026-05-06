@@ -827,6 +827,168 @@ def plot_reward_throughput(output_dir: Path, finetune_rows_by_run: dict[str, lis
     return path.name
 
 
+def plot_training_metrics_by_step(
+    output_dir: Path, finetune_rows_by_run: dict[str, list[dict[str, Any]]], window: int
+) -> str | None:
+    if not any(finetune_rows_by_run.values()):
+        return None
+    plot_setup()
+    fig, axes = plt.subplots(3, 1, figsize=(11, 11), sharex=True)
+    plotted = False
+    for label, rows in finetune_rows_by_run.items():
+        rows = sorted(
+            [row for row in rows if as_float(row.get("step")) is not None],
+            key=lambda row: as_float(row.get("step")) or 0.0,
+        )
+        if not rows:
+            continue
+        steps = [as_float(row.get("step")) for row in rows]
+        rewards = [as_float(row.get("rl/reward")) for row in rows]
+        samples = [as_float(row.get("stats/samples")) for row in rows]
+        throughput = [as_float(row.get("throughput/tokens_perGPU_per_sec")) for row in rows]
+        axes[0].plot(steps, rolling(rewards, window), linewidth=2.0, label=label)
+        axes[1].plot(steps, samples, linewidth=2.0, label=label)
+        axes[2].plot(steps, rolling(throughput, window), linewidth=2.0, label=label)
+        plotted = True
+    if not plotted:
+        plt.close(fig)
+        return None
+    axes[0].set_title(f"Reward by completed finetune step, moving average ({window} log points)")
+    axes[0].set_ylabel("reward")
+    axes[1].set_title("Trained samples by completed finetune step")
+    axes[1].set_ylabel("samples")
+    axes[2].set_title(f"Throughput by completed finetune step, moving average ({window} log points)")
+    axes[2].set_ylabel("tokens/GPU/sec")
+    axes[2].set_xlabel("completed finetune step")
+    for ax in axes:
+        ax.legend(loc="best")
+        ax.grid(True, alpha=0.25)
+    path = output_dir / "training_metrics_by_step.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path.name
+
+
+def add_latest_training_step(
+    rollout_rows: list[dict[str, Any]], finetune_rows_by_run: dict[str, list[dict[str, Any]]]
+) -> list[dict[str, Any]]:
+    schedules: dict[str, list[tuple[float, float]]] = {}
+    for label, rows in finetune_rows_by_run.items():
+        points = [
+            (time_s, step)
+            for row in rows
+            if (time_s := as_float(row.get("time_s"))) is not None
+            and (step := as_float(row.get("step"))) is not None
+        ]
+        schedules[label] = sorted(points)
+    enriched: list[dict[str, Any]] = []
+    for row in rollout_rows:
+        copied = dict(row)
+        label = str(row.get("label") or "")
+        completed = as_float(row.get("completed_at_s"))
+        points = schedules.get(label) or []
+        latest_step = None
+        if completed is not None:
+            for time_s, step in points:
+                if time_s <= completed:
+                    latest_step = step
+                else:
+                    break
+        copied["training_step"] = latest_step
+        enriched.append(copied)
+    return enriched
+
+
+def plot_rollout_behavior_by_training_step(
+    output_dir: Path,
+    rollout_rows: list[dict[str, Any]],
+    stage_rows: list[dict[str, Any]],
+    finetune_rows_by_run: dict[str, list[dict[str, Any]]],
+    window: int,
+) -> str | None:
+    if not rollout_rows or not any(finetune_rows_by_run.values()):
+        return None
+    empty_plans: dict[tuple[str, str], tuple[int, int]] = {}
+    counts: dict[tuple[str, str], list[int]] = defaultdict(lambda: [0, 0])
+    for row in stage_rows:
+        if row.get("stage") != "hop_plan":
+            continue
+        key = (str(row.get("label") or ""), str(row.get("rollout_id") or ""))
+        counts[key][1] += 1
+        if as_float(row.get("planned_action_count")) == 0:
+            counts[key][0] += 1
+    for key, value in counts.items():
+        empty_plans[key] = (value[0], value[1])
+
+    rows = add_latest_training_step(rollout_rows, finetune_rows_by_run)
+    rows = [row for row in rows if as_float(row.get("training_step")) is not None]
+    if not rows:
+        return None
+    labels = sorted({str(row.get("label")) for row in rows if row.get("label")})
+    metrics = [
+        ("source_alignment_rate", "search calls using expected source"),
+        ("empty_plan_rate", "empty hop-plan rate"),
+        ("searches_total", "searches per rollout"),
+        ("local_search_share", "local-search share"),
+    ]
+    plot_setup()
+    fig, axes = plt.subplots(2, 2, figsize=(13, 10), sharex=True)
+    plotted = False
+    for label in labels:
+        label_rows = []
+        for row in rows:
+            if row.get("label") != label:
+                continue
+            copied = dict(row)
+            empty, total = empty_plans.get((label, str(row.get("rollout_id") or "")), (0, 0))
+            copied["empty_plan_rate"] = empty / total if total else None
+            searches = as_float(row.get("searches_total")) or 0.0
+            local_searches = as_float(row.get("search_local_count")) or 0.0
+            copied["local_search_share"] = local_searches / searches if searches else None
+            label_rows.append(copied)
+        by_step: dict[float, list[dict[str, Any]]] = defaultdict(list)
+        for row in label_rows:
+            step = as_float(row.get("training_step"))
+            if step is not None:
+                by_step[step].append(row)
+        steps = sorted(by_step)
+        if not steps:
+            continue
+        for ax, (key, title) in zip(axes.flat, metrics):
+            values = [
+                mean_or_none(
+                    [
+                        value
+                        for row in by_step[step]
+                        if (value := as_float(row.get(key))) is not None
+                    ]
+                )
+                for step in steps
+            ]
+            ax.plot(steps, rolling(values, window), linewidth=2.0, label=label)
+        plotted = True
+    if not plotted:
+        plt.close(fig)
+        return None
+    for ax, (_, title) in zip(axes.flat, metrics):
+        ax.set_title(f"{title} by completed finetune step")
+        ax.grid(True, alpha=0.25)
+        ax.legend(loc="best")
+    axes[0, 0].set_ylim(0, 1)
+    axes[0, 1].set_ylim(0, 1)
+    axes[1, 1].set_ylim(0, 1)
+    axes[1, 0].set_ylabel("mean count")
+    axes[1, 0].set_xlabel("completed finetune step")
+    axes[1, 1].set_xlabel("completed finetune step")
+    fig.suptitle(
+        "Rollout behavior aligned to latest completed finetune step, not wall-clock time"
+    )
+    path = output_dir / "rollout_behavior_by_training_step.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path.name
+
+
 def plot_filtering(output_dir: Path, snapshot_rows: list[dict[str, Any]], window: int) -> str | None:
     if not snapshot_rows:
         return None
@@ -2495,6 +2657,14 @@ def build_classic_html(
             "Hop parse errors and empty planner outputs",
             "Parse errors by stage plus accepted empty hop-plan outputs. Empty [] is valid JSON and is not counted as a parser error by the run.",
         ),
+        "training_metrics_by_step.png": (
+            "Training metrics by finetune step",
+            "Reward, trained samples, and throughput against completed optimizer/log step rather than wall-clock time.",
+        ),
+        "rollout_behavior_by_training_step.png": (
+            "Rollout behavior by finetune step",
+            "Each rollout is assigned to the latest completed finetune step for that model, then retrieval behavior is compared by step.",
+        ),
         "trace_stage_duration_ma.png": (
             "Stage duration moving averages",
             "Old-viewer style stage timing, but plotted over recent rollout trace events.",
@@ -3189,6 +3359,14 @@ def refresh(args: argparse.Namespace, runs: list[RunSpec]) -> None:
     plot_names = [
         plot_training_progress(output_dir, finetune_rows_by_run),
         plot_reward_throughput(output_dir, finetune_rows_by_run, args.rolling_window),
+        plot_training_metrics_by_step(output_dir, finetune_rows_by_run, args.rolling_window),
+        plot_rollout_behavior_by_training_step(
+            output_dir,
+            trace_rollout_rows,
+            trace_stage_rows,
+            finetune_rows_by_run,
+            args.rolling_window,
+        ),
         plot_filtering(output_dir, run_snapshots, args.rolling_window),
         plot_helper_latency(output_dir, helper_flat, args.rolling_window),
         plot_trace_helper_action_latency(output_dir, trace_action_rows, args.rolling_window),
@@ -3283,6 +3461,14 @@ def refresh(args: argparse.Namespace, runs: list[RunSpec]) -> None:
             plot_classic_early_middle_late(model_dir, model_rollouts),
             plot_classic_error_breakdown(model_dir, model_errors),
             plot_classic_parse_and_empty_plan_breakdown(model_dir, model_stages, model_errors),
+            plot_training_metrics_by_step(model_dir, {run.label: finetune_rows_by_run.get(run.label, [])}, args.rolling_window),
+            plot_rollout_behavior_by_training_step(
+                model_dir,
+                model_rollouts,
+                model_stages,
+                {run.label: finetune_rows_by_run.get(run.label, [])},
+                args.rolling_window,
+            ),
             plot_trace_helper_action_latency(model_dir, model_actions, args.rolling_window),
             plot_trace_search_latency(model_dir, model_rollouts, args.rolling_window),
             plot_trace_stage_duration(model_dir, model_stages, args.rolling_window),
