@@ -47,8 +47,11 @@ Important details:
 - `finetune.seq_length=20480` and
   `vllm_config.vllm_kwargs.max_model_len=20480` keep the rollout context limit
   aligned.
-- The script already defaults to the by-docs split:
-  `/home/toolkit/nice_code/drbench/chain_review/datasets/privacy_hopqa_userreviewed_bydocs_v1/{train,val}.jsonl`.
+- The script defaults to the finalized Mosaic dataset split:
+  `/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/{train,val,test}.jsonl`.
+- `test.jsonl` is a full held-out-company split for generalization checks. The
+  training launch uses `train.jsonl` for training and `val.jsonl` for online
+  evaluation; do not use the held-out test split for training-time selection.
 - The script intentionally uses `privacy_hopqa.capture_mode=all_calls` so
   retrieved documents remain available for debugging and reward review.
 

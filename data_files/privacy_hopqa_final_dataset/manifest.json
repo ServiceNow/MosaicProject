@@ -1,10 +1,39 @@
 {
-  "published_at": "2026-05-06T00:36:33.043696+00:00",
+  "published_at": "2026-05-06T02:18:52.268875+00:00",
   "source": "/home/toolkit/nice_code/drbench/chain_review/quality_pass_2026-04-30/proposed_annotations",
   "out": "/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset",
   "mirror_out": null,
   "viewer": "dataset_viewer.html",
   "jsonl": "privacy_hopqa_finalized_2026-05-05.jsonl",
+  "splits": {
+    "strategy": "company_heldout_test_stratified_val",
+    "test_company": "MediConn Solutions",
+    "val_fraction_within_non_test_company_task_groups": 0.15,
+    "files": {
+      "train": "train.jsonl",
+      "val": "val.jsonl",
+      "test": "test.jsonl"
+    },
+    "counts": {
+      "train": 559,
+      "val": 98,
+      "test": 344,
+      "total": 1001
+    },
+    "companies": {
+      "train": [
+        "Elexion Automotive",
+        "Lee's Market"
+      ],
+      "val": [
+        "Elexion Automotive",
+        "Lee's Market"
+      ],
+      "test": [
+        "MediConn Solutions"
+      ]
+    }
+  },
   "n_rows": 1001,
   "n_chains_stats": 1001,
   "n_hops_total": 3403,
@@ -16,7 +45,7 @@
     "4": 71,
     "5": 1
   },
-  "n_hops_with_alternate_valid_answers": 2271,
+  "n_hops_with_alternate_valid_answers": 1688,
   "n_approx_unique_question_clusters": 3275,
   "duplicate_rate_approx": 0.0376
 }

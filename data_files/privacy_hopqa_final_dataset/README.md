@@ -12,6 +12,8 @@ Then visit `http://localhost:8765/dataset_viewer.html`.
 Files:
 
 - `privacy_hopqa_finalized_2026-05-05.jsonl`: finalized dataset rows.
+- `train.jsonl`, `val.jsonl`, `test.jsonl`: canonical split; `test.jsonl` holds out one full company.
+- `split_manifest.json`: split strategy, counts, and held-out company.
 - `dataset_stats.json`: task/company/pattern/hop/doc statistics.
 - `dataset_analysis.json`: derived transition, effective-hop, and answer-variant statistics.
 - `question_uniqueness_stats.json`: approximate near-duplicate question clusters.
