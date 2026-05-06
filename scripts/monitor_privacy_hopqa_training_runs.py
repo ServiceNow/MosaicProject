@@ -1527,7 +1527,7 @@ def plot_source_alignment_by_hop(output_dir: Path, stage_rows: list[dict[str, An
         return None
     labels = sorted({str(row.get("label")) for row in search_rows if row.get("label")})
     plot_setup()
-    fig, axes = plt.subplots(2, 1, figsize=(12, 9), sharex=True)
+    fig, axes = plt.subplots(2, 1, figsize=(13, 9.5), sharex=True, constrained_layout=True)
     plotted = False
     for label in labels:
         rows = [row for row in search_rows if row.get("label") == label]
@@ -1555,10 +1555,10 @@ def plot_source_alignment_by_hop(output_dir: Path, stage_rows: list[dict[str, An
         return None
     axes[0].set_title("Executed search calls that used the expected source by hop position")
     axes[0].set_ylabel("fraction matching expected source")
-    axes[0].set_ylim(0, 1)
+    axes[0].set_ylim(-0.03, 1.03)
     axes[1].set_title("Among executed searches: actual local-search share vs expected-local source share")
     axes[1].set_ylabel("local share")
-    axes[1].set_ylim(0, 1)
+    axes[1].set_ylim(-0.03, 1.03)
     axes[1].set_xlabel("hop number within rollout")
     for ax in axes:
         ax.legend(loc="best")
@@ -1575,7 +1575,7 @@ def plot_source_calls_by_iteration(output_dir: Path, stage_rows: list[dict[str, 
         return None
     labels = sorted({str(row.get("label")) for row in search_rows if row.get("label")})
     plot_setup()
-    fig, axes = plt.subplots(2, 1, figsize=(12, 9), sharex=True)
+    fig, axes = plt.subplots(2, 1, figsize=(13, 9.5), sharex=True, constrained_layout=True)
     plotted = False
     for label in labels:
         rows = [row for row in search_rows if row.get("label") == label]
@@ -1599,7 +1599,7 @@ def plot_source_calls_by_iteration(output_dir: Path, stage_rows: list[dict[str, 
         return None
     axes[0].set_title("Among executed searches: local-search share by rollout iteration")
     axes[0].set_ylabel("local share")
-    axes[0].set_ylim(0, 1)
+    axes[0].set_ylim(-0.03, 1.03)
     axes[1].set_title("Search calls per active rollout by iteration")
     axes[1].set_ylabel("searches / rollout")
     axes[1].set_xlabel("iteration within rollout")
@@ -1716,12 +1716,21 @@ def plot_classic_iteration_distribution(output_dir: Path, rollout_rows: list[dic
     labels = sorted({str(row.get("label")) for row in rollout_rows if row.get("label")})
     plot_setup()
     fig, ax = plt.subplots(figsize=(12, 6))
+    data: list[list[float]] = []
+    used_labels: list[str] = []
+    max_iteration = 0
     for label in labels:
         values = label_values(rollout_rows, label, "iterations_used")
         if values:
-            bins = range(0, int(max(values)) + 2)
-            ax.hist(values, bins=bins, alpha=0.55, label=label)
-    ax.set_title("Iteration count distribution")
+            data.append(values)
+            used_labels.append(label)
+            max_iteration = max(max_iteration, int(max(values)))
+    if not data:
+        plt.close(fig)
+        return None
+    bins = range(0, max_iteration + 2)
+    ax.hist(data, bins=bins, stacked=True, label=used_labels, alpha=0.85)
+    ax.set_title("Stacked iteration count distribution")
     ax.set_xlabel("iterations used")
     ax.set_ylabel("rollouts")
     ax.legend(loc="best")
@@ -1737,18 +1746,42 @@ def plot_classic_searches_vs_docs(output_dir: Path, rollout_rows: list[dict[str,
         return None
     labels = sorted({str(row.get("label")) for row in rollout_rows if row.get("label")})
     plot_setup()
-    fig, ax = plt.subplots(figsize=(10, 7))
-    for label in labels:
+    fig, ax = plt.subplots(figsize=(11, 7.5), constrained_layout=True)
+    iterations = [as_float(row.get("iterations_used")) for row in rollout_rows if as_float(row.get("iterations_used")) is not None]
+    vmin = min(iterations) if iterations else 0.0
+    vmax = max(iterations) if iterations else 1.0
+    markers = ["o", "s", "^", "D", "P"]
+    last_scatter = None
+    for idx, label in enumerate(labels):
         rows = [row for row in rollout_rows if row.get("label") == label]
-        xs = [as_float(row.get("searches_total")) for row in rows]
-        ys = [as_float(row.get("docs_read")) for row in rows]
-        pairs = [(x, y) for x, y in zip(xs, ys) if x is not None and y is not None]
-        if pairs:
-            ax.scatter([x for x, _ in pairs], [y for _, y in pairs], s=12, alpha=0.35, label=label)
+        triples = []
+        for row in rows:
+            x = as_float(row.get("searches_total"))
+            y = as_float(row.get("docs_read"))
+            iteration = as_float(row.get("iterations_used"))
+            if x is not None and y is not None:
+                triples.append((x, y, iteration if iteration is not None else vmin))
+        if triples:
+            last_scatter = ax.scatter(
+                [x for x, _, _ in triples],
+                [y for _, y, _ in triples],
+                c=[iteration for _, _, iteration in triples],
+                cmap="viridis",
+                vmin=vmin,
+                vmax=vmax,
+                marker=markers[idx % len(markers)],
+                s=18,
+                alpha=0.52,
+                linewidths=0,
+                label=f"{label} marker",
+            )
     ax.set_title("Searches vs documents read per rollout")
     ax.set_xlabel("searches")
     ax.set_ylabel("docs read")
     ax.legend(loc="best")
+    if last_scatter is not None:
+        cbar = fig.colorbar(last_scatter, ax=ax)
+        cbar.set_label("iterations used (point color)")
     ax.grid(True, alpha=0.25)
     path = output_dir / "classic_searches_vs_docs_read.png"
     fig.savefig(path)
@@ -2149,21 +2182,47 @@ def plot_classic_source_usage_scatter(output_dir: Path, rollout_rows: list[dict[
         ("search_expected_local_actual_web_count", "search_web_count", "local hops with web searches", "actual web searches"),
     ]
     plot_setup()
-    fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+    fig, axes = plt.subplots(2, 2, figsize=(13, 10.5), constrained_layout=True)
+    iterations = [as_float(row.get("iterations_used")) for row in rollout_rows if as_float(row.get("iterations_used")) is not None]
+    vmin = min(iterations) if iterations else 0.0
+    vmax = max(iterations) if iterations else 1.0
+    markers = ["o", "s", "^", "D", "P"]
+    last_scatter = None
     for ax, (xkey, ykey, xlabel, ylabel) in zip(axes.flat, pairs):
-        for label in labels:
+        max_seen = 0.0
+        for idx, label in enumerate(labels):
             rows = [row for row in rollout_rows if row.get("label") == label]
-            xy = [
-                (x, y)
-                for row in rows
-                if (x := as_float(row.get(xkey))) is not None and (y := as_float(row.get(ykey))) is not None
-            ]
-            if xy:
-                ax.scatter([x for x, _ in xy], [y for _, y in xy], s=12, alpha=0.35, label=label)
+            triples = []
+            for row in rows:
+                x = as_float(row.get(xkey))
+                y = as_float(row.get(ykey))
+                iteration = as_float(row.get("iterations_used"))
+                if x is not None and y is not None:
+                    triples.append((x, y, iteration if iteration is not None else vmin))
+                    max_seen = max(max_seen, x, y)
+            if triples:
+                last_scatter = ax.scatter(
+                    [x for x, _, _ in triples],
+                    [y for _, y, _ in triples],
+                    c=[iteration for _, _, iteration in triples],
+                    cmap="viridis",
+                    vmin=vmin,
+                    vmax=vmax,
+                    marker=markers[idx % len(markers)],
+                    s=16,
+                    alpha=0.5,
+                    linewidths=0,
+                    label=f"{label} marker",
+                )
+        if max_seen > 0:
+            ax.plot([0, max_seen], [0, max_seen], color="#6b7280", linestyle=":", linewidth=1.0, label="y=x reference")
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
         ax.grid(True, alpha=0.25)
-    axes.flat[0].legend(loc="best")
+        ax.legend(loc="best")
+    if last_scatter is not None:
+        cbar = fig.colorbar(last_scatter, ax=axes.ravel().tolist(), shrink=0.86)
+        cbar.set_label("iterations used (point color)")
     fig.suptitle("Source usage scatter (subset buckets vs rollout totals)")
     path = output_dir / "classic_source_usage_scatter.png"
     fig.savefig(path)
@@ -2555,19 +2614,19 @@ def build_classic_html(
     plot_cards = {
         "classic_source_alignment_by_hop.png": (
             "Search calls that used the expected source by hop",
-            "Does the agent use local search on local hops and web search on web hops?",
+            "Unit: executed search event. x is hop_number from timeline metadata. Expected source comes from the dataset hop source; actual source is the emitted search backend. Top panel is matched/known searches. Bottom panel compares local/(local+web) against expected-local/(known searches).",
         ),
         "classic_source_calls_by_iteration.png": (
             "Source calls by rollout iteration",
-            "Within a rollout, this tracks local-search share and search volume as iterations advance.",
+            "Unit: executed search event grouped by rollout loop iteration. Top is local/(local+web). Bottom is search events divided by rollouts that made at least one search in that iteration; rollouts with no search at that iteration are absent from the denominator.",
         ),
         "classic_search_doc_counts.png": (
             "Search/doc counts",
-            "Mean retrieval and document-read counts per rollout, split by run and source where available.",
+            "Unit: rollout. Bars are arithmetic means over cached rollouts: total search events, total doc_read events, web/local search_backend counts, and web/local doc_source counts.",
         ),
         "classic_rollout_distributions.png": (
             "Rollout distributions",
-            "Runtime, LLM-call, search, and document-read distributions for the sampled trace cache.",
+            "Unit: rollout from trace_rollout_timings.csv. Each box summarizes per-rollout duration, LLM calls, search count, and document-read count.",
         ),
         "classic_rollout_duration_distribution.png": (
             "Rollout duration distribution",
@@ -2587,15 +2646,15 @@ def build_classic_html(
         ),
         "classic_source_usage_scatter.png": (
             "Source usage scatter",
-            "Subset source buckets versus total actual local/web search volume; use the confusion plot for exact source-mismatch counts.",
+            "Unit: rollout. x is a specific expected/actual source bucket, y is the rollout's total actual local or web search count. Marker shape identifies the model; point color is iterations_used; dotted line is y=x. Use the confusion plot for exact aggregate mismatch counts.",
         ),
         "classic_search_source_confusion.png": (
             "Expected source vs actual search backend",
-            "Explicit confusion counts and fractions for local/web expected hops versus local/web executed searches.",
+            "Unit: executed search event with known expected source. Counts show expected local/web crossed with actual search_backend local/web; fractions normalize within each expected-source row.",
         ),
         "classic_doc_read_source_totals.png": (
             "Document reads by source",
-            "Total local/web doc_read events and shares; this checks whether local documents were actually read.",
+            "Unit: doc_read timeline event. Counts and shares come from event meta doc_source, split into local and web.",
         ),
         "classic_stage_duration_boxplot.png": (
             "Stage duration boxplots",
@@ -2603,7 +2662,7 @@ def build_classic_html(
         ),
         "classic_source_usage_distributions.png": (
             "Source usage distributions",
-            "Web/local search and document-read distributions across sampled rollouts.",
+            "Unit: rollout. Boxplots show distributions of web/local search counts and web/local doc_read counts across cached rollouts.",
         ),
         "classic_token_usage.png": (
             "Token and LLM-call usage",
@@ -2611,11 +2670,11 @@ def build_classic_html(
         ),
         "classic_iteration_distribution.png": (
             "Iteration distribution",
-            "How many loop iterations rollouts use before completion/stalling.",
+            "Unit: rollout. Stacked histogram; x is iterations_used stored in trace summary, y is rollout count, stacked by model.",
         ),
         "classic_searches_vs_docs_read.png": (
             "Searches vs docs read",
-            "Scatter plot showing retrieval volume versus document-reading volume per rollout.",
+            "Unit: rollout. x is searches_total, y is docs_read. Marker shape identifies model; point color is iterations_used with the colorbar.",
         ),
         "classic_stage_event_mix.png": (
             "Stage event mix",
@@ -2635,7 +2694,7 @@ def build_classic_html(
         ),
         "classic_planning_yield_by_iteration.png": (
             "Planning yield by iteration",
-            "Empty-plan rate and mean planned retrieval actions; this makes the 4B repeated-planning failure visible.",
+            "Unit: hop_plan event grouped by rollout loop iteration. Empty-plan rate is count(planned_action_count == 0) / count(hop_plan events). Mean planned actions is the mean len(planned_actions).",
         ),
         "classic_resolved_hops_distribution.png": (
             "Hops marked answered by the agent distribution",
@@ -2643,7 +2702,7 @@ def build_classic_html(
         ),
         "classic_temporal_rollout_metrics.png": (
             "Temporal moving averages",
-            "Search calls that used the expected source, retrieval volume, and LLM-call volume over rollout completion time.",
+            "Unit: rollout ordered by completion timestamp. Each line is a rolling mean over recent cached rollouts for expected-source search rate, searches_total, and llm_calls_total.",
         ),
         "classic_early_middle_late_metrics.png": (
             "Early / middle / late metrics",
@@ -2655,15 +2714,15 @@ def build_classic_html(
         ),
         "classic_parse_and_empty_plan_breakdown.png": (
             "Hop parse errors and empty planner outputs",
-            "Parse errors by stage plus accepted empty hop-plan outputs. Empty [] is valid JSON and is not counted as a parser error by the run.",
+            "Unit: trace error summary plus hop_plan event. Parse errors are emitted error counters by stage. Empty planner outputs are hop_plan events with planned_action_count == 0; these are valid JSON [] and are not parser errors.",
         ),
         "training_metrics_by_step.png": (
             "Training metrics by finetune step",
-            "Reward, trained samples, and throughput against completed optimizer/log step rather than wall-clock time.",
+            "Unit: finetune log row. x is completed finetune step parsed from info_0.log; y panels are rolling reward, trained samples, and rolling tokens/GPU/sec.",
         ),
         "rollout_behavior_by_training_step.png": (
             "Rollout behavior by finetune step",
-            "Each rollout is assigned to the latest completed finetune step for that model, then retrieval behavior is compared by step.",
+            "Unit: rollout. Each rollout is assigned to the latest completed finetune step whose log timestamp is <= rollout completion time; y panels are means of expected-source search rate, empty hop-plan rate, searches_total, and local-search share for that step.",
         ),
         "trace_stage_duration_ma.png": (
             "Stage duration moving averages",
@@ -2671,11 +2730,11 @@ def build_classic_html(
         ),
         "trace_helper_action_latency_ma.png": (
             "Helper action latency",
-            "Per-helper-call execution times from trace.json actions, split by local/web action type.",
+            "Unit: trace.json action. x is action completion time; y is rolling execution_time_s split by web_search and local_document_search.",
         ),
         "trace_search_latency_ma.png": (
             "Search-stage latency",
-            "Search-stage event durations from timeline_events.json, split by local/web.",
+            "Unit: search timeline event. x is event completion time; y is rolling event duration_s split by search_backend web/local.",
         ),
     }
     plot_html = "\n".join(
