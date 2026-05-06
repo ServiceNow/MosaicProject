@@ -172,7 +172,7 @@ def main() -> None:
         "- `dataset_stats.json`: task/company/pattern/hop/doc statistics.\n"
         "- `dataset_analysis.json`: derived transition, effective-hop, and answer-variant statistics.\n"
         "- `question_uniqueness_stats.json`: approximate near-duplicate question clusters.\n"
-        "- `plots/`: matplotlib/seaborn distribution plots used by the viewer.\n"
+        "- `plots/`: distribution plots used by the viewer.\n"
         "- `manifest.json`: publish provenance.\n",
         encoding="utf-8",
     )

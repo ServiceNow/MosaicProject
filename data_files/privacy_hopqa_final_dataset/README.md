@@ -17,5 +17,5 @@ Files:
 - `dataset_stats.json`: task/company/pattern/hop/doc statistics.
 - `dataset_analysis.json`: derived transition, effective-hop, and answer-variant statistics.
 - `question_uniqueness_stats.json`: approximate near-duplicate question clusters.
-- `plots/`: matplotlib/seaborn distribution plots used by the viewer.
+- `plots/`: distribution plots used by the viewer.
 - `manifest.json`: publish provenance.
