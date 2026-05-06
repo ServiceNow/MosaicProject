@@ -15,6 +15,7 @@ import re
 import subprocess
 import time
 import urllib.request
+from collections import Counter, defaultdict
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -33,6 +34,7 @@ except Exception:  # pragma: no cover - dashboard should still render in minimal
 
 
 DEFAULT_HELPER_URL = "http://dns-4943305a-c17f-44b1-b767-9536529eb8bc-ph-844f0105:8012"
+DEFAULT_DATASET_PATH = "/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-05.jsonl"
 DEFAULT_RUNS = [
     "Qwen3-8B|a1161525-4e2e-4e43-b9bf-d83653ae1d57|/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_final_qwen3_8b_r2_filter_vllm18_schedulerfix_20260506_152928",
     "Qwen3-4B-Instruct-2507|fbe9aa12-9c2b-43e3-9c45-7e6489add3e4|/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_final_qwen3_4b_instruct_2507_r2_filter_vllm18_schedulerfix_20260506_152949",
@@ -73,6 +75,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--rolling-window", type=int, default=8, help="Snapshot points for moving averages.")
     parser.add_argument("--new-trace-limit", type=int, default=512, help="New rollout traces to parse per run per refresh.")
     parser.add_argument("--trace-cache-limit", type=int, default=6000, help="Recent rollout traces to retain per run.")
+    parser.add_argument("--dataset-path", default=DEFAULT_DATASET_PATH, help="Final privacy_hopqa JSONL dataset.")
     return parser.parse_args()
 
 
@@ -385,14 +388,70 @@ def search_backend(event: dict[str, Any]) -> str:
     return "unknown"
 
 
+def load_dataset_index(dataset_path: str) -> dict[tuple[str, str], dict[str, Any]]:
+    path = Path(dataset_path)
+    if not path.exists():
+        return {}
+    index: dict[tuple[str, str], dict[str, Any]] = {}
+    with path.open("r", encoding="utf-8", errors="ignore") as handle:
+        for line in handle:
+            try:
+                row = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            task_id = str(row.get("task_id") or "")
+            chain_id = str(row.get("chain_id") or "")
+            if not task_id or not chain_id:
+                continue
+            hop_sources: dict[int, str] = {}
+            for hop in row.get("hops") or []:
+                if not isinstance(hop, dict):
+                    continue
+                hop_number = as_int(hop.get("hop_number"))
+                doc_id = str(hop.get("doc_id") or "")
+                hop_type = str(hop.get("hop_type") or "")
+                source = "unknown"
+                marker = f"{doc_id} {hop_type}".lower()
+                if marker.startswith("local/") or "local" in marker:
+                    source = "local"
+                elif marker.startswith("web/") or "web" in marker:
+                    source = "web"
+                if hop_number is not None:
+                    hop_sources[hop_number] = source
+            pattern = str(row.get("pattern") or "")
+            for pos, char in enumerate(pattern, start=1):
+                if pos not in hop_sources:
+                    if char.upper() == "L":
+                        hop_sources[pos] = "local"
+                    elif char.upper() == "W":
+                        hop_sources[pos] = "web"
+            index[(task_id, chain_id)] = {
+                "company": row.get("company"),
+                "pattern": pattern,
+                "n_hops": row.get("n_hops"),
+                "n_local_hops": row.get("n_local_hops"),
+                "n_web_hops": row.get("n_web_hops"),
+                "hop_sources": hop_sources,
+            }
+    return index
+
+
+def source_matches(actual: str | None, expected: str | None) -> bool | None:
+    if not actual or not expected or actual == "unknown" or expected == "unknown":
+        return None
+    return actual == expected
+
+
 def parse_trace_timings(
     runs: list[RunSpec],
     seen_rollouts: set[tuple[str, str]],
     new_trace_limit: int,
-) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+    dataset_index: dict[tuple[str, str], dict[str, Any]],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
     stage_rows: list[dict[str, Any]] = []
     rollout_rows: list[dict[str, Any]] = []
     action_rows: list[dict[str, Any]] = []
+    error_rows: list[dict[str, Any]] = []
     for run in runs:
         root = run.run_dir / "privacy_hopqa_runs"
         if not root.exists():
@@ -427,13 +486,19 @@ def parse_trace_timings(
             if not isinstance(summary, dict) or not isinstance(events, list):
                 continue
 
+            task_id = str(summary.get("task_id") or "")
+            chain_id = str(summary.get("chain_id") or "")
+            dataset_meta = dataset_index.get((task_id, chain_id), {})
+            hop_sources = dataset_meta.get("hop_sources") if isinstance(dataset_meta.get("hop_sources"), dict) else {}
             base = {
                 "label": run.label,
                 "job_id": run.job_id,
                 "run_dir": str(run.run_dir),
                 "rollout_id": rollout_id,
-                "task_id": summary.get("task_id"),
-                "chain_id": summary.get("chain_id"),
+                "task_id": task_id,
+                "chain_id": chain_id,
+                "company": dataset_meta.get("company"),
+                "hop_pattern": dataset_meta.get("pattern"),
                 "completed_at_s": completed_at_s,
                 "timestamp": iso(datetime.fromtimestamp(completed_at_s, tz=timezone.utc)),
             }
@@ -441,6 +506,10 @@ def parse_trace_timings(
             stage_values: dict[str, list[float]] = {}
             search_values: dict[str, list[float]] = {"web": [], "local": [], "unknown": [], "all": []}
             action_values: dict[str, list[float]] = {"web_search": [], "local_document_search": [], "all": []}
+            action_hop: dict[str, dict[str, Any]] = {}
+            source_call_counts = Counter()
+            aligned_source_calls = 0
+            known_source_calls = 0
             for event in events:
                 if not isinstance(event, dict):
                     continue
@@ -448,6 +517,10 @@ def parse_trace_timings(
                 if duration is None:
                     continue
                 stage = str(event.get("stage") or "unknown")
+                meta = event.get("meta") if isinstance(event.get("meta"), dict) else {}
+                hop_number = as_int(meta.get("hop_number"))
+                iteration = as_int(meta.get("iteration"))
+                expected_source = hop_sources.get(hop_number) if hop_number is not None else None
                 stage_values.setdefault(stage, []).append(duration)
                 row = {
                     **base,
@@ -455,12 +528,34 @@ def parse_trace_timings(
                     "duration_s": duration,
                     "lane": event.get("lane"),
                     "event_label": event.get("label"),
+                    "hop_number": hop_number,
+                    "iteration": iteration,
+                    "expected_source": expected_source,
+                    "event_action_type": meta.get("action_type"),
+                    "doc_source": meta.get("source"),
+                    "doc_id": meta.get("doc_id"),
+                    "result_count": meta.get("result_count"),
                 }
                 if stage == "search":
                     backend = search_backend(event)
+                    matched = source_matches(backend, expected_source)
                     row["search_backend"] = backend
+                    row["source_matched_expected"] = matched
                     search_values.setdefault(backend, []).append(duration)
                     search_values["all"].append(duration)
+                    source_call_counts[(expected_source or "unknown", backend)] += 1
+                    if matched is not None:
+                        known_source_calls += 1
+                        aligned_source_calls += int(matched)
+                    action_id = meta.get("action_id")
+                    if action_id:
+                        action_hop[str(action_id)] = {
+                            "hop_number": hop_number,
+                            "iteration": iteration,
+                            "expected_source": expected_source,
+                            "actual_source": backend,
+                            "source_matched_expected": matched,
+                        }
                 stage_rows.append(row)
 
             try:
@@ -481,24 +576,57 @@ def parse_trace_timings(
                     if execution_time is None:
                         continue
                     actual_output = action.get("actual_output") if isinstance(action.get("actual_output"), dict) else {}
+                    action_id = str(action.get("id") or "")
+                    mapped = action_hop.get(action_id, {})
+                    actual_source = "web" if action_type == "web_search" else "local" if action_type == "local_document_search" else "unknown"
+                    expected_source = mapped.get("expected_source")
+                    matched = source_matches(actual_source, expected_source)
                     action_values.setdefault(action_type, []).append(execution_time)
                     action_values["all"].append(execution_time)
                     action_rows.append(
                         {
                             **base,
-                            "action_id": action.get("id"),
+                            "action_id": action_id,
                             "action_type": action_type,
+                            "actual_source": actual_source,
+                            "hop_number": mapped.get("hop_number"),
+                            "iteration": action.get("iteration") if action.get("iteration") is not None else mapped.get("iteration"),
+                            "expected_source": expected_source,
+                            "source_matched_expected": matched,
                             "tool": actual_output.get("tool"),
                             "status": action.get("status"),
                             "execution_time_s": execution_time,
                             "query": actual_output.get("query")
-                            or (action.get("parameters") or {}).get("query")
-                            if isinstance(action.get("parameters"), dict)
-                            else actual_output.get("query"),
+                            or ((action.get("parameters") or {}).get("query") if isinstance(action.get("parameters"), dict) else None),
                             "success": actual_output.get("success"),
                             "results_count": actual_output.get("results_count"),
                         }
                     )
+
+            for kind, values in (
+                ("errors_by_stage", summary.get("errors_by_stage")),
+                ("errors_by_kind", summary.get("errors_by_kind")),
+                ("parse_errors_by_stage", summary.get("parse_errors_by_stage")),
+            ):
+                if not isinstance(values, dict):
+                    continue
+                for key, count in values.items():
+                    error_rows.append({**base, "error_group": kind, "error_key": key, "count": count})
+            trace_errors = trace.get("error_records") if isinstance(trace, dict) else None
+            if isinstance(trace_errors, list):
+                for error in trace_errors:
+                    if isinstance(error, dict):
+                        error_rows.append(
+                            {
+                                **base,
+                                "error_group": "error_records",
+                                "error_key": error.get("stage") or error.get("kind") or "unknown",
+                                "count": 1,
+                                "stage": error.get("stage"),
+                                "kind": error.get("kind"),
+                                "message": error.get("message") or error.get("error"),
+                            }
+                        )
 
             rollout_row: dict[str, Any] = {
                 **base,
@@ -513,7 +641,12 @@ def parse_trace_timings(
                 "output_tokens": summary.get("output_tokens"),
                 "total_tokens": summary.get("total_tokens"),
                 "total_errors": summary.get("total_errors"),
+                "source_alignment_known_calls": known_source_calls,
+                "source_alignment_matched_calls": aligned_source_calls,
+                "source_alignment_rate": (aligned_source_calls / known_source_calls) if known_source_calls else None,
             }
+            for (expected_source, actual_source), count in source_call_counts.items():
+                rollout_row[f"search_expected_{expected_source}_actual_{actual_source}_count"] = count
             for stage, values in stage_values.items():
                 safe_stage = re.sub(r"[^A-Za-z0-9]+", "_", stage).strip("_")
                 rollout_row[f"stage_{safe_stage}_count"] = len(values)
@@ -530,15 +663,16 @@ def parse_trace_timings(
                 rollout_row[f"helper_action_{safe_action}_sum_s"] = sum(values) if values else None
             rollout_rows.append(rollout_row)
             parsed_for_run += 1
-    return stage_rows, rollout_rows, action_rows
+    return stage_rows, rollout_rows, action_rows, error_rows
 
 
 def trim_trace_cache(
     stage_rows: list[dict[str, Any]],
     rollout_rows: list[dict[str, Any]],
     action_rows: list[dict[str, Any]],
+    error_rows: list[dict[str, Any]],
     cache_limit: int,
-) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
     kept_ids: set[tuple[str, str]] = set()
     kept_rollouts: list[dict[str, Any]] = []
     labels = sorted({str(row.get("label")) for row in rollout_rows if row.get("label")})
@@ -559,7 +693,8 @@ def trim_trace_cache(
 
     kept_stage = [row for row in stage_rows if keep(row)]
     kept_actions = [row for row in action_rows if keep(row)]
-    return kept_stage, kept_rollouts, kept_actions
+    kept_errors = [row for row in error_rows if keep(row)]
+    return kept_stage, kept_rollouts, kept_actions, kept_errors
 
 
 def plot_setup() -> None:
@@ -878,6 +1013,215 @@ def plot_trace_stage_duration(output_dir: Path, stage_rows: list[dict[str, Any]]
     return path.name
 
 
+def label_values(rows: list[dict[str, Any]], label: str, key: str) -> list[float]:
+    return [value for row in rows if row.get("label") == label and (value := as_float(row.get(key))) is not None]
+
+
+def mean_or_none(values: list[float]) -> float | None:
+    return sum(values) / len(values) if values else None
+
+
+def plot_classic_search_doc_counts(
+    output_dir: Path, rollout_rows: list[dict[str, Any]], stage_rows: list[dict[str, Any]]
+) -> str | None:
+    if not rollout_rows:
+        return None
+    labels = sorted({str(row.get("label")) for row in rollout_rows if row.get("label")})
+    metrics = [
+        ("searches_total", "searches"),
+        ("docs_read", "docs read"),
+        ("search_web_count", "web searches"),
+        ("search_local_count", "local searches"),
+    ]
+    doc_read_counts: dict[tuple[str, str], Counter[str]] = defaultdict(Counter)
+    for row in stage_rows:
+        if row.get("stage") != "doc_read":
+            continue
+        label = str(row.get("label") or "")
+        rollout_id = str(row.get("rollout_id") or "")
+        source = str(row.get("doc_source") or "unknown")
+        doc_read_counts[(label, rollout_id)][source] += 1
+    derived_rollout_rows: list[dict[str, Any]] = []
+    for row in rollout_rows:
+        label = str(row.get("label") or "")
+        rollout_id = str(row.get("rollout_id") or "")
+        copied = dict(row)
+        copied["doc_read_web_count"] = doc_read_counts[(label, rollout_id)].get("web", 0)
+        copied["doc_read_local_count"] = doc_read_counts[(label, rollout_id)].get("local", 0)
+        derived_rollout_rows.append(copied)
+    metrics.extend([("doc_read_web_count", "web docs read"), ("doc_read_local_count", "local docs read")])
+
+    plot_setup()
+    fig, ax = plt.subplots(figsize=(12, 6))
+    width = 0.8 / max(1, len(labels))
+    xs = list(range(len(metrics)))
+    for idx, label in enumerate(labels):
+        means = [mean_or_none(label_values(derived_rollout_rows, label, key)) or 0.0 for key, _ in metrics]
+        offsets = [x - 0.4 + width / 2 + idx * width for x in xs]
+        ax.bar(offsets, means, width=width, label=label)
+    ax.set_title("Mean search and document-read counts per rollout")
+    ax.set_ylabel("mean count")
+    ax.set_xticks(xs)
+    ax.set_xticklabels([name for _, name in metrics], rotation=25, ha="right")
+    ax.legend(loc="best")
+    ax.grid(True, axis="y", alpha=0.25)
+    path = output_dir / "classic_search_doc_counts.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path.name
+
+
+def plot_classic_rollout_distributions(output_dir: Path, rollout_rows: list[dict[str, Any]]) -> str | None:
+    if not rollout_rows:
+        return None
+    labels = sorted({str(row.get("label")) for row in rollout_rows if row.get("label")})
+    metrics = [
+        ("duration_s", "rollout duration (s)"),
+        ("llm_calls_total", "LLM calls"),
+        ("searches_total", "searches"),
+        ("docs_read", "docs read"),
+    ]
+    plot_setup()
+    fig, axes = plt.subplots(2, 2, figsize=(12, 9))
+    for ax, (key, title) in zip(axes.flat, metrics):
+        data = [label_values(rollout_rows, label, key) for label in labels]
+        data = [values for values in data if values]
+        used_labels = [label for label in labels if label_values(rollout_rows, label, key)]
+        if data:
+            ax.boxplot(data, tick_labels=used_labels, showfliers=False)
+        ax.set_title(title)
+        ax.tick_params(axis="x", rotation=20)
+        ax.grid(True, axis="y", alpha=0.25)
+    path = output_dir / "classic_rollout_distributions.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path.name
+
+
+def plot_classic_error_breakdown(output_dir: Path, error_rows: list[dict[str, Any]]) -> str | None:
+    if not error_rows:
+        return None
+    counter: Counter[tuple[str, str]] = Counter()
+    for row in error_rows:
+        label = str(row.get("label") or "unknown")
+        key = f"{row.get('error_group') or 'error'}:{row.get('error_key') or 'unknown'}"
+        counter[(label, key)] += as_int(row.get("count")) or 0
+    if not counter:
+        return None
+    labels = sorted({label for label, _ in counter})
+    keys = [key for _, key in counter.most_common(12)]
+    keys = list(dict.fromkeys(keys))[:12]
+    plot_setup()
+    fig, ax = plt.subplots(figsize=(12, max(5, 0.42 * len(keys))))
+    y = list(range(len(keys)))
+    width = 0.8 / max(1, len(labels))
+    for idx, label in enumerate(labels):
+        values = [counter.get((label, key), 0) for key in keys]
+        offsets = [pos - 0.4 + width / 2 + idx * width for pos in y]
+        ax.barh(offsets, values, height=width, label=label)
+    ax.set_title("Error breakdown from trace summaries")
+    ax.set_xlabel("count")
+    ax.set_yticks(y)
+    ax.set_yticklabels(keys)
+    ax.legend(loc="best")
+    ax.grid(True, axis="x", alpha=0.25)
+    path = output_dir / "classic_error_breakdown.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path.name
+
+
+def plot_source_alignment_by_hop(output_dir: Path, stage_rows: list[dict[str, Any]]) -> str | None:
+    search_rows = [row for row in stage_rows if row.get("stage") == "search"]
+    if not search_rows:
+        return None
+    labels = sorted({str(row.get("label")) for row in search_rows if row.get("label")})
+    plot_setup()
+    fig, axes = plt.subplots(2, 1, figsize=(12, 9), sharex=True)
+    plotted = False
+    for label in labels:
+        rows = [row for row in search_rows if row.get("label") == label]
+        hop_numbers = sorted({as_int(row.get("hop_number")) for row in rows if as_int(row.get("hop_number")) is not None})
+        if not hop_numbers:
+            continue
+        alignment: list[float | None] = []
+        local_share: list[float | None] = []
+        expected_local: list[float | None] = []
+        for hop_number in hop_numbers:
+            hop_rows = [row for row in rows if as_int(row.get("hop_number")) == hop_number]
+            known = [row for row in hop_rows if str(row.get("expected_source") or "unknown") != "unknown"]
+            matched = [row for row in known if str(row.get("source_matched_expected")).lower() == "true"]
+            alignment.append(len(matched) / len(known) if known else None)
+            web = sum(1 for row in hop_rows if row.get("search_backend") == "web")
+            local = sum(1 for row in hop_rows if row.get("search_backend") == "local")
+            local_share.append(local / (local + web) if (local + web) else None)
+            expected_local.append(sum(1 for row in known if row.get("expected_source") == "local") / len(known) if known else None)
+        axes[0].plot(hop_numbers, alignment, marker="o", linewidth=2.0, label=label)
+        axes[1].plot(hop_numbers, local_share, marker="o", linewidth=2.0, label=f"{label} actual local share")
+        axes[1].plot(hop_numbers, expected_local, linestyle="--", linewidth=1.5, label=f"{label} expected local share")
+        plotted = True
+    if not plotted:
+        plt.close(fig)
+        return None
+    axes[0].set_title("Search source alignment by hop position")
+    axes[0].set_ylabel("fraction matching expected source")
+    axes[0].set_ylim(0, 1)
+    axes[1].set_title("Actual local-search share vs expected local-hop share")
+    axes[1].set_ylabel("local share")
+    axes[1].set_ylim(0, 1)
+    axes[1].set_xlabel("hop number within rollout")
+    for ax in axes:
+        ax.legend(loc="best")
+        ax.grid(True, alpha=0.25)
+    path = output_dir / "classic_source_alignment_by_hop.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path.name
+
+
+def plot_source_calls_by_iteration(output_dir: Path, stage_rows: list[dict[str, Any]]) -> str | None:
+    search_rows = [row for row in stage_rows if row.get("stage") == "search"]
+    if not search_rows:
+        return None
+    labels = sorted({str(row.get("label")) for row in search_rows if row.get("label")})
+    plot_setup()
+    fig, axes = plt.subplots(2, 1, figsize=(12, 9), sharex=True)
+    plotted = False
+    for label in labels:
+        rows = [row for row in search_rows if row.get("label") == label]
+        iterations = sorted({as_int(row.get("iteration")) for row in rows if as_int(row.get("iteration")) is not None})
+        if not iterations:
+            continue
+        local_share: list[float | None] = []
+        searches_per_rollout: list[float | None] = []
+        for iteration in iterations:
+            iter_rows = [row for row in rows if as_int(row.get("iteration")) == iteration]
+            web = sum(1 for row in iter_rows if row.get("search_backend") == "web")
+            local = sum(1 for row in iter_rows if row.get("search_backend") == "local")
+            rollout_count = len({row.get("rollout_id") for row in iter_rows if row.get("rollout_id")})
+            local_share.append(local / (local + web) if (local + web) else None)
+            searches_per_rollout.append((local + web) / rollout_count if rollout_count else None)
+        axes[0].plot(iterations, local_share, marker="o", linewidth=2.0, label=label)
+        axes[1].plot(iterations, searches_per_rollout, marker="o", linewidth=2.0, label=label)
+        plotted = True
+    if not plotted:
+        plt.close(fig)
+        return None
+    axes[0].set_title("Local-search share by rollout iteration")
+    axes[0].set_ylabel("local share")
+    axes[0].set_ylim(0, 1)
+    axes[1].set_title("Search calls per active rollout by iteration")
+    axes[1].set_ylabel("searches / rollout")
+    axes[1].set_xlabel("iteration within rollout")
+    for ax in axes:
+        ax.legend(loc="best")
+        ax.grid(True, alpha=0.25)
+    path = output_dir / "classic_source_calls_by_iteration.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path.name
+
+
 def latest_by_label(rows: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     latest: dict[str, dict[str, Any]] = {}
     for row in rows:
@@ -1169,6 +1513,245 @@ def build_html(
     (output_dir.parent / portable_name).write_text(portable_text, encoding="utf-8")
 
 
+def embedded_image(output_dir: Path, name: str) -> str:
+    path = output_dir / name
+    if not path.exists():
+        return "<div class='missing-note'>plot not available yet</div>"
+    data = base64.b64encode(path.read_bytes()).decode("ascii")
+    return f"<img src='data:image/png;base64,{data}' alt='{esc(name)}'>"
+
+
+def stat_card_html(label: str, value: Any) -> str:
+    return f"<div class='stat-card'><div class='stat-label'>{esc(label)}</div><div class='stat-value'>{esc(value)}</div></div>"
+
+
+def simple_table(rows: list[dict[str, Any]], columns: list[tuple[str, str]], limit: int = 12) -> str:
+    if not rows:
+        return "<p class='muted'>No rows yet.</p>"
+    head = "".join(f"<th>{esc(title)}</th>" for key, title in columns)
+    body_rows = []
+    for row in rows[:limit]:
+        body_rows.append("<tr>" + "".join(f"<td>{esc(row.get(key, ''))}</td>" for key, _ in columns) + "</tr>")
+    return f"<table><thead><tr>{head}</tr></thead><tbody>{''.join(body_rows)}</tbody></table>"
+
+
+def aggregate_run_summary(
+    runs: list[RunSpec],
+    rollout_rows: list[dict[str, Any]],
+    stage_rows: list[dict[str, Any]],
+    action_rows: list[dict[str, Any]],
+    error_rows: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    summaries: list[dict[str, Any]] = []
+    for run in runs:
+        label = run.label
+        rollouts = [row for row in rollout_rows if row.get("label") == label]
+        searches = [row for row in stage_rows if row.get("label") == label and row.get("stage") == "search"]
+        known = [row for row in searches if str(row.get("expected_source") or "unknown") != "unknown"]
+        matched = [row for row in known if str(row.get("source_matched_expected")).lower() == "true"]
+        helpers = [row for row in action_rows if row.get("label") == label]
+        errors = sum(as_int(row.get("count")) or 0 for row in error_rows if row.get("label") == label)
+        summaries.append(
+            {
+                "run": label,
+                "rollouts parsed": len(rollouts),
+                "mean duration": fmt_num(mean_or_none(label_values(rollouts, label, "duration_s")), 1),
+                "mean searches": fmt_num(mean_or_none(label_values(rollouts, label, "searches_total")), 2),
+                "mean docs read": fmt_num(mean_or_none(label_values(rollouts, label, "docs_read")), 2),
+                "source alignment": fmt_pct(len(matched) / len(known) if known else None),
+                "mean helper call": fmt_num(mean_or_none([as_float(row.get("execution_time_s")) for row in helpers if as_float(row.get("execution_time_s")) is not None]), 3),
+                "errors": errors,
+            }
+        )
+    return summaries
+
+
+def top_error_rows(error_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    counter: Counter[tuple[str, str, str]] = Counter()
+    for row in error_rows:
+        counter[(str(row.get("label") or ""), str(row.get("error_group") or ""), str(row.get("error_key") or ""))] += as_int(row.get("count")) or 0
+    return [
+        {"run": label, "group": group, "error": key, "count": count}
+        for (label, group, key), count in counter.most_common(20)
+    ]
+
+
+def build_classic_html(
+    output_dir: Path,
+    runs: list[RunSpec],
+    rollout_rows: list[dict[str, Any]],
+    stage_rows: list[dict[str, Any]],
+    action_rows: list[dict[str, Any]],
+    error_rows: list[dict[str, Any]],
+    plot_names: list[str],
+    now: datetime,
+) -> None:
+    summaries = aggregate_run_summary(runs, rollout_rows, stage_rows, action_rows, error_rows)
+    all_known = [row for row in stage_rows if row.get("stage") == "search" and str(row.get("expected_source") or "unknown") != "unknown"]
+    all_matched = [row for row in all_known if str(row.get("source_matched_expected")).lower() == "true"]
+    helper_latencies = [as_float(row.get("execution_time_s")) for row in action_rows if as_float(row.get("execution_time_s")) is not None]
+    plot_cards = {
+        "classic_source_alignment_by_hop.png": (
+            "Source alignment by hop",
+            "Does the agent use local search on local hops and web search on web hops?",
+        ),
+        "classic_source_calls_by_iteration.png": (
+            "Source calls by rollout iteration",
+            "Within a rollout, this tracks local-search share and search volume as iterations advance.",
+        ),
+        "classic_search_doc_counts.png": (
+            "Search/doc counts",
+            "Mean retrieval and document-read counts per rollout, split by run and source where available.",
+        ),
+        "classic_rollout_distributions.png": (
+            "Rollout distributions",
+            "Runtime, LLM-call, search, and document-read distributions for the sampled trace cache.",
+        ),
+        "classic_error_breakdown.png": (
+            "Error breakdown",
+            "Trace summary errors by stage/kind. If empty, there were no emitted error records in the cache.",
+        ),
+        "trace_stage_duration_ma.png": (
+            "Stage duration moving averages",
+            "Old-viewer style stage timing, but plotted over recent rollout trace events.",
+        ),
+        "trace_helper_action_latency_ma.png": (
+            "Helper action latency",
+            "Per-helper-call execution times from trace.json actions, split by local/web action type.",
+        ),
+        "trace_search_latency_ma.png": (
+            "Search-stage latency",
+            "Search-stage event durations from timeline_events.json, split by local/web.",
+        ),
+    }
+    plot_html = "\n".join(
+        f"<div class='plot-card'><h3>{esc(plot_cards[name][0])}</h3><p class='blurb'>{esc(plot_cards[name][1])}</p>{embedded_image(output_dir, name)}</div>"
+        for name in plot_names
+        if name in plot_cards
+    )
+    stats = [
+        ("trace rollouts", fmt_num(len(rollout_rows))),
+        ("stage events", fmt_num(len(stage_rows))),
+        ("helper actions", fmt_num(len(action_rows))),
+        ("source alignment", fmt_pct(len(all_matched) / len(all_known) if all_known else None)),
+        ("mean helper call s", fmt_num(mean_or_none([value for value in helper_latencies if value is not None]), 3)),
+        ("trace errors", fmt_num(sum(as_int(row.get("count")) or 0 for row in error_rows))),
+    ]
+    html_text = f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>privacy_hopqa classic live runtime viewer</title>
+  <style>
+    :root {{
+      --bg: #f5f4ef;
+      --panel: #ffffff;
+      --ink: #1e2430;
+      --muted: #5f6b7a;
+      --line: #d7dbe2;
+      --accent: #1f5da8;
+      --accent-soft: #e7f0fb;
+    }}
+    * {{ box-sizing: border-box; }}
+    body {{
+      margin: 0;
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #f8f7f2 0%, #eef3f8 100%);
+      color: var(--ink);
+    }}
+    a {{ color: var(--accent); }}
+    .page {{ max-width: 1600px; margin: 0 auto; padding: 28px; }}
+    .hero {{
+      background: radial-gradient(circle at top left, #ffffff 0%, #eef4fb 45%, #f8f7f2 100%);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 28px 30px;
+      margin-bottom: 22px;
+      box-shadow: 0 18px 50px rgba(30, 36, 48, 0.06);
+    }}
+    .hero h1 {{ margin: 0 0 8px; font-size: 30px; }}
+    .hero p {{ margin: 6px 0; color: var(--muted); max-width: 1100px; }}
+    .topnav {{ display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }}
+    .topnav a {{
+      text-decoration: none; background: var(--accent-soft); color: var(--accent);
+      padding: 8px 12px; border-radius: 999px; border: 1px solid #cfe0f6; font-size: 14px;
+    }}
+    .stat-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin: 22px 0; }}
+    .stat-card {{ background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; box-shadow: 0 8px 24px rgba(30,36,48,.04); }}
+    .stat-label {{ font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }}
+    .stat-value {{ font-size: 28px; font-weight: 700; }}
+    .section {{ margin: 28px 0; }}
+    .section h2 {{ margin: 0 0 12px; font-size: 22px; }}
+    .section-note, .muted {{ color: var(--muted); }}
+    .plot-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 18px; }}
+    .plot-card, .table-card {{ background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 14px; box-shadow: 0 12px 32px rgba(30,36,48,.05); overflow: auto; }}
+    .plot-card h3, .table-card h3 {{ margin: 4px 0 8px; font-size: 18px; }}
+    .plot-card .blurb {{ margin: 0 0 12px; color: var(--muted); font-size: 14px; min-height: 40px; }}
+    .plot-card img {{ width: 100%; display: block; border-radius: 12px; border: 1px solid var(--line); background: #fff; }}
+    .missing-note {{ min-height: 260px; display: grid; place-items: center; border: 1px dashed var(--line); border-radius: 12px; color: var(--muted); background: #f8fafc; text-align: center; padding: 16px; }}
+    .table-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(460px, 1fr)); gap: 18px; }}
+    table {{ width: 100%; border-collapse: collapse; font-size: 13px; }}
+    th, td {{ padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }}
+    th {{ position: sticky; top: 0; background: #f7f9fc; z-index: 1; }}
+    code {{ background: #f2f5fa; border: 1px solid var(--line); border-radius: 6px; padding: 1px 5px; font-size: 12px; }}
+    ul.raw-links {{ margin: 0; padding-left: 18px; color: var(--muted); }}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <h1>privacy_hopqa live runtime viewer</h1>
+      <p>Generated {esc(iso(now))}. This is the classic-style view over the current 4B and 8B training runs. It uses the same durable rollout trace artifacts as the older runtime viewers: <code>timeline_events.json</code> for stage timing and <code>trace.json/actions[*].execution_time</code> for helper-backed search-call latency.</p>
+      <p>The source-alignment plots compare actual local/web search calls against the expected hop source from the final dataset pattern and hop document ids.</p>
+      <div class="topnav">
+        <a href="#summary">Summary</a>
+        <a href="#source">Source alignment</a>
+        <a href="#runtime">Runtime</a>
+        <a href="#errors">Errors</a>
+        <a href="#raw">Raw exports</a>
+      </div>
+    </section>
+    <section id="summary" class="section">
+      <h2>Summary</h2>
+      <div class="stat-grid">{''.join(stat_card_html(label, value) for label, value in stats)}</div>
+      <div class="table-card">
+        <h3>Run comparison</h3>
+        {simple_table(summaries, [("run", "run"), ("rollouts parsed", "rollouts"), ("mean duration", "mean duration s"), ("mean searches", "mean searches"), ("mean docs read", "mean docs read"), ("source alignment", "source alignment"), ("mean helper call", "mean helper call s"), ("errors", "errors")])}
+      </div>
+    </section>
+    <section id="source" class="section">
+      <h2>Source behavior over a rollout</h2>
+      <p class="section-note">Hop position and iteration are used as within-rollout progress axes. These plots answer whether the agent searches the expected source when working on local vs web hops.</p>
+      <div class="plot-grid">{plot_html}</div>
+    </section>
+    <section id="errors" class="section">
+      <h2>Error details</h2>
+      <div class="table-grid">
+        <div class="table-card">
+          <h3>Top emitted trace errors</h3>
+          {simple_table(top_error_rows(error_rows), [("run", "run"), ("group", "group"), ("error", "error"), ("count", "count")], limit=20)}
+        </div>
+      </div>
+    </section>
+    <section id="raw" class="section">
+      <h2>Raw exports</h2>
+      <ul class="raw-links">
+        <li><code>trace_stage_timings.csv</code>: every parsed timeline stage event.</li>
+        <li><code>trace_rollout_timings.csv</code>: rollout-level timing, search/doc counts, and source-alignment aggregates.</li>
+        <li><code>trace_helper_actions.csv</code>: helper-backed web/local search action execution times.</li>
+        <li><code>trace_error_summary.csv</code>: error summaries and emitted trace error records.</li>
+      </ul>
+    </section>
+  </div>
+</body>
+</html>
+"""
+    classic_name = "privacy_hopqa_schedulerfix_classic_viewer.html"
+    (output_dir / classic_name).write_text(html_text, encoding="utf-8")
+    (output_dir.parent / classic_name).write_text(html_text, encoding="utf-8")
+
+
 def refresh(args: argparse.Namespace, runs: list[RunSpec]) -> None:
     now = utc_now()
     output_dir = Path(args.output_dir)
@@ -1179,16 +1762,21 @@ def refresh(args: argparse.Namespace, runs: list[RunSpec]) -> None:
     cached_stage_rows = read_csv_rows(output_dir / "trace_stage_timings.csv")
     cached_rollout_rows = read_csv_rows(output_dir / "trace_rollout_timings.csv")
     cached_action_rows = read_csv_rows(output_dir / "trace_helper_actions.csv")
+    cached_error_rows = read_csv_rows(output_dir / "trace_error_summary.csv")
     seen_rollouts = {
         (str(row.get("label") or ""), str(row.get("rollout_id") or ""))
         for row in cached_rollout_rows
         if row.get("label") and row.get("rollout_id")
     }
-    new_stage_rows, new_rollout_rows, new_action_rows = parse_trace_timings(runs, seen_rollouts, args.new_trace_limit)
-    trace_stage_rows, trace_rollout_rows, trace_action_rows = trim_trace_cache(
+    dataset_index = load_dataset_index(args.dataset_path)
+    new_stage_rows, new_rollout_rows, new_action_rows, new_error_rows = parse_trace_timings(
+        runs, seen_rollouts, args.new_trace_limit, dataset_index
+    )
+    trace_stage_rows, trace_rollout_rows, trace_action_rows, trace_error_rows = trim_trace_cache(
         cached_stage_rows + new_stage_rows,
         cached_rollout_rows + new_rollout_rows,
         cached_action_rows + new_action_rows,
+        cached_error_rows + new_error_rows,
         args.trace_cache_limit,
     )
 
@@ -1207,6 +1795,7 @@ def refresh(args: argparse.Namespace, runs: list[RunSpec]) -> None:
     write_csv(output_dir / "trace_stage_timings.csv", trace_stage_rows)
     write_csv(output_dir / "trace_rollout_timings.csv", trace_rollout_rows)
     write_csv(output_dir / "trace_helper_actions.csv", trace_action_rows)
+    write_csv(output_dir / "trace_error_summary.csv", trace_error_rows)
 
     plot_names = [
         plot_training_progress(output_dir, finetune_rows_by_run),
@@ -1216,6 +1805,11 @@ def refresh(args: argparse.Namespace, runs: list[RunSpec]) -> None:
         plot_trace_helper_action_latency(output_dir, trace_action_rows, args.rolling_window),
         plot_trace_search_latency(output_dir, trace_rollout_rows, args.rolling_window),
         plot_trace_stage_duration(output_dir, trace_stage_rows, args.rolling_window),
+        plot_source_alignment_by_hop(output_dir, trace_stage_rows),
+        plot_source_calls_by_iteration(output_dir, trace_stage_rows),
+        plot_classic_search_doc_counts(output_dir, trace_rollout_rows, trace_stage_rows),
+        plot_classic_rollout_distributions(output_dir, trace_rollout_rows),
+        plot_classic_error_breakdown(output_dir, trace_error_rows),
     ]
     build_html(
         output_dir=output_dir,
@@ -1228,6 +1822,16 @@ def refresh(args: argparse.Namespace, runs: list[RunSpec]) -> None:
         plot_names=[name for name in plot_names if name],
         now=now,
         helper_url=args.helper_url,
+    )
+    build_classic_html(
+        output_dir=output_dir,
+        runs=runs,
+        rollout_rows=trace_rollout_rows,
+        stage_rows=trace_stage_rows,
+        action_rows=trace_action_rows,
+        error_rows=trace_error_rows,
+        plot_names=[name for name in plot_names if name],
+        now=now,
     )
 
 
