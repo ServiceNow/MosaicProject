@@ -557,7 +557,7 @@ function renderCards() {{
     card('latest reward', fmt(metric(s,'rl/reward'),3), metric(s,'rl/reward') < .25 ? 'warn' : ''),
     card('recent filter rate', pct(DATA.recent_filter_rate), DATA.recent_filter_rate > .75 ? 'bad' : 'warn'),
     card('recent 2-token hop plans', pct(actor.two_token_hop_plan_rate_recent), actor.two_token_hop_plan_rate_recent > .1 ? 'warn' : ''),
-    card('sample answer exact match', pct((traces.correct_count||0)/Math.max(1,traces.trace_records_loaded||0)), '');
+    card('sample answer exact match', pct((traces.correct_count||0)/Math.max(1,traces.trace_records_loaded||0)), '')
   ].join('');
 }}
 function renderConcerns() {{
