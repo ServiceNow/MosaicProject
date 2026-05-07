@@ -74,6 +74,11 @@ TREND_METRICS = [
     ("output_tokens", "Output tokens", ""),
 ]
 
+DEFAULT_DATASET_PATH = (
+    Path(__file__).resolve().parents[1]
+    / "data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-05.jsonl"
+)
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -83,6 +88,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-events-per-sample", type=int, default=16, help="Timeline rows per embedded example")
     parser.add_argument("--time-slice-size", type=int, default=128, help="Rollouts per early/middle/late window")
     parser.add_argument("--moving-average-window", type=int, default=256, help="Rollouts per moving-average point")
+    parser.add_argument(
+        "--dataset-path",
+        default=str(DEFAULT_DATASET_PATH),
+        help="Final Privacy HopQA JSONL dataset used to enrich examples with gold answers and accepted answer variants.",
+    )
     return parser.parse_args()
 
 
@@ -203,6 +213,93 @@ def load_trend_rows(analysis_dir: Path, row_by_id: dict[str, dict[str, str]]) ->
             copied["completed_at_s"] = str(completed_at)
             fallback_rows.append(copied)
     return sorted(fallback_rows, key=lambda row: as_float(row.get("completed_at_s")) or 0.0)
+
+
+def load_problem_index(path: Path) -> dict[str, dict[str, Any]]:
+    if not path.exists():
+        return {}
+    problems: dict[str, dict[str, Any]] = {}
+    with path.open("r", encoding="utf-8") as handle:
+        for line in handle:
+            if not line.strip():
+                continue
+            try:
+                problem = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            chain_id = str(problem.get("chain_id") or "")
+            if chain_id:
+                problems[chain_id] = problem
+    return problems
+
+
+def unique_texts(values: list[Any]) -> list[str]:
+    out: list[str] = []
+    seen: set[str] = set()
+    for value in values:
+        text = str(value or "").strip()
+        if not text:
+            continue
+        key = " ".join(text.lower().split())
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(text)
+    return out
+
+
+def accepted_answers_for_hop(problem_hop: dict[str, Any] | None, fallback: str | None = None) -> list[str]:
+    if not problem_hop:
+        return unique_texts([fallback])
+    return unique_texts(
+        [
+            problem_hop.get("answer"),
+            *(problem_hop.get("accepted_answer_variants") or []),
+            *(problem_hop.get("alternate_valid_answers") or []),
+            fallback,
+        ]
+    )
+
+
+def accepted_answers_for_final(problem: dict[str, Any] | None, fallback: str | None = None) -> list[str]:
+    if not problem:
+        return unique_texts([fallback])
+    return unique_texts(
+        [
+            problem.get("global_answer"),
+            *(problem.get("global_answer_variants") or []),
+            *(problem.get("global_alternate_valid_answers") or []),
+            fallback,
+        ]
+    )
+
+
+def format_answer_list(values: list[str], limit: int = 420) -> str:
+    text = " | ".join(values)
+    return truncate_text(text, limit)
+
+
+def parse_bool(value: Any) -> bool | None:
+    if isinstance(value, bool):
+        return value
+    if value in (None, ""):
+        return None
+    text = str(value).strip().lower()
+    if text in {"true", "1", "yes"}:
+        return True
+    if text in {"false", "0", "no"}:
+        return False
+    return None
+
+
+def example_row_from_trace(sample_dir: Path, row_by_id: dict[str, dict[str, str]], trace: dict[str, Any]) -> dict[str, Any]:
+    row: dict[str, Any] = dict(row_by_id.get(sample_dir.name, {}))
+    summary = trace.get("summary") if isinstance(trace.get("summary"), dict) else {}
+    if summary:
+        for key, value in summary.items():
+            row.setdefault(key, value)
+    row.setdefault("rollout_id", sample_dir.name)
+    return row
 
 
 def choose_sample_dirs(sample_root: Path, row_by_id: dict[str, dict[str, str]], limit: int) -> list[Path]:
@@ -345,17 +442,47 @@ def truncate_text(value: Any, limit: int = 180) -> str:
     return text[:limit].rstrip() + "..."
 
 
-def render_hop_state_table(trace: dict[str, Any]) -> str:
+def render_hop_state_table(trace: dict[str, Any], row: dict[str, Any], problem: dict[str, Any] | None) -> str:
     rows: list[dict[str, Any]] = []
-    for hop in trace.get("hop_states") or []:
+    hop_states = {
+        int(hop.get("hop_number")): hop
+        for hop in trace.get("hop_states") or []
+        if isinstance(hop, dict) and str(hop.get("hop_number") or "").isdigit()
+    }
+    problem_hops = {
+        int(hop.get("hop_number")): hop
+        for hop in (problem or {}).get("hops", [])
+        if isinstance(hop, dict) and str(hop.get("hop_number") or "").isdigit()
+    }
+    total_hops = as_float(row.get("total_hops") or row.get("hop_count") or (problem or {}).get("n_hops")) or max(
+        len(hop_states),
+        len(problem_hops),
+        1,
+    )
+    hop_numbers = sorted(set(hop_states) | set(problem_hops))
+    for hop_number in hop_numbers:
+        hop = hop_states.get(hop_number, {})
+        problem_hop = problem_hops.get(hop_number, {})
+        correct = parse_bool(row.get(f"hop_{hop_number}_correct"))
+        reward_contribution = ""
+        if correct is not None:
+            reward_contribution = fmt_num((1.0 / total_hops) if correct else 0.0, 3)
+        gold = problem_hop.get("answer") or row.get(f"hop_{hop_number}_gold")
+        accepted_answers = accepted_answers_for_hop(problem_hop, row.get(f"hop_{hop_number}_gold"))
         rows.append(
             {
-                "hop": hop.get("hop_number"),
-                "status": hop.get("status"),
-                "attempts": hop.get("attempts"),
-                "question": truncate_text(hop.get("question"), 260),
-                "answer": truncate_text(hop.get("answer"), 120),
-                "reason": truncate_text(hop.get("resolution_reason"), 260),
+                "hop": hop_number,
+                "type": problem_hop.get("hop_type", ""),
+                "status": hop.get("status", ""),
+                "attempts": hop.get("attempts", ""),
+                "correct": "" if correct is None else str(correct),
+                "reward": reward_contribution,
+                "match": fmt_num(row.get(f"hop_{hop_number}_match_score"), 3) if row.get(f"hop_{hop_number}_match_score") not in (None, "") else "",
+                "question": truncate_text(problem_hop.get("question") or hop.get("question"), 260),
+                "predicted": truncate_text(hop.get("answer") or row.get(f"hop_{hop_number}_answer"), 160),
+                "gold": truncate_text(gold, 160),
+                "accepted": format_answer_list(accepted_answers),
+                "reason": truncate_text(hop.get("resolution_reason") or hop.get("justification"), 260),
             }
         )
     if not rows:
@@ -364,10 +491,16 @@ def render_hop_state_table(trace: dict[str, Any]) -> str:
         rows,
         [
             ("hop", "Hop"),
+            ("type", "Type"),
             ("status", "Status"),
             ("attempts", "Attempts"),
+            ("correct", "Correct"),
+            ("reward", "Reward contrib"),
+            ("match", "Match"),
             ("question", "Question"),
-            ("answer", "Answer"),
+            ("predicted", "Predicted answer"),
+            ("gold", "Gold answer"),
+            ("accepted", "Accepted answer(s)"),
             ("reason", "Reason"),
         ],
     )
@@ -1397,29 +1530,51 @@ def sparkline_svg(values: list[float], *, suffix: str = "", width: int = 230, he
     )
 
 
-def render_examples(sample_dirs: list[Path], row_by_id: dict[str, dict[str, str]], max_events: int) -> str:
+def render_examples(
+    sample_dirs: list[Path],
+    row_by_id: dict[str, dict[str, str]],
+    problem_by_chain: dict[str, dict[str, Any]],
+    max_events: int,
+) -> str:
     examples: list[str] = []
     for sample_dir in sample_dirs:
         rollout_id = sample_dir.name
-        row = row_by_id.get(rollout_id, {})
         trace = load_json(sample_dir / "trace.json", {})
+        row = example_row_from_trace(sample_dir, row_by_id, trace)
+        problem = problem_by_chain.get(str(row.get("chain_id") or ""))
         events = load_json(sample_dir / "timeline_events.json", [])
         event_rows, stage_totals = summarize_events(events, max_events)
         report = read_text(sample_dir / "report.md", limit=2600)
-        title = f"{rollout_id} · reward={fmt_num(row.get('reward'), 3)} · hops={row.get('hop_count') or row.get('total_hops') or 'n/a'}"
-        meta = [
+        reward = row.get("reward")
+        hop_count = row.get("hop_count") or row.get("total_hops") or (problem or {}).get("n_hops")
+        title_parts = [rollout_id]
+        if reward not in (None, ""):
+            title_parts.append(f"reward={fmt_num(reward, 3)}")
+        if hop_count not in (None, ""):
+            title_parts.append(f"hops={hop_count}")
+        title = " · ".join(map(str, title_parts))
+
+        meta: list[tuple[str, Any]] = []
+        for label, value in [
             ("Task", row.get("task_id")),
-            ("Pattern", row.get("hop_pattern")),
-            ("Duration", f"{fmt_num(row.get('duration_s'), 1)}s"),
+            ("Company", (problem or {}).get("company")),
+            ("Pattern", row.get("hop_pattern") or (problem or {}).get("pattern")),
             ("Iterations", row.get("iterations_used")),
             ("Searches", row.get("searches_total")),
             ("Docs read", row.get("docs_read")),
             ("LLM calls", row.get("llm_calls_total")),
-            ("Total tokens", fmt_num(row.get("total_tokens"), 0)),
             ("Parse errors", row.get("parse_errors_total")),
             ("Predicted final", row.get("predicted_final_answer")),
-            ("Gold final", row.get("ground_truth_final_answer")),
-        ]
+        ]:
+            if value not in (None, ""):
+                meta.append((label, value))
+        if (duration := as_float(row.get("duration_s"))) is not None:
+            meta.append(("Duration", f"{fmt_num(duration, 1)}s"))
+        if (tokens := as_float(row.get("total_tokens"))) is not None:
+            meta.append(("Total tokens", fmt_num(tokens, 0)))
+        final_answers = accepted_answers_for_final(problem, row.get("ground_truth_final_answer"))
+        if final_answers:
+            meta.append(("Gold final answer(s)", format_answer_list(final_answers, 520)))
         meta_html = "".join(
             f"<div><span>{esc(label)}</span><strong>{esc(value)}</strong></div>"
             for label, value in meta
@@ -1460,7 +1615,7 @@ def render_examples(sample_dirs: list[Path], row_by_id: dict[str, dict[str, str]
               </details>
               <details open>
                 <summary>Hop states</summary>
-                {render_hop_state_table(trace)}
+                {render_hop_state_table(trace, row, problem)}
               </details>
               <details open>
                 <summary>Action and search timeline</summary>
@@ -1488,6 +1643,7 @@ def main() -> None:
     row_by_id = load_rollout_rows(analysis_dir / "rollouts_sample.csv")
     trend_rows = load_trend_rows(analysis_dir, row_by_id)
     sample_dirs = choose_sample_dirs(analysis_dir / "sample_artifacts", row_by_id, args.max_samples)
+    problem_by_chain = load_problem_index(Path(args.dataset_path).expanduser().resolve())
 
     generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%SZ")
     html_doc = f"""<!doctype html>
@@ -1678,7 +1834,7 @@ def main() -> None:
 
     <h2>Representative Examples</h2>
     <p class="note">Examples are sampled across the reward/duration spectrum. Each includes the report preview, stage-time totals, and a compact timeline preview. The full heavy bundle still has the complete timelines and CSVs if needed.</p>
-    {render_examples(sample_dirs, row_by_id, args.max_events_per_sample)}
+      {render_examples(sample_dirs, row_by_id, problem_by_chain, args.max_events_per_sample)}
   </main>
   <div class="plot-modal" id="plot-modal" role="dialog" aria-modal="true" aria-label="Full-size plot">
     <div class="plot-modal-inner">
