@@ -25,7 +25,7 @@ DEFAULT_SOURCE = ROOT / "nice_code/drbench/chain_review/quality_pass_2026-04-30/
 DEFAULT_OUT = ROOT / "my_code/MosaicProject/data_files/privacy_hopqa_final_dataset"
 
 REQUIRED = [
-    "privacy_hopqa_finalized_2026-05-05.jsonl",
+    "privacy_hopqa_finalized_2026-05-07_answer_variants.jsonl",
     "privacy_hopqa_finalized_2026-05-05.meta.json",
     "dataset_stats.json",
     "dataset_analysis.json",
@@ -61,7 +61,7 @@ def stable_key(row: dict) -> str:
 
 
 def write_canonical_splits(out: Path, test_company: str, val_fraction: float) -> dict:
-    rows = read_jsonl(out / "privacy_hopqa_finalized_2026-05-05.jsonl")
+    rows = read_jsonl(out / "privacy_hopqa_finalized_2026-05-07_answer_variants.jsonl")
     heldout = sorted([row for row in rows if row.get("company") == test_company], key=stable_key)
     trainval = [row for row in rows if row.get("company") != test_company]
     groups: dict[tuple[str, str], list[dict]] = {}
@@ -135,7 +135,7 @@ def main() -> None:
         shutil.copytree(source / "plots", out / "plots", dirs_exist_ok=True)
     split_manifest = write_canonical_splits(out, args.test_company, args.val_fraction)
 
-    rows = count_jsonl(out / "privacy_hopqa_finalized_2026-05-05.jsonl")
+    rows = count_jsonl(out / "privacy_hopqa_finalized_2026-05-07_answer_variants.jsonl")
     stats = json.loads((out / "dataset_stats.json").read_text(encoding="utf-8"))
     uniqueness = json.loads((out / "question_uniqueness_stats.json").read_text(encoding="utf-8"))
     analysis = json.loads((out / "dataset_analysis.json").read_text(encoding="utf-8"))
@@ -145,7 +145,7 @@ def main() -> None:
         "out": str(out),
         "mirror_out": str(mirror_out) if mirror_out else None,
         "viewer": "dataset_viewer.html",
-        "jsonl": "privacy_hopqa_finalized_2026-05-05.jsonl",
+        "jsonl": "privacy_hopqa_finalized_2026-05-07_answer_variants.jsonl",
         "splits": split_manifest,
         "n_rows": rows,
         "n_chains_stats": stats.get("n_chains"),
@@ -166,7 +166,7 @@ def main() -> None:
         "```\n\n"
         "Then visit `http://localhost:8765/dataset_viewer.html`.\n\n"
         "Files:\n\n"
-        "- `privacy_hopqa_finalized_2026-05-05.jsonl`: finalized dataset rows.\n"
+        "- `privacy_hopqa_finalized_2026-05-07_answer_variants.jsonl`: finalized dataset rows with StepFun-vetted accepted-answer variants.\n"
         "- `train.jsonl`, `val.jsonl`, `test.jsonl`: canonical split; `test.jsonl` holds out one full company.\n"
         "- `split_manifest.json`: split strategy, counts, and held-out company.\n"
         "- `dataset_stats.json`: task/company/pattern/hop/doc statistics.\n"

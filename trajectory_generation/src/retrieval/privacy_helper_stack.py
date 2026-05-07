@@ -141,7 +141,9 @@ def build_vllm_command(args: argparse.Namespace) -> list[str]:
         str(args.embed_port),
         "--model",
         model_source,
-        "--task",
+        "--runner",
+        "pooling",
+        "--convert",
         "embed",
         "--trust-remote-code",
         "--dtype",
@@ -160,7 +162,7 @@ def build_vllm_command(args: argparse.Namespace) -> list[str]:
     command.extend(
         [
             "--disable-frontend-multiprocessing",
-            "--disable-log-requests",
+            "--no-enable-log-requests",
         ]
     )
     return command

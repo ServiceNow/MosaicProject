@@ -79,10 +79,15 @@ python -m trajectory_generation.scripts.view_generation \
 
 ## Docs
 
-- [Architecture](./docs/architecture.md)
-- [Current System](./docs/system.md)
-- [Examples](./docs/examples.md)
-- [Privacy HopQA Training](./docs/privacy_hopqa_training.md)
+Use this as the main index for repo notes:
+
+- [Architecture](./docs/architecture.md): high-level generation and retrieval design.
+- [Current System](./docs/system.md): current end-to-end system notes.
+- [Examples](./docs/examples.md): generated question examples.
+- [Privacy HopQA final dataset](./docs/privacy_hopqa_final_dataset.md): finalized dataset, schema, viewer, answer variants, and split artifacts.
+- [Privacy HopQA training](./docs/privacy_hopqa_training.md): PipelineRL launch path, helper setup, dataset split, EAI notes, and monitoring.
+- [Privacy HopQA helper fix notes](./docs/privacy_hopqa_helper_fix_2026-05-06.md): helper environment, vLLM, FAISS, and benchmark details.
+- [Privacy HopQA initial-state eval](./docs/privacy_hopqa_initial_state_eval.md): baseline evaluation plan and privacy-evaluator workflow.
 
 ## Repository Layout
 

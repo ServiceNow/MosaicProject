@@ -13,39 +13,127 @@ launcher layer.
 - PipelineRL code and Hydra configs are mounted from
   `/home/toolkit/my_code/PipelineRL` with `SNAPSHOT=0`.
 
+## Dataset and split
+
+The canonical finalized dataset lives in:
+
+- `data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-05.jsonl`
+- `data_files/privacy_hopqa_final_dataset/train.jsonl`
+- `data_files/privacy_hopqa_final_dataset/val.jsonl`
+- `data_files/privacy_hopqa_final_dataset/test.jsonl`
+
+Split counts:
+
+- train: `559`
+- val: `98`
+- test: `344`
+- total: `1001`
+
+Company split:
+
+- train: `Lee's Market` (`248`), `Elexion Automotive` (`311`)
+- val: `Lee's Market` (`42`), `Elexion Automotive` (`56`)
+- test: `MediConn Solutions` (`344`)
+
+The test split is a full held-out-company split. Use train for RL training, val
+for online evaluation and model selection, and reserve test for final
+generalization checks.
+
+PipelineRL entry points:
+
+- Config: `/home/toolkit/my_code/PipelineRL/conf/privacy_hopqa.yaml`
+- Domain params: `/home/toolkit/my_code/PipelineRL/conf/domain_params/privacy_hopqa.yaml`
+- Dataset loader: `/home/toolkit/my_code/PipelineRL/pipelinerl/domains/privacy_hopqa/dataset.py`
+- Reward / answer matching: `/home/toolkit/my_code/PipelineRL/pipelinerl/domains/privacy_hopqa/reward.py`
+
+## EAI CLI
+
+Use the user-local EAI 2 CLI:
+
+```bash
+export PATH=/home/toolkit/.local/bin:$PATH
+eai --version
+```
+
+The system EAI binary at `/usr/bin/eai` was `1.13.1` and failed against the
+current EAI API for fresh replica submissions. A user-local copy was upgraded to
+`2.0.14` at `/home/toolkit/.local/bin/eai`.
+
+The old Makefile command shape:
+
+```bash
+eai job submit --replicas <N> --file multinode_rl.yaml ...
+```
+
+is currently not sufficient by itself. With current EAI, the multi-node YAML
+must have a non-empty `options.internal-dns.name`, and the replica count should
+be materialized into the temporary YAML as `resources.replicas` instead of being
+passed with `--replicas`.
+
 ## Helper
 
 Pass the active helper URL through `PRIVACY_AGENT_HELPER_URL`. Do not commit
 run-specific EAI job IDs, access URLs, or internal DNS hostnames into this doc.
 
-The intended helper shape is 16 API workers, 2 GPUs, BrowseComp recall
-`100/100`, and dense retrieval on `cuda:1` via the torch fallback because
-faiss-gpu bindings are unavailable in the image.
-
-## Current Launch Template
-
-Use a fresh timestamp for the job, output directory, and W&B run name:
+Use the existing helper wrapper:
 
 ```bash
 cd /home/toolkit/my_code/MosaicProject
+export PATH=/home/toolkit/.local/bin:$PATH
+ACCOUNT=snow.research.adea JOB_SPEC=privacy_helper_1gpu.yaml ./run_privacy_helper.sh
+```
+
+The current intended helper shape is one GPU for the embedding vLLM server, four
+API workers, BrowseComp recall `100/100`, and CPU FAISS for BrowseComp dense
+retrieval. GPU FAISS wheels tested in this environment saw the H100 but aborted
+with CUDA kernel-image errors, so CPU FAISS is the known-good path until a
+compatible FAISS build is installed.
+
+Check health before training:
+
+```bash
+curl -s "${PRIVACY_AGENT_HELPER_URL}/health"
+```
+
+Expected fields:
+
+- `ok: true`
+- `embedding_server_ok: true`
+- `local_task_count: 101`
+- `browsecomp_size: 100195`
+- `browsecomp_index_device: cpu`
+- `browsecomp_dense_backend: faiss_cpu`
+
+## Current Launch Template
+
+The intended high-level launch path is still:
+
+```bash
+cd /home/toolkit/my_code/MosaicProject
+export PATH=/home/toolkit/.local/bin:$PATH
+export PRIVACY_AGENT_HELPER_URL=http://<helper-internal-dns>:8012
 
 TS=$(date -u +%Y%m%d_%H%M%S)
-
-PRIVACY_AGENT_HELPER_URL="${PRIVACY_AGENT_HELPER_URL}" \
-JOB_NAME=privacy_hopqa_qwen3_8b_async_roll32_retry3_${TS} \
-WANDB_PROJECT=privacy_hopqa_qwen3_8b_roll32_debug \
-WANDB_GROUP=privacy_hopqa_variants \
-WANDB_NAME=privacy_hopqa_qwen3_8b_async_roll32_retry3_${TS} \
-EXTRA_OVERRIDES="actor.llm_max_rollouts=32 finetune.seq_length=20480 vllm_config.vllm_kwargs.max_model_len=20480" \
+JOB_NAME=privacy_hopqa_final_qwen3_4b_instruct_2507_r3_${TS} \
+WANDB_PROJECT=privacy_hopqa_final_qwen3_4b \
+WANDB_GROUP=privacy_hopqa_final_company_holdout \
+WANDB_NAME=privacy_hopqa_final_qwen3_4b_instruct_2507_r3_${TS} \
+MODEL_PATH=Qwen/Qwen3-4B-Instruct-2507 \
+REPLICAS=2 \
 ./run_privacy_hopqa.sh
 ```
 
 Important details:
 
-- `actor.llm_max_rollouts=32` reduces vLLM/helper pressure without changing the
-  agent retrieval/action budgets.
-- `finetune.seq_length=20480` and
-  `vllm_config.vllm_kwargs.max_model_len=20480` keep the rollout context limit
+- The defaults for dataset paths, helper URL propagation, capture mode,
+  filtering, GSPO settings, sequence length, max tokens, and world fractions
+  live in `run_privacy_hopqa.sh`.
+- To launch the 8B run, use the same template but set
+  `MODEL_PATH=/mnt/llmd/base_models/Qwen3-8B`, use an `8b` run name, and use a
+  separate W&B project.
+- `actor.llm_max_rollouts=64` is the current full-run setting.
+- `finetune.seq_length=16384` and
+  `vllm_config.vllm_kwargs.max_model_len=16384` keep the rollout context limit
   aligned.
 - The script defaults to the finalized Mosaic dataset split:
   `/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/{train,val,test}.jsonl`.
@@ -54,6 +142,15 @@ Important details:
   evaluation; do not use the held-out test split for training-time selection.
 - The script intentionally uses `privacy_hopqa.capture_mode=all_calls` so
   retrieved documents remain available for debugging and reward review.
+
+Current EAI submit caveat:
+
+- EAI 2 requires a non-empty `options.internal-dns.name`.
+- `run_privacy_hopqa.sh` now handles this by default. It writes a temporary copy
+  of `multinode_rl.yaml`, fills in a short DNS name, materializes
+  `resources.replicas`, and asks `Makefile` not to pass `--replicas`.
+- Set `EAI_REPLICAS_IN_FILE=0` only if the EAI CLI/API path is reverted and the
+  old `--replicas --file` behavior is known to work again.
 
 ## Why These Fixes Exist
 
@@ -74,9 +171,8 @@ wandb project: <wandb-project>
 output_dir: <run-output-dir>
 ```
 
-The local EAI CLI is currently `1.13.1`, which supports `--replicas` but not
-`--replica-failures-allowed`. Do not add that flag back unless the interactive
-environment is upgraded and the launch path is re-tested.
+Use the upgraded user-local EAI 2 binary at `/home/toolkit/.local/bin/eai` for
+current launches. Do not use `/usr/bin/eai` unless it has also been upgraded.
 
 ## Monitoring
 
