@@ -862,6 +862,10 @@ async def run_one(
                 "web_queries_visible_to_stepfun": args.query_scope in {"web", "both"},
                 "queries": queries,
             },
+            "stepfun_visible_prompt": {
+                "system": SYSTEM_PROMPT,
+                "user": prompt,
+            },
             "reference_used_by_non_model_scorer": {
                 "visible_to_stepfun": False,
                 "private_questions": questions,
