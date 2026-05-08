@@ -25,29 +25,50 @@ class SearchHit:
     score: float
 
 
+@dataclass(frozen=True)
+class BM25State:
+    k1: float
+    b: float
+    N: int
+    doc_len: list[int]
+    avgdl: float
+    df: dict[str, int]
+    inv: dict[str, list[tuple[int, int]]]
+
+
 class BM25Index:
     """Minimal BM25 implementation (dependency-free)."""
 
     def __init__(
         self,
-        docs: list[str],
+        docs: list[str] | None = None,
         *,
         k1: float = 1.5,
         b: float = 0.75,
+        state: BM25State | None = None,
     ) -> None:
+        if state is not None:
+            self._docs = []
+            self._k1 = float(state.k1)
+            self._b = float(state.b)
+            self._N = int(state.N)
+            self._doc_len = list(state.doc_len)
+            self._avgdl = float(state.avgdl)
+            self._df = defaultdict(int, state.df)
+            self._inv = defaultdict(list, state.inv)
+            return
+
         if not docs:
             raise ValueError("BM25Index requires at least one doc")
+
         self._docs = docs
         self._k1 = float(k1)
         self._b = float(b)
-
         self._N = len(docs)
         self._doc_len: list[int] = []
         self._avgdl: float = 0.0
-
         self._df: dict[str, int] = defaultdict(int)
         self._inv: dict[str, list[tuple[int, int]]] = defaultdict(list)
-
         self._build()
 
     def _build(self) -> None:
@@ -94,6 +115,21 @@ class BM25Index:
     @property
     def size(self) -> int:
         return self._N
+
+    def to_state(self) -> BM25State:
+        return BM25State(
+            k1=self._k1,
+            b=self._b,
+            N=self._N,
+            doc_len=list(self._doc_len),
+            avgdl=self._avgdl,
+            df=dict(self._df),
+            inv={term: list(postings) for term, postings in self._inv.items()},
+        )
+
+    @classmethod
+    def from_state(cls, state: BM25State) -> "BM25Index":
+        return cls(state=state)
 
 
 class BM25Searcher:

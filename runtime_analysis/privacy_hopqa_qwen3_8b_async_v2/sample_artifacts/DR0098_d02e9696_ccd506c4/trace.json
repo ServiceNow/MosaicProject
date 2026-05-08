@@ -1,0 +1,1857 @@
+{
+  "summary": {
+    "task_id": "DR0098",
+    "chain_id": "d02e9696",
+    "iterations_used": 5,
+    "resolved_hops": 1,
+    "total_hops": 4,
+    "searches_total": 15,
+    "docs_read": 21,
+    "duration_s": 310.71029998362064,
+    "stalled": true,
+    "llm_calls_total": 38,
+    "prompt_tokens": 57597,
+    "output_tokens": 23973,
+    "total_tokens": 81570,
+    "total_errors": 0,
+    "parse_errors_total": 0,
+    "context_overflow_errors": 0,
+    "errors_by_stage": {},
+    "errors_by_kind": {},
+    "errors_by_stage_kind": {},
+    "parse_errors_by_stage": {}
+  },
+  "hop_states": [
+    {
+      "hop_number": 1,
+      "question": "What percentage of Lee's Market stores were retrofitted with energy-efficient lighting in 2024?",
+      "status": "answered",
+      "attempts": 2,
+      "answer": "The percentage of Lee's Market stores retrofitted with energy-efficient lighting in 2024 could not be determined from the provided documents.",
+      "justification": "All retrieved documents either discuss unrelated entities (e.g., Walmart, ShopRite, Monash University) or focus on general sustainability topics without mentioning Lee's Market or specific retrofitting percentages for 2024 [DOC:web/53061, web/39920, web/52219].",
+      "confidence": 0.9,
+      "resolution_reason": "No document contains explicit data about Lee's Market retrofits or 2024 energy efficiency initiatives.",
+      "search_history": [
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market energy-efficient lighting retrofit percentage 2024",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/73352",
+            "web/53061",
+            "web/44827"
+          ]
+        },
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market sustainability report 2024 retrofit",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/53061",
+            "web/75196",
+            "web/52219"
+          ]
+        },
+        {
+          "iteration": 0,
+          "hop_number": 1,
+          "action_id": "iter0_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market store retrofitting 2024 news",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/39920",
+            "web/84456",
+            "web/7128"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 1,
+          "action_id": "iter1_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market 2024 sustainability report energy efficiency",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/53061",
+            "web/44827",
+            "web/75196"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 1,
+          "action_id": "iter1_web_search_1",
+          "type": "web_search",
+          "query": "Lee's Market store upgrades 2024 Richmond BC",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/39920",
+            "web/3887",
+            "web/161"
+          ]
+        },
+        {
+          "iteration": 1,
+          "hop_number": 1,
+          "action_id": "iter1_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market environmental initiatives 2024 retrofit percentage",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/52219",
+            "web/44827",
+            "web/53061"
+          ]
+        }
+      ],
+      "selected_doc_ids": [
+        "web/64701",
+        "web/53061",
+        "web/39920",
+        "web/44827",
+        "web/52219",
+        "web/75196",
+        "web/98266"
+      ],
+      "reader_results": [
+        {
+          "doc_id": "web/64701",
+          "source": "web",
+          "title": "https://investor.eastgroup.net/2025-02-06-EastGroup-Properties-Announces-Fourth-Quarter-and-Full-Year-2024-Results",
+          "locator": "https://investor.eastgroup.net/2025-02-06-EastGroup-Properties-Announces-Fourth-Quarter-and-Full-Year-2024-Results",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document excerpt from EastGroup Properties' 2024 results does not mention Lee's Market stores or any energy-efficient lighting retrofit percentages for 2024 [DOC:web/64701].",
+          "confidence": 0.15,
+          "missing_information": "The document lacks any data about Lee's Market stores or energy-efficient lighting retrofits."
+        },
+        {
+          "doc_id": "web/53061",
+          "source": "web",
+          "title": "https://www.eec.org.au/events/awards/2014-awards",
+          "locator": "https://www.eec.org.au/events/awards/2014-awards",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses energy efficiency initiatives by Monash University and Ashbridge Capital but does not mention Lee's Market or any retrofitting percentages for 2024 [DOC:web/53061].",
+          "confidence": 0.18,
+          "missing_information": "The document lacks any reference to Lee's Market stores or energy-efficient lighting retrofits in 2024."
+        },
+        {
+          "doc_id": "web/39920",
+          "source": "web",
+          "title": "https://www.levinmgt.com/press/new-shoprite-of-watchung-to-open-doors-april-9-and-host-grand-opening-celebration-april-13/",
+          "locator": "https://www.levinmgt.com/press/new-shoprite-of-watchung-to-open-doors-april-9-and-host-grand-opening-celebration-april-13/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses a new ShopRite store opening in 2025 but contains no mention of Lee's Market, energy-efficient lighting retrofits, or any percentage related to 2024 upgrades [DOC:web/39920].",
+          "confidence": 0.82,
+          "missing_information": "Specific details about Lee's Market retrofits in 2024 are absent from the document."
+        },
+        {
+          "doc_id": "web/44827",
+          "source": "web",
+          "title": "https://www.wipo.int/web-publications/green-technology-book-energy-solutions-for-climate-change/en/4-green-energy-solutions-for-essential-services.html",
+          "locator": "https://www.wipo.int/web-publications/green-technology-book-energy-solutions-for-climate-change/en/4-green-energy-solutions-for-essential-services.html",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention Lee's Market or any specific retrofitting percentages for 2024 [DOC:web/44827].",
+          "confidence": 0.18,
+          "missing_information": "Specific data about Lee's Market's 2024 energy-efficient lighting retrofits is absent from the document."
+        },
+        {
+          "doc_id": "web/52219",
+          "source": "web",
+          "title": "https://corporate.walmart.com/purpose/esgreport/environmental/climate-change",
+          "locator": "https://corporate.walmart.com/purpose/esgreport/environmental/climate-change",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses Walmart's environmental initiatives, including renewable energy usage and emissions reduction goals, but does not mention Lee's Market or any retrofits with energy-efficient lighting in 2024 [DOC:web/52219].",
+          "confidence": 0.82,
+          "missing_information": "Specific data about Lee's Market stores' retrofitting with energy-efficient lighting in 2024 is not present in the document."
+        },
+        {
+          "doc_id": "web/75196",
+          "source": "web",
+          "title": "https://en.wikipedia.org/wiki/Green_building",
+          "locator": "https://en.wikipedia.org/wiki/Green_building",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses green building practices and certifications like LEED but does not mention Lee's Market or specific retrofitting statistics for 2024 [DOC:web/75196].",
+          "confidence": 0.82,
+          "missing_information": "No data about Lee's Market stores or 2024 energy-efficient lighting retrofits is provided in the document."
+        },
+        {
+          "doc_id": "web/98266",
+          "source": "web",
+          "title": "https://www.nature.com/articles/s41467-022-33531-2",
+          "locator": "https://www.nature.com/articles/s41467-022-33531-2",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses energy efficiency gaps and air conditioner purchases but contains no information about Lee's Market stores or retrofits in 2024 [DOC:web/98266].",
+          "confidence": 0.18,
+          "missing_information": "No data about Lee's Market retrofits or 2024 sustainability initiatives is present in the document."
+        }
+      ],
+      "candidate_doc_ids": [
+        "web/53061",
+        "web/52219",
+        "web/39920",
+        "web/44827",
+        "web/3887",
+        "web/75196",
+        "web/161",
+        "web/98266",
+        "web/45702",
+        "web/49166",
+        "web/13494"
+      ],
+      "candidate_cards": [
+        {
+          "doc_id": "web/53061",
+          "source": "web",
+          "title": "https://www.eec.org.au/events/awards/2014-awards",
+          "best_rank": 1,
+          "hit_count": 2,
+          "top_queries": [
+            "Lee's Market 2024 sustainability report energy efficiency",
+            "Lee's Market environmental initiatives 2024 retrofit percentage"
+          ],
+          "snippet": "---\ntitle: Energy Efficiency Council - Efficiency Providers | Energy Users | Australia\ndate: 2016-01-01\n---\nThe EEC Awar..."
+        },
+        {
+          "doc_id": "web/52219",
+          "source": "web",
+          "title": "https://corporate.walmart.com/purpose/esgreport/environmental/climate-change",
+          "best_rank": 1,
+          "hit_count": 1,
+          "top_queries": [
+            "Lee's Market environmental initiatives 2024 retrofit percentage"
+          ],
+          "snippet": "---\ntitle: Climate Change\ndate: 2013-07-11\n---\nClimate Change\n\nSASB: CG-MR-130a.1, CG-EC-410a.2; FB-FR-110b.1\n\nGRI: 3-3,..."
+        },
+        {
+          "doc_id": "web/39920",
+          "source": "web",
+          "title": "https://www.levinmgt.com/press/new-shoprite-of-watchung-to-open-doors-april-9-and-host-grand-opening-celebration-april-13/",
+          "best_rank": 1,
+          "hit_count": 2,
+          "top_queries": [
+            "Lee's Market store upgrades 2024 Richmond BC",
+            "Lee's Market environmental initiatives 2024 retrofit percentage"
+          ],
+          "snippet": "---\ntitle: State-of-the-Art ShopRite Grand Opening Marks Major Transformation at Blue Star Shopping Center\ndate: 2025-04..."
+        },
+        {
+          "doc_id": "web/44827",
+          "source": "web",
+          "title": "https://www.wipo.int/web-publications/green-technology-book-energy-solutions-for-climate-change/en/4-green-energy-solutions-for-essential-services.html",
+          "best_rank": 2,
+          "hit_count": 2,
+          "top_queries": [
+            "Lee's Market 2024 sustainability report energy efficiency",
+            "Lee's Market environmental initiatives 2024 retrofit percentage"
+          ],
+          "snippet": "---\ntitle: 4. Green energy solutions for essential services\ndate: 2020-10-01\n---\nHow can health care facilities, superma..."
+        },
+        {
+          "doc_id": "web/3887",
+          "source": "web",
+          "title": "https://www.portofbellingham.com/1002/Bellingham-Dockside-Market",
+          "best_rank": 2,
+          "hit_count": 1,
+          "top_queries": [
+            "Lee's Market store upgrades 2024 Richmond BC"
+          ],
+          "snippet": "---\ntitle: Bellingham Dockside Market\nauthor: This Is A Placeholder Government Websites By Civicplus\ndate: 2023-03-04\n--..."
+        },
+        {
+          "doc_id": "web/75196",
+          "source": "web",
+          "title": "https://en.wikipedia.org/wiki/Green_building",
+          "best_rank": 3,
+          "hit_count": 2,
+          "top_queries": [
+            "Lee's Market 2024 sustainability report energy efficiency",
+            "Lee's Market environmental initiatives 2024 retrofit percentage"
+          ],
+          "snippet": "---\ntitle: Green building - Wikipedia\nauthor: Authority control databases National Germany United States Czech Republic..."
+        },
+        {
+          "doc_id": "web/161",
+          "source": "web",
+          "title": "https://en.wikipedia.org/wiki/Richmond,_Virginia",
+          "best_rank": 3,
+          "hit_count": 1,
+          "top_queries": [
+            "Lee's Market store upgrades 2024 Richmond BC"
+          ],
+          "snippet": "---\ntitle: Richmond, Virginia - Wikipedia\nauthor: Authority control databases\ndate: 2002-05-24\n---\nname: Richmond\nsettle..."
+        },
+        {
+          "doc_id": "web/98266",
+          "source": "web",
+          "title": "https://www.nature.com/articles/s41467-022-33531-2",
+          "best_rank": 4,
+          "hit_count": 1,
+          "top_queries": [
+            "Lee's Market 2024 sustainability report energy efficiency"
+          ],
+          "snippet": "---\ntitle: The weather affects air conditioner purchases to fill the energy efficiency gap\nauthor: School; Environmental..."
+        },
+        {
+          "doc_id": "web/45702",
+          "source": "web",
+          "title": "https://farmersmarketla.com/index.html",
+          "best_rank": 4,
+          "hit_count": 1,
+          "top_queries": [
+            "Lee's Market store upgrades 2024 Richmond BC"
+          ],
+          "snippet": "---\ntitle: Farmers Market L.A.\n---\nPlease ensure Javascript is enabled for purposes of\n\nwebsite accessibility"
+        },
+        {
+          "doc_id": "web/49166",
+          "source": "web",
+          "title": "https://www.usgbc.org/guide/om",
+          "best_rank": 5,
+          "hit_count": 1,
+          "top_queries": [
+            "Lee's Market 2024 sustainability report energy efficiency"
+          ],
+          "snippet": "---\ntitle: LEED v4: Building Operations + Maintenance Guide\ndate: 2025-01-01\n---\nGetting Started\n\nHow to use this Refere..."
+        },
+        {
+          "doc_id": "web/13494",
+          "source": "web",
+          "title": "https://www.loudoun.gov/civicalerts.aspx?ARC=L&What=2&CC=2&ItemID=9877&From=AID%3D9877",
+          "best_rank": 5,
+          "hit_count": 1,
+          "top_queries": [
+            "Lee's Market store upgrades 2024 Richmond BC"
+          ],
+          "snippet": "---\ntitle: News & Announcements • Loudoun County, VA\ndate: 2022-07-09\n---\n| Name |\n\nPublished Date |\n\nArchived Date |\n\n|..."
+        }
+      ]
+    },
+    {
+      "hop_number": 2,
+      "question": "What month and year was the School Census conducted that reported 75% coverage for secondary schools?",
+      "status": "pending",
+      "attempts": 3,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": "No candidates were retrieved for this hop.",
+      "search_history": [
+        {
+          "iteration": 2,
+          "hop_number": 2,
+          "action_id": "iter2_web_search_0",
+          "type": "web_search",
+          "query": "School Census 75% coverage secondary schools date",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/94797",
+            "web/27960",
+            "web/16719"
+          ]
+        },
+        {
+          "iteration": 2,
+          "hop_number": 2,
+          "action_id": "iter2_web_search_1",
+          "type": "web_search",
+          "query": "educational census 75% coverage month year",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/67861",
+            "web/12890",
+            "web/27960"
+          ]
+        },
+        {
+          "iteration": 2,
+          "hop_number": 2,
+          "action_id": "iter2_web_search_2",
+          "type": "web_search",
+          "query": "secondary school census reports 75% coverage",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/94797",
+            "web/27960",
+            "web/17560"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 2,
+          "action_id": "iter3_web_search_0",
+          "type": "web_search",
+          "query": "school census 75% secondary school coverage report",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/94797",
+            "web/27960",
+            "web/17560"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 2,
+          "action_id": "iter3_web_search_1",
+          "type": "web_search",
+          "query": "educational census 75% coverage secondary schools date",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/94797",
+            "web/27960",
+            "web/22422"
+          ]
+        },
+        {
+          "iteration": 3,
+          "hop_number": 2,
+          "action_id": "iter3_web_search_2",
+          "type": "web_search",
+          "query": "school census coverage statistics 75% secondary schools year",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/94797",
+            "web/27960",
+            "web/44938"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 2,
+          "action_id": "iter4_web_search_0",
+          "type": "web_search",
+          "query": "school census coverage statistics 75% secondary schools date",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/94797",
+            "web/27960",
+            "web/44938"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 2,
+          "action_id": "iter4_web_search_1",
+          "type": "web_search",
+          "query": "educational coverage reports 75% secondary schools census date",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/94797",
+            "web/27960",
+            "web/17560"
+          ]
+        },
+        {
+          "iteration": 4,
+          "hop_number": 2,
+          "action_id": "iter4_web_search_2",
+          "type": "web_search",
+          "query": "school census 75% secondary school coverage documentation",
+          "result_count": 5,
+          "top_doc_ids": [
+            "web/94797",
+            "web/27960",
+            "web/17560"
+          ]
+        }
+      ],
+      "selected_doc_ids": [
+        "web/94797",
+        "web/27960",
+        "web/17560",
+        "web/67861",
+        "web/12890",
+        "web/13133",
+        "web/16719",
+        "web/39731",
+        "web/16266",
+        "web/41080",
+        "web/22422",
+        "web/44938",
+        "web/45972",
+        "web/11999"
+      ],
+      "reader_results": [
+        {
+          "doc_id": "web/94797",
+          "source": "web",
+          "title": "https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/secondary-schools/",
+          "locator": "https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/secondary-schools/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses historical education policy records but does not mention a School Census with 75% coverage or its date [DOC:web/94797].",
+          "confidence": 0.82,
+          "missing_information": "The document lacks explicit information about the School Census's date and the 75% coverage statistic for secondary schools."
+        },
+        {
+          "doc_id": "web/27960",
+          "source": "web",
+          "title": "https://www150.statcan.gc.ca/n1/pub/11-516-x/sectionw/4147445-eng.htm",
+          "locator": "https://www150.statcan.gc.ca/n1/pub/11-516-x/sectionw/4147445-eng.htm",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document mentions Statistics Canada's educational census publications but does not explicitly state the month and year of the census with 75% coverage for secondary schools [DOC:web/27960].",
+          "confidence": 0.82,
+          "missing_information": "Specific month and year of the School Census reporting 75% coverage for secondary schools."
+        },
+        {
+          "doc_id": "web/17560",
+          "source": "web",
+          "title": "https://education-uk.org/documents/plowden/plowden1967-1.html",
+          "locator": "https://education-uk.org/documents/plowden/plowden1967-1.html",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document mentions the Plowden Report (1967) and references a National Survey in Appendices 3-7, but does not specify a School Census with 75% coverage for secondary schools or its date [DOC:web/17560].",
+          "confidence": 0.82,
+          "missing_information": "Specific details about the School Census with 75% coverage, including its month and year, are not present in the document."
+        },
+        {
+          "doc_id": "web/67861",
+          "source": "web",
+          "title": "https://www.census.gov/topics/education/educational-attainment.html",
+          "locator": "https://www.census.gov/topics/education/educational-attainment.html",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention a 'School Census' or specific coverage percentages for secondary schools. The only percentage referenced (73.6%) relates to voter registration in the 2024 presidential election, not a school census [DOC:web/67861].",
+          "confidence": 0.82,
+          "missing_information": "The document lacks explicit mention of a school census with 75% coverage for secondary schools."
+        },
+        {
+          "doc_id": "web/12890",
+          "source": "web",
+          "title": "https://www.census.gov/newsroom/press-releases/2022/educational-attainment.html",
+          "locator": "https://www.census.gov/newsroom/press-releases/2022/educational-attainment.html",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses educational attainment data from the Current Population Survey's Annual Social and Economic Supplement (2021) but does not mention a 'School Census' or specify a 75% coverage rate for secondary schools [DOC:web/12890].",
+          "confidence": 0.82,
+          "missing_information": "The document lacks explicit mention of a School Census and its 75% coverage metric for secondary schools."
+        },
+        {
+          "doc_id": "web/13133",
+          "source": "web",
+          "title": "https://nces.ed.gov/ipeds/use-the-data/timing-of-ipeds-data-collection",
+          "locator": "https://nces.ed.gov/ipeds/use-the-data/timing-of-ipeds-data-collection",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses IPEDS data collection periods (Fall, Winter, Spring) but does not mention a 'School Census' or specify a 75% coverage rate for secondary schools [DOC:web/13133].",
+          "confidence": 0.82,
+          "missing_information": "The document lacks explicit mention of a School Census with 75% coverage for secondary schools, including specific month/year details."
+        },
+        {
+          "doc_id": "web/16719",
+          "source": "web",
+          "title": "https://nces.ed.gov/fastfacts/display.asp?id=334",
+          "locator": "https://nces.ed.gov/fastfacts/display.asp?id=334",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses the School Survey on Crime and Safety (SSOCS) from 2021–22 but does not mention a 'School Census' or any 75% coverage metric for secondary schools [DOC:web/16719].",
+          "confidence": 0.95,
+          "missing_information": "The document lacks explicit mention of a School Census and the specific 75% coverage figure referenced in the question."
+        },
+        {
+          "doc_id": "web/39731",
+          "source": "web",
+          "title": "https://gov.ie/en/department-of-education/collections/inspectorate-publications-evaluation-reports-and-guidelines/",
+          "locator": "https://gov.ie/en/department-of-education/collections/inspectorate-publications-evaluation-reports-and-guidelines/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention a School Census or its coverage percentage for secondary schools. It discusses inspection guides and reports but lacks specific details about a census with 75% coverage [DOC:web/39731].",
+          "confidence": 0.82,
+          "missing_information": "The document does not provide the month and year of a School Census reporting 75% coverage for secondary schools."
+        },
+        {
+          "doc_id": "web/16266",
+          "source": "web",
+          "title": "https://nces.ed.gov/programs/digest/d13/tables/dt13_104.20.asp",
+          "locator": "https://nces.ed.gov/programs/digest/d13/tables/dt13_104.20.asp",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses educational attainment percentages (e.g., 75.4% for high school completion in 1970) but does not mention a 'School Census' or coverage rates for secondary schools [DOC:web/16266].",
+          "confidence": 0.82,
+          "missing_information": "The document lacks explicit mention of a School Census and its coverage metrics for secondary schools."
+        },
+        {
+          "doc_id": "web/41080",
+          "source": "web",
+          "title": "https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/schools/",
+          "locator": "https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/schools/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention the School Census or its coverage percentage for secondary schools. It only provides general guidance on school record research and cites a date of 2015-03-01 for the guide itself, not the census [DOC:web/41080].",
+          "confidence": 0.82,
+          "missing_information": "The specific month and year of the School Census with 75% secondary school coverage"
+        },
+        {
+          "doc_id": "web/22422",
+          "source": "web",
+          "title": "https://en.wikipedia.org/wiki/Middle_school",
+          "locator": "https://en.wikipedia.org/wiki/Middle_school",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The provided document discusses educational systems and terminology but does not mention a School Census or any specific coverage percentage for secondary schools [DOC:web/22422].",
+          "confidence": 0.2,
+          "missing_information": "The document lacks details about the School Census, its timing, or the 75% coverage metric referenced in the question."
+        },
+        {
+          "doc_id": "web/44938",
+          "source": "web",
+          "title": "https://nces.ed.gov/fastfacts/display.asp?id=372",
+          "locator": "https://nces.ed.gov/fastfacts/display.asp?id=372",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document mentions enrollment statistics for public schools in fall 2022 but does not reference a School Census or the 75% coverage figure for secondary schools [DOC:web/44938].",
+          "confidence": 0.82,
+          "missing_information": "The document lacks explicit mention of a School Census report with 75% coverage for secondary schools, including its specific date."
+        },
+        {
+          "doc_id": "web/45972",
+          "source": "web",
+          "title": "https://nces.ed.gov/programs/digest/d22/tables/dt22_209.22.asp",
+          "locator": "https://nces.ed.gov/programs/digest/d22/tables/dt22_209.22.asp",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document discusses teacher distribution percentages (e.g., 30.1%, 25.2%, 36.3%) but does not mention a 75% coverage figure for secondary schools in the context of a School Census [DOC:web/45972].",
+          "confidence": 0.82,
+          "missing_information": "Specific mention of a 75% coverage figure for secondary schools in a School Census, including the exact month and year of the census."
+        },
+        {
+          "doc_id": "web/11999",
+          "source": "web",
+          "title": "https://www.coursmos.com/how-many-schools-are-in-the-us/",
+          "locator": "https://www.coursmos.com/how-many-schools-are-in-the-us/",
+          "can_answer": false,
+          "proposed_answer": "",
+          "justification": "The document does not mention a School Census with 75% coverage for secondary schools. It references NCES data for the 2022–23 school year but does not specify a census report or 75% coverage metric [DOC:web/11999].",
+          "confidence": 0.95,
+          "missing_information": "The document lacks explicit mention of a School Census report with 75% coverage for secondary schools, including the specific month and year of the census."
+        }
+      ],
+      "candidate_doc_ids": [],
+      "candidate_cards": []
+    },
+    {
+      "hop_number": 3,
+      "question": "What percentage of children in state-funded secondary schools in England were born outside the UK in January 2018?",
+      "status": "pending",
+      "attempts": 0,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": null,
+      "search_history": [],
+      "selected_doc_ids": [],
+      "reader_results": [],
+      "candidate_doc_ids": [],
+      "candidate_cards": []
+    },
+    {
+      "hop_number": 4,
+      "question": "Which social media platform experienced a 10% increase in engagement in the first quarter of 2025?",
+      "status": "pending",
+      "attempts": 0,
+      "answer": null,
+      "justification": null,
+      "confidence": 0.0,
+      "resolution_reason": null,
+      "search_history": [],
+      "selected_doc_ids": [],
+      "reader_results": [],
+      "candidate_doc_ids": [],
+      "candidate_cards": []
+    }
+  ],
+  "actions": [
+    {
+      "id": "iter0_web_search_0",
+      "type": "web_search",
+      "description": "Search for Lee's Market retrofitting percentage in 2024",
+      "parameters": {
+        "query": "Lee's Market energy-efficient lighting retrofit percentage 2024"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market energy-efficient lighting retrofit percentage 2024",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/73352",
+            "source": "web",
+            "title": "https://www.mercurynews.com/2010/02/25/fired-as-seagate-ceo-bill-watkins-finds-a-comeback-in-led/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market energy-efficient lighting retrofit percentage 2024"
+            ],
+            "snippet": "---\ntitle: Fired as Seagate CEO, Bill Watkins finds a comeback in LED\nauthor: Dana Hull\ndate: 2010-02-25\n---\nBill Watkin..."
+          },
+          {
+            "doc_id": "web/53061",
+            "source": "web",
+            "title": "https://www.eec.org.au/events/awards/2014-awards",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market energy-efficient lighting retrofit percentage 2024"
+            ],
+            "snippet": "---\ntitle: Energy Efficiency Council - Efficiency Providers | Energy Users | Australia\ndate: 2016-01-01\n---\nThe EEC Awar..."
+          },
+          {
+            "doc_id": "web/44827",
+            "source": "web",
+            "title": "https://www.wipo.int/web-publications/green-technology-book-energy-solutions-for-climate-change/en/4-green-energy-solutions-for-essential-services.html",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market energy-efficient lighting retrofit percentage 2024"
+            ],
+            "snippet": "---\ntitle: 4. Green energy solutions for essential services\ndate: 2020-10-01\n---\nHow can health care facilities, superma..."
+          },
+          {
+            "doc_id": "web/64701",
+            "source": "web",
+            "title": "https://investor.eastgroup.net/2025-02-06-EastGroup-Properties-Announces-Fourth-Quarter-and-Full-Year-2024-Results",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market energy-efficient lighting retrofit percentage 2024"
+            ],
+            "snippet": "---\ntitle: News Releases\ndate: 2025-02-06\n---\nEastGroup Properties Announces Fourth Quarter and Full Year 2024 Results..."
+          },
+          {
+            "doc_id": "web/25989",
+            "source": "web",
+            "title": "https://www.energy.gov/eere/buildings/179d-energy-efficient-commercial-buildings-tax-deduction",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market energy-efficient lighting retrofit percentage 2024"
+            ],
+            "snippet": "---\ntitle: 179D Energy Efficient Commercial Buildings Tax Deduction\ndate: 2000-01-01\n---\nSection 179D of the Internal Re..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.3069155737757683,
+      "iteration": 0
+    },
+    {
+      "id": "iter0_web_search_1",
+      "type": "web_search",
+      "description": "Search for Lee's Market sustainability initiatives 2024",
+      "parameters": {
+        "query": "Lee's Market sustainability report 2024 retrofit"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market sustainability report 2024 retrofit",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/53061",
+            "source": "web",
+            "title": "https://www.eec.org.au/events/awards/2014-awards",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market sustainability report 2024 retrofit"
+            ],
+            "snippet": "---\ntitle: Energy Efficiency Council - Efficiency Providers | Energy Users | Australia\ndate: 2016-01-01\n---\nThe EEC Awar..."
+          },
+          {
+            "doc_id": "web/75196",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Green_building",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market sustainability report 2024 retrofit"
+            ],
+            "snippet": "---\ntitle: Green building - Wikipedia\nauthor: Authority control databases National Germany United States Czech Republic..."
+          },
+          {
+            "doc_id": "web/52219",
+            "source": "web",
+            "title": "https://corporate.walmart.com/purpose/esgreport/environmental/climate-change",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market sustainability report 2024 retrofit"
+            ],
+            "snippet": "---\ntitle: Climate Change\ndate: 2013-07-11\n---\nClimate Change\n\nSASB: CG-MR-130a.1, CG-EC-410a.2; FB-FR-110b.1\n\nGRI: 3-3,..."
+          },
+          {
+            "doc_id": "web/44827",
+            "source": "web",
+            "title": "https://www.wipo.int/web-publications/green-technology-book-energy-solutions-for-climate-change/en/4-green-energy-solutions-for-essential-services.html",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market sustainability report 2024 retrofit"
+            ],
+            "snippet": "---\ntitle: 4. Green energy solutions for essential services\ndate: 2020-10-01\n---\nHow can health care facilities, superma..."
+          },
+          {
+            "doc_id": "web/49166",
+            "source": "web",
+            "title": "https://www.usgbc.org/guide/om",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market sustainability report 2024 retrofit"
+            ],
+            "snippet": "---\ntitle: LEED v4: Building Operations + Maintenance Guide\ndate: 2025-01-01\n---\nGetting Started\n\nHow to use this Refere..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.3421501303091645,
+      "iteration": 0
+    },
+    {
+      "id": "iter0_web_search_2",
+      "type": "web_search",
+      "description": "Search for news on Lee's Market store upgrades 2024",
+      "parameters": {
+        "query": "Lee's Market store retrofitting 2024 news"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market store retrofitting 2024 news",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/39920",
+            "source": "web",
+            "title": "https://www.levinmgt.com/press/new-shoprite-of-watchung-to-open-doors-april-9-and-host-grand-opening-celebration-april-13/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market store retrofitting 2024 news"
+            ],
+            "snippet": "---\ntitle: State-of-the-Art ShopRite Grand Opening Marks Major Transformation at Blue Star Shopping Center\ndate: 2025-04..."
+          },
+          {
+            "doc_id": "web/84456",
+            "source": "web",
+            "title": "https://www.liveuptehachapi.com/303/Economic-Development-News",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market store retrofitting 2024 news"
+            ],
+            "snippet": "---\ntitle: Economic Development News\nauthor: Government Websites by CivicPlus\ndate: 2018-08-29\n---\n- Portal\n\n- Governmen..."
+          },
+          {
+            "doc_id": "web/7128",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Fort_Gregg-Adams",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market store retrofitting 2024 news"
+            ],
+            "snippet": "---\ntitle: Fort Gregg-Adams - Wikipedia\nauthor: Authority control databases Geographic MusicBrainz area Other NARA\ndate:..."
+          },
+          {
+            "doc_id": "web/87559",
+            "source": "web",
+            "title": "https://www.businessinsider.com/oldest-mall-in-every-state",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market store retrofitting 2024 news"
+            ],
+            "snippet": "---\ntitle: The oldest shopping mall in each of the 50 states\nauthor: Frank Olito\ndate: 2024-05-10\n---\n- Shopping malls w..."
+          },
+          {
+            "doc_id": "web/66256",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Boston_Market",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market store retrofitting 2024 news"
+            ],
+            "snippet": "---\ntitle: Boston Market - Wikipedia\ndate: 2004-05-03\n---\nname: Boston Market Corporation\nlogo: Boston_Market_Rotisserie..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.30633825063705444,
+      "iteration": 0
+    },
+    {
+      "id": "iter1_web_search_0",
+      "type": "web_search",
+      "description": "Search for Lee's Market 2024 sustainability report details",
+      "parameters": {
+        "query": "Lee's Market 2024 sustainability report energy efficiency"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market 2024 sustainability report energy efficiency",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/53061",
+            "source": "web",
+            "title": "https://www.eec.org.au/events/awards/2014-awards",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market 2024 sustainability report energy efficiency"
+            ],
+            "snippet": "---\ntitle: Energy Efficiency Council - Efficiency Providers | Energy Users | Australia\ndate: 2016-01-01\n---\nThe EEC Awar..."
+          },
+          {
+            "doc_id": "web/44827",
+            "source": "web",
+            "title": "https://www.wipo.int/web-publications/green-technology-book-energy-solutions-for-climate-change/en/4-green-energy-solutions-for-essential-services.html",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market 2024 sustainability report energy efficiency"
+            ],
+            "snippet": "---\ntitle: 4. Green energy solutions for essential services\ndate: 2020-10-01\n---\nHow can health care facilities, superma..."
+          },
+          {
+            "doc_id": "web/75196",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Green_building",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market 2024 sustainability report energy efficiency"
+            ],
+            "snippet": "---\ntitle: Green building - Wikipedia\nauthor: Authority control databases National Germany United States Czech Republic..."
+          },
+          {
+            "doc_id": "web/98266",
+            "source": "web",
+            "title": "https://www.nature.com/articles/s41467-022-33531-2",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market 2024 sustainability report energy efficiency"
+            ],
+            "snippet": "---\ntitle: The weather affects air conditioner purchases to fill the energy efficiency gap\nauthor: School; Environmental..."
+          },
+          {
+            "doc_id": "web/49166",
+            "source": "web",
+            "title": "https://www.usgbc.org/guide/om",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market 2024 sustainability report energy efficiency"
+            ],
+            "snippet": "---\ntitle: LEED v4: Building Operations + Maintenance Guide\ndate: 2025-01-01\n---\nGetting Started\n\nHow to use this Refere..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.23758670408278704,
+      "iteration": 1
+    },
+    {
+      "id": "iter1_web_search_1",
+      "type": "web_search",
+      "description": "Search for news on Lee's Market store upgrades in 2024",
+      "parameters": {
+        "query": "Lee's Market store upgrades 2024 Richmond BC"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market store upgrades 2024 Richmond BC",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/39920",
+            "source": "web",
+            "title": "https://www.levinmgt.com/press/new-shoprite-of-watchung-to-open-doors-april-9-and-host-grand-opening-celebration-april-13/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market store upgrades 2024 Richmond BC"
+            ],
+            "snippet": "---\ntitle: State-of-the-Art ShopRite Grand Opening Marks Major Transformation at Blue Star Shopping Center\ndate: 2025-04..."
+          },
+          {
+            "doc_id": "web/3887",
+            "source": "web",
+            "title": "https://www.portofbellingham.com/1002/Bellingham-Dockside-Market",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market store upgrades 2024 Richmond BC"
+            ],
+            "snippet": "---\ntitle: Bellingham Dockside Market\nauthor: This Is A Placeholder Government Websites By Civicplus\ndate: 2023-03-04\n--..."
+          },
+          {
+            "doc_id": "web/161",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Richmond,_Virginia",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market store upgrades 2024 Richmond BC"
+            ],
+            "snippet": "---\ntitle: Richmond, Virginia - Wikipedia\nauthor: Authority control databases\ndate: 2002-05-24\n---\nname: Richmond\nsettle..."
+          },
+          {
+            "doc_id": "web/45702",
+            "source": "web",
+            "title": "https://farmersmarketla.com/index.html",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market store upgrades 2024 Richmond BC"
+            ],
+            "snippet": "---\ntitle: Farmers Market L.A.\n---\nPlease ensure Javascript is enabled for purposes of\n\nwebsite accessibility"
+          },
+          {
+            "doc_id": "web/13494",
+            "source": "web",
+            "title": "https://www.loudoun.gov/civicalerts.aspx?ARC=L&What=2&CC=2&ItemID=9877&From=AID%3D9877",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market store upgrades 2024 Richmond BC"
+            ],
+            "snippet": "---\ntitle: News & Announcements • Loudoun County, VA\ndate: 2022-07-09\n---\n| Name |\n\nPublished Date |\n\nArchived Date |\n\n|..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.15556147787719965,
+      "iteration": 1
+    },
+    {
+      "id": "iter1_web_search_2",
+      "type": "web_search",
+      "description": "Search for Lee's Market environmental initiatives in 2024",
+      "parameters": {
+        "query": "Lee's Market environmental initiatives 2024 retrofit percentage"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "Lee's Market environmental initiatives 2024 retrofit percentage",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/52219",
+            "source": "web",
+            "title": "https://corporate.walmart.com/purpose/esgreport/environmental/climate-change",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market environmental initiatives 2024 retrofit percentage"
+            ],
+            "snippet": "---\ntitle: Climate Change\ndate: 2013-07-11\n---\nClimate Change\n\nSASB: CG-MR-130a.1, CG-EC-410a.2; FB-FR-110b.1\n\nGRI: 3-3,..."
+          },
+          {
+            "doc_id": "web/44827",
+            "source": "web",
+            "title": "https://www.wipo.int/web-publications/green-technology-book-energy-solutions-for-climate-change/en/4-green-energy-solutions-for-essential-services.html",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market environmental initiatives 2024 retrofit percentage"
+            ],
+            "snippet": "---\ntitle: 4. Green energy solutions for essential services\ndate: 2020-10-01\n---\nHow can health care facilities, superma..."
+          },
+          {
+            "doc_id": "web/53061",
+            "source": "web",
+            "title": "https://www.eec.org.au/events/awards/2014-awards",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market environmental initiatives 2024 retrofit percentage"
+            ],
+            "snippet": "---\ntitle: Energy Efficiency Council - Efficiency Providers | Energy Users | Australia\ndate: 2016-01-01\n---\nThe EEC Awar..."
+          },
+          {
+            "doc_id": "web/75196",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Green_building",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market environmental initiatives 2024 retrofit percentage"
+            ],
+            "snippet": "---\ntitle: Green building - Wikipedia\nauthor: Authority control databases National Germany United States Czech Republic..."
+          },
+          {
+            "doc_id": "web/39920",
+            "source": "web",
+            "title": "https://www.levinmgt.com/press/new-shoprite-of-watchung-to-open-doors-april-9-and-host-grand-opening-celebration-april-13/",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "Lee's Market environmental initiatives 2024 retrofit percentage"
+            ],
+            "snippet": "---\ntitle: State-of-the-Art ShopRite Grand Opening Marks Major Transformation at Blue Star Shopping Center\ndate: 2025-04..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.206143363378942,
+      "iteration": 1
+    },
+    {
+      "id": "iter2_web_search_0",
+      "type": "web_search",
+      "description": "Search for School Census dates with 75% secondary school coverage",
+      "parameters": {
+        "query": "School Census 75% coverage secondary schools date"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "School Census 75% coverage secondary schools date",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/94797",
+            "source": "web",
+            "title": "https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/secondary-schools/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "School Census 75% coverage secondary schools date"
+            ],
+            "snippet": "---\ntitle: How to look for records of... Historical education policy and administration: secondary schools\ndate: 1997-01..."
+          },
+          {
+            "doc_id": "web/27960",
+            "source": "web",
+            "title": "https://www150.statcan.gc.ca/n1/pub/11-516-x/sectionw/4147445-eng.htm",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "School Census 75% coverage secondary schools date"
+            ],
+            "snippet": "---\ntitle: Common menu bar links\ndate: 2014-07-02\n---\nInformation identified as archived is provided for reference, rese..."
+          },
+          {
+            "doc_id": "web/16719",
+            "source": "web",
+            "title": "https://nces.ed.gov/fastfacts/display.asp?id=334",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "School Census 75% coverage secondary schools date"
+            ],
+            "snippet": "---\ntitle: School safety and security measures\ndate: 2024-07-25\n---\nQuestion:\n\nWhat safety and security measures are use..."
+          },
+          {
+            "doc_id": "web/41080",
+            "source": "web",
+            "title": "https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/schools/",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "School Census 75% coverage secondary schools date"
+            ],
+            "snippet": "---\ntitle: How to look for records of... Schools\ndate: 2015-03-01\n---\nHow to look for records of... Schools\n\nHow can I v..."
+          },
+          {
+            "doc_id": "web/44938",
+            "source": "web",
+            "title": "https://nces.ed.gov/fastfacts/display.asp?id=372",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "School Census 75% coverage secondary schools date"
+            ],
+            "snippet": "---\ntitle: Back-to-school statistics\ndate: 2019-01-01\n---\nQuestion:\n\nIt's back-to-school time—what do we know about our..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.23083213716745377,
+      "iteration": 2
+    },
+    {
+      "id": "iter2_web_search_1",
+      "type": "web_search",
+      "description": "Search for educational census statistics by month and year",
+      "parameters": {
+        "query": "educational census 75% coverage month year"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "educational census 75% coverage month year",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/67861",
+            "source": "web",
+            "title": "https://www.census.gov/topics/education/educational-attainment.html",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "educational census 75% coverage month year"
+            ],
+            "snippet": "---\ntitle: Educational Attainment\ndate: 2022-02-24\n---\n-\n\nEducational Attainment VisualizationsData made visual with cha..."
+          },
+          {
+            "doc_id": "web/12890",
+            "source": "web",
+            "title": "https://www.census.gov/newsroom/press-releases/2022/educational-attainment.html",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "educational census 75% coverage month year"
+            ],
+            "snippet": "---\ntitle: Census Bureau Releases New Educational Attainment Data\ndate: 2022-02-24\n---\nPress Release Number: CB22-TPS.02..."
+          },
+          {
+            "doc_id": "web/27960",
+            "source": "web",
+            "title": "https://www150.statcan.gc.ca/n1/pub/11-516-x/sectionw/4147445-eng.htm",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "educational census 75% coverage month year"
+            ],
+            "snippet": "---\ntitle: Common menu bar links\ndate: 2014-07-02\n---\nInformation identified as archived is provided for reference, rese..."
+          },
+          {
+            "doc_id": "web/16266",
+            "source": "web",
+            "title": "https://nces.ed.gov/programs/digest/d13/tables/dt13_104.20.asp",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "educational census 75% coverage month year"
+            ],
+            "snippet": "---\ntitle: Percentage of persons 25 to 29 years old with selected levels of educational attainment, by race/ethnicity an..."
+          },
+          {
+            "doc_id": "web/13133",
+            "source": "web",
+            "title": "https://nces.ed.gov/ipeds/use-the-data/timing-of-ipeds-data-collection",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "educational census 75% coverage month year"
+            ],
+            "snippet": "---\ntitle: Timing Of IPEDS Data Collection, Coverage, And Release Cycle\ndate: 2011-12-01\n---\nTiming Of IPEDS Data Collec..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.2218255801126361,
+      "iteration": 2
+    },
+    {
+      "id": "iter2_web_search_2",
+      "type": "web_search",
+      "description": "Search for secondary school census reports with percentage data",
+      "parameters": {
+        "query": "secondary school census reports 75% coverage"
+      },
+      "priority": 0.6,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "secondary school census reports 75% coverage",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/94797",
+            "source": "web",
+            "title": "https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/secondary-schools/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "secondary school census reports 75% coverage"
+            ],
+            "snippet": "---\ntitle: How to look for records of... Historical education policy and administration: secondary schools\ndate: 1997-01..."
+          },
+          {
+            "doc_id": "web/27960",
+            "source": "web",
+            "title": "https://www150.statcan.gc.ca/n1/pub/11-516-x/sectionw/4147445-eng.htm",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "secondary school census reports 75% coverage"
+            ],
+            "snippet": "---\ntitle: Common menu bar links\ndate: 2014-07-02\n---\nInformation identified as archived is provided for reference, rese..."
+          },
+          {
+            "doc_id": "web/17560",
+            "source": "web",
+            "title": "https://education-uk.org/documents/plowden/plowden1967-1.html",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "secondary school census reports 75% coverage"
+            ],
+            "snippet": "---\ntitle: Plowden Report (1967) Volume 1\ndate: 2020-02-14\n---\n[page 545]\n\nIndex\n\nUnless otherwise stated, references ar..."
+          },
+          {
+            "doc_id": "web/39731",
+            "source": "web",
+            "title": "https://gov.ie/en/department-of-education/collections/inspectorate-publications-evaluation-reports-and-guidelines/",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "secondary school census reports 75% coverage"
+            ],
+            "snippet": "---\ntitle: Inspectorate publications: Evaluation reports and guidelines\ndate: 2019-08-13\n---\nThe Inspectorate publishes..."
+          },
+          {
+            "doc_id": "web/22422",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Middle_school",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "secondary school census reports 75% coverage"
+            ],
+            "snippet": "---\ntitle: Middle school - Wikipedia\nauthor: Authority control databases National United States Japan Latvia Israel\ndate..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.23046427126973867,
+      "iteration": 2
+    },
+    {
+      "id": "iter3_web_search_0",
+      "type": "web_search",
+      "description": "Search for School Census reports with 75% secondary school coverage metrics",
+      "parameters": {
+        "query": "school census 75% secondary school coverage report"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "school census 75% secondary school coverage report",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/94797",
+            "source": "web",
+            "title": "https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/secondary-schools/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "school census 75% secondary school coverage report"
+            ],
+            "snippet": "---\ntitle: How to look for records of... Historical education policy and administration: secondary schools\ndate: 1997-01..."
+          },
+          {
+            "doc_id": "web/27960",
+            "source": "web",
+            "title": "https://www150.statcan.gc.ca/n1/pub/11-516-x/sectionw/4147445-eng.htm",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "school census 75% secondary school coverage report"
+            ],
+            "snippet": "---\ntitle: Common menu bar links\ndate: 2014-07-02\n---\nInformation identified as archived is provided for reference, rese..."
+          },
+          {
+            "doc_id": "web/17560",
+            "source": "web",
+            "title": "https://education-uk.org/documents/plowden/plowden1967-1.html",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "school census 75% secondary school coverage report"
+            ],
+            "snippet": "---\ntitle: Plowden Report (1967) Volume 1\ndate: 2020-02-14\n---\n[page 545]\n\nIndex\n\nUnless otherwise stated, references ar..."
+          },
+          {
+            "doc_id": "web/39731",
+            "source": "web",
+            "title": "https://gov.ie/en/department-of-education/collections/inspectorate-publications-evaluation-reports-and-guidelines/",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "school census 75% secondary school coverage report"
+            ],
+            "snippet": "---\ntitle: Inspectorate publications: Evaluation reports and guidelines\ndate: 2019-08-13\n---\nThe Inspectorate publishes..."
+          },
+          {
+            "doc_id": "web/11999",
+            "source": "web",
+            "title": "https://www.coursmos.com/how-many-schools-are-in-the-us/",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "school census 75% secondary school coverage report"
+            ],
+            "snippet": "---\ntitle: How Many Schools Are In The US (2025 Data)\nauthor: Dave Franklin\ndate: 2025-03-25\n---\nThe U.S. education syst..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.17018123716115952,
+      "iteration": 3
+    },
+    {
+      "id": "iter3_web_search_1",
+      "type": "web_search",
+      "description": "Search for educational census data with 75% coverage specifics",
+      "parameters": {
+        "query": "educational census 75% coverage secondary schools date"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "educational census 75% coverage secondary schools date",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/94797",
+            "source": "web",
+            "title": "https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/secondary-schools/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "educational census 75% coverage secondary schools date"
+            ],
+            "snippet": "---\ntitle: How to look for records of... Historical education policy and administration: secondary schools\ndate: 1997-01..."
+          },
+          {
+            "doc_id": "web/27960",
+            "source": "web",
+            "title": "https://www150.statcan.gc.ca/n1/pub/11-516-x/sectionw/4147445-eng.htm",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "educational census 75% coverage secondary schools date"
+            ],
+            "snippet": "---\ntitle: Common menu bar links\ndate: 2014-07-02\n---\nInformation identified as archived is provided for reference, rese..."
+          },
+          {
+            "doc_id": "web/22422",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Middle_school",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "educational census 75% coverage secondary schools date"
+            ],
+            "snippet": "---\ntitle: Middle school - Wikipedia\nauthor: Authority control databases National United States Japan Latvia Israel\ndate..."
+          },
+          {
+            "doc_id": "web/95624",
+            "source": "web",
+            "title": "https://worldpopulationreview.com/country-rankings/most-educated-countries",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "educational census 75% coverage secondary schools date"
+            ],
+            "snippet": "---\ntitle: Most Educated Countries 2025\ndate: 2024-09-12\n---\nTertiary Total 2022\n\n10%\n\n15%\n\n20%\n\n25%\n\n30%\n\n35%\n\n40%\n\n45%..."
+          },
+          {
+            "doc_id": "web/14022",
+            "source": "web",
+            "title": "https://nces.ed.gov/naal/lit_history.asp",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "educational census 75% coverage secondary schools date"
+            ],
+            "snippet": "---\ntitle: National Assessment of Adult Literacy (NAAL)\n---\n- Overview\n\n- Educational Characteristics of the Population..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.26296450663357973,
+      "iteration": 3
+    },
+    {
+      "id": "iter3_web_search_2",
+      "type": "web_search",
+      "description": "Search for School Census coverage statistics by year",
+      "parameters": {
+        "query": "school census coverage statistics 75% secondary schools year"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "school census coverage statistics 75% secondary schools year",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/94797",
+            "source": "web",
+            "title": "https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/secondary-schools/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "school census coverage statistics 75% secondary schools year"
+            ],
+            "snippet": "---\ntitle: How to look for records of... Historical education policy and administration: secondary schools\ndate: 1997-01..."
+          },
+          {
+            "doc_id": "web/27960",
+            "source": "web",
+            "title": "https://www150.statcan.gc.ca/n1/pub/11-516-x/sectionw/4147445-eng.htm",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "school census coverage statistics 75% secondary schools year"
+            ],
+            "snippet": "---\ntitle: Common menu bar links\ndate: 2014-07-02\n---\nInformation identified as archived is provided for reference, rese..."
+          },
+          {
+            "doc_id": "web/44938",
+            "source": "web",
+            "title": "https://nces.ed.gov/fastfacts/display.asp?id=372",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "school census coverage statistics 75% secondary schools year"
+            ],
+            "snippet": "---\ntitle: Back-to-school statistics\ndate: 2019-01-01\n---\nQuestion:\n\nIt's back-to-school time—what do we know about our..."
+          },
+          {
+            "doc_id": "web/45972",
+            "source": "web",
+            "title": "https://nces.ed.gov/programs/digest/d22/tables/dt22_209.22.asp",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "school census coverage statistics 75% secondary schools year"
+            ],
+            "snippet": "---\ntitle: Number and percentage distribution of teachers in public elementary and secondary schools, by instructional l..."
+          },
+          {
+            "doc_id": "web/11999",
+            "source": "web",
+            "title": "https://www.coursmos.com/how-many-schools-are-in-the-us/",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "school census coverage statistics 75% secondary schools year"
+            ],
+            "snippet": "---\ntitle: How Many Schools Are In The US (2025 Data)\nauthor: Dave Franklin\ndate: 2025-03-25\n---\nThe U.S. education syst..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.24281185772269964,
+      "iteration": 3
+    },
+    {
+      "id": "iter4_web_search_0",
+      "type": "web_search",
+      "description": "Search for School Census coverage statistics with 75% secondary school data",
+      "parameters": {
+        "query": "school census coverage statistics 75% secondary schools date"
+      },
+      "priority": 0.8,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "school census coverage statistics 75% secondary schools date",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/94797",
+            "source": "web",
+            "title": "https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/secondary-schools/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "school census coverage statistics 75% secondary schools date"
+            ],
+            "snippet": "---\ntitle: How to look for records of... Historical education policy and administration: secondary schools\ndate: 1997-01..."
+          },
+          {
+            "doc_id": "web/27960",
+            "source": "web",
+            "title": "https://www150.statcan.gc.ca/n1/pub/11-516-x/sectionw/4147445-eng.htm",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "school census coverage statistics 75% secondary schools date"
+            ],
+            "snippet": "---\ntitle: Common menu bar links\ndate: 2014-07-02\n---\nInformation identified as archived is provided for reference, rese..."
+          },
+          {
+            "doc_id": "web/44938",
+            "source": "web",
+            "title": "https://nces.ed.gov/fastfacts/display.asp?id=372",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "school census coverage statistics 75% secondary schools date"
+            ],
+            "snippet": "---\ntitle: Back-to-school statistics\ndate: 2019-01-01\n---\nQuestion:\n\nIt's back-to-school time—what do we know about our..."
+          },
+          {
+            "doc_id": "web/16719",
+            "source": "web",
+            "title": "https://nces.ed.gov/fastfacts/display.asp?id=334",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "school census coverage statistics 75% secondary schools date"
+            ],
+            "snippet": "---\ntitle: School safety and security measures\ndate: 2024-07-25\n---\nQuestion:\n\nWhat safety and security measures are use..."
+          },
+          {
+            "doc_id": "web/45972",
+            "source": "web",
+            "title": "https://nces.ed.gov/programs/digest/d22/tables/dt22_209.22.asp",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "school census coverage statistics 75% secondary schools date"
+            ],
+            "snippet": "---\ntitle: Number and percentage distribution of teachers in public elementary and secondary schools, by instructional l..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.4495434435084462,
+      "iteration": 4
+    },
+    {
+      "id": "iter4_web_search_1",
+      "type": "web_search",
+      "description": "Search for educational coverage reports with 75% secondary school metrics",
+      "parameters": {
+        "query": "educational coverage reports 75% secondary schools census date"
+      },
+      "priority": 0.75,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "educational coverage reports 75% secondary schools census date",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/94797",
+            "source": "web",
+            "title": "https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/secondary-schools/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "educational coverage reports 75% secondary schools census date"
+            ],
+            "snippet": "---\ntitle: How to look for records of... Historical education policy and administration: secondary schools\ndate: 1997-01..."
+          },
+          {
+            "doc_id": "web/27960",
+            "source": "web",
+            "title": "https://www150.statcan.gc.ca/n1/pub/11-516-x/sectionw/4147445-eng.htm",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "educational coverage reports 75% secondary schools census date"
+            ],
+            "snippet": "---\ntitle: Common menu bar links\ndate: 2014-07-02\n---\nInformation identified as archived is provided for reference, rese..."
+          },
+          {
+            "doc_id": "web/17560",
+            "source": "web",
+            "title": "https://education-uk.org/documents/plowden/plowden1967-1.html",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "educational coverage reports 75% secondary schools census date"
+            ],
+            "snippet": "---\ntitle: Plowden Report (1967) Volume 1\ndate: 2020-02-14\n---\n[page 545]\n\nIndex\n\nUnless otherwise stated, references ar..."
+          },
+          {
+            "doc_id": "web/39731",
+            "source": "web",
+            "title": "https://gov.ie/en/department-of-education/collections/inspectorate-publications-evaluation-reports-and-guidelines/",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "educational coverage reports 75% secondary schools census date"
+            ],
+            "snippet": "---\ntitle: Inspectorate publications: Evaluation reports and guidelines\ndate: 2019-08-13\n---\nThe Inspectorate publishes..."
+          },
+          {
+            "doc_id": "web/45972",
+            "source": "web",
+            "title": "https://nces.ed.gov/programs/digest/d22/tables/dt22_209.22.asp",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "educational coverage reports 75% secondary schools census date"
+            ],
+            "snippet": "---\ntitle: Number and percentage distribution of teachers in public elementary and secondary schools, by instructional l..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.3443348044529557,
+      "iteration": 4
+    },
+    {
+      "id": "iter4_web_search_2",
+      "type": "web_search",
+      "description": "Search for School Census 75% secondary school coverage documentation",
+      "parameters": {
+        "query": "school census 75% secondary school coverage documentation"
+      },
+      "priority": 0.7,
+      "expected_output": "Candidate evidence for the current hop",
+      "status": "completed",
+      "actual_output": {
+        "tool": "browsecomp_search",
+        "query": "school census 75% secondary school coverage documentation",
+        "success": true,
+        "data_retrieved": true,
+        "results_count": 5,
+        "results": [
+          {
+            "doc_id": "web/94797",
+            "source": "web",
+            "title": "https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/secondary-schools/",
+            "best_rank": 1,
+            "hit_count": 1,
+            "top_queries": [
+              "school census 75% secondary school coverage documentation"
+            ],
+            "snippet": "---\ntitle: How to look for records of... Historical education policy and administration: secondary schools\ndate: 1997-01..."
+          },
+          {
+            "doc_id": "web/27960",
+            "source": "web",
+            "title": "https://www150.statcan.gc.ca/n1/pub/11-516-x/sectionw/4147445-eng.htm",
+            "best_rank": 2,
+            "hit_count": 1,
+            "top_queries": [
+              "school census 75% secondary school coverage documentation"
+            ],
+            "snippet": "---\ntitle: Common menu bar links\ndate: 2014-07-02\n---\nInformation identified as archived is provided for reference, rese..."
+          },
+          {
+            "doc_id": "web/17560",
+            "source": "web",
+            "title": "https://education-uk.org/documents/plowden/plowden1967-1.html",
+            "best_rank": 3,
+            "hit_count": 1,
+            "top_queries": [
+              "school census 75% secondary school coverage documentation"
+            ],
+            "snippet": "---\ntitle: Plowden Report (1967) Volume 1\ndate: 2020-02-14\n---\n[page 545]\n\nIndex\n\nUnless otherwise stated, references ar..."
+          },
+          {
+            "doc_id": "web/41080",
+            "source": "web",
+            "title": "https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/schools/",
+            "best_rank": 4,
+            "hit_count": 1,
+            "top_queries": [
+              "school census 75% secondary school coverage documentation"
+            ],
+            "snippet": "---\ntitle: How to look for records of... Schools\ndate: 2015-03-01\n---\nHow to look for records of... Schools\n\nHow can I v..."
+          },
+          {
+            "doc_id": "web/22422",
+            "source": "web",
+            "title": "https://en.wikipedia.org/wiki/Middle_school",
+            "best_rank": 5,
+            "hit_count": 1,
+            "top_queries": [
+              "school census 75% secondary school coverage documentation"
+            ],
+            "snippet": "---\ntitle: Middle school - Wikipedia\nauthor: Authority control databases National United States Japan Latvia Israel\ndate..."
+          }
+        ]
+      },
+      "error": null,
+      "execution_time": 0.38643589802086353,
+      "iteration": 4
+    }
+  ],
+  "error_records": [],
+  "timeline_paths": {
+    "events_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0098_d02e9696_ccd506c4/timeline_events.json",
+    "summary_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0098_d02e9696_ccd506c4/timeline_summary.json",
+    "html_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0098_d02e9696_ccd506c4/timeline.html",
+    "report_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0098_d02e9696_ccd506c4/workspace/research_report_1776316647.md"
+  },
+  "report_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0098_d02e9696_ccd506c4/workspace/research_report_1776316647.md"
+}

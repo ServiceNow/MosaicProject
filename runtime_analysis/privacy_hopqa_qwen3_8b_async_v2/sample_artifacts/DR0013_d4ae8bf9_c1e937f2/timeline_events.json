@@ -1,0 +1,622 @@
+[
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 0.000236,
+    "end_s": 13.539127,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "planned_actions": [
+        {
+          "action_id": "iter0_web_search_0",
+          "type": "web_search",
+          "query": "Elexion Automotive advanced materials production cost reduction percentage"
+        },
+        {
+          "action_id": "iter0_web_search_1",
+          "type": "web_search",
+          "query": "Elexion Automotive R&D cost savings advanced materials 2023"
+        },
+        {
+          "action_id": "iter0_web_search_2",
+          "type": "web_search",
+          "query": "Elexion Automotive sustainability report material cost reduction"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_0",
+    "label": "web_search: Elexion Automotive advanced materials production...",
+    "start_s": 13.539178,
+    "end_s": 13.811123,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_0",
+      "action_type": "web_search",
+      "query": "Elexion Automotive advanced materials production cost reduction percentage",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/29203",
+        "web/4850"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_1",
+    "label": "web_search: Elexion Automotive R&D cost savings advanced mat...",
+    "start_s": 13.539292,
+    "end_s": 13.828228,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_1",
+      "action_type": "web_search",
+      "query": "Elexion Automotive R&D cost savings advanced materials 2023",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/97348",
+        "web/20817"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_2",
+    "label": "web_search: Elexion Automotive sustainability report materia...",
+    "start_s": 13.539356,
+    "end_s": 13.828399,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_2",
+      "action_type": "web_search",
+      "query": "Elexion Automotive sustainability report material cost reduction",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/29203",
+        "web/81410"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs",
+    "start_s": 13.82857,
+    "end_s": 33.828543,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "candidate_count": 9,
+      "selected_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/29203",
+        "web/4850"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/29203",
+    "label": "https://www.assemblymag.com/articles/97788-tesla...",
+    "start_s": 33.832137,
+    "end_s": 40.479481,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/29203",
+      "source": "web",
+      "title": "https://www.assemblymag.com/articles/97788-tesla-rethinks-the-assembly-line",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+    "label": "https://www.helpnetsecurity.com/2025/04/04/cyber...",
+    "start_s": 33.828649,
+    "end_s": 41.632471,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+      "source": "web",
+      "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/4850",
+    "label": "https://finance.yahoo.com/news/13-best-auto-comp...",
+    "start_s": 33.836135,
+    "end_s": 42.612528,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/4850",
+      "source": "web",
+      "title": "https://finance.yahoo.com/news/13-best-auto-components-parts-062515306.html",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 42.612803,
+    "end_s": 60.61444,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.3,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/97348",
+        "web/20817",
+        "web/81410"
+      ],
+      "unread_candidate_count": 6
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/20817",
+    "label": "https://edisonawards.com/2024-winners/",
+    "start_s": 60.617353,
+    "end_s": 67.842468,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/20817",
+      "source": "web",
+      "title": "https://edisonawards.com/2024-winners/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/97348",
+    "label": "https://newsroom.lexus.eu/lexus-history/",
+    "start_s": 60.614646,
+    "end_s": 68.314224,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/97348",
+      "source": "web",
+      "title": "https://newsroom.lexus.eu/lexus-history/",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/81410",
+    "label": "https://cen.acs.org/business/finance/CENs-top-50...",
+    "start_s": 60.619886,
+    "end_s": 69.111653,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/81410",
+      "source": "web",
+      "title": "https://cen.acs.org/business/finance/CENs-top-50-US-chemical-producers-for-2021/100/i16",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 69.208848,
+    "end_s": 79.940691,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": true,
+      "confidence": 0.9,
+      "next_step": "done",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 3
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 79.940802,
+    "end_s": 92.31404,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "planned_actions": [
+        {
+          "action_id": "iter1_web_search_0",
+          "type": "web_search",
+          "query": "year 10% U.S. weather stations all-time temperature records"
+        },
+        {
+          "action_id": "iter1_web_search_1",
+          "type": "web_search",
+          "query": "U.S. weather stations temperature records 10% threshold"
+        },
+        {
+          "action_id": "iter1_web_search_2",
+          "type": "web_search",
+          "query": "historical U.S. weather station record events 10%"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_0",
+    "label": "web_search: year 10% U.S. weather stations all-time temperat...",
+    "start_s": 92.3141,
+    "end_s": 92.530747,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "action_id": "iter1_web_search_0",
+      "action_type": "web_search",
+      "query": "year 10% U.S. weather stations all-time temperature records",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/38674",
+        "web/30109"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_2",
+    "label": "web_search: historical U.S. weather station record events 10...",
+    "start_s": 92.314324,
+    "end_s": 92.530948,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "action_id": "iter1_web_search_2",
+      "action_type": "web_search",
+      "query": "historical U.S. weather station record events 10%",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/38674",
+        "web/68151",
+        "web/30109"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_search_1",
+    "label": "web_search: U.S. weather stations temperature records 10% th...",
+    "start_s": 92.314258,
+    "end_s": 92.572548,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "action_id": "iter1_web_search_1",
+      "action_type": "web_search",
+      "query": "U.S. weather stations temperature records 10% threshold",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/38674",
+        "web/34389",
+        "web/91976"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs",
+    "start_s": 92.572833,
+    "end_s": 116.315388,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "candidate_count": 9,
+      "selected_doc_ids": [
+        "web/38674",
+        "web/30109"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/30109",
+    "label": "https://www.weather.gov/eka/ekarecords",
+    "start_s": 116.321109,
+    "end_s": 124.326696,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "doc_id": "web/30109",
+      "source": "web",
+      "title": "https://www.weather.gov/eka/ekarecords",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/38674",
+    "label": "https://www.nytimes.com/interactive/2022/01/11/c...",
+    "start_s": 116.315523,
+    "end_s": 141.098551,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "doc_id": "web/38674",
+      "source": "web",
+      "title": "https://www.nytimes.com/interactive/2022/01/11/climate/record-temperatures-map-2021.html",
+      "can_answer": true,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 141.098834,
+    "end_s": 156.506519,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 1,
+      "answered": true,
+      "confidence": 0.85,
+      "next_step": "done",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 7
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H3 retrieval plan",
+    "start_s": 156.506606,
+    "end_s": 173.510516,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "planned_actions": [
+        {
+          "action_id": "iter2_web_search_0",
+          "type": "web_search",
+          "query": "Elexion Automotive 2021 cybersecurity software updates percentage"
+        },
+        {
+          "action_id": "iter2_web_search_1",
+          "type": "web_search",
+          "query": "2021 Elexion Automotive software updates cybersecurity enhancements"
+        },
+        {
+          "action_id": "iter2_web_search_2",
+          "type": "web_search",
+          "query": "Elexion Automotive annual report 2021 cybersecurity percentage"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_1",
+    "label": "web_search: 2021 Elexion Automotive software updates cyberse...",
+    "start_s": 173.51089,
+    "end_s": 173.721696,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "action_id": "iter2_web_search_1",
+      "action_type": "web_search",
+      "query": "2021 Elexion Automotive software updates cybersecurity enhancements",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/74786",
+        "web/30967"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_2",
+    "label": "web_search: Elexion Automotive annual report 2021 cybersecur...",
+    "start_s": 173.510971,
+    "end_s": 173.736872,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "action_id": "iter2_web_search_2",
+      "action_type": "web_search",
+      "query": "Elexion Automotive annual report 2021 cybersecurity percentage",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/4912",
+        "web/30161"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_0",
+    "label": "web_search: Elexion Automotive 2021 cybersecurity software u...",
+    "start_s": 173.510697,
+    "end_s": 173.752188,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "action_id": "iter2_web_search_0",
+      "action_type": "web_search",
+      "query": "Elexion Automotive 2021 cybersecurity software updates percentage",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/74786",
+        "web/12200"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H3 choose docs",
+    "start_s": 173.752459,
+    "end_s": 196.919192,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "candidate_count": 8,
+      "selected_doc_ids": [
+        "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+        "web/4912"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+    "label": "https://www.helpnetsecurity.com/2025/04/04/cyber...",
+    "start_s": 196.919438,
+    "end_s": 204.70264,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "doc_id": "web/drbench_urls/drbench_urls_5b611c3b7adbdcb4",
+      "source": "web",
+      "title": "https://www.helpnetsecurity.com/2025/04/04/cybersecurity-risks-cars/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/4912",
+    "label": "https://purplesec.us/resources/cybersecurity-sta...",
+    "start_s": 196.923813,
+    "end_s": 208.063184,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "doc_id": "web/4912",
+      "source": "web",
+      "title": "https://purplesec.us/resources/cybersecurity-statistics/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H3 resolve",
+    "start_s": 208.063422,
+    "end_s": 225.405122,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "answered": false,
+      "confidence": 0.8,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/74786",
+        "web/12200",
+        "web/30967"
+      ],
+      "unread_candidate_count": 6
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/12200",
+    "label": "https://www.cm-alliance.com/cybersecurity-blog/j...",
+    "start_s": 225.408454,
+    "end_s": 233.898633,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "doc_id": "web/12200",
+      "source": "web",
+      "title": "https://www.cm-alliance.com/cybersecurity-blog/january-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/74786",
+    "label": "https://berla.co/ive-software-v4-8-release/",
+    "start_s": 225.405253,
+    "end_s": 234.777131,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "doc_id": "web/74786",
+      "source": "web",
+      "title": "https://berla.co/ive-software-v4-8-release/",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/30967",
+    "label": "https://www.cm-alliance.com/cybersecurity-blog/m...",
+    "start_s": 225.412071,
+    "end_s": 235.626218,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "doc_id": "web/30967",
+      "source": "web",
+      "title": "https://www.cm-alliance.com/cybersecurity-blog/may-2024-biggest-cyber-attacks-data-breaches-ransomware-attacks",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H3 resolve",
+    "start_s": 235.626495,
+    "end_s": 246.041103,
+    "meta": {
+      "hop_number": 3,
+      "iteration": 2,
+      "answered": true,
+      "confidence": 0.7,
+      "next_step": "done",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 3
+    }
+  },
+  {
+    "stage": "report",
+    "lane": "report",
+    "label": "Final report",
+    "start_s": 246.041152,
+    "end_s": 246.085222,
+    "meta": {
+      "resolved_hops": 3,
+      "report_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0013_d4ae8bf9_c1e937f2/workspace/research_report_1776335967.md"
+    }
+  }
+]

@@ -1,28 +1,39 @@
 """BrowseComp retrieval adapters for trajectory generation.
 
-This module contains the small amount of BrowseComp code needed by the
-generator so the package can run without importing the larger neighboring repos.
+The helper service uses the same hybrid retrieval logic as the generator:
+BM25 recall plus dense recall, followed by dense reranking. The dense query
+encoder can be supplied externally so the helper can use a colocated vLLM
+embedding server instead of loading another model in-process.
 """
 
 import glob
 import logging
 import pickle
-import threading
-from contextlib import nullcontext
 from pathlib import Path
-from typing import Any
+from typing import Any, Protocol
 
 import numpy as np
+from datasets import load_dataset
 
-from trajectory_generation.src.retrieval.bm25 import BM25Index
+from trajectory_generation.src.retrieval.bm25 import BM25Index, BM25State
 from trajectory_generation.src.retrieval.types import RetrievalHit
 
 logger = logging.getLogger(__name__)
 
+TASK_PREFIX = (
+    "Instruct: Given a web search query, retrieve relevant passages that answer the query\n"
+    "Query:"
+)
 
-def _load_dataset(dataset_name: str):
-    from datasets import load_dataset
 
+class QueryEmbedder(Protocol):
+    """Minimal query-embedding interface used by BrowseComp search."""
+
+    def embed_query(self, query: str) -> np.ndarray:
+        ...
+
+
+def _load_dataset(dataset_name: str) -> tuple[Any, dict[str, int], dict[str, str]]:
     dataset_path = Path(dataset_name)
     if dataset_path.exists():
         dataset = load_dataset("json", data_files=str(dataset_path), split="train")
@@ -93,30 +104,32 @@ def _load_cached_bm25(cache_path: Path):
         logger.warning("Ignoring incompatible BM25 cache at %s", cache_path)
         return None
 
-    bm25 = BM25Index.__new__(BM25Index)
-    bm25._docs = []
-    bm25._k1 = data["k1"]
-    bm25._b = data["b"]
-    bm25._N = data["N"]
-    bm25._doc_len = data["doc_len"]
-    bm25._avgdl = data["avgdl"]
-    bm25._df = data["df"]
-    bm25._inv = data["inv"]
+    state = BM25State(
+        k1=float(data["k1"]),
+        b=float(data["b"]),
+        N=int(data["N"]),
+        doc_len=list(data["doc_len"]),
+        avgdl=float(data["avgdl"]),
+        df=dict(data["df"]),
+        inv={term: list(postings) for term, postings in dict(data["inv"]).items()},
+    )
+    bm25 = BM25Index.from_state(state)
     return bm25, mapping
 
 
 def _save_cached_bm25(cache_path: Path, bm25: BM25Index, mapping: Any) -> None:
+    state = bm25.to_state()
     cache_path.parent.mkdir(parents=True, exist_ok=True)
     with cache_path.open("wb") as f:
         pickle.dump(
             {
-                "k1": bm25._k1,
-                "b": bm25._b,
-                "N": bm25._N,
-                "doc_len": bm25._doc_len,
-                "avgdl": bm25._avgdl,
-                "df": dict(bm25._df),
-                "inv": dict(bm25._inv),
+                "k1": state.k1,
+                "b": state.b,
+                "N": state.N,
+                "doc_len": state.doc_len,
+                "avgdl": state.avgdl,
+                "df": state.df,
+                "inv": state.inv,
                 "mapping": mapping,
             },
             f,
@@ -152,44 +165,40 @@ class _BrowseCompBase:
 
 
 class BrowseCompHybridSearcher(_BrowseCompBase):
-    """BrowseComp searcher that mixes BM25 recall with local embedding reranking."""
+    """BrowseComp searcher that mixes BM25 recall with dense reranking."""
 
     def __init__(
         self,
         *,
         index_glob: str,
-        model_name: str,
         dataset_name: str,
-        device: str = "cuda",
+        embedder: QueryEmbedder,
         bm25_recall_k: int = 200,
         dense_recall_k: int = 200,
         max_chars: int = 8_000,
+        index_device: str = "cpu",
     ) -> None:
         self.index_glob = index_glob
-        self.model_name = model_name
         self.dataset_name = dataset_name
-        self.device = device
+        self.embedder = embedder
         self.bm25_recall_k = int(bm25_recall_k)
         self.dense_recall_k = int(dense_recall_k)
         self.max_chars = int(max_chars)
+        self.index_device = index_device
 
-        self.searcher = None
         self.lookup: list[str] = []
+        self.embeddings: np.ndarray | None = None
         self.dataset = None
         self.docid_to_idx = {}
         self.docid_to_url = {}
-        self.model = None
-        self.tokenizer = None
         self.bm25: BM25Index | None = None
         self._bm25_idx_to_lookup_idx: dict[int, int] | None = None
-        self._encode_lock = threading.Lock()
-        self.task_prefix = (
-            "Instruct: Given a web search query, retrieve relevant passages that answer the query\n"
-            "Query:"
-        )
+        self._faiss_index = None
+        self._dense_backend = "faiss_cpu"
+        self._torch_device = None
+        self._torch_embeddings = None
 
         self._load_faiss_index()
-        self._load_model_and_tokenizer()
         self.dataset, self.docid_to_idx, self.docid_to_url = _load_dataset(dataset_name)
         self._build_bm25()
 
@@ -197,51 +206,98 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
     def size(self) -> int:
         return len(self.lookup)
 
-    def _load_faiss_index(self) -> None:
-        from tevatron.retriever.searcher import FaissFlatSearcher
+    @property
+    def dense_backend(self) -> str:
+        return self._dense_backend
 
-        def pickle_load(path: str):
-            with open(path, "rb") as f:
-                reps, lookup = pickle.load(f)
-            return np.array(reps), list(lookup)
+    def _load_torch_dense_backend(self, embeddings: np.ndarray) -> None:
+        import torch
+
+        device = torch.device(self.index_device)
+        self._torch_device = device
+        with torch.no_grad():
+            self._torch_embeddings = torch.as_tensor(embeddings, device=device, dtype=torch.float32)
+        self._dense_backend = f"torch:{device}"
+
+    def _torch_query(self, query_vector: np.ndarray):
+        import torch
+
+        if self._torch_device is None:
+            raise RuntimeError("Torch dense backend requested before initialization")
+        return torch.as_tensor(query_vector, device=self._torch_device, dtype=torch.float32)
+
+    def _search_dense(self, query_vector: np.ndarray, dense_k: int) -> list[int]:
+        if self._dense_backend.startswith("torch:"):
+            import torch
+
+            if self._torch_embeddings is None:
+                raise RuntimeError("Torch dense backend is not initialized")
+            with torch.no_grad():
+                scores = torch.mv(self._torch_embeddings, self._torch_query(query_vector))
+                topk = torch.topk(scores, k=min(dense_k, scores.shape[0]), dim=0)
+            return [int(idx) for idx in topk.indices.detach().cpu().tolist()]
+
+        query_matrix = np.expand_dims(query_vector, axis=0)
+        _scores, dense_indices = self._faiss_index.search(query_matrix, dense_k)
+        return [int(idx) for idx in dense_indices[0] if int(idx) >= 0]
+
+    def _rerank_scores(self, candidate_list: list[int], query_vector: np.ndarray) -> np.ndarray:
+        if self._dense_backend.startswith("torch:"):
+            import torch
+
+            if self._torch_embeddings is None:
+                raise RuntimeError("Torch dense backend is not initialized")
+            with torch.no_grad():
+                candidate_embs = self._torch_embeddings[candidate_list]
+                scores = torch.mv(candidate_embs, self._torch_query(query_vector))
+            return scores.detach().cpu().numpy()
+
+        candidate_embs = self.embeddings[candidate_list]
+        return candidate_embs @ query_vector
+
+    def _load_faiss_index(self) -> None:
+        import faiss
+
+        shard_embeddings: list[np.ndarray] = []
+        shard_docids: list[str] = []
 
         index_files = sorted(glob.glob(self.index_glob))
         if not index_files:
             raise RuntimeError(f"No index shards found for pattern: {self.index_glob}")
 
-        reps0, lookup0 = pickle_load(index_files[0])
-        self.searcher = FaissFlatSearcher(reps0)
-        self.searcher.add(reps0)
-        self.lookup = list(lookup0)
+        for path in index_files:
+            with open(path, "rb") as f:
+                reps, lookup = pickle.load(f)
+            shard_embeddings.append(np.asarray(reps, dtype=np.float32))
+            shard_docids.extend(str(docid) for docid in lookup)
 
-        for path in index_files[1:]:
-            reps, shard_lookup = pickle_load(path)
-            self.searcher.add(reps)
-            self.lookup.extend(shard_lookup)
+        embeddings = np.concatenate(shard_embeddings, axis=0)
+        if embeddings.ndim != 2 or embeddings.shape[0] != len(shard_docids):
+            raise RuntimeError("BrowseComp index shards are inconsistent")
 
-    def _load_model_and_tokenizer(self) -> None:
-        import torch
-        from transformers import AutoTokenizer
-        from tevatron.retriever.modeling.dense import DenseModel
+        index = faiss.IndexFlatIP(int(embeddings.shape[1]))
+        index.add(embeddings)
 
-        torch_dtype = torch.float16 if self.device.startswith("cuda") else torch.float32
-        self.model = DenseModel.load(
-            self.model_name,
-            pooling="eos",
-            normalize=True,
-            torch_dtype=torch_dtype,
-            trust_remote_code=True,
-        )
-        self.model = self.model.to(self.device)
-        self.model.eval()
+        if self.index_device.startswith("cuda"):
+            gpu_id = 0
+            if ":" in self.index_device:
+                gpu_id = int(self.index_device.split(":", 1)[1])
+            if hasattr(faiss, "StandardGpuResources"):
+                resources = faiss.StandardGpuResources()
+                options = faiss.GpuClonerOptions()
+                options.useFloat16 = True
+                index = faiss.index_cpu_to_gpu(resources, gpu_id, index, options)
+                self._dense_backend = f"faiss_gpu:{gpu_id}"
+            else:
+                logger.warning(
+                    "faiss-gpu bindings are unavailable; using torch dense retrieval on %s",
+                    self.index_device,
+                )
+                self._load_torch_dense_backend(embeddings)
 
-        self.tokenizer = AutoTokenizer.from_pretrained(
-            self.model_name,
-            padding_side="left",
-            trust_remote_code=True,
-        )
-        if self.tokenizer.pad_token_id is None:
-            self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
+        self.lookup = shard_docids
+        self.embeddings = embeddings
+        self._faiss_index = index
 
     def _build_bm25(self) -> None:
         if not self.lookup:
@@ -277,27 +333,8 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
             _save_cached_bm25(cache_path, self.bm25, idx_to_lookup)
 
     def _encode_query(self, query: str) -> np.ndarray:
-        import torch
-
-        batch = self.tokenizer(
-            self.task_prefix + query,
-            padding=True,
-            truncation=True,
-            max_length=512,
-            return_tensors="pt",
-        )
-        batch = {k: v.to(self.device) for k, v in batch.items()}
-
-        if self.device.startswith("cuda"):
-            ctx = torch.amp.autocast(device_type="cuda")
-        else:
-            ctx = nullcontext()
-
-        with self._encode_lock:
-            with ctx:
-                with torch.no_grad():
-                    reps = self.model.encode_query(batch)
-        return reps.cpu().numpy()
+        text = f"{TASK_PREFIX}{query}"
+        return np.asarray(self.embedder.embed_query(text), dtype=np.float32)
 
     def search(
         self,
@@ -311,10 +348,10 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
             return []
         if mode not in {"bm25", "hybrid"}:
             raise ValueError("BrowseCompHybridSearcher supports mode='bm25' or mode='hybrid'")
-        if self.searcher is None or not self.lookup:
+        if self._faiss_index is None or not self.lookup or self.embeddings is None:
             return []
 
-        q_reps = self._encode_query(query)
+        query_vector = self._encode_query(query).astype(np.float32, copy=False)
         candidate_lookup_idxs: set[int] = set()
 
         if self.bm25 is not None and self._bm25_idx_to_lookup_idx is not None:
@@ -325,16 +362,15 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
 
         dense_k = min(self.dense_recall_k, len(self.lookup))
         if dense_k > 0:
-            _scores, dense_indices = self.searcher.search(q_reps, dense_k)
-            for idx in dense_indices[0]:
-                candidate_lookup_idxs.add(int(idx))
+            for idx in self._search_dense(query_vector, dense_k):
+                if idx >= 0:
+                    candidate_lookup_idxs.add(idx)
 
         if not candidate_lookup_idxs:
             return []
 
         candidate_list = sorted(candidate_lookup_idxs)
-        candidate_embs = np.array([self.searcher.index.reconstruct(i) for i in candidate_list])
-        rerank_scores = candidate_embs @ q_reps[0]
+        rerank_scores = self._rerank_scores(candidate_list, query_vector)
         ranked = sorted(
             zip(candidate_list, rerank_scores),
             key=lambda item: float(item[1]),

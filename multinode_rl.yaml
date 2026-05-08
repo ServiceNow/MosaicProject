@@ -1,0 +1,255 @@
+image: registry.toolkit-sp.yul201.service-now.com/snow.research.tapes/interactive-toolkit:throughput
+resources:
+  cpu: 128
+  gpu: 8
+  mem: 1536
+options:
+  infiniband: true
+  internal-dns:
+      name: ""
+      ports:
+      # deepspeed rendez-vous, Toolkit will automatically use this port as MASTER_PORT
+      - port: 9001 
+        target-port: 9001
+        protocol: TCP
+      # agent rendez-vous
+      - port: 9000 
+        target-port: 9000
+        protocol: TCP
+      # redis
+      - port: 11000
+        target-port: 11000
+        protocol: TCP
+      # actor llms
+      - port: 8080
+        target-port: 8080
+        protocol: TCP
+      - port: 8081
+        target-port: 8081
+        protocol: TCP
+      - port: 8082
+        target-port: 8082
+        protocol: TCP
+      - port: 8083
+        target-port: 8083
+        protocol: TCP
+      - port: 8084
+        target-port: 8084
+        protocol: TCP
+      - port: 8085
+        target-port: 8085
+        protocol: TCP
+      - port: 8086
+        target-port: 8086
+        protocol: TCP
+      - port: 8087
+        target-port: 8087
+        protocol: TCP
+      # preprocessor llms
+      - port: 8180
+        target-port: 8180
+        protocol: TCP
+      - port: 8181
+        target-port: 8181
+        protocol: TCP
+      - port: 8182
+        target-port: 8182
+        protocol: TCP
+      - port: 8183
+        target-port: 8183
+        protocol: TCP
+      - port: 8184
+        target-port: 8184
+        protocol: TCP
+      - port: 8185
+        target-port: 8185
+        protocol: TCP
+      - port: 8186
+        target-port: 8186
+        protocol: TCP
+      - port: 8187
+        target-port: 8187
+      # environments
+      - port: 7777
+        target-port: 7777
+        protocol: TCP
+      - port: 7778
+        target-port: 7778
+        protocol: TCP
+      - port: 7779
+        target-port: 7779
+        protocol: TCP
+      - port: 7780
+        target-port: 7780
+        protocol: TCP
+      - port: 7781
+        target-port: 7781
+        protocol: TCP
+      - port: 7782
+        target-port: 7782
+        protocol: TCP
+      - port: 7783
+        target-port: 7783
+        protocol: TCP
+      - port: 7784
+        target-port: 7784
+        protocol: TCP
+      - port: 7785
+        target-port: 7785
+        protocol: TCP
+      - port: 7786
+        target-port: 7786
+        protocol: TCP
+      - port: 7787
+        target-port: 7787
+        protocol: TCP
+      - port: 7788
+        target-port: 7788
+        protocol: TCP
+      - port: 7789
+        target-port: 7789
+        protocol: TCP
+      - port: 7790
+        target-port: 7790
+        protocol: TCP
+      - port: 7791
+        target-port: 7791
+        protocol: TCP
+      - port: 7792
+        target-port: 7792
+        protocol: TCP
+      - port: 7793
+        target-port: 7793
+        protocol: TCP
+      - port: 7794
+        target-port: 7794
+        protocol: TCP
+      - port: 7795
+        target-port: 7795
+        protocol: TCP
+      - port: 7796
+        target-port: 7796
+        protocol: TCP
+      - port: 7797
+        target-port: 7797
+        protocol: TCP
+      - port: 7798
+        target-port: 7798
+        protocol: TCP
+      - port: 7799
+        target-port: 7799
+        protocol: TCP
+      - port: 7800
+        target-port: 7800
+        protocol: TCP
+      - port: 7801
+        target-port: 7801
+        protocol: TCP
+      - port: 7802
+        target-port: 7802
+        protocol: TCP
+      - port: 7803
+        target-port: 7803
+        protocol: TCP
+      - port: 7804
+        target-port: 7804
+        protocol: TCP
+      - port: 7805
+        target-port: 7805
+        protocol: TCP
+      - port: 7806
+        target-port: 7806
+        protocol: TCP
+      - port: 7807
+        target-port: 7807
+        protocol: TCP
+      - port: 7808
+        target-port: 7808
+        protocol: TCP
+      - port: 7809
+        target-port: 7809
+        protocol: TCP
+      - port: 7810
+        target-port: 7810
+        protocol: TCP
+      - port: 7811
+        target-port: 7811
+        protocol: TCP
+      - port: 7812
+        target-port: 7812
+        protocol: TCP
+      - port: 7813
+        target-port: 7813
+        protocol: TCP
+      - port: 7814
+        target-port: 7814
+        protocol: TCP
+      - port: 7815
+        target-port: 7815
+        protocol: TCP
+      - port: 7816
+        target-port: 7816
+        protocol: TCP
+      - port: 7817
+        target-port: 7817
+        protocol: TCP
+      - port: 7818
+        target-port: 7818
+        protocol: TCP
+      - port: 7819
+        target-port: 7819
+        protocol: TCP
+      - port: 7820
+        target-port: 7820
+        protocol: TCP
+      - port: 7821
+        target-port: 7821
+        protocol: TCP
+      - port: 7822
+        target-port: 7822
+        protocol: TCP
+      - port: 7823
+        target-port: 7823
+        protocol: TCP
+      - port: 7824
+        target-port: 7824
+        protocol: TCP
+      - port: 7825
+        target-port: 7825
+        protocol: TCP
+      - port: 7826
+        target-port: 7826
+        protocol: TCP
+      - port: 7827
+        target-port: 7827
+        protocol: TCP
+      - port: 7828
+        target-port: 7828
+        protocol: TCP
+      - port: 7829
+        target-port: 7829
+        protocol: TCP
+      - port: 7830
+        target-port: 7830
+        protocol: TCP
+      - port: 7831
+        target-port: 7831
+        protocol: TCP
+      - port: 7832
+        target-port: 7832
+        protocol: TCP
+      - port: 7833
+        target-port: 7833
+        protocol: TCP
+      - port: 7834
+        target-port: 7834
+        protocol: TCP
+      - port: 7835
+        target-port: 7835
+        protocol: TCP
+      - port: 7836
+        target-port: 7836
+        protocol: TCP
+
+preemptable: true
+restartable: true

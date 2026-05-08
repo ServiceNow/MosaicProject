@@ -1,0 +1,815 @@
+[
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 6e-05,
+    "end_s": 9.000986,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "planned_actions": [
+        {
+          "action_id": "iter0_web_search_0",
+          "type": "web_search",
+          "query": "Lee's Market intranet system collaboration impact 2023"
+        },
+        {
+          "action_id": "iter0_web_search_1",
+          "type": "web_search",
+          "query": "team collaboration metrics Lee's Market intranet integration"
+        },
+        {
+          "action_id": "iter0_web_search_2",
+          "type": "web_search",
+          "query": "Lee's Market 2023 intranet system collaboration increase"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_0",
+    "label": "web_search: Lee's Market intranet system collaboration impac...",
+    "start_s": 9.001034,
+    "end_s": 9.169951,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_0",
+      "action_type": "web_search",
+      "query": "Lee's Market intranet system collaboration impact 2023",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_3ee05beb162b350e",
+        "web/25243",
+        "web/45702"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_2",
+    "label": "web_search: Lee's Market 2023 intranet system collaboration...",
+    "start_s": 9.001213,
+    "end_s": 9.194334,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_2",
+      "action_type": "web_search",
+      "query": "Lee's Market 2023 intranet system collaboration increase",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_3ee05beb162b350e",
+        "web/45702",
+        "web/25243"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter0_web_search_1",
+    "label": "web_search: team collaboration metrics Lee's Market intranet...",
+    "start_s": 9.001162,
+    "end_s": 9.212459,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "action_id": "iter0_web_search_1",
+      "action_type": "web_search",
+      "query": "team collaboration metrics Lee's Market intranet integration",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_3ee05beb162b350e",
+        "web/29277",
+        "web/48334"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs",
+    "start_s": 9.212673,
+    "end_s": 29.858668,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "candidate_count": 11,
+      "selected_doc_ids": [
+        "web/drbench_urls/drbench_urls_3ee05beb162b350e"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/drbench_urls/drbench_urls_3ee05beb162b350e",
+    "label": "https://knowmax.ai/blog/retail-knowledge-managem...",
+    "start_s": 29.858739,
+    "end_s": 35.662688,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/drbench_urls/drbench_urls_3ee05beb162b350e",
+      "source": "web",
+      "title": "https://knowmax.ai/blog/retail-knowledge-management/",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 35.662916,
+    "end_s": 58.897066,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.3,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/25243",
+        "web/29277",
+        "web/45702"
+      ],
+      "unread_candidate_count": 10
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/29277",
+    "label": "https://www.lumapps.com/employee-experience/impr...",
+    "start_s": 58.900671,
+    "end_s": 65.677934,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/29277",
+      "source": "web",
+      "title": "https://www.lumapps.com/employee-experience/improve-teamwork-in-the-workplace",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/25243",
+    "label": "https://en.wikipedia.org/wiki/History_of_virtual...",
+    "start_s": 58.897331,
+    "end_s": 65.772852,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/25243",
+      "source": "web",
+      "title": "https://en.wikipedia.org/wiki/History_of_virtual_learning_environments_in_the_1990s",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/45702",
+    "label": "https://farmersmarketla.com/index.html",
+    "start_s": 58.90347,
+    "end_s": 66.500875,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/45702",
+      "source": "web",
+      "title": "https://farmersmarketla.com/index.html",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 66.501206,
+    "end_s": 80.039496,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.3,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/23219",
+        "web/57967",
+        "web/43316"
+      ],
+      "unread_candidate_count": 7
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/23219",
+    "label": "https://bmchealthservres.biomedcentral.com/artic...",
+    "start_s": 80.039605,
+    "end_s": 85.267298,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/23219",
+      "source": "web",
+      "title": "https://bmchealthservres.biomedcentral.com/articles/10.1186/s12913-020-05542-6",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/57967",
+    "label": "https://projectcenter.help.newforma.com/learning...",
+    "start_s": 80.0424,
+    "end_s": 86.415621,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/57967",
+      "source": "web",
+      "title": "https://projectcenter.help.newforma.com/learning/reference-guides/project_team_quick_reference_guide/",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/43316",
+    "label": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3652225...",
+    "start_s": 80.045094,
+    "end_s": 86.506756,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/43316",
+      "source": "web",
+      "title": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3652225/",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 86.507059,
+    "end_s": 102.76278,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.1,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/48334",
+        "web/8007",
+        "web/4034"
+      ],
+      "unread_candidate_count": 4
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/48334",
+    "label": "https://journals.plos.org/plosone/article?id=10....",
+    "start_s": 102.762936,
+    "end_s": 109.188962,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/48334",
+      "source": "web",
+      "title": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0010937",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/4034",
+    "label": "https://en.wikipedia.org/wiki/Enron",
+    "start_s": 102.772007,
+    "end_s": 110.626462,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/4034",
+      "source": "web",
+      "title": "https://en.wikipedia.org/wiki/Enron",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/8007",
+    "label": "https://www.sap.com/investors/en/why-invest/acqu...",
+    "start_s": 102.767809,
+    "end_s": 110.97971,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/8007",
+      "source": "web",
+      "title": "https://www.sap.com/investors/en/why-invest/acquisitions.html",
+      "can_answer": false,
+      "confidence": 0.95
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 111.041449,
+    "end_s": 140.279929,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.15,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/5529"
+      ],
+      "unread_candidate_count": 1
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/5529",
+    "label": "https://tmf.cio.gov/investments/",
+    "start_s": 140.28002,
+    "end_s": 148.418711,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "doc_id": "web/5529",
+      "source": "web",
+      "title": "https://tmf.cio.gov/investments/",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 148.418985,
+    "end_s": 156.143197,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 0,
+      "answered": false,
+      "confidence": 0.15,
+      "next_step": "search_more",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 0
+    }
+  },
+  {
+    "stage": "error",
+    "lane": "error:hop_plan",
+    "label": "hop_plan parse_error",
+    "start_s": 172.248064,
+    "end_s": 172.249064,
+    "meta": {
+      "stage": "hop_plan",
+      "kind": "parse_error",
+      "hop_number": 1,
+      "iteration": 1,
+      "message": "No valid JSON found in response: line 1 column 1 (char 0)"
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H1 retrieval plan",
+    "start_s": 156.143378,
+    "end_s": 172.248089,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "planned_actions": [
+        {
+          "action_id": "iter1_web_fallback",
+          "type": "web_search",
+          "query": "What was the increase in team collaboration at Lee's Market in 2023 from the intranet system integration?"
+        },
+        {
+          "action_id": "iter1_local_fallback",
+          "type": "local_document_search",
+          "query": "What was the increase in team collaboration at Lee's Market in 2023 from the intranet system integration?"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_local_fallback",
+    "label": "local_document_search: What was the increase in team collaboration at L...",
+    "start_s": 172.252609,
+    "end_s": 172.498195,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "action_id": "iter1_local_fallback",
+      "action_type": "local_document_search",
+      "query": "What was the increase in team collaboration at Lee's Market in 2023 from the intranet system integration?",
+      "result_count": 5,
+      "top_doc_ids": [
+        "doc_ece885bf_1776306853",
+        "doc_ec9e0cd1_1776306852",
+        "doc_45ecf9d5_1776306853"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter1_web_fallback",
+    "label": "web_search: What was the increase in team collaboration at L...",
+    "start_s": 172.252464,
+    "end_s": 172.924651,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "action_id": "iter1_web_fallback",
+      "action_type": "web_search",
+      "query": "What was the increase in team collaboration at Lee's Market in 2023 from the intranet system integration?",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_3ee05beb162b350e",
+        "web/29277",
+        "web/8007"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H1 choose docs",
+    "start_s": 173.012869,
+    "end_s": 188.131999,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "candidate_count": 7,
+      "selected_doc_ids": [
+        "doc_ece885bf_1776306853"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_ece885bf_1776306853",
+    "label": "knowledge-management-evaluation.pdf",
+    "start_s": 188.132069,
+    "end_s": 195.248556,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "doc_ece885bf_1776306853",
+      "source": "local",
+      "title": "knowledge-management-evaluation.pdf",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 195.248769,
+    "end_s": 211.516879,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "answered": false,
+      "confidence": 0.65,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "doc_ec9e0cd1_1776306852",
+        "doc_45ecf9d5_1776306853",
+        "doc_03bce5c4_1776306852"
+      ],
+      "unread_candidate_count": 6
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_45ecf9d5_1776306853",
+    "label": "Q2-KM-Software-Analysis.pdf",
+    "start_s": 211.518672,
+    "end_s": 218.952195,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "doc_45ecf9d5_1776306853",
+      "source": "local",
+      "title": "Q2-KM-Software-Analysis.pdf",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_ec9e0cd1_1776306852",
+    "label": "mattermost_chat_20251202_131713.jsonl",
+    "start_s": 211.516987,
+    "end_s": 219.620022,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "doc_ec9e0cd1_1776306852",
+      "source": "local",
+      "title": "mattermost_chat_20251202_131713.jsonl",
+      "can_answer": false,
+      "confidence": 0.18
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_03bce5c4_1776306852",
+    "label": "q1-2024-knowledge-report.pdf",
+    "start_s": 211.52153,
+    "end_s": 220.86513,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "doc_id": "doc_03bce5c4_1776306852",
+      "source": "local",
+      "title": "q1-2024-knowledge-report.pdf",
+      "can_answer": true,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H1 resolve",
+    "start_s": 220.928457,
+    "end_s": 230.744279,
+    "meta": {
+      "hop_number": 1,
+      "iteration": 1,
+      "answered": true,
+      "confidence": 0.9,
+      "next_step": "done",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 3
+    }
+  },
+  {
+    "stage": "hop_plan",
+    "lane": "plan",
+    "label": "H2 retrieval plan",
+    "start_s": 230.74434,
+    "end_s": 241.716013,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "planned_actions": [
+        {
+          "action_id": "iter2_local_document_search_0",
+          "type": "local_document_search",
+          "query": "regional profit impact shrinkage store expansion comparison"
+        },
+        {
+          "action_id": "iter2_web_search_1",
+          "type": "web_search",
+          "query": "retail profit impact store expansion shrinkage reduction regional benchmarks"
+        },
+        {
+          "action_id": "iter2_local_document_search_2",
+          "type": "local_document_search",
+          "query": "Lee's Market regional profit figures shrinkage store expansion"
+        }
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_local_document_search_0",
+    "label": "local_document_search: regional profit impact shrinkage store expansion...",
+    "start_s": 241.716062,
+    "end_s": 241.75129,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "action_id": "iter2_local_document_search_0",
+      "action_type": "local_document_search",
+      "query": "regional profit impact shrinkage store expansion comparison",
+      "result_count": 5,
+      "top_doc_ids": [
+        "doc_ec9e0cd1_1776306852",
+        "doc_8e0008b1_1776306852",
+        "doc_83685d58_1776306852"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_local_document_search_2",
+    "label": "local_document_search: Lee's Market regional profit figures shrinkage s...",
+    "start_s": 241.71627,
+    "end_s": 241.76687,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "action_id": "iter2_local_document_search_2",
+      "action_type": "local_document_search",
+      "query": "Lee's Market regional profit figures shrinkage store expansion",
+      "result_count": 5,
+      "top_doc_ids": [
+        "doc_ec9e0cd1_1776306852",
+        "doc_8e0008b1_1776306852",
+        "doc_39bec3d0_1776306853"
+      ]
+    }
+  },
+  {
+    "stage": "search",
+    "lane": "search:iter2_web_search_1",
+    "label": "web_search: retail profit impact store expansion shrinkage r...",
+    "start_s": 241.716198,
+    "end_s": 241.868602,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "action_id": "iter2_web_search_1",
+      "action_type": "web_search",
+      "query": "retail profit impact store expansion shrinkage reduction regional benchmarks",
+      "result_count": 5,
+      "top_doc_ids": [
+        "web/drbench_urls/drbench_urls_3ee05beb162b350e",
+        "web/2465",
+        "web/40337"
+      ]
+    }
+  },
+  {
+    "stage": "doc_choose",
+    "lane": "choose",
+    "label": "H2 choose docs",
+    "start_s": 241.868857,
+    "end_s": 259.41949,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "candidate_count": 13,
+      "selected_doc_ids": [
+        "doc_ec9e0cd1_1776306852",
+        "web/drbench_urls/drbench_urls_3ee05beb162b350e",
+        "doc_e2184145_1776306853"
+      ]
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_ec9e0cd1_1776306852",
+    "label": "mattermost_chat_20251202_131713.jsonl",
+    "start_s": 259.428234,
+    "end_s": 266.866317,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "doc_id": "doc_ec9e0cd1_1776306852",
+      "source": "local",
+      "title": "mattermost_chat_20251202_131713.jsonl",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/drbench_urls/drbench_urls_3ee05beb162b350e",
+    "label": "https://knowmax.ai/blog/retail-knowledge-managem...",
+    "start_s": 259.429893,
+    "end_s": 267.67964,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "doc_id": "web/drbench_urls/drbench_urls_3ee05beb162b350e",
+      "source": "web",
+      "title": "https://knowmax.ai/blog/retail-knowledge-management/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:doc_e2184145_1776306853",
+    "label": "competitor-operations-analysis.pdf",
+    "start_s": 259.432112,
+    "end_s": 267.709648,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "doc_id": "doc_e2184145_1776306853",
+      "source": "local",
+      "title": "competitor-operations-analysis.pdf",
+      "can_answer": false,
+      "confidence": 0.15
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 267.710199,
+    "end_s": 280.921072,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "answered": false,
+      "confidence": 0.6,
+      "next_step": "read_more",
+      "selected_doc_ids": [
+        "web/2465",
+        "web/40337",
+        "web/34285"
+      ],
+      "unread_candidate_count": 10
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/2465",
+    "label": "https://www.agilenceinc.com/shrink",
+    "start_s": 280.9212,
+    "end_s": 289.205982,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "doc_id": "web/2465",
+      "source": "web",
+      "title": "https://www.agilenceinc.com/shrink",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/34285",
+    "label": "https://www.statista.com/statistics/1139351/reta...",
+    "start_s": 280.927373,
+    "end_s": 292.224456,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "doc_id": "web/34285",
+      "source": "web",
+      "title": "https://www.statista.com/statistics/1139351/retailers-inventory-shrinkage-rate-us/",
+      "can_answer": false,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "doc_read",
+    "lane": "read:web/40337",
+    "label": "https://www.ecrloss.com/research/measuring-retai...",
+    "start_s": 280.924186,
+    "end_s": 294.235653,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "doc_id": "web/40337",
+      "source": "web",
+      "title": "https://www.ecrloss.com/research/measuring-retail-shrinkage/",
+      "can_answer": true,
+      "confidence": 0.82
+    }
+  },
+  {
+    "stage": "hop_resolve",
+    "lane": "resolve",
+    "label": "H2 resolve",
+    "start_s": 294.236234,
+    "end_s": 302.54697,
+    "meta": {
+      "hop_number": 2,
+      "iteration": 2,
+      "answered": true,
+      "confidence": 0.9,
+      "next_step": "done",
+      "selected_doc_ids": [],
+      "unread_candidate_count": 7
+    }
+  },
+  {
+    "stage": "report",
+    "lane": "report",
+    "label": "Final report",
+    "start_s": 302.546994,
+    "end_s": 302.565196,
+    "meta": {
+      "resolved_hops": 2,
+      "report_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_qwen3_8b_async_v2/privacy_hopqa_runs/DR0031_30430e77_3794335e/workspace/research_report_1776336086.md"
+    }
+  }
+]

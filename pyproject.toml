@@ -25,19 +25,28 @@ search = [
     "datasets>=2.18.0",
     "torch>=2.1.0",
     "transformers>=4.41.0",
-    "tevatron>=0.1.0",
 ]
 dense = [
     "sentence-transformers>=3.0.0",
 ]
+server = [
+    "fastapi>=0.110.0",
+    "uvicorn>=0.29.0",
+]
 dev = [
     "pytest>=8.0.0",
+]
+viewer = [
+    "rich>=13.7.0",
+    "textual>=0.85.0",
 ]
 
 [project.scripts]
 trajectory-generate = "trajectory_generation.run:main"
 trajectory-browsecomp-server = "trajectory_generation.src.retrieval.browsecomp_hybrid_server:main"
 trajectory-privacy-helper = "trajectory_generation.src.retrieval.privacy_helper_server:main"
+trajectory-privacy-helper-stack = "trajectory_generation.src.retrieval.privacy_helper_stack:main"
+trajectory-privacy-helper-smoke = "trajectory_generation.scripts.privacy_helper_smoke:main"
 trajectory-fetch-curated-urls = "trajectory_generation.data_prep.fetch_drbench_urls:main"
 trajectory-chunk-local = "trajectory_generation.data_prep.chunk_local_tasks:main"
 trajectory-extract-secrets = "trajectory_generation.data_prep.extract_local_secrets:main"
