@@ -390,12 +390,15 @@ def sample_trace_records(run_dir: Path, dataset: dict[str, dict[str, Any]], max_
     add_unique(middle_records, max_examples * 11 // 12)
     add_unique(random_records, max_examples)
     selected = selected[:max_examples]
+    answered_count = sum(1 for item in records if str(item.get("predicted_answer") or "").strip())
     summary = {
         "scanned_dirs": scanned,
         "trace_records_loaded": len(records),
         "embedded_records": len(selected),
         "correct_count": sum(1 for item in records if item.get("correct")),
         "incorrect_count": sum(1 for item in records if not item.get("correct")),
+        "answered_count": answered_count,
+        "blank_count": len(records) - answered_count,
         "problem_count": len(problem_records),
         "mean_duration_s": mean([v for v in durations]) if durations else None,
         "p90_duration_s": p90,
@@ -472,64 +475,73 @@ def render_html(data: dict[str, Any]) -> str:
 <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
 <title>Privacy HopQA First-Web 4B Run Viewer</title>
 <style>
-:root {{ --ink:#17201b; --muted:#637166; --paper:#f6f1e8; --panel:#fffaf0; --line:#d8cdbc; --accent:#1e6b52; --bad:#ad3b2f; --warn:#ad741f; --good:#28704d; --blue:#285c8f; }}
+:root {{ --bg:#f5f4ef; --panel:#fff; --ink:#1e2430; --muted:#637084; --line:#d8deea; --accent:#1f5da8; --accent-soft:#e7f0fb; --bad:#b42318; --warn:#b56b00; --good:#137333; --shadow:0 14px 38px rgba(30,36,48,.08); }}
 * {{ box-sizing:border-box; }}
-body {{ margin:0; font-family: ui-serif, Georgia, Cambria, 'Times New Roman', serif; color:var(--ink); background:radial-gradient(circle at 10% 0%, #fff7dd 0, #f6f1e8 34%, #ebe1d1 100%); }}
-header {{ padding:28px 32px 16px; border-bottom:1px solid var(--line); background:linear-gradient(135deg,#133f32,#265b48); color:#fff7e8; }}
-h1 {{ margin:0 0 8px; font-size:34px; letter-spacing:-0.03em; }}
-header p {{ margin:4px 0; color:#f1dfc4; }}
-main {{ padding:24px 32px 60px; max-width:1480px; margin:0 auto; }}
-.grid {{ display:grid; gap:16px; }}
-.cards {{ grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); }}
-.card {{ background:rgba(255,250,240,.9); border:1px solid var(--line); border-radius:18px; padding:16px; box-shadow:0 10px 30px rgba(50,35,15,.08); }}
-.card .label {{ color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.08em; }}
-.card .value {{ font-size:26px; font-weight:800; margin-top:6px; }}
-.section {{ margin-top:24px; background:rgba(255,250,240,.78); border:1px solid var(--line); border-radius:20px; padding:18px; }}
-h2 {{ margin:0 0 12px; font-size:24px; }}
+body {{ margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; color:var(--ink); background:linear-gradient(180deg,#fbfaf6 0,var(--bg) 46%,#eceff5 100%); }}
+.page {{ max-width:1500px; margin:0 auto; padding:28px 30px 56px; }}
+.hero {{ background:linear-gradient(135deg,#ffffff 0,#f2f6fd 100%); border:1px solid var(--line); border-radius:24px; padding:24px 28px; box-shadow:var(--shadow); }}
+.eyebrow {{ color:var(--accent); font-size:12px; font-weight:800; letter-spacing:.11em; text-transform:uppercase; margin-bottom:8px; }}
+h1 {{ margin:0 0 8px; font-size:34px; line-height:1.08; letter-spacing:-0.035em; }}
+.hero p {{ margin:5px 0; color:var(--muted); }}
+.topnav {{ display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }}
+.topnav a {{ color:var(--accent); background:var(--accent-soft); border:1px solid #cfe0f6; border-radius:999px; padding:7px 11px; text-decoration:none; font-size:13px; font-weight:700; }}
+.stat-grid {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px; }}
+.stat-card {{ background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:16px; box-shadow:0 8px 24px rgba(30,36,48,.06); }}
+.stat-label {{ color:var(--muted); font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; }}
+.stat-value {{ font-size:27px; font-weight:850; margin-top:7px; letter-spacing:-.025em; }}
+.section {{ margin-top:20px; background:rgba(255,255,255,.9); border:1px solid var(--line); border-radius:22px; padding:18px; box-shadow:0 8px 28px rgba(30,36,48,.05); }}
+h2 {{ margin:0 0 12px; font-size:23px; letter-spacing:-.02em; }}
 h3 {{ margin:16px 0 8px; }}
 .small {{ color:var(--muted); font-size:13px; }}
 .bad {{ color:var(--bad); font-weight:700; }} .warn {{ color:var(--warn); font-weight:700; }} .good {{ color:var(--good); font-weight:700; }}
-.pill {{ display:inline-block; padding:3px 8px; margin:2px; border-radius:999px; background:#eadfce; font-size:12px; }}
-.pill.bad {{ background:#f2d7d3; color:var(--bad); }} .pill.good {{ background:#d9eadf; color:var(--good); }} .pill.warn {{ background:#f2e2c8; color:var(--warn); }}
-.plotgrid {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(360px,1fr)); gap:16px; }}
-svg {{ width:100%; height:220px; background:#fffdf8; border:1px solid var(--line); border-radius:14px; }}
+.pill {{ display:inline-block; padding:3px 8px; margin:2px; border-radius:999px; background:#eef2f8; color:#39475c; font-size:12px; }}
+.pill.bad {{ background:#f9dedb; color:var(--bad); }} .pill.good {{ background:#dff0e5; color:var(--good); }} .pill.warn {{ background:#faead2; color:var(--warn); }}
+.plotgrid {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(360px,1fr)); gap:14px; }}
+.plot-card {{ background:#fbfcff; border:1px solid var(--line); border-radius:18px; padding:12px; }}
+svg {{ width:100%; height:220px; background:#fff; border:1px solid var(--line); border-radius:14px; }}
+.table-wrap {{ overflow:auto; border:1px solid var(--line); border-radius:16px; background:#fff; }}
 table {{ width:100%; border-collapse:collapse; font-size:14px; }}
-th, td {{ border-bottom:1px solid var(--line); padding:8px 6px; text-align:left; vertical-align:top; }}
+th, td {{ border-bottom:1px solid var(--line); padding:8px 7px; text-align:left; vertical-align:top; }}
+tr:last-child td {{ border-bottom:0; }}
 th {{ color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.06em; }}
-button {{ border:1px solid var(--line); background:#fffaf0; color:var(--ink); border-radius:999px; padding:7px 11px; cursor:pointer; }}
+button {{ border:1px solid var(--line); background:#fff; color:var(--ink); border-radius:999px; padding:7px 11px; cursor:pointer; font-weight:700; }}
 button.active {{ background:var(--accent); color:white; border-color:var(--accent); }}
 pre {{ white-space:pre-wrap; background:#1d231f; color:#f7efdd; border-radius:14px; padding:12px; overflow:auto; max-height:280px; font-size:12px; }}
-details {{ border:1px solid var(--line); background:#fffdf8; border-radius:14px; padding:10px 12px; margin:10px 0; }}
+details {{ border:1px solid var(--line); background:#fbfcff; border-radius:14px; padding:10px 12px; margin:10px 0; }}
 summary {{ cursor:pointer; font-weight:700; }}
 .two {{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }}
-@media (max-width:900px) {{ main {{ padding:16px; }} .two {{ grid-template-columns:1fr; }} }}
+@media (max-width:900px) {{ .page {{ padding:16px; }} .two {{ grid-template-columns:1fr; }} .plotgrid {{ grid-template-columns:1fr; }} }}
 </style>
 </head>
 <body>
-<header>
-<h1>Privacy HopQA First-Web 4B Validation Run</h1>
+<div class=\"page\">
+<section class=\"hero\">
+<div class=\"eyebrow\">Privacy HopQA run viewer</div>
+<h1>First-Web 4B Validation Run</h1>
 <p>Generated: <span id=\"generated\"></span></p>
 <p class=\"small\">Run: <code id=\"runDir\"></code></p>
-</header>
-<main>
-<section class=\"grid cards\" id=\"cards\"></section>
-<section class=\"section\"><h2>Concrete concerns</h2><div id=\"concerns\"></div></section>
-<section class=\"section\"><h2>Training curves</h2><div class=\"plotgrid\" id=\"plots\"></div><p class=\"small\">Reward is the batch mean logged by finetune. Filter rate is filtered / (kept + filtered) from preprocess batches.</p></section>
-<section class=\"section\"><h2>Sampled rollout quality</h2><div id=\"traceSummary\"></div><div id=\"filters\" style=\"margin:12px 0\"></div><div id=\"rolloutTable\"></div></section>
-<section class=\"section\"><h2>Answer audit table</h2><p class=\"small\">Calculated reward here is deterministic for this one-hop dataset: normalized predicted answer exact-matches any accepted answer variant => 1, otherwise 0. This is separate from the batch mean reward logged by training.</p><div id=\"answerControls\" style=\"margin:12px 0\"></div><div id=\"answerAudit\"></div></section>
-<section class=\"section\"><h2>Rollout details</h2><div id=\"details\"></div></section>
-</main>
+<nav class=\"topnav\">
+<a href=\"#summary\">Summary</a><a href=\"#concernsSec\">Concerns</a><a href=\"#curves\">Training curves</a><a href=\"#quality\">Rollout quality</a><a href=\"#answers\">Answer audit</a><a href=\"#detailsSec\">Details</a>
+</nav>
+</section>
+<section class=\"section\" id=\"summary\"><h2>Summary</h2><div class=\"stat-grid\" id=\"cards\"></div></section>
+<section class=\"section\" id=\"concernsSec\"><h2>Concrete concerns</h2><div id=\"concerns\"></div></section>
+<section class=\"section\" id=\"curves\"><h2>Training curves</h2><div class=\"plotgrid\" id=\"plots\"></div><p class=\"small\">Reward is the batch mean logged by finetune. Filter rate is filtered / (kept + filtered) from preprocess batches.</p></section>
+<section class=\"section\" id=\"quality\"><h2>Sampled rollout quality</h2><div id=\"traceSummary\"></div><div id=\"filters\" style=\"margin:12px 0\"></div><div id=\"rolloutTable\"></div></section>
+<section class=\"section\" id=\"answers\"><h2>Answer audit table</h2><p class=\"small\">Calculated reward here is deterministic for this one-hop dataset: normalized predicted answer exact-matches any accepted answer variant => 1, otherwise 0. Use the answer-presence filters to separate blank failures from non-empty wrong answers.</p><div id=\"answerControls\" style=\"margin:12px 0\"></div><div id=\"answerAudit\"></div></section>
+<section class=\"section\" id=\"detailsSec\"><h2>Rollout details</h2><div id=\"details\"></div></section>
+</div>
 <script>
 const DATA = {blob};
 const fmt = (x, d=3) => x === null || x === undefined || Number.isNaN(Number(x)) ? 'n/a' : Number(x).toLocaleString(undefined, {{maximumFractionDigits:d}});
 const pct = x => x === null || x === undefined ? 'n/a' : (100*Number(x)).toFixed(1)+'%';
 const esc = s => String(s ?? '').replace(/[&<>\"']/g, c => ({{'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}}[c]));
 function val(obj, key) {{ return obj && Object.prototype.hasOwnProperty.call(obj,key) ? Number(obj[key]) : null; }}
-function card(label, value, cls='') {{ return `<div class=\"card\"><div class=\"label\">${{esc(label)}}</div><div class=\"value ${{cls}}\">${{esc(value)}}</div></div>`; }}
+function card(label, value, cls='') {{ return `<div class=\"stat-card\"><div class=\"stat-label\">${{esc(label)}}</div><div class=\"stat-value ${{cls}}\">${{esc(value)}}</div></div>`; }}
 function metric(step, key) {{ return step && step[key] !== undefined ? Number(step[key]) : null; }}
 function lineSvg(title, rows, key, color) {{
   const vals = rows.map(r => metric(r,key)).filter(v => Number.isFinite(v));
-  if (!vals.length) return `<div><h3>${{esc(title)}}</h3><svg><text x=\"20\" y=\"40\">No data</text></svg></div>`;
+  if (!vals.length) return `<div class=\"plot-card\"><h3>${{esc(title)}}</h3><svg><text x=\"20\" y=\"40\">No data</text></svg></div>`;
   const points = rows.map((r,i)=>[i, metric(r,key)]).filter(p=>Number.isFinite(p[1]));
   const minX = points[0][0], maxX = points[points.length-1][0];
   const minY = Math.min(...vals), maxY = Math.max(...vals); const pad=28, w=640, h=220;
@@ -537,7 +549,7 @@ function lineSvg(title, rows, key, color) {{
   const sy = y => h-pad - (y-minY) / Math.max(1e-9,(maxY-minY)) * (h-2*pad);
   const d = points.map((p,i)=>(i?'L':'M')+sx(p[0]).toFixed(1)+','+sy(p[1]).toFixed(1)).join(' ');
   const last = points[points.length-1][1];
-  return `<div><h3>${{esc(title)}} <span class=\"small\">latest ${{fmt(last)}}</span></h3><svg viewBox=\"0 0 ${{w}} ${{h}}\"><path d=\"M${{pad}},${{h-pad}} L${{w-pad}},${{h-pad}} M${{pad}},${{pad}} L${{pad}},${{h-pad}}\" stroke=\"#d8cdbc\" fill=\"none\"/><path d=\"${{d}}\" stroke=\"${{color}}\" stroke-width=\"3\" fill=\"none\"/><text x=\"${{pad}}\" y=\"18\" font-size=\"12\">max ${{fmt(maxY)}}</text><text x=\"${{pad}}\" y=\"${{h-6}}\" font-size=\"12\">min ${{fmt(minY)}}</text></svg></div>`;
+  return `<div class=\"plot-card\"><h3>${{esc(title)}} <span class=\"small\">latest ${{fmt(last)}}</span></h3><svg viewBox=\"0 0 ${{w}} ${{h}}\"><path d=\"M${{pad}},${{h-pad}} L${{w-pad}},${{h-pad}} M${{pad}},${{pad}} L${{pad}},${{h-pad}}\" stroke=\"#d8deea\" fill=\"none\"/><path d=\"${{d}}\" stroke=\"${{color}}\" stroke-width=\"3\" fill=\"none\"/><text x=\"${{pad}}\" y=\"18\" font-size=\"12\">max ${{fmt(maxY)}}</text><text x=\"${{pad}}\" y=\"${{h-6}}\" font-size=\"12\">min ${{fmt(minY)}}</text></svg></div>`;
 }}
 function preprocessSvg() {{
   const rows = DATA.preprocess_batches || [];
@@ -557,7 +569,9 @@ function renderCards() {{
     card('latest reward', fmt(metric(s,'rl/reward'),3), metric(s,'rl/reward') < .25 ? 'warn' : ''),
     card('recent filter rate', pct(DATA.recent_filter_rate), DATA.recent_filter_rate > .75 ? 'bad' : 'warn'),
     card('recent 2-token hop plans', pct(actor.two_token_hop_plan_rate_recent), actor.two_token_hop_plan_rate_recent > .1 ? 'warn' : ''),
-    card('sample answer exact match', pct((traces.correct_count||0)/Math.max(1,traces.trace_records_loaded||0)), '')
+    card('sample answer exact match', pct((traces.correct_count||0)/Math.max(1,traces.trace_records_loaded||0)), ''),
+    card('sample answered rate', pct((traces.answered_count||0)/Math.max(1,traces.trace_records_loaded||0)), ''),
+    card('blank predictions', fmt(traces.blank_count||0,0), traces.blank_count ? 'warn' : '')
   ].join('');
 }}
 function renderConcerns() {{
@@ -600,7 +614,7 @@ function setFilter(f) {{ currentFilter=f; renderTable(); }}
 function renderTable() {{
   const rows = filteredRecords();
   document.getElementById('filters').innerHTML = ['problem','incorrect','planner','slow','all'].map(f=>`<button class=\"${{currentFilter===f?'active':''}}\" onclick=\"setFilter('${{f}}')\">${{f}}</button>`).join(' ');
-  document.getElementById('rolloutTable').innerHTML = `<table><thead><tr><th></th><th>chain</th><th>question</th><th>exact</th><th>answer</th><th>searches/docs</th><th>duration</th><th>flags</th></tr></thead><tbody>${{rows.slice(0,80).map((r)=>recordRow(r, (DATA.traces.records||[]).indexOf(r))).join('')}}</tbody></table>`;
+  document.getElementById('rolloutTable').innerHTML = `<div class=\"table-wrap\"><table><thead><tr><th></th><th>chain</th><th>question</th><th>exact</th><th>answer</th><th>searches/docs</th><th>duration</th><th>flags</th></tr></thead><tbody>${{rows.slice(0,80).map((r)=>recordRow(r, (DATA.traces.records||[]).indexOf(r))).join('')}}</tbody></table></div>`;
 }}
 function renderTraceSummary() {{
   const s = DATA.traces.summary || {{}};
@@ -609,7 +623,11 @@ function renderTraceSummary() {{
 }}
 function answerRows() {{
   const rows = DATA.traces.answer_audit || [];
+  const hasPrediction = r => String(r.predicted_answer || '').trim().length > 0;
   if (answerFilter === 'wrong') return rows.filter(r=>!r.correct);
+  if (answerFilter === 'nonempty_wrong') return rows.filter(r=>!r.correct && hasPrediction(r));
+  if (answerFilter === 'blank') return rows.filter(r=>!hasPrediction(r));
+  if (answerFilter === 'answered') return rows.filter(r=>hasPrediction(r));
   if (answerFilter === 'right') return rows.filter(r=>r.correct);
   if (answerFilter === 'flagged') return rows.filter(r=>(r.flags||[]).length);
   return rows;
@@ -625,20 +643,20 @@ function renderAnswerAudit() {{
   const rows = answerRows();
   const limited = answerLimit === -1 ? rows : rows.slice(0, answerLimit);
   document.getElementById('answerControls').innerHTML =
-    ['wrong','flagged','right','all'].map(f=>`<button class=\"${{answerFilter===f?'active':''}}\" onclick=\"setAnswerFilter('${{f}}')\">${{f}}</button>`).join(' ') +
+    [['wrong','wrong'],['nonempty_wrong','nonempty wrong'],['blank','blank'],['answered','answered'],['flagged','flagged'],['right','right'],['all','all']].map(([f,label])=>`<button class=\"${{answerFilter===f?'active':''}}\" onclick=\"setAnswerFilter('${{f}}')\">${{label}}</button>`).join(' ') +
     ' <span class=\"small\"> rows: </span>' +
     [[500,'500'],[2000,'2k'],[-1,'all']].map(([n,label])=>`<button class=\"${{answerLimit===n?'active':''}}\" onclick=\"setAnswerLimit(${{n}})\">${{label}}</button>`).join(' ') +
     ` <span class=\"small\">showing ${{limited.length.toLocaleString()}} / ${{rows.length.toLocaleString()}}</span>`;
-  document.getElementById('answerAudit').innerHTML = `<table><thead><tr><th>reward</th><th>chain</th><th>question</th><th>predicted answer</th><th>gold answer</th><th>accepted variants</th><th>search/docs</th><th>flags</th></tr></thead><tbody>${{
+  document.getElementById('answerAudit').innerHTML = `<div class=\"table-wrap\"><table><thead><tr><th>reward</th><th>chain</th><th>question</th><th>predicted answer</th><th>gold answer</th><th>accepted variants</th><th>search/docs</th><th>flags</th></tr></thead><tbody>${{
     limited.map(r=>`<tr><td class=\"${{r.correct?'good':'bad'}}\">${{fmt(r.calculated_reward,0)}}</td><td>${{esc(r.chain_id)}}<br><span class=\"small\">${{esc(r.task_id)}} / ${{esc(r.company)}}</span></td><td>${{esc(r.question)}}</td><td>${{esc(r.predicted_answer)}}</td><td>${{esc(r.gold_answer)}}</td><td>${{esc((r.accepted_answers||[]).join(' | '))}}</td><td>${{fmt(r.searches_total,0)}} / ${{fmt(r.docs_read,0)}}<br><span class=\"small\">${{fmt(r.duration_s,1)}}s</span></td><td>${{answerFlagPills(r)}}</td></tr>`).join('')
-  }}</tbody></table>`;
+  }}</tbody></table></div>`;
 }}
 function showDetail(idx) {{
   const r = (DATA.traces.records || [])[idx]; if (!r) return;
   const searches = (r.search_history||[]).map(s=>`<tr><td>${{esc(s.iteration)}}</td><td>${{esc(s.type)}}</td><td>${{esc(s.query)}}</td><td>${{fmt(s.result_count,0)}}</td><td>${{esc((s.top_doc_ids||[]).join(', '))}}</td></tr>`).join('');
   const readers = (r.reader_sample||[]).map(x=>`<details><summary>${{esc(x.doc_id)}} | ${{esc(x.source)}} | can_answer=${{esc(x.can_answer)}} | proposed=${{esc(x.proposed_answer)}}</summary><p><b>${{esc(x.title)}}</b></p><p>${{esc(x.justification)}}</p></details>`).join('');
   const actions = (r.actions||[]).map(a=>`<tr><td>${{esc(a.id)}}</td><td>${{esc(a.type)}}</td><td>${{esc(a.status)}}</td><td>${{esc(a.query)}}</td><td>${{fmt(a.results_count,0)}}</td><td>${{fmt(a.execution_time,2)}}s</td><td>${{esc(a.error)}}</td></tr>`).join('');
-  document.getElementById('details').innerHTML = `<h3>${{esc(r.chain_id)}} <span class=\"small\">${{esc(r.rollout_id)}}</span></h3><p>${{flagPills(r.flags)}}</p><div class=\"two\"><div><p><b>Question:</b> ${{esc(r.question)}}</p><p><b>Predicted:</b> <span class=\"${{r.correct?'good':'bad'}}\">${{esc(r.predicted_answer)}}</span></p><p><b>Gold:</b> ${{esc(r.gold_answer)}}</p><p><b>Accepted variants:</b> ${{esc((r.accepted_answers||[]).join(' | '))}}</p><p><b>Reason:</b> ${{esc(r.reason)}}</p><p><b>Justification:</b> ${{esc(r.justification)}}</p><p class=\"small\">Trace path: ${{esc(r.trace_path)}}</p></div><div><p><b>Status:</b> ${{esc(r.status)}} confidence ${{fmt(r.confidence,2)}}</p><p><b>Iterations/searches/docs/LLM calls:</b> ${{fmt(r.iterations_used,0)}} / ${{fmt(r.searches_total,0)}} / ${{fmt(r.docs_read,0)}} / ${{fmt(r.llm_calls_total,0)}}</p><p><b>Tokens:</b> ${{fmt(r.total_tokens,0)}}; duration ${{fmt(r.duration_s,1)}}s</p></div></div><h3>Search history</h3><table><thead><tr><th>iter</th><th>type</th><th>query</th><th>results</th><th>top docs</th></tr></thead><tbody>${{searches}}</tbody></table><h3>Actions</h3><table><thead><tr><th>id</th><th>type</th><th>status</th><th>query</th><th>results</th><th>time</th><th>error</th></tr></thead><tbody>${{actions}}</tbody></table><h3>Reader sample</h3>${{readers || '<p>No reader sample embedded.</p>'}}`;
+  document.getElementById('details').innerHTML = `<h3>${{esc(r.chain_id)}} <span class=\"small\">${{esc(r.rollout_id)}}</span></h3><p>${{flagPills(r.flags)}}</p><div class=\"two\"><div><p><b>Question:</b> ${{esc(r.question)}}</p><p><b>Predicted:</b> <span class=\"${{r.correct?'good':'bad'}}\">${{esc(r.predicted_answer)}}</span></p><p><b>Gold:</b> ${{esc(r.gold_answer)}}</p><p><b>Accepted variants:</b> ${{esc((r.accepted_answers||[]).join(' | '))}}</p><p><b>Reason:</b> ${{esc(r.reason)}}</p><p><b>Justification:</b> ${{esc(r.justification)}}</p><p class=\"small\">Trace path: ${{esc(r.trace_path)}}</p></div><div><p><b>Status:</b> ${{esc(r.status)}} confidence ${{fmt(r.confidence,2)}}</p><p><b>Iterations/searches/docs/LLM calls:</b> ${{fmt(r.iterations_used,0)}} / ${{fmt(r.searches_total,0)}} / ${{fmt(r.docs_read,0)}} / ${{fmt(r.llm_calls_total,0)}}</p><p><b>Tokens:</b> ${{fmt(r.total_tokens,0)}}; duration ${{fmt(r.duration_s,1)}}s</p></div></div><h3>Search history</h3><div class=\"table-wrap\"><table><thead><tr><th>iter</th><th>type</th><th>query</th><th>results</th><th>top docs</th></tr></thead><tbody>${{searches}}</tbody></table></div><h3>Actions</h3><div class=\"table-wrap\"><table><thead><tr><th>id</th><th>type</th><th>status</th><th>query</th><th>results</th><th>time</th><th>error</th></tr></thead><tbody>${{actions}}</tbody></table></div><h3>Reader sample</h3>${{readers || '<p>No reader sample embedded.</p>'}}`;
   window.scrollTo({{top: document.getElementById('details').offsetTop - 12, behavior:'smooth'}});
 }}
 renderCards(); renderConcerns(); renderPlots(); renderTraceSummary(); renderTable(); renderAnswerAudit();
