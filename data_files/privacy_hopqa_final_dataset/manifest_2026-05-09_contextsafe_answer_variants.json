@@ -1,0 +1,53 @@
+{
+  "dataset_version": "2026-05-09_contextsafe_answer_variants",
+  "created_at_utc": "2026-05-09T19:20:06.993240+00:00",
+  "base_dataset": "privacy_hopqa_finalized_2026-05-07_answer_variants.jsonl plus curated 2026-05-09 answer-variant updates",
+  "policy": {
+    "answer_variants": "Accepted variants are evaluation aliases only and should preserve the gold answer semantics. Over-specific but correct aliases may be accepted for reward, while downstream context uses the canonical hop answer after an accepted match.",
+    "chaining": "PipelineRL privacy_hopqa now separates raw answers from context-safe canonical answers in prompts.",
+    "mutation_policy": "This version is a copied, dated artifact; future training should reference these versioned files rather than relying on mutable train.jsonl/val.jsonl/test.jsonl names."
+  },
+  "files": {
+    "full": {
+      "path": "/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-09_contextsafe_answer_variants.jsonl",
+      "chains": 1001,
+      "hops": 3403,
+      "companies": {
+        "MediConn Solutions": 344,
+        "Elexion Automotive": 367,
+        "Lee's Market": 290
+      }
+    },
+    "train": {
+      "path": "/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/train_2026-05-09_contextsafe_answer_variants.jsonl",
+      "chains": 559,
+      "hops": 1888,
+      "companies": {
+        "Lee's Market": 248,
+        "Elexion Automotive": 311
+      }
+    },
+    "val": {
+      "path": "/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/val_2026-05-09_contextsafe_answer_variants.jsonl",
+      "chains": 98,
+      "hops": 340,
+      "companies": {
+        "Lee's Market": 42,
+        "Elexion Automotive": 56
+      }
+    },
+    "test": {
+      "path": "/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/test_2026-05-09_contextsafe_answer_variants.jsonl",
+      "chains": 344,
+      "hops": 1175,
+      "companies": {
+        "MediConn Solutions": 344
+      }
+    }
+  },
+  "review_artifacts": {
+    "firstweb_variant_review_html": "/home/toolkit/my_code/MosaicProject/runtime_analysis/firstweb_answer_variant_review_2026-05-09.html",
+    "full_dataset_review_html": "/home/toolkit/my_code/MosaicProject/runtime_analysis/privacy_hopqa_full_dataset_answer_review_2026-05-09.html",
+    "full_dataset_review_json": "/home/toolkit/my_code/MosaicProject/runtime_analysis/privacy_hopqa_full_dataset_answer_review_2026-05-09.json"
+  }
+}
