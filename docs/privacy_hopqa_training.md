@@ -131,7 +131,10 @@ Important details:
 - To launch the 8B run, use the same template but set
   `MODEL_PATH=/mnt/llmd/base_models/Qwen3-8B`, use an `8b` run name, and use a
   separate W&B project.
-- `actor.llm_max_rollouts=64` is the current full-run setting.
+- `actor.llm_max_rollouts=64` is the current full-run setting, but the helper
+  must be sized for the resulting retrieval bursts.
+- The high-concurrency single-helper target is the 2-GPU helper spec with
+  `workers=16`, `threadpool_tokens=16`, `cpu=256`, and `mem=768`.
 - `finetune.seq_length=16384` and
   `vllm_config.vllm_kwargs.max_model_len=16384` keep the rollout context limit
   aligned.
@@ -140,8 +143,10 @@ Important details:
 - `test.jsonl` is a full held-out-company split for generalization checks. The
   training launch uses `train.jsonl` for training and `val.jsonl` for online
   evaluation; do not use the held-out test split for training-time selection.
-- The script intentionally uses `privacy_hopqa.capture_mode=all_calls` so
-  retrieved documents remain available for debugging and reward review.
+- The script defaults to `privacy_hopqa.capture_mode=planning_only` so
+  variable-length failed retrieval chains do not receive disproportionate
+  training weight. Set `CAPTURE_MODE=all_calls` only when explicitly studying
+  full tool-chain credit assignment.
 
 Current EAI submit caveat:
 
@@ -154,7 +159,7 @@ Current EAI submit caveat:
 
 ## Why These Fixes Exist
 
-Privacy HopQA rollouts are much larger than ordinary single-answer rollouts because `capture_mode=all_calls` keeps every planner, chooser, reader, and resolver call, plus token ids, rewards, logprobs, reference logprobs, and metadata. Preprocessing expands those traces into RL rows and sends them through a shared-memory queue; one retry run produced a roughly 123 MB preprocessed payload for a 100 MB queue slot. The fixes were to raise the preprocess shared-memory entry size, split oversized preprocessed outputs into multiple queue messages, and filter before queue output when possible.
+Privacy HopQA rollouts are much larger than ordinary single-answer rollouts when `capture_mode=all_calls` keeps every planner, chooser, reader, and resolver call, plus token ids, rewards, logprobs, reference logprobs, and metadata. Preprocessing expands those traces into RL rows and sends them through a shared-memory queue; one retry run produced a roughly 123 MB preprocessed payload for a 100 MB queue slot. The fixes were to raise the preprocess shared-memory entry size, split oversized preprocessed outputs into multiple queue messages, and filter before queue output when possible. The default training path now uses `planning_only` capture to avoid sample-weighting long failed tool chains.
 
 A separate class of failures came from rollout infrastructure rather than agent behavior. We saw vLLM/backend symptoms including HTTP 500s, DNS/connect failures, helper disconnects, and an `AsyncEngineDeadError` caused by a CUDA unknown error inside a vLLM actor shard. Those should not become low-reward training trajectories, so the privacy HopQA adapter now treats transport errors, timeouts, HTTP 5xx, and `AsyncEngineDead` as infrastructure failures and re-raises them for PipelineRL to handle at the actor/job level.
 

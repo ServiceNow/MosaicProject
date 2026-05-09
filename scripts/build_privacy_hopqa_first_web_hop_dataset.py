@@ -122,6 +122,9 @@ def transform(row: dict[str, Any], index: int) -> dict[str, Any] | None:
     out["answer"] = answer
     out["global_answer_variants"] = variants
     out["global_alternate_valid_answers"] = alternates
+    out["global_answer_variant_sources"] = first.get("answer_variant_sources") or [
+        {"variant": value, "sources": ["first_web_hop_transform"]} for value in variants
+    ]
     out["hops"] = [first]
     return out
 

@@ -55,7 +55,14 @@ Results on fresh CPU-FAISS helpers:
 | `workers=4` | `6.56s` | `2.57s / 4.47s` | `0.12s / 1.61s` | `0` | selected |
 | `workers=8` | `5.68s` | `2.25s / 3.43s` | `0.29s / 0.91s` | `0` | fastest, but logged child restarts |
 
-Decision: use `workers=4`. It was stable in request tests and did not show the worker restart behavior observed under `workers=8`.
+Decision for the original low-concurrency run: use `workers=4`. It was stable in request tests and did not show the worker restart behavior observed under `workers=8`.
+
+For high-concurrency Privacy HopQA training, the 2-GPU helper spec now uses a
+larger single endpoint: `workers=16`, `threadpool_tokens=16`, `cpu=256`, and
+`mem=768`. The threadpool cap is intentionally part of the sizing: uvicorn
+workers are process-level sharding, while FastAPI sync handlers also use a
+per-worker threadpool. Without a cap, increasing workers can create too many
+simultaneous CPU-heavy searches inside one helper job.
 
 ## Selected helper for next privacy_hopqa runs
 

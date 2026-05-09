@@ -27,6 +27,7 @@ VAL_DATASET_PATH=${VAL_DATASET_PATH:-${DATASET_SPLIT_ROOT}/val.jsonl}
 TEST_DATASET_PATH=${TEST_DATASET_PATH:-${DATASET_SPLIT_ROOT}/test.jsonl}
 LONG_HOLDOUT_DATASET_PATH=${LONG_HOLDOUT_DATASET_PATH:-${DATASET_SPLIT_ROOT}/long_holdout.jsonl}
 EXTRA_OVERRIDES=${EXTRA_OVERRIDES:-}
+CAPTURE_MODE=${CAPTURE_MODE:-planning_only}
 
 PRIVACY_AGENT_HELPER_URL=${PRIVACY_AGENT_HELPER_URL:-}
 CONDA_ENV=${CONDA_ENV:-pipeline-rl}
@@ -158,7 +159,7 @@ privacy_hopqa.local_index_root=${LOCAL_INDEX_ROOT} \
 privacy_hopqa.helper_service_url=${PRIVACY_AGENT_HELPER_URL} \
 privacy_hopqa.embedding_provider=huggingface \
 privacy_hopqa.embedding_model=Qwen/Qwen3-Embedding-4B \
-privacy_hopqa.capture_mode=all_calls \
+privacy_hopqa.capture_mode=${CAPTURE_MODE} \
 +finetune.rl.filter_zero_advantage_groups=${FILTER_ZERO_ADVANTAGE_GROUPS} \
 finetune.learning_rate=1e-6 \
 finetune.rl.policy_loss=gspo \

@@ -181,6 +181,8 @@ def build_helper_command(args: argparse.Namespace) -> list[str]:
         args.local_index_root,
         "--workers",
         str(args.workers),
+        "--threadpool-tokens",
+        str(args.threadpool_tokens),
         "--local-index-mmap-mode",
         args.local_index_mmap_mode,
         "--embedding-base-url",

@@ -9,10 +9,11 @@ workdir: /home/toolkit/my_code/MosaicProject
 # If you rebuild the local indices again, update this path explicitly rather
 # than assuming /mnt/llmd/results/exps/alexg/privacy_agent/local_indices is safe.
 #
-# This variant keeps the second GPU available for future FAISS builds, but the
-# current pip faiss-gpu-cu12 wheels abort on H100 with CUDA error 209
-# ("no kernel image is available for execution on the device"). Use CPU FAISS
-# until a compatible H100 FAISS build is available.
+# This variant uses the second helper GPU for BrowseComp dense retrieval via
+# the torch fallback in BrowseCompHybridSearcher. Do not install faiss-gpu-cu12
+# here: the current PyPI wheels abort on H100 with CUDA error 209 ("no kernel
+# image is available for execution on the device") because their FAISS kernels
+# are not built for sm_90.
 command:
   - /opt/conda/bin/conda
   - run
@@ -29,13 +30,15 @@ command:
   - --local-index-root
   - /mnt/llmd/results/exps/alexg/privacy_agent/local_indices_fixeddeps_20260415
   - --workers
-  - '4'
+  - '16'
+  - --threadpool-tokens
+  - '16'
   - --browsecomp-index-glob
   - /home/toolkit/BrowseComp-Plus/indexes/qwen3-embedding-4b/corpus.shard*_of_*.pkl
   - --browsecomp-corpus
   - Tevatron/browsecomp-plus-corpus
   - --browsecomp-index-device
-  - cpu
+  - cuda:1
   - --browsecomp-bm25-recall-k
   - '100'
   - --browsecomp-dense-recall-k
@@ -60,6 +63,10 @@ environmentVars:
   - PORT=8012
   - PRIVACY_HELPER_EMBED_PORT=8000
   - PRIVACY_HELPER_MODEL_CACHE_ROOT=/transformers_cache/hub
+  - OMP_NUM_THREADS=2
+  - MKL_NUM_THREADS=2
+  - OPENBLAS_NUM_THREADS=2
+  - NUMEXPR_NUM_THREADS=2
 options:
   internal-dns:
     name: dns-privacy-helper
@@ -68,9 +75,9 @@ options:
         protocol: TCP
         target-port: 8012
 resources:
-  cpu: 64
+  cpu: 256
   gpu: 2
   gpuMem: 80
-  mem: 512
+  mem: 768
 preemptable: true
 restartable: true

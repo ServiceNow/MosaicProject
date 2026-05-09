@@ -293,6 +293,7 @@ class PrivacyHelperConfig:
     browsecomp_max_chars: int
     curated_web_docs: str
     curated_web_chunks: list[str]
+    threadpool_tokens: int = 16
 
 
 class PrivacyHelperBackend:
@@ -399,8 +400,8 @@ class PrivacyHelperBackend:
         max_chars: int | None = None,
     ) -> list[dict[str, Any]]:
         searcher = self._task_web_searcher(task_id)
-        hits = searcher.search(query=query, k=k, mode="hybrid")
         char_limit = int(max_chars) if max_chars is not None else self.browsecomp.max_chars
+        hits = searcher.search(query=query, k=k, mode="hybrid", max_chars=char_limit)
 
         results: list[dict[str, Any]] = []
         for hit in hits:

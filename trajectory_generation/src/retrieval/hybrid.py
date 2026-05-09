@@ -127,6 +127,7 @@ class HybridSearcher:
         embedder: EmbeddingBackend | None = None,
         bm25_k: int = 200,
         dense_k: int = 200,
+        **_kwargs: Any,
     ) -> list[RetrievalHit]:
         if k <= 0:
             return []
