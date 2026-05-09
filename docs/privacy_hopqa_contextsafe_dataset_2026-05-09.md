@@ -71,11 +71,14 @@ Prompts show this in a simple notes format:
 Current Answers So Far:
 (1) May 30, 2025
     For references to (1), use: 30
+    Justification: The evidence states that ownership of Red was sold back on May 30, 2025. [DOC:...]
 ```
 
 The full numbered chain remains visible, so the model can still reason from the original question text and the raw answer surface.
 
 This is intended to prevent accepted-but-awkward aliases from poisoning downstream retrieval queries or `(N)` substitutions.
+
+The current-answer notes also include the stored previous-hop justification, truncated for prompt size. This gives later hops lightweight provenance without requiring the model to reconstruct why earlier answers were accepted.
 
 ## PipelineRL code changes in this batch
 
@@ -119,6 +122,23 @@ privacy_hopqa.retrieval_context_mode=legacy_prefix
 
 Decimal percent aliases, such as `0.3` for `30%`, remain accepted in the dataset for now. They may be awkward as chain context, but the context-safe answer mapping should prevent them from being substituted into later-hop questions after an accepted match.
 
+Follow-up answer-variant update:
+
+```text
+035c3d89 H2
+```
+
+asks for Lee's Market's disaster recovery infrastructure investment. The gold support states `$250,000`, while the dataset only accepted bare numeric forms. The following evaluation aliases were added:
+
+```text
+$250,000
+$250000
+250,000 dollars
+250000 dollars
+250 thousand
+250 thousand dollars
+```
+
 ## Final report justifications
 
 The model does not need to carry justifications forward in its own notes. The harness stores them.
@@ -132,7 +152,7 @@ For each hop:
 4. The final report is deterministic: it writes the stored hop answers and stored hop justifications.
 ```
 
-Later-hop prompts currently show only the current answers so far, not the previous justifications. This is intentional: previous justifications are mostly audit/report material, while later-hop retrieval should depend on the question chain and answer values. The stored justifications are still preserved in traces and in the deterministic final report.
+Later-hop prompts now show the current answers so far plus the stored previous-hop justifications. This gives the model provenance for earlier answers while keeping the final report deterministic: the report still writes the stored hop answers and stored hop justifications rather than asking the model to regenerate them.
 
 ## Review artifacts
 
@@ -149,6 +169,13 @@ Full main-dataset review:
 runtime_analysis/privacy_hopqa_full_dataset_answer_review_2026-05-09.html
 runtime_analysis/privacy_hopqa_full_dataset_answer_review_2026-05-09.csv
 runtime_analysis/privacy_hopqa_full_dataset_answer_review_2026-05-09.json
+```
+
+Focused high-priority review notes:
+
+```text
+runtime_analysis/privacy_hopqa_high_priority_review_2026-05-09.md
+runtime_analysis/privacy_hopqa_high_priority_review_2026-05-09.json
 ```
 
 The full review currently covers all 3403 hops and joins the latest full-dataset StepFun answer-unit proposal file:
@@ -172,6 +199,8 @@ missing StepFun proposal coverage: 123 hops
 ```
 
 The high-priority queue is the next recommended direct review target. The medium-priority queue is broad and intentionally conservative; most of it is not necessarily wrong.
+
+The initial high-priority review suggests that most high flags are stale metadata or noisy StepFun proposal artifacts rather than true dataset errors. Non-obvious suggested rewrites, especially generated rewrites containing references like `FY (1)` or `0. (1)`, should not be applied automatically.
 
 ## Recommended next work
 
