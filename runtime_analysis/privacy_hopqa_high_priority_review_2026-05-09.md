@@ -1,36 +1,17 @@
 # Privacy HopQA High-Priority Review - 2026-05-09
 
-Generated: 2026-05-09T19:37:20.084543+00:00
+Generated: 2026-05-09T19:49:17.096523+00:00
 
-This review covers the high-priority rows from the full dataset review. It is a recommendation file; the only dataset mutation reflected here is the $250,000 alias addition for 035c3d89 H2.
-
-## 1c429b8b H1 - keep
-
-- Company: MediConn Solutions
-- Hop type: W
-- Flags: question_marked_not_well_formed, stepfun_needs_edit
-- Question: According to the document, by how many years is an asylee's green card backdated from the date it is received?
-- Gold answer: One
-- Accepted variants: One, 1, One year, 1 year
-- Rejected existing variants from old StepFun proposal: None
-- Suggested/proposed rewrite: None
-- Recommendation: Question/support answer the asylee backdating fact; variants already cover one/1/year forms. The not-well-formed flag appears stale.
-- Doc ref: /home/toolkit/full_docs/7139.txt
-
-Support context:
-
-```text
-proval of green card. What's the best way to fix this mistake ? Thanks To be honest, when I have seen this for a few clients, I did not bother to fix it, as it seemed too much trouble. If you want to t
-```
+This review covers the current high-priority rows from the full dataset review. It is a recommendation file. Vague document-reference rows were rewritten separately in `privacy_hopqa_document_phrase_rewrites_2026-05-09.json`.
 
 ## 035c3d89 H2 - variant_added_keep
 
 - Company: Lee's Market
 - Hop type: L
-- Flags: question_marked_not_well_formed
+- Flags: question_marked_not_well_formed, stepfun_proposed_removals
 - Question: What is Lee's Market's disaster recovery infrastructure investment for the system tracking approximately 250 high-risk food products?
 - Gold answer: 250,000
-- Accepted variants: 250,000, 250000
+- Accepted variants: 250,000, 250000, $250,000, $250000, 250,000 dollars, 250000 dollars, 250 thousand, 250 thousand dollars
 - Rejected existing variants from old StepFun proposal: None
 - Suggested/proposed rewrite: None
 - Recommendation: Added currency/unit aliases for $250,000. Question/support are fine; no rewrite recommended.
@@ -168,35 +149,6 @@ Our facility repair department has always been proactive in maintaining our reta
 Overall, our expenditure trends have demonstrated an emphasis on optimizing resource allocation in recent years. An analysis of ou
 ```
 
-## 8ccc8cd2 H2 - keep
-
-- Company: MediConn Solutions
-- Hop type: L
-- Flags: question_marked_not_well_formed
-- Question: In which year did MediConn host a virtual global food festival, per the document noting a 20% daily usage increase?
-- Gold answer: 2022
-- Accepted variants: 2022
-- Rejected existing variants from old StepFun proposal: None
-- Suggested/proposed rewrite: None
-- Recommendation: Support directly states MediConn hosted a virtual global food festival in 2022. The not-well-formed flag appears stale.
-- Doc ref: /home/toolkit/nice_code/drbench/drbench/data/tasks/DR0046/files/DI0022/IT-Engagement-Initiatives.md
-
-Support context:
-
-```text
-Online Work Culture
-
-MediConn Solutions is committed to promoting inclusivity within our virtual workspace. In 2023, we introduced a series of diversity and inclusion training sessions for all employees. The feedback we received was overwhelmingly positive, with over 95% of participants stating that the training had a positive impact on their perceptions and interactions with their colleagues.
-
-## Organizing Interactive Cultural Events
-
-MediConn Solutions regularly organizes cultural events to promote team unity and employee engagement. In 2022, we hosted a virtual global food festival, where employees showcased their culinary skills and shared recipes from their cultural backgrounds. It led to a 30% increase in employee participation compared to previous years.
-
-## Conclusion
-
-The IT department's initiatives have significantly contributed to maintaining high morale and a positive work culture at MediConn Solutions. The successful organization of cultural events, in particular, has fostered a sense of community and inclusivity among employees. As we move forward, we will continue to innovate and implement strategies th
-```
-
 ## acca8c9d H3 - keep
 
 - Company: MediConn Solutions
@@ -228,25 +180,6 @@ MediConn maintained a diverse distribution of full-time employees across its dif
 The data reviewed in this analysis provides valuable insights into our current staff
 ```
 
-## 41ca699d H6 - keep
-
-- Company: MediConn Solutions
-- Hop type: W
-- Flags: question_marked_not_well_formed
-- Question: In the document referencing Veeam's report, which organization experienced a ransomware attack in January 2024?
-- Gold answer: LoanDepot
-- Accepted variants: LoanDepot
-- Rejected existing variants from old StepFun proposal: None
-- Suggested/proposed rewrite: None
-- Recommendation: Support names LoanDepot as the January 2024 ransomware attack. The not-well-formed flag appears stale.
-- Doc ref: /home/toolkit/full_docs/57530.txt
-
-Support context:
-
-```text
-mpact on the company's operations, financial performance, and supply chain. 1. LoanDepot ransomware attack Date: January 2024 Impact: Data breach impacting 16.9M customers and $27M in response and recovery
-```
-
 ## 67a1a6b6 H4 - keep
 
 - Company: Lee's Market
@@ -257,44 +190,13 @@ mpact on the company's operations, financial performance, and supply chain. 1. L
 - Accepted variants: 2020
 - Rejected existing variants from old StepFun proposal: None
 - Suggested/proposed rewrite: None
-- Recommendation: Support directly states energy-efficient refrigeration units were installed in 2020. The not-well-formed flag appears stale.
+- Recommendation: PPTX slide text directly states the refrigeration system accounts for 40% of energy consumption and that units were installed in 2020. The not-well-formed flag appears stale.
 - Doc ref: /home/toolkit/nice_code/drbench/drbench/data/tasks/DR0095/files/DI0004/energy-cost-analysis.pptx
 
 Support context:
 
 ```text
 tion system at Lee's Market accounts for 40% of the total energy consumption In 2020, the company installed energy-efficient refrigeration units in all its stores The company has a dedicated team to monit
-```
-
-## bf1db289 H2 - source_check_then_probably_keep
-
-- Company: Elexion Automotive
-- Hop type: L
-- Flags: question_marked_not_well_formed
-- Question: By what year does Elexion Automotive's predictive model project a service visit reduction, as mentioned in the document that reports 18% of service visits in 2024 were related to infotainment system issues?
-- Gold answer: 2027
-- Accepted variants: 2027
-- Rejected existing variants from old StepFun proposal: None
-- Suggested/proposed rewrite: None
-- Recommendation: Support excerpt includes records up to 2027 but should be checked against the surrounding document text before declaring fully clean.
-- Doc ref: /home/toolkit/nice_code/drbench/drbench/data/tasks/DR0074/files/IN0003/ev-education-impact.md
-
-Support context:
-
-```text
-# EV Infotainment Education: Impact on Service Visits
-
-## Introduction
-
-The following report explores the potential ramifications of increasing dealer-led customer education on our Electric Vehicle (EV) infotainment and connectivity features by 20%. As a Quality Assurance Engineer, I aim to identify how this increase can optimize our product reliability and operational efficiency, thereby reducing the frequency of service visits. This analysis considers the existing quality control processes, customer feedback, and service records up to 2027.
-
-## Analysis of EV Infotainment-Related Service Visits
-
-In 2024, a total of 18% of service visits were related to infotainment system issues. Although this was a slight increase from the previous year, we noticed a decrease in the severity of the issues reported. Most of the concerns were related to software updates and minor technical glitches, which were promptly addressed by our service teams.
-
-## Predictive Model: Service Visits Reduction by 2027
-
-Our predictive modeling suggests a general decrease in service visits as our vehicles improve in quality and reliability. By 2
 ```
 
 ## f3e96d3a H2 - keep

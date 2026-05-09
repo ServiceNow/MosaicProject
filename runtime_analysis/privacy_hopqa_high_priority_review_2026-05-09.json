@@ -1,41 +1,6 @@
 {
-  "generated_at_utc": "2026-05-09T19:37:20.079140+00:00",
+  "generated_at_utc": "2026-05-09T19:49:17.092382+00:00",
   "records": [
-    {
-      "chain_id": "1c429b8b",
-      "problem_id": "privacy_hopqa_1c429b8b",
-      "task_id": "DR0097",
-      "company": "MediConn Solutions",
-      "pattern": "WWL",
-      "hop_number": 1,
-      "hop_type": "W",
-      "priority": "high",
-      "flags": [
-        "question_marked_not_well_formed",
-        "stepfun_needs_edit"
-      ],
-      "question": "According to the document, by how many years is an asylee's green card backdated from the date it is received?",
-      "answer": "One",
-      "accepted_variants": [
-        "One",
-        "1",
-        "One year",
-        "1 year"
-      ],
-      "proposal_additions": [],
-      "proposal_removals": [],
-      "proposal_rejected_existing": [],
-      "proposal_question_rewrite": null,
-      "proposal_rationale": "",
-      "proposal_confidence": 0.8,
-      "question_issues": [],
-      "suggested_rewrite": null,
-      "supporting_span": "proval of green card. What's the best way to fix this mistake ? Thanks To be honest, when I have seen this for a few clients, I did not bother to fix it, as it seemed too much trouble. If you want to t",
-      "doc_ref": "/home/toolkit/full_docs/7139.txt",
-      "support_context": "proval of green card. What's the best way to fix this mistake ? Thanks To be honest, when I have seen this for a few clients, I did not bother to fix it, as it seemed too much trouble. If you want to t",
-      "recommended_action": "keep",
-      "review_note": "Question/support answer the asylee backdating fact; variants already cover one/1/year forms. The not-well-formed flag appears stale."
-    },
     {
       "chain_id": "035c3d89",
       "problem_id": "privacy_hopqa_035c3d89",
@@ -46,16 +11,30 @@
       "hop_type": "L",
       "priority": "high",
       "flags": [
-        "question_marked_not_well_formed"
+        "question_marked_not_well_formed",
+        "stepfun_proposed_removals"
       ],
       "question": "What is Lee's Market's disaster recovery infrastructure investment for the system tracking approximately 250 high-risk food products?",
       "answer": "250,000",
       "accepted_variants": [
         "250,000",
-        "250000"
+        "250000",
+        "$250,000",
+        "$250000",
+        "250,000 dollars",
+        "250000 dollars",
+        "250 thousand",
+        "250 thousand dollars"
       ],
       "proposal_additions": [],
-      "proposal_removals": [],
+      "proposal_removals": [
+        "$250,000",
+        "$250000",
+        "250,000 dollars",
+        "250000 dollars",
+        "250 thousand",
+        "250 thousand dollars"
+      ],
       "proposal_rejected_existing": [],
       "proposal_question_rewrite": null,
       "proposal_rationale": "",
@@ -222,37 +201,6 @@
       "review_note": "Question/support are fine. Existing generated rewrite with FY (2) is not needed and should not be applied automatically."
     },
     {
-      "chain_id": "8ccc8cd2",
-      "problem_id": "privacy_hopqa_8ccc8cd2",
-      "task_id": "DR0046",
-      "company": "MediConn Solutions",
-      "pattern": "LLLLW",
-      "hop_number": 2,
-      "hop_type": "L",
-      "priority": "high",
-      "flags": [
-        "question_marked_not_well_formed"
-      ],
-      "question": "In which year did MediConn host a virtual global food festival, per the document noting a 20% daily usage increase?",
-      "answer": "2022",
-      "accepted_variants": [
-        "2022"
-      ],
-      "proposal_additions": [],
-      "proposal_removals": [],
-      "proposal_rejected_existing": [],
-      "proposal_question_rewrite": null,
-      "proposal_rationale": "",
-      "proposal_confidence": 0.8,
-      "question_issues": [],
-      "suggested_rewrite": null,
-      "supporting_span": "rly organizes cultural events to promote team unity and employee engagement. In 2022, we hosted a virtual global food festival, where employees showcased their culinary skills and shared recipes from thei",
-      "doc_ref": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0046/files/DI0022/IT-Engagement-Initiatives.md",
-      "support_context": "Online Work Culture\n\nMediConn Solutions is committed to promoting inclusivity within our virtual workspace. In 2023, we introduced a series of diversity and inclusion training sessions for all employees. The feedback we received was overwhelmingly positive, with over 95% of participants stating that the training had a positive impact on their perceptions and interactions with their colleagues.\n\n## Organizing Interactive Cultural Events\n\nMediConn Solutions regularly organizes cultural events to promote team unity and employee engagement. In 2022, we hosted a virtual global food festival, where employees showcased their culinary skills and shared recipes from their cultural backgrounds. It led to a 30% increase in employee participation compared to previous years.\n\n## Conclusion\n\nThe IT department's initiatives have significantly contributed to maintaining high morale and a positive work culture at MediConn Solutions. The successful organization of cultural events, in particular, has fostered a sense of community and inclusivity among employees. As we move forward, we will continue to innovate and implement strategies th",
-      "recommended_action": "keep",
-      "review_note": "Support directly states MediConn hosted a virtual global food festival in 2022. The not-well-formed flag appears stale."
-    },
-    {
       "chain_id": "acca8c9d",
       "problem_id": "privacy_hopqa_acca8c9d",
       "task_id": "DR0094",
@@ -294,37 +242,6 @@
       "review_note": "Question/support are fine. Existing generated rewrite with FY (2) is not needed and should not be applied automatically."
     },
     {
-      "chain_id": "41ca699d",
-      "problem_id": "privacy_hopqa_41ca699d",
-      "task_id": "DR0088",
-      "company": "MediConn Solutions",
-      "pattern": "LLLLWWW",
-      "hop_number": 6,
-      "hop_type": "W",
-      "priority": "high",
-      "flags": [
-        "question_marked_not_well_formed"
-      ],
-      "question": "In the document referencing Veeam's report, which organization experienced a ransomware attack in January 2024?",
-      "answer": "LoanDepot",
-      "accepted_variants": [
-        "LoanDepot"
-      ],
-      "proposal_additions": [],
-      "proposal_removals": [],
-      "proposal_rejected_existing": [],
-      "proposal_question_rewrite": null,
-      "proposal_rationale": "",
-      "proposal_confidence": 0.8,
-      "question_issues": [],
-      "suggested_rewrite": null,
-      "supporting_span": "mpact on the company's operations, financial performance, and supply chain. 1. LoanDepot ransomware attack Date: January 2024 Impact: Data breach impacting 16.9M customers and $27M in response and recovery",
-      "doc_ref": "/home/toolkit/full_docs/57530.txt",
-      "support_context": "mpact on the company's operations, financial performance, and supply chain. 1. LoanDepot ransomware attack Date: January 2024 Impact: Data breach impacting 16.9M customers and $27M in response and recovery",
-      "recommended_action": "keep",
-      "review_note": "Support names LoanDepot as the January 2024 ransomware attack. The not-well-formed flag appears stale."
-    },
-    {
       "chain_id": "67a1a6b6",
       "problem_id": "privacy_hopqa_67a1a6b6",
       "task_id": "DR0095",
@@ -353,38 +270,7 @@
       "doc_ref": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0095/files/DI0004/energy-cost-analysis.pptx",
       "support_context": "tion system at Lee's Market accounts for 40% of the total energy consumption In 2020, the company installed energy-efficient refrigeration units in all its stores The company has a dedicated team to monit",
       "recommended_action": "keep",
-      "review_note": "Support directly states energy-efficient refrigeration units were installed in 2020. The not-well-formed flag appears stale."
-    },
-    {
-      "chain_id": "bf1db289",
-      "problem_id": "privacy_hopqa_bf1db289",
-      "task_id": "DR0074",
-      "company": "Elexion Automotive",
-      "pattern": "LLLLW",
-      "hop_number": 2,
-      "hop_type": "L",
-      "priority": "high",
-      "flags": [
-        "question_marked_not_well_formed"
-      ],
-      "question": "By what year does Elexion Automotive's predictive model project a service visit reduction, as mentioned in the document that reports 18% of service visits in 2024 were related to infotainment system issues?",
-      "answer": "2027",
-      "accepted_variants": [
-        "2027"
-      ],
-      "proposal_additions": [],
-      "proposal_removals": [],
-      "proposal_rejected_existing": [],
-      "proposal_question_rewrite": null,
-      "proposal_rationale": "",
-      "proposal_confidence": 0.8,
-      "question_issues": [],
-      "suggested_rewrite": null,
-      "supporting_span": "xisting quality control processes, customer feedback, and service records up to 2027. ## Analysis of EV Infotainment-Related Service Visits In 2024, a total of 18% of service visits were related to info",
-      "doc_ref": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0074/files/IN0003/ev-education-impact.md",
-      "support_context": "# EV Infotainment Education: Impact on Service Visits\n\n## Introduction\n\nThe following report explores the potential ramifications of increasing dealer-led customer education on our Electric Vehicle (EV) infotainment and connectivity features by 20%. As a Quality Assurance Engineer, I aim to identify how this increase can optimize our product reliability and operational efficiency, thereby reducing the frequency of service visits. This analysis considers the existing quality control processes, customer feedback, and service records up to 2027.\n\n## Analysis of EV Infotainment-Related Service Visits\n\nIn 2024, a total of 18% of service visits were related to infotainment system issues. Although this was a slight increase from the previous year, we noticed a decrease in the severity of the issues reported. Most of the concerns were related to software updates and minor technical glitches, which were promptly addressed by our service teams.\n\n## Predictive Model: Service Visits Reduction by 2027\n\nOur predictive modeling suggests a general decrease in service visits as our vehicles improve in quality and reliability. By 2",
-      "recommended_action": "source_check_then_probably_keep",
-      "review_note": "Support excerpt includes records up to 2027 but should be checked against the surrounding document text before declaring fully clean."
+      "review_note": "PPTX slide text directly states the refrigeration system accounts for 40% of energy consumption and that units were installed in 2020. The not-well-formed flag appears stale."
     },
     {
       "chain_id": "f3e96d3a",

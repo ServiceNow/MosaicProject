@@ -139,6 +139,21 @@ $250000
 250 thousand dollars
 ```
 
+Follow-up question wording update:
+
+```text
+runtime_analysis/privacy_hopqa_document_phrase_rewrites_2026-05-09.json
+```
+
+Four vague `document`-anchored questions were rewritten with source/fact-specific wording, without changing answers:
+
+```text
+1c429b8b H1: removed "According to the document" from the asylee Green Card back-date question.
+8ccc8cd2 H2: replaced "per the document" with the specific MediConn IT Engagement Initiatives context.
+41ca699d H6: replaced "In the document referencing Veeam's report" with the specific cyber-attack overview context.
+bf1db289 H2: replaced "as mentioned in the document" with the specific EV Infotainment Education impact report context.
+```
+
 ## Final report justifications
 
 The model does not need to carry justifications forward in its own notes. The harness stores them.
@@ -198,7 +213,17 @@ no flag: 1722 hops
 missing StepFun proposal coverage: 123 hops
 ```
 
-The high-priority queue is the next recommended direct review target. The medium-priority queue is broad and intentionally conservative; most of it is not necessarily wrong.
+After the document-phrase rewrites, the full-dataset review reports:
+
+```text
+high priority: 8 hops
+medium priority: 1658 hops
+low priority: 12 hops
+no flag: 1725 hops
+missing StepFun proposal coverage: 123 hops
+```
+
+The remaining high-priority queue mostly reflects stale `question_well_formed=false` metadata or noisy StepFun proposal artifacts rather than obvious question/answer errors. The medium-priority queue is broad and intentionally conservative; most of it is not necessarily wrong.
 
 The initial high-priority review suggests that most high flags are stale metadata or noisy StepFun proposal artifacts rather than true dataset errors. Non-obvious suggested rewrites, especially generated rewrites containing references like `FY (1)` or `0. (1)`, should not be applied automatically.
 
