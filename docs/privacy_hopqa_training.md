@@ -15,12 +15,12 @@ launcher layer.
 
 ## Dataset and split
 
-The canonical finalized dataset lives in:
+The current canonical finalized dataset lives in:
 
-- `data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-05.jsonl`
-- `data_files/privacy_hopqa_final_dataset/train.jsonl`
-- `data_files/privacy_hopqa_final_dataset/val.jsonl`
-- `data_files/privacy_hopqa_final_dataset/test.jsonl`
+- `data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-10_spanfixed.jsonl`
+- `data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-10_spanfixed_train.jsonl`
+- `data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-10_spanfixed_val.jsonl`
+- `data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-10_spanfixed_test.jsonl`
 
 Split counts:
 
@@ -104,7 +104,39 @@ Expected fields:
 - `browsecomp_index_device: cpu`
 - `browsecomp_dense_backend: faiss_cpu`
 
-## Current Launch Template
+## Current First-Web Debug Launch Template
+
+Use this for the 2026-05-10 spanfixed first-web debug run. It trains all
+captured training texts, not just planning calls:
+
+```bash
+cd /home/toolkit/my_code/MosaicProject
+export PATH=/home/toolkit/.local/bin:$PATH
+export PRIVACY_AGENT_HELPER_URL=http://<helper-internal-dns>:8012
+
+TS=$(date +%Y%m%d%H%M%S)
+JOB="privacy_hopqa_firstweb_qwen3_4b2507_spanfixed_allcalls_${TS}"
+
+PIPELINERL_ROOT=/home/toolkit/my_code/PipelineRL \
+OUTPUT_DIR_BASE=/mnt/llmd/results/exps/alexg/reason \
+JOB_NAME="$JOB" \
+WANDB_PROJECT=privacy_hopqa_firstweb_4b_spanfixed_allcalls \
+WANDB_GROUP=spanfixed_allcalls \
+WANDB_NAME="$JOB" \
+REPLICAS=2 \
+MODEL_PATH="Qwen/Qwen3-4B-Instruct-2507" \
+CAPTURE_MODE=all_calls \
+DATASET_SPLIT_ROOT=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset \
+FINAL_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_2026-05-10_spanfixed.jsonl \
+TRAIN_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_2026-05-10_spanfixed_train.jsonl \
+VAL_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_2026-05-10_spanfixed_val.jsonl \
+TEST_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_2026-05-10_spanfixed_test.jsonl \
+FILTER_ZERO_ADVANTAGE_GROUPS=true \
+EXTRA_OVERRIDES="privacy_hopqa.reward_mode=all_hops_correct privacy_hopqa.iteration_budget_per_hop=3 privacy_hopqa.helper_timeout_s=180 actor.llm_max_rollouts=16" \
+bash /home/toolkit/my_code/MosaicProject/run_privacy_hopqa.sh
+```
+
+## Full-Dataset Launch Template
 
 The intended high-level launch path is still:
 
@@ -138,15 +170,16 @@ Important details:
 - `finetune.seq_length=16384` and
   `vllm_config.vllm_kwargs.max_model_len=16384` keep the rollout context limit
   aligned.
-- The script defaults to the finalized Mosaic dataset split:
-  `/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/{train,val,test}.jsonl`.
+- The script defaults to the finalized Mosaic dataset split, but current runs
+  should pass the explicit `privacy_hopqa_finalized_2026-05-10_spanfixed_*`
+  paths until old compatibility names are deliberately updated.
 - `test.jsonl` is a full held-out-company split for generalization checks. The
   training launch uses `train.jsonl` for training and `val.jsonl` for online
   evaluation; do not use the held-out test split for training-time selection.
-- The script defaults to `privacy_hopqa.capture_mode=planning_only` so
-  variable-length failed retrieval chains do not receive disproportionate
-  training weight. Set `CAPTURE_MODE=all_calls` only when explicitly studying
-  full tool-chain credit assignment.
+- The script now defaults to `privacy_hopqa.capture_mode=all_calls` for the
+  current debugging run, so planner, chooser, reader, and resolver texts are all
+  trainable. Set `CAPTURE_MODE=planning_only` only when deliberately isolating
+  planning-call credit assignment.
 
 Current EAI submit caveat:
 

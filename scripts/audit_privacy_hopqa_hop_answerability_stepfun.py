@@ -45,8 +45,23 @@ DEFAULT_SUMMARY_JSON = (
     "/home/toolkit/my_code/MosaicProject/runtime_analysis/"
     "privacy_hopqa_stepfun_answerability_review_2026-05-09_summary.json"
 )
+DEFAULT_PROPOSALS = (
+    "/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/"
+    "proposed_question_changes_2026-05-09.jsonl"
+)
+DEFAULT_VARIANT_PROPOSALS = (
+    "/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/"
+    "proposed_answer_variants_2026-05-09.jsonl"
+)
 DEFAULT_BASE_URL = "http://dns-4943305a-c17f-44b1-b767-9536529eb8bc-step35flash-vllm:8000"
 ALLOWED_LABELS = {"yes", "no", "ambiguous", "underspecified", "requires_calculation"}
+PROPOSAL_ISSUE_TYPES = {
+    "rewrite_question_keep_answer",
+    "change_gold_answer",
+    "add_answer_variants",
+    "drop_or_manual_review",
+    "audit_false_positive",
+}
 
 
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -103,6 +118,8 @@ def flatten_hops(dataset_rows: list[dict[str, Any]], chain_ids: set[str] | None)
         for hop_index, hop in enumerate(hops):
             hop_number = hop.get("hop_number") or hop_index + 1
             audit_id = f"{chain_id}::hop{hop_number}"
+            prev_hop = hops[hop_index - 1] if hop_index > 0 else None
+            next_hop = hops[hop_index + 1] if hop_index + 1 < len(hops) else None
             flattened.append(
                 {
                     "audit_id": audit_id,
@@ -113,7 +130,9 @@ def flatten_hops(dataset_rows: list[dict[str, Any]], chain_ids: set[str] | None)
                     "hop_index": hop_index,
                     "hop_number": hop_number,
                     "hop_type": hop.get("hop_type"),
+                    "n_hops": len(hops),
                     "question": hop.get("question"),
+                    "question_templated": hop.get("question_templated"),
                     "gold_answer": hop.get("answer"),
                     "accepted_answers": accepted_answers(hop),
                     "doc_id": hop.get("doc_id"),
@@ -121,9 +140,26 @@ def flatten_hops(dataset_rows: list[dict[str, Any]], chain_ids: set[str] | None)
                     "supporting_span": hop.get("supporting_span"),
                     "question_issues": hop.get("question_issues") or [],
                     "existing_suggested_rewrite": hop.get("suggested_rewrite"),
+                    "prev_hop": _hop_summary(prev_hop),
+                    "next_hop": _hop_summary(next_hop),
+                    "global_question": chain.get("global_question"),
+                    "global_answer": chain.get("global_answer"),
                 }
             )
     return flattened
+
+
+def _hop_summary(hop: dict[str, Any] | None) -> dict[str, Any] | None:
+    if not hop:
+        return None
+    return {
+        "hop_number": hop.get("hop_number"),
+        "hop_type": hop.get("hop_type"),
+        "question": hop.get("question"),
+        "question_templated": hop.get("question_templated"),
+        "answer": hop.get("answer"),
+        "doc_id": hop.get("doc_id"),
+    }
 
 
 def accepted_answers(hop: dict[str, Any]) -> list[str]:
@@ -146,7 +182,12 @@ def accepted_answers(hop: dict[str, Any]) -> list[str]:
     return deduped
 
 
-def read_document(path_text: str, max_chars: int) -> tuple[str, int, bool, str | None]:
+def read_document(
+    path_text: str,
+    max_chars: int,
+    *,
+    focus_texts: list[str] | None = None,
+) -> tuple[str, int, bool, str | None]:
     if not path_text:
         return "", 0, False, "missing_doc_ref"
     path = Path(path_text)
@@ -161,8 +202,43 @@ def read_document(path_text: str, max_chars: int) -> tuple[str, int, bool, str |
     original_chars = len(text)
     truncated = original_chars > max_chars
     if truncated:
-        text = text[:max_chars]
+        text = truncate_document_text(text, max_chars, focus_texts or [])
     return text, original_chars, truncated, None
+
+
+def truncate_document_text(text: str, max_chars: int, focus_texts: list[str]) -> str:
+    focus_index = -1
+    focus_label = ""
+    for focus in focus_texts:
+        focus = str(focus or "").strip()
+        if not focus:
+            continue
+        focus_index = text.find(focus)
+        if focus_index >= 0:
+            focus_label = "supporting_span"
+            break
+    if focus_index < 0:
+        for focus in focus_texts:
+            focus = str(focus or "").strip()
+            if not focus or len(focus) > 120:
+                continue
+            focus_index = text.lower().find(focus.lower())
+            if focus_index >= 0:
+                focus_label = "short_focus_text"
+                break
+
+    if focus_index < 0:
+        return text[:max_chars]
+
+    half_window = max_chars // 2
+    start = max(0, focus_index - half_window)
+    end = min(len(text), start + max_chars)
+    start = max(0, end - max_chars)
+    prefix = (
+        f"[Document truncated to a {max_chars}-character window centered near {focus_label}. "
+        f"Original characters: {len(text)}. Window start: {start}.]\n"
+    )
+    return prefix + text[start:end]
 
 
 def extract_document_text(path: Path) -> str:
@@ -514,12 +590,30 @@ def parse_json_object(text: str) -> tuple[dict[str, Any] | None, str | None]:
     if cleaned.startswith("```"):
         cleaned = re.sub(r"^```(?:json)?\s*", "", cleaned)
         cleaned = re.sub(r"\s*```$", "", cleaned)
+    # Strip <think>...</think> reasoning blocks — they can contain stale JSON-like fragments.
+    think_stripped = re.sub(r"<think>.*?</think>", "", cleaned, flags=re.DOTALL)
+    if think_stripped.strip() != cleaned.strip():
+        cleaned = think_stripped.strip()
     try:
         parsed = json.loads(cleaned, strict=False)
         if isinstance(parsed, dict):
             return parsed, None
         return None, "json_root_not_object"
     except json.JSONDecodeError:
+        # Find the LAST {...} block (StepFun's final output, not stale reasoning).
+        candidates = list(re.finditer(r"\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}", cleaned, re.DOTALL))
+        last_candidate = None
+        for cand in reversed(candidates):
+            try:
+                parsed = json.loads(cand.group(0), strict=False)
+                if isinstance(parsed, dict) and "predicted_answer" in parsed:
+                    last_candidate = parsed
+                    break
+            except json.JSONDecodeError:
+                continue
+        if last_candidate is not None:
+            return last_candidate, None
+        # Fall back to a greedy regex (first { to last }) for severely malformed output.
         match = re.search(r"\{.*\}", cleaned, re.DOTALL)
         if not match:
             salvaged = salvage_stepfun_fields(cleaned)
@@ -551,12 +645,14 @@ def salvage_stepfun_fields(text: str) -> dict[str, Any] | None:
     ]
     salvaged: dict[str, Any] = {}
     for key in string_keys:
-        match = re.search(rf'"{re.escape(key)}"\s*:\s*"((?:[^"\\]|\\.)*)"', text, re.DOTALL)
-        if match:
-            salvaged[key] = bytes(match.group(1), "utf-8").decode("unicode_escape", errors="replace")
-    confidence_match = re.search(r'"confidence"\s*:\s*([0-9]+(?:\.[0-9]+)?)', text)
-    if confidence_match:
-        salvaged["confidence"] = float(confidence_match.group(1))
+        # Use findall + last match: for outputs with <think> reasoning then final JSON,
+        # earlier matches may contain stale/draft predicted_answer values.
+        matches = re.findall(rf'"{re.escape(key)}"\s*:\s*"((?:[^"\\]|\\.)*)"', text, re.DOTALL)
+        if matches:
+            salvaged[key] = bytes(matches[-1], "utf-8").decode("unicode_escape", errors="replace")
+    confidence_matches = re.findall(r'"confidence"\s*:\s*([0-9]+(?:\.[0-9]+)?)', text)
+    if confidence_matches:
+        salvaged["confidence"] = float(confidence_matches[-1])
     if salvaged.get("predicted_answer") and salvaged.get("answerable_label"):
         salvaged.setdefault("confidence", 0.0)
         salvaged.setdefault("evidence_quote", "")
@@ -568,7 +664,13 @@ def salvage_stepfun_fields(text: str) -> dict[str, Any] | None:
 
 
 def audit_one(item: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
-    document_text, original_chars, truncated, doc_error = read_document(item["doc_ref"], args.max_doc_chars)
+    focus_texts = [str(item.get("supporting_span") or "")]
+    focus_texts.extend(str(answer) for answer in item.get("accepted_answers") or [])
+    document_text, original_chars, truncated, doc_error = read_document(
+        item["doc_ref"],
+        args.max_doc_chars,
+        focus_texts=focus_texts,
+    )
     base = dict(item)
     base.update(
         {
@@ -810,10 +912,62 @@ def write_summary(path: Path, rows: list[dict[str, Any]]) -> dict[str, Any]:
     return summary
 
 
-def write_viewer(path: Path, rows: list[dict[str, Any]], summary: dict[str, Any]) -> None:
+def summarize_proposals(
+    proposals: dict[str, dict[str, Any]],
+    rows: list[dict[str, Any]],
+) -> dict[str, Any]:
+    audit_ids_with_issues = {
+        str(r.get("audit_id"))
+        for r in rows
+        if "exact_mismatch" in (r.get("flags") or [])
+        or (r.get("stepfun") or {}).get("answerable_label") == "no"
+        or (r.get("stepfun") or {}).get("answerable_label") == "requires_calculation"
+    }
+    by_issue: dict[str, int] = {}
+    by_fp_subtype: dict[str, int] = {}
+    needs_human = 0
+    high_conf = 0
+    for proposal in proposals.values():
+        issue = str(proposal.get("issue_type") or "unspecified")
+        by_issue[issue] = by_issue.get(issue, 0) + 1
+        subtype = proposal.get("false_positive_subtype")
+        if subtype:
+            by_fp_subtype[subtype] = by_fp_subtype.get(subtype, 0) + 1
+        if proposal.get("needs_human_review"):
+            needs_human += 1
+        try:
+            if float(proposal.get("confidence", 0)) >= 0.8:
+                high_conf += 1
+        except (TypeError, ValueError):
+            pass
+    return {
+        "total_proposals": len(proposals),
+        "audit_priority_count": len(audit_ids_with_issues),
+        "covered_audit_priority_count": len(set(proposals) & audit_ids_with_issues),
+        "by_issue_type": dict(sorted(by_issue.items(), key=lambda kv: (-kv[1], kv[0]))),
+        "by_false_positive_subtype": dict(sorted(by_fp_subtype.items(), key=lambda kv: (-kv[1], kv[0]))),
+        "needs_human_review": needs_human,
+        "high_confidence": high_conf,
+    }
+
+
+def write_viewer(
+    path: Path,
+    rows: list[dict[str, Any]],
+    summary: dict[str, Any],
+    proposals: dict[str, dict[str, Any]] | None = None,
+) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    viewer_rows = [viewer_row(row) for row in sorted(rows, key=review_sort_key)]
-    data_json = json.dumps({"summary": summary, "rows": viewer_rows}, ensure_ascii=False)
+    proposals = proposals or {}
+    viewer_rows = [
+        viewer_row(row, proposals.get(str(row.get("audit_id") or "")))
+        for row in sorted(rows, key=review_sort_key)
+    ]
+    proposal_summary = summarize_proposals(proposals, rows)
+    data_json = json.dumps(
+        {"summary": summary, "rows": viewer_rows, "proposal_summary": proposal_summary},
+        ensure_ascii=False,
+    )
     data_json = data_json.replace("</", "<\\/")
     html_template = """<!doctype html>
 <html lang="en">
@@ -870,7 +1024,7 @@ def write_viewer(path: Path, rows: list[dict[str, Any]], summary: dict[str, Any]
     .label {{ color: var(--muted); font-size: 13px; margin-top: 3px; }}
     .controls {{
       display: grid;
-      grid-template-columns: 1fr repeat(4, minmax(120px, 170px));
+      grid-template-columns: 1fr repeat(6, minmax(120px, 170px));
       gap: 10px;
       padding: 18px 34px;
     }}
@@ -948,6 +1102,38 @@ def write_viewer(path: Path, rows: list[dict[str, Any]], summary: dict[str, Any]
     code {{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }}
     .mono {{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }}
     .small {{ color: var(--muted); font-size: 12px; }}
+    .proposal-panel {{
+      background: linear-gradient(135deg, #fbf6e9, #f1e8d2);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 11px 13px;
+      margin-top: 8px;
+    }}
+    .proposal-panel.has-warn {{ background: linear-gradient(135deg, #fdf2dd, #f6e4bd); }}
+    .proposal-panel.has-bad  {{ background: linear-gradient(135deg, #fce4dd, #f6cdc1); }}
+    .proposal-empty {{
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+      padding: 8px 11px;
+      margin-top: 8px;
+      color: var(--muted);
+      font-style: italic;
+    }}
+    .proposal-row {{ display: grid; grid-template-columns: 130px 1fr; gap: 8px; margin: 3px 0; align-items: baseline; }}
+    .proposal-row .key {{ color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }}
+    .proposal-row .val {{ color: var(--ink); }}
+    .proposal-row .val.proposed {{ background: #fdf6df; padding: 1px 5px; border-radius: 4px; }}
+    .chain-card {{
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px 10px;
+      margin: 4px 0;
+      background: rgba(255,250,240,.65);
+      font-size: 12.5px;
+    }}
+    .chain-card.current {{ background: #e9efe6; border-color: var(--accent); }}
+    .chain-card .chain-meta {{ color: var(--muted); font-size: 11px; }}
+    .chain-card .answer {{ color: var(--accent); font-weight: 600; }}
     @media (max-width: 900px) {{
       .controls {{ grid-template-columns: 1fr; }}
       th {{ position: static; }}
@@ -966,7 +1152,7 @@ def write_viewer(path: Path, rows: list[dict[str, Any]], summary: dict[str, Any]
 </header>
 <section class="cards" id="cards"></section>
 <section class="controls">
-  <input id="search" placeholder="Search question, answer, doc id, reason...">
+  <input id="search" placeholder="Search question, answer, doc id, reason, proposal...">
   <select id="flagFilter"><option value="">All flags</option></select>
   <select id="labelFilter"><option value="">All labels</option></select>
   <select id="companyFilter"><option value="">All companies</option></select>
@@ -976,6 +1162,13 @@ def write_viewer(path: Path, rows: list[dict[str, Any]], summary: dict[str, Any]
     <option value="numeric">Numeric-only match</option>
     <option value="mismatch">Exact mismatch</option>
   </select>
+  <select id="proposalFilter">
+    <option value="">All rows</option>
+    <option value="has">Has proposal</option>
+    <option value="missing">Priority but no proposal</option>
+    <option value="needs_review">Needs human review</option>
+  </select>
+  <select id="issueTypeFilter"><option value="">All issue types</option></select>
 </section>
 <main>
   <section class="plots">
@@ -987,11 +1180,11 @@ def write_viewer(path: Path, rows: list[dict[str, Any]], summary: dict[str, Any]
   <table>
     <thead>
       <tr>
-        <th>Hop</th>
-        <th>Question</th>
-        <th>Gold / StepFun</th>
-        <th>Flags</th>
-        <th>Evidence and notes</th>
+        <th style="width:11%">Hop</th>
+        <th style="width:24%">Question and chain context</th>
+        <th style="width:14%">Gold / StepFun</th>
+        <th style="width:14%">Flags / Evidence</th>
+        <th style="width:37%">Proposed change</th>
       </tr>
     </thead>
     <tbody id="rows"></tbody>
@@ -1003,6 +1196,8 @@ const DATA = JSON.parse(document.getElementById('audit-data').textContent);
 const rows = DATA.rows;
 const summary = DATA.summary;
 
+const proposalSummary = DATA.proposal_summary || {{ total_proposals: 0, audit_priority_count: 0, covered_audit_priority_count: 0, by_issue_type: {{}}, needs_human_review: 0, high_confidence: 0 }};
+
 function pct(x) {{ return (100 * x).toFixed(1) + '%'; }}
 function esc(s) {{
   return String(s ?? '').replace(/[&<>"']/g, c => ({{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}}[c]));
@@ -1010,11 +1205,16 @@ function esc(s) {{
 function card(label, value) {{ return `<div class="card"><div class="metric">${{esc(value)}}</div><div class="label">${{esc(label)}}</div></div>`; }}
 function renderCards() {{
   const total = summary.total_hops || 0;
+  const proposalCoverage = proposalSummary.audit_priority_count
+    ? `${{proposalSummary.covered_audit_priority_count}} / ${{proposalSummary.audit_priority_count}}`
+    : `${{proposalSummary.total_proposals}}`;
   document.getElementById('cards').innerHTML = [
     card('Total hop questions', total),
     card('Exact StepFun matches', `${{summary.exact_matches}} (${{pct(summary.exact_match_rate || 0)}})`),
     card('Numeric-only matches', summary.numeric_match_only || 0),
     card('Exact mismatches', total - (summary.exact_matches || 0)),
+    card('Proposals (priority covered)', proposalCoverage),
+    card('Proposals needing human review', proposalSummary.needs_human_review || 0),
   ].join('');
 }}
 function optionize(id, values) {{
@@ -1042,13 +1242,27 @@ function renderPlots() {{
   const hopEntries = Object.entries(summary.hop_type_stats || {}).map(([k, v]) => [k + ' exact', Math.round(1000 * v.exact_matches / Math.max(1, v.total)) / 10]);
   renderBarPlot('hopPlot', hopEntries, 100);
 }}
+function isPriorityRow(row) {{
+  if (row.answerable_label === 'no' || row.answerable_label === 'requires_calculation') return true;
+  return row.flags.includes('exact_mismatch');
+}}
 function rowMatches(row) {{
   const q = document.getElementById('search').value.trim().toLowerCase();
   const flag = document.getElementById('flagFilter').value;
   const label = document.getElementById('labelFilter').value;
   const company = document.getElementById('companyFilter').value;
   const match = document.getElementById('matchFilter').value;
-  const hay = [row.audit_id, row.company, row.doc_id, row.question, row.gold_answer, row.accepted_answers.join(' '), row.stepfun_answer, row.reason, row.evidence_quote, row.suggested_rewrite].join(' ').toLowerCase();
+  const proposalState = document.getElementById('proposalFilter').value;
+  const issueType = document.getElementById('issueTypeFilter').value;
+  const proposal = row.proposal || null;
+  const proposalText = proposal ? [
+    proposal.proposed_question, proposal.proposed_gold_answer,
+    (proposal.proposed_accepted_variants || []).join(' '),
+    proposal.evidence_quote, proposal.rationale, proposal.issue_type
+  ].join(' ') : '';
+  const hay = [row.audit_id, row.company, row.doc_id, row.question, row.gold_answer,
+    row.accepted_answers.join(' '), row.stepfun_answer, row.reason, row.evidence_quote,
+    row.suggested_rewrite, proposalText].join(' ').toLowerCase();
   if (q && !hay.includes(q)) return false;
   if (flag && !row.flags.includes(flag)) return false;
   if (label && row.answerable_label !== label) return false;
@@ -1056,12 +1270,67 @@ function rowMatches(row) {{
   if (match === 'exact' && !row.exact_match) return false;
   if (match === 'numeric' && !(row.numeric_match && !row.exact_match)) return false;
   if (match === 'mismatch' && row.exact_match) return false;
+  if (proposalState === 'has' && !proposal) return false;
+  if (proposalState === 'missing' && (proposal || !isPriorityRow(row))) return false;
+  if (proposalState === 'needs_review' && !(proposal && proposal.needs_human_review)) return false;
+  if (issueType && (!proposal || proposal.issue_type !== issueType)) return false;
   return true;
 }}
 function flagClass(flag) {{
   if (flag.includes('mismatch') || flag.includes('not_found') || flag.includes('error')) return 'bad';
   if (flag.includes('numeric') || flag.includes('ambiguous') || flag.includes('underspecified') || flag.includes('truncated') || flag.includes('rewrite')) return 'warn';
   return 'good';
+}}
+function issueTypeClass(issueType) {{
+  if (!issueType) return '';
+  if (issueType === 'drop_or_manual_review') return 'has-bad';
+  if (issueType === 'change_gold_answer') return 'has-warn';
+  if (issueType === 'audit_false_positive') return 'has-warn';
+  return '';
+}}
+function chainCard(hop, label, isCurrent) {{
+  if (!hop) return `<div class="chain-card small">${{esc(label)}}: <i>n/a</i></div>`;
+  const cls = isCurrent ? 'chain-card current' : 'chain-card';
+  return `<div class="${{cls}}">
+    <div class="chain-meta">${{esc(label)}} · hop ${{esc(hop.hop_number)}} · ${{esc(hop.hop_type || '')}} · <span class="mono">${{esc(hop.doc_id || '')}}</span></div>
+    <div>${{esc(hop.question)}}</div>
+    <div class="answer">→ ${{esc(hop.answer)}}</div>
+  </div>`;
+}}
+function chainContextBlock(row) {{
+  return `<details>
+    <summary>Chain context (hop ${{esc(row.hop_number)}} of ${{esc(row.n_hops || '?')}})</summary>
+    ${{chainCard(row.prev_hop, 'Previous', false)}}
+    ${{chainCard({{hop_number: row.hop_number, hop_type: row.hop_type, question: row.question, answer: row.gold_answer, doc_id: row.doc_id}}, 'Current (this hop)', true)}}
+    ${{chainCard(row.next_hop, 'Next', false)}}
+    ${{row.global_question ? `<details><summary>Full chain text</summary><pre style="white-space:pre-wrap;font-size:12px">${{esc(row.global_question)}}</pre><div class="small">Final answer: <b>${{esc(row.global_answer)}}</b></div></details>` : ''}}
+  </details>`;
+}}
+function proposalBlock(row) {{
+  const proposal = row.proposal;
+  if (!proposal) {{
+    if (isPriorityRow(row)) return `<div class="proposal-empty">No proposal yet (priority row).</div>`;
+    return '';
+  }}
+  const issue = proposal.issue_type || 'unspecified';
+  const cls = `proposal-panel ${{issueTypeClass(issue)}}`;
+  const qChanged = (proposal.proposed_question || '') !== (row.question || '');
+  const aChanged = String(proposal.proposed_gold_answer ?? '') !== String(row.gold_answer ?? '');
+  const variantList = (proposal.proposed_accepted_variants || []).join(' | ');
+  const conf = (proposal.confidence !== undefined && proposal.confidence !== null) ? Number(proposal.confidence).toFixed(2) : '—';
+  const reviewPill = proposal.needs_human_review ? '<span class="pill bad">needs human review</span>' : '<span class="pill good">auto-ok</span>';
+  const fpSubtype = proposal.false_positive_subtype;
+  const fpPill = fpSubtype ? ` <span class="pill">${{esc(fpSubtype)}}</span>` : '';
+  return `<div class="${{cls}}">
+    <div><b>Proposal</b> <span class="pill warn">${{esc(issue)}}</span>${{fpPill}} ${{reviewPill}} <span class="pill">conf ${{esc(conf)}}</span></div>
+    <div class="proposal-row"><span class="key">Proposed question</span><span class="val ${{qChanged ? 'proposed' : ''}}">${{esc(proposal.proposed_question)}}</span></div>
+    <div class="proposal-row"><span class="key">Proposed answer</span><span class="val ${{aChanged ? 'proposed' : ''}}">${{esc(proposal.proposed_gold_answer)}}</span></div>
+    ${{variantList ? `<div class="proposal-row"><span class="key">Accepted variants</span><span class="val mono">${{esc(variantList)}}</span></div>` : ''}}
+    ${{proposal.evidence_quote ? `<div class="proposal-row"><span class="key">Evidence quote</span><span class="val"><i>"${{esc(proposal.evidence_quote)}}"</i></span></div>` : ''}}
+    ${{proposal.evidence_location ? `<div class="proposal-row"><span class="key">Evidence location</span><span class="val mono">${{esc(proposal.evidence_location)}}</span></div>` : ''}}
+    <div class="proposal-row"><span class="key">Rationale</span><span class="val">${{esc(proposal.rationale)}}</span></div>
+    ${{proposal.notes ? `<div class="proposal-row"><span class="key">Notes</span><span class="val">${{esc(proposal.notes)}}</span></div>` : ''}}
+  </div>`;
 }}
 function renderRows() {{
   const visible = rows.filter(rowMatches);
@@ -1072,13 +1341,16 @@ function renderRows() {{
       (row.numeric_match ? '<span class="pill warn">numeric-only match</span>' : '<span class="pill bad">mismatch</span>');
     return `<tr>
       <td>
-        <div><b>${{esc(row.chain_id)}} hop ${{esc(row.hop_number)}}</b></div>
+        <div><b>${{esc(row.chain_id)}} · hop ${{esc(row.hop_number)}}/${{esc(row.n_hops || '?')}}</b></div>
         <div class="small">${{esc(row.hop_type)}} · ${{esc(row.company || '')}}</div>
         <div class="small mono">${{esc(row.doc_id || '')}}</div>
+        <div class="small mono"><code>${{esc(row.audit_id)}}</code></div>
       </td>
       <td>
-        <div>${{esc(row.question)}}</div>
-        ${{row.existing_suggested_rewrite ? `<details><summary>Existing rewrite</summary>${{esc(row.existing_suggested_rewrite)}}</details>` : ''}}
+        <div><b>Q:</b> ${{esc(row.question)}}</div>
+        ${{row.question_templated && row.question_templated !== row.question ? `<div class="small"><b>Template:</b> ${{esc(row.question_templated)}}</div>` : ''}}
+        ${{chainContextBlock(row)}}
+        ${{row.existing_suggested_rewrite ? `<details><summary>Existing suggested_rewrite</summary>${{esc(row.existing_suggested_rewrite)}}</details>` : ''}}
       </td>
       <td>
         <div><b>Gold:</b> ${{esc(row.gold_answer)}}</div>
@@ -1086,15 +1358,19 @@ function renderRows() {{
         <div>${{matchPill}} <span class="pill">${{esc(row.answerable_label)}}</span></div>
         <details><summary>Accepted variants (${{row.accepted_answers.length}})</summary><div class="mono">${{esc(row.accepted_answers.join(' | '))}}</div></details>
       </td>
-      <td>${{flags}}</td>
       <td>
-        <div><b>Evidence:</b> ${{esc(row.evidence_quote)}}</div>
-        <div><b>Reason:</b> ${{esc(row.reason)}}</div>
-        ${{row.suggested_rewrite ? `<div><b>Suggested rewrite:</b> ${{esc(row.suggested_rewrite)}}</div>` : ''}}
-        <details><summary>Doc path</summary><code>${{esc(row.doc_ref)}}</code></details>
+        <div>${{flags}}</div>
+        <div class="small" style="margin-top:6px"><b>StepFun evidence:</b> <i>${{esc(row.evidence_quote || '—')}}</i></div>
+        <div class="small"><b>Reason:</b> ${{esc(row.reason || '')}}</div>
+        ${{row.suggested_rewrite ? `<div class="small"><b>StepFun suggestion:</b> ${{esc(row.suggested_rewrite)}}</div>` : ''}}
+        ${{row.supporting_span ? `<details><summary>Supporting span (gold)</summary><div class="small mono">${{esc(row.supporting_span)}}</div></details>` : ''}}
+        <details><summary>Doc path</summary><code class="small">${{esc(row.doc_ref)}}</code></details>
+      </td>
+      <td>
+        ${{proposalBlock(row)}}
       </td>
     </tr>`;
-  }).join('');
+  }}).join('');
 }}
 function init() {{
   renderCards();
@@ -1102,7 +1378,8 @@ function init() {{
   optionize('flagFilter', uniq(rows.flatMap(r => r.flags)));
   optionize('labelFilter', uniq(rows.map(r => r.answerable_label)));
   optionize('companyFilter', uniq(rows.map(r => r.company)));
-  ['search','flagFilter','labelFilter','companyFilter','matchFilter'].forEach(id => document.getElementById(id).addEventListener('input', renderRows));
+  optionize('issueTypeFilter', uniq(rows.map(r => r.proposal && r.proposal.issue_type)));
+  ['search','flagFilter','labelFilter','companyFilter','matchFilter','proposalFilter','issueTypeFilter'].forEach(id => document.getElementById(id).addEventListener('input', renderRows));
   renderRows();
 }}
 init();
@@ -1114,7 +1391,7 @@ init();
     path.write_text(html_text, encoding="utf-8")
 
 
-def viewer_row(row: dict[str, Any]) -> dict[str, Any]:
+def viewer_row(row: dict[str, Any], proposal: dict[str, Any] | None = None) -> dict[str, Any]:
     stepfun = row.get("stepfun") or {}
     comparison = row.get("comparison") or {}
     return {
@@ -1122,10 +1399,12 @@ def viewer_row(row: dict[str, Any]) -> dict[str, Any]:
         "chain_id": row.get("chain_id"),
         "hop_number": row.get("hop_number"),
         "hop_type": row.get("hop_type"),
+        "n_hops": row.get("n_hops"),
         "company": row.get("company"),
         "doc_id": row.get("doc_id"),
         "doc_ref": row.get("doc_ref"),
         "question": row.get("question"),
+        "question_templated": row.get("question_templated"),
         "gold_answer": row.get("gold_answer"),
         "accepted_answers": row.get("accepted_answers") or [],
         "stepfun_answer": stepfun.get("predicted_answer"),
@@ -1142,7 +1421,64 @@ def viewer_row(row: dict[str, Any]) -> dict[str, Any]:
         "question_issues": row.get("question_issues") or [],
         "document_truncated": row.get("document_truncated"),
         "document_chars": row.get("document_chars"),
+        "supporting_span": row.get("supporting_span"),
+        "prev_hop": row.get("prev_hop"),
+        "next_hop": row.get("next_hop"),
+        "global_question": row.get("global_question"),
+        "global_answer": row.get("global_answer"),
+        "proposal": proposal,
     }
+
+
+def load_proposals(path: Path) -> dict[str, dict[str, Any]]:
+    if not path or not path.exists():
+        return {}
+    proposals: dict[str, dict[str, Any]] = {}
+    with path.open("r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                row = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            audit_id = str(row.get("audit_id") or "")
+            chain_id = str(row.get("chain_id") or "")
+            hop_number = row.get("hop_number")
+            if not audit_id and chain_id and hop_number is not None:
+                audit_id = f"{chain_id}::hop{hop_number}"
+            if not audit_id:
+                continue
+            proposals[audit_id] = row
+    return proposals
+
+
+def merge_chain_context(rows: list[dict[str, Any]], dataset_rows: list[dict[str, Any]]) -> None:
+    chain_lookup: dict[str, dict[str, Any]] = {}
+    for chain in dataset_rows:
+        chain_id = str(chain.get("chain_id") or chain.get("id") or "")
+        if chain_id:
+            chain_lookup[chain_id] = chain
+    for row in rows:
+        chain = chain_lookup.get(str(row.get("chain_id") or ""))
+        if not chain:
+            continue
+        hops = chain.get("hops") or []
+        hop_index = next(
+            (i for i, hop in enumerate(hops) if (hop.get("hop_number") or i + 1) == row.get("hop_number")),
+            None,
+        )
+        if hop_index is None:
+            continue
+        prev_hop = hops[hop_index - 1] if hop_index > 0 else None
+        next_hop = hops[hop_index + 1] if hop_index + 1 < len(hops) else None
+        row.setdefault("n_hops", len(hops))
+        row.setdefault("prev_hop", _hop_summary(prev_hop))
+        row.setdefault("next_hop", _hop_summary(next_hop))
+        row.setdefault("global_question", chain.get("global_question"))
+        row.setdefault("global_answer", chain.get("global_answer"))
+        row.setdefault("question_templated", hops[hop_index].get("question_templated"))
 
 
 def parse_args() -> argparse.Namespace:
@@ -1170,6 +1506,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--chain-id", action="append", default=[])
     parser.add_argument("--no-resume", action="store_true")
     parser.add_argument("--rebuild-only", action="store_true")
+    parser.add_argument("--proposals", default=DEFAULT_PROPOSALS)
+    parser.add_argument("--variant-proposals", default=DEFAULT_VARIANT_PROPOSALS)
     return parser.parse_args()
 
 
@@ -1180,12 +1518,23 @@ def main() -> int:
     viewer_path = Path(args.viewer)
     summary_json_path = Path(args.summary_json)
 
+    proposals_path = Path(args.proposals) if args.proposals else None
+    variant_proposals_path = Path(args.variant_proposals) if args.variant_proposals else None
+    proposals = load_proposals(proposals_path) if proposals_path else {}
+    if variant_proposals_path:
+        variant_proposals = load_proposals(variant_proposals_path)
+        for audit_id, proposal in variant_proposals.items():
+            proposals.setdefault(audit_id, proposal)
+
     if args.rebuild_only:
         rows = read_jsonl(output_path)
+        dataset_rows = read_jsonl(Path(args.dataset)) if Path(args.dataset).exists() else []
+        if dataset_rows:
+            merge_chain_context(rows, dataset_rows)
         summary = write_summary(summary_json_path, rows)
         write_review_csv(review_csv_path, rows)
-        write_viewer(viewer_path, rows, summary)
-        print(f"Rebuilt review artifacts for {len(rows)} rows")
+        write_viewer(viewer_path, rows, summary, proposals)
+        print(f"Rebuilt review artifacts for {len(rows)} rows; proposals={len(proposals)}")
         print(f"viewer={viewer_path}")
         print(f"csv={review_csv_path}")
         return 0
@@ -1228,9 +1577,10 @@ def main() -> int:
     if chain_ids or args.limit is not None:
         wanted = {item["audit_id"] for item in items}
         rows = [row for row in rows if row.get("audit_id") in wanted]
+    merge_chain_context(rows, dataset_rows)
     summary = write_summary(summary_json_path, rows)
     write_review_csv(review_csv_path, rows)
-    write_viewer(viewer_path, rows, summary)
+    write_viewer(viewer_path, rows, summary, proposals)
     print(json.dumps(summary, indent=2, sort_keys=True))
     print(f"output={output_path}")
     print(f"review_csv={review_csv_path}")

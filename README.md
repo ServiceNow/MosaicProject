@@ -8,28 +8,31 @@ Run these from the repo root:
 
 ```bash
 cd /home/toolkit/my_code/MosaicProject
-export PRIVACY_AGENT_HELPER_URL="http://dns-4943305a-c17f-44b1-b767-9536529eb8bc-ph-fw4b-20260507201033:8012"
+export PRIVACY_AGENT_HELPER_URL="http://<active-helper-internal-dns>:8012"
 ```
 
-First-web-only 4B validation run, matching the low-concurrency validation setup:
+Current first-web-only 4B validation run. This uses the 2026-05-10 spanfixed
+dataset, trains all captured training texts, and keeps the held-out MediConn
+test company out of train/val:
 
 ```bash
 TS=$(date +%Y%m%d%H%M%S)
-JOB="privacy_hopqa_firstweb_qwen3_4b2507_shortanswer_promptfix_${TS}"
+JOB="privacy_hopqa_firstweb_qwen3_4b2507_spanfixed_allcalls_${TS}"
 
 PIPELINERL_ROOT=/home/toolkit/my_code/PipelineRL \
 OUTPUT_DIR_BASE=/mnt/llmd/results/exps/alexg/reason \
 JOB_NAME="$JOB" \
-WANDB_PROJECT=privacy_hopqa_firstweb_4b_validation \
-WANDB_GROUP=firstweb_shortanswer_promptfix \
+WANDB_PROJECT=privacy_hopqa_firstweb_4b_spanfixed_allcalls \
+WANDB_GROUP=spanfixed_allcalls \
 WANDB_NAME="$JOB" \
 REPLICAS=2 \
 MODEL_PATH="Qwen/Qwen3-4B-Instruct-2507" \
+CAPTURE_MODE=all_calls \
 DATASET_SPLIT_ROOT=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset \
-FINAL_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_2026-05-07.jsonl \
-TRAIN_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_2026-05-07_train.jsonl \
-VAL_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_2026-05-07_val.jsonl \
-TEST_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_2026-05-07_test.jsonl \
+FINAL_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_2026-05-10_spanfixed.jsonl \
+TRAIN_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_2026-05-10_spanfixed_train.jsonl \
+VAL_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_2026-05-10_spanfixed_val.jsonl \
+TEST_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_2026-05-10_spanfixed_test.jsonl \
 FILTER_ZERO_ADVANTAGE_GROUPS=true \
 EXTRA_OVERRIDES="privacy_hopqa.reward_mode=all_hops_correct privacy_hopqa.iteration_budget_per_hop=3 privacy_hopqa.helper_timeout_s=180 actor.llm_max_rollouts=16" \
 bash /home/toolkit/my_code/MosaicProject/run_privacy_hopqa.sh
@@ -170,6 +173,7 @@ Use this as the main index for repo notes:
 - [Current System](./docs/system.md): current end-to-end system notes.
 - [Examples](./docs/examples.md): generated question examples.
 - [Privacy HopQA final dataset](./docs/privacy_hopqa_final_dataset.md): finalized dataset, schema, viewer, answer variants, and split artifacts.
+- [Privacy HopQA spanfix 2026-05-10](./docs/privacy_hopqa_spanfix_2026-05-10.md): current spanfixed dataset version, validation, and first-web rerun settings.
 - [Privacy HopQA training](./docs/privacy_hopqa_training.md): PipelineRL launch path, helper setup, dataset split, EAI notes, and monitoring.
 - [Privacy HopQA helper fix notes](./docs/privacy_hopqa_helper_fix_2026-05-06.md): helper environment, vLLM, FAISS, and benchmark details.
 - [Privacy HopQA initial-state eval](./docs/privacy_hopqa_initial_state_eval.md): baseline evaluation plan and privacy-evaluator workflow.
