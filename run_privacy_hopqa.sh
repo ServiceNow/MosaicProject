@@ -58,7 +58,7 @@ if [[ "${EAI_REPLICAS_IN_FILE}" == "1" && -z "${MULTI_REPLICA_FILE}" ]]; then
     fi
 
     DNS_NAME=${DNS_NAME:-$(
-        python - <<'PY'
+        python3 - <<'PY'
 import uuid
 
 print(f"phrl{uuid.uuid4().hex[:8]}")
@@ -66,7 +66,7 @@ PY
     )}
     TMP_MULTI_REPLICA_FILE=$(mktemp /tmp/privacy_hopqa_multinode.XXXXXX.yaml)
 
-    python - "${MULTI_REPLICA_TEMPLATE}" "${TMP_MULTI_REPLICA_FILE}" "${REPLICAS}" "${DNS_NAME}" <<'PY'
+    python3 - "${MULTI_REPLICA_TEMPLATE}" "${TMP_MULTI_REPLICA_FILE}" "${REPLICAS}" "${DNS_NAME}" <<'PY'
 import sys
 
 src_path, dst_path, replicas, dns_name = sys.argv[1:5]
