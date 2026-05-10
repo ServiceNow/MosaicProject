@@ -10,7 +10,7 @@ ACCOUNT=${ACCOUNT:-"snow.research.rlar"}
 TMP_JOB_SPEC=""
 
 DEFAULT_DNS_NAME=$(
-python - <<'PY'
+python3 - <<'PY'
 import uuid
 
 print(f"ph-{uuid.uuid4().hex[:8]}")
@@ -33,7 +33,7 @@ trap cleanup EXIT
 
 TMP_JOB_SPEC=$(mktemp /tmp/privacy_helper_job.XXXXXX.yaml)
 
-python - "${JOB_SPEC}" "${TMP_JOB_SPEC}" "${JOB_NAME}" "${DNS_NAME}" <<'PY'
+python3 - "${JOB_SPEC}" "${TMP_JOB_SPEC}" "${JOB_NAME}" "${DNS_NAME}" <<'PY'
 import sys
 
 src_path, dst_path, job_name, dns_name = sys.argv[1:5]
@@ -97,7 +97,7 @@ fi
 submit_output=$(eai job submit --account "${ACCOUNT}" --format json -f "${TMP_JOB_SPEC}")
 echo "${submit_output}"
 
-job_id=$(python - <<'PY' "${submit_output}"
+job_id=$(python3 - <<'PY' "${submit_output}"
 import json
 import sys
 
@@ -112,7 +112,7 @@ resolved_internal_name=""
 if [[ -n "${job_id}" ]]; then
     job_spec_output=$(eai job info "${job_id}" --job-spec 2>/dev/null || true)
     if [[ -n "${job_spec_output}" ]]; then
-        resolved_internal_name=$(python - <<'PY' "${job_spec_output}"
+        resolved_internal_name=$(python3 - <<'PY' "${job_spec_output}"
 import sys
 
 lines = sys.argv[1].splitlines()
@@ -131,7 +131,7 @@ PY
     fi
 fi
 
-python - <<'PY' "${submit_output}" "${helper_url}" "${resolved_internal_name}"
+python3 - <<'PY' "${submit_output}" "${helper_url}" "${resolved_internal_name}"
 import json
 import sys
 
