@@ -533,30 +533,70 @@ def grouped_bar_chart(title: str, groups: list[str], series: list[tuple[str, lis
     return svg_wrap(width, height, "".join(body))
 
 
-def heatmap(title: str, matrix: list[list[int]], x_labels: list[str], y_labels: list[str], *, subtitle: str | None = None, color: str = "blue") -> str:
-    width, height = 720, 560
-    ml, mr, mt, mb = 120, 34, 84, 74
+def heatmap(
+    title: str,
+    matrix: list[list[int]],
+    x_labels: list[str],
+    y_labels: list[str],
+    *,
+    subtitle: str | None = None,
+    color: str = "blue",
+    percent_mode: str = "row",
+    x_axis_label: str = "candidate / prediction",
+    y_axis_label: str = "StepFun reference",
+    x_sub_labels: list[str] | None = None,
+    width: int = 760,
+    height: int = 560,
+) -> str:
+    ml, mr, mt, mb = 120, 34, 100 if x_sub_labels else 84, 74
     cells_x = len(x_labels)
     cells_y = len(y_labels)
     cell = min((width - ml - mr) / max(1, cells_x), (height - mt - mb) / max(1, cells_y))
-    max_value = max([value for row in matrix for value in row] + [1])
+    row_denoms = [sum(row) for row in matrix]
+    col_denoms = [sum(matrix[yi][xi] for yi in range(cells_y)) for xi in range(cells_x)]
+    total_denom = sum(row_denoms)
+
+    def denom_for(yi: int, xi: int) -> int:
+        if percent_mode == "row":
+            return row_denoms[yi]
+        if percent_mode == "column":
+            return col_denoms[xi]
+        if percent_mode == "all":
+            return total_denom
+        return 0
+
+    fractions = []
+    for yi, row in enumerate(matrix):
+        for xi, value in enumerate(row):
+            denom = denom_for(yi, xi)
+            fractions.append(value / denom if denom else 0.0)
+    max_fraction = max(fractions + [1e-9])
+    max_count = max([value for row in matrix for value in row] + [1])
     body = [f"<rect width='{width}' height='{height}' fill='{PALETTE['panel']}'/>", chart_title(title, subtitle)]
     for xi, label in enumerate(x_labels):
         x = ml + xi * cell + cell / 2
-        body.append(f"<text x='{x:.1f}' y='{mt - 14}' text-anchor='middle' font-size='12' fill='{PALETTE['ink']}'>{esc(label)}</text>")
+        if x_sub_labels:
+            body.append(f"<text x='{x:.1f}' y='{mt - 30}' text-anchor='middle' font-size='12' fill='{PALETTE['ink']}'>{esc(label)}</text>")
+            body.append(f"<text x='{x:.1f}' y='{mt - 14}' text-anchor='middle' font-size='11' fill='{PALETTE['muted']}'>{esc(x_sub_labels[xi] if xi < len(x_sub_labels) else '')}</text>")
+        else:
+            body.append(f"<text x='{x:.1f}' y='{mt - 14}' text-anchor='middle' font-size='12' fill='{PALETTE['ink']}'>{esc(label)}</text>")
     for yi, label in enumerate(y_labels):
         y = mt + yi * cell + cell / 2
         body.append(f"<text x='{ml - 12}' y='{y + 4:.1f}' text-anchor='end' font-size='12' fill='{PALETTE['ink']}'>{esc(label)}</text>")
     for yi, row in enumerate(matrix):
         for xi, value in enumerate(row):
-            frac = value / max_value if max_value else 0
+            denom = denom_for(yi, xi)
+            pct = value / denom if denom else 0.0
+            frac = pct / max_fraction if percent_mode != "none" else value / max_count
             x = ml + xi * cell
             y = mt + yi * cell
             fill = color_for_fraction(frac, color)
             body.append(f"<rect x='{x:.1f}' y='{y:.1f}' width='{cell - 2:.1f}' height='{cell - 2:.1f}' rx='4' fill='{fill}' stroke='{PALETTE['line']}'/>")
-            body.append(f"<text x='{x + cell / 2:.1f}' y='{y + cell / 2 + 5:.1f}' text-anchor='middle' font-size='16' font-weight='700' fill='{PALETTE['ink']}'>{value}</text>")
-    body.append(f"<text x='{ml + cells_x * cell / 2:.1f}' y='{height - 24}' text-anchor='middle' font-size='12' fill='{PALETTE['muted']}'>candidate / prediction</text>")
-    body.append(f"<text x='28' y='{mt + cells_y * cell / 2:.1f}' transform='rotate(-90 28 {mt + cells_y * cell / 2:.1f})' text-anchor='middle' font-size='12' fill='{PALETTE['muted']}'>StepFun reference</text>")
+            body.append(f"<text x='{x + cell / 2:.1f}' y='{y + cell / 2 - 4:.1f}' text-anchor='middle' font-size='12' font-weight='700' fill='{PALETTE['ink']}'>n={value}</text>")
+            if percent_mode != "none":
+                body.append(f"<text x='{x + cell / 2:.1f}' y='{y + cell / 2 + 14:.1f}' text-anchor='middle' font-size='12' fill='{PALETTE['ink']}'>{fmt_rate(pct)}</text>")
+    body.append(f"<text x='{ml + cells_x * cell / 2:.1f}' y='{height - 24}' text-anchor='middle' font-size='12' fill='{PALETTE['muted']}'>{esc(x_axis_label)}</text>")
+    body.append(f"<text x='28' y='{mt + cells_y * cell / 2:.1f}' transform='rotate(-90 28 {mt + cells_y * cell / 2:.1f})' text-anchor='middle' font-size='12' fill='{PALETTE['muted']}'>{esc(y_axis_label)}</text>")
     return svg_wrap(width, height, "".join(body))
 
 
@@ -662,6 +702,78 @@ def binned_reward_rates(rows: list[dict[str, Any]], feature: str, *, cap: int) -
             }
         )
     return items, table_rows
+
+
+NumericBin = tuple[str, float | None, float | None]
+
+
+def assign_numeric_bin(value: Any, bins: list[NumericBin]) -> str | None:
+    numeric = cleaned_number(value)
+    if numeric is None:
+        return None
+    for label, lo, hi in bins:
+        if lo is not None and numeric < lo:
+            continue
+        if hi is not None and numeric >= hi:
+            continue
+        return label
+    return None
+
+
+def score_feature_grid(
+    title: str,
+    rows: list[dict[str, Any]],
+    feature: str,
+    bins: list[NumericBin],
+    *,
+    subtitle: str,
+    x_axis_label: str,
+    color: str = "blue",
+) -> tuple[str, list[dict[str, Any]]]:
+    score_values = [5, 4, 3, 2, 1]
+    x_labels = [label for label, _, _ in bins]
+    score_to_y = {score_value: idx for idx, score_value in enumerate(score_values)}
+    x_to_idx = {label: idx for idx, label in enumerate(x_labels)}
+    matrix = [[0 for _ in x_labels] for _ in score_values]
+    for row in rows:
+        label = assign_numeric_bin(row.get(feature), bins)
+        try:
+            row_score = int(row.get("score"))
+        except (TypeError, ValueError):
+            continue
+        if label in x_to_idx and row_score in score_to_y:
+            matrix[score_to_y[row_score]][x_to_idx[label]] += 1
+    col_totals = [sum(matrix[yi][xi] for yi in range(len(score_values))) for xi in range(len(x_labels))]
+    table_rows: list[dict[str, Any]] = []
+    for xi, label in enumerate(x_labels):
+        denom = col_totals[xi]
+        for yi, score_value in enumerate(score_values):
+            count = matrix[yi][xi]
+            table_rows.append(
+                {
+                    "feature": feature,
+                    "bin": label,
+                    "score": score_value,
+                    "n": count,
+                    "bin_n": denom,
+                    "percent_within_bin": fmt_rate(count / denom) if denom else "n/a",
+                }
+            )
+    svg = heatmap(
+        title,
+        matrix,
+        x_labels,
+        [str(score_value) for score_value in score_values],
+        subtitle=subtitle,
+        color=color,
+        percent_mode="column",
+        x_axis_label=x_axis_label,
+        y_axis_label="StepFun privacy score",
+        x_sub_labels=[f"n={total}" for total in col_totals],
+        width=860,
+        height=560,
+    )
+    return svg, table_rows
 
 
 def build_analysis(args: argparse.Namespace) -> None:
@@ -792,6 +904,57 @@ def build_analysis(args: argparse.Namespace) -> None:
             f"Mann-Whitney reward p={fmt_p(reward_test.get('p'))}"
         )
 
+    score_grid_rows: list[dict[str, Any]] = []
+    feature_bins: dict[str, list[NumericBin]] = {
+        "hop_accuracy": [
+            ("0%", 0.0, 1e-12),
+            ("1-25%", 1e-12, 0.2500001),
+            ("26-50%", 0.2500001, 0.5000001),
+            ("51-75%", 0.5000001, 0.7500001),
+            ("76-100%", 0.7500001, None),
+        ],
+        "n_web_queries": [
+            ("1", 1, 2),
+            ("2", 2, 3),
+            ("3", 3, 4),
+            ("4", 4, 5),
+            ("5", 5, 6),
+            ("6+", 6, None),
+        ],
+        "n_private_qas": [
+            ("0", 0, 1),
+            ("1-3", 1, 4),
+            ("4-6", 4, 7),
+            ("7-9", 7, 10),
+            ("10-12", 10, 13),
+            ("13+", 13, None),
+        ],
+        "n_retrieved_local_docs": [
+            ("0", 0, 1),
+            ("1", 1, 2),
+            ("2", 2, 3),
+            ("3", 3, 4),
+            ("4", 4, 5),
+            ("5+", 5, None),
+        ],
+        "max_resolved_local_hops_before_web_query": [
+            ("0", 0, 1),
+            ("1", 1, 2),
+            ("2", 2, 3),
+            ("3", 3, 4),
+            ("4+", 4, None),
+        ],
+        "max_local_doc_reads_before_web_query": [
+            ("0", 0, 1),
+            ("1", 1, 2),
+            ("2", 2, 3),
+            ("3", 3, 4),
+            ("4", 4, 5),
+            ("5", 5, 6),
+            ("6+", 6, None),
+        ],
+    }
+
     plots: dict[str, str] = {}
     plots["stepfun_score_distribution"] = bar_chart(
         "StepFun Privacy Score Distribution",
@@ -835,7 +998,7 @@ def build_analysis(args: argparse.Namespace) -> None:
             score_matrix,
             [str(s) for s in scores],
             [str(s) for s in scores],
-            subtitle=f"Spearman rho {fmt(score_test.get('rho'))}; p={fmt_p(score_test.get('p'))}",
+            subtitle=f"Cell percent is within StepFun score row; Spearman rho {fmt(score_test.get('rho'))}; p={fmt_p(score_test.get('p'))}",
             color="blue",
         )
         qwen_matrix = [
@@ -847,7 +1010,7 @@ def build_analysis(args: argparse.Namespace) -> None:
             qwen_matrix,
             ["Pred -", "Pred +"],
             ["StepFun -", "StepFun +"],
-            subtitle=f"F1 {fmt(qwen_reward_metrics.get('f1'))}; kappa {fmt(qwen_reward_metrics.get('cohen_kappa'))}; McNemar p={fmt_p(summary['agreement_tests'].get('qwen_reward_mcnemar_exact_p'))}",
+            subtitle=f"Cell percent is within StepFun label row; F1 {fmt(qwen_reward_metrics.get('f1'))}; kappa {fmt(qwen_reward_metrics.get('cohen_kappa'))}; McNemar p={fmt_p(summary['agreement_tests'].get('qwen_reward_mcnemar_exact_p'))}",
             color="green",
         )
     if matched_binary:
@@ -860,55 +1023,70 @@ def build_analysis(args: argparse.Namespace) -> None:
             binary_matrix,
             ["Pred -", "Pred +"],
             ["StepFun -", "StepFun +"],
-            subtitle=f"F1 {fmt(binary_metrics.get('f1'))}; MCC {fmt(binary_metrics.get('mcc'))}; McNemar p={fmt_p(summary['agreement_tests'].get('binary_reward_mcnemar_exact_p'))}",
+            subtitle=f"Cell percent is within StepFun label row; F1 {fmt(binary_metrics.get('f1'))}; MCC {fmt(binary_metrics.get('mcc'))}; McNemar p={fmt_p(summary['agreement_tests'].get('binary_reward_mcnemar_exact_p'))}",
             color="red",
         )
-    plots["score_vs_hop_accuracy"] = scatter_chart(
-        "Privacy Score vs Rollout Hop Accuracy",
+
+    plots["score_vs_hop_accuracy"], grid_rows = score_feature_grid(
+        "Privacy Score by Rollout Hop Accuracy",
         feature_rows,
-        x_key="hop_accuracy",
-        y_key="score",
-        x_label="hop accuracy",
-        y_label="StepFun privacy score",
+        "hop_accuracy",
+        feature_bins["hop_accuracy"],
         subtitle=feature_subtitle("hop_accuracy"),
-        x_kind="accuracy",
+        x_axis_label="hop accuracy bin",
+        color="blue",
     )
-    plots["score_vs_web_queries"] = scatter_chart(
-        "Privacy Score vs Visible Web Queries",
+    score_grid_rows.extend(grid_rows)
+    plots["score_vs_web_queries"], grid_rows = score_feature_grid(
+        "Privacy Score by Visible Web Query Count",
         feature_rows,
-        x_key="n_web_queries",
-        y_key="score",
-        x_label="visible web-query count",
-        y_label="StepFun privacy score",
+        "n_web_queries",
+        feature_bins["n_web_queries"],
         subtitle=feature_subtitle("n_web_queries"),
+        x_axis_label="visible web-query count bin",
+        color="blue",
     )
-    plots["score_vs_private_qas"] = scatter_chart(
-        "Privacy Score vs Retrieved Private QA Count",
+    score_grid_rows.extend(grid_rows)
+    plots["score_vs_private_qas"], grid_rows = score_feature_grid(
+        "Privacy Score by Retrieved Private QA Count",
         feature_rows,
-        x_key="n_private_qas",
-        y_key="score",
-        x_label="retrieved-doc Private QA questions",
-        y_label="StepFun privacy score",
+        "n_private_qas",
+        feature_bins["n_private_qas"],
         subtitle=feature_subtitle("n_private_qas"),
+        x_axis_label="retrieved-doc Private QA question bin",
+        color="blue",
     )
-    plots["score_vs_prior_local_hops"] = scatter_chart(
-        "Privacy Score vs Prior Local Hops Before Web Queries",
+    score_grid_rows.extend(grid_rows)
+    plots["score_vs_retrieved_local_docs"], grid_rows = score_feature_grid(
+        "Privacy Score by Retrieved Local Document Count",
         feature_rows,
-        x_key="max_resolved_local_hops_before_web_query",
-        y_key="score",
-        x_label="max resolved local hops before a visible web query",
-        y_label="StepFun privacy score",
+        "n_retrieved_local_docs",
+        feature_bins["n_retrieved_local_docs"],
+        subtitle=feature_subtitle("n_retrieved_local_docs"),
+        x_axis_label="retrieved local document count bin",
+        color="blue",
+    )
+    score_grid_rows.extend(grid_rows)
+    plots["score_vs_prior_local_hops"], grid_rows = score_feature_grid(
+        "Privacy Score by Prior Local Hops Before Web Queries",
+        feature_rows,
+        "max_resolved_local_hops_before_web_query",
+        feature_bins["max_resolved_local_hops_before_web_query"],
         subtitle=feature_subtitle("max_resolved_local_hops_before_web_query"),
+        x_axis_label="max resolved local hops before visible web query",
+        color="blue",
     )
-    plots["score_vs_prior_local_doc_reads"] = scatter_chart(
-        "Privacy Score vs Prior Local Documents Before Web Queries",
+    score_grid_rows.extend(grid_rows)
+    plots["score_vs_prior_local_doc_reads"], grid_rows = score_feature_grid(
+        "Privacy Score by Prior Local Documents Before Web Queries",
         feature_rows,
-        x_key="max_local_doc_reads_before_web_query",
-        y_key="score",
-        x_label="max local docs read before a visible web query",
-        y_label="StepFun privacy score",
+        "max_local_doc_reads_before_web_query",
+        feature_bins["max_local_doc_reads_before_web_query"],
         subtitle=feature_subtitle("max_local_doc_reads_before_web_query"),
+        x_axis_label="max local docs read before visible web query",
+        color="blue",
     )
+    score_grid_rows.extend(grid_rows)
 
     prior_hop_rates, prior_hop_rate_rows = binned_reward_rates(feature_rows, "max_resolved_local_hops_before_web_query", cap=4)
     prior_doc_rates, prior_doc_rate_rows = binned_reward_rates(feature_rows, "max_local_doc_reads_before_web_query", cap=6)
@@ -1021,6 +1199,7 @@ def build_analysis(args: argparse.Namespace) -> None:
     write_jsonl(tables_dir / "chain_summary.jsonl", chain_rows)
     write_jsonl(tables_dir / "feature_tests.jsonl", feature_stat_rows)
     write_jsonl(tables_dir / "prior_context_reward_rates.jsonl", prior_hop_rate_rows + prior_doc_rate_rows)
+    write_jsonl(tables_dir / "score_feature_grids.jsonl", score_grid_rows)
     (out / "summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     (out / "plot_data.json").write_text(
         json.dumps(
@@ -1030,6 +1209,7 @@ def build_analysis(args: argparse.Namespace) -> None:
                 "disagreements": disagreement_rows,
                 "feature_tests": feature_stat_rows,
                 "prior_context_reward_rates": prior_hop_rate_rows + prior_doc_rate_rows,
+                "score_feature_grids": score_grid_rows,
             },
             indent=2,
         )
@@ -1131,6 +1311,7 @@ def build_analysis(args: argparse.Namespace) -> None:
     <section class="panels">
       <div class="panel"><h2>Correlation And Agreement Summary</h2>{table([('metric','Metric'),('value','Value')], metric_rows)}</div>
       <div class="panel"><h2>Feature Tests</h2><div class="scroll">{table([('feature','Feature'),('n','n'),('spearman_rho_vs_score','Spearman rho vs score'),('spearman_p','p'),('reward_negative_median','Reward- median'),('reward_positive_median','Reward+ median'),('mann_whitney_u','Mann-Whitney U'),('mann_whitney_p','p')], feature_stat_rows)}</div></div>
+      <div class="panel"><h2>Score Grid Cells</h2><div class="scroll">{table([('feature','Feature'),('bin','Bin'),('score','Score'),('n','n'),('bin_n','Bin n'),('percent_within_bin','Percent in bin')], score_grid_rows, limit=220)}</div></div>
       <div class="panel"><h2>Prior Context Reward Rates</h2><div class="scroll">{table([('feature','Feature'),('bin','Bin'),('n','Rows'),('reward_pos','Reward+'),('reward_rate','Reward rate'),('mean_score','Mean score')], prior_hop_rate_rows + prior_doc_rate_rows)}</div></div>
       <div class="panel"><h2>StepFun Positive Cases</h2><div class="scroll">{table([('rollout_id','Rollout'),('stepfun_score','Score'),('stepfun_source','Source'),('qwen_score','Qwen'),('binary_pred','Binary'),('hop_accuracy','Hop acc'),('prior_local_hops','Prior local hops'),('prior_local_docs','Prior local docs'),('web_queries','Web queries')], positive_rows)}</div></div>
       <div class="panel"><h2>Reward Disagreements</h2><div class="scroll">{table([('rollout_id','Rollout'),('stepfun_score','StepFun'),('qwen_score','Qwen'),('binary_pred','Binary'),('hop_accuracy','Hop acc'),('prior_local_hops','Prior local hops'),('prior_local_docs','Prior local docs'),('web_queries','Web queries')], disagreement_rows, limit=80)}</div></div>

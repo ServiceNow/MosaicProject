@@ -358,6 +358,7 @@ plots/binary_reward_confusion.svg
 plots/score_vs_hop_accuracy.svg
 plots/score_vs_web_queries.svg
 plots/score_vs_private_qas.svg
+plots/score_vs_retrieved_local_docs.svg
 plots/score_vs_prior_local_hops.svg
 plots/score_vs_prior_local_doc_reads.svg
 plots/reward_rate_by_prior_local_hops.svg
@@ -365,9 +366,11 @@ plots/reward_rate_by_prior_local_doc_reads.svg
 ```
 
 The viewer includes the intent/overall 1-5 rubric, the binary reward label
-definition, and a short glossary for MCC. Axes for score, count, and accuracy
-plots are fixed to natural bounds and tick marks rather than auto-padded around
-the observed sample.
+definition, and a short glossary for MCC. Discrete score-vs-feature plots are
+rendered as categorical heatmap grids rather than jittered scatterplots. Each
+cell shows `n` plus the percent within the feature bin; each feature-bin column
+also shows its total `n` above the grid. Judge-comparison and confusion heatmaps
+show `n` plus row-normalized percentages.
 
 The prior-local-context plots are computed from each rollout's timeline events:
 for every visible `web_search`, the script counts local hops resolved and local
@@ -383,7 +386,8 @@ exploratory and uncorrected.
 
 It also writes `tables/positive_cases.jsonl`, `tables/disagreements.jsonl`,
 `tables/chain_summary.jsonl`, `tables/feature_tests.jsonl`, and
-`tables/prior_context_reward_rates.jsonl` for deeper inspection.
+`tables/prior_context_reward_rates.jsonl` for deeper inspection. The score-grid
+cell values are exported to `tables/score_feature_grids.jsonl`.
 
 ## Qwen3-4B Judge Comparison
 
