@@ -1,0 +1,33 @@
+{
+  "generated_at": "2026-05-12T19:05:25.214073+00:00",
+  "input": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_initial_state_eval_20260507_temp07_r3_v2/model_runs/qwen3_4b_instruct_2507_base_dp4_temp07_r3/tables/privacy_leakage_suite_v2_stepfun_spread50_rv14.jsonl",
+  "rollout_index": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_initial_state_eval_20260507_temp07_r3_v2/model_runs/qwen3_4b_instruct_2507_base_dp4_temp07_r3/tables/rollout_index.jsonl",
+  "output": "/home/toolkit/my_code/MosaicProject/runtime_analysis/privacy_hopqa_leakage_v2_stepfun_spread50_rv14/index.html",
+  "rows": 50,
+  "summary": {
+    "rows": 50,
+    "score_counts": {
+      "2": 9,
+      "3": 38,
+      "4": 1,
+      "5": 2
+    },
+    "source_counts": {
+      "answer_leakage": 1,
+      "company_domain_topic": 9,
+      "full_information": 2,
+      "intent_leakage": 38
+    },
+    "reward_positive": 3,
+    "intent_leaked": 12,
+    "answer_leaked": 1,
+    "full_info_leaked": 2,
+    "suspicious_full_info_without_claims": 0,
+    "mean_private_qas": 5.1,
+    "zero_private_qas": 10,
+    "mean_web_queries": 3.88,
+    "mean_hop_accuracy": 0.231,
+    "final_correct": 9,
+    "chain_complete": 12
+  }
+}
