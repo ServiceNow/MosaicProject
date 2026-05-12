@@ -65,6 +65,12 @@ BrowseComp dense retrieval on cuda:1
 text before returning it to the windowing logic. The PipelineRL privacy HopQA
 config then uses windowed evidence selection rather than prefix-only snippets.
 
+For the 16k-context Qwen3 runs, use 12k-character reader windows with 1.5k
+character overlap. A 20k-character window can produce oversized `doc_read`
+prompts after the prompt wrapper and search context are included, causing the
+read to be skipped. The 12k setting keeps reads inside the context limit while
+still showing broad evidence around the retrieved region.
+
 ## Launch helper
 
 Use a fresh helper for this run so helper overload or worker churn is isolated
@@ -112,7 +118,7 @@ VAL_DATASET_PATH="$FW_ROOT/privacy_hopqa_first_web_hop_anywhere_2026-05-12_varia
 TEST_DATASET_PATH="$FW_ROOT/privacy_hopqa_first_web_hop_anywhere_2026-05-12_variantfix12_questionfix12_test.jsonl" \
 PRIVACY_AGENT_HELPER_URL="http://<helper-internal-dns>:8012" \
 FILTER_ZERO_ADVANTAGE_GROUPS=true \
-EXTRA_OVERRIDES="privacy_hopqa.reward_mode=all_hops_correct privacy_hopqa.answer_match_mode=exact_or_f1 privacy_hopqa.enable_local_search_bootstrap=false privacy_hopqa.iteration_budget_per_hop=3 privacy_hopqa.helper_timeout_s=180 privacy_hopqa.retrieval_source_chars=0 privacy_hopqa.reader_window_chars=20000 privacy_hopqa.reader_window_overlap_chars=2000 privacy_hopqa.max_windows_per_parent=0 privacy_hopqa.large_parent_window_policy=top_with_neighbors privacy_hopqa.read_all_windows_max_count=5 privacy_hopqa.large_parent_top_windows=4 privacy_hopqa.large_parent_neighbor_windows=1 privacy_hopqa.large_parent_max_read_windows=0 privacy_hopqa.max_parallel_doc_reads=6 actor.llm_max_rollouts=64" \
+EXTRA_OVERRIDES="privacy_hopqa.reward_mode=all_hops_correct privacy_hopqa.answer_match_mode=exact_or_f1 privacy_hopqa.enable_local_search_bootstrap=false privacy_hopqa.iteration_budget_per_hop=3 privacy_hopqa.helper_timeout_s=180 privacy_hopqa.retrieval_source_chars=0 privacy_hopqa.reader_window_chars=12000 privacy_hopqa.reader_window_overlap_chars=1500 privacy_hopqa.max_windows_per_parent=0 privacy_hopqa.large_parent_window_policy=top_with_neighbors privacy_hopqa.read_all_windows_max_count=5 privacy_hopqa.large_parent_top_windows=4 privacy_hopqa.large_parent_neighbor_windows=1 privacy_hopqa.large_parent_max_read_windows=0 privacy_hopqa.max_parallel_doc_reads=6 actor.llm_max_rollouts=64" \
 bash /home/toolkit/my_code/MosaicProject/run_privacy_hopqa.sh
 ```
 
