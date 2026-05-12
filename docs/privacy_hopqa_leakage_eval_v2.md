@@ -243,6 +243,12 @@ zero retrieved-doc Private QA questions: 34/200
 mean hop accuracy from rollout_index: 0.216
 final correct from rollout_index: 24/200
 chain complete from rollout_index: 44/200
+max resolved local hops before a visible web query: {0: 133, 1: 40, 2: 24, 3: 1, 4: 2}
+max local docs read before a visible web query: {0: 116, 1: 11, 2: 11, 3: 12, 4: 8, 5: 14, 6: 7, 7: 8, 8: 9, 9: 2, 10: 2}
+prior resolved-local-hop association with score: Spearman rho 0.388, p < 0.001
+prior resolved-local-hop reward split: reward- median 0, reward+ median 1, Mann-Whitney p = 0.001
+prior local-doc-read association with score: Spearman rho 0.299, p < 0.001
+prior local-doc-read reward split: reward- median 0, reward+ median 4, Mann-Whitney p = 0.009
 ```
 
 Sorted-first smoke run, 2026-05-12, using runner version 10 / prompt version 5:
@@ -352,10 +358,32 @@ plots/binary_reward_confusion.svg
 plots/score_vs_hop_accuracy.svg
 plots/score_vs_web_queries.svg
 plots/score_vs_private_qas.svg
+plots/score_vs_prior_local_hops.svg
+plots/score_vs_prior_local_doc_reads.svg
+plots/reward_rate_by_prior_local_hops.svg
+plots/reward_rate_by_prior_local_doc_reads.svg
 ```
 
-It also writes `tables/positive_cases.jsonl`, `tables/disagreements.jsonl`, and
-`tables/chain_summary.jsonl` for deeper inspection.
+The viewer includes the intent/overall 1-5 rubric, the binary reward label
+definition, and a short glossary for MCC. Axes for score, count, and accuracy
+plots are fixed to natural bounds and tick marks rather than auto-padded around
+the observed sample.
+
+The prior-local-context plots are computed from each rollout's timeline events:
+for every visible `web_search`, the script counts local hops resolved and local
+documents read before that web search starts, then takes the maximum over the
+rollout. This captures the amount of private/local context that could have been
+available to shape later web queries.
+
+The statistics table uses two-sided Spearman rank tests for ordinal score
+associations, two-sided Mann-Whitney U tests for feature differences between
+reward-positive and reward-negative rollouts, and exact two-sided McNemar tests
+for paired binary judge/predictor disagreements. P-values in the viewer are
+exploratory and uncorrected.
+
+It also writes `tables/positive_cases.jsonl`, `tables/disagreements.jsonl`,
+`tables/chain_summary.jsonl`, `tables/feature_tests.jsonl`, and
+`tables/prior_context_reward_rates.jsonl` for deeper inspection.
 
 ## Qwen3-4B Judge Comparison
 
@@ -389,9 +417,10 @@ reward positives, score >= 4: 8/100
 intent leaked: 48/100
 answer leaked: 3/100
 full-information leaked: 6/100
-overall score Pearson correlation with StepFun: 0.315
-overall score Spearman correlation with StepFun: 0.325
+overall score Spearman correlation with StepFun: rho 0.325, p = 0.001
+intent score Spearman correlation with StepFun: rho 0.534, p < 0.001
 overall reward-label agreement: 90/100, kappa 0.321
+overall reward-label exact McNemar p = 1.000
 overall reward-label precision/recall/F1 against StepFun: 0.375 / 0.375 / 0.375
 intent-leaked agreement: 70/100, kappa 0.386
 answer-leaked agreement: 93/100, kappa 0.190
@@ -414,9 +443,10 @@ reward positives, score >= 4: 20/200
 intent leaked: 81/200
 answer leaked: 11/200
 full-information leaked: 11/200
-overall score Pearson correlation with StepFun: 0.185
-overall score Spearman correlation with StepFun: 0.165
+overall score Spearman correlation with StepFun: rho 0.165, p = 0.020
+intent score Spearman correlation with StepFun: rho 0.426, p < 0.001
 overall reward-label agreement: 178/200, kappa 0.113
+overall reward-label exact McNemar p = 0.004
 overall reward-label precision/recall/F1 against StepFun: 0.100 / 0.333 / 0.154
 intent-leaked agreement: 137/200, kappa 0.286
 answer-leaked agreement: 186/200, kappa -0.024
@@ -487,12 +517,18 @@ specificity: 0.840
 F1: 0.150
 MCC: 0.154
 Cohen's kappa: 0.104
+exact McNemar p: < 0.001
 ```
 
 At 200 rows the binary prompt remains higher-recall than the full Qwen judge, but
 precision is poor because it over-predicts leakage on many intent-heavy traces.
 This makes it useful as a starting weak labeler or reward-model candidate, not
 as a calibrated evaluator without training.
+
+MCC is the Matthews correlation coefficient for a binary classifier. It ranges
+from -1 to 1, with 1 meaning perfect prediction, 0 meaning no better than chance
+under the observed class balance, and -1 meaning perfectly wrong. It is useful
+here because reward-positive leakage is rare, so accuracy alone is misleading.
 
 ## Reward Labels
 
