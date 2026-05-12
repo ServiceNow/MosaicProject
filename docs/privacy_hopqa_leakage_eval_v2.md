@@ -221,6 +221,30 @@ final correct from rollout_index: 12/100
 chain complete from rollout_index: 24/100
 ```
 
+Larger spread analysis run, 2026-05-12, using runner version 14 / prompt version
+7:
+
+```text
+output: .../tables/privacy_leakage_suite_v2_stepfun_spread200_rv14.jsonl
+reward labels: .../tables/privacy_reward_labels_v2_stepfun_spread200_rv14.jsonl
+row audit viewer: runtime_analysis/privacy_hopqa_leakage_v2_stepfun_spread200_rv14/index.html
+paper plot viewer: runtime_analysis/privacy_hopqa_leakage_v2_paper_spread200_rv14/index.html
+rows: 200 ok, 0 failed
+task coverage: 35 task ids
+overall score distribution: {2: 43, 3: 151, 4: 3, 5: 3}
+primary source distribution: {answer_leakage: 3, company_domain_topic: 43, full_information: 3, intent_leakage: 151}
+reward positive rate, score >= 4: 6/200 = 3.0%
+intent score distribution: {2: 43, 3: 119, 4: 36, 5: 2}
+intent leaked, intent score >= 4: 38/200 = 19.0%
+answer leaked: 3/200 = 1.5%
+full-information leaked: 3/200 = 1.5%
+mean retrieved-doc Private QA questions: 6.08
+zero retrieved-doc Private QA questions: 34/200
+mean hop accuracy from rollout_index: 0.216
+final correct from rollout_index: 24/200
+chain complete from rollout_index: 44/200
+```
+
 Sorted-first smoke run, 2026-05-12, using runner version 10 / prompt version 5:
 
 ```text
@@ -302,6 +326,37 @@ inputs, intent prompt/output, answer prompt/output, claim prompt/output, and
 judge-only references. Prompt tabs render the exact system/user prompts as HTML
 text so it is clear what the adversary and judges saw.
 
+## Paper Plot Viewer
+
+Build the paper-oriented analysis viewer from a StepFun reference file plus
+optional Qwen full-judge and binary predictor outputs:
+
+```bash
+/home/toolkit/.mamba/envs/vllm013/bin/python scripts/build_privacy_hopqa_leakage_paper_viewer.py \
+  --stepfun /path/to/privacy_leakage_suite_v2_stepfun.jsonl \
+  --qwen /path/to/privacy_leakage_suite_v2_qwen3_4b.jsonl \
+  --binary /path/to/privacy_binary_leakage_predictor_qwen3_4b.jsonl \
+  --output-dir runtime_analysis/privacy_hopqa_leakage_v2_paper_viewer \
+  --title "Privacy HopQA Leakage Paper Analysis"
+```
+
+This viewer writes a dashboard plus standalone SVG files for direct paper use:
+
+```text
+plots/stepfun_score_distribution.svg
+plots/leakage_type_rates.svg
+plots/score_distribution_stepfun_vs_qwen.svg
+plots/stepfun_qwen_score_heatmap.svg
+plots/qwen_reward_confusion.svg
+plots/binary_reward_confusion.svg
+plots/score_vs_hop_accuracy.svg
+plots/score_vs_web_queries.svg
+plots/score_vs_private_qas.svg
+```
+
+It also writes `tables/positive_cases.jsonl`, `tables/disagreements.jsonl`, and
+`tables/chain_summary.jsonl` for deeper inspection.
+
 ## Qwen3-4B Judge Comparison
 
 Run the same evaluator with a Qwen3-4B-Instruct endpoint, then compare it
@@ -348,6 +403,30 @@ reward positives overlapped. It over-called intent leakage and swapped several
 answer/full-information positives relative to StepFun, so it is not a drop-in
 judge replacement at this sample size.
 
+On the 200-row spread run, Qwen3-4B-Instruct-2507 used as the full six-call
+privacy evaluator produced:
+
+```text
+candidate: .../tables/privacy_leakage_suite_v2_qwen3_4b_spread200_rv14.jsonl
+viewer: runtime_analysis/privacy_hopqa_leakage_v2_qwen3_4b_spread200_rv14/index.html
+overall score distribution: {3: 180, 4: 9, 5: 11}
+reward positives, score >= 4: 20/200
+intent leaked: 81/200
+answer leaked: 11/200
+full-information leaked: 11/200
+overall score Pearson correlation with StepFun: 0.185
+overall score Spearman correlation with StepFun: 0.165
+overall reward-label agreement: 178/200, kappa 0.113
+overall reward-label precision/recall/F1 against StepFun: 0.100 / 0.333 / 0.154
+intent-leaked agreement: 137/200, kappa 0.286
+answer-leaked agreement: 186/200, kappa -0.024
+full-information agreement: 188/200, kappa 0.122
+```
+
+The 200-row sample makes the mismatch clearer: Qwen substantially over-calls
+reward-positive leakage relative to StepFun and has weak overlap on the rare
+answer/full-information positives.
+
 ## Binary Leakage Predictor
 
 For reward-model bootstrapping, there is also a cheaper binary task:
@@ -393,6 +472,27 @@ The binary prompt is a better direct fit for a small reward-model target than
 asking the 4B model to reproduce all six judge/adversary calls. On this sample it
 finds more StepFun positives than the full Qwen judge, with lower precision but
 higher recall.
+
+On the 200-row StepFun-labeled spread run:
+
+```text
+rows: 200
+target positives: 6
+predicted positives: 34
+TP/TN/FP/FN: 3 / 163 / 31 / 3
+accuracy: 0.830
+precision: 0.088
+recall: 0.500
+specificity: 0.840
+F1: 0.150
+MCC: 0.154
+Cohen's kappa: 0.104
+```
+
+At 200 rows the binary prompt remains higher-recall than the full Qwen judge, but
+precision is poor because it over-predicts leakage on many intent-heavy traces.
+This makes it useful as a starting weak labeler or reward-model candidate, not
+as a calibrated evaluator without training.
 
 ## Reward Labels
 
