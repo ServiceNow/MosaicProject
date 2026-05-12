@@ -4,6 +4,12 @@ Repo for our privacy-aware dataset creation (and eventually agent training)
 
 ## Current Privacy HopQA training launch commands
 
+Current first-web debugging runbook: [Privacy HopQA first-web q12 2026-05-12](./docs/privacy_hopqa_firstweb_q12_2026-05-12.md).
+It documents the `variantfix12/questionfix12` dataset, the 2-GPU helper, and the exact 4B planning-only `replicas=4` launch command.
+
+Previous 2026-05-11 notes are in [Privacy HopQA first-web-anywhere 2026-05-11](./docs/privacy_hopqa_firstweb_anywhere_2026-05-11.md).
+The commands below are older 2026-05-10 spanfixed/full-dataset references.
+
 Run these from the repo root:
 
 ```bash
@@ -173,6 +179,7 @@ Use this as the main index for repo notes:
 - [Current System](./docs/system.md): current end-to-end system notes.
 - [Examples](./docs/examples.md): generated question examples.
 - [Privacy HopQA final dataset](./docs/privacy_hopqa_final_dataset.md): finalized dataset, schema, viewer, answer variants, and split artifacts.
+- [Privacy HopQA first-web-anywhere 2026-05-11](./docs/privacy_hopqa_firstweb_anywhere_2026-05-11.md): current first-web-anywhere dataset, helper commands, 4B/8B launch commands, JSON parse errors, infrastructure errors, local-search bootstrap, and reward-signal audit notes.
 - [Privacy HopQA spanfix 2026-05-10](./docs/privacy_hopqa_spanfix_2026-05-10.md): current spanfixed dataset version, validation, and first-web rerun settings.
 - [Privacy HopQA training](./docs/privacy_hopqa_training.md): PipelineRL launch path, helper setup, dataset split, EAI notes, and monitoring.
 - [Privacy HopQA helper fix notes](./docs/privacy_hopqa_helper_fix_2026-05-06.md): helper environment, vLLM, FAISS, and benchmark details.

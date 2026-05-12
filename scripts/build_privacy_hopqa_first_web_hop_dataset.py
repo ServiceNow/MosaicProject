@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a first-hop-only dataset from Privacy HopQA web-first chains."""
+"""Build single-web-hop datasets from Privacy HopQA chains."""
 
 from __future__ import annotations
 
@@ -77,16 +77,48 @@ def dedupe(values: list[str]) -> list[str]:
     return out
 
 
-def transform(row: dict[str, Any], index: int, output_basename: str) -> dict[str, Any] | None:
+def render_question(template: str, prior_hops: list[dict[str, Any]]) -> str:
+    rendered = str(template or "")
+    for prior in prior_hops:
+        hop_number = prior.get("hop_number")
+        if hop_number is None:
+            continue
+        answer = str(prior.get("answer") or "").strip()
+        rendered = rendered.replace(f"({hop_number})", answer)
+    return " ".join(rendered.split())
+
+
+def select_web_hop(row: dict[str, Any], selection: str) -> tuple[int, dict[str, Any]] | None:
     hops = row.get("hops") or []
     if not hops:
         return None
-    first = dict(hops[0])
-    if hop_type(row, first) != "W":
+    if selection == "chain_first_hop_web":
+        first = hops[0]
+        if hop_type(row, first) != "W":
+            return None
+        return 0, first
+    if selection == "first_web_hop_anywhere":
+        for idx, hop in enumerate(hops):
+            if hop_type(row, hop) == "W":
+                return idx, hop
         return None
+    raise ValueError(f"unknown selection mode: {selection}")
+
+
+def transform(row: dict[str, Any], index: int, output_basename: str, selection: str) -> dict[str, Any] | None:
+    hops = row.get("hops") or []
+    selected = select_web_hop(row, selection)
+    if selected is None:
+        return None
+    selected_idx, selected_hop = selected
+    prior_hops = hops[:selected_idx]
+    first = dict(selected_hop)
 
     source_chain_id = str(row.get("chain_id") or row.get("id") or row.get("problem_id") or index)
-    question = str(first.get("question") or row.get("question") or row.get("global_question") or "")
+    question_template = str(first.get("question_templated") or first.get("question") or row.get("question") or "")
+    question = render_question(question_template, prior_hops)
+    if "(" in question and ")" in question and first.get("question"):
+        question = render_question(str(first.get("question")), prior_hops)
     answer = str(first.get("answer") or row.get("answer") or row.get("global_answer") or "")
     variants = dedupe(as_list(first.get("accepted_answer_variants")) + as_list(answer))
     alternates = dedupe(as_list(first.get("alternate_valid_answers")))
@@ -94,6 +126,7 @@ def transform(row: dict[str, Any], index: int, output_basename: str) -> dict[str
     first["hop_number"] = 1
     first["hop_type"] = "W"
     first["question"] = question
+    first["question_templated"] = question
     first["answer"] = answer
     first["accepted_answer_variants"] = variants
     first["alternate_valid_answers"] = alternates
@@ -104,9 +137,20 @@ def transform(row: dict[str, Any], index: int, output_basename: str) -> dict[str
     out["chain_id"] = f"{source_chain_id}_first_web_hop"
     out["source_chain_id"] = source_chain_id
     out["source_problem_id"] = row.get("problem_id")
+    out["source_hop_number"] = selected_hop.get("hop_number")
+    out["source_question_templated"] = selected_hop.get("question_templated")
+    out["source_prior_answers"] = [
+        {
+            "hop_number": prior.get("hop_number"),
+            "answer": prior.get("answer"),
+            "question": prior.get("question"),
+        }
+        for prior in prior_hops
+    ]
     out["source_pattern"] = row.get("pattern")
     out["source_n_hops"] = row.get("n_hops") or len(hops)
     out["dataset"] = "privacy_hopqa_first_web_hop"
+    out["selection_mode"] = selection
     out["pattern"] = "W"
     out["n_hops"] = 1
     out["n_local_hops"] = 0
@@ -129,11 +173,16 @@ def transform(row: dict[str, Any], index: int, output_basename: str) -> dict[str
     return out
 
 
-def build_split(rows: list[dict[str, Any]], start_index: int, output_basename: str) -> tuple[list[dict[str, Any]], int]:
+def build_split(
+    rows: list[dict[str, Any]],
+    start_index: int,
+    output_basename: str,
+    selection: str,
+) -> tuple[list[dict[str, Any]], int]:
     out: list[dict[str, Any]] = []
     next_index = start_index
     for row in rows:
-        converted = transform(row, next_index, output_basename)
+        converted = transform(row, next_index, output_basename, selection)
         if converted is None:
             continue
         out.append(converted)
@@ -152,6 +201,15 @@ def main() -> int:
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     parser.add_argument("--source-basename", default=DEFAULT_SOURCE_BASENAME)
     parser.add_argument("--output-basename", default=DEFAULT_OUTPUT_BASENAME)
+    parser.add_argument(
+        "--selection",
+        choices=["chain_first_hop_web", "first_web_hop_anywhere"],
+        default="chain_first_hop_web",
+        help=(
+            "chain_first_hop_web keeps only chains whose first hop is web; "
+            "first_web_hop_anywhere keeps each chain's first web hop and fills prior-hop answers into the question."
+        ),
+    )
     args = parser.parse_args()
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -159,6 +217,7 @@ def main() -> int:
         read_jsonl(split_path(args.source_dir, args.source_basename, None)),
         1,
         args.output_basename,
+        args.selection,
     )
     split_rows: dict[str, list[dict[str, Any]]] = {}
     for split in ("train", "val", "test"):
@@ -166,6 +225,7 @@ def main() -> int:
             read_jsonl(split_path(args.source_dir, args.source_basename, split)),
             next_index,
             args.output_basename,
+            args.selection,
         )
 
     write_jsonl(args.output_dir / f"{args.output_basename}.jsonl", all_rows)
@@ -177,7 +237,12 @@ def main() -> int:
         "source_dir": str(args.source_dir),
         "source_basename": args.source_basename,
         "output_basename": args.output_basename,
-        "selection_rule": "Keep only chains whose first hop is web; retain only that first hop.",
+        "selection_mode": args.selection,
+        "selection_rule": (
+            "Keep only chains whose first hop is web; retain only that first hop."
+            if args.selection == "chain_first_hop_web"
+            else "Keep each chain's first web hop, fill prior-hop gold answers into the web-hop question, and retain only that hop."
+        ),
         "all": summarize(all_rows),
         "splits": {split: summarize(rows) for split, rows in split_rows.items()},
     }
@@ -188,8 +253,9 @@ def main() -> int:
     )
     (args.output_dir / "README.md").write_text(
         "# Privacy HopQA first-web-hop dataset\n\n"
-        "Derived from the finalized Privacy HopQA split. Each example keeps only the first hop "
-        "when that hop is a web hop, preserving the canonical train/val/test assignment.\n\n"
+        "Derived from the finalized Privacy HopQA split. Each example keeps one web hop "
+        "as a standalone web QA problem, preserving the canonical train/val/test assignment.\n\n"
+        f"- Selection mode: `{args.selection}`\n"
         f"- Source: `{args.source_dir / (args.source_basename + '.jsonl')}`\n"
         f"- Full dataset: `{args.output_dir / (args.output_basename + '.jsonl')}`\n"
         f"- Train: `{args.output_dir / (args.output_basename + '_train.jsonl')}`\n"

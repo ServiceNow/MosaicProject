@@ -1,0 +1,28 @@
+{
+  "dataset": "data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-12_variantfix9_questionfix9.jsonl",
+  "output_dir": "runtime_analysis/privacy_hopqa_questionfix9_changed_hops_reaudit_2026-05-12",
+  "model": "Qwen/Qwen3-4B-Instruct-2507",
+  "base_urls": [
+    "http://dns-d888b689-cf5f-40d5-8eba-12fcf101469c-phrl87204e9c-1:8080",
+    "http://dns-d888b689-cf5f-40d5-8eba-12fcf101469c-phrl87204e9c-1:8081",
+    "http://dns-d888b689-cf5f-40d5-8eba-12fcf101469c-phrl87204e9c-1:8082",
+    "http://dns-d888b689-cf5f-40d5-8eba-12fcf101469c-phrl87204e9c-1:8083",
+    "http://dns-d888b689-cf5f-40d5-8eba-12fcf101469c-phrl87204e9c-1:8084",
+    "http://dns-d888b689-cf5f-40d5-8eba-12fcf101469c-phrl87204e9c-1:8085",
+    "http://dns-d888b689-cf5f-40d5-8eba-12fcf101469c-phrl87204e9c-1:8086",
+    "http://dns-d888b689-cf5f-40d5-8eba-12fcf101469c-phrl87204e9c-1:8087"
+  ],
+  "temperature": 0.0,
+  "max_tokens": 512,
+  "window_chars": 16000,
+  "overlap_chars": 1000,
+  "max_windows_per_doc": 0,
+  "local_index_root": "/home/toolkit/my_code/PipelineRL/.privacy_agent/local_indices",
+  "pipelinerl_root": "/home/toolkit/my_code/PipelineRL",
+  "case_count": 21,
+  "existing_case_count": 0,
+  "pending_case_count": 21,
+  "case_concurrency": 16,
+  "f1_threshold": 0.75,
+  "resume_existing": false
+}

@@ -401,12 +401,14 @@ class PrivacyHelperBackend:
     ) -> list[dict[str, Any]]:
         searcher = self._task_web_searcher(task_id)
         char_limit = int(max_chars) if max_chars is not None else self.browsecomp.max_chars
+        if char_limit <= 0:
+            char_limit = 0
         hits = searcher.search(query=query, k=k, mode="hybrid", max_chars=char_limit)
 
         results: list[dict[str, Any]] = []
         for hit in hits:
             text = hit.text
-            if len(text) > char_limit:
+            if char_limit > 0 and len(text) > char_limit:
                 text = text[:char_limit] + "\n\n[truncated]"
             meta = hit.meta or {}
             results.append(

@@ -160,6 +160,8 @@ class _BrowseCompBase:
 
     def _truncate(self, text: str, max_chars: int | None = None) -> str:
         limit = self.max_chars if max_chars is None else int(max_chars)
+        if limit <= 0:
+            return text
         if len(text) <= limit:
             return text
         return text[:limit] + "\n\n[truncated]"

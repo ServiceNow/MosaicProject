@@ -43,6 +43,8 @@ command:
   - '100'
   - --browsecomp-dense-recall-k
   - '100'
+  - --browsecomp-max-chars
+  - '0'
   - --embedding-model
   - Qwen/Qwen3-Embedding-4B
 data:
@@ -75,9 +77,9 @@ options:
         protocol: TCP
         target-port: 8012
 resources:
-  cpu: 256
+  cpu: 96
   gpu: 2
   gpuMem: 80
-  mem: 768
+  mem: 384
 preemptable: true
 restartable: true

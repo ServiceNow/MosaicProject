@@ -23,6 +23,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DATASET_ROOT = ROOT / "data_files" / "privacy_hopqa_final_dataset"
+DEFAULT_DATASET_BASENAME = "privacy_hopqa_finalized_2026-05-11"
 DEFAULT_PIPELINERL_ROOT = Path(os.environ.get("PIPELINERL_ROOT", "/home/toolkit/my_code/PipelineRL"))
 DEFAULT_TASK_DATA_ROOT = Path("/home/toolkit/nice_code/drbench/drbench/data/tasks")
 DEFAULT_LOCAL_INDEX_ROOT = Path("/mnt/llmd/results/exps/alexg/privacy_agent/local_indices_fixeddeps_20260415")
@@ -121,14 +122,15 @@ def build_cfg(args: argparse.Namespace, split_output_dir: Path, OmegaConf: Any) 
     if not helper_url and not args.local_tools:
         raise ValueError("Set --helper-url or PRIVACY_AGENT_HELPER_URL, or pass --local-tools.")
     dataset_root = Path(args.dataset_root).expanduser()
+    dataset_basename = args.dataset_basename
     return OmegaConf.create(
         {
             "output_dir": str(split_output_dir),
             "privacy_hopqa": {
-                "final_dataset_path": str(dataset_root / "privacy_hopqa_finalized_2026-05-05.jsonl"),
-                "final_train_dataset_path": str(dataset_root / "train.jsonl"),
-                "final_val_dataset_path": str(dataset_root / "val.jsonl"),
-                "final_test_dataset_path": str(dataset_root / "test.jsonl"),
+                "final_dataset_path": str(dataset_root / f"{dataset_basename}.jsonl"),
+                "final_train_dataset_path": str(dataset_root / f"{dataset_basename}_train.jsonl"),
+                "final_val_dataset_path": str(dataset_root / f"{dataset_basename}_val.jsonl"),
+                "final_test_dataset_path": str(dataset_root / f"{dataset_basename}_test.jsonl"),
                 "task_data_root": str(Path(args.task_data_root).expanduser()),
                 "local_index_root": str(Path(args.local_index_root).expanduser()),
                 "local_index_mmap_mode": "r",
@@ -347,6 +349,7 @@ async def run_all(args: argparse.Namespace) -> None:
             "artifact_type": "privacy_hopqa_initial_state_eval",
             "runner_version": RUNNER_VERSION,
             "dataset_root": str(Path(args.dataset_root).expanduser()),
+            "dataset_basename": args.dataset_basename,
             "pipelinerl_root": str(pipelinerl_root),
             "task_data_root": str(Path(args.task_data_root).expanduser()),
             "local_index_root": str(Path(args.local_index_root).expanduser()),
@@ -371,7 +374,7 @@ async def run_all(args: argparse.Namespace) -> None:
     total_stats = RunStats()
     async with aiohttp.ClientSession() as session:
         for split_name in args.splits:
-            split_path = Path(args.dataset_root).expanduser() / f"{split_name}.jsonl"
+            split_path = Path(args.dataset_root).expanduser() / f"{args.dataset_basename}_{split_name}.jsonl"
             rows = select_rows(read_jsonl(split_path), args)
             split_output_dir = output_root / "rollouts" / model_label / split_name
             split_output_dir.mkdir(parents=True, exist_ok=True)
@@ -420,6 +423,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--base-url", required=True, help="OpenAI-compatible base URL without /v1.")
     parser.add_argument("--tokenizer-name", default=None)
     parser.add_argument("--dataset-root", default=str(DEFAULT_DATASET_ROOT))
+    parser.add_argument("--dataset-basename", default=DEFAULT_DATASET_BASENAME)
     parser.add_argument("--splits", nargs="+", default=["train", "val", "test"], choices=["train", "val", "test"])
     parser.add_argument("--pipelinerl-root", default=str(DEFAULT_PIPELINERL_ROOT))
     parser.add_argument("--task-data-root", default=str(DEFAULT_TASK_DATA_ROOT))
@@ -441,9 +445,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--enable-generic-retrieval-fallback", action="store_true")
     parser.add_argument("--max-parallel-retrieval-actions", type=int, default=3)
     parser.add_argument("--retrieval-top-k", type=int, default=5)
-    parser.add_argument("--choose-top-k", type=int, default=3)
+    parser.add_argument("--choose-top-k", type=int, default=6)
     parser.add_argument("--max-candidate-cards", type=int, default=20)
-    parser.add_argument("--chooser-excerpt-chars", type=int, default=120)
+    parser.add_argument("--chooser-excerpt-chars", type=int, default=500)
     parser.add_argument("--reader-excerpt-chars", type=int, default=2500)
     parser.add_argument("--max-history-entries", type=int, default=10)
     parser.add_argument("--local-search-threshold", type=float, default=0.0)
@@ -454,7 +458,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--browsecomp-max-chars", type=int, default=8000)
     parser.add_argument("--embedding-provider", default="huggingface")
     parser.add_argument("--embedding-model", default="Qwen/Qwen3-Embedding-4B")
-    parser.add_argument("--max-parallel-doc-reads", type=int, default=3)
+    parser.add_argument("--max-parallel-doc-reads", type=int, default=6)
     parser.add_argument("--serial-searches", action="store_true")
     parser.add_argument("--log-prompts", action="store_true")
     parser.add_argument("--verbose", action="store_true")
