@@ -148,27 +148,8 @@ def run_privacy_evals_for_model(args: argparse.Namespace, model_root: Path, qwen
         "200",
         "--continue-on-error",
     ]
-    run_cmd(
-        common
-        + [
-            "--output",
-            str(stepfun_output),
-            "--errors",
-            str(tables / "privacy_leakage_suite_v2_stepfun_full_errors.jsonl"),
-            "--base-url",
-            args.stepfun_base_url,
-            "--model",
-            "step-3.5-flash",
-            "--api-mode",
-            "completion_template",
-            "--concurrency",
-            str(args.stepfun_concurrency),
-            "--timeout",
-            "600",
-            "--max-tokens",
-            str(args.judge_max_tokens),
-        ]
-    )
+    # Run the fast Qwen judge first so comparison plots update while the
+    # StepFun ground-truth judge, which is much slower, continues to catch up.
     run_cmd(
         common
         + [
@@ -184,6 +165,27 @@ def run_privacy_evals_for_model(args: argparse.Namespace, model_root: Path, qwen
             "chat",
             "--concurrency",
             str(args.qwen_concurrency),
+            "--timeout",
+            "600",
+            "--max-tokens",
+            str(args.judge_max_tokens),
+        ]
+    )
+    run_cmd(
+        common
+        + [
+            "--output",
+            str(stepfun_output),
+            "--errors",
+            str(tables / "privacy_leakage_suite_v2_stepfun_full_errors.jsonl"),
+            "--base-url",
+            args.stepfun_base_url,
+            "--model",
+            "step-3.5-flash",
+            "--api-mode",
+            "completion_template",
+            "--concurrency",
+            str(args.stepfun_concurrency),
             "--timeout",
             "600",
             "--max-tokens",
