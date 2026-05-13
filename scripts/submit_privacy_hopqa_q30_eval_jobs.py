@@ -21,7 +21,7 @@ RESULTS = "snow.research.rlar.results:/mnt/llmd/results:rw"
 BASE_MODELS = "snow.research.tapes.base_models:/mnt/llmd/base_models:ro"
 WORKDIR = "/home/toolkit/my_code/MosaicProject"
 PYTHON = "/home/toolkit/.conda/envs/pipeline-rl/bin/python"
-HELPER_URL = "http://dns-24e3447c-506e-4b21-92df-156e18db5087-q4:8012"
+HELPER_URL = "http://dns-24e3447c-506e-4b21-92df-156e18db5087-qrb140411:8012"
 STEPFUN_URL = "http://dns-4943305a-c17f-44b1-b767-9536529eb8bc-step35flash-vllm:8000"
 GEMMA4_VENV = "/tmp/gemma4_vllm_env"
 
@@ -72,6 +72,7 @@ ROLLOUT_JOBS: list[dict[str, Any]] = [
         "tp": 1,
         "concurrency": 20,
         "max_model_len": 32768,
+        "max_parallel_doc_reads": 10,
     },
     {
         "name": "privacy_hopqa_q30_eval_rollouts_qwen3_8b_20260513",
@@ -86,6 +87,7 @@ ROLLOUT_JOBS: list[dict[str, Any]] = [
         "tp": 1,
         "concurrency": 16,
         "max_model_len": 32768,
+        "max_parallel_doc_reads": 10,
     },
     {
         "name": "privacy_hopqa_q30_eval_rollouts_stepfun35_flash_20260513",
@@ -99,6 +101,7 @@ ROLLOUT_JOBS: list[dict[str, Any]] = [
         "mem": 128,
         "concurrency": 12,
         "max_model_len": 65536,
+        "max_parallel_doc_reads": 10,
     },
     {
         "name": "privacy_hopqa_q30_eval_rollouts_gpt_oss_20b_20260513",
@@ -106,13 +109,14 @@ ROLLOUT_JOBS: list[dict[str, Any]] = [
         "served_model_name": "openai/gpt-oss-20b",
         "model_path": "/mnt/llmd/base_models/gpt-oss-20b",
         "tokenizer_name": "/mnt/llmd/base_models/gpt-oss-20b",
-        "splits": ["test"],
+        "splits": ["train", "val", "test"],
         "gpu": 1,
         "cpu": 48,
         "mem": 512,
         "tp": 1,
         "concurrency": 12,
         "max_model_len": 32768,
+        "max_parallel_doc_reads": 10,
         "temperature": 0.7,
         "request_api_mode": "completion_template",
         "request_params_json": {"include_reasoning": False},
@@ -124,13 +128,14 @@ ROLLOUT_JOBS: list[dict[str, Any]] = [
         "served_model_name": "google/gemma-4-31B-it",
         "model_path": "google/gemma-4-31B-it",
         "tokenizer_name": "google/gemma-4-31B-it",
-        "splits": ["test"],
+        "splits": ["train", "val", "test"],
         "gpu": 2,
         "cpu": 64,
         "mem": 768,
         "tp": 2,
         "concurrency": 10,
         "max_model_len": 32768,
+        "max_parallel_doc_reads": 10,
         "trust_remote_code": True,
         "python": f"{GEMMA4_VENV}/bin/python",
         "setup_command": GEMMA4_SETUP_COMMAND,
@@ -189,7 +194,7 @@ def base_submit_cmd(name: str, cpu: int, mem: int, gpu: int, bid: int) -> list[s
     return cmd
 
 
-def rollout_worker_command(job: dict[str, Any], artifact_root: Path) -> str:
+def rollout_worker_command(job: dict[str, Any], artifact_root: Path, helper_url: str) -> str:
     parts = [
         job.get("python", PYTHON),
         "scripts/run_privacy_hopqa_q30_rollout_worker.py",
@@ -204,7 +209,7 @@ def rollout_worker_command(job: dict[str, Any], artifact_root: Path) -> str:
         "--splits",
         *job["splits"],
         "--helper-url",
-        HELPER_URL,
+        helper_url,
         "--rollout-concurrency",
         str(job["concurrency"]),
         "--tensor-parallel-size",
@@ -215,6 +220,8 @@ def rollout_worker_command(job: dict[str, Any], artifact_root: Path) -> str:
         "16000",
         "--stage-max-tokens",
         "16000",
+        "--max-parallel-doc-reads",
+        str(job.get("max_parallel_doc_reads", 10)),
         "--temperature",
         str(job.get("temperature", 1.0)),
     ]
@@ -276,6 +283,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--privacy-once", action="store_true")
     parser.add_argument("--privacy-interval-s", type=int, default=1800)
     parser.add_argument("--push-viewer", action="store_true")
+    parser.add_argument("--helper-url", default=HELPER_URL)
     return parser.parse_args()
 
 
@@ -286,7 +294,7 @@ def main() -> None:
         "artifact_root": str(args.artifact_root),
         "rollout_jobs": ROLLOUT_JOBS,
         "privacy_eval_job": PRIVACY_EVAL_JOB,
-        "helper_url": HELPER_URL,
+        "helper_url": args.helper_url,
         "stepfun_url": STEPFUN_URL,
     }
     manifest_path = args.artifact_root / "job_manifest.json"
@@ -297,7 +305,7 @@ def main() -> None:
         for job in ROLLOUT_JOBS:
             if selected_labels and job["model_label"] not in selected_labels:
                 continue
-            job_command = rollout_worker_command(job, args.artifact_root)
+            job_command = rollout_worker_command(job, args.artifact_root, args.helper_url)
             if job.get("setup_command"):
                 job_command = f"{job['setup_command']} && {job_command}"
             submit_cmd = base_submit_cmd(job["name"] + args.job_name_suffix, job["cpu"], job["mem"], job["gpu"], args.bid)
