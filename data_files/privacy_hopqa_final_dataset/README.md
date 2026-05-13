@@ -36,5 +36,5 @@ Run this consistency check before launching new experiments:
 ```bash
 cd /home/toolkit/my_code/MosaicProject
 source configs/privacy_hopqa_q30_current.env
-python3 scripts/validate_privacy_hopqa_advisor_setup.py
+python3 scripts/validate_privacy_hopqa_setup.py
 ```

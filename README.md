@@ -2,18 +2,18 @@
 
 Repo for our privacy-aware dataset creation (and eventually agent training)
 
-## Advisor quick start for Privacy HopQA q30
+## Privacy HopQA q30 quick start for Privacy HopQA q30
 
-Use the advisor runbook as the canonical launch path:
+Use the runbook as the canonical launch path:
 
-[Privacy HopQA advisor runbook, q30, 2026-05-13](./docs/privacy_hopqa_advisor_runbook_2026-05-13.md)
+[Privacy HopQA runbook, q30, 2026-05-13](./docs/privacy_hopqa_runbook_2026-05-13.md)
 
 Minimal preflight:
 
 ```bash
 cd /home/toolkit/my_code/MosaicProject
 source configs/privacy_hopqa_q30_current.env
-python3 scripts/validate_privacy_hopqa_advisor_setup.py
+python3 scripts/validate_privacy_hopqa_setup.py
 ```
 
 The helper-facing retrieval artifacts are staged under:
@@ -192,4 +192,4 @@ Use this as the main index for repo notes:
 - [`trajectory_generation/src/retrieval/`](./trajectory_generation/src/retrieval) local and web retrieval code
 - [`scripts/`](./scripts) explicit run wrappers for chain generation, local input prep, and the reusable web retriever
 - [`trajectory_generation/src/retrieval/privacy_helper_stack.py`](./trajectory_generation/src/retrieval/privacy_helper_stack.py) colocated vLLM + helper stack for privacy-agent retrieval workloads
-- [`docs/`](./docs) advisor-facing overview notes
+- [`docs/`](./docs) overview notes

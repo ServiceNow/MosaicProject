@@ -1,4 +1,4 @@
-# Privacy HopQA advisor runbook, q30, 2026-05-13
+# Privacy HopQA runbook, q30, 2026-05-13
 
 This is the current reproducible launch path for Privacy HopQA q30 training runs.
 It covers the three pieces that must stay synchronized: code, dataset files, and helper retrieval artifacts.
@@ -34,7 +34,7 @@ git pull --ff-only origin privacy_agent
 
 cd /home/toolkit/my_code/MosaicProject
 source configs/privacy_hopqa_q30_current.env
-python3 scripts/validate_privacy_hopqa_advisor_setup.py
+python3 scripts/validate_privacy_hopqa_setup.py
 ```
 
 Expected validation facts:
@@ -57,7 +57,7 @@ If you make a new dataset version, update these files together:
 | `run_privacy_hopqa.sh` | Wrapper defaults used by most EAI training launches. |
 | `data_files/privacy_hopqa_final_dataset/README.md` | Human-readable dataset provenance. |
 | `docs/privacy_hopqa_q30_training_defaults_2026-05-13.md` | Current dataset/split/training metrics note. |
-| `docs/privacy_hopqa_advisor_runbook_2026-05-13.md` | Advisor-facing copy/paste commands. |
+| `docs/privacy_hopqa_runbook_2026-05-13.md` | Copy/paste launch commands. |
 | `PipelineRL/conf/domain_params/privacy_hopqa.yaml` | PipelineRL defaults when the wrapper is not used. |
 
 If new helper artifacts are required, rebuild or copy them into a new shared directory and update `privacy_helper_2gpu.yaml` plus `configs/privacy_hopqa_q30_current.env`. Do not silently point helpers at untracked local files under `data_files/` or `/home/toolkit/BrowseComp-Plus`.

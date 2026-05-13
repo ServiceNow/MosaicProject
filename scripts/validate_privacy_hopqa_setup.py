@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail-fast checks for the advisor-facing Privacy HopQA q30 setup."""
+"""Fail-fast checks for the runbook Privacy HopQA q30 setup."""
 
 from __future__ import annotations
 
@@ -129,7 +129,7 @@ def main() -> int:
             print(f"- {failure}")
         return 1
 
-    print("\nPrivacy HopQA q30 advisor setup is internally consistent.")
+    print("\nPrivacy HopQA q30 setup is internally consistent.")
     return 0
 
 
