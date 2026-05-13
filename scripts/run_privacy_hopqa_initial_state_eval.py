@@ -402,14 +402,21 @@ async def run_all(args: argparse.Namespace) -> None:
         }
         provenance_path.write_text(json.dumps(provenance, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
+    request_parameters: dict[str, Any] = {
+        "temperature": args.temperature,
+        "max_tokens": args.max_tokens,
+    }
+    if args.request_params_json:
+        extra_request_parameters = json.loads(args.request_params_json)
+        if not isinstance(extra_request_parameters, dict):
+            raise ValueError("--request-params-json must decode to a JSON object")
+        request_parameters.update(extra_request_parameters)
+
     llm = TrainableLLM(
         model_name=args.model,
         tokenizer_name=args.tokenizer_name or args.model,
         base_url=args.base_url.rstrip("/"),
-        parameters={
-            "temperature": args.temperature,
-            "max_tokens": args.max_tokens,
-        },
+        parameters=request_parameters,
     )
 
     completed = set() if args.force else load_completed(index_path, model_label)
@@ -480,6 +487,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--concurrency", type=int, default=16)
     parser.add_argument("--temperature", type=float, default=1.0)
     parser.add_argument("--max-tokens", type=int, default=4096)
+    parser.add_argument(
+        "--request-params-json",
+        default="",
+        help="Extra JSON object merged into each OpenAI-compatible chat completion request.",
+    )
     parser.add_argument("--capture-mode", default="all_calls")
     parser.add_argument("--generation-context-limit-tokens", type=int, default=16384)
     parser.add_argument("--generation-context-margin-tokens", type=int, default=128)

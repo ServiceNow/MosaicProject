@@ -165,6 +165,8 @@ def run_rollouts(args: argparse.Namespace, model_run_root: Path, base_url: str) 
         "--log-prompts",
         "--continue-on-error",
     ]
+    if args.request_params_json:
+        cmd.extend(["--request-params-json", args.request_params_json])
     if args.max_examples:
         cmd.extend(["--max-examples", str(args.max_examples)])
 
@@ -201,6 +203,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--rollout-concurrency", type=int, default=16)
     parser.add_argument("--temperature", type=float, default=1.0)
     parser.add_argument("--max-tokens", type=int, default=16000)
+    parser.add_argument("--request-params-json", default="")
     parser.add_argument("--stage-max-tokens", type=int, default=16000)
     parser.add_argument("--generation-context-limit-tokens", type=int, default=32000)
     parser.add_argument("--generation-context-margin-tokens", type=int, default=512)

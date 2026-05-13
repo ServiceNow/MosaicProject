@@ -16,6 +16,16 @@ The rollout harness follows `choose_top_k=3`. The q30 rollout workers use
 `max_tokens=16000` and per-stage generation caps of `16000`; the context window
 is capped separately. vLLM jobs are launched without `max-num-seqs`.
 
+Per-model serving exceptions:
+
+```text
+gpt_oss_20b:   request include_reasoning=false and temperature=0.7 to reduce
+               known GPT-OSS/Harmony parser failures under vLLM chat serving.
+gemma4_31b_it: uses an isolated /tmp/gemma4_vllm_env overlay with vLLM 0.19.1
+               and current Transformers, because the shared PipelineRL env has
+               vLLM 0.18.1 / Transformers 4.57.6 and cannot load model_type=gemma4.
+```
+
 ## Durable artifact root
 
 ```text
@@ -44,6 +54,16 @@ Submit or resubmit the full set:
 
 ```bash
 python scripts/submit_privacy_hopqa_q30_eval_jobs.py --push-viewer
+```
+
+Resubmit only selected rollout shards:
+
+```bash
+python scripts/submit_privacy_hopqa_q30_eval_jobs.py \
+  --skip-privacy-eval \
+  --job-name-suffix _rerun1 \
+  --only-model-label gpt_oss_20b \
+  --only-model-label gemma4_31b_it
 ```
 
 Rollout workers:

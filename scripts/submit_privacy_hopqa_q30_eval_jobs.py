@@ -23,6 +23,39 @@ WORKDIR = "/home/toolkit/my_code/MosaicProject"
 PYTHON = "/home/toolkit/.conda/envs/pipeline-rl/bin/python"
 HELPER_URL = "http://dns-24e3447c-506e-4b21-92df-156e18db5087-q4:8012"
 STEPFUN_URL = "http://dns-4943305a-c17f-44b1-b767-9536529eb8bc-step35flash-vllm:8000"
+GEMMA4_VENV = "/tmp/gemma4_vllm_env"
+
+
+def shell_join(parts: list[str]) -> str:
+    return " ".join(shlex.quote(str(part)) for part in parts)
+
+
+GEMMA4_SETUP_COMMAND = shell_join(
+    [
+        "/bin/bash",
+        "-lc",
+        (
+            "set -euo pipefail; "
+            f"if [ ! -x {shlex.quote(GEMMA4_VENV)}/bin/python ]; then "
+            f"rm -rf {shlex.quote(GEMMA4_VENV)}; "
+            f"{shlex.quote(PYTHON)} -m venv --system-site-packages {shlex.quote(GEMMA4_VENV)}; "
+            f"{shlex.quote(GEMMA4_VENV)}/bin/python -m pip install --no-cache-dir --no-deps 'vllm==0.19.1'; "
+            f"{shlex.quote(GEMMA4_VENV)}/bin/python -m pip install --no-cache-dir "
+            "'flashinfer-cubin==0.6.6' 'compressed-tensors==0.15.0.1'; "
+            f"{shlex.quote(GEMMA4_VENV)}/bin/python -m pip install --no-cache-dir -U "
+            "'git+https://github.com/huggingface/transformers.git'; "
+            "fi; "
+            f"{shlex.quote(GEMMA4_VENV)}/bin/python - <<'PY'\n"
+            "import importlib.util\n"
+            "import transformers, vllm\n"
+            "from transformers import AutoConfig\n"
+            "assert importlib.util.find_spec('vllm.model_executor.models.gemma4') is not None\n"
+            "AutoConfig.from_pretrained('google/gemma-4-31B-it', trust_remote_code=True)\n"
+            "print('gemma4 overlay', transformers.__version__, vllm.__version__)\n"
+            "PY"
+        ),
+    ]
+)
 
 
 ROLLOUT_JOBS: list[dict[str, Any]] = [
@@ -80,6 +113,8 @@ ROLLOUT_JOBS: list[dict[str, Any]] = [
         "tp": 1,
         "concurrency": 12,
         "max_model_len": 32768,
+        "temperature": 0.7,
+        "request_params_json": {"include_reasoning": False},
         "trust_remote_code": True,
     },
     {
@@ -96,6 +131,8 @@ ROLLOUT_JOBS: list[dict[str, Any]] = [
         "concurrency": 10,
         "max_model_len": 32768,
         "trust_remote_code": True,
+        "python": f"{GEMMA4_VENV}/bin/python",
+        "setup_command": GEMMA4_SETUP_COMMAND,
     },
 ]
 
@@ -106,12 +143,6 @@ PRIVACY_EVAL_JOB = {
     "cpu": 48,
     "mem": 384,
 }
-
-
-def shell_join(parts: list[str]) -> str:
-    return " ".join(shlex.quote(str(part)) for part in parts)
-
-
 def base_submit_cmd(name: str, cpu: int, mem: int, gpu: int, bid: int) -> list[str]:
     cmd = [
         "eai",
@@ -159,7 +190,7 @@ def base_submit_cmd(name: str, cpu: int, mem: int, gpu: int, bid: int) -> list[s
 
 def rollout_worker_command(job: dict[str, Any], artifact_root: Path) -> str:
     parts = [
-        PYTHON,
+        job.get("python", PYTHON),
         "scripts/run_privacy_hopqa_q30_rollout_worker.py",
         "--artifact-root",
         str(artifact_root),
@@ -183,7 +214,11 @@ def rollout_worker_command(job: dict[str, Any], artifact_root: Path) -> str:
         "16000",
         "--stage-max-tokens",
         "16000",
+        "--temperature",
+        str(job.get("temperature", 1.0)),
     ]
+    if job.get("request_params_json"):
+        parts.extend(["--request-params-json", json.dumps(job["request_params_json"], separators=(",", ":"))])
     if job.get("base_url"):
         parts.extend(["--base-url", job["base_url"]])
     else:
@@ -228,6 +263,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--skip-rollouts", action="store_true")
     parser.add_argument("--skip-privacy-eval", action="store_true")
+    parser.add_argument("--only-model-label", action="append", default=[])
+    parser.add_argument("--job-name-suffix", default="", help="Suffix appended to submitted EAI job names for reruns.")
     parser.add_argument("--privacy-once", action="store_true")
     parser.add_argument("--privacy-interval-s", type=int, default=1800)
     parser.add_argument("--push-viewer", action="store_true")
@@ -248,16 +285,21 @@ def main() -> None:
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
 
     if not args.skip_rollouts:
+        selected_labels = set(args.only_model_label)
         for job in ROLLOUT_JOBS:
+            if selected_labels and job["model_label"] not in selected_labels:
+                continue
             job_command = rollout_worker_command(job, args.artifact_root)
-            submit_cmd = base_submit_cmd(job["name"], job["cpu"], job["mem"], job["gpu"], args.bid)
+            if job.get("setup_command"):
+                job_command = f"{job['setup_command']} && {job_command}"
+            submit_cmd = base_submit_cmd(job["name"] + args.job_name_suffix, job["cpu"], job["mem"], job["gpu"], args.bid)
             submit_cmd.extend(["--", "/bin/bash", "-lc", job_command])
             submit(submit_cmd, args.dry_run)
 
     if not args.skip_privacy_eval:
         job = PRIVACY_EVAL_JOB
         job_command = privacy_eval_command(args.artifact_root, args.privacy_interval_s, args.privacy_once, args.push_viewer)
-        submit_cmd = base_submit_cmd(job["name"], job["cpu"], job["mem"], job["gpu"], args.bid)
+        submit_cmd = base_submit_cmd(job["name"] + args.job_name_suffix, job["cpu"], job["mem"], job["gpu"], args.bid)
         submit_cmd.extend(["--", "/bin/bash", "-lc", job_command])
         submit(submit_cmd, args.dry_run)
 
