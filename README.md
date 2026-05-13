@@ -2,7 +2,7 @@
 
 Repo for our privacy-aware dataset creation (and eventually agent training)
 
-## Privacy HopQA q30 quick start for Privacy HopQA q30
+## Privacy HopQA q30 quick start
 
 Use the runbook as the canonical launch path:
 
