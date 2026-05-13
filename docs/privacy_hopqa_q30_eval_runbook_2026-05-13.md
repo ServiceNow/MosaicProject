@@ -61,11 +61,15 @@ Resubmit only selected rollout shards:
 
 ```bash
 python scripts/submit_privacy_hopqa_q30_eval_jobs.py \
-  --skip-privacy-eval \
   --job-name-suffix _rerun1 \
   --only-model-label gpt_oss_20b \
   --only-model-label gemma4_31b_it
 ```
+
+When `--only-model-label` is used, the submitter skips the privacy monitor by
+default so model reruns do not create duplicate judge writers. Add
+`--force-privacy-eval-with-filter` only if a filtered rerun intentionally needs
+to launch a new monitor.
 
 Rollout workers:
 
@@ -80,12 +84,14 @@ gemma4_31b_it:           test
 The privacy-eval monitor starts Qwen3-4B as a local judge, then repeatedly runs:
 
 ```text
-StepFun leakage suite v2
 Qwen3-4B leakage suite v2
+StepFun leakage suite v2
 Qwen3-4B web-query-only binary predictor against StepFun score >= 4
 ```
 
-All evaluators resume from their output JSONL files.
+The Qwen judge runs before StepFun so comparison plots update quickly while the
+StepFun ground-truth judge catches up. All evaluators resume from their output
+JSONL files.
 
 ## Viewer
 
