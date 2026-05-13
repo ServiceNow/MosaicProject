@@ -20,8 +20,8 @@ from urllib.request import urlopen
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ARTIFACT_ROOT = Path("/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_full_regen_20260513")
 DEFAULT_STEPFUN_URL = "http://dns-4943305a-c17f-44b1-b767-9536529eb8bc-step35flash-vllm:8000"
-VIEWER_DIR = ROOT / "runtime_analysis" / "privacy_hopqa_q30_live_analysis"
-LATEST_VIEWERS = [
+DEFAULT_VIEWER_DIR = ROOT / "runtime_analysis" / "privacy_hopqa_q30_live_analysis"
+DEFAULT_LATEST_VIEWERS = [
     ROOT / "runtime_analysis" / "latest_privacy_hopqa_q30_live_analysis.html",
     ROOT / "runtime_analysis" / "privacy_hopqa_q30_live_analysis_latest.html",
 ]
@@ -227,8 +227,8 @@ def run_privacy_evals_for_model(args: argparse.Namespace, model_root: Path, qwen
         )
 
 
-def write_eai_snapshot() -> None:
-    snapshot = VIEWER_DIR / "eai_jobs_snapshot.jsonl"
+def write_eai_snapshot(viewer_dir: Path) -> None:
+    snapshot = viewer_dir / "eai_jobs_snapshot.jsonl"
     snapshot.parent.mkdir(parents=True, exist_ok=True)
     cmd = [
         "eai",
@@ -256,26 +256,27 @@ def write_eai_snapshot() -> None:
 
 
 def build_viewer(args: argparse.Namespace) -> None:
-    write_eai_snapshot()
+    write_eai_snapshot(args.viewer_output_dir)
     cmd = [
         sys.executable,
         str(ROOT / "scripts" / "build_privacy_hopqa_q30_live_analysis_viewer.py"),
         "--artifact-root",
         str(args.artifact_root),
         "--output-dir",
-        str(VIEWER_DIR),
+        str(args.viewer_output_dir),
     ]
-    for latest_viewer in LATEST_VIEWERS:
+    for latest_viewer in args.latest_viewer_output:
         cmd.extend(["--latest-output", str(latest_viewer)])
     run_cmd(cmd)
 
 
-def push_viewer_update() -> None:
+def push_viewer_update(args: argparse.Namespace) -> None:
     paths = [
-        str(VIEWER_DIR),
-        *(str(latest_viewer) for latest_viewer in LATEST_VIEWERS),
+        str(args.viewer_output_dir),
         str(ROOT / "docs" / "privacy_hopqa_q30_eval_runbook_2026-05-13.md"),
     ]
+    for latest_viewer in args.latest_viewer_output:
+        paths.append(str(latest_viewer))
     run_cmd(["git", "add", *paths], cwd=ROOT, tolerate_failure=True)
     diff = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=ROOT).returncode
     if diff == 0:
@@ -306,7 +307,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--once", action="store_true")
     parser.add_argument("--skip-viewer", action="store_true")
     parser.add_argument("--push-viewer", action="store_true")
-    return parser.parse_args()
+    parser.add_argument("--viewer-output-dir", type=Path, default=DEFAULT_VIEWER_DIR)
+    parser.add_argument("--latest-viewer-output", type=Path, action="append", default=[])
+    args = parser.parse_args()
+    if not args.latest_viewer_output:
+        args.latest_viewer_output = list(DEFAULT_LATEST_VIEWERS)
+    return args
 
 
 def main() -> None:
@@ -335,7 +341,7 @@ def main() -> None:
             if not args.skip_viewer:
                 build_viewer(args)
             if args.push_viewer and not args.skip_viewer:
-                push_viewer_update()
+                push_viewer_update(args)
             if args.once:
                 break
             print(f"privacy eval monitor sleeping {args.interval_s}s", flush=True)

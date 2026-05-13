@@ -266,6 +266,8 @@ def privacy_eval_command(
     skip_qwen_judge: bool,
     skip_binary_predictor: bool,
     skip_viewer: bool,
+    viewer_output_dir: Path | None,
+    latest_viewer_outputs: list[Path],
 ) -> str:
     parts = [
         PYTHON,
@@ -291,6 +293,10 @@ def privacy_eval_command(
         parts.append("--skip-binary-predictor")
     if skip_viewer:
         parts.append("--skip-viewer")
+    if viewer_output_dir is not None:
+        parts.extend(["--viewer-output-dir", str(viewer_output_dir)])
+    for latest_viewer_output in latest_viewer_outputs:
+        parts.extend(["--latest-viewer-output", str(latest_viewer_output)])
     return shell_join(parts)
 
 
@@ -320,6 +326,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--skip-binary-predictor", action="store_true")
     parser.add_argument("--skip-viewer", action="store_true")
     parser.add_argument("--push-viewer", action="store_true")
+    parser.add_argument("--viewer-output-dir", type=Path, default=None)
+    parser.add_argument("--latest-viewer-output", type=Path, action="append", default=[])
     parser.add_argument("--helper-url", default=HELPER_URL)
     parser.add_argument("--splits", nargs="+", choices=["train", "val", "test"], default=[])
     parser.add_argument("--max-examples", type=int, default=0)
@@ -379,6 +387,8 @@ def main() -> None:
             args.skip_qwen_judge,
             args.skip_binary_predictor,
             args.skip_viewer,
+            args.viewer_output_dir,
+            args.latest_viewer_output,
         )
         submit_cmd = base_submit_cmd(job["name"] + args.job_name_suffix, job["cpu"], job["mem"], privacy_eval_gpu, args.bid)
         submit_cmd.extend(["--", "/bin/bash", "-lc", job_command])
