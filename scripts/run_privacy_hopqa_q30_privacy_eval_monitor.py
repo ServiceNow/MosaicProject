@@ -18,10 +18,13 @@ from urllib.request import urlopen
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_ARTIFACT_ROOT = Path("/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_model_rollouts_20260513")
+DEFAULT_ARTIFACT_ROOT = Path("/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_full_regen_20260513")
 DEFAULT_STEPFUN_URL = "http://dns-4943305a-c17f-44b1-b767-9536529eb8bc-step35flash-vllm:8000"
 VIEWER_DIR = ROOT / "runtime_analysis" / "privacy_hopqa_q30_live_analysis"
-LATEST_VIEWER = ROOT / "runtime_analysis" / "latest_privacy_hopqa_q30_live_analysis.html"
+LATEST_VIEWERS = [
+    ROOT / "runtime_analysis" / "latest_privacy_hopqa_q30_live_analysis.html",
+    ROOT / "runtime_analysis" / "privacy_hopqa_q30_live_analysis_latest.html",
+]
 
 
 def iso_now() -> str:
@@ -256,16 +259,16 @@ def build_viewer(args: argparse.Namespace) -> None:
         str(args.artifact_root),
         "--output-dir",
         str(VIEWER_DIR),
-        "--latest-output",
-        str(LATEST_VIEWER),
     ]
+    for latest_viewer in LATEST_VIEWERS:
+        cmd.extend(["--latest-output", str(latest_viewer)])
     run_cmd(cmd)
 
 
 def push_viewer_update() -> None:
     paths = [
         str(VIEWER_DIR),
-        str(LATEST_VIEWER),
+        *(str(latest_viewer) for latest_viewer in LATEST_VIEWERS),
         str(ROOT / "docs" / "privacy_hopqa_q30_eval_runbook_2026-05-13.md"),
     ]
     run_cmd(["git", "add", *paths], cwd=ROOT, tolerate_failure=True)

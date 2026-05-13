@@ -25,7 +25,7 @@ except Exception:  # pragma: no cover - viewer still builds without scipy.
     scipy_stats = None
 
 
-DEFAULT_ARTIFACT_ROOT = Path("/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_model_rollouts_20260513")
+DEFAULT_ARTIFACT_ROOT = Path("/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_full_regen_20260513")
 DEFAULT_OUTPUT_DIR = Path("/home/toolkit/my_code/MosaicProject/runtime_analysis/privacy_hopqa_q30_live_analysis")
 SPLIT_SIZES = {"train": 559, "val": 98, "test": 344}
 SCORE_VALUES = [1, 2, 3, 4, 5]
@@ -1572,7 +1572,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--artifact-root", type=Path, default=DEFAULT_ARTIFACT_ROOT)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
-    parser.add_argument("--latest-output", type=Path, default=None)
+    parser.add_argument("--latest-output", type=Path, action="append", default=[])
     return parser.parse_args()
 
 
@@ -1633,9 +1633,9 @@ def main() -> None:
         + "\n",
         encoding="utf-8",
     )
-    if args.latest_output:
-        args.latest_output.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(index, args.latest_output)
+    for latest_output in args.latest_output:
+        latest_output.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(index, latest_output)
     print(f"viewer={index}")
 
 

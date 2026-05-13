@@ -23,7 +23,7 @@ from urllib.request import urlopen
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_ARTIFACT_ROOT = Path("/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_model_rollouts_20260513")
+DEFAULT_ARTIFACT_ROOT = Path("/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_full_regen_20260513")
 DEFAULT_DATASET_ROOT = ROOT / "data_files" / "privacy_hopqa_final_dataset"
 DEFAULT_DATASET_BASENAME = "privacy_hopqa_finalized_2026-05-13_q30_final_residual_review"
 DEFAULT_HELPER_URL = "http://dns-24e3447c-506e-4b21-92df-156e18db5087-q4:8012"

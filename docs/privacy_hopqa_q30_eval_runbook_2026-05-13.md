@@ -30,7 +30,7 @@ gemma4_31b_it: uses an isolated /tmp/gemma4_vllm_env overlay with vLLM 0.19.1
 ## Durable artifact root
 
 ```text
-/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_model_rollouts_20260513
+/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_full_regen_20260513
 ```
 
 Layout:
@@ -99,9 +99,10 @@ Build once:
 
 ```bash
 python scripts/build_privacy_hopqa_q30_live_analysis_viewer.py \
-  --artifact-root /mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_model_rollouts_20260513 \
+  --artifact-root /mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_full_regen_20260513 \
   --output-dir runtime_analysis/privacy_hopqa_q30_live_analysis \
-  --latest-output runtime_analysis/latest_privacy_hopqa_q30_live_analysis.html
+  --latest-output runtime_analysis/latest_privacy_hopqa_q30_live_analysis.html \
+  --latest-output runtime_analysis/privacy_hopqa_q30_live_analysis_latest.html
 ```
 
 Open:
@@ -109,6 +110,7 @@ Open:
 ```text
 runtime_analysis/privacy_hopqa_q30_live_analysis/index.html
 runtime_analysis/latest_privacy_hopqa_q30_live_analysis.html
+runtime_analysis/privacy_hopqa_q30_live_analysis_latest.html
 ```
 
 The monitor can commit and push viewer updates with `--push-viewer`, so pulling

@@ -11,7 +11,7 @@ import subprocess
 from typing import Any
 
 
-ARTIFACT_ROOT = Path("/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_model_rollouts_20260513")
+ARTIFACT_ROOT = Path("/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_full_regen_20260513")
 IMAGE = "registry.toolkit-sp.yul201.service-now.com/snow.research.tapes/interactive-toolkit:throughput"
 ACCOUNT = "snow.research.adea"
 HOME_DATA = "snow.home.alex_gurung:/home/toolkit:rw"
