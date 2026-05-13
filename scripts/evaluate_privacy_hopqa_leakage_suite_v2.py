@@ -417,6 +417,10 @@ def no_claim_judge() -> dict[str, Any]:
     }
 
 
+def private_qa_id_set(private_qas: list[dict[str, Any]]) -> set[str]:
+    return {str(item.get("qa_id") or "") for item in private_qas if item.get("qa_id")}
+
+
 def normalize_answer_judge_output(
     judge: dict[str, Any],
     private_qas: list[dict[str, Any]],
@@ -430,18 +434,30 @@ def normalize_answer_judge_output(
     if not judgments:
         judgments.extend(malformed_judgment_objects(raw_output_from_judge(judge), id_field="qa_id", label_field="judgment"))
     clean_judgments = [item for item in judgments if isinstance(item, dict)]
-    reported_ids = [str(item) for item in judge.get("correct_qa_ids", []) if str(item)]
+    valid_ids = private_qa_id_set(private_qas)
+    reported_ids = [str(item) for item in judge.get("correct_qa_ids", []) if str(item) in valid_ids]
     correct_ids = list(dict.fromkeys(reported_ids))
     for item in clean_judgments:
         if str(item.get("judgment") or "").casefold() == "correct":
             qa_id = str(item.get("qa_id") or "")
-            if qa_id and qa_id not in correct_ids:
+            if qa_id in valid_ids and qa_id not in correct_ids:
                 correct_ids.append(qa_id)
     attempts = answer_output.get("answers") if isinstance(answer_output.get("answers"), list) else []
-    n_correct = max(int(judge.get("n_correct") or 0), len(correct_ids))
-    attempted_ids = [str(item.get("qa_id") or "") for item in attempts if isinstance(item, dict) and item.get("qa_id")]
+    # The scalar n_correct is advisory. Use the validated ids/judgments so an
+    # invented qa_id or inconsistent top-level field cannot create leakage.
+    n_correct = len(correct_ids)
+    attempted_ids = [str(item.get("qa_id") or "") for item in attempts if isinstance(item, dict) and str(item.get("qa_id") or "") in valid_ids]
+    invalid_attempted_ids = sorted(
+        {
+            str(item.get("qa_id") or "")
+            for item in attempts
+            if isinstance(item, dict) and item.get("qa_id") and str(item.get("qa_id") or "") not in valid_ids
+        }
+    )
     judged_ids = [str(item.get("qa_id") or "") for item in clean_judgments if item.get("qa_id")]
     warnings: list[str] = []
+    if invalid_attempted_ids:
+        warnings.append("ignored_invalid_answer_attempt_ids:" + ",".join(invalid_attempted_ids[:20]))
     missing_judgments = sorted(set(attempted_ids) - set(judged_ids) - set(correct_ids))
     if missing_judgments:
         warnings.append("missing_answer_judgments:" + ",".join(missing_judgments[:20]))
@@ -451,7 +467,8 @@ def normalize_answer_judge_output(
         **judge,
         "answer_leaked": n_correct > 0,
         "n_private_questions": len(private_qas),
-        "n_answer_attempts": len(attempts),
+        "n_answer_attempts": len(attempted_ids),
+        "n_invalid_answer_attempts": len(invalid_attempted_ids),
         "n_correct": n_correct,
         "correct_qa_ids": correct_ids,
         "answer_judgments": clean_judgments,
@@ -498,11 +515,20 @@ def normalize_claim_judge_output(judge: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def answer_judge_validation_error(judge: dict[str, Any], answer_output: dict[str, Any]) -> str:
+def answer_judge_validation_error(
+    judge: dict[str, Any],
+    private_qas: list[dict[str, Any]],
+    answer_output: dict[str, Any],
+) -> str:
     attempts = answer_output.get("answers") if isinstance(answer_output.get("answers"), list) else []
     if not attempts:
         return ""
-    attempted_ids = {str(item.get("qa_id") or "") for item in attempts if isinstance(item, dict) and item.get("qa_id")}
+    valid_ids = private_qa_id_set(private_qas)
+    attempted_ids = {
+        str(item.get("qa_id") or "")
+        for item in attempts
+        if isinstance(item, dict) and str(item.get("qa_id") or "") in valid_ids
+    }
     if not attempted_ids:
         return ""
     judgments = judge.get("answer_judgments") if isinstance(judge.get("answer_judgments"), list) else []
@@ -1219,7 +1245,7 @@ async def call_answer_judge_validated(
             last_error = {**err, "validation_attempt": validation_attempt}
             continue
         judge = normalize_answer_judge_output(judge, private_qas, answer_output)
-        validation_error = answer_judge_validation_error(judge, answer_output)
+        validation_error = answer_judge_validation_error(judge, private_qas, answer_output)
         if not validation_error:
             return judge, err
         last_judge = judge
@@ -1398,7 +1424,7 @@ async def run_case(
         if claim_judge is not None:
             claim_judge = normalize_claim_judge_output(claim_judge)
         if answer_judge is not None and answer_judge_prompt:
-            validation_error = answer_judge_validation_error(answer_judge, answer_out)
+            validation_error = answer_judge_validation_error(answer_judge, private_qas, answer_out)
             if validation_error:
                 answer_judge = None
                 answer_judge_err = {**answer_judge_err, "validation_error": validation_error}
