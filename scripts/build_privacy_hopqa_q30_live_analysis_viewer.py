@@ -99,6 +99,18 @@ def model_display(model_label: str) -> str:
     return MODEL_NAMES.get(model_label, model_label)
 
 
+def model_sort_key(model_label: str) -> tuple[int, str]:
+    order = {label: idx for idx, label in enumerate(MODEL_NAMES)}
+    return (order.get(model_label, len(order)), model_display(model_label))
+
+
+def ordered_model_labels(labels: Any, include_defaults: bool = False) -> list[str]:
+    label_set = {str(label) for label in labels if str(label)}
+    if include_defaults:
+        label_set.update(MODEL_NAMES)
+    return sorted(label_set, key=model_sort_key)
+
+
 def model_roots(artifact_root: Path) -> list[Path]:
     root = artifact_root / "model_runs"
     if not root.exists():
@@ -412,23 +424,28 @@ def plot_progress(rows: list[dict[str, Any]], path: Path, split_scope: str | Non
     labels = []
     values = []
     expected = []
-    for model in sorted({str(row.get("model_label")) for row in rows}):
+    for model in ordered_model_labels((row.get("model_label") for row in rows), include_defaults=True):
+        all_model_rows = [row for row in rows if row.get("model_label") == model]
         model_rows = [row for row in ok if row.get("model_label") == model]
         if split_scope is not None:
             planned = {split_scope}
         else:
             planned = set()
-            for row in rows:
-                if row.get("model_label") == model:
-                    planned.update(row.get("planned_splits") or [])
+            for row in all_model_rows:
+                planned.update(row.get("planned_splits") or [])
         if not planned:
-            planned = {str(row.get("split")) for row in model_rows}
+            planned = {str(row.get("split")) for row in all_model_rows if row.get("split")}
+        if not planned:
+            planned = {split_scope} if split_scope is not None else set(SPLIT_SIZES)
         for split in ["train", "val", "test"]:
-            if split not in planned and not any(row.get("split") == split for row in model_rows):
+            if split not in planned and not any(row.get("split") == split for row in all_model_rows):
                 continue
             labels.append(f"{model_display(model)}\n{split}")
             values.append(sum(1 for row in model_rows if row.get("split") == split))
             expected.append(SPLIT_SIZES.get(split, 0))
+    if not labels:
+        empty_plot(path, "Rollout coverage by model and split", "No rollout rows have been written yet.")
+        return
     plt.figure(figsize=(max(8, len(labels) * 0.75), 5.2))
     x = list(range(len(labels)))
     plt.bar(x, expected, color="#d8d2c6", label="expected")
@@ -445,7 +462,7 @@ def plot_accuracy_privacy(rollouts: list[dict[str, Any]], leakage: list[dict[str
     rollout_by_trace = {str(row.get("trace_path")): row for row in rollouts if row.get("ok")}
     plt.figure(figsize=(8.2, 5.8))
     any_points = False
-    for model in sorted({str(row.get("model_label")) for row in leakage}):
+    for model in ordered_model_labels(row.get("model_label") for row in leakage):
         paired = []
         for row in leakage:
             if row.get("model_label") != model:
@@ -464,6 +481,10 @@ def plot_accuracy_privacy(rollouts: list[dict[str, Any]], leakage: list[dict[str
         color = COLORS.get(model)
         plt.scatter([mean_acc], [leak_rate], s=size, color=color, edgecolor="#1f2421", linewidth=0.7, alpha=0.9)
         plt.annotate(model_display(model), (mean_acc, leak_rate), xytext=(6, 5), textcoords="offset points", fontsize=9)
+    if not any_points:
+        plt.close()
+        empty_plot(path, "Mean task performance vs privacy leakage by model", "No StepFun-judged rollouts can be paired with successful rollouts yet.")
+        return
     plt.xlim(0, 100)
     plt.ylim(0, 100)
     plt.xticks(range(0, 101, 20))
@@ -553,7 +574,10 @@ def plot_accuracy_privacy_facets(rollouts: list[dict[str, Any]], leakage: list[d
 
 
 def plot_hop_accuracy_summary(rollouts: list[dict[str, Any]], path: Path) -> None:
-    models = sorted({str(row.get("model_label")) for row in rollouts if row.get("ok")})
+    models = ordered_model_labels(row.get("model_label") for row in rollouts if row.get("ok"))
+    if not models:
+        empty_plot(path, "Task performance by model", "No successful rollouts in this scope yet.")
+        return
     x = list(range(len(models)))
     hop_vals = []
     final_vals = []
@@ -582,7 +606,10 @@ def plot_hop_accuracy_summary(rollouts: list[dict[str, Any]], path: Path) -> Non
 
 
 def plot_score_distribution(rows: list[dict[str, Any]], path: Path, title: str) -> None:
-    models = sorted({str(row.get("model_label")) for row in rows})
+    models = ordered_model_labels(row.get("model_label") for row in rows)
+    if not models:
+        empty_plot(path, title, "No judge rows in this scope yet.")
+        return
     x = list(range(len(models)))
     width = 0.14
     plt.figure(figsize=(max(8, len(models) * 1.0), 5.2))
@@ -599,7 +626,10 @@ def plot_score_distribution(rows: list[dict[str, Any]], path: Path, title: str) 
 
 
 def plot_leakage_rates(rows: list[dict[str, Any]], path: Path) -> None:
-    models = sorted({str(row.get("model_label")) for row in rows})
+    models = ordered_model_labels(row.get("model_label") for row in rows)
+    if not models:
+        empty_plot(path, "Leakage type rates by model", "No StepFun judge rows in this scope yet.")
+        return
     series = [
         ("intent >= 4", lambda row: intent_score(row) >= 4, "#315c9c"),
         ("answer", answer_leaked, "#b67812"),
@@ -627,7 +657,10 @@ def plot_leakage_rates(rows: list[dict[str, Any]], path: Path) -> None:
 
 def plot_score3_intent_breakdown(rows: list[dict[str, Any]], path: Path) -> None:
     score3 = [row for row in rows if score(row) == 3]
-    models = sorted({str(row.get("model_label")) for row in score3})
+    models = ordered_model_labels(row.get("model_label") for row in score3)
+    if not models:
+        empty_plot(path, "Overall score 3 breakdown by intent subscore", "No overall score-3 rows in this scope yet.")
+        return
     x = list(range(len(models)))
     bottoms = [0.0 for _ in models]
     colors = {3: "#9ecae1", 4: "#3182bd", 5: "#08519c"}
@@ -653,7 +686,10 @@ def plot_score3_intent_breakdown(rows: list[dict[str, Any]], path: Path) -> None
 
 
 def plot_leakage_count_metrics(rows: list[dict[str, Any]], path: Path) -> None:
-    models = sorted({str(row.get("model_label")) for row in rows})
+    models = ordered_model_labels(row.get("model_label") for row in rows)
+    if not models:
+        empty_plot(path, "Privacy leakage count metrics", "No StepFun judge rows in this scope yet.")
+        return
     series = [
         ("fully predicted subquestions", fully_predicted_subquestion_count, "#0072B2"),
         ("correct private answers", correct_answer_count, "#D55E00"),
@@ -689,6 +725,9 @@ def heatmap_percent(
 ) -> None:
     mat = [[pairs.get((x, y), 0) for x in x_values] for y in y_values]
     total = sum(sum(row) for row in mat)
+    if total == 0:
+        empty_plot(path, title, "No rows in this scope yet.")
+        return
     plt.figure(figsize=(max(6.5, len(x_values) * 0.65), max(5, len(y_values) * 0.55)))
     plt.imshow(mat, cmap="Blues", aspect="auto")
     plt.colorbar(label="n")
@@ -777,7 +816,10 @@ def plot_local_read_query_intensity_heatmap(rollouts: list[dict[str, Any]], step
 
 
 def plot_query_read_profile(rollouts: list[dict[str, Any]], path: Path) -> None:
-    models = sorted({str(row.get("model_label")) for row in rollouts if row.get("ok")})
+    models = ordered_model_labels(row.get("model_label") for row in rollouts if row.get("ok"))
+    if not models:
+        empty_plot(path, "Agent retrieval/query behavior by model", "No successful rollouts in this scope yet.")
+        return
     x = list(range(len(models)))
     mean_queries = []
     mean_reads = []
@@ -805,7 +847,7 @@ def plot_query_read_profile(rollouts: list[dict[str, Any]], path: Path) -> None:
 
 def plot_pattern_accuracy_heatmap(rollouts: list[dict[str, Any]], path: Path) -> None:
     ok = [row for row in rollouts if row.get("ok")]
-    models = sorted({str(row.get("model_label")) for row in ok})
+    models = ordered_model_labels(row.get("model_label") for row in ok)
     patterns = sorted({str(row.get("pattern") or "?") for row in ok}, key=lambda item: (len(item), item))
     if not models or not patterns:
         empty_plot(path, "Mean hop accuracy by model and hop pattern")
@@ -844,7 +886,7 @@ def plot_pattern_accuracy_heatmap(rollouts: list[dict[str, Any]], path: Path) ->
 
 def plot_company_accuracy_heatmap(rollouts: list[dict[str, Any]], path: Path) -> None:
     ok = [row for row in rollouts if row.get("ok")]
-    models = sorted({str(row.get("model_label")) for row in ok})
+    models = ordered_model_labels(row.get("model_label") for row in ok)
     companies = sorted({str(row.get("company") or "?") for row in ok})
     if not models or not companies:
         empty_plot(path, "Task difficulty by company")
@@ -879,7 +921,7 @@ def plot_company_accuracy_heatmap(rollouts: list[dict[str, Any]], path: Path) ->
 
 
 def plot_company_leakage_heatmap(stepfun: list[dict[str, Any]], path: Path) -> None:
-    models = sorted({str(row.get("model_label")) for row in stepfun})
+    models = ordered_model_labels(row.get("model_label") for row in stepfun)
     companies = sorted({str(row.get("company") or "?") for row in stepfun})
     if not models or not companies:
         empty_plot(path, "Privacy leakage by company")
@@ -951,7 +993,7 @@ def plot_task_accuracy_leakage(rollouts: list[dict[str, Any]], stepfun: list[dic
 
 
 def plot_tokens(rollouts: list[dict[str, Any]], path: Path) -> None:
-    models = sorted({str(row.get("model_label")) for row in rollouts if row.get("ok")})
+    models = ordered_model_labels(row.get("model_label") for row in rollouts if row.get("ok"))
     data = []
     labels = []
     for model in models:
@@ -960,9 +1002,11 @@ def plot_tokens(rollouts: list[dict[str, Any]], path: Path) -> None:
         if vals:
             data.append(vals)
             labels.append(model_display(model))
+    if not data:
+        empty_plot(path, "Agent rollout token usage", "No token usage rows in this scope yet.")
+        return
     plt.figure(figsize=(max(8, len(data) * 1.0), 5.2))
-    if data:
-        plt.boxplot(data, tick_labels=labels, showfliers=False)
+    plt.boxplot(data, tick_labels=labels, showfliers=False)
     plt.ylabel("agent prompt + output tokens")
     plt.title("Agent rollout token usage")
     plt.xticks(rotation=25, ha="right")
@@ -1543,10 +1587,10 @@ def main() -> None:
     scopes = [
         build_scope(
             args.output_dir,
-            "test",
-            "Test Set",
-            "Only rows from the held-out test split. This is the cleanest model-comparison view when train/val rollouts are used for reward-model development.",
-            "test",
+            "all",
+            "All Available Splits",
+            "All completed train, validation, and test rows currently present in the artifact root. This is the best live view while full-dataset jobs are still writing rows.",
+            None,
             rollouts,
             stepfun,
             qwen,
@@ -1554,10 +1598,10 @@ def main() -> None:
         ),
         build_scope(
             args.output_dir,
-            "all",
-            "All Available Splits",
-            "All completed train, validation, and test rows currently present in the artifact root. Models that have only been run on test so far will show only test rows until full-dataset reruns finish.",
-            None,
+            "test",
+            "Test Set",
+            "Only rows from the held-out test split. During fresh full-dataset runs this section may remain sparse until the jobs finish train and validation rows.",
+            "test",
             rollouts,
             stepfun,
             qwen,
