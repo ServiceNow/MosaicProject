@@ -152,6 +152,12 @@ def run_rollouts(args: argparse.Namespace, model_run_root: Path, base_url: str) 
         str(args.stage_max_tokens),
         "--max-iterations",
         str(args.max_iterations),
+        "--hop-plan-attempts",
+        str(args.hop_plan_attempts),
+        "--case-attempts",
+        str(args.case_attempts),
+        "--case-retry-delay-s",
+        str(args.case_retry_delay_s),
         "--choose-top-k",
         str(args.choose_top_k),
         "--retrieval-top-k",
@@ -169,6 +175,8 @@ def run_rollouts(args: argparse.Namespace, model_run_root: Path, base_url: str) 
     ]
     if args.request_params_json:
         cmd.extend(["--request-params-json", args.request_params_json])
+    if args.planner_privacy_prompt:
+        cmd.append("--planner-privacy-prompt")
     if args.max_examples:
         cmd.extend(["--max-examples", str(args.max_examples)])
 
@@ -211,6 +219,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--generation-context-limit-tokens", type=int, default=32000)
     parser.add_argument("--generation-context-margin-tokens", type=int, default=512)
     parser.add_argument("--max-iterations", type=int, default=21)
+    parser.add_argument("--hop-plan-attempts", type=int, default=1)
+    parser.add_argument("--case-attempts", type=int, default=1)
+    parser.add_argument("--case-retry-delay-s", type=float, default=5.0)
+    parser.add_argument("--planner-privacy-prompt", action="store_true")
     parser.add_argument("--choose-top-k", type=int, default=3)
     parser.add_argument("--retrieval-top-k", type=int, default=5)
     parser.add_argument("--max-candidate-cards", type=int, default=20)

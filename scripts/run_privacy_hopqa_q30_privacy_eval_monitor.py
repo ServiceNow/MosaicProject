@@ -128,7 +128,7 @@ def run_cmd(cmd: list[str], cwd: Path = ROOT, tolerate_failure: bool = True) -> 
     return code
 
 
-def run_privacy_evals_for_model(args: argparse.Namespace, model_root: Path, qwen_base_url: str) -> None:
+def run_privacy_evals_for_model(args: argparse.Namespace, model_root: Path, qwen_base_url: str | None) -> None:
     if count_ok_rollouts(model_root) == 0:
         print(f"skip {model_root.name}: no successful rollouts yet", flush=True)
         return
@@ -151,29 +151,32 @@ def run_privacy_evals_for_model(args: argparse.Namespace, model_root: Path, qwen
         "200",
         "--continue-on-error",
     ]
-    # Run the fast Qwen judge first so comparison plots update while the
-    # StepFun ground-truth judge, which is much slower, continues to catch up.
-    run_cmd(
-        common
-        + [
-            "--output",
-            str(qwen_output),
-            "--errors",
-            str(tables / "privacy_leakage_suite_v2_qwen3_4b_full_errors.jsonl"),
-            "--base-url",
-            qwen_base_url,
-            "--model",
-            args.qwen_served_model_name,
-            "--api-mode",
-            "chat",
-            "--concurrency",
-            str(args.qwen_concurrency),
-            "--timeout",
-            "600",
-            "--max-tokens",
-            str(args.judge_max_tokens),
-        ]
-    )
+    # Run the fast Qwen judge first when requested so comparison plots update
+    # while the StepFun ground-truth judge, which is much slower, catches up.
+    if not args.skip_qwen_judge:
+        if not qwen_base_url:
+            raise ValueError("qwen_base_url is required unless --skip-qwen-judge is set")
+        run_cmd(
+            common
+            + [
+                "--output",
+                str(qwen_output),
+                "--errors",
+                str(tables / "privacy_leakage_suite_v2_qwen3_4b_full_errors.jsonl"),
+                "--base-url",
+                qwen_base_url,
+                "--model",
+                args.qwen_served_model_name,
+                "--api-mode",
+                "chat",
+                "--concurrency",
+                str(args.qwen_concurrency),
+                "--timeout",
+                "600",
+                "--max-tokens",
+                str(args.judge_max_tokens),
+            ]
+        )
     run_cmd(
         common
         + [
@@ -195,7 +198,9 @@ def run_privacy_evals_for_model(args: argparse.Namespace, model_root: Path, qwen
             str(args.judge_max_tokens),
         ]
     )
-    if stepfun_output.exists():
+    if stepfun_output.exists() and not args.skip_binary_predictor:
+        if not qwen_base_url:
+            raise ValueError("qwen_base_url is required unless --skip-binary-predictor is set")
         run_cmd(
             [
                 sys.executable,
@@ -295,8 +300,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--stepfun-concurrency", type=int, default=48)
     parser.add_argument("--qwen-concurrency", type=int, default=24)
     parser.add_argument("--binary-concurrency", type=int, default=32)
+    parser.add_argument("--skip-qwen-judge", action="store_true")
+    parser.add_argument("--skip-binary-predictor", action="store_true")
     parser.add_argument("--interval-s", type=int, default=1800)
     parser.add_argument("--once", action="store_true")
+    parser.add_argument("--skip-viewer", action="store_true")
     parser.add_argument("--push-viewer", action="store_true")
     return parser.parse_args()
 
@@ -314,15 +322,19 @@ def main() -> None:
     signal.signal(signal.SIGINT, handle_signal)
 
     try:
-        qwen_process = start_qwen_vllm(args)
-        qwen_base_url = f"http://127.0.0.1:{args.qwen_port}"
-        wait_for_models(qwen_base_url, args.qwen_timeout_s)
+        needs_qwen = not (args.skip_qwen_judge and args.skip_binary_predictor)
+        qwen_base_url = None
+        if needs_qwen:
+            qwen_process = start_qwen_vllm(args)
+            qwen_base_url = f"http://127.0.0.1:{args.qwen_port}"
+            wait_for_models(qwen_base_url, args.qwen_timeout_s)
         while True:
             print(f"privacy eval monitor pass started {iso_now()}", flush=True)
             for model_root in discover_model_roots(args.artifact_root):
                 run_privacy_evals_for_model(args, model_root, qwen_base_url)
-            build_viewer(args)
-            if args.push_viewer:
+            if not args.skip_viewer:
+                build_viewer(args)
+            if args.push_viewer and not args.skip_viewer:
                 push_viewer_update()
             if args.once:
                 break

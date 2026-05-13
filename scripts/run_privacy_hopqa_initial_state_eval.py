@@ -178,6 +178,7 @@ def build_cfg(args: argparse.Namespace, split_output_dir: Path, OmegaConf: Any) 
                 "answer_match_f1_threshold": args.answer_match_f1_threshold,
                 "max_iterations": args.max_iterations,
                 "hop_plan_attempts": args.hop_plan_attempts,
+                "planner_privacy_prompt": args.planner_privacy_prompt,
                 "enable_generic_retrieval_fallback": args.enable_generic_retrieval_fallback,
                 "max_parallel_retrieval_actions": args.max_parallel_retrieval_actions,
                 "retrieval_top_k": args.retrieval_top_k,
@@ -238,6 +239,7 @@ async def run_case(
     write_lock: asyncio.Lock,
     index_path: Path,
     error_path: Path,
+    attempt_path: Path,
 ) -> bool:
     split_name = case.split_name
     split_output_dir = case.split_output_dir
@@ -247,75 +249,101 @@ async def run_case(
     chain_id = str(problem.get("chain_id") or "")
     root = split_output_dir / "privacy_hopqa_runs"
     started = time.time()
+    case_attempts = max(1, int(args.case_attempts))
+    attempt_rows: list[dict[str, Any]] = []
     async with sem:
-        try:
-            before = {path.name for path in root.iterdir()} if root.exists() else set()
-            result = await generate_privacy_hopqa_rollout(cfg, llm, problem, session)
-            metrics = result.metrics.model_dump() if hasattr(result.metrics, "model_dump") else dict(result.metrics)
-            token_totals = training_text_token_totals(result.training_texts)
-            trace_path = new_trace_for(split_output_dir, task_id, chain_id, before)
-            row = {
-                "timestamp": iso_now(),
-                "ok": True,
-                "runner_version": RUNNER_VERSION,
-                "model_label": args.model_label,
-                "model": args.model,
-                "split": split_name,
-                "repeat": repeat,
-                "task_id": task_id,
-                "chain_id": chain_id,
-                "company": problem.get("company"),
-                "pattern": problem.get("pattern"),
-                "n_hops": problem.get("n_hops"),
-                "latency_s": round(time.time() - started, 3),
-                "reward": metrics.get("reward"),
-                "hop_accuracy": metrics.get("hop_accuracy"),
-                "raw_hop_accuracy": metrics.get("raw_hop_accuracy", metrics.get("hop_accuracy")),
-                "conditional_hop_accuracy": metrics.get("conditional_hop_accuracy"),
-                "conditional_correct_hops": metrics.get("conditional_correct_hops"),
-                "evaluable_hops": metrics.get("evaluable_hops"),
-                "blocked_hops": metrics.get("blocked_hops"),
-                "prefix_correct_hops": metrics.get("prefix_correct_hops"),
-                "prefix_hop_accuracy": metrics.get("prefix_hop_accuracy"),
-                "first_incorrect_hop": metrics.get("first_incorrect_hop"),
-                "strict_chain_success": metrics.get("strict_chain_success"),
-                "final_correct": metrics.get("final_correct"),
-                "chain_complete": metrics.get("chain_complete"),
-                "training_text_count": len(result.training_texts),
-                "prompt_tokens": token_totals["prompt_tokens"],
-                "output_tokens": token_totals["output_tokens"],
-                "total_tokens": token_totals["total_tokens"],
-                "finished_llm_calls": token_totals["finished_llm_calls"],
-                "length_finished_llm_calls": token_totals["length_finished_llm_calls"],
-                "metrics": metrics,
-                "trace_path": str(trace_path),
-            }
-        except Exception as exc:
-            row = {
-                "timestamp": iso_now(),
-                "ok": False,
-                "runner_version": RUNNER_VERSION,
-                "model_label": args.model_label,
-                "model": args.model,
-                "split": split_name,
-                "repeat": repeat,
-                "task_id": task_id,
-                "chain_id": chain_id,
-                "company": problem.get("company"),
-                "pattern": problem.get("pattern"),
-                "n_hops": problem.get("n_hops"),
-                "latency_s": round(time.time() - started, 3),
-                "error_type": type(exc).__name__,
-                "error": str(exc),
-            }
+        for attempt in range(1, case_attempts + 1):
+            attempt_started = time.time()
+            try:
+                before = {path.name for path in root.iterdir()} if root.exists() else set()
+                result = await generate_privacy_hopqa_rollout(cfg, llm, problem, session)
+                metrics = result.metrics.model_dump() if hasattr(result.metrics, "model_dump") else dict(result.metrics)
+                token_totals = training_text_token_totals(result.training_texts)
+                trace_path = new_trace_for(split_output_dir, task_id, chain_id, before)
+                row = {
+                    "timestamp": iso_now(),
+                    "ok": True,
+                    "runner_version": RUNNER_VERSION,
+                    "model_label": args.model_label,
+                    "model": args.model,
+                    "split": split_name,
+                    "repeat": repeat,
+                    "task_id": task_id,
+                    "chain_id": chain_id,
+                    "company": problem.get("company"),
+                    "pattern": problem.get("pattern"),
+                    "n_hops": problem.get("n_hops"),
+                    "latency_s": round(time.time() - started, 3),
+                    "attempt_latency_s": round(time.time() - attempt_started, 3),
+                    "case_attempt": attempt,
+                    "case_attempts": case_attempts,
+                    "reward": metrics.get("reward"),
+                    "hop_accuracy": metrics.get("hop_accuracy"),
+                    "raw_hop_accuracy": metrics.get("raw_hop_accuracy", metrics.get("hop_accuracy")),
+                    "conditional_hop_accuracy": metrics.get("conditional_hop_accuracy"),
+                    "conditional_correct_hops": metrics.get("conditional_correct_hops"),
+                    "evaluable_hops": metrics.get("evaluable_hops"),
+                    "blocked_hops": metrics.get("blocked_hops"),
+                    "prefix_correct_hops": metrics.get("prefix_correct_hops"),
+                    "prefix_hop_accuracy": metrics.get("prefix_hop_accuracy"),
+                    "first_incorrect_hop": metrics.get("first_incorrect_hop"),
+                    "strict_chain_success": metrics.get("strict_chain_success"),
+                    "final_correct": metrics.get("final_correct"),
+                    "chain_complete": metrics.get("chain_complete"),
+                    "training_text_count": len(result.training_texts),
+                    "prompt_tokens": token_totals["prompt_tokens"],
+                    "output_tokens": token_totals["output_tokens"],
+                    "total_tokens": token_totals["total_tokens"],
+                    "finished_llm_calls": token_totals["finished_llm_calls"],
+                    "length_finished_llm_calls": token_totals["length_finished_llm_calls"],
+                    "metrics": metrics,
+                    "trace_path": str(trace_path),
+                }
+                break
+            except Exception as exc:
+                row = {
+                    "timestamp": iso_now(),
+                    "ok": False,
+                    "runner_version": RUNNER_VERSION,
+                    "model_label": args.model_label,
+                    "model": args.model,
+                    "split": split_name,
+                    "repeat": repeat,
+                    "task_id": task_id,
+                    "chain_id": chain_id,
+                    "company": problem.get("company"),
+                    "pattern": problem.get("pattern"),
+                    "n_hops": problem.get("n_hops"),
+                    "latency_s": round(time.time() - started, 3),
+                    "attempt_latency_s": round(time.time() - attempt_started, 3),
+                    "case_attempt": attempt,
+                    "case_attempts": case_attempts,
+                    "attempts_exhausted": attempt >= case_attempts,
+                    "error_type": type(exc).__name__,
+                    "error": str(exc),
+                }
+                attempt_rows.append({**row, "final_index_row": attempt >= case_attempts})
+                if attempt < case_attempts:
+                    delay = min(120.0, max(0.0, args.case_retry_delay_s) * (2 ** (attempt - 1)))
+                    print(
+                        f"retry model={args.model_label} split={split_name} repeat={repeat} "
+                        f"chain={chain_id} attempt={attempt}/{case_attempts} delay={delay:.1f}s "
+                        f"error={type(exc).__name__}",
+                        flush=True,
+                    )
+                    if delay:
+                        await asyncio.sleep(delay)
     async with write_lock:
+        for attempt_row in attempt_rows:
+            append_jsonl(attempt_path, attempt_row)
         append_jsonl(index_path, row)
         if not row.get("ok"):
             append_jsonl(error_path, row)
         status = "ok" if row.get("ok") else "fail"
         print(
             f"{status} model={args.model_label} split={split_name} repeat={repeat} "
-            f"chain={chain_id} latency={row.get('latency_s')}s",
+            f"chain={chain_id} attempt={row.get('case_attempt')}/{row.get('case_attempts')} "
+            f"latency={row.get('latency_s')}s",
             flush=True,
         )
     return bool(row.get("ok"))
@@ -330,6 +358,7 @@ async def run_split_cases(
     session: Any,
     index_path: Path,
     error_path: Path,
+    attempt_path: Path,
 ) -> RunStats:
     stats = RunStats(queued=len(cases))
     if not cases:
@@ -368,6 +397,7 @@ async def run_split_cases(
                         write_lock,
                         index_path,
                         error_path,
+                        attempt_path,
                     )
                 stats.record(ok)
             finally:
@@ -400,6 +430,7 @@ async def run_all(args: argparse.Namespace) -> None:
     tables_dir = output_root / "tables"
     index_path = tables_dir / "rollout_index.jsonl"
     error_path = tables_dir / "rollout_errors.jsonl"
+    attempt_path = tables_dir / "rollout_attempts.jsonl"
     provenance_path = output_root / "config" / "provenance.json"
     provenance_path.parent.mkdir(parents=True, exist_ok=True)
     if not provenance_path.exists() or args.force_provenance:
@@ -556,6 +587,7 @@ async def run_all(args: argparse.Namespace) -> None:
                 session,
                 index_path,
                 error_path,
+                attempt_path,
             )
             total_stats.queued += split_stats.queued
             total_stats.ok += split_stats.ok
@@ -596,6 +628,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--task-id", action="append", default=[])
     parser.add_argument("--chain-id", action="append", default=[])
     parser.add_argument("--repeats", type=int, default=1)
+    parser.add_argument("--case-attempts", type=int, default=1)
+    parser.add_argument("--case-retry-delay-s", type=float, default=5.0)
     parser.add_argument("--concurrency", type=int, default=16)
     parser.add_argument("--temperature", type=float, default=1.0)
     parser.add_argument("--max-tokens", type=int, default=4096)
@@ -620,6 +654,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--answer-match-f1-threshold", type=float, default=0.75)
     parser.add_argument("--max-iterations", type=int, default=21)
     parser.add_argument("--hop-plan-attempts", type=int, default=1)
+    parser.add_argument("--planner-privacy-prompt", action="store_true")
     parser.add_argument("--enable-generic-retrieval-fallback", action="store_true")
     parser.add_argument("--max-parallel-retrieval-actions", type=int, default=3)
     parser.add_argument("--retrieval-top-k", type=int, default=5)
