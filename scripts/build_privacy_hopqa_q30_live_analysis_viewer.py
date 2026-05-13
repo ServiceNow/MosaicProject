@@ -9,9 +9,9 @@ from datetime import datetime, timezone
 import html
 import json
 import math
+import os
 from pathlib import Path
 import re
-import shutil
 from statistics import mean, median
 from typing import Any
 
@@ -1752,6 +1752,30 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def write_latest_redirect(index: Path, latest_output: Path) -> None:
+    latest_output.parent.mkdir(parents=True, exist_ok=True)
+    if latest_output.resolve() == index.resolve():
+        return
+    target = os.path.relpath(index.resolve(), latest_output.parent.resolve())
+    target = target.replace(os.sep, "/")
+    latest_output.write_text(
+        f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="refresh" content="0; url={esc(target)}">
+  <title>Privacy HopQA q30 Live Analysis</title>
+  <script>window.location.replace({json.dumps(target)});</script>
+</head>
+<body>
+  <p>Opening <a href="{esc(target)}">Privacy HopQA q30 Live Analysis</a>.</p>
+</body>
+</html>
+""",
+        encoding="utf-8",
+    )
+
+
 def main() -> None:
     args = parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -1811,8 +1835,7 @@ def main() -> None:
         encoding="utf-8",
     )
     for latest_output in args.latest_output:
-        latest_output.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(index, latest_output)
+        write_latest_redirect(index, latest_output)
     print(f"viewer={index}")
 
 
