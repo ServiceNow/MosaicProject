@@ -347,7 +347,7 @@ def event_detail(event: dict[str, Any]) -> str:
     if stage == "doc_choose" and meta.get("selected_doc_ids"):
         pieces.append(f"selected={', '.join(map(str, meta['selected_doc_ids'][:4]))}")
     if stage == "doc_read":
-        for key in ("doc_id", "source", "title"):
+        for key in ("doc_id", "parent_doc_id", "window_index", "window_count", "source", "title"):
             if meta.get(key):
                 pieces.append(f"{key}={str(meta[key])[:80]}")
     return "; ".join(pieces)
@@ -516,10 +516,16 @@ def action_result_preview(action: dict[str, Any], limit: int = 3) -> str:
     rows: list[dict[str, Any]] = []
     for index, result in enumerate(results[:limit], start=1):
         metadata = result.get("metadata") if isinstance(result.get("metadata"), dict) else {}
+        parent_doc_id = result.get("parent_doc_id") or metadata.get("parent_doc_id") or result.get("doc_id") or result.get("docid")
+        window_index = result.get("window_index") or metadata.get("window_index")
+        window_count = result.get("window_count") or metadata.get("window_count")
+        window_label = f"{window_index}/{window_count}" if window_index else ""
         rows.append(
             {
                 "rank": index,
                 "doc_id": result.get("doc_id") or result.get("docid"),
+                "parent_doc_id": parent_doc_id,
+                "window": window_label,
                 "source": result.get("source"),
                 "title": truncate_text(result.get("title") or result.get("url") or metadata.get("filename"), 170),
                 "snippet": truncate_text(result.get("snippet") or result.get("preview") or result.get("content") or result.get("text"), 300),
@@ -529,7 +535,9 @@ def action_result_preview(action: dict[str, Any], limit: int = 3) -> str:
         rows,
         [
             ("rank", "#"),
-            ("doc_id", "Doc"),
+            ("doc_id", "Evidence window"),
+            ("parent_doc_id", "Parent doc"),
+            ("window", "Window"),
             ("source", "Source"),
             ("title", "Title"),
             ("snippet", "Preview"),

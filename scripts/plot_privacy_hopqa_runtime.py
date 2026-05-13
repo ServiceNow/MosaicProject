@@ -508,13 +508,20 @@ def load_rollouts(run_dir: Path, problem_lookup: dict[tuple[str, str], dict[str,
 
         web_docs_read = 0
         local_docs_read = 0
+        web_parent_docs_read: set[str] = set()
+        local_parent_docs_read: set[str] = set()
         for hop_state in trace.get("hop_states") or []:
             for reader_result in hop_state.get("reader_results") or []:
                 source = str(reader_result.get("source") or "").lower()
+                parent_doc_id = str(reader_result.get("parent_doc_id") or reader_result.get("doc_id") or "")
                 if source == "web":
                     web_docs_read += 1
+                    if parent_doc_id:
+                        web_parent_docs_read.add(parent_doc_id)
                 elif source == "local":
                     local_docs_read += 1
+                    if parent_doc_id:
+                        local_parent_docs_read.add(parent_doc_id)
 
         rollout_row = {
             "rollout_id": rollout_id,
@@ -535,6 +542,9 @@ def load_rollouts(run_dir: Path, problem_lookup: dict[tuple[str, str], dict[str,
             "docs_read": int(summary.get("docs_read") or 0),
             "web_docs_read": web_docs_read,
             "local_docs_read": local_docs_read,
+            "web_parent_docs_read": len(web_parent_docs_read),
+            "local_parent_docs_read": len(local_parent_docs_read),
+            "unique_parent_docs_read": len(web_parent_docs_read | local_parent_docs_read),
             "llm_calls_total": int(summary.get("llm_calls_total") or 0),
             "prompt_tokens": int(summary.get("prompt_tokens") or 0),
             "output_tokens": int(summary.get("output_tokens") or 0),

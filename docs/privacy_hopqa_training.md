@@ -15,12 +15,12 @@ launcher layer.
 
 ## Dataset and split
 
-The canonical finalized dataset lives in:
+The current canonical finalized dataset lives in:
 
-- `data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-05.jsonl`
-- `data_files/privacy_hopqa_final_dataset/train.jsonl`
-- `data_files/privacy_hopqa_final_dataset/val.jsonl`
-- `data_files/privacy_hopqa_final_dataset/test.jsonl`
+- `data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-10_spanfixed.jsonl`
+- `data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-10_spanfixed_train.jsonl`
+- `data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-10_spanfixed_val.jsonl`
+- `data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-10_spanfixed_test.jsonl`
 
 Split counts:
 
@@ -104,7 +104,39 @@ Expected fields:
 - `browsecomp_index_device: cpu`
 - `browsecomp_dense_backend: faiss_cpu`
 
-## Current Launch Template
+## Current First-Web Debug Launch Template
+
+Use this for the 2026-05-10 spanfixed first-web debug run. It trains all
+captured training texts, not just planning calls:
+
+```bash
+cd /home/toolkit/my_code/MosaicProject
+export PATH=/home/toolkit/.local/bin:$PATH
+export PRIVACY_AGENT_HELPER_URL=http://<helper-internal-dns>:8012
+
+TS=$(date +%Y%m%d%H%M%S)
+JOB="privacy_hopqa_firstweb_qwen3_4b2507_spanfixed_allcalls_${TS}"
+
+PIPELINERL_ROOT=/home/toolkit/my_code/PipelineRL \
+OUTPUT_DIR_BASE=/mnt/llmd/results/exps/alexg/reason \
+JOB_NAME="$JOB" \
+WANDB_PROJECT=privacy_hopqa_firstweb_4b_spanfixed_allcalls \
+WANDB_GROUP=spanfixed_allcalls \
+WANDB_NAME="$JOB" \
+REPLICAS=2 \
+MODEL_PATH="Qwen/Qwen3-4B-Instruct-2507" \
+CAPTURE_MODE=all_calls \
+DATASET_SPLIT_ROOT=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset \
+FINAL_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_2026-05-10_spanfixed.jsonl \
+TRAIN_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_2026-05-10_spanfixed_train.jsonl \
+VAL_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_2026-05-10_spanfixed_val.jsonl \
+TEST_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_2026-05-10_spanfixed_test.jsonl \
+FILTER_ZERO_ADVANTAGE_GROUPS=true \
+EXTRA_OVERRIDES="privacy_hopqa.reward_mode=all_hops_correct privacy_hopqa.iteration_budget_per_hop=3 privacy_hopqa.helper_timeout_s=180 actor.llm_max_rollouts=16" \
+bash /home/toolkit/my_code/MosaicProject/run_privacy_hopqa.sh
+```
+
+## Full-Dataset Launch Template
 
 The intended high-level launch path is still:
 
@@ -131,17 +163,23 @@ Important details:
 - To launch the 8B run, use the same template but set
   `MODEL_PATH=/mnt/llmd/base_models/Qwen3-8B`, use an `8b` run name, and use a
   separate W&B project.
-- `actor.llm_max_rollouts=64` is the current full-run setting.
+- `actor.llm_max_rollouts=64` is the current full-run setting, but the helper
+  must be sized for the resulting retrieval bursts.
+- The high-concurrency single-helper target is the 2-GPU helper spec with
+  `workers=16`, `threadpool_tokens=16`, `cpu=256`, and `mem=768`.
 - `finetune.seq_length=16384` and
   `vllm_config.vllm_kwargs.max_model_len=16384` keep the rollout context limit
   aligned.
-- The script defaults to the finalized Mosaic dataset split:
-  `/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/{train,val,test}.jsonl`.
+- The script defaults to the finalized Mosaic dataset split, but current runs
+  should pass the explicit `privacy_hopqa_finalized_2026-05-10_spanfixed_*`
+  paths until old compatibility names are deliberately updated.
 - `test.jsonl` is a full held-out-company split for generalization checks. The
   training launch uses `train.jsonl` for training and `val.jsonl` for online
   evaluation; do not use the held-out test split for training-time selection.
-- The script intentionally uses `privacy_hopqa.capture_mode=all_calls` so
-  retrieved documents remain available for debugging and reward review.
+- The script now defaults to `privacy_hopqa.capture_mode=all_calls` for the
+  current debugging run, so planner, chooser, reader, and resolver texts are all
+  trainable. Set `CAPTURE_MODE=planning_only` only when deliberately isolating
+  planning-call credit assignment.
 
 Current EAI submit caveat:
 
@@ -154,7 +192,7 @@ Current EAI submit caveat:
 
 ## Why These Fixes Exist
 
-Privacy HopQA rollouts are much larger than ordinary single-answer rollouts because `capture_mode=all_calls` keeps every planner, chooser, reader, and resolver call, plus token ids, rewards, logprobs, reference logprobs, and metadata. Preprocessing expands those traces into RL rows and sends them through a shared-memory queue; one retry run produced a roughly 123 MB preprocessed payload for a 100 MB queue slot. The fixes were to raise the preprocess shared-memory entry size, split oversized preprocessed outputs into multiple queue messages, and filter before queue output when possible.
+Privacy HopQA rollouts are much larger than ordinary single-answer rollouts when `capture_mode=all_calls` keeps every planner, chooser, reader, and resolver call, plus token ids, rewards, logprobs, reference logprobs, and metadata. Preprocessing expands those traces into RL rows and sends them through a shared-memory queue; one retry run produced a roughly 123 MB preprocessed payload for a 100 MB queue slot. The fixes were to raise the preprocess shared-memory entry size, split oversized preprocessed outputs into multiple queue messages, and filter before queue output when possible. The default training path now uses `planning_only` capture to avoid sample-weighting long failed tool chains.
 
 A separate class of failures came from rollout infrastructure rather than agent behavior. We saw vLLM/backend symptoms including HTTP 500s, DNS/connect failures, helper disconnects, and an `AsyncEngineDeadError` caused by a CUDA unknown error inside a vLLM actor shard. Those should not become low-reward training trajectories, so the privacy HopQA adapter now treats transport errors, timeouts, HTTP 5xx, and `AsyncEngineDead` as infrastructure failures and re-raises them for PipelineRL to handle at the actor/job level.
 

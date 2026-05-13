@@ -23,6 +23,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DATASET_ROOT = ROOT / "data_files" / "privacy_hopqa_final_dataset"
+DEFAULT_DATASET_BASENAME = "privacy_hopqa_finalized_2026-05-11"
 DEFAULT_PIPELINERL_ROOT = Path(os.environ.get("PIPELINERL_ROOT", "/home/toolkit/my_code/PipelineRL"))
 DEFAULT_TASK_DATA_ROOT = Path("/home/toolkit/nice_code/drbench/drbench/data/tasks")
 DEFAULT_LOCAL_INDEX_ROOT = Path("/mnt/llmd/results/exps/alexg/privacy_agent/local_indices_fixeddeps_20260415")
@@ -78,6 +79,36 @@ def append_jsonl(path: Path, row: dict[str, Any]) -> None:
         handle.write(json.dumps(row, ensure_ascii=False) + "\n")
 
 
+def training_text_token_totals(training_texts: list[Any]) -> dict[str, int]:
+    """Aggregate token usage from PipelineRL training-text records."""
+    prompt_tokens = 0
+    output_tokens = 0
+    finished = 0
+    length_finished = 0
+    for item in training_texts:
+        if hasattr(item, "prompt_tokens"):
+            prompt_tokens += int(getattr(item, "prompt_tokens") or 0)
+            output_tokens += int(getattr(item, "output_tokens") or 0)
+            is_finished = bool(getattr(item, "finished", False))
+        elif isinstance(item, dict):
+            prompt_tokens += int(item.get("prompt_tokens") or 0)
+            output_tokens += int(item.get("output_tokens") or 0)
+            is_finished = bool(item.get("finished", False))
+        else:
+            is_finished = False
+        if is_finished:
+            finished += 1
+        else:
+            length_finished += 1
+    return {
+        "prompt_tokens": prompt_tokens,
+        "output_tokens": output_tokens,
+        "total_tokens": prompt_tokens + output_tokens,
+        "finished_llm_calls": finished,
+        "length_finished_llm_calls": length_finished,
+    }
+
+
 def load_completed(index_path: Path, model_label: str) -> set[tuple[str, str, int]]:
     completed: set[tuple[str, str, int]] = set()
     if not index_path.exists():
@@ -107,13 +138,13 @@ def select_rows(rows: list[dict[str, Any]], args: argparse.Namespace) -> list[di
     return selected
 
 
-def ensure_pipelinerl_imports(pipelinerl_root: Path) -> tuple[Any, Any, Any]:
+def ensure_pipelinerl_imports(pipelinerl_root: Path) -> tuple[Any, Any, Any, Any, Any, Any, Any]:
     sys.path.insert(0, str(pipelinerl_root))
     from omegaconf import OmegaConf
     from pipelinerl.domains.privacy_hopqa.rollouts import generate_privacy_hopqa_rollout
-    from pipelinerl.llm import TrainableLLM
+    from pipelinerl.llm import LLMEvent, LLMOutput, LLMStream, Prompt, TrainableLLM
 
-    return OmegaConf, TrainableLLM, generate_privacy_hopqa_rollout
+    return OmegaConf, LLMEvent, LLMOutput, LLMStream, Prompt, TrainableLLM, generate_privacy_hopqa_rollout
 
 
 def build_cfg(args: argparse.Namespace, split_output_dir: Path, OmegaConf: Any) -> Any:
@@ -121,14 +152,15 @@ def build_cfg(args: argparse.Namespace, split_output_dir: Path, OmegaConf: Any) 
     if not helper_url and not args.local_tools:
         raise ValueError("Set --helper-url or PRIVACY_AGENT_HELPER_URL, or pass --local-tools.")
     dataset_root = Path(args.dataset_root).expanduser()
+    dataset_basename = args.dataset_basename
     return OmegaConf.create(
         {
             "output_dir": str(split_output_dir),
             "privacy_hopqa": {
-                "final_dataset_path": str(dataset_root / "privacy_hopqa_finalized_2026-05-05.jsonl"),
-                "final_train_dataset_path": str(dataset_root / "train.jsonl"),
-                "final_val_dataset_path": str(dataset_root / "val.jsonl"),
-                "final_test_dataset_path": str(dataset_root / "test.jsonl"),
+                "final_dataset_path": str(dataset_root / f"{dataset_basename}.jsonl"),
+                "final_train_dataset_path": str(dataset_root / f"{dataset_basename}_train.jsonl"),
+                "final_val_dataset_path": str(dataset_root / f"{dataset_basename}_val.jsonl"),
+                "final_test_dataset_path": str(dataset_root / f"{dataset_basename}_test.jsonl"),
                 "task_data_root": str(Path(args.task_data_root).expanduser()),
                 "local_index_root": str(Path(args.local_index_root).expanduser()),
                 "local_index_mmap_mode": "r",
@@ -137,6 +169,12 @@ def build_cfg(args: argparse.Namespace, split_output_dir: Path, OmegaConf: Any) 
                 "use_remote_local_search": not args.local_tools,
                 "use_remote_browsecomp": not args.local_tools,
                 "capture_mode": args.capture_mode,
+                "generation_context_limit_tokens": args.generation_context_limit_tokens,
+                "generation_context_margin_tokens": args.generation_context_margin_tokens,
+                "hop_plan_max_tokens": args.hop_plan_max_tokens,
+                "doc_choose_max_tokens": args.doc_choose_max_tokens,
+                "doc_read_max_tokens": args.doc_read_max_tokens,
+                "hop_resolve_max_tokens": args.hop_resolve_max_tokens,
                 "answer_match_f1_threshold": args.answer_match_f1_threshold,
                 "max_iterations": args.max_iterations,
                 "hop_plan_attempts": args.hop_plan_attempts,
@@ -214,6 +252,7 @@ async def run_case(
             before = {path.name for path in root.iterdir()} if root.exists() else set()
             result = await generate_privacy_hopqa_rollout(cfg, llm, problem, session)
             metrics = result.metrics.model_dump() if hasattr(result.metrics, "model_dump") else dict(result.metrics)
+            token_totals = training_text_token_totals(result.training_texts)
             trace_path = new_trace_for(split_output_dir, task_id, chain_id, before)
             row = {
                 "timestamp": iso_now(),
@@ -234,6 +273,11 @@ async def run_case(
                 "final_correct": metrics.get("final_correct"),
                 "chain_complete": metrics.get("chain_complete"),
                 "training_text_count": len(result.training_texts),
+                "prompt_tokens": token_totals["prompt_tokens"],
+                "output_tokens": token_totals["output_tokens"],
+                "total_tokens": token_totals["total_tokens"],
+                "finished_llm_calls": token_totals["finished_llm_calls"],
+                "length_finished_llm_calls": token_totals["length_finished_llm_calls"],
                 "metrics": metrics,
                 "trace_path": str(trace_path),
             }
@@ -331,7 +375,15 @@ async def run_all(args: argparse.Namespace) -> None:
     import aiohttp
 
     pipelinerl_root = Path(args.pipelinerl_root).expanduser()
-    OmegaConf, TrainableLLM, generate_privacy_hopqa_rollout = ensure_pipelinerl_imports(pipelinerl_root)
+    (
+        OmegaConf,
+        LLMEvent,
+        LLMOutput,
+        LLMStream,
+        Prompt,
+        TrainableLLM,
+        generate_privacy_hopqa_rollout,
+    ) = ensure_pipelinerl_imports(pipelinerl_root)
 
     output_root = Path(args.output_root).expanduser()
     model_label = slugify(args.model_label)
@@ -347,6 +399,7 @@ async def run_all(args: argparse.Namespace) -> None:
             "artifact_type": "privacy_hopqa_initial_state_eval",
             "runner_version": RUNNER_VERSION,
             "dataset_root": str(Path(args.dataset_root).expanduser()),
+            "dataset_basename": args.dataset_basename,
             "pipelinerl_root": str(pipelinerl_root),
             "task_data_root": str(Path(args.task_data_root).expanduser()),
             "local_index_root": str(Path(args.local_index_root).expanduser()),
@@ -357,21 +410,123 @@ async def run_all(args: argparse.Namespace) -> None:
         }
         provenance_path.write_text(json.dumps(provenance, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
-    llm = TrainableLLM(
+    request_parameters: dict[str, Any] = {
+        "temperature": args.temperature,
+        "max_tokens": args.max_tokens,
+    }
+    if args.request_params_json:
+        extra_request_parameters = json.loads(args.request_params_json)
+        if not isinstance(extra_request_parameters, dict):
+            raise ValueError("--request-params-json must decode to a JSON object")
+        request_parameters.update(extra_request_parameters)
+
+    class CompletionTemplateLLM(TrainableLLM):
+        """Use /v1/completions with a locally rendered chat template.
+
+        GPT-OSS can fail inside vLLM's chat/Harmony response parser even when the
+        model generated usable text. The completions endpoint returns raw text
+        and avoids that parser while preserving the same chat template.
+        """
+
+        async def agenerate(self, prompt: Any, session: aiohttp.ClientSession, **kwargs: Any) -> Any:
+            headers = {"Content-Type": "application/json"}
+            if self.api_token:
+                headers |= {"Authorization": f"Bearer {self.api_token}"}
+            self.load_tokenizer()
+            chat_kwargs = dict(self.chat_template_kwargs) if self.chat_template_kwargs else {}
+            rendered_prompt = self.tokenizer.apply_chat_template(
+                prompt.messages,
+                tokenize=False,
+                add_generation_prompt=True,
+                **chat_kwargs,
+            )
+
+            def _plain(value: Any) -> Any:
+                return OmegaConf.to_container(value, resolve=True) if OmegaConf.is_config(value) else value
+
+            params = {"model": self.model_name, "prompt": rendered_prompt}
+            for key, value in self.parameters.items():
+                params[key] = _plain(value)
+            for key, value in kwargs.items():
+                params[key] = _plain(value)
+            params.pop("include_reasoning", None)
+            params.pop("chat_template_kwargs", None)
+
+            async with self._semaphore:  # type: ignore[attr-defined]
+                retry_count = 0
+                while True:
+                    try:
+                        async with session.post(
+                            url=f"{self.base_url}/v1/completions",
+                            json=params,
+                            headers=headers,
+                            ssl=False,
+                        ) as response:
+                            if not response.ok:
+                                response.raise_for_status()
+                            data = await response.json()
+                            break
+                    except asyncio.TimeoutError as exc:
+                        retry_count += 1
+                        if retry_count > self.max_retries:
+                            raise exc
+                        await asyncio.sleep(self.base_delay * (2 ** (retry_count - 1)))
+                    except aiohttp.ClientError as exc:
+                        retry_count += 1
+                        if retry_count > self.max_retries:
+                            raise exc
+                        await asyncio.sleep(self.base_delay * (2 ** (retry_count - 1)))
+
+            content = data["choices"][0].get("text") or ""
+            prompt_tokens = int(data.get("usage", {}).get("prompt_tokens") or 0)
+            completion_tokens = int(data.get("usage", {}).get("completion_tokens") or 0)
+            output = LLMOutput(content=content)
+            if not isinstance(prompt, Prompt):
+                prompt = Prompt(**prompt.model_dump(exclude_none=True))
+            llm_call = self.log_output(
+                prompt,
+                output,
+                prompt_length_tokens=prompt_tokens,
+                output_length_tokens=completion_tokens,
+                count_tokens=False,
+            )
+            assert llm_call is not None, "llm_call is None"
+
+            def _gen():
+                yield LLMEvent(llm_call=llm_call, output=output)
+
+            return LLMStream(generator=_gen(), prompt=prompt)
+
+    llm_cls = CompletionTemplateLLM if args.request_api_mode == "completion_template" else TrainableLLM
+    llm = llm_cls(
         model_name=args.model,
         tokenizer_name=args.tokenizer_name or args.model,
         base_url=args.base_url.rstrip("/"),
-        parameters={
-            "temperature": args.temperature,
-            "max_tokens": args.max_tokens,
-        },
+        parameters=request_parameters,
     )
+    if args.request_api_mode == "completion_template":
+        from pipelinerl.domains.privacy_hopqa import llm_adapter as privacy_hopqa_llm_adapter
+
+        async def completion_template_async_generate(
+            llm: Any,
+            prompt: Any,
+            session: aiohttp.ClientSession,
+            *,
+            parameters_override: dict[str, Any] | None = None,
+        ) -> Any:
+            # PrivacyHopQALLMAdapter normally calls PipelineRL's async helper,
+            # which is hardwired to /v1/chat/completions. GPT-OSS needs the
+            # completions endpoint to avoid vLLM's Harmony chat response parser.
+            stream = await llm.agenerate(prompt, session, **(parameters_override or {}))
+            return stream.get_llm_call()
+
+        privacy_hopqa_llm_adapter.llm_async_generate = completion_template_async_generate
 
     completed = set() if args.force else load_completed(index_path, model_label)
     total_stats = RunStats()
     async with aiohttp.ClientSession() as session:
         for split_name in args.splits:
-            split_path = Path(args.dataset_root).expanduser() / f"{split_name}.jsonl"
+            split_path = Path(args.dataset_root).expanduser() / f"{args.dataset_basename}_{split_name}.jsonl"
             rows = select_rows(read_jsonl(split_path), args)
             split_output_dir = output_root / "rollouts" / model_label / split_name
             split_output_dir.mkdir(parents=True, exist_ok=True)
@@ -420,6 +575,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--base-url", required=True, help="OpenAI-compatible base URL without /v1.")
     parser.add_argument("--tokenizer-name", default=None)
     parser.add_argument("--dataset-root", default=str(DEFAULT_DATASET_ROOT))
+    parser.add_argument("--dataset-basename", default=DEFAULT_DATASET_BASENAME)
     parser.add_argument("--splits", nargs="+", default=["train", "val", "test"], choices=["train", "val", "test"])
     parser.add_argument("--pipelinerl-root", default=str(DEFAULT_PIPELINERL_ROOT))
     parser.add_argument("--task-data-root", default=str(DEFAULT_TASK_DATA_ROOT))
@@ -434,16 +590,33 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--concurrency", type=int, default=16)
     parser.add_argument("--temperature", type=float, default=1.0)
     parser.add_argument("--max-tokens", type=int, default=4096)
+    parser.add_argument(
+        "--request-params-json",
+        default="",
+        help="Extra JSON object merged into each OpenAI-compatible chat completion request.",
+    )
+    parser.add_argument(
+        "--request-api-mode",
+        choices=["chat", "completion_template"],
+        default="chat",
+        help="Use chat completions normally, or render chat locally and call /v1/completions.",
+    )
     parser.add_argument("--capture-mode", default="all_calls")
+    parser.add_argument("--generation-context-limit-tokens", type=int, default=16384)
+    parser.add_argument("--generation-context-margin-tokens", type=int, default=128)
+    parser.add_argument("--hop-plan-max-tokens", type=int, default=1024)
+    parser.add_argument("--doc-choose-max-tokens", type=int, default=1024)
+    parser.add_argument("--doc-read-max-tokens", type=int, default=768)
+    parser.add_argument("--hop-resolve-max-tokens", type=int, default=1024)
     parser.add_argument("--answer-match-f1-threshold", type=float, default=0.75)
-    parser.add_argument("--max-iterations", type=int, default=12)
+    parser.add_argument("--max-iterations", type=int, default=21)
     parser.add_argument("--hop-plan-attempts", type=int, default=1)
     parser.add_argument("--enable-generic-retrieval-fallback", action="store_true")
     parser.add_argument("--max-parallel-retrieval-actions", type=int, default=3)
     parser.add_argument("--retrieval-top-k", type=int, default=5)
     parser.add_argument("--choose-top-k", type=int, default=3)
     parser.add_argument("--max-candidate-cards", type=int, default=20)
-    parser.add_argument("--chooser-excerpt-chars", type=int, default=120)
+    parser.add_argument("--chooser-excerpt-chars", type=int, default=500)
     parser.add_argument("--reader-excerpt-chars", type=int, default=2500)
     parser.add_argument("--max-history-entries", type=int, default=10)
     parser.add_argument("--local-search-threshold", type=float, default=0.0)
@@ -454,7 +627,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--browsecomp-max-chars", type=int, default=8000)
     parser.add_argument("--embedding-provider", default="huggingface")
     parser.add_argument("--embedding-model", default="Qwen/Qwen3-Embedding-4B")
-    parser.add_argument("--max-parallel-doc-reads", type=int, default=3)
+    parser.add_argument("--max-parallel-doc-reads", type=int, default=6)
     parser.add_argument("--serial-searches", action="store_true")
     parser.add_argument("--log-prompts", action="store_true")
     parser.add_argument("--verbose", action="store_true")

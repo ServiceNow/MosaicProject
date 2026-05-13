@@ -14,19 +14,22 @@ WANDB_NAME=${WANDB_NAME:-}
 STREAMS_BACKEND=${STREAMS_BACKEND:-files}
 FILTER_ZERO_ADVANTAGE_GROUPS=${FILTER_ZERO_ADVANTAGE_GROUPS:-true}
 REPLICAS=${REPLICAS:-4}
-LOCAL_INDEX_ROOT=${LOCAL_INDEX_ROOT:-/mnt/llmd/results/exps/alexg/privacy_agent/local_indices_fixeddeps_20260415}
+# Previous local default, kept for debugging old runs:
+# /mnt/llmd/results/exps/alexg/privacy_agent/local_indices_fixeddeps_20260415
+LOCAL_INDEX_ROOT=${LOCAL_INDEX_ROOT:-/mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/local_indices_fixeddeps_20260415}
 MODEL_PATH=${MODEL_PATH:-/mnt/llmd/base_models/Qwen3-8B}
 ANNOTATIONS_PATH=${ANNOTATIONS_PATH:-/home/toolkit/nice_code/drbench/chain_review/annotations_2026-04-16.json}
 CURATED_PATH=${CURATED_PATH:-/home/toolkit/nice_code/drbench/chain_review/curated_chains.jsonl}
 TASK_DATA_ROOT=${TASK_DATA_ROOT:-/home/toolkit/nice_code/drbench/drbench/data/tasks}
 DATASET_SPLIT_ROOT=${DATASET_SPLIT_ROOT:-/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset}
-FINAL_DATASET_PATH=${FINAL_DATASET_PATH:-${DATASET_SPLIT_ROOT}/privacy_hopqa_finalized_2026-05-07_answer_variants.jsonl}
+FINAL_DATASET_PATH=${FINAL_DATASET_PATH:-${DATASET_SPLIT_ROOT}/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review.jsonl}
 DATASET_PATH=${DATASET_PATH:-}
-TRAIN_DATASET_PATH=${TRAIN_DATASET_PATH:-${DATASET_SPLIT_ROOT}/train.jsonl}
-VAL_DATASET_PATH=${VAL_DATASET_PATH:-${DATASET_SPLIT_ROOT}/val.jsonl}
-TEST_DATASET_PATH=${TEST_DATASET_PATH:-${DATASET_SPLIT_ROOT}/test.jsonl}
+TRAIN_DATASET_PATH=${TRAIN_DATASET_PATH:-${DATASET_SPLIT_ROOT}/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review_train.jsonl}
+VAL_DATASET_PATH=${VAL_DATASET_PATH:-${DATASET_SPLIT_ROOT}/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review_val.jsonl}
+TEST_DATASET_PATH=${TEST_DATASET_PATH:-${DATASET_SPLIT_ROOT}/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review_test.jsonl}
 LONG_HOLDOUT_DATASET_PATH=${LONG_HOLDOUT_DATASET_PATH:-${DATASET_SPLIT_ROOT}/long_holdout.jsonl}
 EXTRA_OVERRIDES=${EXTRA_OVERRIDES:-}
+CAPTURE_MODE=${CAPTURE_MODE:-planning_only}
 
 PRIVACY_AGENT_HELPER_URL=${PRIVACY_AGENT_HELPER_URL:-}
 CONDA_ENV=${CONDA_ENV:-pipeline-rl}
@@ -57,7 +60,7 @@ if [[ "${EAI_REPLICAS_IN_FILE}" == "1" && -z "${MULTI_REPLICA_FILE}" ]]; then
     fi
 
     DNS_NAME=${DNS_NAME:-$(
-        python - <<'PY'
+        python3 - <<'PY'
 import uuid
 
 print(f"phrl{uuid.uuid4().hex[:8]}")
@@ -65,7 +68,7 @@ PY
     )}
     TMP_MULTI_REPLICA_FILE=$(mktemp /tmp/privacy_hopqa_multinode.XXXXXX.yaml)
 
-    python - "${MULTI_REPLICA_TEMPLATE}" "${TMP_MULTI_REPLICA_FILE}" "${REPLICAS}" "${DNS_NAME}" <<'PY'
+    python3 - "${MULTI_REPLICA_TEMPLATE}" "${TMP_MULTI_REPLICA_FILE}" "${REPLICAS}" "${DNS_NAME}" <<'PY'
 import sys
 
 src_path, dst_path, replicas, dns_name = sys.argv[1:5]
@@ -158,7 +161,7 @@ privacy_hopqa.local_index_root=${LOCAL_INDEX_ROOT} \
 privacy_hopqa.helper_service_url=${PRIVACY_AGENT_HELPER_URL} \
 privacy_hopqa.embedding_provider=huggingface \
 privacy_hopqa.embedding_model=Qwen/Qwen3-Embedding-4B \
-privacy_hopqa.capture_mode=all_calls \
+privacy_hopqa.capture_mode=${CAPTURE_MODE} \
 +finetune.rl.filter_zero_advantage_groups=${FILTER_ZERO_ADVANTAGE_GROUPS} \
 finetune.learning_rate=1e-6 \
 finetune.rl.policy_loss=gspo \

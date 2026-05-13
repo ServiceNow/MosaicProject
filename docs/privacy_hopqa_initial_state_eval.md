@@ -106,7 +106,7 @@ Important defaults:
 ```text
 temperature: 1.0
 max_tokens: 4096
-max_iterations: 12
+max_iterations: 21
 max_parallel_retrieval_actions: 3
 capture_mode: all_calls
 generic retrieval fallback: disabled
@@ -114,6 +114,12 @@ generic retrieval fallback: disabled
 
 These should match training unless we intentionally create a separate eval
 variant.
+
+The HopQA agent also carries a small deduplicated cross-hop document memory:
+parent documents that supported earlier answered hops are shown as "previously
+useful documents" and their cached evidence windows can be retried on later
+hops. This memory is built only from documents the agent actually read and used;
+it does not use gold document labels.
 
 ## StepFun privacy evaluator
 

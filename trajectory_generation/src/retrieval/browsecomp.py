@@ -158,10 +158,13 @@ class _BrowseCompBase:
             "text": row.get("text") or "",
         }
 
-    def _truncate(self, text: str) -> str:
-        if len(text) <= self.max_chars:
+    def _truncate(self, text: str, max_chars: int | None = None) -> str:
+        limit = self.max_chars if max_chars is None else int(max_chars)
+        if limit <= 0:
             return text
-        return text[: self.max_chars] + "\n\n[truncated]"
+        if len(text) <= limit:
+            return text
+        return text[:limit] + "\n\n[truncated]"
 
 
 class BrowseCompHybridSearcher(_BrowseCompBase):
@@ -342,6 +345,7 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
         *,
         k: int = 10,
         mode: str = "bm25",
+        max_chars: int | None = None,
         **_kwargs,
     ) -> list[RetrievalHit]:
         if not query or k <= 0:
@@ -386,7 +390,7 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
                     chunk_id=self._normalize_docid(raw_docid),
                     doc_id=self._normalize_docid(raw_docid),
                     score=float(score),
-                    text=self._truncate(doc.get("text") or ""),
+                    text=self._truncate(doc.get("text") or "", max_chars=max_chars),
                     meta={
                         "url": doc.get("url") or "",
                         "raw_docid": raw_docid,
@@ -448,6 +452,7 @@ class BrowseCompBM25Searcher(_BrowseCompBase):
         *,
         k: int = 10,
         mode: str = "bm25",
+        max_chars: int | None = None,
         **_kwargs,
     ) -> list[RetrievalHit]:
         if mode != "bm25":
@@ -462,7 +467,7 @@ class BrowseCompBM25Searcher(_BrowseCompBase):
                     chunk_id=self._normalize_docid(raw_docid),
                     doc_id=self._normalize_docid(raw_docid),
                     score=float(bm25_hit.score),
-                    text=self._truncate(doc.get("text") or ""),
+                    text=self._truncate(doc.get("text") or "", max_chars=max_chars),
                     meta={
                         "url": doc.get("url") or "",
                         "raw_docid": raw_docid,

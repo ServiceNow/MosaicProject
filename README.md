@@ -2,60 +2,73 @@
 
 Repo for our privacy-aware dataset creation (and eventually agent training)
 
+## Privacy HopQA q30 quick start for Privacy HopQA q30
+
+Use the runbook as the canonical launch path:
+
+[Privacy HopQA runbook, q30, 2026-05-13](./docs/privacy_hopqa_runbook_2026-05-13.md)
+
+Minimal preflight:
+
+```bash
+cd /home/toolkit/my_code/MosaicProject
+source configs/privacy_hopqa_q30_current.env
+python3 scripts/validate_privacy_hopqa_setup.py
+```
+
+The helper-facing retrieval artifacts are staged under:
+
+```bash
+/mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513
+```
+
 ## Current Privacy HopQA training launch commands
+
+Current canonical dataset: [Privacy HopQA q30 residual-review dataset](./docs/privacy_hopqa_q30_training_defaults_2026-05-13.md).
+
+The repo-level helper specs now read from the shared q30 artifact bundle,
+blacklist long BrowseComp parents, live-filter
+BrowseComp hits to at most ten 16k/1k-overlap reader windows, and serve the
+fixed local indices from `local_indices_fixeddeps_20260415`:
+
+```bash
+cd /home/toolkit/my_code/MosaicProject
+ACCOUNT=snow.research.adea JOB_SPEC=privacy_helper_2gpu.yaml ./run_privacy_helper.sh
+```
+
+`run_privacy_hopqa.sh` defaults to the q30 full-dataset train/val/test files.
+The train/val/test split is 559/98/344 chains, with MediConn Solutions held out
+entirely as test.
+
+Current first-web debugging runbook: [Privacy HopQA first-web q12 2026-05-12](./docs/privacy_hopqa_firstweb_q12_2026-05-12.md).
+For first-web-only runs, pass first-web dataset paths explicitly instead of using the defaults below.
+
+Previous 2026-05-11 notes are in [Privacy HopQA first-web-anywhere 2026-05-11](./docs/privacy_hopqa_firstweb_anywhere_2026-05-11.md).
 
 Run these from the repo root:
 
 ```bash
 cd /home/toolkit/my_code/MosaicProject
-export PRIVACY_AGENT_HELPER_URL="http://dns-4943305a-c17f-44b1-b767-9536529eb8bc-ph-fw4b-20260507201033:8012"
-```
-
-First-web-only 4B validation run, matching the low-concurrency validation setup:
-
-```bash
-TS=$(date +%Y%m%d%H%M%S)
-JOB="privacy_hopqa_firstweb_qwen3_4b2507_shortanswer_promptfix_${TS}"
-
-PIPELINERL_ROOT=/home/toolkit/my_code/PipelineRL \
-OUTPUT_DIR_BASE=/mnt/llmd/results/exps/alexg/reason \
-JOB_NAME="$JOB" \
-WANDB_PROJECT=privacy_hopqa_firstweb_4b_validation \
-WANDB_GROUP=firstweb_shortanswer_promptfix \
-WANDB_NAME="$JOB" \
-REPLICAS=2 \
-MODEL_PATH="Qwen/Qwen3-4B-Instruct-2507" \
-DATASET_SPLIT_ROOT=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset \
-FINAL_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_2026-05-07.jsonl \
-TRAIN_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_2026-05-07_train.jsonl \
-VAL_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_2026-05-07_val.jsonl \
-TEST_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_2026-05-07_test.jsonl \
-FILTER_ZERO_ADVANTAGE_GROUPS=true \
-EXTRA_OVERRIDES="privacy_hopqa.reward_mode=all_hops_correct privacy_hopqa.iteration_budget_per_hop=3 privacy_hopqa.helper_timeout_s=180 actor.llm_max_rollouts=16" \
-bash /home/toolkit/my_code/MosaicProject/run_privacy_hopqa.sh
+export PRIVACY_AGENT_HELPER_URL="http://<active-helper-internal-dns>:8012"
 ```
 
 Normal full-dataset 4B run:
 
 ```bash
 TS=$(date +%Y%m%d%H%M%S)
-JOB="privacy_hopqa_final_qwen3_4b_instruct_2507_shortanswer_${TS}"
+JOB="privacy_hopqa_q30_qwen3_4b_instruct_2507_${TS}"
 
 PIPELINERL_ROOT=/home/toolkit/my_code/PipelineRL \
 OUTPUT_DIR_BASE=/mnt/llmd/results/exps/alexg/reason \
 JOB_NAME="$JOB" \
-WANDB_PROJECT=privacy_hopqa_final_qwen3_4b_instruct_2507 \
-WANDB_GROUP=shortanswer_promptfix \
+WANDB_PROJECT=privacy_hopqa_q30_qwen3_4b_instruct_2507 \
+WANDB_GROUP=q30_full \
 WANDB_NAME="$JOB" \
 REPLICAS=2 \
 MODEL_PATH="Qwen/Qwen3-4B-Instruct-2507" \
-DATASET_SPLIT_ROOT=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset \
-FINAL_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-07_answer_variants.jsonl \
-TRAIN_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/train.jsonl \
-VAL_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/val.jsonl \
-TEST_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/test.jsonl \
+CAPTURE_MODE=planning_only \
 FILTER_ZERO_ADVANTAGE_GROUPS=true \
-EXTRA_OVERRIDES="privacy_hopqa.helper_timeout_s=180 actor.llm_max_rollouts=64" \
+EXTRA_OVERRIDES="privacy_hopqa.helper_timeout_s=180 privacy_hopqa.max_parallel_doc_reads=10 actor.llm_max_rollouts=64" \
 bash /home/toolkit/my_code/MosaicProject/run_privacy_hopqa.sh
 ```
 
@@ -63,29 +76,25 @@ Normal full-dataset 8B run:
 
 ```bash
 TS=$(date +%Y%m%d%H%M%S)
-JOB="privacy_hopqa_final_qwen3_8b_shortanswer_${TS}"
+JOB="privacy_hopqa_q30_qwen3_8b_${TS}"
 
 PIPELINERL_ROOT=/home/toolkit/my_code/PipelineRL \
 OUTPUT_DIR_BASE=/mnt/llmd/results/exps/alexg/reason \
 JOB_NAME="$JOB" \
-WANDB_PROJECT=privacy_hopqa_final_qwen3_8b \
-WANDB_GROUP=shortanswer_promptfix \
+WANDB_PROJECT=privacy_hopqa_q30_qwen3_8b \
+WANDB_GROUP=q30_full \
 WANDB_NAME="$JOB" \
 REPLICAS=2 \
-MODEL_PATH="Qwen/Qwen3-8B" \
-DATASET_SPLIT_ROOT=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset \
-FINAL_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-07_answer_variants.jsonl \
-TRAIN_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/train.jsonl \
-VAL_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/val.jsonl \
-TEST_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/test.jsonl \
+MODEL_PATH=/mnt/llmd/base_models/Qwen3-8B \
+CAPTURE_MODE=planning_only \
 FILTER_ZERO_ADVANTAGE_GROUPS=true \
-EXTRA_OVERRIDES="privacy_hopqa.helper_timeout_s=180 actor.llm_max_rollouts=64" \
+EXTRA_OVERRIDES="privacy_hopqa.helper_timeout_s=180 privacy_hopqa.max_parallel_doc_reads=10 actor.llm_max_rollouts=64" \
 bash /home/toolkit/my_code/MosaicProject/run_privacy_hopqa.sh
 ```
 
-The first-web command uses `actor.llm_max_rollouts=16` to match the earlier
-low-concurrency validation run. The normal 4B and 8B jobs use `64`, matching the
-previous full-dataset training runs.
+The normal 4B and 8B jobs train planning calls only (`CAPTURE_MODE=planning_only`), use `actor.llm_max_rollouts=64`, and allow up to 10 concurrent document-reader calls per rollout. Reward/success
+metrics are logged by gold pattern and chain length, for example
+`reward_by_pattern/LLW_mean` and `reward_by_chain_length/3_mean`.
 
 [`trajectory_generation`](./trajectory_generation) shows how we generate multi-hop research questions that rely on both private (enterprise) documents and external web documents (from browsecomp-plus).
 
@@ -170,6 +179,8 @@ Use this as the main index for repo notes:
 - [Current System](./docs/system.md): current end-to-end system notes.
 - [Examples](./docs/examples.md): generated question examples.
 - [Privacy HopQA final dataset](./docs/privacy_hopqa_final_dataset.md): finalized dataset, schema, viewer, answer variants, and split artifacts.
+- [Privacy HopQA first-web-anywhere 2026-05-11](./docs/privacy_hopqa_firstweb_anywhere_2026-05-11.md): current first-web-anywhere dataset, helper commands, 4B/8B launch commands, JSON parse errors, infrastructure errors, local-search bootstrap, and reward-signal audit notes.
+- [Privacy HopQA spanfix 2026-05-10](./docs/privacy_hopqa_spanfix_2026-05-10.md): current spanfixed dataset version, validation, and first-web rerun settings.
 - [Privacy HopQA training](./docs/privacy_hopqa_training.md): PipelineRL launch path, helper setup, dataset split, EAI notes, and monitoring.
 - [Privacy HopQA helper fix notes](./docs/privacy_hopqa_helper_fix_2026-05-06.md): helper environment, vLLM, FAISS, and benchmark details.
 - [Privacy HopQA initial-state eval](./docs/privacy_hopqa_initial_state_eval.md): baseline evaluation plan and privacy-evaluator workflow.
@@ -181,4 +192,4 @@ Use this as the main index for repo notes:
 - [`trajectory_generation/src/retrieval/`](./trajectory_generation/src/retrieval) local and web retrieval code
 - [`scripts/`](./scripts) explicit run wrappers for chain generation, local input prep, and the reusable web retriever
 - [`trajectory_generation/src/retrieval/privacy_helper_stack.py`](./trajectory_generation/src/retrieval/privacy_helper_stack.py) colocated vLLM + helper stack for privacy-agent retrieval workloads
-- [`docs/`](./docs) advisor-facing overview notes
+- [`docs/`](./docs) overview notes

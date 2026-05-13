@@ -1,0 +1,376 @@
+{
+  "aggregates": [
+    {
+      "model": "4B",
+      "root": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_full_planning_docread10_qwen3_4b_instruct_2507_20260513033026",
+      "all_trace_count": 38850,
+      "sampled_trace_count": 1800,
+      "config": {
+        "train_batch_size": "1",
+        "attempts": "8",
+        "filter_zero_advantage_groups": "true",
+        "llm_max_rollouts": "64",
+        "wandb_name": "privacy_hopqa_q30_full_planning_docread10_qwen3_4b_instruct_2507_20260513033026",
+        "wandb_project_name": "privacy_hopqa_q30_full_planning_docread10_4b_20260513",
+        "final_dataset_path": "/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review.jsonl",
+        "final_train_dataset_path": "/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review_train.jsonl",
+        "final_val_dataset_path": "/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review_val.jsonl",
+        "final_test_dataset_path": "/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review_test.jsonl",
+        "capture_mode": "planning_only",
+        "answer_match_f1_threshold": "0.75",
+        "answer_match_mode": "exact_or_f1",
+        "reward_mode": "all_hops_correct",
+        "hop_plan_attempts": "1",
+        "max_parallel_doc_reads": "10"
+      },
+      "mean_binary_reward": 0.18666666666666668,
+      "mean_fractional_reward": 0.4451402116402116,
+      "sample_hop_accuracy": 0.4482308821131583,
+      "total_hops": 6133,
+      "correct_hops": 2749,
+      "answer_mismatch_hops": 3384,
+      "reader_can_answer_wrong_final": 473,
+      "mean_parse_errors": 0.0022222222222222222,
+      "parse_errors_total": 4,
+      "parse_error_stage_counts_sample": {
+        "doc_read": 4
+      },
+      "warning_log": {
+        "path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_full_planning_docread10_qwen3_4b_instruct_2507_20260513033026/actor/warning.log",
+        "exists": true,
+        "total_invalid_json_warnings": 115,
+        "stage_counts": {
+          "doc_read": 101,
+          "hop_resolve": 7,
+          "hop_plan": 7
+        },
+        "examples": [
+          "[actor]: 2026-05-13 03:37:57,651 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc read failed for web/16842#w01of01: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:39:37,493 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc read failed for web/30161#w01of03: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:39:55,562 - pipelinerl.domains.privacy_hopqa.agent - WARNING - hop resolver failed for hop 1 iteration 2: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:45:59,855 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc read failed for doc_3a523eff_1776305588: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:46:00,677 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc read failed for doc_3a523eff_1776305588: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:46:20,696 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc read failed for web/55023#w01of04: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 04:01:03,649 - pipelinerl.domains.privacy_hopqa.agent - WARNING - hop resolver failed for hop 3 iteration 6: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 04:10:23,205 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc read failed for doc_35671d6a_1776306887: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 04:10:39,507 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc read failed for doc_35671d6a_1776306887: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 04:15:38,137 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc read failed for doc_516d58ad_1776305579: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 04:20:57,361 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc read failed for web/22084#w01of03: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 04:23:44,491 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc read failed for doc_35671d6a_1776306887: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 04:24:47,156 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc read failed for doc_5e92c448_1776306872: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 04:31:33,220 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc read failed for web/6565#w03of03: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 04:33:11,710 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc read failed for doc_35671d6a_1776306887: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 04:49:36,225 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc read failed for web/89121#w01of04: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 04:52:10,631 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc read failed for doc_9f0215f0_1776374859: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 05:02:24,745 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc read failed for web/10101#w08of10: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 05:06:50,685 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc read failed for doc_ece885bf_1776306853: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 05:09:07,260 - pipelinerl.domains.privacy_hopqa.agent - WARNING - hop resolver failed for hop 1 iteration 1: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 05:09:30,728 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc read failed for web/17275#w01of02: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 05:58:57,326 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc read failed for web/6565#w03of03: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 06:04:05,818 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc read failed for web/31691#w04of08: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 06:05:01,981 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc read failed for web/31691#w04of08: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 06:07:07,624 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc read failed for web/83751#w02of02: No valid JSON found in response: line 1 column 1 (char 0)"
+        ]
+      },
+      "actor_info_tail": {
+        "path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_full_planning_docread10_qwen3_4b_instruct_2507_20260513033026/actor/info.log",
+        "tail_bytes": 75000000,
+        "total_call_summaries": 133784,
+        "total_prompt_summaries": 82307,
+        "call_rows": [
+          {
+            "log_name": "doc_choose",
+            "count": 7297,
+            "captured_count": 7297,
+            "output_mean": 62.42729888995478,
+            "output_p50": 70.0,
+            "output_p95": 83.0,
+            "output_max": 95.0,
+            "output_near_observed_max": 1,
+            "output_le_5": 0,
+            "output_near_4k": 0,
+            "prompt_mean": 3497.174044127724,
+            "prompt_p95": 4614.0,
+            "prompt_max": 7741.0,
+            "total_p95": 4662.0
+          },
+          {
+            "log_name": "doc_read",
+            "count": 65877,
+            "captured_count": 0,
+            "output_mean": 132.21203151327475,
+            "output_p50": 128.0,
+            "output_p95": 181.0,
+            "output_max": 768.0,
+            "output_near_observed_max": 2,
+            "output_le_5": 0,
+            "output_near_4k": 0,
+            "prompt_mean": 3217.5212289569954,
+            "prompt_p95": 5887.0,
+            "prompt_max": 14987.0,
+            "total_p95": 6032.0
+          },
+          {
+            "log_name": "hop_plan",
+            "count": 27811,
+            "captured_count": 27811,
+            "output_mean": 108.814102333609,
+            "output_p50": 2.0,
+            "output_p95": 284.0,
+            "output_max": 505.0,
+            "output_near_observed_max": 2,
+            "output_le_5": 14960,
+            "output_near_4k": 0,
+            "prompt_mean": 2708.351371759376,
+            "prompt_p95": 5641.0,
+            "prompt_max": 7946.0,
+            "total_p95": 5815.0
+          },
+          {
+            "log_name": "hop_resolve",
+            "count": 32799,
+            "captured_count": 32799,
+            "output_mean": 157.68681972011342,
+            "output_p50": 147.0,
+            "output_p95": 241.0,
+            "output_max": 496.0,
+            "output_near_observed_max": 1,
+            "output_le_5": 0,
+            "output_near_4k": 0,
+            "prompt_mean": 4305.400835391323,
+            "prompt_p95": 6559.0,
+            "prompt_max": 10618.0,
+            "total_p95": 6732.0
+          }
+        ],
+        "prompt_rows": [
+          {
+            "log_name": "doc_choose",
+            "count": 5159,
+            "prompt_mean": 3746.3446404341926,
+            "prompt_p95": 4781.0,
+            "prompt_max": 7741.0
+          },
+          {
+            "log_name": "doc_read",
+            "count": 35847,
+            "prompt_mean": 4304.935894217089,
+            "prompt_p95": 6372.0,
+            "prompt_max": 16592.0
+          },
+          {
+            "log_name": "hop_plan",
+            "count": 18555,
+            "prompt_mean": 2909.5648073295606,
+            "prompt_p95": 5846.0,
+            "prompt_max": 7946.0
+          },
+          {
+            "log_name": "hop_resolve",
+            "count": 22746,
+            "prompt_mean": 5262.634573111756,
+            "prompt_p95": 6747.0,
+            "prompt_max": 10618.0
+          }
+        ]
+      },
+      "group_stats": {
+        "groups_with_2plus_rollouts": 442,
+        "mixed_binary_reward_groups": 98,
+        "partial_with_full_success_groups": 88,
+        "all_binary_zero_but_fractional_varies_groups": 99,
+        "fractional_varies_groups": 197
+      }
+    },
+    {
+      "model": "8B",
+      "root": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_full_planning_docread10_qwen3_8b_20260513033026",
+      "all_trace_count": 17577,
+      "sampled_trace_count": 1800,
+      "config": {
+        "train_batch_size": "1",
+        "attempts": "8",
+        "filter_zero_advantage_groups": "true",
+        "llm_max_rollouts": "64",
+        "wandb_name": "privacy_hopqa_q30_full_planning_docread10_qwen3_8b_20260513033026",
+        "wandb_project_name": "privacy_hopqa_q30_full_planning_docread10_8b_20260513",
+        "final_dataset_path": "/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review.jsonl",
+        "final_train_dataset_path": "/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review_train.jsonl",
+        "final_val_dataset_path": "/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review_val.jsonl",
+        "final_test_dataset_path": "/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review_test.jsonl",
+        "capture_mode": "planning_only",
+        "answer_match_f1_threshold": "0.75",
+        "answer_match_mode": "exact_or_f1",
+        "reward_mode": "all_hops_correct",
+        "hop_plan_attempts": "1",
+        "max_parallel_doc_reads": "10"
+      },
+      "mean_binary_reward": 0.2783333333333333,
+      "mean_fractional_reward": 0.44808333333333333,
+      "sample_hop_accuracy": 0.4485137132534078,
+      "total_hops": 6089,
+      "correct_hops": 2731,
+      "answer_mismatch_hops": 3358,
+      "reader_can_answer_wrong_final": 276,
+      "mean_parse_errors": 4.308333333333334,
+      "parse_errors_total": 7755,
+      "parse_error_stage_counts_sample": {
+        "doc_choose": 3629,
+        "doc_read": 2911,
+        "hop_resolve": 641,
+        "hop_plan": 574
+      },
+      "warning_log": {
+        "path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_full_planning_docread10_qwen3_8b_20260513033026/actor/warning.log",
+        "exists": true,
+        "total_invalid_json_warnings": 76680,
+        "stage_counts": {
+          "doc_choose": 36108,
+          "doc_read": 26679,
+          "hop_resolve": 6945,
+          "hop_plan": 6948
+        },
+        "examples": [
+          "[actor]: 2026-05-13 03:35:26,470 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc chooser failed for hop 1 iteration 0: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:35:26,698 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc chooser failed for hop 1 iteration 0: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:35:27,613 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc chooser failed for hop 1 iteration 0: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:35:27,654 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc chooser failed for hop 1 iteration 0: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:35:27,734 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc chooser failed for hop 1 iteration 0: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:35:27,791 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc chooser failed for hop 1 iteration 0: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:35:27,959 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc chooser failed for hop 1 iteration 0: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:35:28,746 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc chooser failed for hop 1 iteration 0: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:35:28,809 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc chooser failed for hop 1 iteration 0: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:35:29,222 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc chooser failed for hop 1 iteration 0: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:35:29,266 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc chooser failed for hop 1 iteration 0: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:35:29,324 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc chooser failed for hop 1 iteration 0: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:35:29,590 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc chooser failed for hop 1 iteration 0: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:35:29,683 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc chooser failed for hop 1 iteration 0: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:35:29,821 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc chooser failed for hop 1 iteration 0: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:35:29,944 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc chooser failed for hop 1 iteration 0: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:35:30,366 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc chooser failed for hop 1 iteration 0: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:35:30,884 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc chooser failed for hop 1 iteration 0: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:35:31,220 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc chooser failed for hop 1 iteration 0: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:35:31,284 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc chooser failed for hop 1 iteration 0: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:35:31,495 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc chooser failed for hop 1 iteration 0: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:35:32,065 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc chooser failed for hop 1 iteration 0: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:35:32,694 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc read failed for web/51464#w02of02: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:35:32,698 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc chooser failed for hop 1 iteration 0: No valid JSON found in response: line 1 column 1 (char 0)",
+          "[actor]: 2026-05-13 03:35:32,701 - pipelinerl.domains.privacy_hopqa.agent - WARNING - doc chooser failed for hop 1 iteration 0: No valid JSON found in response: line 1 column 1 (char 0)"
+        ]
+      },
+      "actor_info_tail": {
+        "path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_full_planning_docread10_qwen3_8b_20260513033026/actor/info.log",
+        "tail_bytes": 75000000,
+        "total_call_summaries": 126461,
+        "total_prompt_summaries": 84801,
+        "call_rows": [
+          {
+            "log_name": "doc_choose",
+            "count": 8363,
+            "captured_count": 8363,
+            "output_mean": 892.4725576946072,
+            "output_p50": 1024.0,
+            "output_p95": 1024.0,
+            "output_max": 1024.0,
+            "output_near_observed_max": 4912,
+            "output_le_5": 0,
+            "output_near_4k": 0,
+            "prompt_mean": 3000.1000837020206,
+            "prompt_p95": 4497.0,
+            "prompt_max": 6297.0,
+            "total_p95": 5477.0
+          },
+          {
+            "log_name": "doc_read",
+            "count": 75720,
+            "captured_count": 0,
+            "output_mean": 441.7886555731643,
+            "output_p50": 415.0,
+            "output_p95": 749.0,
+            "output_max": 768.0,
+            "output_near_observed_max": 3743,
+            "output_le_5": 0,
+            "output_near_4k": 0,
+            "prompt_mean": 3708.9281299524564,
+            "prompt_p95": 6580.0,
+            "prompt_max": 16174.0,
+            "total_p95": 7026.0
+          },
+          {
+            "log_name": "hop_plan",
+            "count": 19747,
+            "captured_count": 19747,
+            "output_mean": 762.2400871018383,
+            "output_p50": 755.0,
+            "output_p95": 1024.0,
+            "output_max": 1024.0,
+            "output_near_observed_max": 2300,
+            "output_le_5": 0,
+            "output_near_4k": 0,
+            "prompt_mean": 3601.5401326783817,
+            "prompt_p95": 5942.0,
+            "prompt_max": 7746.0,
+            "total_p95": 6745.0
+          },
+          {
+            "log_name": "hop_resolve",
+            "count": 22631,
+            "captured_count": 22631,
+            "output_mean": 516.5996641774557,
+            "output_p50": 454.0,
+            "output_p95": 988.0,
+            "output_max": 1024.0,
+            "output_near_observed_max": 1071,
+            "output_le_5": 0,
+            "output_near_4k": 0,
+            "prompt_mean": 5287.112677301047,
+            "prompt_p95": 7037.0,
+            "prompt_max": 9137.0,
+            "total_p95": 7587.0
+          }
+        ],
+        "prompt_rows": [
+          {
+            "log_name": "doc_choose",
+            "count": 4915,
+            "prompt_mean": 3281.2191251271615,
+            "prompt_p95": 4689.0,
+            "prompt_max": 6297.0
+          },
+          {
+            "log_name": "doc_read",
+            "count": 42246,
+            "prompt_mean": 5005.6752355252565,
+            "prompt_p95": 7237.0,
+            "prompt_max": 16174.0
+          },
+          {
+            "log_name": "hop_plan",
+            "count": 16901,
+            "prompt_mean": 3941.2462576178923,
+            "prompt_p95": 5988.0,
+            "prompt_max": 7746.0
+          },
+          {
+            "log_name": "hop_resolve",
+            "count": 20739,
+            "prompt_mean": 5506.87511451854,
+            "prompt_p95": 7073.0,
+            "prompt_max": 9137.0
+          }
+        ]
+      },
+      "group_stats": {
+        "groups_with_2plus_rollouts": 402,
+        "mixed_binary_reward_groups": 119,
+        "partial_with_full_success_groups": 84,
+        "all_binary_zero_but_fractional_varies_groups": 62,
+        "fractional_varies_groups": 181
+      }
+    }
+  ],
+  "invalid_example_count": 64,
+  "answer_noise_example_count": 240,
+  "group_example_count": 32,
+  "output_html": "/home/toolkit/my_code/MosaicProject/runtime_analysis/privacy_hopqa_q30_reward_stagnation_2026-05-13/index.html"
+}

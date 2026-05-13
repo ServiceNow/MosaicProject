@@ -35,6 +35,31 @@ class FilteredSearcher:
         return filtered[:k]
 
 
+class ExcludedSearcher:
+    """Exclude selected document IDs from an underlying searcher."""
+
+    def __init__(self, base_searcher: Any, *, excluded_doc_ids: set[str], overfetch_factor: int = 20) -> None:
+        self.base_searcher = base_searcher
+        self.excluded_doc_ids = set(excluded_doc_ids)
+        self.overfetch_factor = max(1, int(overfetch_factor))
+
+    @property
+    def size(self) -> int:
+        base_size = int(getattr(self.base_searcher, "size", 0))
+        return max(0, base_size - len(self.excluded_doc_ids))
+
+    def search(self, query: str, *, k: int = 10, **kwargs) -> list[RetrievalHit]:
+        if k <= 0:
+            return []
+        if not self.excluded_doc_ids:
+            return self.base_searcher.search(query, k=k, **kwargs)
+        base_size = int(getattr(self.base_searcher, "size", k))
+        search_k = min(base_size, max(k, k * self.overfetch_factor))
+        hits = self.base_searcher.search(query, k=search_k, **kwargs)
+        filtered = [hit for hit in hits if hit.doc_id not in self.excluded_doc_ids]
+        return filtered[:k]
+
+
 class FixedKwargSearcher:
     """Force selected search kwargs for an underlying searcher."""
 

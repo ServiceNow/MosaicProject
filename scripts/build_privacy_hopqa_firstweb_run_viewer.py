@@ -304,6 +304,7 @@ def summarize_trace(path: Path, dataset: dict[str, dict[str, Any]]) -> dict[str,
                 "query": item.get("query"),
                 "result_count": item.get("result_count"),
                 "top_doc_ids": item.get("top_doc_ids") or [],
+                "top_parent_doc_ids": item.get("top_parent_doc_ids") or [],
                 "error": item.get("error"),
             }
             for item in search_history[:12]
@@ -315,6 +316,8 @@ def summarize_trace(path: Path, dataset: dict[str, dict[str, Any]]) -> dict[str,
                 "status": action.get("status"),
                 "query": (action.get("parameters") or {}).get("query"),
                 "results_count": ((action.get("actual_output") or {}).get("results_count")),
+                "candidate_count": ((action.get("actual_output") or {}).get("candidate_count")),
+                "retrieval_context_mode": ((action.get("actual_output") or {}).get("retrieval_context_mode")),
                 "execution_time": action.get("execution_time"),
                 "error": action.get("error"),
             }
@@ -323,6 +326,10 @@ def summarize_trace(path: Path, dataset: dict[str, dict[str, Any]]) -> dict[str,
         "reader_sample": [
             {
                 "doc_id": result.get("doc_id"),
+                "parent_doc_id": result.get("parent_doc_id"),
+                "evidence_window_id": result.get("evidence_window_id"),
+                "window_index": result.get("window_index"),
+                "window_count": result.get("window_count"),
                 "source": result.get("source"),
                 "title": trunc(result.get("title"), 160),
                 "can_answer": result.get("can_answer"),
@@ -653,10 +660,11 @@ function renderAnswerAudit() {{
 }}
 function showDetail(idx) {{
   const r = (DATA.traces.records || [])[idx]; if (!r) return;
-  const searches = (r.search_history||[]).map(s=>`<tr><td>${{esc(s.iteration)}}</td><td>${{esc(s.type)}}</td><td>${{esc(s.query)}}</td><td>${{fmt(s.result_count,0)}}</td><td>${{esc((s.top_doc_ids||[]).join(', '))}}</td></tr>`).join('');
-  const readers = (r.reader_sample||[]).map(x=>`<details><summary>${{esc(x.doc_id)}} | ${{esc(x.source)}} | can_answer=${{esc(x.can_answer)}} | proposed=${{esc(x.proposed_answer)}}</summary><p><b>${{esc(x.title)}}</b></p><p>${{esc(x.justification)}}</p></details>`).join('');
-  const actions = (r.actions||[]).map(a=>`<tr><td>${{esc(a.id)}}</td><td>${{esc(a.type)}}</td><td>${{esc(a.status)}}</td><td>${{esc(a.query)}}</td><td>${{fmt(a.results_count,0)}}</td><td>${{fmt(a.execution_time,2)}}s</td><td>${{esc(a.error)}}</td></tr>`).join('');
-  document.getElementById('details').innerHTML = `<h3>${{esc(r.chain_id)}} <span class=\"small\">${{esc(r.rollout_id)}}</span></h3><p>${{flagPills(r.flags)}}</p><div class=\"two\"><div><p><b>Question:</b> ${{esc(r.question)}}</p><p><b>Predicted:</b> <span class=\"${{r.correct?'good':'bad'}}\">${{esc(r.predicted_answer)}}</span></p><p><b>Gold:</b> ${{esc(r.gold_answer)}}</p><p><b>Accepted variants:</b> ${{esc((r.accepted_answers||[]).join(' | '))}}</p><p><b>Reason:</b> ${{esc(r.reason)}}</p><p><b>Justification:</b> ${{esc(r.justification)}}</p><p class=\"small\">Trace path: ${{esc(r.trace_path)}}</p></div><div><p><b>Status:</b> ${{esc(r.status)}} confidence ${{fmt(r.confidence,2)}}</p><p><b>Iterations/searches/docs/LLM calls:</b> ${{fmt(r.iterations_used,0)}} / ${{fmt(r.searches_total,0)}} / ${{fmt(r.docs_read,0)}} / ${{fmt(r.llm_calls_total,0)}}</p><p><b>Tokens:</b> ${{fmt(r.total_tokens,0)}}; duration ${{fmt(r.duration_s,1)}}s</p></div></div><h3>Search history</h3><div class=\"table-wrap\"><table><thead><tr><th>iter</th><th>type</th><th>query</th><th>results</th><th>top docs</th></tr></thead><tbody>${{searches}}</tbody></table></div><h3>Actions</h3><div class=\"table-wrap\"><table><thead><tr><th>id</th><th>type</th><th>status</th><th>query</th><th>results</th><th>time</th><th>error</th></tr></thead><tbody>${{actions}}</tbody></table></div><h3>Reader sample</h3>${{readers || '<p>No reader sample embedded.</p>'}}`;
+  const windowLabel = x => x.window_index ? `window ${{esc(x.window_index)}}/${{esc(x.window_count || '?')}}` : '';
+  const searches = (r.search_history||[]).map(s=>`<tr><td>${{esc(s.iteration)}}</td><td>${{esc(s.type)}}</td><td>${{esc(s.query)}}</td><td>${{fmt(s.result_count,0)}}</td><td>${{esc((s.top_doc_ids||[]).join(', '))}}</td><td>${{esc((s.top_parent_doc_ids||[]).join(', '))}}</td></tr>`).join('');
+  const readers = (r.reader_sample||[]).map(x=>`<details><summary>${{esc(x.doc_id)}} | parent=${{esc(x.parent_doc_id || x.doc_id)}} ${{windowLabel(x)}} | ${{esc(x.source)}} | can_answer=${{esc(x.can_answer)}} | proposed=${{esc(x.proposed_answer)}}</summary><p><b>${{esc(x.title)}}</b></p><p><b>Evidence window:</b> ${{esc(x.evidence_window_id || x.doc_id)}}; <b>Parent doc:</b> ${{esc(x.parent_doc_id || x.doc_id)}}; <b>Window:</b> ${{esc(windowLabel(x) || 'n/a')}}</p><p>${{esc(x.justification)}}</p></details>`).join('');
+  const actions = (r.actions||[]).map(a=>`<tr><td>${{esc(a.id)}}</td><td>${{esc(a.type)}}</td><td>${{esc(a.status)}}</td><td>${{esc(a.query)}}</td><td>${{fmt(a.results_count,0)}} / ${{fmt(a.candidate_count,0)}}</td><td>${{esc(a.retrieval_context_mode || '')}}</td><td>${{fmt(a.execution_time,2)}}s</td><td>${{esc(a.error)}}</td></tr>`).join('');
+  document.getElementById('details').innerHTML = `<h3>${{esc(r.chain_id)}} <span class=\"small\">${{esc(r.rollout_id)}}</span></h3><p>${{flagPills(r.flags)}}</p><div class=\"two\"><div><p><b>Question:</b> ${{esc(r.question)}}</p><p><b>Predicted:</b> <span class=\"${{r.correct?'good':'bad'}}\">${{esc(r.predicted_answer)}}</span></p><p><b>Gold:</b> ${{esc(r.gold_answer)}}</p><p><b>Accepted variants:</b> ${{esc((r.accepted_answers||[]).join(' | '))}}</p><p><b>Reason:</b> ${{esc(r.reason)}}</p><p><b>Justification:</b> ${{esc(r.justification)}}</p><p class=\"small\">Trace path: ${{esc(r.trace_path)}}</p></div><div><p><b>Status:</b> ${{esc(r.status)}} confidence ${{fmt(r.confidence,2)}}</p><p><b>Iterations/searches/docs/LLM calls:</b> ${{fmt(r.iterations_used,0)}} / ${{fmt(r.searches_total,0)}} / ${{fmt(r.docs_read,0)}} / ${{fmt(r.llm_calls_total,0)}}</p><p><b>Tokens:</b> ${{fmt(r.total_tokens,0)}}; duration ${{fmt(r.duration_s,1)}}s</p><p><b>Evidence model:</b> top docs are selectable evidence windows; parent docs identify the original web page.</p></div></div><h3>Search history</h3><div class=\"table-wrap\"><table><thead><tr><th>iter</th><th>type</th><th>query</th><th>candidate windows</th><th>top evidence windows</th><th>top parent docs</th></tr></thead><tbody>${{searches}}</tbody></table></div><h3>Actions</h3><div class=\"table-wrap\"><table><thead><tr><th>id</th><th>type</th><th>status</th><th>query</th><th>hits / candidates</th><th>mode</th><th>time</th><th>error</th></tr></thead><tbody>${{actions}}</tbody></table></div><h3>Reader sample</h3>${{readers || '<p>No reader sample embedded.</p>'}}`;
   window.scrollTo({{top: document.getElementById('details').offsetTop - 12, behavior:'smooth'}});
 }}
 renderCards(); renderConcerns(); renderPlots(); renderTraceSummary(); renderTable(); renderAnswerAudit();

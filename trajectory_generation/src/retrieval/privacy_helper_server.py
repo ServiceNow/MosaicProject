@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 from typing import Any
 
+import anyio.to_thread
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 import uvicorn
@@ -60,6 +61,10 @@ class HelperAppLifecycle:
         self.config_obj = config_obj
 
     async def __aenter__(self) -> None:
+        anyio.to_thread.current_default_thread_limiter().total_tokens = max(
+            1,
+            int(self.config_obj.threadpool_tokens),
+        )
         logger.info("Loading privacy helper backend...")
         self.app.state.backend = PrivacyHelperBackend(self.config_obj)
         logger.info("Privacy helper backend ready")
@@ -90,6 +95,12 @@ def add_helper_arguments(
         type=int,
         default=1,
         help="Number of helper worker processes to run.",
+    )
+    argument_target.add_argument(
+        "--threadpool-tokens",
+        type=int,
+        default=16,
+        help="Maximum concurrent blocking request handlers per helper worker.",
     )
     argument_target.add_argument(
         "--local-index-root",
@@ -154,7 +165,30 @@ def add_helper_arguments(
         "--browsecomp-max-chars",
         type=int,
         default=8000,
-        help="Maximum text length returned per BrowseComp hit.",
+        help="Default text length returned per BrowseComp hit when the request does not specify max_chars.",
+    )
+    argument_target.add_argument(
+        "--browsecomp-exclude-doc-ids-file",
+        default="",
+        help="Optional newline-delimited BrowseComp parent doc IDs to exclude from web retrieval.",
+    )
+    argument_target.add_argument(
+        "--browsecomp-max-doc-windows",
+        type=int,
+        default=10,
+        help="Live safety filter: drop BrowseComp parents longer than this many 16k-character reader windows. Use 0 to disable.",
+    )
+    argument_target.add_argument(
+        "--browsecomp-reader-window-chars",
+        type=int,
+        default=16000,
+        help="Reader window size used to convert --browsecomp-max-doc-windows into an exact character cap.",
+    )
+    argument_target.add_argument(
+        "--browsecomp-reader-window-overlap-chars",
+        type=int,
+        default=1000,
+        help="Reader window overlap used to convert --browsecomp-max-doc-windows into an exact character cap.",
     )
     argument_target.add_argument(
         "--curated-web-docs",
@@ -208,6 +242,11 @@ def config_from_args(args: argparse.Namespace) -> PrivacyHelperConfig:
         browsecomp_max_chars=int(args.browsecomp_max_chars),
         curated_web_docs=args.curated_web_docs,
         curated_web_chunks=curated_chunks,
+        browsecomp_exclude_doc_ids_file=args.browsecomp_exclude_doc_ids_file,
+        browsecomp_max_doc_windows=int(args.browsecomp_max_doc_windows),
+        browsecomp_reader_window_chars=int(args.browsecomp_reader_window_chars),
+        browsecomp_reader_window_overlap_chars=int(args.browsecomp_reader_window_overlap_chars),
+        threadpool_tokens=int(args.threadpool_tokens),
     )
 
 
