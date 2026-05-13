@@ -19,8 +19,9 @@ is capped separately. vLLM jobs are launched without `max-num-seqs`.
 Per-model serving exceptions:
 
 ```text
-gpt_oss_20b:   request include_reasoning=false and temperature=0.7 to reduce
-               known GPT-OSS/Harmony parser failures under vLLM chat serving.
+gpt_oss_20b:   locally render the chat template and call /v1/completions, with
+               temperature=0.7, to avoid known GPT-OSS/Harmony chat-parser
+               failures under vLLM.
 gemma4_31b_it: uses an isolated /tmp/gemma4_vllm_env overlay with vLLM 0.19.1
                and current Transformers, because the shared PipelineRL env has
                vLLM 0.18.1 / Transformers 4.57.6 and cannot load model_type=gemma4.

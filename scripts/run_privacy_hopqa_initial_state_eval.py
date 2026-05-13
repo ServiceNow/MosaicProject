@@ -138,13 +138,13 @@ def select_rows(rows: list[dict[str, Any]], args: argparse.Namespace) -> list[di
     return selected
 
 
-def ensure_pipelinerl_imports(pipelinerl_root: Path) -> tuple[Any, Any, Any]:
+def ensure_pipelinerl_imports(pipelinerl_root: Path) -> tuple[Any, Any, Any, Any, Any, Any, Any]:
     sys.path.insert(0, str(pipelinerl_root))
     from omegaconf import OmegaConf
     from pipelinerl.domains.privacy_hopqa.rollouts import generate_privacy_hopqa_rollout
-    from pipelinerl.llm import TrainableLLM
+    from pipelinerl.llm import LLMEvent, LLMOutput, LLMStream, Prompt, TrainableLLM
 
-    return OmegaConf, TrainableLLM, generate_privacy_hopqa_rollout
+    return OmegaConf, LLMEvent, LLMOutput, LLMStream, Prompt, TrainableLLM, generate_privacy_hopqa_rollout
 
 
 def build_cfg(args: argparse.Namespace, split_output_dir: Path, OmegaConf: Any) -> Any:
@@ -375,7 +375,15 @@ async def run_all(args: argparse.Namespace) -> None:
     import aiohttp
 
     pipelinerl_root = Path(args.pipelinerl_root).expanduser()
-    OmegaConf, TrainableLLM, generate_privacy_hopqa_rollout = ensure_pipelinerl_imports(pipelinerl_root)
+    (
+        OmegaConf,
+        LLMEvent,
+        LLMOutput,
+        LLMStream,
+        Prompt,
+        TrainableLLM,
+        generate_privacy_hopqa_rollout,
+    ) = ensure_pipelinerl_imports(pipelinerl_root)
 
     output_root = Path(args.output_root).expanduser()
     model_label = slugify(args.model_label)
@@ -412,7 +420,79 @@ async def run_all(args: argparse.Namespace) -> None:
             raise ValueError("--request-params-json must decode to a JSON object")
         request_parameters.update(extra_request_parameters)
 
-    llm = TrainableLLM(
+    class CompletionTemplateLLM(TrainableLLM):
+        """Use /v1/completions with a locally rendered chat template.
+
+        GPT-OSS can fail inside vLLM's chat/Harmony response parser even when the
+        model generated usable text. The completions endpoint returns raw text
+        and avoids that parser while preserving the same chat template.
+        """
+
+        async def agenerate(self, prompt: Any, session: aiohttp.ClientSession, **kwargs: Any) -> Any:
+            headers = {"Content-Type": "application/json"}
+            if self.api_token:
+                headers |= {"Authorization": f"Bearer {self.api_token}"}
+            self.load_tokenizer()
+            chat_kwargs = dict(self.chat_template_kwargs) if self.chat_template_kwargs else {}
+            rendered_prompt = self.tokenizer.apply_chat_template(
+                prompt.messages,
+                tokenize=False,
+                add_generation_prompt=True,
+                **chat_kwargs,
+            )
+            params = {"model": self.model_name, "prompt": rendered_prompt} | kwargs
+            for key, value in self.parameters.items():
+                params[key] = OmegaConf.to_container(value) if hasattr(value, "_metadata") else value
+            params.pop("include_reasoning", None)
+            params.pop("chat_template_kwargs", None)
+
+            async with self._semaphore:  # type: ignore[attr-defined]
+                retry_count = 0
+                while True:
+                    try:
+                        async with session.post(
+                            url=f"{self.base_url}/v1/completions",
+                            json=params,
+                            headers=headers,
+                            ssl=False,
+                        ) as response:
+                            if not response.ok:
+                                response.raise_for_status()
+                            data = await response.json()
+                            break
+                    except asyncio.TimeoutError as exc:
+                        retry_count += 1
+                        if retry_count > self.max_retries:
+                            raise exc
+                        await asyncio.sleep(self.base_delay * (2 ** (retry_count - 1)))
+                    except aiohttp.ClientError as exc:
+                        retry_count += 1
+                        if retry_count > self.max_retries:
+                            raise exc
+                        await asyncio.sleep(self.base_delay * (2 ** (retry_count - 1)))
+
+            content = data["choices"][0].get("text") or ""
+            prompt_tokens = int(data.get("usage", {}).get("prompt_tokens") or 0)
+            completion_tokens = int(data.get("usage", {}).get("completion_tokens") or 0)
+            output = LLMOutput(content=content)
+            if not isinstance(prompt, Prompt):
+                prompt = Prompt(**prompt.model_dump(exclude_none=True))
+            llm_call = self.log_output(
+                prompt,
+                output,
+                prompt_length_tokens=prompt_tokens,
+                output_length_tokens=completion_tokens,
+                count_tokens=False,
+            )
+            assert llm_call is not None, "llm_call is None"
+
+            def _gen():
+                yield LLMEvent(llm_call=llm_call, output=output)
+
+            return LLMStream(generator=_gen(), prompt=prompt)
+
+    llm_cls = CompletionTemplateLLM if args.request_api_mode == "completion_template" else TrainableLLM
+    llm = llm_cls(
         model_name=args.model,
         tokenizer_name=args.tokenizer_name or args.model,
         base_url=args.base_url.rstrip("/"),
@@ -491,6 +571,12 @@ def parse_args() -> argparse.Namespace:
         "--request-params-json",
         default="",
         help="Extra JSON object merged into each OpenAI-compatible chat completion request.",
+    )
+    parser.add_argument(
+        "--request-api-mode",
+        choices=["chat", "completion_template"],
+        default="chat",
+        help="Use chat completions normally, or render chat locally and call /v1/completions.",
     )
     parser.add_argument("--capture-mode", default="all_calls")
     parser.add_argument("--generation-context-limit-tokens", type=int, default=16384)

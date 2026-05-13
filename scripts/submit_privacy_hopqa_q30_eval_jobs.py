@@ -114,6 +114,7 @@ ROLLOUT_JOBS: list[dict[str, Any]] = [
         "concurrency": 12,
         "max_model_len": 32768,
         "temperature": 0.7,
+        "request_api_mode": "completion_template",
         "request_params_json": {"include_reasoning": False},
         "trust_remote_code": True,
     },
@@ -217,6 +218,8 @@ def rollout_worker_command(job: dict[str, Any], artifact_root: Path) -> str:
         "--temperature",
         str(job.get("temperature", 1.0)),
     ]
+    if job.get("request_api_mode"):
+        parts.extend(["--request-api-mode", job["request_api_mode"]])
     if job.get("request_params_json"):
         parts.extend(["--request-params-json", json.dumps(job["request_params_json"], separators=(",", ":"))])
     if job.get("base_url"):

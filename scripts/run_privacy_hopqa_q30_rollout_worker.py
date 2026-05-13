@@ -136,6 +136,8 @@ def run_rollouts(args: argparse.Namespace, model_run_root: Path, base_url: str) 
         str(args.temperature),
         "--max-tokens",
         str(args.max_tokens),
+        "--request-api-mode",
+        args.request_api_mode,
         "--generation-context-limit-tokens",
         str(args.generation_context_limit_tokens),
         "--generation-context-margin-tokens",
@@ -203,6 +205,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--rollout-concurrency", type=int, default=16)
     parser.add_argument("--temperature", type=float, default=1.0)
     parser.add_argument("--max-tokens", type=int, default=16000)
+    parser.add_argument("--request-api-mode", choices=["chat", "completion_template"], default="chat")
     parser.add_argument("--request-params-json", default="")
     parser.add_argument("--stage-max-tokens", type=int, default=16000)
     parser.add_argument("--generation-context-limit-tokens", type=int, default=32000)
