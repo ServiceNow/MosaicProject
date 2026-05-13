@@ -291,6 +291,10 @@ def read_text(path: str, args: argparse.Namespace | None = None) -> tuple[str, s
             )
             if text.strip() and not extraction_failed:
                 return text, "production_content_processor"
+        if ref.suffix.lower() == ".txt":
+            text = ref.read_text(encoding="utf-8", errors="replace")
+            if text.strip():
+                return text, "plain_text_fallback"
         if args.require_production_stack:
             raise RuntimeError(f"Production content processor unavailable for {ref}: {_PRODUCTION_IMPORT_ERROR}")
     return extract_document_text(ref), "stepfun_extract_document_text_fallback"
@@ -319,6 +323,7 @@ def local_index_content(case: Case, local_index_root: Path) -> str | None:
     doc_name = Path(case.doc_ref).name
     doc_stem = Path(case.doc_ref).stem
     doc_rel = "/".join(Path(case.doc_ref).parts[-2:])
+    matches: list[str] = []
     for doc_info in documents.values():
         metadata = doc_info.get("metadata") or {}
         candidates = [
@@ -338,7 +343,13 @@ def local_index_content(case: Case, local_index_root: Path) -> str | None:
         ):
             content = str(doc_info.get("content") or "")
             if content.strip():
-                return content
+                title = str(metadata.get("title") or metadata.get("subject") or metadata.get("filename") or "").strip()
+                if title:
+                    matches.append(f"### {title}\n{content}")
+                else:
+                    matches.append(content)
+    if matches:
+        return "\n\n---\n\n".join(matches)
     return None
 
 

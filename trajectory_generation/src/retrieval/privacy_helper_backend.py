@@ -14,6 +14,7 @@ import numpy as np
 from trajectory_generation import config
 from trajectory_generation.src.retrieval.browsecomp import BrowseCompHybridSearcher
 from trajectory_generation.src.retrieval.composite import (
+    ExcludedSearcher,
     FilteredSearcher,
     FixedKwargSearcher,
     WeightedRRFSearcher,
@@ -248,6 +249,26 @@ def _load_curated_doc_metadata(docs_path: Path) -> tuple[set[str], dict[str, set
     return allowed_doc_ids, by_task
 
 
+def _load_doc_id_file(path: str | Path | None) -> set[str]:
+    if not path:
+        return set()
+    resolved = Path(path).expanduser()
+    if not resolved.exists():
+        return set()
+    doc_ids: set[str] = set()
+    with resolved.open("r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            doc_ids.add(line)
+            if line.startswith("web/"):
+                doc_ids.add(line.removeprefix("web/"))
+            else:
+                doc_ids.add(f"web/{line}")
+    return doc_ids
+
+
 class CuratedWebRepository:
     """Optional direct-fetch web sidecar keyed by task id."""
 
@@ -293,6 +314,10 @@ class PrivacyHelperConfig:
     browsecomp_max_chars: int
     curated_web_docs: str
     curated_web_chunks: list[str]
+    browsecomp_exclude_doc_ids_file: str = ""
+    browsecomp_max_doc_windows: int = 10
+    browsecomp_reader_window_chars: int = 16000
+    browsecomp_reader_window_overlap_chars: int = 1000
     threadpool_tokens: int = 16
 
 
@@ -321,6 +346,18 @@ class PrivacyHelperBackend:
             max_chars=config_obj.browsecomp_max_chars,
             index_device=config_obj.browsecomp_index_device,
         )
+        self.browsecomp_excluded_doc_ids = _load_doc_id_file(
+            config_obj.browsecomp_exclude_doc_ids_file
+        )
+        window_chars = max(1, int(config_obj.browsecomp_reader_window_chars))
+        overlap_chars = min(max(0, int(config_obj.browsecomp_reader_window_overlap_chars)), window_chars - 1)
+        window_step_chars = max(1, window_chars - overlap_chars)
+        max_doc_windows = max(0, int(config_obj.browsecomp_max_doc_windows))
+        self.browsecomp_max_doc_chars = (
+            overlap_chars + (max_doc_windows * window_step_chars)
+            if max_doc_windows > 0
+            else 0
+        )
         self.curated = CuratedWebRepository(
             docs_path=config_obj.curated_web_docs,
             chunk_paths=config_obj.curated_web_chunks,
@@ -339,6 +376,11 @@ class PrivacyHelperBackend:
             "local_task_count": self.local_indices.total_tasks,
             "loaded_local_tasks": self.local_indices.loaded_tasks,
             "browsecomp_size": self.browsecomp.size,
+            "browsecomp_excluded_doc_count": len(self.browsecomp_excluded_doc_ids),
+            "browsecomp_max_doc_windows": self.config.browsecomp_max_doc_windows,
+            "browsecomp_max_doc_chars": self.browsecomp_max_doc_chars,
+            "browsecomp_reader_window_chars": self.config.browsecomp_reader_window_chars,
+            "browsecomp_reader_window_overlap_chars": self.config.browsecomp_reader_window_overlap_chars,
             "browsecomp_index_device": self.config.browsecomp_index_device,
             "browsecomp_dense_backend": self.browsecomp.dense_backend,
             "curated_enabled": self.curated.enabled,
@@ -368,8 +410,15 @@ class PrivacyHelperBackend:
             if cached is not None:
                 return cached
 
+            browsecomp_searcher: Any = self.browsecomp
+            if self.browsecomp_excluded_doc_ids:
+                browsecomp_searcher = ExcludedSearcher(
+                    self.browsecomp,
+                    excluded_doc_ids=self.browsecomp_excluded_doc_ids,
+                )
+
             searchers: list[tuple[Any, float]] = [
-                (self.browsecomp, config.BROWSECOMP_WEB_WEIGHT),
+                (browsecomp_searcher, config.BROWSECOMP_WEB_WEIGHT),
             ]
 
             curated_ids = self.curated.allowed_for_task(task_id)
@@ -403,14 +452,21 @@ class PrivacyHelperBackend:
         char_limit = int(max_chars) if max_chars is not None else self.browsecomp.max_chars
         if char_limit <= 0:
             char_limit = 0
-        hits = searcher.search(query=query, k=k, mode="hybrid", max_chars=char_limit)
+        search_k = max(k, k * 20) if self.browsecomp_max_doc_chars > 0 else k
+        hits = searcher.search(query=query, k=search_k, mode="hybrid", max_chars=char_limit)
 
         results: list[dict[str, Any]] = []
         for hit in hits:
+            meta = hit.meta or {}
+            source = str(meta.get("source", ""))
+            if self.browsecomp_max_doc_chars > 0 and source.startswith("browsecomp"):
+                raw_docid = str(meta.get("raw_docid") or hit.doc_id)
+                doc = self.browsecomp._get_doc(raw_docid)
+                if len(doc.get("text") or "") > self.browsecomp_max_doc_chars:
+                    continue
             text = hit.text
             if char_limit > 0 and len(text) > char_limit:
                 text = text[:char_limit] + "\n\n[truncated]"
-            meta = hit.meta or {}
             results.append(
                 {
                     "docid": hit.doc_id,
@@ -421,4 +477,6 @@ class PrivacyHelperBackend:
                     "raw_docid": meta.get("raw_docid", ""),
                 }
             )
+            if len(results) >= k:
+                break
         return results

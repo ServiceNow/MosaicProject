@@ -1,12 +1,125 @@
 # Privacy HopQA Final Dataset Bundle
 
-## Current trainable version: 2026-05-12 variantfix12/questionfix12
+## Current trainable version: 2026-05-13 q30 final residual review
+
+The historical trainable dataset is:
+
+`data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review.jsonl`
+
+Split files:
+
+- `data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review_train.jsonl`
+- `data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review_val.jsonl`
+- `data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review_test.jsonl`
+
+First-web debugging dataset:
+
+- `data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_anywhere_2026-05-13_q30_final_residual_review.jsonl`
+- `data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_anywhere_2026-05-13_q30_final_residual_review_train.jsonl`
+- `data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_anywhere_2026-05-13_q30_final_residual_review_val.jsonl`
+- `data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_anywhere_2026-05-13_q30_final_residual_review_test.jsonl`
+
+Build script:
+
+`scripts/apply_privacy_hopqa_q30_final_residual_review_fixes_2026_05_13.py`
+
+Patch log and manifest:
+
+- `data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review.applied_log.jsonl`
+- `data_files/privacy_hopqa_final_dataset/manifest_privacy_hopqa_finalized_2026-05-13_q30_final_residual_review.json`
+
+Counts:
+
+| Split | Chains | Hops | Company coverage |
+|---|---:|---:|---|
+| Full | 1,001 | 3,403 | 367 Elexion, 290 Lee's, 344 MediConn |
+| Train | 559 | 1,888 | 311 Elexion, 248 Lee's |
+| Val | 98 | 340 | 56 Elexion, 42 Lee's |
+| Test | 344 | 1,175 | 344 MediConn |
+| First-web full | 794 | 794 | 296 Elexion, 223 Lee's, 275 MediConn |
+| First-web train | 444 | 444 | 251 Elexion, 193 Lee's |
+| First-web val | 75 | 75 | 45 Elexion, 30 Lee's |
+| First-web test | 275 | 275 | 275 MediConn |
+
+### q30 targeted residual answerability audit
+
+This targeted audit reran the 24 residual rows from the q29 full gold-evidence
+audit after the q30 fixes. It uses Qwen3-4B-Instruct-2507 with the production
+document extraction path, `window_chars=16000`, `overlap_chars=1000`, all
+windows enabled, and `f1_threshold=0.8`.
+
+Run output:
+
+`runtime_analysis/privacy_hopqa_q30_targeted_residual_reaudit_4b_2026-05-13/`
+
+Final result:
+
+| Metric | Value | Meaning |
+|---|---:|---|
+| `total` | 24 | The q29 residual hops selected for targeted q30 reaudit. |
+| `resolver_match` | 24 / 24 | Final resolver answer matched the gold answer or an accepted variant. This is the primary pass/fail metric for the targeted residual audit. |
+| `resolver_answered` | 24 / 24 | Resolver produced a non-empty final answer. |
+| `any_window_match` | 23 / 24 | At least one reader pass over any gold-document window produced a matching answer. |
+| `any_window_can_answer` | 23 / 24 | At least one reader pass over any gold-document window claimed the question was answerable. |
+| `correct_window_match` | 20 / 24 | The reader pass on the supporting-span-centered window produced a matching answer. |
+| `correct_window_can_answer` | 21 / 24 | The reader pass on the supporting-span-centered window claimed the question was answerable. |
+| `span_located` | 16 / 24 | The diagnostic script found the exact `supporting_span` string in the extracted document text. Lower values here can reflect legitimate span wording drift; it is not the reward metric. |
+| `doc_read_methods` | 24 production content processor | All targeted rows used the same production document extraction path. |
+| `elapsed_s` | 13.336 | Wall-clock time for this targeted audit on the local 4B vLLM server. |
+
+Metric interpretation:
+
+- `correct_window_*` tests whether the model can answer when shown the window
+  centered on the dataset supporting span.
+- `any_window_*` tests whether any window from the gold document contains enough
+  evidence for the reader to produce the gold answer.
+- `resolver_*` tests the full diagnostic reader/resolver path: read all gold
+  document windows, then choose the final answer from the reader results.
+- For training readiness, `resolver_match` is the most relevant diagnostic,
+  because it checks the final answer-selection behavior after the document has
+  been retrieved and read.
+
+Audit command:
+
+```bash
+cd /home/toolkit/my_code/MosaicProject
+
+python3 - <<'PY'
+import csv
+from pathlib import Path
+src = Path('runtime_analysis/privacy_hopqa_q29_final_full_gold_evidence_docref_4b_2026-05-13/resolver_failures_investigation.csv')
+out = Path('runtime_analysis/privacy_hopqa_q30_targeted_residual_rows_2026-05-13.txt')
+rows = list(csv.DictReader(src.open()))
+out.write_text('\\n'.join(f"{r['chain_id']}::hop{r['hop_number']}" for r in rows) + '\\n')
+PY
+
+/home/toolkit/bin/micromamba run -p /home/toolkit/.conda/envs/pipeline-rl \
+  python scripts/test_privacy_hopqa_firstweb_evidence_modes.py \
+    --dataset data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review.jsonl \
+    --output-dir runtime_analysis/privacy_hopqa_q30_targeted_residual_reaudit_4b_2026-05-13 \
+    --row-id-file runtime_analysis/privacy_hopqa_q30_targeted_residual_rows_2026-05-13.txt \
+    --base-url http://127.0.0.1:8000 \
+    --case-concurrency 8 \
+    --concurrency 48 \
+    --f1-threshold 0.8 \
+    --log-every 4
+```
+
+q30 changes from q29:
+
+- no rows dropped
+- no bridge answers changed
+- 14 residual question rewrites
+- 19 residual answer-variant expansions
+- 14 supporting-span rewrites to exact or more direct evidence text
+
+## Historical trainable version: 2026-05-12 variantfix12/questionfix12
 
 The current trainable dataset is:
 
 `data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-12_variantfix12_questionfix12.jsonl`
 
-The current first-web debugging dataset is:
+The historical first-web debugging dataset is:
 
 `data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_anywhere_2026-05-12_variantfix12_questionfix12.jsonl`
 

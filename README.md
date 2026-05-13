@@ -4,11 +4,25 @@ Repo for our privacy-aware dataset creation (and eventually agent training)
 
 ## Current Privacy HopQA training launch commands
 
+Current canonical dataset: [Privacy HopQA q30 residual-review dataset](./docs/privacy_hopqa_q30_training_defaults_2026-05-13.md).
+
+The repo-level helper specs now blacklist long BrowseComp parents, live-filter
+BrowseComp hits to at most ten 16k/1k-overlap reader windows, and serve the
+fixed local indices from `local_indices_fixeddeps_20260415`:
+
+```bash
+cd /home/toolkit/my_code/MosaicProject
+ACCOUNT=snow.research.adea JOB_SPEC=privacy_helper_2gpu.yaml ./run_privacy_helper.sh
+```
+
+`run_privacy_hopqa.sh` defaults to the q30 full-dataset train/val/test files.
+The train/val/test split is 559/98/344 chains, with MediConn Solutions held out
+entirely as test.
+
 Current first-web debugging runbook: [Privacy HopQA first-web q12 2026-05-12](./docs/privacy_hopqa_firstweb_q12_2026-05-12.md).
-It documents the `variantfix12/questionfix12` dataset, the 2-GPU helper, and the exact 4B planning-only `replicas=4` launch command.
+For first-web-only runs, pass first-web dataset paths explicitly instead of using the defaults below.
 
 Previous 2026-05-11 notes are in [Privacy HopQA first-web-anywhere 2026-05-11](./docs/privacy_hopqa_firstweb_anywhere_2026-05-11.md).
-The commands below are older 2026-05-10 spanfixed/full-dataset references.
 
 Run these from the repo root:
 
@@ -17,54 +31,23 @@ cd /home/toolkit/my_code/MosaicProject
 export PRIVACY_AGENT_HELPER_URL="http://<active-helper-internal-dns>:8012"
 ```
 
-Current first-web-only 4B validation run. This uses the 2026-05-10 spanfixed
-dataset, trains all captured training texts, and keeps the held-out MediConn
-test company out of train/val:
-
-```bash
-TS=$(date +%Y%m%d%H%M%S)
-JOB="privacy_hopqa_firstweb_qwen3_4b2507_spanfixed_allcalls_${TS}"
-
-PIPELINERL_ROOT=/home/toolkit/my_code/PipelineRL \
-OUTPUT_DIR_BASE=/mnt/llmd/results/exps/alexg/reason \
-JOB_NAME="$JOB" \
-WANDB_PROJECT=privacy_hopqa_firstweb_4b_spanfixed_allcalls \
-WANDB_GROUP=spanfixed_allcalls \
-WANDB_NAME="$JOB" \
-REPLICAS=2 \
-MODEL_PATH="Qwen/Qwen3-4B-Instruct-2507" \
-CAPTURE_MODE=all_calls \
-DATASET_SPLIT_ROOT=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset \
-FINAL_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_2026-05-10_spanfixed.jsonl \
-TRAIN_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_2026-05-10_spanfixed_train.jsonl \
-VAL_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_2026-05-10_spanfixed_val.jsonl \
-TEST_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_first_web_hop_dataset/privacy_hopqa_first_web_hop_2026-05-10_spanfixed_test.jsonl \
-FILTER_ZERO_ADVANTAGE_GROUPS=true \
-EXTRA_OVERRIDES="privacy_hopqa.reward_mode=all_hops_correct privacy_hopqa.iteration_budget_per_hop=3 privacy_hopqa.helper_timeout_s=180 actor.llm_max_rollouts=16" \
-bash /home/toolkit/my_code/MosaicProject/run_privacy_hopqa.sh
-```
-
 Normal full-dataset 4B run:
 
 ```bash
 TS=$(date +%Y%m%d%H%M%S)
-JOB="privacy_hopqa_final_qwen3_4b_instruct_2507_shortanswer_${TS}"
+JOB="privacy_hopqa_q30_qwen3_4b_instruct_2507_${TS}"
 
 PIPELINERL_ROOT=/home/toolkit/my_code/PipelineRL \
 OUTPUT_DIR_BASE=/mnt/llmd/results/exps/alexg/reason \
 JOB_NAME="$JOB" \
-WANDB_PROJECT=privacy_hopqa_final_qwen3_4b_instruct_2507 \
-WANDB_GROUP=shortanswer_promptfix \
+WANDB_PROJECT=privacy_hopqa_q30_qwen3_4b_instruct_2507 \
+WANDB_GROUP=q30_full \
 WANDB_NAME="$JOB" \
 REPLICAS=2 \
 MODEL_PATH="Qwen/Qwen3-4B-Instruct-2507" \
-DATASET_SPLIT_ROOT=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset \
-FINAL_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-07_answer_variants.jsonl \
-TRAIN_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/train.jsonl \
-VAL_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/val.jsonl \
-TEST_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/test.jsonl \
+CAPTURE_MODE=planning_only \
 FILTER_ZERO_ADVANTAGE_GROUPS=true \
-EXTRA_OVERRIDES="privacy_hopqa.helper_timeout_s=180 actor.llm_max_rollouts=64" \
+EXTRA_OVERRIDES="privacy_hopqa.helper_timeout_s=180 privacy_hopqa.max_parallel_doc_reads=10 actor.llm_max_rollouts=64" \
 bash /home/toolkit/my_code/MosaicProject/run_privacy_hopqa.sh
 ```
 
@@ -72,29 +55,25 @@ Normal full-dataset 8B run:
 
 ```bash
 TS=$(date +%Y%m%d%H%M%S)
-JOB="privacy_hopqa_final_qwen3_8b_shortanswer_${TS}"
+JOB="privacy_hopqa_q30_qwen3_8b_${TS}"
 
 PIPELINERL_ROOT=/home/toolkit/my_code/PipelineRL \
 OUTPUT_DIR_BASE=/mnt/llmd/results/exps/alexg/reason \
 JOB_NAME="$JOB" \
-WANDB_PROJECT=privacy_hopqa_final_qwen3_8b \
-WANDB_GROUP=shortanswer_promptfix \
+WANDB_PROJECT=privacy_hopqa_q30_qwen3_8b \
+WANDB_GROUP=q30_full \
 WANDB_NAME="$JOB" \
 REPLICAS=2 \
-MODEL_PATH="Qwen/Qwen3-8B" \
-DATASET_SPLIT_ROOT=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset \
-FINAL_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-07_answer_variants.jsonl \
-TRAIN_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/train.jsonl \
-VAL_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/val.jsonl \
-TEST_DATASET_PATH=/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/test.jsonl \
+MODEL_PATH=/mnt/llmd/base_models/Qwen3-8B \
+CAPTURE_MODE=planning_only \
 FILTER_ZERO_ADVANTAGE_GROUPS=true \
-EXTRA_OVERRIDES="privacy_hopqa.helper_timeout_s=180 actor.llm_max_rollouts=64" \
+EXTRA_OVERRIDES="privacy_hopqa.helper_timeout_s=180 privacy_hopqa.max_parallel_doc_reads=10 actor.llm_max_rollouts=64" \
 bash /home/toolkit/my_code/MosaicProject/run_privacy_hopqa.sh
 ```
 
-The first-web command uses `actor.llm_max_rollouts=16` to match the earlier
-low-concurrency validation run. The normal 4B and 8B jobs use `64`, matching the
-previous full-dataset training runs.
+The normal 4B and 8B jobs train planning calls only (`CAPTURE_MODE=planning_only`), use `actor.llm_max_rollouts=64`, and allow up to 10 concurrent document-reader calls per rollout. Reward/success
+metrics are logged by gold pattern and chain length, for example
+`reward_by_pattern/LLW_mean` and `reward_by_chain_length/3_mean`.
 
 [`trajectory_generation`](./trajectory_generation) shows how we generate multi-hop research questions that rely on both private (enterprise) documents and external web documents (from browsecomp-plus).
 

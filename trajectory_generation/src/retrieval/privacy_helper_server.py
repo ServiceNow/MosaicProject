@@ -168,6 +168,29 @@ def add_helper_arguments(
         help="Default text length returned per BrowseComp hit when the request does not specify max_chars.",
     )
     argument_target.add_argument(
+        "--browsecomp-exclude-doc-ids-file",
+        default="",
+        help="Optional newline-delimited BrowseComp parent doc IDs to exclude from web retrieval.",
+    )
+    argument_target.add_argument(
+        "--browsecomp-max-doc-windows",
+        type=int,
+        default=10,
+        help="Live safety filter: drop BrowseComp parents longer than this many 16k-character reader windows. Use 0 to disable.",
+    )
+    argument_target.add_argument(
+        "--browsecomp-reader-window-chars",
+        type=int,
+        default=16000,
+        help="Reader window size used to convert --browsecomp-max-doc-windows into an exact character cap.",
+    )
+    argument_target.add_argument(
+        "--browsecomp-reader-window-overlap-chars",
+        type=int,
+        default=1000,
+        help="Reader window overlap used to convert --browsecomp-max-doc-windows into an exact character cap.",
+    )
+    argument_target.add_argument(
         "--curated-web-docs",
         default=str(config.CURATED_WEB_DOCS),
         help="Direct-fetch curated web metadata JSONL.",
@@ -219,6 +242,10 @@ def config_from_args(args: argparse.Namespace) -> PrivacyHelperConfig:
         browsecomp_max_chars=int(args.browsecomp_max_chars),
         curated_web_docs=args.curated_web_docs,
         curated_web_chunks=curated_chunks,
+        browsecomp_exclude_doc_ids_file=args.browsecomp_exclude_doc_ids_file,
+        browsecomp_max_doc_windows=int(args.browsecomp_max_doc_windows),
+        browsecomp_reader_window_chars=int(args.browsecomp_reader_window_chars),
+        browsecomp_reader_window_overlap_chars=int(args.browsecomp_reader_window_overlap_chars),
         threadpool_tokens=int(args.threadpool_tokens),
     )
 
