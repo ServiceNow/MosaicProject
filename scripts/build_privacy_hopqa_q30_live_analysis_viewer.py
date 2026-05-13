@@ -352,6 +352,8 @@ def trace_prior_web_features(trace_path: str) -> dict[str, int]:
         "local_doc_reads_before_any_web": 0,
         "resolved_local_hops_before_first_web": 0,
     }
+    if not trace_path.strip():
+        return default
     path = Path(trace_path)
     if not path.exists():
         return default
@@ -534,9 +536,9 @@ def load_rollouts(artifact_root: Path, problem_lookup: dict[tuple[str, str], dic
             row["model_label"] = str(row.get("model_label") or model_label)
             row["model_display"] = model_display(row["model_label"])
             row["planned_splits"] = planned_splits
+            row.update(trace_prior_web_features(str(row.get("trace_path") or "")))
             if row.get("ok"):
                 enrich_dependency_metrics(row, problem_lookup)
-                row.update(trace_prior_web_features(str(row.get("trace_path") or "")))
             rows.append(row)
     return rows
 
@@ -611,7 +613,7 @@ def add_ols_trend(
     ys: list[float],
     x_range: tuple[float, float] = (0.0, 100.0),
     label: str = "OLS fit",
-) -> Any | None:
+) -> dict[str, Any] | None:
     if len(xs) < 3 or len(set(xs)) < 2:
         return None
     x_mean = mean(xs)
@@ -633,7 +635,37 @@ def add_ols_trend(
         label=label,
         zorder=1,
     )[0]
-    return line
+    return {"line": line, "slope": slope, "intercept": intercept}
+
+
+def ols_text(fit: dict[str, Any] | None) -> str:
+    if not fit:
+        return "OLS: n/a"
+    slope = float(fit["slope"])
+    intercept = float(fit["intercept"])
+    sign = "+" if intercept >= 0 else "-"
+    return f"OLS: y = {slope:.3g}x {sign} {abs(intercept):.3g}"
+
+
+def spearman_text(xs: list[float], ys: list[float]) -> str:
+    if scipy_stats is None or len(xs) < 3 or len(set(xs)) < 2 or len(set(ys)) < 2:
+        return "Spearman: n/a"
+    rho, p_value = scipy_stats.spearmanr(xs, ys)
+    return f"Spearman: rho={rho:.2f}, p={p_value:.3g}"
+
+
+def add_stats_box(ax: Any, lines: list[str], x: float = 0.03, y: float = 0.97) -> None:
+    ax.text(
+        x,
+        y,
+        "\n".join(lines),
+        transform=ax.transAxes,
+        ha="left",
+        va="top",
+        fontsize=8,
+        color="#1f2421",
+        bbox={"boxstyle": "round,pad=0.25", "facecolor": "#fffdf8", "edgecolor": "#d7d0c2", "alpha": 0.88},
+    )
 
 
 def plot_progress(rows: list[dict[str, Any]], path: Path, split_scope: str | None = None) -> None:
@@ -713,9 +745,11 @@ def plot_accuracy_privacy(rollouts: list[dict[str, Any]], leakage: list[dict[str
     plt.xlabel("Mean conditional hop accuracy (% evaluable hops)")
     plt.ylabel("StepFun leakage rate (% score 4-5)")
     plt.title("Mean task performance vs privacy leakage by model")
-    add_ols_trend(plt.gca(), xs, ys)
+    ax = plt.gca()
+    fit = add_ols_trend(ax, xs, ys)
+    add_stats_box(ax, [f"n={len(xs)} models", spearman_text(xs, ys), ols_text(fit)], y=0.93)
     if any_points:
-        plt.text(1, 96, "Point size scales with evaluated rollouts.", fontsize=8, color="#65706b")
+        plt.text(1, 2, "Point size scales with evaluated rollouts.", fontsize=8, color="#65706b")
     plt.grid(alpha=0.25)
     savefig(path)
 
@@ -751,22 +785,8 @@ def plot_accuracy_privacy_facets(rollouts: list[dict[str, Any]], leakage: list[d
         colors = ["#b23a2e" if leaked else "#2f6f9f" for _, _, leaked, _ in vals]
         jittered_y = [y + (((idx * 37) % 17) - 8) * 0.012 for idx, y in enumerate(ys)]
         ax.scatter(xs, jittered_y, s=24, c=colors, alpha=0.72, edgecolor="#1f2421", linewidth=0.25)
-        add_ols_trend(ax, xs, ys)
-        rho_text = "rho=n/a"
-        if scipy_stats is not None and len(vals) >= 3 and len(set(xs)) >= 2 and len(set(ys)) >= 2:
-            rho, p_value = scipy_stats.spearmanr(xs, ys)
-            rho_text = f"rho={rho:.2f}, p={p_value:.3g}"
-        ax.text(
-            0.03,
-            0.95,
-            f"n={len(vals)}\n{rho_text}",
-            transform=ax.transAxes,
-            ha="left",
-            va="top",
-            fontsize=8,
-            color="#1f2421",
-            bbox={"boxstyle": "round,pad=0.2", "facecolor": "#fffdf8", "edgecolor": "#d7d0c2", "alpha": 0.86},
-        )
+        fit = add_ols_trend(ax, xs, ys)
+        add_stats_box(ax, [f"n={len(vals)} rollouts", spearman_text(xs, ys), ols_text(fit)], y=0.95)
         ax.set_title(model_display(model), fontsize=10)
         ax.set_xlim(0, 100)
         ax.set_ylim(0.7, 5.3)
@@ -1028,10 +1048,13 @@ def plot_local_read_query_intensity_heatmap(rollouts: list[dict[str, Any]], step
     )
 
 
-def plot_query_read_profile(rollouts: list[dict[str, Any]], path: Path) -> None:
-    models = ordered_model_labels(row.get("model_label") for row in rollouts if row.get("ok"))
+def plot_query_read_profile(rollouts: list[dict[str, Any]], path: Path, successful_only: bool) -> None:
+    selected = [row for row in rollouts if row.get("ok")] if successful_only else rollouts
+    models = ordered_model_labels(row.get("model_label") for row in selected)
+    row_label = "successful rollout" if successful_only else "rollout row"
+    title_suffix = "successful rollouts" if successful_only else "all rollout rows"
     if not models:
-        empty_plot(path, "Agent retrieval/query behavior by model", "No successful rollouts in this scope yet.")
+        empty_plot(path, f"Agent retrieval/query behavior by model ({title_suffix})", f"No {title_suffix} in this scope yet.")
         return
     x = list(range(len(models)))
     series = [
@@ -1042,7 +1065,7 @@ def plot_query_read_profile(rollouts: list[dict[str, Any]], path: Path) -> None:
     ]
     values_by_series: list[list[float]] = [[] for _ in series]
     for model in models:
-        subset = [row for row in rollouts if row.get("ok") and row.get("model_label") == model]
+        subset = [row for row in selected if row.get("model_label") == model]
         for series_index, (_label, key, _color) in enumerate(series):
             vals = [int(row.get(key) or 0) for row in subset]
             values_by_series[series_index].append(mean(vals) if vals else 0)
@@ -1052,8 +1075,8 @@ def plot_query_read_profile(rollouts: list[dict[str, Any]], path: Path) -> None:
     for offset, (label, _key, color), values in zip(offsets, series, values_by_series):
         plt.bar([item + offset for item in x], values, width=width, color=color, label=label)
     plt.xticks(x, [model_display(model) for model in models], rotation=25, ha="right")
-    plt.ylabel("mean count per successful rollout")
-    plt.title("Agent retrieval and document-use behavior by model")
+    plt.ylabel(f"mean count per {row_label}")
+    plt.title(f"Agent retrieval and document-use behavior by model ({title_suffix})")
     plt.legend(fontsize=8)
     plt.grid(axis="y", alpha=0.25)
     savefig(path)
@@ -1200,13 +1223,15 @@ def plot_task_accuracy_leakage(rollouts: list[dict[str, Any]], stepfun: list[dic
     plt.xlabel("Task mean conditional hop accuracy (%)")
     plt.ylabel("Task StepFun score 4-5 rate (%)")
     plt.title("Task-level difficulty vs privacy leakage")
-    trend_handle = add_ols_trend(plt.gca(), xs, ys)
+    ax = plt.gca()
+    fit = add_ols_trend(ax, xs, ys)
+    add_stats_box(ax, [f"n={len(xs)} tasks", spearman_text(xs, ys), ols_text(fit)], y=0.93)
     if companies:
         handles = [
             plt.Line2D([0], [0], marker="o", color="w", label=company, markerfacecolor=company_colors[company], markeredgecolor="#1f2421", markersize=7)
             for company in companies
         ]
-        if trend_handle is not None:
+        if fit is not None:
             handles.append(plt.Line2D([0], [0], color="#8f8f8f", linestyle="--", linewidth=1.4, label="OLS fit"))
         plt.legend(handles=handles, fontsize=8, loc="best")
     plt.grid(alpha=0.25)
@@ -1313,17 +1338,20 @@ def make_plots(
     plots.append((f"{src_prefix}/hop_pattern_accuracy.svg", "Performance By Hop Pattern", "Cells show mean conditional hop accuracy for each model/pattern pair, with n equal to successful rollouts in that cell."))
     plot_company_accuracy_heatmap(rollouts, plot_dir / "company_accuracy.svg")
     plots.append((f"{src_prefix}/company_accuracy.svg", "Difficulty By Company", "Cells show mean conditional hop accuracy by company and model, with n equal to successful rollouts in that cell."))
-    plot_query_read_profile(rollouts, plot_dir / "query_read_profile.svg")
-    plots.append((f"{src_prefix}/query_read_profile.svg", "Retrieval And Query Behavior", "Means are computed over successful rollouts from timeline events: local document searches, web searches, local document reads, and web document reads."))
+    plot_query_read_profile(rollouts, plot_dir / "query_read_profile.svg", successful_only=True)
+    plot_query_read_profile(rollouts, plot_dir / "query_read_profile_successful.svg", successful_only=True)
+    plots.append((f"{src_prefix}/query_read_profile_successful.svg", "Retrieval And Query Behavior: Successful Rollouts", "Means are computed over successful rollouts from timeline events: local document searches, web searches, local document reads, and web document reads."))
+    plot_query_read_profile(rollouts, plot_dir / "query_read_profile_all.svg", successful_only=False)
+    plots.append((f"{src_prefix}/query_read_profile_all.svg", "Retrieval And Query Behavior: All Rollouts", "Means are computed over all loaded rollout rows from timeline events. Rows without a saved trace contribute zero parsed events."))
     if stepfun:
         plot_company_leakage_heatmap(stepfun, plot_dir / "company_leakage.svg")
         plots.append((f"{src_prefix}/company_leakage.svg", "Leakage By Company", "Cells show StepFun score>=4 rates by company and model, with n equal to StepFun-judged rollouts in that cell."))
         plot_task_accuracy_leakage(rollouts, stepfun, plot_dir / "task_accuracy_leakage.svg")
-        plots.append((f"{src_prefix}/task_accuracy_leakage.svg", "Task Difficulty vs Leakage", "Each point is a task id: x is mean conditional hop accuracy and y is StepFun score>=4 rate over judged rollouts. Point size scales with available rollouts; color marks company. The light gray dashed line is an OLS fit."))
+        plots.append((f"{src_prefix}/task_accuracy_leakage.svg", "Task Difficulty vs Leakage", "Each point is a task id: x is mean conditional hop accuracy and y is StepFun score>=4 rate over judged rollouts. Point size is continuous, not bucketed: marker area is 35 + 6*n, capped at 255, where n is the number of StepFun-judged rollout evaluations contributing to that task aggregate. Color marks company. The annotation reports Spearman correlation plus the OLS slope/intercept for the light gray dashed line."))
         plot_accuracy_privacy(rollouts, stepfun, plot_dir / "accuracy_privacy_scatter.svg")
-        plots.append((f"{src_prefix}/accuracy_privacy_scatter.svg", "Mean Accuracy vs Privacy Leakage", "Each point is one model: x is mean conditional hop accuracy and y is the StepFun score>=4 leakage rate over paired judged rollouts. Point size scales with evaluated rows. The light gray dashed line is an OLS fit."))
+        plots.append((f"{src_prefix}/accuracy_privacy_scatter.svg", "Mean Accuracy vs Privacy Leakage", "Each point is one model: x is mean conditional hop accuracy and y is the StepFun score>=4 leakage rate over paired judged rollouts. Point size scales with evaluated rows. The annotation reports Spearman correlation plus the OLS slope/intercept for the light gray dashed line."))
         plot_accuracy_privacy_facets(rollouts, stepfun, plot_dir / "accuracy_privacy_facets.svg")
-        plots.append((f"{src_prefix}/accuracy_privacy_facets.svg", "Per-Model Accuracy vs Privacy", "Each point is a judged rollout. The x-axis is conditional hop accuracy, the y-axis is StepFun's 1-5 privacy score, red points are score>=4, and the light gray dashed line is an OLS fit. The annotation reports Spearman rank correlation with p value."))
+        plots.append((f"{src_prefix}/accuracy_privacy_facets.svg", "Per-Model Accuracy vs Privacy", "Each point is a judged rollout. The x-axis is conditional hop accuracy, the y-axis is StepFun's 1-5 privacy score, red points are score>=4, and the light gray dashed line is an OLS fit. The annotation reports Spearman correlation plus the OLS slope/intercept."))
         plot_score_distribution(stepfun, plot_dir / "stepfun_score_distribution.svg", "StepFun privacy score distribution")
         plots.append((f"{src_prefix}/stepfun_score_distribution.svg", "StepFun Score Distribution", "Raw evaluated rollout counts by overall privacy score."))
         plot_leakage_rates(stepfun, plot_dir / "stepfun_leakage_rates.svg")
