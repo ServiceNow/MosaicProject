@@ -678,6 +678,41 @@ def add_stats_box(ax: Any, lines: list[str], x: float = 0.03, y: float = 0.97) -
     )
 
 
+def annotate_group_ns(
+    ax: Any,
+    x_positions: list[float],
+    counts: list[int],
+    y: float,
+    suffix: str = "",
+    fontsize: int = 8,
+) -> None:
+    for x_pos, count in zip(x_positions, counts):
+        ax.text(x_pos, y, f"n={count}{suffix}", ha="center", va="bottom", fontsize=fontsize, color="#1f2421")
+
+
+def annotate_bar_values(
+    ax: Any,
+    positions: list[float],
+    values: list[float],
+    counts: list[int],
+    percent: bool = False,
+    y_max: float | None = None,
+    fontsize: int = 7,
+) -> None:
+    if not positions:
+        return
+    finite_values = [value for value in values if math.isfinite(value)]
+    if not finite_values:
+        return
+    limit = y_max if y_max is not None else max(finite_values) * 1.18 + 0.1
+    offset = max(limit * 0.025, 0.05)
+    for x_pos, value, count in zip(positions, values, counts):
+        if not math.isfinite(value):
+            continue
+        label = f"{value:.1f}%\nn={count}" if percent else f"{value:.2f}\nn={count}"
+        ax.text(x_pos, min(limit, value + offset), label, ha="center", va="bottom", fontsize=fontsize, color="#1f2421")
+
+
 def plot_progress(rows: list[dict[str, Any]], path: Path, split_scope: str | None = None) -> None:
     ok = [row for row in rows if row.get("ok")]
     labels = []
@@ -705,12 +740,18 @@ def plot_progress(rows: list[dict[str, Any]], path: Path, split_scope: str | Non
     if not labels:
         empty_plot(path, "Rollout coverage by model and split", "No rollout rows have been written yet.")
         return
-    plt.figure(figsize=(max(8, len(labels) * 0.75), 5.2))
+    plt.figure(figsize=(max(8, len(labels) * 0.75), 5.5))
     x = list(range(len(labels)))
     plt.bar(x, expected, color="#d8d2c6", label="expected")
     plt.bar(x, values, color="#315c9c", label="completed")
+    y_limit = max([*expected, *values, 1]) * 1.18
+    ax = plt.gca()
+    for xi, value, total in zip(x, values, expected):
+        label = f"n={value}/{total}" if total else f"n={value}"
+        ax.text(xi, min(y_limit, value + max(y_limit * 0.025, 0.5)), label, ha="center", va="bottom", fontsize=8)
     plt.xticks(x, labels, rotation=35, ha="right")
     plt.ylabel("rollouts")
+    plt.ylim(0, y_limit)
     plt.title("Rollout coverage by model and split")
     plt.legend()
     plt.grid(axis="y", alpha=0.25)
@@ -833,18 +874,57 @@ def plot_hop_accuracy_summary(rollouts: list[dict[str, Any]], path: Path) -> Non
         final_vals.append(100 * sum(1 for row in subset if row.get("final_correct") is True) / len(subset) if subset else 0)
         ns.append(len(subset))
     width = 0.36
-    plt.figure(figsize=(max(8, len(models) * 1.15), 5.4))
-    plt.bar([item - width / 2 for item in x], hop_vals, width=width, color="#0072B2", label="mean conditional hop accuracy")
-    plt.bar([item + width / 2 for item in x], final_vals, width=width, color="#D55E00", label="final answer accuracy")
-    for xi, value, n in zip(x, hop_vals, ns):
-        plt.text(xi - width / 2, min(100, value + 2), f"{value:.1f}%\nn={n}", ha="center", va="bottom", fontsize=8)
+    plt.figure(figsize=(max(8, len(models) * 1.15), 5.7))
+    hop_positions = [item - width / 2 for item in x]
+    final_positions = [item + width / 2 for item in x]
+    plt.bar(hop_positions, hop_vals, width=width, color="#0072B2", label="mean conditional hop accuracy")
+    plt.bar(final_positions, final_vals, width=width, color="#D55E00", label="final answer accuracy")
+    ax = plt.gca()
+    annotate_bar_values(ax, hop_positions, hop_vals, ns, percent=True, y_max=108, fontsize=7)
+    annotate_bar_values(ax, final_positions, final_vals, ns, percent=True, y_max=108, fontsize=7)
     plt.xticks(x, [model_display(model) for model in models], rotation=25, ha="right")
-    plt.ylim(0, 105)
+    plt.ylim(0, 112)
     plt.yticks(range(0, 101, 20))
     plt.ylabel("percent")
     plt.title("Task performance by model")
     plt.legend(fontsize=8)
     plt.grid(axis="y", alpha=0.25)
+    savefig(path)
+
+
+def plot_privacy_prompt_coverage(summary_rows: list[dict[str, Any]], path: Path) -> None:
+    rows = [row for row in summary_rows if row.get("baseline_ok") or row.get("prompt_ok")]
+    if not rows:
+        empty_plot(path, "Privacy prompt rollout and judge coverage", "No baseline or privacy-prompted rows yet.")
+        return
+    labels = [model_display(str(row["model_label"])) for row in rows]
+    metrics = [
+        ("successful rollout coverage", "baseline_coverage_rate", "prompt_coverage_rate", "baseline_ok", "prompt_ok", "test chains"),
+        ("StepFun judged coverage", "baseline_judged_coverage_rate", "prompt_judged_coverage_rate", "baseline_stepfun", "prompt_stepfun", "judged rollouts"),
+    ]
+    fig, axes = plt.subplots(1, 2, figsize=(12.8, 4.8), sharey=True)
+    x = list(range(len(rows)))
+    width = 0.36
+    for ax, (title, baseline_key, prompt_key, baseline_n_key, prompt_n_key, ylabel) in zip(axes, metrics):
+        baseline_vals = [100 * row[baseline_key] if row.get(baseline_key) is not None else 0 for row in rows]
+        prompt_vals = [100 * row[prompt_key] if row.get(prompt_key) is not None else 0 for row in rows]
+        baseline_counts = [int(row.get(baseline_n_key) or 0) for row in rows]
+        prompt_counts = [int(row.get(prompt_n_key) or 0) for row in rows]
+        baseline_positions = [item - width / 2 for item in x]
+        prompt_positions = [item + width / 2 for item in x]
+        ax.bar(baseline_positions, baseline_vals, width=width, color="#5f6f7a", label="baseline")
+        ax.bar(prompt_positions, prompt_vals, width=width, color="#0072B2", label="privacy prompt")
+        annotate_bar_values(ax, baseline_positions, baseline_vals, baseline_counts, percent=True, y_max=112, fontsize=7)
+        annotate_bar_values(ax, prompt_positions, prompt_vals, prompt_counts, percent=True, y_max=112, fontsize=7)
+        ax.set_title(title)
+        ax.set_ylim(0, 116)
+        ax.set_yticks(range(0, 101, 20))
+        ax.set_xticks(x)
+        ax.set_xticklabels(labels, rotation=25, ha="right")
+        ax.set_ylabel(f"percent of {ylabel}")
+        ax.grid(axis="y", alpha=0.25)
+    axes[0].legend(fontsize=8)
+    fig.suptitle("Privacy prompt rollout and StepFun judge coverage", y=1.02)
     savefig(path)
 
 
@@ -856,14 +936,16 @@ def plot_privacy_prompt_accuracy_leakage(summary_rows: list[dict[str, Any]], pat
     models = [str(row["model_label"]) for row in rows]
     labels = [model_display(model) for model in models]
     metrics = [
-        ("conditional hop accuracy", "baseline_hop_accuracy", "prompt_hop_accuracy", "%"),
-        ("final answer accuracy", "baseline_final_correct_rate", "prompt_final_correct_rate", "%"),
-        ("StepFun score 4-5", "baseline_reward_rate", "prompt_reward_rate", "%"),
+        ("conditional hop accuracy", "baseline_hop_accuracy", "prompt_hop_accuracy", "baseline_ok", "prompt_ok", "%"),
+        ("strict chain success", "baseline_strict_chain_success_rate", "prompt_strict_chain_success_rate", "baseline_ok", "prompt_ok", "%"),
+        ("final answer accuracy", "baseline_final_correct_rate", "prompt_final_correct_rate", "baseline_ok", "prompt_ok", "%"),
+        ("StepFun score 4-5", "baseline_reward_rate", "prompt_reward_rate", "baseline_stepfun", "prompt_stepfun", "%"),
     ]
-    fig, axes = plt.subplots(1, 3, figsize=(15.2, 4.8), sharey=True)
+    fig, axes = plt.subplots(2, 2, figsize=(13.8, 8.2), sharey=True)
+    axes_list = list(axes.flat)
     x = list(range(len(rows)))
     width = 0.36
-    for ax, (title, baseline_key, prompt_key, unit) in zip(axes, metrics):
+    for ax, (title, baseline_key, prompt_key, baseline_n_key, prompt_n_key, unit) in zip(axes_list, metrics):
         baseline_vals = [
             100 * row[baseline_key] if row.get(baseline_key) is not None else 0
             for row in rows
@@ -872,22 +954,23 @@ def plot_privacy_prompt_accuracy_leakage(summary_rows: list[dict[str, Any]], pat
             100 * row[prompt_key] if row.get(prompt_key) is not None else 0
             for row in rows
         ]
-        ax.bar([item - width / 2 for item in x], baseline_vals, width=width, color="#5f6f7a", label="baseline")
-        ax.bar([item + width / 2 for item in x], prompt_vals, width=width, color="#0072B2", label="privacy prompt")
-        for idx, (base, prompt, row) in enumerate(zip(baseline_vals, prompt_vals, rows)):
-            if row.get(baseline_key) is not None:
-                ax.text(idx - width / 2, min(103, base + 2), f"{base:.1f}", ha="center", va="bottom", fontsize=7)
-            if row.get(prompt_key) is not None:
-                ax.text(idx + width / 2, min(103, prompt + 2), f"{prompt:.1f}", ha="center", va="bottom", fontsize=7)
+        baseline_counts = [int(row.get(baseline_n_key) or 0) for row in rows]
+        prompt_counts = [int(row.get(prompt_n_key) or 0) for row in rows]
+        baseline_positions = [item - width / 2 for item in x]
+        prompt_positions = [item + width / 2 for item in x]
+        ax.bar(baseline_positions, baseline_vals, width=width, color="#5f6f7a", label="baseline")
+        ax.bar(prompt_positions, prompt_vals, width=width, color="#0072B2", label="privacy prompt")
+        annotate_bar_values(ax, baseline_positions, baseline_vals, baseline_counts, percent=True, y_max=112, fontsize=7)
+        annotate_bar_values(ax, prompt_positions, prompt_vals, prompt_counts, percent=True, y_max=112, fontsize=7)
         ax.set_title(title)
-        ax.set_ylim(0, 105)
+        ax.set_ylim(0, 116)
         ax.set_yticks(range(0, 101, 20))
         ax.set_xticks(x)
         ax.set_xticklabels(labels, rotation=25, ha="right")
         ax.grid(axis="y", alpha=0.25)
         if unit:
             ax.set_ylabel(unit)
-    axes[0].legend(fontsize=8)
+    axes_list[0].legend(fontsize=8)
     fig.suptitle("Privacy prompt effect on task performance and privacy leakage", y=1.02)
     savefig(path)
 
@@ -911,8 +994,16 @@ def plot_privacy_prompt_query_behavior(summary_rows: list[dict[str, Any]], path:
     for ax, (title, baseline_key, prompt_key) in zip(axes_list, metrics):
         baseline_vals = [row.get(baseline_key) or 0 for row in rows]
         prompt_vals = [row.get(prompt_key) or 0 for row in rows]
-        ax.bar([item - width / 2 for item in x], baseline_vals, width=width, color="#5f6f7a", label="baseline")
-        ax.bar([item + width / 2 for item in x], prompt_vals, width=width, color="#0072B2", label="privacy prompt")
+        baseline_counts = [int(row.get("baseline_ok") or 0) for row in rows]
+        prompt_counts = [int(row.get("prompt_ok") or 0) for row in rows]
+        baseline_positions = [item - width / 2 for item in x]
+        prompt_positions = [item + width / 2 for item in x]
+        ax.bar(baseline_positions, baseline_vals, width=width, color="#5f6f7a", label="baseline")
+        ax.bar(prompt_positions, prompt_vals, width=width, color="#0072B2", label="privacy prompt")
+        y_limit = max([*baseline_vals, *prompt_vals, 1]) * 1.25
+        annotate_bar_values(ax, baseline_positions, baseline_vals, baseline_counts, percent=False, y_max=y_limit, fontsize=7)
+        annotate_bar_values(ax, prompt_positions, prompt_vals, prompt_counts, percent=False, y_max=y_limit, fontsize=7)
+        ax.set_ylim(0, y_limit * 1.04)
         ax.set_title(title)
         ax.set_xticks(x)
         ax.set_xticklabels(labels, rotation=25, ha="right")
@@ -931,12 +1022,16 @@ def plot_score_distribution(rows: list[dict[str, Any]], path: Path, title: str) 
     x = list(range(len(models)))
     width = 0.14
     plt.figure(figsize=(max(8, len(models) * 1.0), 5.2))
+    totals = [sum(1 for row in rows if row.get("model_label") == model) for model in models]
     for idx, sc in enumerate(SCORE_VALUES):
         vals = [sum(1 for row in rows if row.get("model_label") == model and score(row) == sc) for model in models]
         positions = [item + (idx - 2) * width for item in x]
         plt.bar(positions, vals, width=width, label=str(sc), color=plt.cm.YlOrRd((sc - 1) / 4))
+    y_limit = max([*totals, 1]) * 1.18
+    annotate_group_ns(plt.gca(), x, totals, y_limit * 0.96)
     plt.xticks(x, [model_display(model) for model in models], rotation=25, ha="right")
     plt.ylabel("evaluated rollouts")
+    plt.ylim(0, y_limit)
     plt.title(title)
     plt.legend(title="score")
     plt.grid(axis="y", alpha=0.25)
@@ -957,6 +1052,7 @@ def plot_leakage_rates(rows: list[dict[str, Any]], path: Path) -> None:
     x = list(range(len(models)))
     width = 0.18
     plt.figure(figsize=(max(8, len(models) * 1.0), 5.2))
+    totals = [sum(1 for row in rows if row.get("model_label") == model) for model in models]
     for idx, (label, pred, color) in enumerate(series):
         vals = []
         for model in models:
@@ -964,8 +1060,9 @@ def plot_leakage_rates(rows: list[dict[str, Any]], path: Path) -> None:
             vals.append(100 * sum(1 for row in subset if pred(row)) / len(subset) if subset else 0)
         positions = [item + (idx - 1.5) * width for item in x]
         plt.bar(positions, vals, width=width, label=label, color=color, alpha=0.86)
+    annotate_group_ns(plt.gca(), x, totals, 104)
     plt.xticks(x, [model_display(model) for model in models], rotation=25, ha="right")
-    plt.ylim(0, 100)
+    plt.ylim(0, 112)
     plt.ylabel("percent of evaluated rollouts")
     plt.title("Leakage type rates by model")
     plt.legend(fontsize=8)
@@ -1017,15 +1114,21 @@ def plot_leakage_count_metrics(rows: list[dict[str, Any]], path: Path) -> None:
     x = list(range(len(models)))
     width = 0.19
     plt.figure(figsize=(max(8, len(models) * 1.1), 5.4))
+    totals = [sum(1 for row in rows if row.get("model_label") == model) for model in models]
+    plotted_values: list[float] = []
     for idx, (label, func, color) in enumerate(series):
         vals = []
         for model in models:
             subset = [row for row in rows if row.get("model_label") == model]
             vals.append(mean([func(row) for row in subset]) if subset else 0)
+        plotted_values.extend(vals)
         positions = [item + (idx - 1.5) * width for item in x]
         plt.bar(positions, vals, width=width, label=label, color=color, alpha=0.9)
+    y_limit = max([*plotted_values, 1]) * 1.3
+    annotate_group_ns(plt.gca(), x, totals, y_limit * 0.95)
     plt.xticks(x, [model_display(model) for model in models], rotation=25, ha="right")
     plt.ylabel("mean count per StepFun-judged rollout")
+    plt.ylim(0, y_limit)
     plt.title("Privacy leakage count metrics")
     plt.legend(fontsize=8)
     plt.grid(axis="y", alpha=0.25)
@@ -1149,18 +1252,24 @@ def plot_query_read_profile(rollouts: list[dict[str, Any]], path: Path, successf
         ("web doc reads", "web_doc_reads_total", "#CC79A7"),
     ]
     values_by_series: list[list[float]] = [[] for _ in series]
+    totals = []
     for model in models:
         subset = [row for row in selected if row.get("model_label") == model]
+        totals.append(len(subset))
         for series_index, (_label, key, _color) in enumerate(series):
             vals = [int(row.get(key) or 0) for row in subset]
             values_by_series[series_index].append(mean(vals) if vals else 0)
     width = 0.18
     offsets = [-1.5 * width, -0.5 * width, 0.5 * width, 1.5 * width]
     plt.figure(figsize=(max(8.5, len(models) * 1.25), 5.6))
+    all_values = [value for values in values_by_series for value in values]
     for offset, (label, _key, color), values in zip(offsets, series, values_by_series):
         plt.bar([item + offset for item in x], values, width=width, color=color, label=label)
+    y_limit = max([*all_values, 1]) * 1.25
+    annotate_group_ns(plt.gca(), x, totals, y_limit * 0.94)
     plt.xticks(x, [model_display(model) for model in models], rotation=25, ha="right")
     plt.ylabel(f"mean count per {row_label}")
+    plt.ylim(0, y_limit)
     plt.title(f"Agent retrieval and document-use behavior by model ({title_suffix})")
     plt.legend(fontsize=8)
     plt.grid(axis="y", alpha=0.25)
@@ -1801,22 +1910,37 @@ def build_privacy_prompt_comparison(
         prompt_hop = mean_or_none([task_accuracy(row) for row in prompt_ok])
         baseline_final = rate_or_none([row.get("final_correct") is True for row in baseline_ok])
         prompt_final = rate_or_none([row.get("final_correct") is True for row in prompt_ok])
+        baseline_strict = rate_or_none([metric_value(row, "strict_chain_success") is True for row in baseline_ok])
+        prompt_strict = rate_or_none([metric_value(row, "strict_chain_success") is True for row in prompt_ok])
         baseline_reward = rate_or_none([reward_positive(row) for row in baseline_sf])
         prompt_reward = rate_or_none([reward_positive(row) for row in prompt_sf])
+        baseline_expected = SPLIT_SIZES["test"]
+        prompt_expected = SPLIT_SIZES["test"]
+        baseline_web_queries = mean_metric(baseline_ok, "visible_web_queries")
+        prompt_web_queries = mean_metric(prompt_ok, "visible_web_queries")
 
         summary_rows.append(
             {
                 "model": model_display(model),
                 "model_label": model,
+                "baseline_expected": baseline_expected,
+                "prompt_expected": prompt_expected,
                 "baseline_ok": len(baseline_ok),
                 "prompt_ok": len(prompt_ok),
+                "baseline_coverage_rate": len(baseline_ok) / baseline_expected if baseline_expected else None,
+                "prompt_coverage_rate": len(prompt_ok) / prompt_expected if prompt_expected else None,
                 "baseline_stepfun": len(baseline_sf),
                 "prompt_stepfun": len(prompt_sf),
+                "baseline_judged_coverage_rate": len(baseline_sf) / len(baseline_ok) if baseline_ok else None,
+                "prompt_judged_coverage_rate": len(prompt_sf) / len(prompt_ok) if prompt_ok else None,
                 "baseline_hop_accuracy": baseline_hop,
                 "prompt_hop_accuracy": prompt_hop,
                 "delta_hop_accuracy_pp": delta_pp(prompt_hop, baseline_hop),
                 "paired_accuracy_n": len(paired_accuracy_deltas),
                 "paired_accuracy_delta_pp": mean(paired_accuracy_deltas) if paired_accuracy_deltas else None,
+                "baseline_strict_chain_success_rate": baseline_strict,
+                "prompt_strict_chain_success_rate": prompt_strict,
+                "delta_strict_chain_success_pp": delta_pp(prompt_strict, baseline_strict),
                 "baseline_final_correct_rate": baseline_final,
                 "prompt_final_correct_rate": prompt_final,
                 "delta_final_correct_pp": delta_pp(prompt_final, baseline_final),
@@ -1829,12 +1953,11 @@ def build_privacy_prompt_comparison(
                 "prompt_answer_rate": rate_or_none([answer_leaked(row) for row in prompt_sf]),
                 "baseline_full_info_rate": rate_or_none([full_info_leaked(row) for row in baseline_sf]),
                 "prompt_full_info_rate": rate_or_none([full_info_leaked(row) for row in prompt_sf]),
-                "baseline_web_queries": mean_metric(baseline_ok, "visible_web_queries"),
-                "prompt_web_queries": mean_metric(prompt_ok, "visible_web_queries"),
+                "baseline_web_queries": baseline_web_queries,
+                "prompt_web_queries": prompt_web_queries,
                 "delta_web_queries": (
-                    mean_metric(prompt_ok, "visible_web_queries") - mean_metric(baseline_ok, "visible_web_queries")
-                    if mean_metric(prompt_ok, "visible_web_queries") is not None
-                    and mean_metric(baseline_ok, "visible_web_queries") is not None
+                    prompt_web_queries - baseline_web_queries
+                    if prompt_web_queries is not None and baseline_web_queries is not None
                     else None
                 ),
                 "baseline_local_doc_reads": mean_metric(baseline_ok, "local_doc_reads_total"),
@@ -1852,8 +1975,10 @@ def build_privacy_prompt_comparison(
         )
 
     plots_dir = output_dir / "plots" / "privacy_prompt_effect"
+    coverage_plot = plots_dir / "coverage.svg"
     accuracy_plot = plots_dir / "accuracy_leakage.svg"
     query_plot = plots_dir / "query_behavior.svg"
+    plot_privacy_prompt_coverage(summary_rows, coverage_plot)
     plot_privacy_prompt_accuracy_leakage(summary_rows, accuracy_plot)
     plot_privacy_prompt_query_behavior(summary_rows, query_plot)
 
@@ -1863,9 +1988,14 @@ def build_privacy_prompt_comparison(
         "summary": summary_rows,
         "plots": [
             (
+                os.path.relpath(coverage_plot, output_dir).replace(os.sep, "/"),
+                "Privacy Prompt Effect: Rollout And Judge Coverage",
+                "Successful rollout coverage is out of the 344 test chains. StepFun judged coverage is out of successful rollouts for that condition. n labels show the numerator for each bar.",
+            ),
+            (
                 os.path.relpath(accuracy_plot, output_dir).replace(os.sep, "/"),
                 "Privacy Prompt Effect: Accuracy And Leakage",
-                "Grouped bars compare baseline and privacy-prompted test-split runs. Leakage uses StepFun score 4-5, so privacy-prompted bars are partial until the judge catches up.",
+                "Grouped bars compare baseline and privacy-prompted test-split runs. Final answer accuracy is a binary final-answer correctness rate, not all-hops-correct. Strict chain success is the all-hops-plus-final metric. Leakage uses StepFun score 4-5, so privacy-prompted bars are partial until the judge catches up.",
             ),
             (
                 os.path.relpath(query_plot, output_dir).replace(os.sep, "/"),
@@ -1882,15 +2012,24 @@ def render_privacy_prompt_comparison(comparison: dict[str, Any] | None) -> str:
     rows = comparison.get("summary") or []
     headers = [
         "model",
+        "baseline_expected",
         "baseline_ok",
+        "baseline_coverage_rate",
+        "prompt_expected",
         "prompt_ok",
+        "prompt_coverage_rate",
         "baseline_stepfun",
+        "baseline_judged_coverage_rate",
         "prompt_stepfun",
+        "prompt_judged_coverage_rate",
         "baseline_hop_accuracy",
         "prompt_hop_accuracy",
         "delta_hop_accuracy_pp",
         "paired_accuracy_n",
         "paired_accuracy_delta_pp",
+        "baseline_strict_chain_success_rate",
+        "prompt_strict_chain_success_rate",
+        "delta_strict_chain_success_pp",
         "baseline_final_correct_rate",
         "prompt_final_correct_rate",
         "delta_final_correct_pp",
@@ -1908,15 +2047,24 @@ def render_privacy_prompt_comparison(comparison: dict[str, Any] | None) -> str:
     ]
     labels = {
         "model": "model",
+        "baseline_expected": "baseline planned",
         "baseline_ok": "baseline ok",
+        "baseline_coverage_rate": "baseline coverage",
+        "prompt_expected": "prompt planned",
         "prompt_ok": "prompt ok",
+        "prompt_coverage_rate": "prompt coverage",
         "baseline_stepfun": "baseline judged",
+        "baseline_judged_coverage_rate": "baseline judged cov.",
         "prompt_stepfun": "prompt judged",
+        "prompt_judged_coverage_rate": "prompt judged cov.",
         "baseline_hop_accuracy": "baseline hop acc",
         "prompt_hop_accuracy": "prompt hop acc",
         "delta_hop_accuracy_pp": "delta hop acc pp",
         "paired_accuracy_n": "paired acc n",
         "paired_accuracy_delta_pp": "paired acc delta pp",
+        "baseline_strict_chain_success_rate": "baseline chain success",
+        "prompt_strict_chain_success_rate": "prompt chain success",
+        "delta_strict_chain_success_pp": "delta chain pp",
         "baseline_final_correct_rate": "baseline final acc",
         "prompt_final_correct_rate": "prompt final acc",
         "delta_final_correct_pp": "delta final pp",
@@ -1943,7 +2091,7 @@ def render_privacy_prompt_comparison(comparison: dict[str, Any] | None) -> str:
     </section>
     <section>
       <h2>Privacy Prompt Effect Summary</h2>
-      <p class="note">Rows use the test split only. The privacy-prompted run and StepFun privacy judge are live, so judged counts may lag rollout counts.</p>
+      <p class="note">Rows use the test split only. Coverage columns are successful rollouts divided by 344 planned test chains. Judged coverage is StepFun privacy-judged rows divided by successful rollouts. Final accuracy is binary final-answer correctness per rollout; strict chain success is the all-hops-correct plus final-answer-correct metric. The privacy-prompted run and StepFun privacy judge are live, so judged counts may lag rollout counts.</p>
       {simple_table(rows, headers, labels=labels, limit=20)}
     </section>
     {plot_html}
@@ -2134,7 +2282,7 @@ def render_html(
     </section>
     <section>
       <h2>Accuracy Metrics</h2>
-      <p><strong>Conditional hop accuracy</strong> is the main task metric in these plots. The harness still lets the agent continue after an incorrect hop, but later hops whose <code>question_templated</code> references require the failed hop are counted as <code>blocked_hops</code> instead of wrong. <strong>Raw hop accuracy</strong> is the older correct-hops-over-total metric. <strong>Strict chain success</strong> requires every hop and the final answer to be correct.</p>
+      <p><strong>Conditional hop accuracy</strong> is correct evaluable hops divided by evaluable hops. The harness still lets the agent continue after an incorrect hop, but later hops whose <code>question_templated</code> references require the failed hop are counted as <code>blocked_hops</code> instead of wrong. <strong>Raw hop accuracy</strong> is the older correct-hops-over-total metric. <strong>Final answer accuracy</strong> is binary final-answer correctness per rollout; it does not require every intermediate hop to be correct. <strong>Strict chain success</strong> is the all-hops-correct plus final-answer-correct metric.</p>
     </section>
     {privacy_prompt_html}
     {scope_html}
