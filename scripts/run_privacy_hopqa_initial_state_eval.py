@@ -440,9 +440,15 @@ async def run_all(args: argparse.Namespace) -> None:
                 add_generation_prompt=True,
                 **chat_kwargs,
             )
-            params = {"model": self.model_name, "prompt": rendered_prompt} | kwargs
+
+            def _plain(value: Any) -> Any:
+                return OmegaConf.to_container(value, resolve=True) if OmegaConf.is_config(value) else value
+
+            params = {"model": self.model_name, "prompt": rendered_prompt}
             for key, value in self.parameters.items():
-                params[key] = OmegaConf.to_container(value) if hasattr(value, "_metadata") else value
+                params[key] = _plain(value)
+            for key, value in kwargs.items():
+                params[key] = _plain(value)
             params.pop("include_reasoning", None)
             params.pop("chat_template_kwargs", None)
 
@@ -498,6 +504,23 @@ async def run_all(args: argparse.Namespace) -> None:
         base_url=args.base_url.rstrip("/"),
         parameters=request_parameters,
     )
+    if args.request_api_mode == "completion_template":
+        from pipelinerl.domains.privacy_hopqa import llm_adapter as privacy_hopqa_llm_adapter
+
+        async def completion_template_async_generate(
+            llm: Any,
+            prompt: Any,
+            session: aiohttp.ClientSession,
+            *,
+            parameters_override: dict[str, Any] | None = None,
+        ) -> Any:
+            # PrivacyHopQALLMAdapter normally calls PipelineRL's async helper,
+            # which is hardwired to /v1/chat/completions. GPT-OSS needs the
+            # completions endpoint to avoid vLLM's Harmony chat response parser.
+            stream = await llm.agenerate(prompt, session, **(parameters_override or {}))
+            return stream.get_llm_call()
+
+        privacy_hopqa_llm_adapter.llm_async_generate = completion_template_async_generate
 
     completed = set() if args.force else load_completed(index_path, model_label)
     total_stats = RunStats()
