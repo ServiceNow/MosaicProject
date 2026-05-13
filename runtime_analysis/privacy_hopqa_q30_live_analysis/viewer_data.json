@@ -1,100 +1,191 @@
 {
-  "generated_at": "2026-05-13T13:22:35.216031+00:00",
+  "generated_at": "2026-05-13T13:31:03.357140+00:00",
   "artifact_root": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_model_rollouts_20260513",
-  "model_summary": [
-    {
-      "model": "Gemma 4 31B IT",
-      "model_label": "gemma4_31b_it",
-      "rollouts_ok": 343,
-      "rollouts_failed": 1,
-      "mean_hop_accuracy": 0.617208107732889,
-      "final_correct_rate": 0.446064139941691,
-      "median_tokens": 134172.0,
-      "stepfun_evals": 343,
-      "stepfun_reward_rate": 0.04956268221574344,
-      "stepfun_answer_rate": 0.029154518950437316,
-      "stepfun_full_info_rate": 0.02040816326530612,
-      "qwen_evals": 343,
-      "qwen_reward_rate": 0.13702623906705538
+  "scopes": {
+    "test": {
+      "title": "Test Set",
+      "split": "test",
+      "model_summary": [
+        {
+          "model": "Gemma 4 31B IT",
+          "model_label": "gemma4_31b_it",
+          "rollouts_ok": 343,
+          "rollouts_failed": 1,
+          "mean_hop_accuracy": 0.617208107732889,
+          "final_correct_rate": 0.446064139941691,
+          "median_tokens": 134172.0,
+          "stepfun_evals": 343,
+          "stepfun_reward_rate": 0.04956268221574344,
+          "stepfun_answer_rate": 0.029154518950437316,
+          "stepfun_full_info_rate": 0.02040816326530612,
+          "qwen_evals": 343,
+          "qwen_reward_rate": 0.13702623906705538
+        },
+        {
+          "model": "GPT-OSS 20B",
+          "model_label": "gpt_oss_20b",
+          "rollouts_ok": 344,
+          "rollouts_failed": 0,
+          "mean_hop_accuracy": 0.5843230897009967,
+          "final_correct_rate": 0.43023255813953487,
+          "median_tokens": 202891.0,
+          "stepfun_evals": 344,
+          "stepfun_reward_rate": 0.20348837209302326,
+          "stepfun_answer_rate": 0.13372093023255813,
+          "stepfun_full_info_rate": 0.11627906976744186,
+          "qwen_evals": 344,
+          "qwen_reward_rate": 0.5465116279069767
+        },
+        {
+          "model": "Qwen3 4B",
+          "model_label": "qwen3_4b_instruct_2507",
+          "rollouts_ok": 343,
+          "rollouts_failed": 1,
+          "mean_hop_accuracy": 0.35155490767735664,
+          "final_correct_rate": 0.16034985422740525,
+          "median_tokens": 155654.0,
+          "stepfun_evals": 343,
+          "stepfun_reward_rate": 0.09329446064139942,
+          "stepfun_answer_rate": 0.06997084548104957,
+          "stepfun_full_info_rate": 0.04664723032069971,
+          "qwen_evals": 343,
+          "qwen_reward_rate": 0.2944606413994169
+        },
+        {
+          "model": "Qwen3 8B",
+          "model_label": "qwen3_8b",
+          "rollouts_ok": 289,
+          "rollouts_failed": 55,
+          "mean_hop_accuracy": 0.4600263634865711,
+          "final_correct_rate": 0.3494809688581315,
+          "median_tokens": 252523.0,
+          "stepfun_evals": 257,
+          "stepfun_reward_rate": 0.07392996108949416,
+          "stepfun_answer_rate": 0.058365758754863814,
+          "stepfun_full_info_rate": 0.027237354085603113,
+          "qwen_evals": 269,
+          "qwen_reward_rate": 0.45353159851301117
+        }
+      ],
+      "stats": {
+        "judge_agreement": {
+          "n": 1287,
+          "spearman_rho": 0.573706692918375,
+          "spearman_p": 1.5822882824655703e-113
+        },
+        "binary_predictor": {
+          "n": 1253,
+          "tp": 0,
+          "fp": 258,
+          "tn": 995,
+          "fn": 0,
+          "accuracy": 0.7940941739824421,
+          "precision": 0.0,
+          "recall": null,
+          "f1": null,
+          "mcnemar_exact_p": 4.3180842775472223e-78
+        }
+      }
     },
-    {
-      "model": "GPT-OSS 20B",
-      "model_label": "gpt_oss_20b",
-      "rollouts_ok": 344,
-      "rollouts_failed": 0,
-      "mean_hop_accuracy": 0.5843230897009967,
-      "final_correct_rate": 0.43023255813953487,
-      "median_tokens": 202891.0,
-      "stepfun_evals": 344,
-      "stepfun_reward_rate": 0.20348837209302326,
-      "stepfun_answer_rate": 0.13372093023255813,
-      "stepfun_full_info_rate": 0.11627906976744186,
-      "qwen_evals": 344,
-      "qwen_reward_rate": 0.5465116279069767
-    },
-    {
-      "model": "Qwen3 4B",
-      "model_label": "qwen3_4b_instruct_2507",
-      "rollouts_ok": 999,
-      "rollouts_failed": 2,
-      "mean_hop_accuracy": 0.39181800848467513,
-      "final_correct_rate": 0.17317317317317318,
-      "median_tokens": 129215.0,
-      "stepfun_evals": 999,
-      "stepfun_reward_rate": 0.1001001001001001,
-      "stepfun_answer_rate": 0.07207207207207207,
-      "stepfun_full_info_rate": 0.05005005005005005,
-      "qwen_evals": 999,
-      "qwen_reward_rate": 0.30930930930930933
-    },
-    {
-      "model": "Qwen3 8B",
-      "model_label": "qwen3_8b",
-      "rollouts_ok": 894,
-      "rollouts_failed": 107,
-      "mean_hop_accuracy": 0.4732901885586449,
-      "final_correct_rate": 0.3668903803131991,
-      "median_tokens": 223335.5,
-      "stepfun_evals": 759,
-      "stepfun_reward_rate": 0.09881422924901186,
-      "stepfun_answer_rate": 0.06982872200263504,
-      "stepfun_full_info_rate": 0.048748353096179184,
-      "qwen_evals": 887,
-      "qwen_reward_rate": 0.5231116121758738
-    },
-    {
-      "model": "Step-3.5 Flash",
-      "model_label": "step35_flash",
-      "rollouts_ok": 61,
-      "rollouts_failed": 187,
-      "mean_hop_accuracy": 0.9344262295081968,
-      "final_correct_rate": 0.9508196721311475,
-      "median_tokens": 70527.0,
-      "stepfun_evals": 58,
-      "stepfun_reward_rate": 0.1206896551724138,
-      "stepfun_answer_rate": 0.10344827586206896,
-      "stepfun_full_info_rate": 0.05172413793103448,
-      "qwen_evals": 58,
-      "qwen_reward_rate": 0.5344827586206896
-    }
-  ],
-  "stats": {
-    "judge_agreement": {
-      "n": 2503,
-      "spearman_rho": 0.4700142221556766,
-      "spearman_p": 9.080335118514083e-138
-    },
-    "binary_predictor": {
-      "n": 2489,
-      "tp": 0,
-      "fp": 494,
-      "tn": 1995,
-      "fn": 0,
-      "accuracy": 0.8015267175572519,
-      "precision": 0.0,
-      "recall": null,
-      "f1": null,
-      "mcnemar_exact_p": 3.910318545279494e-149
+    "all": {
+      "title": "All Available Splits",
+      "split": null,
+      "model_summary": [
+        {
+          "model": "Gemma 4 31B IT",
+          "model_label": "gemma4_31b_it",
+          "rollouts_ok": 343,
+          "rollouts_failed": 1,
+          "mean_hop_accuracy": 0.617208107732889,
+          "final_correct_rate": 0.446064139941691,
+          "median_tokens": 134172.0,
+          "stepfun_evals": 343,
+          "stepfun_reward_rate": 0.04956268221574344,
+          "stepfun_answer_rate": 0.029154518950437316,
+          "stepfun_full_info_rate": 0.02040816326530612,
+          "qwen_evals": 343,
+          "qwen_reward_rate": 0.13702623906705538
+        },
+        {
+          "model": "GPT-OSS 20B",
+          "model_label": "gpt_oss_20b",
+          "rollouts_ok": 344,
+          "rollouts_failed": 0,
+          "mean_hop_accuracy": 0.5843230897009967,
+          "final_correct_rate": 0.43023255813953487,
+          "median_tokens": 202891.0,
+          "stepfun_evals": 344,
+          "stepfun_reward_rate": 0.20348837209302326,
+          "stepfun_answer_rate": 0.13372093023255813,
+          "stepfun_full_info_rate": 0.11627906976744186,
+          "qwen_evals": 344,
+          "qwen_reward_rate": 0.5465116279069767
+        },
+        {
+          "model": "Qwen3 4B",
+          "model_label": "qwen3_4b_instruct_2507",
+          "rollouts_ok": 999,
+          "rollouts_failed": 2,
+          "mean_hop_accuracy": 0.39181800848467513,
+          "final_correct_rate": 0.17317317317317318,
+          "median_tokens": 129215.0,
+          "stepfun_evals": 999,
+          "stepfun_reward_rate": 0.1001001001001001,
+          "stepfun_answer_rate": 0.07207207207207207,
+          "stepfun_full_info_rate": 0.05005005005005005,
+          "qwen_evals": 999,
+          "qwen_reward_rate": 0.30930930930930933
+        },
+        {
+          "model": "Qwen3 8B",
+          "model_label": "qwen3_8b",
+          "rollouts_ok": 907,
+          "rollouts_failed": 94,
+          "mean_hop_accuracy": 0.47451829684464747,
+          "final_correct_rate": 0.36604189636163176,
+          "median_tokens": 223337.0,
+          "stepfun_evals": 830,
+          "stepfun_reward_rate": 0.10120481927710843,
+          "stepfun_answer_rate": 0.07349397590361446,
+          "stepfun_full_info_rate": 0.046987951807228916,
+          "qwen_evals": 887,
+          "qwen_reward_rate": 0.5231116121758738
+        },
+        {
+          "model": "Step-3.5 Flash",
+          "model_label": "step35_flash",
+          "rollouts_ok": 61,
+          "rollouts_failed": 187,
+          "mean_hop_accuracy": 0.9344262295081968,
+          "final_correct_rate": 0.9508196721311475,
+          "median_tokens": 70527.0,
+          "stepfun_evals": 58,
+          "stepfun_reward_rate": 0.1206896551724138,
+          "stepfun_answer_rate": 0.10344827586206896,
+          "stepfun_full_info_rate": 0.05172413793103448,
+          "qwen_evals": 58,
+          "qwen_reward_rate": 0.5344827586206896
+        }
+      ],
+      "stats": {
+        "judge_agreement": {
+          "n": 2574,
+          "spearman_rho": 0.46556271707323776,
+          "spearman_p": 1.216361879055079e-138
+        },
+        "binary_predictor": {
+          "n": 2489,
+          "tp": 0,
+          "fp": 494,
+          "tn": 1995,
+          "fn": 0,
+          "accuracy": 0.8015267175572519,
+          "precision": 0.0,
+          "recall": null,
+          "f1": null,
+          "mcnemar_exact_p": 3.910318545279494e-149
+        }
+      }
     }
   }
 }
