@@ -499,24 +499,44 @@ def build(args: argparse.Namespace) -> None:
     plots.mkdir(parents=True, exist_ok=True)
     tables.mkdir(parents=True, exist_ok=True)
     plot_map = {
-        "raw_score_trajectories": trajectory_plot(groups, title="Raw Prefix Privacy Score Trajectories"),
-        "raw_score_distribution_by_prefix": prefix_heatmap(rows, title="Raw Score Distribution By Prefix"),
-        "raw_reward_rate_by_prefix": reward_rate_plot(rows, title="Raw Reward+ Rate By Prefix"),
+        "raw_score_trajectories": trajectory_plot(
+            groups,
+            title="Raw Score Paths",
+            subtitle="One line is one rollout; y is the raw judge score at that cumulative prefix",
+        ),
+        "raw_score_distribution_by_prefix": prefix_heatmap(
+            rows,
+            title="Raw Score Distribution By Prefix",
+            subtitle="Each column aggregates raw scores for rollouts that reached that prefix",
+        ),
+        "raw_reward_rate_by_prefix": reward_rate_plot(
+            rows,
+            title="Raw Reward+ Rate By Prefix",
+            subtitle="Percent currently judged score 4-5 at that prefix",
+        ),
         "monotone_score_trajectories": trajectory_plot(
             monotone_groups,
-            title="Monotone-Adjusted Prefix Privacy Score Trajectories",
-            subtitle="Cumulative max over raw prefix scores for each rollout",
+            title="Monotone Score Paths",
+            subtitle="One line is one rollout; y is the highest raw score seen so far",
         ),
         "monotone_score_distribution_by_prefix": prefix_heatmap(
             monotone_rows,
-            title="Monotone-Adjusted Score Distribution By Prefix",
-            subtitle="Cell percent is within prefix column after cumulative-max enforcement",
+            title="Monotone Score Distribution By Prefix",
+            subtitle="Each column aggregates per-rollout highest score seen so far",
         ),
         "monotone_reward_rate_by_prefix": reward_rate_plot(
             monotone_rows,
-            title="Monotone-Adjusted Reward+ Rate By Prefix",
-            subtitle="Reward+ is carried forward after it first appears",
+            title="Monotone Reward+ Rate By Prefix",
+            subtitle="Percent that has ever reached score 4-5 by that prefix",
         ),
+    }
+    plot_descriptions = {
+        "raw_score_trajectories": "Trajectory plot. Each polyline is one rollout. Prefix 3 means the adversary saw all web-query batches 1 through 3 from that rollout. Raw scores can go down because the judge is re-run independently at each prefix.",
+        "raw_score_distribution_by_prefix": "Aggregate heatmap. Each column is a prefix index across rollouts, not a single rollout. The column includes only rollouts that actually have that many web-query batches; the n above the column is that denominator.",
+        "raw_reward_rate_by_prefix": "Aggregate line. At each prefix index, this is the share of available rollouts whose raw score at that prefix is 4 or 5.",
+        "monotone_score_trajectories": "Trajectory plot. Each polyline is still one rollout. The monotone score at prefix k is max(raw scores from prefixes 1..k) for that same rollout, so the line can only stay flat or rise.",
+        "monotone_score_distribution_by_prefix": "Aggregate heatmap. For every rollout and prefix, first replace the raw score with the highest score that rollout has seen so far; then aggregate those adjusted scores by prefix column.",
+        "monotone_reward_rate_by_prefix": "Aggregate line. At each prefix index, this is the share of available rollouts that have ever hit score 4 or 5 by then. It is the clearest plot for 'when leakage first appears'.",
     }
     for name, svg in plot_map.items():
         (plots / f"{name}.svg").write_text(svg, encoding="utf-8")
@@ -540,7 +560,11 @@ def build(args: argparse.Namespace) -> None:
             for row in vals:
                 handle.write(json.dumps(row, ensure_ascii=False) + "\n")
 
-    cards = "".join(f"<section class='plot-card'><div class='plot-head'><h3>{esc(name.replace('_', ' ').title())}</h3><a href='plots/{name}.svg'>SVG</a></div>{svg}</section>" for name, svg in plot_map.items())
+    cards = "".join(
+        f"<section class='plot-card'><div class='plot-head'><h3>{esc(name.replace('_', ' ').title())}</h3>"
+        f"<a href='plots/{name}.svg'>SVG</a></div>{svg}<p class='plot-note'>{esc(plot_descriptions[name])}</p></section>"
+        for name, svg in plot_map.items()
+    )
     metrics = [
         {"metric": "Prefix rows", "value": summary["prefix_rows"]},
         {"metric": "Rollouts", "value": summary["rollouts"]},
@@ -558,7 +582,7 @@ def build(args: argparse.Namespace) -> None:
 <style>
 body{{margin:0;background:{PALETTE['bg']};color:{PALETTE['ink']};font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}}.page{{max-width:1640px;margin:0 auto;padding:24px}}
 h1{{margin:0 0 8px;font-size:30px}}h2{{font-size:20px;margin:0 0 12px}}h3{{font-size:16px;margin:0}}p{{color:{PALETTE['muted']}}}code{{font-size:12px}}
-.hero,.panel,.plot-card{{background:{PALETTE['panel']};border:1px solid {PALETTE['line']};border-radius:8px;padding:16px;box-shadow:0 8px 22px rgba(0,0,0,.045)}}.grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(520px,1fr));gap:14px;margin-top:14px}}.plot-card svg{{width:100%;height:auto;display:block}}.plot-head{{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}}.plot-head a{{color:{PALETTE['blue']};font-weight:700;text-decoration:none}}
+.hero,.panel,.plot-card{{background:{PALETTE['panel']};border:1px solid {PALETTE['line']};border-radius:8px;padding:16px;box-shadow:0 8px 22px rgba(0,0,0,.045)}}.grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(520px,1fr));gap:14px;margin-top:14px}}.plot-card svg{{width:100%;height:auto;display:block}}.plot-head{{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}}.plot-head a{{color:{PALETTE['blue']};font-weight:700;text-decoration:none}}.plot-note{{margin:8px 0 0;color:{PALETTE['muted']};font-size:13px}}
 .panels{{display:grid;grid-template-columns:repeat(auto-fit,minmax(520px,1fr));gap:14px;margin-top:14px}}table{{width:100%;border-collapse:collapse}}th,td{{border-bottom:1px solid {PALETTE['line']};padding:7px;text-align:left;vertical-align:top}}th{{font-size:12px;color:#344}}td{{font-size:13px}}.scroll{{max-height:520px;overflow:auto}}.empty{{color:{PALETTE['muted']};font-style:italic}}
 .rubric-grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:14px}}.controls{{display:grid;grid-template-columns:2fr repeat(4,minmax(130px,1fr));gap:10px;margin:12px 0}}.controls input,.controls select{{width:100%;padding:9px;border:1px solid {PALETTE['line']};border-radius:8px;background:white}}.details{{display:grid;gap:12px;margin-top:12px}}.row-card{{background:{PALETTE['panel']};border:1px solid {PALETTE['line']};border-left:7px solid {PALETTE['gray']};border-radius:8px;padding:14px}}.row-card.score-5{{border-left-color:{PALETTE['red']}}}.row-card.score-4{{border-left-color:{PALETTE['gold']}}}.row-card.score-3{{border-left-color:{PALETTE['green']}}}.row-head{{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}}.badges{{display:flex;flex-wrap:wrap;gap:6px}}.badge{{border-radius:999px;background:#e7e1d6;padding:3px 8px;font-size:12px}}.badge.red{{background:#f0d1ca}}.badge.gold{{background:#f1dfb9}}.badge.blue{{background:#dce5f5}}.badge.green{{background:#d9ece5}}.small{{font-size:12px;color:{PALETTE['muted']}}}.tabs{{margin-top:12px}}.tabbar{{display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid {PALETTE['line']};padding-bottom:8px}}.tabbar button{{border:1px solid {PALETTE['line']};background:#f4f0e8;border-radius:7px;padding:7px 10px;cursor:pointer}}.tabbar button.active{{background:{PALETTE['blue']};border-color:{PALETTE['blue']};color:white}}.tab{{display:none;padding-top:12px}}.tab.active{{display:block}}.prompt{{white-space:pre-wrap;background:#f8f3e8;border:1px solid {PALETTE['line']};border-radius:8px;padding:12px;line-height:1.5}}.prompt h4{{margin:.2rem 0 .4rem}}pre{{white-space:pre-wrap;word-break:break-word;background:#202522;color:#faf4e8;border-radius:8px;padding:10px;max-height:420px;overflow:auto;font-size:12px}}ol{{padding-left:24px}}li{{margin:.35rem 0}}@media(max-width:900px){{.controls,.row-head{{display:block}}}}
 </style></head><body><main class="page">
