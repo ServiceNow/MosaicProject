@@ -103,7 +103,7 @@ ROLLOUT_JOBS: list[dict[str, Any]] = [
         "gpu": 0,
         "cpu": 32,
         "mem": 128,
-        "concurrency": 12,
+        "concurrency": 4,
         "max_model_len": 65536,
         "max_parallel_doc_reads": 10,
         "hop_plan_attempts": 3,
