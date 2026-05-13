@@ -2,11 +2,32 @@
 
 Repo for our privacy-aware dataset creation (and eventually agent training)
 
+## Advisor quick start for Privacy HopQA q30
+
+Use the advisor runbook as the canonical launch path:
+
+[Privacy HopQA advisor runbook, q30, 2026-05-13](./docs/privacy_hopqa_advisor_runbook_2026-05-13.md)
+
+Minimal preflight:
+
+```bash
+cd /home/toolkit/my_code/MosaicProject
+source configs/privacy_hopqa_q30_current.env
+python3 scripts/validate_privacy_hopqa_advisor_setup.py
+```
+
+The helper-facing retrieval artifacts are staged under:
+
+```bash
+/mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513
+```
+
 ## Current Privacy HopQA training launch commands
 
 Current canonical dataset: [Privacy HopQA q30 residual-review dataset](./docs/privacy_hopqa_q30_training_defaults_2026-05-13.md).
 
-The repo-level helper specs now blacklist long BrowseComp parents, live-filter
+The repo-level helper specs now read from the shared q30 artifact bundle,
+blacklist long BrowseComp parents, live-filter
 BrowseComp hits to at most ten 16k/1k-overlap reader windows, and serve the
 fixed local indices from `local_indices_fixeddeps_20260415`:
 

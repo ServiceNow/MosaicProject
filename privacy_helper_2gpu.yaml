@@ -1,13 +1,11 @@
 image: registry.toolkit-sp.yul201.service-now.com/snow.research.tapes/interactive-toolkit:throughput
 name: privacy_helper_2gpu
 workdir: /home/toolkit/my_code/MosaicProject
-# This helper intentionally points at the rebuilt local index root from
-# 2026-04-15. The previous root contained stale task-local extraction output
-# from before python-docx/openpyxl/python-pptx/PyPDF2/pdfplumber/xlrd were
-# installed in the pipeline-rl env, which caused placeholders like
-# "python-docx library not available" to be indexed as document content.
-# If you rebuild the local indices again, update this path explicitly rather
-# than assuming /mnt/llmd/results/exps/alexg/privacy_agent/local_indices is safe.
+# This helper intentionally points at the shared q30 artifact bundle. The
+# bundle contains the rebuilt 2026-04-15 local indices, BrowseComp embedding
+# shards, BM25 cache, long-document blacklist, and curated web inputs. Keeping
+# all helper-facing artifacts under /mnt/llmd/results avoids hidden dependency
+# on untracked repo-local files in /home/toolkit.
 #
 # This variant uses the second helper GPU for BrowseComp dense retrieval via
 # the torch fallback in BrowseCompHybridSearcher. Do not install faiss-gpu-cu12
@@ -28,13 +26,17 @@ command:
   - --port
   - '8012'
   - --local-index-root
-  - /mnt/llmd/results/exps/alexg/privacy_agent/local_indices_fixeddeps_20260415
+  - /mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/local_indices_fixeddeps_20260415
+  # Previous local default, kept for debugging old runs:
+  # - /mnt/llmd/results/exps/alexg/privacy_agent/local_indices_fixeddeps_20260415
   - --workers
   - '16'
   - --threadpool-tokens
   - '16'
   - --browsecomp-index-glob
-  - /home/toolkit/BrowseComp-Plus/indexes/qwen3-embedding-4b/corpus.shard*_of_*.pkl
+  - /mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/browsecomp_indexes/qwen3-embedding-4b/corpus.shard*_of_*.pkl
+  # Previous local default, kept for debugging old runs:
+  # - /home/toolkit/BrowseComp-Plus/indexes/qwen3-embedding-4b/corpus.shard*_of_*.pkl
   - --browsecomp-corpus
   - Tevatron/browsecomp-plus-corpus
   - --browsecomp-index-device
@@ -46,7 +48,7 @@ command:
   - --browsecomp-max-chars
   - '0'
   - --browsecomp-exclude-doc-ids-file
-  - /home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/browsecomp_doc_ids_over_10_windows_2026-05-12.txt
+  - /mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/helper_inputs/browsecomp_doc_ids_over_10_windows_2026-05-12.txt
   - --browsecomp-max-doc-windows
   - '10'
   - --browsecomp-reader-window-chars
@@ -54,17 +56,17 @@ command:
   - --browsecomp-reader-window-overlap-chars
   - '1000'
   - --curated-web-docs
-  - /home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/curated_source_shortdocs_q24_2026-05-12/docs_curated_web_plus_privacy_hopqa_q24.jsonl
+  - /mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/helper_inputs/docs_curated_web_plus_privacy_hopqa_q24.jsonl
   - --curated-web-chunks
-  - /home/toolkit/my_code/MosaicProject/trajectory_generation/data/chunks_curated_web.jsonl
+  - /mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/helper_inputs/chunks_curated_web_base.jsonl
   - --curated-web-chunks
-  - /home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/curated_source_shortdocs_q19_2026-05-12/chunks_curated_web_privacy_hopqa_q19.jsonl
+  - /mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/helper_inputs/chunks_curated_web_privacy_hopqa_q19.jsonl
   - --curated-web-chunks
-  - /home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/curated_source_shortdocs_q20_2026-05-12/chunks_curated_web_privacy_hopqa_q20.jsonl
+  - /mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/helper_inputs/chunks_curated_web_privacy_hopqa_q20.jsonl
   - --curated-web-chunks
-  - /home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/curated_source_shortdocs_q21_2026-05-12/chunks_curated_web_privacy_hopqa_q21.jsonl
+  - /mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/helper_inputs/chunks_curated_web_privacy_hopqa_q21.jsonl
   - --curated-web-chunks
-  - /home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/curated_source_shortdocs_q24_2026-05-12/chunks_curated_web_privacy_hopqa_q24.jsonl
+  - /mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/helper_inputs/chunks_curated_web_privacy_hopqa_q24.jsonl
   - --embedding-model
   - Qwen/Qwen3-Embedding-4B
 data:

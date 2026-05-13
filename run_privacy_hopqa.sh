@@ -14,7 +14,9 @@ WANDB_NAME=${WANDB_NAME:-}
 STREAMS_BACKEND=${STREAMS_BACKEND:-files}
 FILTER_ZERO_ADVANTAGE_GROUPS=${FILTER_ZERO_ADVANTAGE_GROUPS:-true}
 REPLICAS=${REPLICAS:-4}
-LOCAL_INDEX_ROOT=${LOCAL_INDEX_ROOT:-/mnt/llmd/results/exps/alexg/privacy_agent/local_indices_fixeddeps_20260415}
+# Previous local default, kept for debugging old runs:
+# /mnt/llmd/results/exps/alexg/privacy_agent/local_indices_fixeddeps_20260415
+LOCAL_INDEX_ROOT=${LOCAL_INDEX_ROOT:-/mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/local_indices_fixeddeps_20260415}
 MODEL_PATH=${MODEL_PATH:-/mnt/llmd/base_models/Qwen3-8B}
 ANNOTATIONS_PATH=${ANNOTATIONS_PATH:-/home/toolkit/nice_code/drbench/chain_review/annotations_2026-04-16.json}
 CURATED_PATH=${CURATED_PATH:-/home/toolkit/nice_code/drbench/chain_review/curated_chains.jsonl}
