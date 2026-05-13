@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-13T08:16:26.971064+00:00",
+  "generated_at": "2026-05-13T11:38:00.251590+00:00",
   "artifact_root": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_model_rollouts_20260513",
   "model_summary": [
     {
@@ -10,12 +10,12 @@
       "mean_hop_accuracy": 0.6133287398560711,
       "final_correct_rate": 0.45016077170418006,
       "median_tokens": 129904.0,
-      "stepfun_evals": 35,
-      "stepfun_reward_rate": 0.08571428571428572,
-      "stepfun_answer_rate": 0.02857142857142857,
-      "stepfun_full_info_rate": 0.05714285714285714,
-      "qwen_evals": 34,
-      "qwen_reward_rate": 0.11764705882352941
+      "stepfun_evals": 311,
+      "stepfun_reward_rate": 0.04501607717041801,
+      "stepfun_answer_rate": 0.028938906752411574,
+      "stepfun_full_info_rate": 0.01607717041800643,
+      "qwen_evals": 311,
+      "qwen_reward_rate": 0.13183279742765272
     },
     {
       "model": "GPT-OSS 20B",
@@ -25,12 +25,12 @@
       "mean_hop_accuracy": 0.5831112036651395,
       "final_correct_rate": 0.42857142857142855,
       "median_tokens": 204096.0,
-      "stepfun_evals": 120,
-      "stepfun_reward_rate": 0.15833333333333333,
-      "stepfun_answer_rate": 0.11666666666666667,
-      "stepfun_full_info_rate": 0.06666666666666667,
-      "qwen_evals": 107,
-      "qwen_reward_rate": 0.5794392523364486
+      "stepfun_evals": 343,
+      "stepfun_reward_rate": 0.20116618075801748,
+      "stepfun_answer_rate": 0.13119533527696792,
+      "stepfun_full_info_rate": 0.11370262390670553,
+      "qwen_evals": 343,
+      "qwen_reward_rate": 0.5451895043731778
     },
     {
       "model": "Qwen3 4B",
@@ -50,51 +50,51 @@
     {
       "model": "Qwen3 8B",
       "model_label": "qwen3_8b",
-      "rollouts_ok": 710,
-      "rollouts_failed": 241,
-      "mean_hop_accuracy": 0.4749832327297116,
-      "final_correct_rate": 0.36619718309859156,
-      "median_tokens": 218916.5,
-      "stepfun_evals": 481,
-      "stepfun_reward_rate": 0.0997920997920998,
-      "stepfun_answer_rate": 0.06652806652806653,
-      "stepfun_full_info_rate": 0.05197505197505198,
-      "qwen_evals": 474,
-      "qwen_reward_rate": 0.5485232067510548
+      "rollouts_ok": 745,
+      "rollouts_failed": 256,
+      "mean_hop_accuracy": 0.47567913071268775,
+      "final_correct_rate": 0.36644295302013424,
+      "median_tokens": 219821.0,
+      "stepfun_evals": 745,
+      "stepfun_reward_rate": 0.09932885906040269,
+      "stepfun_answer_rate": 0.0697986577181208,
+      "stepfun_full_info_rate": 0.049664429530201344,
+      "qwen_evals": 745,
+      "qwen_reward_rate": 0.5342281879194631
     },
     {
       "model": "Step-3.5 Flash",
       "model_label": "step35_flash",
-      "rollouts_ok": 27,
-      "rollouts_failed": 104,
-      "mean_hop_accuracy": 0.9567901234567902,
-      "final_correct_rate": 0.9629629629629629,
-      "median_tokens": 76080.0,
-      "stepfun_evals": 24,
-      "stepfun_reward_rate": 0.08333333333333333,
-      "stepfun_answer_rate": 0.08333333333333333,
-      "stepfun_full_info_rate": 0.041666666666666664,
-      "qwen_evals": 24,
-      "qwen_reward_rate": 0.4583333333333333
+      "rollouts_ok": 55,
+      "rollouts_failed": 179,
+      "mean_hop_accuracy": 0.9333333333333333,
+      "final_correct_rate": 0.9636363636363636,
+      "median_tokens": 70527.0,
+      "stepfun_evals": 51,
+      "stepfun_reward_rate": 0.13725490196078433,
+      "stepfun_answer_rate": 0.11764705882352941,
+      "stepfun_full_info_rate": 0.058823529411764705,
+      "qwen_evals": 51,
+      "qwen_reward_rate": 0.5490196078431373
     }
   ],
   "stats": {
     "judge_agreement": {
-      "n": 1623,
-      "spearman_rho": 0.34866878580806165,
-      "spearman_p": 1.340725367248156e-47
+      "n": 2434,
+      "spearman_rho": 0.45650635131878525,
+      "spearman_p": 1.3587156856136414e-125
     },
     "binary_predictor": {
-      "n": 1644,
+      "n": 2434,
       "tp": 0,
-      "fp": 292,
-      "tn": 1352,
+      "fp": 485,
+      "tn": 1949,
       "fn": 0,
-      "accuracy": 0.8223844282238443,
+      "accuracy": 0.8007395234182416,
       "precision": 0.0,
       "recall": null,
       "f1": null,
-      "mcnemar_exact_p": 2.513455854232436e-88
+      "mcnemar_exact_p": 2.002083095183101e-146
     }
   }
 }
