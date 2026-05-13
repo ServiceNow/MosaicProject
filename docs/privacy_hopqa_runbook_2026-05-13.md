@@ -174,6 +174,67 @@ EXTRA_OVERRIDES="$PRIVACY_HOPQA_PREFIX_STEP_REWARD_OVERRIDE $PRIVACY_HOPQA_COMMO
 ./run_privacy_hopqa.sh
 ```
 
+### Live launch record: 2026-05-13 prefix-progress run
+
+This is the exact paired helper/trainer launch used for the live 4B prefix-progress step-reward run.
+
+Helper:
+
+```bash
+cd /home/toolkit/my_code/MosaicProject
+source configs/privacy_hopqa_q30_current.env
+export PATH=/home/toolkit/.local/bin:$PATH
+
+HELPER_JOB="privacy_helper_q30_prefix_step_20260513173046"
+HELPER_DNS="phq30ps20260513173046"
+
+ACCOUNT="$PRIVACY_HOPQA_ACCOUNT" \
+JOB_SPEC="$PRIVACY_HOPQA_HELPER_JOB_SPEC" \
+JOB_NAME="$HELPER_JOB" \
+DNS_NAME="$HELPER_DNS" \
+./run_privacy_helper.sh
+```
+
+Helper result:
+
+```text
+job_id=c445dee5-97de-48fe-a207-ca70a7f4afef
+internal_url=http://dns-24e3447c-506e-4b21-92df-156e18db5087-phq30ps20260513173046:8012
+```
+
+Trainer:
+
+```bash
+cd /home/toolkit/my_code/MosaicProject
+source configs/privacy_hopqa_q30_current.env
+export PATH=/home/toolkit/.local/bin:$PATH
+export PRIVACY_AGENT_HELPER_URL="http://dns-24e3447c-506e-4b21-92df-156e18db5087-phq30ps20260513173046:8012"
+
+JOB="privacy_hopqa_q30_4b_prefix_step_20260513173122"
+
+PIPELINERL_ROOT="$PIPELINERL_ROOT" \
+OUTPUT_DIR_BASE="$PRIVACY_HOPQA_OUTPUT_DIR_BASE" \
+JOB_NAME="$JOB" \
+WANDB_PROJECT="$PRIVACY_HOPQA_DEFAULT_WANDB_PROJECT" \
+WANDB_GROUP="$PRIVACY_HOPQA_DEFAULT_WANDB_GROUP" \
+WANDB_NAME="$JOB" \
+REPLICAS="$PRIVACY_HOPQA_REPLICAS" \
+MODEL_PATH="$PRIVACY_HOPQA_MODEL_4B" \
+CAPTURE_MODE="$PRIVACY_HOPQA_CAPTURE_MODE" \
+FILTER_ZERO_ADVANTAGE_GROUPS="$PRIVACY_HOPQA_FILTER_ZERO_ADVANTAGE_GROUPS" \
+EXTRA_OVERRIDES="$PRIVACY_HOPQA_PREFIX_STEP_REWARD_OVERRIDE $PRIVACY_HOPQA_COMMON_EXTRA_OVERRIDES" \
+./run_privacy_hopqa.sh
+```
+
+Trainer result:
+
+```text
+job_id=3c154fdb-e4e0-401d-a219-5595854d58ec
+wandb_project=privacy_hopqa_q30_runs
+wandb_group=q30_full
+output_dir=/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_4b_prefix_step_20260513173122
+```
+
 ## 7. Monitor jobs
 
 ```bash
