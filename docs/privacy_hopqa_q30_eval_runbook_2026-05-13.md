@@ -49,6 +49,14 @@ model_runs/<model_label>/
 `rollout_index.jsonl` now records per-rollout `prompt_tokens`,
 `output_tokens`, and `total_tokens` from PipelineRL `TrainingText` records.
 
+Accuracy reporting keeps the rollout running after an incorrect hop, but the
+main viewer metric is dependency-aware. `raw_hop_accuracy` is the historical
+correct-hop count divided by total hops. `conditional_hop_accuracy` only scores
+hops whose `question_templated` prerequisites, such as `(2)`, were already
+correct; downstream hops after a failed prerequisite are counted as
+`blocked_hops` rather than wrong. `strict_chain_success` requires all hops and
+the final answer to be correct.
+
 ## Jobs
 
 Submit or resubmit the full set:
