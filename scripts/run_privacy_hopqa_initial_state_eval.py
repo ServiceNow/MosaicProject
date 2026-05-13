@@ -79,6 +79,36 @@ def append_jsonl(path: Path, row: dict[str, Any]) -> None:
         handle.write(json.dumps(row, ensure_ascii=False) + "\n")
 
 
+def training_text_token_totals(training_texts: list[Any]) -> dict[str, int]:
+    """Aggregate token usage from PipelineRL training-text records."""
+    prompt_tokens = 0
+    output_tokens = 0
+    finished = 0
+    length_finished = 0
+    for item in training_texts:
+        if hasattr(item, "prompt_tokens"):
+            prompt_tokens += int(getattr(item, "prompt_tokens") or 0)
+            output_tokens += int(getattr(item, "output_tokens") or 0)
+            is_finished = bool(getattr(item, "finished", False))
+        elif isinstance(item, dict):
+            prompt_tokens += int(item.get("prompt_tokens") or 0)
+            output_tokens += int(item.get("output_tokens") or 0)
+            is_finished = bool(item.get("finished", False))
+        else:
+            is_finished = False
+        if is_finished:
+            finished += 1
+        else:
+            length_finished += 1
+    return {
+        "prompt_tokens": prompt_tokens,
+        "output_tokens": output_tokens,
+        "total_tokens": prompt_tokens + output_tokens,
+        "finished_llm_calls": finished,
+        "length_finished_llm_calls": length_finished,
+    }
+
+
 def load_completed(index_path: Path, model_label: str) -> set[tuple[str, str, int]]:
     completed: set[tuple[str, str, int]] = set()
     if not index_path.exists():
@@ -139,6 +169,12 @@ def build_cfg(args: argparse.Namespace, split_output_dir: Path, OmegaConf: Any) 
                 "use_remote_local_search": not args.local_tools,
                 "use_remote_browsecomp": not args.local_tools,
                 "capture_mode": args.capture_mode,
+                "generation_context_limit_tokens": args.generation_context_limit_tokens,
+                "generation_context_margin_tokens": args.generation_context_margin_tokens,
+                "hop_plan_max_tokens": args.hop_plan_max_tokens,
+                "doc_choose_max_tokens": args.doc_choose_max_tokens,
+                "doc_read_max_tokens": args.doc_read_max_tokens,
+                "hop_resolve_max_tokens": args.hop_resolve_max_tokens,
                 "answer_match_f1_threshold": args.answer_match_f1_threshold,
                 "max_iterations": args.max_iterations,
                 "hop_plan_attempts": args.hop_plan_attempts,
@@ -216,6 +252,7 @@ async def run_case(
             before = {path.name for path in root.iterdir()} if root.exists() else set()
             result = await generate_privacy_hopqa_rollout(cfg, llm, problem, session)
             metrics = result.metrics.model_dump() if hasattr(result.metrics, "model_dump") else dict(result.metrics)
+            token_totals = training_text_token_totals(result.training_texts)
             trace_path = new_trace_for(split_output_dir, task_id, chain_id, before)
             row = {
                 "timestamp": iso_now(),
@@ -236,6 +273,11 @@ async def run_case(
                 "final_correct": metrics.get("final_correct"),
                 "chain_complete": metrics.get("chain_complete"),
                 "training_text_count": len(result.training_texts),
+                "prompt_tokens": token_totals["prompt_tokens"],
+                "output_tokens": token_totals["output_tokens"],
+                "total_tokens": token_totals["total_tokens"],
+                "finished_llm_calls": token_totals["finished_llm_calls"],
+                "length_finished_llm_calls": token_totals["length_finished_llm_calls"],
                 "metrics": metrics,
                 "trace_path": str(trace_path),
             }
@@ -439,13 +481,19 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--temperature", type=float, default=1.0)
     parser.add_argument("--max-tokens", type=int, default=4096)
     parser.add_argument("--capture-mode", default="all_calls")
+    parser.add_argument("--generation-context-limit-tokens", type=int, default=16384)
+    parser.add_argument("--generation-context-margin-tokens", type=int, default=128)
+    parser.add_argument("--hop-plan-max-tokens", type=int, default=1024)
+    parser.add_argument("--doc-choose-max-tokens", type=int, default=1024)
+    parser.add_argument("--doc-read-max-tokens", type=int, default=768)
+    parser.add_argument("--hop-resolve-max-tokens", type=int, default=1024)
     parser.add_argument("--answer-match-f1-threshold", type=float, default=0.75)
-    parser.add_argument("--max-iterations", type=int, default=12)
+    parser.add_argument("--max-iterations", type=int, default=21)
     parser.add_argument("--hop-plan-attempts", type=int, default=1)
     parser.add_argument("--enable-generic-retrieval-fallback", action="store_true")
     parser.add_argument("--max-parallel-retrieval-actions", type=int, default=3)
     parser.add_argument("--retrieval-top-k", type=int, default=5)
-    parser.add_argument("--choose-top-k", type=int, default=6)
+    parser.add_argument("--choose-top-k", type=int, default=3)
     parser.add_argument("--max-candidate-cards", type=int, default=20)
     parser.add_argument("--chooser-excerpt-chars", type=int, default=500)
     parser.add_argument("--reader-excerpt-chars", type=int, default=2500)
