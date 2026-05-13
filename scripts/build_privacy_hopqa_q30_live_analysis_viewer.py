@@ -27,6 +27,9 @@ except Exception:  # pragma: no cover - viewer still builds without scipy.
 
 
 DEFAULT_ARTIFACT_ROOT = Path("/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_full_regen_20260513")
+DEFAULT_PRIVACY_PROMPT_ARTIFACT_ROOT = Path(
+    "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_privacy_prompt_test_20260513"
+)
 DEFAULT_OUTPUT_DIR = Path("/home/toolkit/my_code/MosaicProject/runtime_analysis/privacy_hopqa_q30_live_analysis")
 DEFAULT_DATASET_ROOT = Path("/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset")
 DEFAULT_DATASET_BASENAME = "privacy_hopqa_finalized_2026-05-13_q30_final_residual_review"
@@ -206,6 +209,13 @@ def rollout_identity(row: dict[str, Any]) -> tuple[str, str, str, str]:
         str(row.get("chain_id") or ""),
         str(row.get("repeat") or 0),
     )
+
+
+def latest_by_identity(rows: list[dict[str, Any]]) -> dict[tuple[str, str, str, str, str], dict[str, Any]]:
+    latest: dict[tuple[str, str, str, str, str], dict[str, Any]] = {}
+    for row in rows:
+        latest[(str(row.get("model_label") or ""), *rollout_identity(row))] = row
+    return latest
 
 
 def leakage_trace_key(row: dict[str, Any]) -> str:
@@ -835,6 +845,81 @@ def plot_hop_accuracy_summary(rollouts: list[dict[str, Any]], path: Path) -> Non
     plt.title("Task performance by model")
     plt.legend(fontsize=8)
     plt.grid(axis="y", alpha=0.25)
+    savefig(path)
+
+
+def plot_privacy_prompt_accuracy_leakage(summary_rows: list[dict[str, Any]], path: Path) -> None:
+    rows = [row for row in summary_rows if row.get("baseline_ok") or row.get("prompt_ok")]
+    if not rows:
+        empty_plot(path, "Privacy prompt effect on accuracy and leakage", "No paired baseline or privacy-prompted rows yet.")
+        return
+    models = [str(row["model_label"]) for row in rows]
+    labels = [model_display(model) for model in models]
+    metrics = [
+        ("conditional hop accuracy", "baseline_hop_accuracy", "prompt_hop_accuracy", "%"),
+        ("final answer accuracy", "baseline_final_correct_rate", "prompt_final_correct_rate", "%"),
+        ("StepFun score 4-5", "baseline_reward_rate", "prompt_reward_rate", "%"),
+    ]
+    fig, axes = plt.subplots(1, 3, figsize=(15.2, 4.8), sharey=True)
+    x = list(range(len(rows)))
+    width = 0.36
+    for ax, (title, baseline_key, prompt_key, unit) in zip(axes, metrics):
+        baseline_vals = [
+            100 * row[baseline_key] if row.get(baseline_key) is not None else 0
+            for row in rows
+        ]
+        prompt_vals = [
+            100 * row[prompt_key] if row.get(prompt_key) is not None else 0
+            for row in rows
+        ]
+        ax.bar([item - width / 2 for item in x], baseline_vals, width=width, color="#5f6f7a", label="baseline")
+        ax.bar([item + width / 2 for item in x], prompt_vals, width=width, color="#0072B2", label="privacy prompt")
+        for idx, (base, prompt, row) in enumerate(zip(baseline_vals, prompt_vals, rows)):
+            if row.get(baseline_key) is not None:
+                ax.text(idx - width / 2, min(103, base + 2), f"{base:.1f}", ha="center", va="bottom", fontsize=7)
+            if row.get(prompt_key) is not None:
+                ax.text(idx + width / 2, min(103, prompt + 2), f"{prompt:.1f}", ha="center", va="bottom", fontsize=7)
+        ax.set_title(title)
+        ax.set_ylim(0, 105)
+        ax.set_yticks(range(0, 101, 20))
+        ax.set_xticks(x)
+        ax.set_xticklabels(labels, rotation=25, ha="right")
+        ax.grid(axis="y", alpha=0.25)
+        if unit:
+            ax.set_ylabel(unit)
+    axes[0].legend(fontsize=8)
+    fig.suptitle("Privacy prompt effect on task performance and privacy leakage", y=1.02)
+    savefig(path)
+
+
+def plot_privacy_prompt_query_behavior(summary_rows: list[dict[str, Any]], path: Path) -> None:
+    rows = [row for row in summary_rows if row.get("baseline_ok") or row.get("prompt_ok")]
+    if not rows:
+        empty_plot(path, "Privacy prompt effect on retrieval and query behavior", "No paired baseline or privacy-prompted rows yet.")
+        return
+    labels = [model_display(str(row["model_label"])) for row in rows]
+    metrics = [
+        ("visible web queries", "baseline_web_queries", "prompt_web_queries"),
+        ("local doc reads", "baseline_local_doc_reads", "prompt_local_doc_reads"),
+        ("web doc reads", "baseline_web_doc_reads", "prompt_web_doc_reads"),
+        ("local searches", "baseline_local_searches", "prompt_local_searches"),
+    ]
+    fig, axes = plt.subplots(2, 2, figsize=(13.8, 8.2))
+    axes_list = list(axes.flat)
+    x = list(range(len(rows)))
+    width = 0.36
+    for ax, (title, baseline_key, prompt_key) in zip(axes_list, metrics):
+        baseline_vals = [row.get(baseline_key) or 0 for row in rows]
+        prompt_vals = [row.get(prompt_key) or 0 for row in rows]
+        ax.bar([item - width / 2 for item in x], baseline_vals, width=width, color="#5f6f7a", label="baseline")
+        ax.bar([item + width / 2 for item in x], prompt_vals, width=width, color="#0072B2", label="privacy prompt")
+        ax.set_title(title)
+        ax.set_xticks(x)
+        ax.set_xticklabels(labels, rotation=25, ha="right")
+        ax.set_ylabel("mean count per rollout")
+        ax.grid(axis="y", alpha=0.25)
+    axes_list[0].legend(fontsize=8)
+    fig.suptitle("Privacy prompt effect on retrieval and query behavior", y=0.995)
     savefig(path)
 
 
@@ -1637,6 +1722,234 @@ def task_summary(rollouts: list[dict[str, Any]], stepfun: list[dict[str, Any]]) 
     return rows
 
 
+def mean_or_none(values: list[float | None]) -> float | None:
+    clean = [value for value in values if value is not None]
+    return mean(clean) if clean else None
+
+
+def rate_or_none(values: list[bool]) -> float | None:
+    return sum(1 for value in values if value) / len(values) if values else None
+
+
+def delta_pp(prompt_value: float | None, baseline_value: float | None) -> float | None:
+    if prompt_value is None or baseline_value is None:
+        return None
+    return 100 * (prompt_value - baseline_value)
+
+
+def mean_metric(rows: list[dict[str, Any]], key: str) -> float | None:
+    return mean_or_none([as_float(row.get(key)) for row in rows])
+
+
+def build_privacy_prompt_comparison(
+    output_dir: Path,
+    problem_lookup: dict[tuple[str, str], dict[str, Any]],
+    baseline_root: Path,
+    prompt_root: Path,
+) -> dict[str, Any] | None:
+    if not baseline_root.exists() or not prompt_root.exists():
+        return None
+
+    baseline_rollouts = filter_split(load_rollouts(baseline_root, problem_lookup), "test")
+    prompt_rollouts = filter_split(load_rollouts(prompt_root, problem_lookup), "test")
+    baseline_stepfun = filter_split(load_leakage(baseline_root, "stepfun"), "test")
+    prompt_stepfun = filter_split(load_leakage(prompt_root, "stepfun"), "test")
+
+    baseline_rollout_latest = latest_by_identity(baseline_rollouts)
+    prompt_rollout_latest = latest_by_identity(prompt_rollouts)
+    baseline_step_latest = latest_by_identity(baseline_stepfun)
+    prompt_step_latest = latest_by_identity(prompt_stepfun)
+
+    labels = ordered_model_labels(
+        [
+            *(row.get("model_label") for row in baseline_rollout_latest.values()),
+            *(row.get("model_label") for row in prompt_rollout_latest.values()),
+            *(row.get("model_label") for row in baseline_step_latest.values()),
+            *(row.get("model_label") for row in prompt_step_latest.values()),
+        ],
+        include_defaults=True,
+    )
+    summary_rows: list[dict[str, Any]] = []
+    for model in labels:
+        baseline_ok = [
+            row for row in baseline_rollout_latest.values()
+            if row.get("model_label") == model and row.get("ok")
+        ]
+        prompt_ok = [
+            row for row in prompt_rollout_latest.values()
+            if row.get("model_label") == model and row.get("ok")
+        ]
+        baseline_sf = [row for row in baseline_step_latest.values() if row.get("model_label") == model]
+        prompt_sf = [row for row in prompt_step_latest.values() if row.get("model_label") == model]
+
+        baseline_ok_by_key = {rollout_identity(row): row for row in baseline_ok}
+        prompt_ok_by_key = {rollout_identity(row): row for row in prompt_ok}
+        paired_rollout_keys = sorted(set(baseline_ok_by_key) & set(prompt_ok_by_key))
+        paired_accuracy_deltas = []
+        for key in paired_rollout_keys:
+            baseline_acc = task_accuracy(baseline_ok_by_key[key])
+            prompt_acc = task_accuracy(prompt_ok_by_key[key])
+            if baseline_acc is not None and prompt_acc is not None:
+                paired_accuracy_deltas.append(100 * (prompt_acc - baseline_acc))
+
+        baseline_sf_by_key = {rollout_identity(row): row for row in baseline_sf}
+        prompt_sf_by_key = {rollout_identity(row): row for row in prompt_sf}
+        paired_score_keys = sorted(set(baseline_sf_by_key) & set(prompt_sf_by_key))
+        paired_score_deltas = [score(prompt_sf_by_key[key]) - score(baseline_sf_by_key[key]) for key in paired_score_keys]
+
+        baseline_hop = mean_or_none([task_accuracy(row) for row in baseline_ok])
+        prompt_hop = mean_or_none([task_accuracy(row) for row in prompt_ok])
+        baseline_final = rate_or_none([row.get("final_correct") is True for row in baseline_ok])
+        prompt_final = rate_or_none([row.get("final_correct") is True for row in prompt_ok])
+        baseline_reward = rate_or_none([reward_positive(row) for row in baseline_sf])
+        prompt_reward = rate_or_none([reward_positive(row) for row in prompt_sf])
+
+        summary_rows.append(
+            {
+                "model": model_display(model),
+                "model_label": model,
+                "baseline_ok": len(baseline_ok),
+                "prompt_ok": len(prompt_ok),
+                "baseline_stepfun": len(baseline_sf),
+                "prompt_stepfun": len(prompt_sf),
+                "baseline_hop_accuracy": baseline_hop,
+                "prompt_hop_accuracy": prompt_hop,
+                "delta_hop_accuracy_pp": delta_pp(prompt_hop, baseline_hop),
+                "paired_accuracy_n": len(paired_accuracy_deltas),
+                "paired_accuracy_delta_pp": mean(paired_accuracy_deltas) if paired_accuracy_deltas else None,
+                "baseline_final_correct_rate": baseline_final,
+                "prompt_final_correct_rate": prompt_final,
+                "delta_final_correct_pp": delta_pp(prompt_final, baseline_final),
+                "baseline_reward_rate": baseline_reward,
+                "prompt_reward_rate": prompt_reward,
+                "delta_reward_pp": delta_pp(prompt_reward, baseline_reward),
+                "baseline_intent4_rate": rate_or_none([intent_score(row) >= 4 for row in baseline_sf]),
+                "prompt_intent4_rate": rate_or_none([intent_score(row) >= 4 for row in prompt_sf]),
+                "baseline_answer_rate": rate_or_none([answer_leaked(row) for row in baseline_sf]),
+                "prompt_answer_rate": rate_or_none([answer_leaked(row) for row in prompt_sf]),
+                "baseline_full_info_rate": rate_or_none([full_info_leaked(row) for row in baseline_sf]),
+                "prompt_full_info_rate": rate_or_none([full_info_leaked(row) for row in prompt_sf]),
+                "baseline_web_queries": mean_metric(baseline_ok, "visible_web_queries"),
+                "prompt_web_queries": mean_metric(prompt_ok, "visible_web_queries"),
+                "delta_web_queries": (
+                    mean_metric(prompt_ok, "visible_web_queries") - mean_metric(baseline_ok, "visible_web_queries")
+                    if mean_metric(prompt_ok, "visible_web_queries") is not None
+                    and mean_metric(baseline_ok, "visible_web_queries") is not None
+                    else None
+                ),
+                "baseline_local_doc_reads": mean_metric(baseline_ok, "local_doc_reads_total"),
+                "prompt_local_doc_reads": mean_metric(prompt_ok, "local_doc_reads_total"),
+                "baseline_web_doc_reads": mean_metric(baseline_ok, "web_doc_reads_total"),
+                "prompt_web_doc_reads": mean_metric(prompt_ok, "web_doc_reads_total"),
+                "baseline_local_searches": mean_metric(baseline_ok, "local_search_events_total"),
+                "prompt_local_searches": mean_metric(prompt_ok, "local_search_events_total"),
+                "paired_score_n": len(paired_score_deltas),
+                "paired_score_delta": mean(paired_score_deltas) if paired_score_deltas else None,
+                "paired_score_down": sum(1 for value in paired_score_deltas if value < 0),
+                "paired_score_same": sum(1 for value in paired_score_deltas if value == 0),
+                "paired_score_up": sum(1 for value in paired_score_deltas if value > 0),
+            }
+        )
+
+    plots_dir = output_dir / "plots" / "privacy_prompt_effect"
+    accuracy_plot = plots_dir / "accuracy_leakage.svg"
+    query_plot = plots_dir / "query_behavior.svg"
+    plot_privacy_prompt_accuracy_leakage(summary_rows, accuracy_plot)
+    plot_privacy_prompt_query_behavior(summary_rows, query_plot)
+
+    return {
+        "baseline_root": str(baseline_root),
+        "prompt_root": str(prompt_root),
+        "summary": summary_rows,
+        "plots": [
+            (
+                os.path.relpath(accuracy_plot, output_dir).replace(os.sep, "/"),
+                "Privacy Prompt Effect: Accuracy And Leakage",
+                "Grouped bars compare baseline and privacy-prompted test-split runs. Leakage uses StepFun score 4-5, so privacy-prompted bars are partial until the judge catches up.",
+            ),
+            (
+                os.path.relpath(query_plot, output_dir).replace(os.sep, "/"),
+                "Privacy Prompt Effect: Query And Retrieval Behavior",
+                "Counts are means over successful test rollouts currently written for each condition.",
+            ),
+        ],
+    }
+
+
+def render_privacy_prompt_comparison(comparison: dict[str, Any] | None) -> str:
+    if not comparison:
+        return ""
+    rows = comparison.get("summary") or []
+    headers = [
+        "model",
+        "baseline_ok",
+        "prompt_ok",
+        "baseline_stepfun",
+        "prompt_stepfun",
+        "baseline_hop_accuracy",
+        "prompt_hop_accuracy",
+        "delta_hop_accuracy_pp",
+        "paired_accuracy_n",
+        "paired_accuracy_delta_pp",
+        "baseline_final_correct_rate",
+        "prompt_final_correct_rate",
+        "delta_final_correct_pp",
+        "baseline_reward_rate",
+        "prompt_reward_rate",
+        "delta_reward_pp",
+        "baseline_web_queries",
+        "prompt_web_queries",
+        "delta_web_queries",
+        "paired_score_n",
+        "paired_score_delta",
+        "paired_score_down",
+        "paired_score_same",
+        "paired_score_up",
+    ]
+    labels = {
+        "model": "model",
+        "baseline_ok": "baseline ok",
+        "prompt_ok": "prompt ok",
+        "baseline_stepfun": "baseline judged",
+        "prompt_stepfun": "prompt judged",
+        "baseline_hop_accuracy": "baseline hop acc",
+        "prompt_hop_accuracy": "prompt hop acc",
+        "delta_hop_accuracy_pp": "delta hop acc pp",
+        "paired_accuracy_n": "paired acc n",
+        "paired_accuracy_delta_pp": "paired acc delta pp",
+        "baseline_final_correct_rate": "baseline final acc",
+        "prompt_final_correct_rate": "prompt final acc",
+        "delta_final_correct_pp": "delta final pp",
+        "baseline_reward_rate": "baseline score 4-5",
+        "prompt_reward_rate": "prompt score 4-5",
+        "delta_reward_pp": "delta leakage pp",
+        "baseline_web_queries": "baseline web queries",
+        "prompt_web_queries": "prompt web queries",
+        "delta_web_queries": "delta web queries",
+        "paired_score_n": "paired score n",
+        "paired_score_delta": "paired score delta",
+        "paired_score_down": "score down",
+        "paired_score_same": "score same",
+        "paired_score_up": "score up",
+    }
+    plot_html = "".join(
+        f"<section><h2>{esc(title)}</h2><p class='note'>{esc(note)}</p><img src='{esc(src)}' alt='{esc(title)}'></section>"
+        for src, title, note in comparison.get("plots", [])
+    )
+    return f"""
+    <section id="privacy-prompt-effect" class="scope-heading">
+      <h2>Privacy Prompt Effect</h2>
+      <p class="note">Compares the regular baseline artifact root <code>{esc(comparison.get('baseline_root'))}</code> against the privacy-prompted test artifact root <code>{esc(comparison.get('prompt_root'))}</code>. Deltas are privacy prompt minus baseline. Negative leakage deltas are better; positive accuracy deltas are better.</p>
+    </section>
+    <section>
+      <h2>Privacy Prompt Effect Summary</h2>
+      <p class="note">Rows use the test split only. The privacy-prompted run and StepFun privacy judge are live, so judged counts may lag rollout counts.</p>
+      {simple_table(rows, headers, labels=labels, limit=20)}
+    </section>
+    {plot_html}
+"""
+
+
 def jobs_table(rows: list[dict[str, Any]]) -> str:
     if not rows:
         return "<p class='muted'>No EAI snapshot available yet.</p>"
@@ -1678,10 +1991,13 @@ def render_html(
     binary: list[dict[str, Any]],
     scopes: list[dict[str, Any]],
     jobs: list[dict[str, Any]],
+    privacy_prompt_comparison: dict[str, Any] | None = None,
 ) -> str:
     scope_nav = "".join(
         f"<a href='#{esc(scope['slug'])}'>{esc(scope['title'])}</a>" for scope in scopes
     )
+    if privacy_prompt_comparison:
+        scope_nav += "<a href='#privacy-prompt-effect'>Privacy Prompt Effect</a>"
     scope_html_parts = []
     for scope in scopes:
         plot_html = "".join(
@@ -1773,6 +2089,7 @@ def render_html(
 """
         )
     scope_html = "".join(scope_html_parts)
+    privacy_prompt_html = render_privacy_prompt_comparison(privacy_prompt_comparison)
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -1819,6 +2136,7 @@ def render_html(
       <h2>Accuracy Metrics</h2>
       <p><strong>Conditional hop accuracy</strong> is the main task metric in these plots. The harness still lets the agent continue after an incorrect hop, but later hops whose <code>question_templated</code> references require the failed hop are counted as <code>blocked_hops</code> instead of wrong. <strong>Raw hop accuracy</strong> is the older correct-hops-over-total metric. <strong>Strict chain success</strong> requires every hop and the final answer to be correct.</p>
     </section>
+    {privacy_prompt_html}
     {scope_html}
     <section>
       <h2>EAI Jobs</h2>
@@ -1841,6 +2159,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dataset-root", type=Path, default=DEFAULT_DATASET_ROOT)
     parser.add_argument("--dataset-basename", default=DEFAULT_DATASET_BASENAME)
     parser.add_argument("--latest-output", type=Path, action="append", default=[])
+    parser.add_argument("--baseline-comparison-artifact-root", type=Path, default=DEFAULT_ARTIFACT_ROOT)
+    parser.add_argument("--privacy-prompt-comparison-artifact-root", type=Path, default=DEFAULT_PRIVACY_PROMPT_ARTIFACT_ROOT)
+    parser.add_argument("--skip-privacy-prompt-comparison", action="store_true")
     return parser.parse_args()
 
 
@@ -1877,6 +2198,14 @@ def main() -> None:
     qwen = load_leakage(args.artifact_root, "qwen3_4b")
     binary = load_binary(args.artifact_root)
     jobs = load_eai_snapshot(args.output_dir)
+    privacy_prompt_comparison = None
+    if not args.skip_privacy_prompt_comparison:
+        privacy_prompt_comparison = build_privacy_prompt_comparison(
+            args.output_dir,
+            problem_lookup,
+            args.baseline_comparison_artifact_root,
+            args.privacy_prompt_comparison_artifact_root,
+        )
     scopes = [
         build_scope(
             args.output_dir,
@@ -1901,7 +2230,17 @@ def main() -> None:
             binary,
         ),
     ]
-    html_text = render_html(args.artifact_root, args.output_dir, rollouts, stepfun, qwen, binary, scopes, jobs)
+    html_text = render_html(
+        args.artifact_root,
+        args.output_dir,
+        rollouts,
+        stepfun,
+        qwen,
+        binary,
+        scopes,
+        jobs,
+        privacy_prompt_comparison,
+    )
     index = args.output_dir / "index.html"
     index.write_text(html_text, encoding="utf-8")
     (args.output_dir / "viewer_data.json").write_text(
@@ -1920,6 +2259,13 @@ def main() -> None:
                     }
                     for scope in scopes
                 },
+                "privacy_prompt_comparison": {
+                    "baseline_root": privacy_prompt_comparison.get("baseline_root"),
+                    "prompt_root": privacy_prompt_comparison.get("prompt_root"),
+                    "summary": privacy_prompt_comparison.get("summary"),
+                }
+                if privacy_prompt_comparison
+                else None,
             },
             indent=2,
         )
