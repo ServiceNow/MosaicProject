@@ -1,6 +1,85 @@
 {
-  "generated_at": "2026-05-13T03:35:13.070228+00:00",
+  "generated_at": "2026-05-13T03:55:52.084388+00:00",
   "artifact_root": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_model_rollouts_20260513",
-  "model_summary": [],
-  "stats": {}
+  "model_summary": [
+    {
+      "model": "GPT-OSS 20B",
+      "model_label": "gpt_oss_20b",
+      "rollouts_ok": 8,
+      "rollouts_failed": 21,
+      "mean_hop_accuracy": 0.8958333333333334,
+      "final_correct_rate": 0.75,
+      "median_tokens": 59988.5,
+      "stepfun_evals": 0,
+      "stepfun_reward_rate": null,
+      "stepfun_answer_rate": null,
+      "stepfun_full_info_rate": null,
+      "qwen_evals": 0,
+      "qwen_reward_rate": null
+    },
+    {
+      "model": "Qwen3 4B",
+      "model_label": "qwen3_4b_instruct_2507",
+      "rollouts_ok": 369,
+      "rollouts_failed": 1,
+      "mean_hop_accuracy": 0.4048328816621499,
+      "final_correct_rate": 0.1978319783197832,
+      "median_tokens": 110191.0,
+      "stepfun_evals": 21,
+      "stepfun_reward_rate": 0.0,
+      "stepfun_answer_rate": 0.0,
+      "stepfun_full_info_rate": 0.0,
+      "qwen_evals": 348,
+      "qwen_reward_rate": 0.27873563218390807
+    },
+    {
+      "model": "Qwen3 8B",
+      "model_label": "qwen3_8b",
+      "rollouts_ok": 47,
+      "rollouts_failed": 9,
+      "mean_hop_accuracy": 0.46879432624113476,
+      "final_correct_rate": 0.40425531914893614,
+      "median_tokens": 169561.0,
+      "stepfun_evals": 0,
+      "stepfun_reward_rate": null,
+      "stepfun_answer_rate": null,
+      "stepfun_full_info_rate": null,
+      "qwen_evals": 0,
+      "qwen_reward_rate": null
+    },
+    {
+      "model": "Step-3.5 Flash",
+      "model_label": "step35_flash",
+      "rollouts_ok": 2,
+      "rollouts_failed": 1,
+      "mean_hop_accuracy": 1.0,
+      "final_correct_rate": 1.0,
+      "median_tokens": 81060.0,
+      "stepfun_evals": 0,
+      "stepfun_reward_rate": null,
+      "stepfun_answer_rate": null,
+      "stepfun_full_info_rate": null,
+      "qwen_evals": 0,
+      "qwen_reward_rate": null
+    }
+  ],
+  "stats": {
+    "judge_agreement": {
+      "n": 21,
+      "spearman_rho": NaN,
+      "spearman_p": NaN
+    },
+    "binary_predictor": {
+      "n": 21,
+      "tp": 0,
+      "fp": 2,
+      "tn": 19,
+      "fn": 0,
+      "accuracy": 0.9047619047619048,
+      "precision": 0.0,
+      "recall": null,
+      "f1": null,
+      "mcnemar_exact_p": 0.5
+    }
+  }
 }
