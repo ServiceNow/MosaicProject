@@ -137,7 +137,44 @@ EXTRA_OVERRIDES="$PRIVACY_HOPQA_BINARY_REWARD_OVERRIDE $PRIVACY_HOPQA_COMMON_EXT
 ./run_privacy_hopqa.sh
 ```
 
-## 6. Monitor jobs
+## 6. Launch 4B prefix-progress step-reward training
+
+This is the experimental stepwise reward mode. It keeps outcome-based training as the default elsewhere.
+
+Stepwise semantics:
+
+```text
+training reward at a captured call = prefix_correct_hops_so_far / total_hops
+```
+
+If a 3-hop chain has correctness `correct, correct, wrong`, captured calls on hop 1 get `1/3`, calls on hop 2 get `2/3`, and calls on hop 3 stay at `2/3`.
+If the prefix breaks, later correct-looking hops do not increase progress. With `stop_after_incorrect_hop=true`, the training rollout stops after the first resolved wrong hop without injecting a gold answer.
+For advantage calculation only, shorter rollouts are padded with their final progress reward so a rollout that reaches farther into the chain is compared fairly at later step indices.
+
+```bash
+cd /home/toolkit/my_code/MosaicProject
+source configs/privacy_hopqa_q30_current.env
+export PATH=/home/toolkit/.local/bin:$PATH
+export PRIVACY_AGENT_HELPER_URL="http://<helper-for-this-run>:8012"
+
+TS=$(date +%Y%m%d%H%M%S)
+JOB="privacy_hopqa_q30_4b_prefix_step_${TS}"
+
+PIPELINERL_ROOT="$PIPELINERL_ROOT" \
+OUTPUT_DIR_BASE="$PRIVACY_HOPQA_OUTPUT_DIR_BASE" \
+JOB_NAME="$JOB" \
+WANDB_PROJECT="$PRIVACY_HOPQA_DEFAULT_WANDB_PROJECT" \
+WANDB_GROUP="$PRIVACY_HOPQA_DEFAULT_WANDB_GROUP" \
+WANDB_NAME="$JOB" \
+REPLICAS="$PRIVACY_HOPQA_REPLICAS" \
+MODEL_PATH="$PRIVACY_HOPQA_MODEL_4B" \
+CAPTURE_MODE="$PRIVACY_HOPQA_CAPTURE_MODE" \
+FILTER_ZERO_ADVANTAGE_GROUPS="$PRIVACY_HOPQA_FILTER_ZERO_ADVANTAGE_GROUPS" \
+EXTRA_OVERRIDES="$PRIVACY_HOPQA_PREFIX_STEP_REWARD_OVERRIDE $PRIVACY_HOPQA_COMMON_EXTRA_OVERRIDES" \
+./run_privacy_hopqa.sh
+```
+
+## 7. Monitor jobs
 
 ```bash
 eai job get <helper-job-id> <trainer-job-id> \
@@ -151,7 +188,7 @@ rg -n "Completed steps|rl/reward|Published weight update request" "$OUT/finetune
 rg -n "PrivacyHopQAHelperInfrastructureError|retry [2-9]|failed after|Traceback|Exception" "$OUT/actor/info.log" "$OUT/actor/error.log"
 ```
 
-## 7. Kill jobs
+## 8. Kill jobs
 
 ```bash
 eai job kill <trainer-job-id>
