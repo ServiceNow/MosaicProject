@@ -477,6 +477,81 @@ def plot_accuracy_privacy(rollouts: list[dict[str, Any]], leakage: list[dict[str
     savefig(path)
 
 
+def plot_accuracy_privacy_facets(rollouts: list[dict[str, Any]], leakage: list[dict[str, Any]], path: Path) -> None:
+    rollout_by_trace = {str(row.get("trace_path")): row for row in rollouts if row.get("ok")}
+    points_by_model: dict[str, list[tuple[float, int, bool, str]]] = defaultdict(list)
+    for row in leakage:
+        rollout = rollout_by_trace.get(leakage_trace_key(row))
+        acc = as_float((rollout or {}).get("hop_accuracy"))
+        privacy_score = score(row)
+        if acc is None or privacy_score not in SCORE_VALUES:
+            continue
+        model = str(row.get("model_label") or "?")
+        trace_key = leakage_trace_key(row)
+        points_by_model[model].append((100 * acc, privacy_score, reward_positive(row), trace_key))
+    models = sorted(points_by_model)
+    if not models:
+        empty_plot(path, "Per-model rollout accuracy vs privacy score")
+        return
+
+    cols = 2 if len(models) <= 4 else 3
+    rows = math.ceil(len(models) / cols)
+    fig, axes = plt.subplots(rows, cols, figsize=(cols * 5.2, rows * 4.1), sharex=True, sharey=True)
+    axes_list = list(axes.flat) if hasattr(axes, "flat") else [axes]
+    for ax in axes_list[len(models) :]:
+        ax.axis("off")
+
+    for ax, model in zip(axes_list, models):
+        vals = sorted(points_by_model[model], key=lambda item: item[3])
+        xs = [item[0] for item in vals]
+        ys = [item[1] for item in vals]
+        colors = ["#b23a2e" if leaked else "#2f6f9f" for _, _, leaked, _ in vals]
+        jittered_y = [y + (((idx * 37) % 17) - 8) * 0.012 for idx, y in enumerate(ys)]
+        ax.scatter(xs, jittered_y, s=24, c=colors, alpha=0.72, edgecolor="#1f2421", linewidth=0.25)
+        if len(vals) >= 3 and len(set(xs)) >= 2:
+            x_mean = mean(xs)
+            y_mean = mean(ys)
+            denom = sum((x - x_mean) ** 2 for x in xs)
+            if denom:
+                slope = sum((x - x_mean) * (y - y_mean) for x, y in zip(xs, ys)) / denom
+                intercept = y_mean - slope * x_mean
+                fit_x = [0, 100]
+                fit_y = [intercept + slope * x for x in fit_x]
+                ax.plot(fit_x, fit_y, color="#1f2421", linewidth=1.2, alpha=0.85)
+        rho_text = "rho=n/a"
+        if scipy_stats is not None and len(vals) >= 3 and len(set(xs)) >= 2 and len(set(ys)) >= 2:
+            rho, p_value = scipy_stats.spearmanr(xs, ys)
+            rho_text = f"rho={rho:.2f}, p={p_value:.3g}"
+        ax.text(
+            0.03,
+            0.95,
+            f"n={len(vals)}\n{rho_text}",
+            transform=ax.transAxes,
+            ha="left",
+            va="top",
+            fontsize=8,
+            color="#1f2421",
+            bbox={"boxstyle": "round,pad=0.2", "facecolor": "#fffdf8", "edgecolor": "#d7d0c2", "alpha": 0.86},
+        )
+        ax.set_title(model_display(model), fontsize=10)
+        ax.set_xlim(0, 100)
+        ax.set_ylim(0.7, 5.3)
+        ax.set_xticks(range(0, 101, 25))
+        ax.set_yticks(SCORE_VALUES)
+        ax.grid(alpha=0.22)
+
+    fig.supxlabel("Rollout hop accuracy (% correct hops)")
+    fig.supylabel("StepFun privacy score (1-5)")
+    fig.suptitle("Per-model rollout accuracy vs privacy leakage", y=0.995)
+    handles = [
+        plt.Line2D([0], [0], marker="o", color="w", label="score 1-3", markerfacecolor="#2f6f9f", markeredgecolor="#1f2421", markersize=6),
+        plt.Line2D([0], [0], marker="o", color="w", label="score 4-5", markerfacecolor="#b23a2e", markeredgecolor="#1f2421", markersize=6),
+        plt.Line2D([0], [0], color="#1f2421", linewidth=1.2, label="OLS trend"),
+    ]
+    fig.legend(handles=handles, loc="lower center", ncol=3, bbox_to_anchor=(0.5, -0.01), fontsize=8)
+    savefig(path)
+
+
 def plot_hop_accuracy_summary(rollouts: list[dict[str, Any]], path: Path) -> None:
     models = sorted({str(row.get("model_label")) for row in rollouts if row.get("ok")})
     x = list(range(len(models)))
@@ -982,6 +1057,8 @@ def make_plots(
         plots.append((f"{src_prefix}/task_accuracy_leakage.svg", "Task Difficulty vs Leakage", "Each point is a task id: x is mean hop accuracy and y is StepFun score>=4 rate over judged rollouts. Point size scales with available rollouts; color marks company."))
         plot_accuracy_privacy(rollouts, stepfun, plot_dir / "accuracy_privacy_scatter.svg")
         plots.append((f"{src_prefix}/accuracy_privacy_scatter.svg", "Mean Accuracy vs Privacy Leakage", "Each point is one model: x is mean hop accuracy and y is the StepFun score>=4 leakage rate over paired judged rollouts. Point size scales with evaluated rows."))
+        plot_accuracy_privacy_facets(rollouts, stepfun, plot_dir / "accuracy_privacy_facets.svg")
+        plots.append((f"{src_prefix}/accuracy_privacy_facets.svg", "Per-Model Accuracy vs Privacy", "Each point is a judged rollout. The x-axis is hop accuracy, the y-axis is StepFun's 1-5 privacy score, red points are score>=4, and the line is a visual OLS trend. The annotation reports Spearman rank correlation with p value."))
         plot_score_distribution(stepfun, plot_dir / "stepfun_score_distribution.svg", "StepFun privacy score distribution")
         plots.append((f"{src_prefix}/stepfun_score_distribution.svg", "StepFun Score Distribution", "Raw evaluated rollout counts by overall privacy score."))
         plot_leakage_rates(stepfun, plot_dir / "stepfun_leakage_rates.svg")
