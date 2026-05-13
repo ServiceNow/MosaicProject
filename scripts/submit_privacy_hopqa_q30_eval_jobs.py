@@ -268,6 +268,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--skip-privacy-eval", action="store_true")
     parser.add_argument("--only-model-label", action="append", default=[])
     parser.add_argument("--job-name-suffix", default="", help="Suffix appended to submitted EAI job names for reruns.")
+    parser.add_argument(
+        "--force-privacy-eval-with-filter",
+        action="store_true",
+        help="Submit the privacy-eval monitor even when --only-model-label is used.",
+    )
     parser.add_argument("--privacy-once", action="store_true")
     parser.add_argument("--privacy-interval-s", type=int, default=1800)
     parser.add_argument("--push-viewer", action="store_true")
@@ -299,7 +304,10 @@ def main() -> None:
             submit_cmd.extend(["--", "/bin/bash", "-lc", job_command])
             submit(submit_cmd, args.dry_run)
 
-    if not args.skip_privacy_eval:
+    should_submit_privacy_eval = not args.skip_privacy_eval and (
+        not args.only_model_label or args.force_privacy_eval_with_filter
+    )
+    if should_submit_privacy_eval:
         job = PRIVACY_EVAL_JOB
         job_command = privacy_eval_command(args.artifact_root, args.privacy_interval_s, args.privacy_once, args.push_viewer)
         submit_cmd = base_submit_cmd(job["name"] + args.job_name_suffix, job["cpu"], job["mem"], job["gpu"], args.bid)
