@@ -28,11 +28,11 @@ except Exception:  # pragma: no cover - viewer still builds without scipy.
     scipy_stats = None
 
 
-DEFAULT_ARTIFACT_ROOT = Path("/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_full_regen_20260513")
+DEFAULT_ARTIFACT_ROOT = Path("/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_mosaic_v11_20260514")
 DEFAULT_PRIVACY_PROMPT_ARTIFACT_ROOT = Path(
-    "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_privacy_prompt_test_20260513"
+    "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_privacy_prompt_mosaic_v11_20260514"
 )
-DEFAULT_OUTPUT_DIR = Path("/home/toolkit/my_code/MosaicProject/runtime_analysis/privacy_hopqa_q30_live_analysis")
+DEFAULT_OUTPUT_DIR = Path("/home/toolkit/my_code/MosaicProject/runtime_analysis/privacy_hopqa_q30_mosaic_v11_analysis")
 DEFAULT_DATASET_ROOT = Path("/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset")
 DEFAULT_DATASET_BASENAME = "privacy_hopqa_finalized_2026-05-13_q30_final_residual_review"
 DEFAULT_BINARY_REWARD_PROMPT_DATASET_DIR = Path(

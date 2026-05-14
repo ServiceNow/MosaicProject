@@ -11,7 +11,8 @@ import subprocess
 from typing import Any
 
 
-ARTIFACT_ROOT = Path("/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_full_regen_20260513")
+RUN_TAG = "mosaic_v11_20260514"
+ARTIFACT_ROOT = Path(f"/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_{RUN_TAG}")
 IMAGE = "registry.toolkit-sp.yul201.service-now.com/snow.research.tapes/interactive-toolkit:throughput"
 ACCOUNT = "snow.research.adea"
 HOME_DATA = "snow.home.alex_gurung:/home/toolkit:rw"
@@ -60,7 +61,7 @@ GEMMA4_SETUP_COMMAND = shell_join(
 
 ROLLOUT_JOBS: list[dict[str, Any]] = [
     {
-        "name": "privacy_hopqa_q30_eval_rollouts_qwen3_4b_20260513",
+        "name": f"privacy_hopqa_q30_eval_rollouts_qwen3_4b_{RUN_TAG}",
         "model_label": "qwen3_4b_instruct_2507",
         "served_model_name": "Qwen/Qwen3-4B-Instruct-2507",
         "model_path": "Qwen/Qwen3-4B-Instruct-2507",
@@ -77,7 +78,7 @@ ROLLOUT_JOBS: list[dict[str, Any]] = [
         "case_attempts": 5,
     },
     {
-        "name": "privacy_hopqa_q30_eval_rollouts_qwen3_8b_20260513",
+        "name": f"privacy_hopqa_q30_eval_rollouts_qwen3_8b_{RUN_TAG}",
         "model_label": "qwen3_8b",
         "served_model_name": "Qwen/Qwen3-8B",
         "model_path": "/mnt/llmd/base_models/Qwen3-8B",
@@ -94,7 +95,7 @@ ROLLOUT_JOBS: list[dict[str, Any]] = [
         "case_attempts": 5,
     },
     {
-        "name": "privacy_hopqa_q30_eval_rollouts_stepfun35_flash_20260513",
+        "name": f"privacy_hopqa_q30_eval_rollouts_stepfun35_flash_{RUN_TAG}",
         "model_label": "step35_flash",
         "served_model_name": "step-3.5-flash",
         "tokenizer_name": "/mnt/llmd/base_models/Step-3.5-Flash",
@@ -110,7 +111,7 @@ ROLLOUT_JOBS: list[dict[str, Any]] = [
         "case_attempts": 5,
     },
     {
-        "name": "privacy_hopqa_q30_eval_rollouts_gpt_oss_20b_20260513",
+        "name": f"privacy_hopqa_q30_eval_rollouts_gpt_oss_20b_{RUN_TAG}",
         "model_label": "gpt_oss_20b",
         "served_model_name": "openai/gpt-oss-20b",
         "model_path": "/mnt/llmd/base_models/gpt-oss-20b",
@@ -131,7 +132,7 @@ ROLLOUT_JOBS: list[dict[str, Any]] = [
         "trust_remote_code": True,
     },
     {
-        "name": "privacy_hopqa_q30_eval_rollouts_chroma_context_1_20260514",
+        "name": f"privacy_hopqa_q30_eval_rollouts_chroma_context_1_{RUN_TAG}",
         "model_label": "chroma_context_1",
         "served_model_name": "chromadb/context-1",
         # The upstream Chroma repo currently declares tokenizer_class=TokenizersBackend,
@@ -155,7 +156,7 @@ ROLLOUT_JOBS: list[dict[str, Any]] = [
         "trust_remote_code": True,
     },
     {
-        "name": "privacy_hopqa_q30_eval_rollouts_gemma4_31b_it_20260513",
+        "name": f"privacy_hopqa_q30_eval_rollouts_gemma4_31b_it_{RUN_TAG}",
         "model_label": "gemma4_31b_it",
         "served_model_name": "google/gemma-4-31B-it",
         "model_path": "google/gemma-4-31B-it",
@@ -178,7 +179,7 @@ ROLLOUT_JOBS: list[dict[str, Any]] = [
 
 
 PRIVACY_EVAL_JOB = {
-    "name": "privacy_hopqa_q30_eval_privacy_judges_20260513",
+    "name": f"privacy_hopqa_q30_eval_privacy_judges_{RUN_TAG}",
     "gpu": 1,
     "cpu": 48,
     "mem": 384,
@@ -292,6 +293,9 @@ def privacy_eval_command(
     skip_viewer: bool,
     viewer_output_dir: Path | None,
     latest_viewer_outputs: list[Path],
+    viewer_baseline_comparison_artifact_root: Path | None,
+    viewer_privacy_prompt_comparison_artifact_root: Path | None,
+    viewer_skip_privacy_prompt_comparison: bool,
 ) -> str:
     parts = [
         PYTHON,
@@ -319,6 +323,16 @@ def privacy_eval_command(
         parts.append("--skip-viewer")
     if viewer_output_dir is not None:
         parts.extend(["--viewer-output-dir", str(viewer_output_dir)])
+    if viewer_baseline_comparison_artifact_root is not None:
+        parts.extend(
+            ["--viewer-baseline-comparison-artifact-root", str(viewer_baseline_comparison_artifact_root)]
+        )
+    if viewer_privacy_prompt_comparison_artifact_root is not None:
+        parts.extend(
+            ["--viewer-privacy-prompt-comparison-artifact-root", str(viewer_privacy_prompt_comparison_artifact_root)]
+        )
+    if viewer_skip_privacy_prompt_comparison:
+        parts.append("--viewer-skip-privacy-prompt-comparison")
     for latest_viewer_output in latest_viewer_outputs:
         parts.extend(["--latest-viewer-output", str(latest_viewer_output)])
     return shell_join(parts)
@@ -351,6 +365,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--skip-viewer", action="store_true")
     parser.add_argument("--push-viewer", action="store_true")
     parser.add_argument("--viewer-output-dir", type=Path, default=None)
+    parser.add_argument("--viewer-baseline-comparison-artifact-root", type=Path, default=None)
+    parser.add_argument("--viewer-privacy-prompt-comparison-artifact-root", type=Path, default=None)
+    parser.add_argument("--viewer-skip-privacy-prompt-comparison", action="store_true")
     parser.add_argument("--latest-viewer-output", type=Path, action="append", default=[])
     parser.add_argument("--helper-url", default=HELPER_URL)
     parser.add_argument("--splits", nargs="+", choices=["train", "val", "test"], default=[])
@@ -413,6 +430,9 @@ def main() -> None:
             args.skip_viewer,
             args.viewer_output_dir,
             args.latest_viewer_output,
+            args.viewer_baseline_comparison_artifact_root,
+            args.viewer_privacy_prompt_comparison_artifact_root,
+            args.viewer_skip_privacy_prompt_comparison,
         )
         submit_cmd = base_submit_cmd(job["name"] + args.job_name_suffix, job["cpu"], job["mem"], privacy_eval_gpu, args.bid)
         submit_cmd.extend(["--", "/bin/bash", "-lc", job_command])

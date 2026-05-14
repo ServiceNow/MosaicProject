@@ -18,12 +18,13 @@ from urllib.request import urlopen
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_ARTIFACT_ROOT = Path("/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_full_regen_20260513")
+DEFAULT_ARTIFACT_ROOT = Path("/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_mosaic_v11_20260514")
 DEFAULT_STEPFUN_URL = "http://dns-4943305a-c17f-44b1-b767-9536529eb8bc-step35flash-vllm:8000"
-DEFAULT_VIEWER_DIR = ROOT / "runtime_analysis" / "privacy_hopqa_q30_live_analysis"
+DEFAULT_VIEWER_DIR = ROOT / "runtime_analysis" / "privacy_hopqa_q30_mosaic_v11_analysis"
 DEFAULT_LATEST_VIEWERS = [
     ROOT / "runtime_analysis" / "latest_privacy_hopqa_q30_live_analysis.html",
     ROOT / "runtime_analysis" / "privacy_hopqa_q30_live_analysis_latest.html",
+    ROOT / "runtime_analysis" / "latest_privacy_hopqa_q30_mosaic_v11_analysis.html",
 ]
 
 
