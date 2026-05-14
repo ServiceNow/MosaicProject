@@ -793,6 +793,31 @@ def group_rows(grouped: dict[str, Any]) -> list[list[Any]]:
     return rows
 
 
+def difficulty_rows(grouped: dict[str, Any]) -> list[list[Any]]:
+    rows: list[list[Any]] = []
+    for difficulty in ["easy", "medium", "hard-answer", "hard-retrieval"]:
+        block = grouped.get(f"difficulty={difficulty}")
+        if not block:
+            continue
+        rows.append([
+            esc(difficulty),
+            esc(block["n"]),
+            pct(block["dense"]["top1"]),
+            pct(block["lexical"]["top1"]),
+            pct(block["fusion"]["top1"]),
+            pct(block["dense"]["top5"]),
+            pct(block["lexical"]["top5"]),
+            pct(block["fusion"]["top5"]),
+            pct(block["dense"]["top10"]),
+            pct(block["lexical"]["top10"]),
+            pct(block["fusion"]["top10"]),
+            pct(block["dense"]["top20"]),
+            pct(block["lexical"]["top20"]),
+            pct(block["fusion"]["top20"]),
+        ])
+    return rows
+
+
 def tuning_rows(results: list[dict[str, Any]], limit: int = 10) -> list[list[Any]]:
     rows: list[list[Any]] = []
     for item in results[:limit]:
@@ -896,6 +921,14 @@ def build_viewer(out_path: Path, summary: dict[str, Any], rows: list[dict[str, A
     <h3>Recommended actual-query setting by source/difficulty</h3>
     <p class="muted">The recommended row is selected by top-10, then top-5, then top-20, then top-1. In this run it is <code>{esc(recommended_tuning['label'] if recommended_tuning else 'n/a')}</code>.</p>
     {recommended_group_table}
+  </section>
+  <section>
+    <h2>Breakdown by difficulty</h2>
+    <p class="muted">Difficulty is assigned from the current rollout traces: easy hops are frequently correct, hard-answer hops often retrieve/read useful evidence but answer incorrectly, and hard-retrieval hops have low success and weak positive-reader evidence. Each rank is the best gold-parent rank over the query variants for that row.</p>
+    <h3>Actual model queries</h3>
+    {render_table(["difficulty", "n", "dense top1", "lexical top1", "fusion top1", "dense top5", "lexical top5", "fusion top5", "dense top10", "lexical top10", "fusion top10", "dense top20", "lexical top20", "fusion top20"], difficulty_rows(summary['actual_model_queries']['groups']))}
+    <h3>Question-derived baselines</h3>
+    {render_table(["difficulty", "n", "dense top1", "lexical top1", "fusion top1", "dense top5", "lexical top5", "fusion top5", "dense top10", "lexical top10", "fusion top10", "dense top20", "lexical top20", "fusion top20"], difficulty_rows(summary['question_baseline']['groups']))}
   </section>
   <section>
     <h2>Actual-query top-10/top-20 by group</h2>
