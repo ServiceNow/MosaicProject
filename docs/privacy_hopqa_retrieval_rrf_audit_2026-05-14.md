@@ -158,6 +158,89 @@ Viewer:
 runtime_analysis/privacy_hopqa_rrf_replay_qwen4b_2026-05-14_large40/index.html
 ```
 
+## Parallel-query chooser replay
+
+The direct top-5 replay above is useful but too optimistic about how evidence reaches the answer. The more realistic replay below uses the production chooser, reader, and resolver prompts:
+
+- take up to three actual observed model queries for the hop, matching `max_parallel_retrieval_actions=3`
+- retrieve top 5 per query under current ranking versus RRF ranking
+- merge duplicate parent documents into one candidate-card pool
+- add opposite-source distractor cards from a real trace when available, so local hops can include web distractors and web hops can include local distractors
+- cap the chooser pool at 20 parent documents
+- ask Qwen to select up to 3 parent documents
+- read selected documents with `max_parallel_doc_reads=5`
+- resolve the hop and score with both exact accepted-variant match and the current PipelineRL reward match, `exact_or_f1>=0.75`
+
+This is still an isolated-hop counterfactual. Previous-hop answers are gold answers from the dataset, so the measurement asks: if the model made similar search queries, how would the ranking mode affect whether the current hop can be answered?
+
+Command:
+
+```bash
+cd /home/toolkit/my_code/MosaicProject
+python3 scripts/replay_privacy_hopqa_parallel_rrf_qwen.py \
+  --per-bucket 12 \
+  --workers 8 \
+  --out-dir runtime_analysis/privacy_hopqa_parallel_rrf_replay_qwen4b_2026-05-14_large96_mixed
+```
+
+Settings:
+
+```text
+model=Qwen/Qwen3-4B-Instruct-2507
+n_cases=96
+queries_per_hop=3
+retrieval_top_k_per_query=5
+max_candidate_cards=20
+choose_top_k=3
+max_parallel_doc_reads=5
+rrf_k=20
+include_trace_distractors=true
+```
+
+### Parallel replay results
+
+| bucket | n | current gold in candidates | RRF gold in candidates | current gold selected | RRF gold selected | current reward match | RRF reward match |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| overall | 96 | 41 | 81 | 34 | 61 | 26 | 54 |
+| local | 48 | 18 | 41 | 14 | 33 | 11 | 31 |
+| web | 48 | 23 | 40 | 20 | 28 | 15 | 23 |
+| easy | 24 | 21 | 24 | 18 | 19 | 17 | 19 |
+| medium | 24 | 12 | 22 | 9 | 19 | 6 | 17 |
+| hard-answer | 24 | 5 | 17 | 5 | 9 | 3 | 7 |
+| hard-retrieval | 24 | 3 | 18 | 2 | 14 | 0 | 11 |
+| local easy | 12 | 10 | 12 | 8 | 10 | 8 | 11 |
+| local medium | 12 | 4 | 11 | 3 | 11 | 2 | 10 |
+| local hard-answer | 12 | 2 | 9 | 2 | 5 | 1 | 5 |
+| local hard-retrieval | 12 | 2 | 9 | 1 | 7 | 0 | 5 |
+| web easy | 12 | 11 | 12 | 10 | 9 | 9 | 8 |
+| web medium | 12 | 8 | 11 | 6 | 8 | 4 | 7 |
+| web hard-answer | 12 | 3 | 8 | 3 | 4 | 2 | 2 |
+| web hard-retrieval | 12 | 1 | 9 | 1 | 7 | 0 | 6 |
+
+Case-level deltas:
+
+| outcome | count |
+| --- | ---: |
+| RRF correct, current wrong | 31 |
+| current correct, RRF wrong | 3 |
+| both correct | 23 |
+| neither correct | 39 |
+
+Interpretation:
+
+- RRF has a large positive expected effect under the realistic chooser/reader path: reward matches improve from 26/96 to 54/96.
+- The gain is mostly retrieval-side. Gold parent documents reach the chooser pool in 81/96 RRF cases versus 41/96 current cases.
+- The chooser can use the extra signal: gold-selected cases rise from 34/96 to 61/96 even with opposite-source distractors present.
+- The largest gains are in medium and hard-retrieval buckets. Hard-retrieval goes from 0/24 current reward matches to 11/24 with RRF.
+- Easy web is the only small regression slice in this sample, 9/12 current versus 8/12 RRF. The net case-level tradeoff is still strongly positive: 31 improvements versus 3 regressions.
+- There are still 39/96 cases where neither mode answers correctly. Those are now better targets for question quality, reader behavior, or query-generation work rather than pure ranking.
+
+Viewer:
+
+```text
+runtime_analysis/privacy_hopqa_parallel_rrf_replay_qwen4b_2026-05-14_large96_mixed/index.html
+```
+
 ## Recommended live experiment
 
 Launch one RRF helper:
