@@ -296,6 +296,9 @@ def privacy_eval_command(
     viewer_baseline_comparison_artifact_root: Path | None,
     viewer_privacy_prompt_comparison_artifact_root: Path | None,
     viewer_skip_privacy_prompt_comparison: bool,
+    stepfun_concurrency: int | None,
+    qwen_concurrency: int | None,
+    binary_concurrency: int | None,
 ) -> str:
     parts = [
         PYTHON,
@@ -333,6 +336,12 @@ def privacy_eval_command(
         )
     if viewer_skip_privacy_prompt_comparison:
         parts.append("--viewer-skip-privacy-prompt-comparison")
+    if stepfun_concurrency is not None:
+        parts.extend(["--stepfun-concurrency", str(stepfun_concurrency)])
+    if qwen_concurrency is not None:
+        parts.extend(["--qwen-concurrency", str(qwen_concurrency)])
+    if binary_concurrency is not None:
+        parts.extend(["--binary-concurrency", str(binary_concurrency)])
     for latest_viewer_output in latest_viewer_outputs:
         parts.extend(["--latest-viewer-output", str(latest_viewer_output)])
     return shell_join(parts)
@@ -362,6 +371,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--privacy-interval-s", type=int, default=1800)
     parser.add_argument("--skip-qwen-judge", action="store_true")
     parser.add_argument("--skip-binary-predictor", action="store_true")
+    parser.add_argument("--stepfun-concurrency", type=int, default=None)
+    parser.add_argument("--qwen-concurrency", type=int, default=None)
+    parser.add_argument("--binary-concurrency", type=int, default=None)
     parser.add_argument("--skip-viewer", action="store_true")
     parser.add_argument("--push-viewer", action="store_true")
     parser.add_argument("--viewer-output-dir", type=Path, default=None)
@@ -433,6 +445,9 @@ def main() -> None:
             args.viewer_baseline_comparison_artifact_root,
             args.viewer_privacy_prompt_comparison_artifact_root,
             args.viewer_skip_privacy_prompt_comparison,
+            args.stepfun_concurrency,
+            args.qwen_concurrency,
+            args.binary_concurrency,
         )
         submit_cmd = base_submit_cmd(job["name"] + args.job_name_suffix, job["cpu"], job["mem"], privacy_eval_gpu, args.bid)
         submit_cmd.extend(["--", "/bin/bash", "-lc", job_command])
