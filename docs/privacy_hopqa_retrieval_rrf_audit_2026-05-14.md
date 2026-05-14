@@ -449,3 +449,91 @@ Monitor:
 - parse errors
 - helper timeout/error rate
 - whether hard-retrieval chains start receiving non-zero advantage
+
+## Query privacy levels and consistent local/web RRF default
+
+The earlier phrase `privacy-aware query` was too vague. In this audit, query privacy and retrieval ranking are separated:
+
+- Query privacy describes what the planner put in the search string.
+- Retrieval rank mode describes how the helper orders candidate documents after receiving that search string.
+
+### Query privacy levels
+
+| level | meaning | desired use |
+| --- | --- | --- |
+| P0 raw or bridge leaky | Query includes the company name, accepted answer, or previous-hop answer. | Useful for diagnosing current behavior, not privacy preserving. |
+| P1 private details remain | Company is omitted, but private numeric/date/entity details or internal operational terms remain. | Less raw than P0, still leaky. |
+| P2 private-topic paraphrase | Company and exact answers are omitted, but the query still targets an internal company topic. | A privacy-improved but still sensitive planning behavior. |
+| P3 public-targeted analogue | Query asks for a general/public analogue without direct company or answer leakage. | A reasonable privacy-aware planner target for local-hop uncertainty. |
+| P4 independent public hop | Web-hop query aimed at external public evidence without obvious company, answer, or internal-topic leakage. | Desired behavior for genuine web hops. |
+
+These labels are heuristic and intentionally conservative. Generic public words that also appear in internal contexts are not enough to label a query private; the classifier only treats non-public-overlap terms as private-topic terms.
+
+### Query privacy audit command
+
+```bash
+cd /home/toolkit/my_code/MosaicProject
+python3 scripts/audit_privacy_hopqa_query_privacy_levels.py \
+  --out-dir runtime_analysis/privacy_hopqa_query_privacy_levels_2026-05-14
+```
+
+Inputs:
+
+```text
+run_root=/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_4b_prefix_step_20260513173122
+dataset=data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review_train.jsonl
+retrieval_audit_rows=runtime_analysis/privacy_hopqa_retrieval_method_audit_2026-05-14_large240/retrieval_method_rows.jsonl
+```
+
+Viewer:
+
+```text
+runtime_analysis/privacy_hopqa_query_privacy_levels_2026-05-14/index.html
+```
+
+### Observed query privacy distribution
+
+This scans unique observed `web_search` calls from the trace root. The source prefix below is the true hop type being solved when the web query was made.
+
+| group | queries | share |
+| --- | ---: | ---: |
+| overall | 19,066 | 100.0% |
+| P0 raw or bridge leaky | 15,597 | 81.8% |
+| P1 private details remain | 1,263 | 6.6% |
+| P2 private-topic paraphrase | 236 | 1.2% |
+| P3 public-targeted analogue | 898 | 4.7% |
+| P4 independent public hop | 1,072 | 5.6% |
+| local-hop web queries, P0 | 14,507 | 76.1% of all queries |
+| web-hop queries, P4 | 1,072 | 5.6% of all queries |
+
+Interpretation:
+
+- Most observed web queries are leaky because the current planner often includes company names or bridge answers, especially while solving local hops.
+- That is a planner/privacy issue, not a reason to avoid RRF. RRF only changes candidate ordering after a query exists.
+- The query privacy viewer is meant to help debug whether future training shifts queries from P0/P1 toward P2/P3 for local hops and toward P4 for web hops.
+
+### Retrieval mode recommendation
+
+Use RRF for both web and local as the consistent default:
+
+```text
+--browsecomp-rank-mode rrf
+--browsecomp-rrf-k 20
+--local-rank-mode rrf
+--local-bm25-recall-k 100
+--local-dense-recall-k 100
+--local-rrf-k 20
+```
+
+Keep BM25-only as a controlled ablation, not the default:
+
+```text
+--browsecomp-rank-mode bm25
+--local-rank-mode bm25
+```
+
+Rationale:
+
+- BM25-only is strong in several samples, including local retrieval.
+- RRF is the better default because it keeps lexical gains while preserving dense signal, and it performed best on gold-candidate coverage in the realistic replay.
+- Using RRF for both sources makes the helper behavior easier to reason about: local and web are both ranked by the same fusion principle, with source-specific corpora and recall pools.
