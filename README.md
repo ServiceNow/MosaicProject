@@ -128,7 +128,7 @@ REPLICAS=4 \
 MODEL_PATH="Qwen/Qwen3-4B-Instruct-2507" \
 CAPTURE_MODE=planning_only \
 FILTER_ZERO_ADVANTAGE_GROUPS=true \
-EXTRA_OVERRIDES="privacy_hopqa.reward_mode=hop_accuracy privacy_hopqa.training_reward_mode=outcome privacy_hopqa.stop_after_incorrect_hop=false finetune.rl.step_reward_advantages=false finetune.rl.pad_step_rewards_for_advantage=false privacy_hopqa.helper_timeout_s=180 privacy_hopqa.max_parallel_doc_reads=5 actor.llm_max_rollouts=64" \
+EXTRA_OVERRIDES="privacy_hopqa.reward_mode=hop_accuracy privacy_hopqa.training_reward_mode=outcome privacy_hopqa.stop_after_incorrect_hop=false finetune.rl.step_reward_advantages=false finetune.rl.pad_step_rewards_for_advantage=false privacy_hopqa.zero_error_step_reward=false privacy_hopqa.helper_timeout_s=180 privacy_hopqa.max_parallel_doc_reads=5 actor.llm_max_rollouts=64" \
 bash /home/toolkit/my_code/MosaicProject/run_privacy_hopqa.sh
 ```
 
