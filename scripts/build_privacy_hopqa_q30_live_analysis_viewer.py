@@ -979,7 +979,7 @@ def logistic_fit(xs: list[float], ys: list[bool]) -> dict[str, float] | None:
 
 def logistic_text(fit: dict[str, float] | None) -> str:
     if not fit:
-        return "Logistic: n/a"
+        return "Logistic: n/a (one class or too little x variation)"
     return f"Logistic: OR/10pp={fit['odds_ratio_10pp']:.2f}, p={fit['p']:.3g}"
 
 
@@ -1428,7 +1428,16 @@ def plot_binary_leakage_accuracy_grid(
         if fit:
             curve_x = list(range(0, 101, 2))
             curve_y = logistic_curve(fit, curve_x)
-            ax.plot(curve_x, curve_y, color="#8f8f8f", linestyle="--", linewidth=1.6, label="logistic regression")
+            ax.plot(
+                curve_x,
+                curve_y,
+                color="#5f6368",
+                linestyle="--",
+                linewidth=2.2,
+                alpha=0.95,
+                zorder=6,
+                label="logistic regression",
+            )
         positives = sum(1 for item in ys_bool if item)
         ys_numeric = [1.0 if value else 0.0 for value in ys_bool]
         add_stats_box(
@@ -1455,7 +1464,7 @@ def plot_binary_leakage_accuracy_grid(
     handles = [
         plt.Line2D([0], [0], marker="o", color="w", label="no", markerfacecolor="#2f6f9f", markeredgecolor="#1f2421", markersize=6),
         plt.Line2D([0], [0], marker="o", color="w", label="yes", markerfacecolor="#b23a2e", markeredgecolor="#1f2421", markersize=6),
-        plt.Line2D([0], [0], color="#8f8f8f", linestyle="--", linewidth=1.4, label="logistic regression"),
+        plt.Line2D([0], [0], color="#5f6368", linestyle="--", linewidth=2.0, label="logistic regression"),
     ]
     fig.legend(handles=handles, loc="lower center", ncol=3, bbox_to_anchor=(0.5, -0.01), fontsize=8)
     fig.text(0.01, 0.01, "Bubble area = n rollouts at exact coordinate; no jitter.", fontsize=8, color="#65706b")
@@ -1497,6 +1506,7 @@ def build_binary_leakage_accuracy_tabs(
             "against chain progress accuracy. Repeated exact coordinates are aggregated into larger bubbles, with no jitter. "
             "The gray dashed curve is an unadjusted one-variable logistic regression; "
             "Spearman rank is shown as the monotonic association test for the discrete plotted points. "
+            "A logistic curve is omitted only when the panel has one outcome class or too little x-axis variation. "
             "OR/10pp is the odds ratio for a 10 percentage-point increase in chain progress accuracy. The p-value is a Wald "
             "test for nonzero logistic slope. This is descriptive and does not adjust for task/model dependence."
         ),
@@ -2439,8 +2449,9 @@ def make_plots(
     plot_query_read_profile(rollouts, plot_dir / "query_read_profile_all.svg", successful_only=False)
     plots.append((f"{src_prefix}/query_read_profile_all.svg", "Retrieval And Query Behavior: All Rollouts", "Means are computed over all loaded rollout rows from timeline events. Rows without a saved trace contribute zero parsed events."))
     if stepfun:
-        plot_company_leakage_heatmap(stepfun, plot_dir / "company_leakage.svg")
-        plots.append((f"{src_prefix}/company_leakage.svg", "Leakage By Company", f"Scope: {scope_label}. Cells show StepFun score>=4 rates by company and model, with n equal to StepFun-judged rollouts in that cell."))
+        if len({str(row.get("company") or "?") for row in stepfun}) >= 2:
+            plot_company_leakage_heatmap(stepfun, plot_dir / "company_leakage.svg")
+            plots.append((f"{src_prefix}/company_leakage.svg", "Leakage By Company", f"Scope: {scope_label}. Cells show StepFun score>=4 rates by company and model, with n equal to StepFun-judged rollouts in that cell."))
         plots.append(build_task_difficulty_tabs(output_dir, plot_dir, src_prefix, rollouts, stepfun, scope_slug, scope_label))
         plot_accuracy_privacy(rollouts, stepfun, plot_dir / "accuracy_privacy_scatter.svg", scope_label)
         plots.append((f"{src_prefix}/accuracy_privacy_scatter.svg", "Mean Accuracy vs Privacy Leakage", f"Scope: {scope_label}. Each point is one agent model: x is mean chain progress accuracy and y is the StepFun score>=4 leakage rate over paired judged rollouts. Point size scales with evaluated rows. Spearman rank is the primary association statistic; the light gray dashed OLS regression line is a descriptive visual trend with slope/intercept shown in the annotation."))
@@ -3383,32 +3394,30 @@ def render_html(
             [
                 ("#privacy-prompt-effect", "Prompt: Top"),
                 ("#privacy-prompt-summary", "Prompt: Summary"),
-                ("#privacy-prompt-leakage-summary", "Prompt: Types Table"),
                 ("#privacy-prompt-examples", "Prompt: Examples"),
-                *[
-                    (
-                        f"#privacy-prompt-{slugify(title)}",
-                        short_jump_label(title),
-                    )
-                    for _src, title, _note in privacy_prompt_comparison.get("plots", [])
-                ],
+                ("#privacy-prompt-privacy_prompt_effect_rollout_and_judge_coverage", "Prompt: Plots"),
             ]
         )
     for scope in scopes:
         scope_slug = str(scope["slug"])
         scope_short = "All" if scope_slug == "all" else "Test" if scope_slug == "test" else str(scope["title"])
-        jump_links.extend(
-            [
-                (f"#{scope_slug}", f"{scope_short}: Top"),
-                (f"#{section_anchor(scope_slug, 'model-summary')}", f"{scope_short}: Models"),
-                (f"#{section_anchor(scope_slug, 'agreement-statistics')}", f"{scope_short}: Agreement"),
-                (f"#{section_anchor(scope_slug, 'company-summary')}", f"{scope_short}: Companies"),
-                (f"#{section_anchor(scope_slug, 'task-summary')}", f"{scope_short}: Tasks"),
-            ]
-        )
-        for plot in scope["plots"]:
-            title = plot_entry_title(plot)
-            jump_links.append((f"#{section_anchor(scope_slug, title)}", f"{scope_short}: {short_jump_label(title)}"))
+        title_set = {plot_entry_title(plot) for plot in scope["plots"]}
+
+        def add_scope_plot(title: str, label: str) -> None:
+            if title in title_set:
+                jump_links.append((f"#{section_anchor(scope_slug, title)}", f"{scope_short}: {label}"))
+
+        jump_links.append((f"#{scope_slug}", f"{scope_short}: Summary"))
+        add_scope_plot("Task Performance By Model", "Performance")
+        add_scope_plot("Retrieval And Query Behavior: Successful Rollouts", "Retrieval")
+        add_scope_plot("Task Difficulty vs Leakage", "Privacy/Difficulty")
+        add_scope_plot("Binary Leakage vs Accuracy", "Binary Leakage")
+        add_scope_plot("StepFun Leakage Rates", "Leakage Rates")
+        if "StepFun vs Qwen Score Heatmap" in title_set:
+            add_scope_plot("StepFun vs Qwen Score Heatmap", "Judge Agreement")
+        else:
+            jump_links.append((f"#{section_anchor(scope_slug, 'agreement-statistics')}", f"{scope_short}: Agreement"))
+        add_scope_plot("Rollout Token Usage", "Tokens")
     jump_links.extend([("#eai-jobs", "Jobs"), ("#files", "Files")])
     jump_nav = "".join(f"<a href='{esc(href)}'>{esc(label)}</a>" for href, label in jump_links)
     scope_html_parts = []
