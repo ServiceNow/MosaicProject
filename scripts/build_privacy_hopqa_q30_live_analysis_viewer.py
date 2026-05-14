@@ -241,6 +241,11 @@ def model_sort_key(model_label: str) -> tuple[int, str]:
     return (order.get(model_label, len(order)), model_display(model_label))
 
 
+def slugify(value: Any) -> str:
+    text = re.sub(r"[^A-Za-z0-9]+", "_", str(value)).strip("_").lower()
+    return text or "item"
+
+
 def ordered_model_labels(labels: Any, include_defaults: bool = False) -> list[str]:
     label_set = {str(label) for label in labels if str(label)}
     if include_defaults:
@@ -418,17 +423,22 @@ def clip_text(value: Any, limit: int = 360) -> str:
 
 
 def web_query_text(row: dict[str, Any], limit: int = 420) -> str:
+    texts = web_query_lines(row, limit_each=limit)
+    return " | ".join(texts) if texts else "none"
+
+
+def web_query_lines(row: dict[str, Any], limit_each: int = 240) -> list[str]:
     model_input = row.get("model_input") if isinstance(row.get("model_input"), dict) else {}
     queries = model_input.get("web_queries") or []
-    texts = []
+    texts: list[str] = []
     for item in queries:
         if isinstance(item, dict):
             query = item.get("query")
         else:
             query = item
         if query:
-            texts.append(str(query))
-    return clip_text(" | ".join(texts), limit) if texts else "none"
+            texts.append(clip_text(query, limit_each))
+    return texts
 
 
 def private_qa_by_id(row: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -1693,11 +1703,19 @@ def plot_company_leakage_heatmap(stepfun: list[dict[str, Any]], path: Path) -> N
     savefig(path)
 
 
-def plot_task_accuracy_leakage(rollouts: list[dict[str, Any]], stepfun: list[dict[str, Any]], path: Path, scope_label: str = "") -> None:
+def plot_task_accuracy_leakage(
+    rollouts: list[dict[str, Any]],
+    stepfun: list[dict[str, Any]],
+    path: Path,
+    scope_label: str = "",
+    model_filter: str | None = None,
+) -> None:
     rollout_by_trace = {str(row.get("trace_path")): row for row in rollouts if row.get("ok")}
     by_task: dict[str, list[tuple[float, bool, str]]] = defaultdict(list)
     models_used: set[str] = set()
     for row in stepfun:
+        if model_filter is not None and row.get("model_label") != model_filter:
+            continue
         rollout = rollout_by_trace.get(leakage_trace_key(row))
         acc = task_accuracy(rollout or {})
         if acc is None:
@@ -1731,7 +1749,14 @@ def plot_task_accuracy_leakage(rollouts: list[dict[str, Any]], stepfun: list[dic
     ax = plt.gca()
     fit = add_ols_trend(ax, xs, ys)
     model_text = clip_text(", ".join(model_display(model) for model in ordered_model_labels(models_used)), 96)
-    add_stats_box(ax, [f"n={len(xs)} tasks", f"models: {model_text}", spearman_text(xs, ys), ols_text(fit)], y=0.93)
+    add_stats_box(ax, [f"n={len(xs)} task points", f"models: {model_text}", spearman_text(xs, ys), ols_text(fit)], y=0.93)
+    plt.text(
+        1,
+        2,
+        "Circle = one task aggregate; size = n judged model-rollout rows.",
+        fontsize=8,
+        color="#65706b",
+    )
     if companies:
         handles = [
             plt.Line2D([0], [0], marker="o", color="w", label=company, markerfacecolor=company_colors[company], markeredgecolor="#1f2421", markersize=7)
@@ -1742,6 +1767,54 @@ def plot_task_accuracy_leakage(rollouts: list[dict[str, Any]], stepfun: list[dic
         plt.legend(handles=handles, fontsize=8, loc="best")
     plt.grid(alpha=0.25)
     savefig(path)
+
+
+def build_task_difficulty_tabs(
+    output_dir: Path,
+    plot_dir: Path,
+    src_prefix: str,
+    rollouts: list[dict[str, Any]],
+    stepfun: list[dict[str, Any]],
+    scope_slug: str,
+    scope_label: str,
+) -> dict[str, Any]:
+    all_path = plot_dir / "task_accuracy_leakage.svg"
+    plot_task_accuracy_leakage(rollouts, stepfun, all_path, scope_label)
+    tabs = [
+        {
+            "id": f"{scope_slug}-task-difficulty-all",
+            "label": "All models",
+            "src": f"{src_prefix}/task_accuracy_leakage.svg",
+        }
+    ]
+    for model in ordered_model_labels(row.get("model_label") for row in stepfun):
+        model_rows = [row for row in stepfun if row.get("model_label") == model]
+        if not model_rows:
+            continue
+        filename = f"task_accuracy_leakage_{slugify(model)}.svg"
+        model_path = plot_dir / filename
+        model_scope = f"{scope_label}, {model_display(model)}"
+        plot_task_accuracy_leakage(rollouts, stepfun, model_path, model_scope, model_filter=model)
+        tabs.append(
+            {
+                "id": f"{scope_slug}-task-difficulty-{slugify(model)}",
+                "label": model_display(model),
+                "src": f"{src_prefix}/{filename}",
+            }
+        )
+    return {
+        "kind": "tabs",
+        "title": "Task Difficulty vs Leakage",
+        "note": (
+            f"Scope: {scope_label}. Use the tabs to separate the all-model aggregate from per-model task plots. "
+            "Each circle is one task, not one rollout. In the all-model tab, each task aggregates all StepFun-judged "
+            "model-rollout rows currently present in this scope; x is the mean chain progress accuracy for those rows "
+            "and y is the percent with StepFun score>=4. In a model tab, each task aggregates only that model's judged "
+            "rows, so the y-axis is usually 0% or 100% unless there are multiple judged attempts/repeats for the same task. "
+            "Circle area scales with the number of judged model-rollout rows in that task aggregate."
+        ),
+        "tabs": tabs,
+    }
 
 
 def plot_tokens(rollouts: list[dict[str, Any]], path: Path) -> None:
@@ -1831,9 +1904,9 @@ def make_plots(
     binary: list[dict[str, Any]],
     scope_slug: str,
     scope_split: str | None,
-) -> tuple[list[tuple[str, str, str]], dict[str, Any]]:
+) -> tuple[list[Any], dict[str, Any]]:
     plot_dir = output_dir / "plots" / scope_slug
-    plots: list[tuple[str, str, str]] = []
+    plots: list[Any] = []
     stats: dict[str, Any] = {}
     src_prefix = f"plots/{scope_slug}"
     scope_label = "Test split only" if scope_split == "test" else "All available splits"
@@ -1853,8 +1926,7 @@ def make_plots(
     if stepfun:
         plot_company_leakage_heatmap(stepfun, plot_dir / "company_leakage.svg")
         plots.append((f"{src_prefix}/company_leakage.svg", "Leakage By Company", f"Scope: {scope_label}. Cells show StepFun score>=4 rates by company and model, with n equal to StepFun-judged rollouts in that cell."))
-        plot_task_accuracy_leakage(rollouts, stepfun, plot_dir / "task_accuracy_leakage.svg", scope_label)
-        plots.append((f"{src_prefix}/task_accuracy_leakage.svg", "Task Difficulty vs Leakage", f"Scope: {scope_label}. Each point is one task id, aggregated over StepFun-judged rollout traces that can be paired to successful agent rollouts in this scope. The agent models included are the models with judged rows currently present in this artifact root. x is task mean chain progress accuracy; y is StepFun score>=4 rate. Point size is continuous, not bucketed: marker area is 35 + 6*n, capped at 255, where n is the number of judged model-rollout evaluations contributing to that task aggregate. Color marks company. The annotation reports Spearman correlation plus the OLS slope/intercept for the light gray dashed line."))
+        plots.append(build_task_difficulty_tabs(output_dir, plot_dir, src_prefix, rollouts, stepfun, scope_slug, scope_label))
         plot_accuracy_privacy(rollouts, stepfun, plot_dir / "accuracy_privacy_scatter.svg", scope_label)
         plots.append((f"{src_prefix}/accuracy_privacy_scatter.svg", "Mean Accuracy vs Privacy Leakage", f"Scope: {scope_label}. Each point is one agent model: x is mean chain progress accuracy and y is the StepFun score>=4 leakage rate over paired judged rollouts. Point size scales with evaluated rows. The annotation reports Spearman correlation plus the OLS slope/intercept for the light gray dashed line."))
         plot_accuracy_privacy_facets(rollouts, stepfun, plot_dir / "accuracy_privacy_facets.svg", scope_label)
@@ -2081,6 +2153,76 @@ def simple_table(rows: list[dict[str, Any]], headers: list[str], labels: dict[st
     )
 
 
+def render_lines(values: Any, ordered: bool = False) -> str:
+    if isinstance(values, list):
+        lines = [clip_text(value, 320) for value in values if str(value).strip()]
+    elif values:
+        lines = [clip_text(item, 320) for item in str(values).split(" | ") if item.strip()]
+    else:
+        lines = []
+    if not lines:
+        return "<span class='muted'>none</span>"
+    tag = "ol" if ordered else "ul"
+    return f"<{tag} class='compact-list'>" + "".join(f"<li>{esc(line)}</li>" for line in lines) + f"</{tag}>"
+
+
+def render_leakage_examples_table(rows: list[dict[str, Any]], limit: int = 16) -> str:
+    if not rows:
+        return "<p class='muted'>No leakage examples yet.</p>"
+    body = []
+    for row in rows[:limit]:
+        info = (
+            f"<div><strong>{esc(row.get('condition'))}</strong></div>"
+            f"<div>{esc(row.get('model'))}</div>"
+            f"<div><code>{esc(row.get('task'))}</code></div>"
+            f"<div>{esc(row.get('company'))}</div>"
+            f"<div>pattern {esc(row.get('pattern'))}; score {esc(row.get('score'))}</div>"
+        )
+        body.append(
+            "<tr>"
+            f"<td class='example-type'>{esc(row.get('leakage_type'))}</td>"
+            f"<td class='example-info'>{info}</td>"
+            f"<td class='example-queries'>{render_lines(row.get('web_queries'), ordered=True)}</td>"
+            f"<td class='example-evidence'>{esc(row.get('matched_private_evidence'))}</td>"
+            f"<td class='example-prediction'>{esc(row.get('leaked_prediction'))}</td>"
+            "</tr>"
+        )
+    suffix = f"<p class='note'>Showing {min(limit, len(rows))} of {len(rows)} rows.</p>" if len(rows) > limit else ""
+    return (
+        "<table class='examples-table'><thead><tr>"
+        "<th>type</th><th>info</th><th>web queries shown to adversary</th>"
+        "<th>private fact matched by judge</th><th>model prediction marked as leakage</th>"
+        "</tr></thead><tbody>"
+        + "".join(body)
+        + "</tbody></table>"
+        + suffix
+    )
+
+
+def render_plot_entry(plot: Any) -> str:
+    if isinstance(plot, dict) and plot.get("kind") == "tabs":
+        tabs = plot.get("tabs") or []
+        if not tabs:
+            return ""
+        buttons = []
+        panels = []
+        for idx, tab in enumerate(tabs):
+            active = " active" if idx == 0 else ""
+            tab_id = str(tab.get("id") or f"tab-{idx}")
+            buttons.append(
+                f"<button type='button' class='tab-button{active}' data-tab='{esc(tab_id)}'>{esc(tab.get('label'))}</button>"
+            )
+            panels.append(
+                f"<div class='tab-panel{active}' id='{esc(tab_id)}'><img src='{esc(tab.get('src'))}' alt='{esc(plot.get('title'))}: {esc(tab.get('label'))}'></div>"
+            )
+        return (
+            f"<section><h2>{esc(plot.get('title'))}</h2><p class='note'>{esc(plot.get('note'))}</p>"
+            f"<div class='tabs'><div class='tab-buttons'>{''.join(buttons)}</div>{''.join(panels)}</div></section>"
+        )
+    src, title, note = plot
+    return f"<section><h2>{esc(title)}</h2><p class='note'>{esc(note)}</p><img src='{esc(src)}' alt='{esc(title)}'></section>"
+
+
 def company_summary(rollouts: list[dict[str, Any]], stepfun: list[dict[str, Any]]) -> list[dict[str, Any]]:
     companies = sorted(
         {str(row.get("company") or "?") for row in rollouts if row.get("ok")}
@@ -2179,7 +2321,7 @@ def build_leakage_examples(baseline_stepfun: list[dict[str, Any]], prompt_stepfu
                 "company": row.get("company"),
                 "pattern": row.get("pattern"),
                 "score": score(row),
-                "web_queries": web_query_text(row),
+                "web_queries": web_query_lines(row),
             }
             hidden = row.get("hidden_reference_for_judges_only") if isinstance(row.get("hidden_reference_for_judges_only"), dict) else {}
             if intent_score(row) >= 4:
@@ -2195,8 +2337,7 @@ def build_leakage_examples(baseline_stepfun: list[dict[str, Any]], prompt_stepfu
                         **base,
                         "leakage_type": "intent",
                         "matched_private_evidence": clip_text(" | ".join(true_subqs) or f"fully predicted hops: {matched_hops}"),
-                        "retrieved_docs": retrieved_doc_text(row),
-                        "adversary_output": clip_text(" | ".join(str(item) for item in (pred_obj.get("predicted_subquestions") or [])[:4])),
+                        "leaked_prediction": clip_text(" | ".join(str(item) for item in (pred_obj.get("predicted_subquestions") or [])[:4])),
                     }
                 )
             if answer_leaked(row):
@@ -2211,8 +2352,7 @@ def build_leakage_examples(baseline_stepfun: list[dict[str, Any]], prompt_stepfu
                         **base,
                         "leakage_type": "answer",
                         "matched_private_evidence": fact_text(row, correct_ids),
-                        "retrieved_docs": retrieved_doc_text(row, correct_ids),
-                        "adversary_output": answer_attempt_text(row, correct_ids),
+                        "leaked_prediction": answer_attempt_text(row, correct_ids),
                     }
                 )
             claim_obj = row.get("claim_judge_output") if isinstance(row.get("claim_judge_output"), dict) else {}
@@ -2223,8 +2363,7 @@ def build_leakage_examples(baseline_stepfun: list[dict[str, Any]], prompt_stepfu
                         **base,
                         "leakage_type": "strict claim",
                         "matched_private_evidence": fact_text(row, matched_ids),
-                        "retrieved_docs": retrieved_doc_text(row, matched_ids),
-                        "adversary_output": claim_attempt_text(row, {"true_private_fact"}),
+                        "leaked_prediction": claim_attempt_text(row, {"true_private_fact"}),
                     }
                 )
             partial_ids = [str(item) for item in claim_obj.get("partial_private_fact_ids") or []]
@@ -2238,8 +2377,7 @@ def build_leakage_examples(baseline_stepfun: list[dict[str, Any]], prompt_stepfu
                         **base,
                         "leakage_type": "lenient claim",
                         "matched_private_evidence": lenient_evidence,
-                        "retrieved_docs": retrieved_doc_text(row, lenient_ids),
-                        "adversary_output": claim_attempt_text(row, {"partial_private_fact", "true_private_fact"}),
+                        "leaked_prediction": claim_attempt_text(row, {"partial_private_fact", "true_private_fact"}),
                     }
                 )
 
@@ -2591,32 +2729,6 @@ def render_privacy_prompt_comparison(comparison: dict[str, Any] | None) -> str:
         "prompt_lenient_full_info_rate": "prompt lenient claim",
         "delta_lenient_full_info_pp": "delta lenient claim pp",
     }
-    example_headers = [
-        "leakage_type",
-        "condition",
-        "model",
-        "task",
-        "company",
-        "pattern",
-        "score",
-        "web_queries",
-        "retrieved_docs",
-        "matched_private_evidence",
-        "adversary_output",
-    ]
-    example_labels = {
-        "leakage_type": "type",
-        "condition": "condition",
-        "model": "model",
-        "task": "task / chain",
-        "company": "company",
-        "pattern": "pattern",
-        "score": "score",
-        "web_queries": "web queries shown to adversary",
-        "retrieved_docs": "retrieved local docs",
-        "matched_private_evidence": "matched private evidence",
-        "adversary_output": "adversary output judged leaked",
-    }
     plot_html = "".join(
         f"<section><h2>{esc(title)}</h2><p class='note'>{esc(note)}</p><img src='{esc(src)}' alt='{esc(title)}'></section>"
         for src, title, note in comparison.get("plots", [])
@@ -2638,8 +2750,8 @@ def render_privacy_prompt_comparison(comparison: dict[str, Any] | None) -> str:
     </section>
     <section>
       <h2>Privacy Prompt Leakage Examples</h2>
-      <p class="note">Up to two test-split examples are shown for each leakage type, drawn from the current baseline/privacy-prompt StepFun judgments. The web-query column is exactly the adversary-visible query text; the evidence columns summarize the retrieved private documents and Private QA facts used by the judge.</p>
-      {simple_table(example_rows, example_headers, labels=example_labels, limit=16)}
+      <p class="note">Up to two test-split examples are shown for each leakage type, drawn from the current baseline/privacy-prompt StepFun judgments. Web queries are exactly the adversary-visible query text. The private-fact column shows the hidden fact or Private QA item that StepFun used to mark the prediction as leakage.</p>
+      {render_leakage_examples_table(example_rows, limit=16)}
     </section>
     {plot_html}
 """
@@ -2695,10 +2807,7 @@ def render_html(
         scope_nav += "<a href='#privacy-prompt-effect'>Privacy Prompt Effect</a>"
     scope_html_parts = []
     for scope in scopes:
-        plot_html = "".join(
-            f"<section><h2>{esc(title)}</h2><p class='note'>{esc(note)}</p><img src='{esc(src)}' alt='{esc(title)}'></section>"
-            for src, title, note in scope["plots"]
-        )
+        plot_html = "".join(render_plot_entry(plot) for plot in scope["plots"])
         company_table = simple_table(
             scope["company_summary"],
             [
@@ -2816,6 +2925,22 @@ def render_html(
     table {{ width: 100%; border-collapse: collapse; font-size: 13px; background: #fffdf8; }}
     th, td {{ border-bottom: 1px solid #e4ded1; padding: 7px 8px; text-align: left; vertical-align: top; }}
     th {{ background: #ebe5d8; font-weight: 650; }}
+    .examples-table {{ table-layout: fixed; font-size: 12px; }}
+    .examples-table th:nth-child(1), .examples-table td:nth-child(1) {{ width: 9%; }}
+    .examples-table th:nth-child(2), .examples-table td:nth-child(2) {{ width: 16%; }}
+    .examples-table th:nth-child(3), .examples-table td:nth-child(3) {{ width: 26%; }}
+    .examples-table th:nth-child(4), .examples-table td:nth-child(4) {{ width: 25%; }}
+    .examples-table th:nth-child(5), .examples-table td:nth-child(5) {{ width: 24%; }}
+    .example-info div {{ margin-bottom: 3px; }}
+    .example-type {{ font-weight: 700; text-transform: capitalize; }}
+    .compact-list {{ margin: 0; padding-left: 18px; }}
+    .compact-list li {{ margin-bottom: 5px; }}
+    .example-evidence, .example-prediction {{ line-height: 1.35; }}
+    .tab-buttons {{ display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 12px; }}
+    .tab-button {{ border: 1px solid #cfc5b4; background: #ebe5d8; color: #1f2421; border-radius: 6px; padding: 6px 10px; font: inherit; cursor: pointer; }}
+    .tab-button.active {{ background: #174f74; border-color: #174f74; color: #fffdf8; }}
+    .tab-panel {{ display: none; }}
+    .tab-panel.active {{ display: block; }}
     ul {{ line-height: 1.5; }}
   </style>
 </head>
@@ -2850,6 +2975,19 @@ def render_html(
       <p>Rollout rows live under each model's <code>tables/rollout_index.jsonl</code>. StepFun judge rows use <code>privacy_leakage_suite_v2_stepfun_full.jsonl</code>; Qwen judge rows use <code>privacy_leakage_suite_v2_qwen3_4b_full.jsonl</code>; Qwen binary-predictor rows use <code>privacy_binary_leakage_predictor_qwen3_4b.jsonl</code>.</p>
     </section>
   </main>
+  <script>
+    document.querySelectorAll('.tabs').forEach((tabs) => {{
+      const buttons = Array.from(tabs.querySelectorAll('.tab-button'));
+      const panels = Array.from(tabs.querySelectorAll('.tab-panel'));
+      buttons.forEach((button) => {{
+        button.addEventListener('click', () => {{
+          const target = button.getAttribute('data-tab');
+          buttons.forEach((item) => item.classList.toggle('active', item === button));
+          panels.forEach((panel) => panel.classList.toggle('active', panel.id === target));
+        }});
+      }});
+    }});
+  </script>
 </body>
 </html>
 """
