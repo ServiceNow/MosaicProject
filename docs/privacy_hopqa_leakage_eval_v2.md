@@ -672,16 +672,16 @@ This writes `all.jsonl`, `train.jsonl`, `val.jsonl`, `test.jsonl`, and
 assistant completion is exactly `YES` when StepFun's overall score is 4-5 and
 exactly `NO` otherwise. The prompt contains only visible web-query text.
 
-Current live export, 2026-05-14 02:59 UTC:
+Snapshot export, 2026-05-14 03:05 UTC:
 
 ```text
-rows: 5,301
-positive labels: 622 (11.7%)
-train: 2,219 rows, 292 positives
-val: 359 rows, 44 positives
-test: 2,723 rows, 286 positives
-baseline condition: 3,929 rows, 494 positives
-privacy-prompt condition: 1,372 rows, 128 positives
+rows: 5,372
+positive labels: 627 (11.7%)
+train: 2,254 rows, 293 positives
+val: 381 rows, 47 positives
+test: 2,737 rows, 287 positives
+baseline condition: 3,998 rows, 499 positives
+privacy-prompt condition: 1,374 rows, 128 positives
 ```
 
 A first zero-shot Qwen3-4B YES/NO pass on the 359-row validation split is high
