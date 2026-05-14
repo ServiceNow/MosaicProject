@@ -871,7 +871,7 @@ def add_ols_trend(
     xs: list[float],
     ys: list[float],
     x_range: tuple[float, float] = (0.0, 100.0),
-    label: str = "OLS fit",
+    label: str = "OLS regression",
 ) -> dict[str, Any] | None:
     if len(xs) < 3 or len(set(xs)) < 2:
         return None
@@ -906,11 +906,35 @@ def ols_text(fit: dict[str, Any] | None) -> str:
     return f"OLS: y = {slope:.3g}x {sign} {abs(intercept):.3g}"
 
 
+def bubble_size(count: int, max_count: int, min_size: float = 34.0, max_size: float = 520.0) -> float:
+    """Area scale for repeated observations at an exact plotted coordinate."""
+    if max_count <= 1:
+        return min_size + 0.35 * (max_size - min_size)
+    return min_size + (max_size - min_size) * math.sqrt(max(1, count)) / math.sqrt(max_count)
+
+
+def label_large_bubbles(ax: Any, bubbles: dict[tuple[float, float], int], max_count: int) -> None:
+    threshold = max(12, math.ceil(max_count * 0.35))
+    for (x_val, y_val), count in bubbles.items():
+        if count < threshold:
+            continue
+        ax.text(
+            x_val,
+            y_val,
+            str(count),
+            ha="center",
+            va="center",
+            fontsize=7,
+            color="#1f2421",
+            zorder=4,
+        )
+
+
 def spearman_text(xs: list[float], ys: list[float]) -> str:
     if scipy_stats is None or len(xs) < 3 or len(set(xs)) < 2 or len(set(ys)) < 2:
-        return "Spearman: n/a"
+        return "Spearman rank: n/a"
     rho, p_value = scipy_stats.spearmanr(xs, ys)
-    return f"Spearman: rho={rho:.2f}, p={p_value:.3g}"
+    return f"Spearman rank: rho={rho:.2f}, p={p_value:.3g}"
 
 
 def logistic_fit(xs: list[float], ys: list[bool]) -> dict[str, float] | None:
@@ -1126,11 +1150,22 @@ def plot_accuracy_privacy_facets(rollouts: list[dict[str, Any]], leakage: list[d
         vals = sorted(points_by_model[model], key=lambda item: item[3])
         xs = [item[0] for item in vals]
         ys = [item[1] for item in vals]
-        colors = ["#b23a2e" if leaked else "#2f6f9f" for _, _, leaked, _ in vals]
-        jittered_y = [y + (((idx * 37) % 17) - 8) * 0.012 for idx, y in enumerate(ys)]
-        ax.scatter(xs, jittered_y, s=24, c=colors, alpha=0.72, edgecolor="#1f2421", linewidth=0.25)
+        bubbles = Counter((round(x, 6), float(y)) for x, y in zip(xs, ys))
+        max_count = max(bubbles.values()) if bubbles else 1
+        for (x_val, y_val), count in sorted(bubbles.items()):
+            color = "#b23a2e" if y_val >= 4 else "#2f6f9f"
+            ax.scatter(
+                [x_val],
+                [y_val],
+                s=bubble_size(count, max_count, min_size=28, max_size=430),
+                c=color,
+                alpha=0.66,
+                edgecolor="#1f2421",
+                linewidth=0.35,
+            )
+        label_large_bubbles(ax, bubbles, max_count)
         fit = add_ols_trend(ax, xs, ys)
-        add_stats_box(ax, [f"n={len(vals)} rollouts", spearman_text(xs, ys), ols_text(fit)], y=0.95)
+        add_stats_box(ax, [f"n={len(vals)} rollouts", f"{len(bubbles)} exact points", spearman_text(xs, ys), ols_text(fit)], y=0.95)
         ax.set_title(model_display(model), fontsize=10)
         ax.set_xlim(0, 100)
         ax.set_ylim(0.7, 5.3)
@@ -1145,7 +1180,7 @@ def plot_accuracy_privacy_facets(rollouts: list[dict[str, Any]], leakage: list[d
     handles = [
         plt.Line2D([0], [0], marker="o", color="w", label="score 1-3", markerfacecolor="#2f6f9f", markeredgecolor="#1f2421", markersize=6),
         plt.Line2D([0], [0], marker="o", color="w", label="score 4-5", markerfacecolor="#b23a2e", markeredgecolor="#1f2421", markersize=6),
-        plt.Line2D([0], [0], color="#8f8f8f", linestyle="--", linewidth=1.4, label="OLS fit"),
+        plt.Line2D([0], [0], color="#8f8f8f", linestyle="--", linewidth=1.4, label="OLS regression"),
     ]
     fig.legend(handles=handles, loc="lower center", ncol=3, bbox_to_anchor=(0.5, -0.01), fontsize=8)
     savefig(path)
@@ -1183,15 +1218,29 @@ def plot_accuracy_privacy_single_model(
     vals = sorted(points, key=lambda item: item[3])
     xs = [item[0] for item in vals]
     ys = [item[1] for item in vals]
-    colors = ["#b23a2e" if leaked else "#2f6f9f" for _, _, leaked, _ in vals]
-    jittered_x = [max(0, min(100, x + (((idx * 31) % 19) - 9) * 0.45)) for idx, x in enumerate(xs)]
-    jittered_y = [y + (((idx * 37) % 17) - 8) * 0.012 for idx, y in enumerate(ys)]
+    bubbles = Counter((round(x, 6), float(y)) for x, y in zip(xs, ys))
+    max_count = max(bubbles.values()) if bubbles else 1
     plt.figure(figsize=(8.4, 5.8))
-    plt.scatter(jittered_x, jittered_y, s=26, c=colors, alpha=0.70, edgecolor="#1f2421", linewidth=0.25)
     ax = plt.gca()
+    for (x_val, y_val), count in sorted(bubbles.items()):
+        color = "#b23a2e" if y_val >= 4 else "#2f6f9f"
+        ax.scatter(
+            [x_val],
+            [y_val],
+            s=bubble_size(count, max_count),
+            c=color,
+            alpha=0.66,
+            edgecolor="#1f2421",
+            linewidth=0.4,
+        )
+    label_large_bubbles(ax, bubbles, max_count)
     fit = add_ols_trend(ax, xs, ys)
     leaked_n = sum(1 for _, _, leaked, _ in vals if leaked)
-    add_stats_box(ax, [f"n={len(vals)} judged rollouts", f"score 4-5 n={leaked_n}", spearman_text(xs, ys), ols_text(fit)], y=0.95)
+    add_stats_box(
+        ax,
+        [f"n={len(vals)} judged rollouts", f"{len(bubbles)} exact points", f"score 4-5 n={leaked_n}", spearman_text(xs, ys), ols_text(fit)],
+        y=0.95,
+    )
     plt.xlim(-2, 102)
     plt.ylim(0.7, 5.3)
     plt.xticks(range(0, 101, 20))
@@ -1202,9 +1251,10 @@ def plot_accuracy_privacy_single_model(
     handles = [
         plt.Line2D([0], [0], marker="o", color="w", label="score 1-3", markerfacecolor="#2f6f9f", markeredgecolor="#1f2421", markersize=6),
         plt.Line2D([0], [0], marker="o", color="w", label="score 4-5", markerfacecolor="#b23a2e", markeredgecolor="#1f2421", markersize=6),
-        plt.Line2D([0], [0], color="#8f8f8f", linestyle="--", linewidth=1.4, label="OLS fit"),
+        plt.Line2D([0], [0], color="#8f8f8f", linestyle="--", linewidth=1.4, label="OLS regression"),
     ]
     plt.legend(handles=handles, fontsize=8, loc="lower right")
+    plt.text(1, 0.82, "Bubble area = n rollouts at exact coordinate; no jitter.", fontsize=8, color="#65706b")
     plt.grid(alpha=0.25)
     savefig(path)
 
@@ -1221,24 +1271,23 @@ def plot_accuracy_privacy_combined(rollouts: list[dict[str, Any]], leakage: list
     plt.figure(figsize=(9.0, 6.0))
     xs = [item[1] for item in vals]
     ys = [item[2] for item in vals]
-    for model in ordered_model_labels({item[0] for item in vals}):
-        subset = [(idx, item) for idx, item in enumerate(vals) if item[0] == model]
-        jittered_x = [max(0, min(100, item[1] + (((idx * 31) % 19) - 9) * 0.35)) for idx, item in subset]
-        jittered_y = [item[2] + (((idx * 37) % 17) - 8) * 0.012 for idx, item in subset]
-        edgecolors = ["#b23a2e" if item[3] else "#1f2421" for _idx, item in subset]
-        plt.scatter(
-            jittered_x,
-            jittered_y,
-            s=24,
-            c=COLORS.get(model, "#777777"),
-            alpha=0.55,
-            edgecolor=edgecolors,
-            linewidth=0.35,
-            label=model_display(model),
-        )
     ax = plt.gca()
+    bubbles = Counter((round(item[1], 6), float(item[2])) for item in vals)
+    max_count = max(bubbles.values()) if bubbles else 1
+    for (x_val, y_val), count in sorted(bubbles.items()):
+        color = "#b23a2e" if y_val >= 4 else "#2f6f9f"
+        ax.scatter(
+            [x_val],
+            [y_val],
+            s=bubble_size(count, max_count, min_size=36, max_size=680),
+            c=color,
+            alpha=0.64,
+            edgecolor="#1f2421",
+            linewidth=0.45,
+        )
+    label_large_bubbles(ax, bubbles, max_count)
     fit = add_ols_trend(ax, xs, ys)
-    add_stats_box(ax, [f"n={len(vals)} judged rollouts", spearman_text(xs, ys), ols_text(fit)], y=0.95)
+    add_stats_box(ax, [f"n={len(vals)} judged rollouts", f"{len(bubbles)} exact points", spearman_text(xs, ys), ols_text(fit)], y=0.95)
     plt.xlim(-2, 102)
     plt.ylim(0.7, 5.3)
     plt.xticks(range(0, 101, 20))
@@ -1246,7 +1295,13 @@ def plot_accuracy_privacy_combined(rollouts: list[dict[str, Any]], leakage: list
     plt.xlabel("Rollout chain progress accuracy (%)")
     plt.ylabel("StepFun privacy score (1-5)")
     plt.title(f"All-model rollout accuracy vs privacy score ({scope_label})")
-    plt.legend(fontsize=8, loc="lower right")
+    handles = [
+        plt.Line2D([0], [0], marker="o", color="w", label="score 1-3", markerfacecolor="#2f6f9f", markeredgecolor="#1f2421", markersize=6),
+        plt.Line2D([0], [0], marker="o", color="w", label="score 4-5", markerfacecolor="#b23a2e", markeredgecolor="#1f2421", markersize=6),
+        plt.Line2D([0], [0], color="#8f8f8f", linestyle="--", linewidth=1.4, label="OLS regression"),
+    ]
+    plt.legend(handles=handles, fontsize=8, loc="lower right")
+    plt.text(1, 0.82, "Bubble area = n rollouts at exact coordinate; no jitter.", fontsize=8, color="#65706b")
     plt.grid(alpha=0.25)
     savefig(path)
 
@@ -1291,8 +1346,9 @@ def build_rollout_accuracy_privacy_tabs(
         "note": (
             f"Scope: {scope_label}. These are rollout-level points, not task aggregates. "
             "The combined and grid tabs show every StepFun-judged rollout that can be paired to a successful agent rollout. "
-            "Per-model tabs show the same raw points for one model at a time. x is chain progress accuracy; "
-            "y is StepFun's 1-5 privacy score; red points are the score>=4 leakage label."
+            "Repeated exact coordinates are aggregated into larger bubbles, with no jitter. "
+            "Per-model tabs show the same rows for one model at a time. x is chain progress accuracy; "
+            "y is StepFun's 1-5 privacy score; red bubbles are the score>=4 leakage label."
         ),
         "tabs": tabs,
     }
@@ -1354,17 +1410,38 @@ def plot_binary_leakage_accuracy_grid(
         vals = sorted(rows, key=lambda item: item[3])
         xs = [item[1] for item in vals]
         ys_bool = [item[2][key] for item in vals]
-        jittered_x = [max(0, min(100, x + (((idx * 31) % 19) - 9) * 0.35)) for idx, x in enumerate(xs)]
-        jittered_y = [(1.0 if y else 0.0) + (((idx * 37) % 17) - 8) * 0.006 for idx, y in enumerate(ys_bool)]
-        colors = [COLORS.get(item[0], "#777777") for item in vals]
-        ax.scatter(jittered_x, jittered_y, s=18, c=colors, alpha=0.45, edgecolor="#1f2421", linewidth=0.15)
+        bubbles = Counter((round(x, 6), 1.0 if y else 0.0) for x, y in zip(xs, ys_bool))
+        max_count = max(bubbles.values()) if bubbles else 1
+        for (x_val, y_val), count in sorted(bubbles.items()):
+            color = "#b23a2e" if y_val else "#2f6f9f"
+            ax.scatter(
+                [x_val],
+                [y_val],
+                s=bubble_size(count, max_count, min_size=26, max_size=440),
+                c=color,
+                alpha=0.62,
+                edgecolor="#1f2421",
+                linewidth=0.32,
+            )
+        label_large_bubbles(ax, bubbles, max_count)
         fit = logistic_fit(xs, ys_bool)
         if fit:
             curve_x = list(range(0, 101, 2))
             curve_y = logistic_curve(fit, curve_x)
-            ax.plot(curve_x, curve_y, color="#8f8f8f", linestyle="--", linewidth=1.6, label="logistic fit")
+            ax.plot(curve_x, curve_y, color="#8f8f8f", linestyle="--", linewidth=1.6, label="logistic regression")
         positives = sum(1 for item in ys_bool if item)
-        add_stats_box(ax, [f"n={len(vals)}", f"yes={positives} ({pct(positives, len(vals), 1)})", logistic_text(fit)], y=0.95)
+        ys_numeric = [1.0 if value else 0.0 for value in ys_bool]
+        add_stats_box(
+            ax,
+            [
+                f"n={len(vals)}",
+                f"{len(bubbles)} exact points",
+                f"yes={positives} ({pct(positives, len(vals), 1)})",
+                spearman_text(xs, ys_numeric),
+                logistic_text(fit),
+            ],
+            y=0.95,
+        )
         ax.set_title(label, fontsize=10)
         ax.set_xlim(-2, 102)
         ax.set_ylim(-0.08, 1.08)
@@ -1375,12 +1452,13 @@ def plot_binary_leakage_accuracy_grid(
     fig.supxlabel("Rollout chain progress accuracy (%)")
     fig.supylabel("Binary leakage label")
     fig.suptitle(f"Binary leakage vs accuracy ({title_suffix})", y=1.0)
-    if not model_filter:
-        handles = [
-            plt.Line2D([0], [0], marker="o", color="w", label=model_display(model), markerfacecolor=COLORS.get(model, "#777777"), markeredgecolor="#1f2421", markersize=6)
-            for model in ordered_model_labels({item[0] for item in rows})
-        ]
-        fig.legend(handles=handles, loc="lower center", ncol=min(5, len(handles)), bbox_to_anchor=(0.5, -0.01), fontsize=8)
+    handles = [
+        plt.Line2D([0], [0], marker="o", color="w", label="no", markerfacecolor="#2f6f9f", markeredgecolor="#1f2421", markersize=6),
+        plt.Line2D([0], [0], marker="o", color="w", label="yes", markerfacecolor="#b23a2e", markeredgecolor="#1f2421", markersize=6),
+        plt.Line2D([0], [0], color="#8f8f8f", linestyle="--", linewidth=1.4, label="logistic regression"),
+    ]
+    fig.legend(handles=handles, loc="lower center", ncol=3, bbox_to_anchor=(0.5, -0.01), fontsize=8)
+    fig.text(0.01, 0.01, "Bubble area = n rollouts at exact coordinate; no jitter.", fontsize=8, color="#65706b")
     savefig(path)
 
 
@@ -1416,7 +1494,9 @@ def build_binary_leakage_accuracy_tabs(
         "title": "Binary Leakage vs Accuracy",
         "note": (
             f"Scope: {scope_label}. Each panel treats a leakage type as yes/no and plots the raw judged rollouts "
-            "against chain progress accuracy. The gray dashed curve is an unadjusted one-variable logistic regression; "
+            "against chain progress accuracy. Repeated exact coordinates are aggregated into larger bubbles, with no jitter. "
+            "The gray dashed curve is an unadjusted one-variable logistic regression; "
+            "Spearman rank is shown as the monotonic association test for the discrete plotted points. "
             "OR/10pp is the odds ratio for a 10 percentage-point increase in chain progress accuracy. The p-value is a Wald "
             "test for nonzero logistic slope. This is descriptive and does not adjust for task/model dependence."
         ),
@@ -2198,7 +2278,7 @@ def plot_task_accuracy_leakage(
             for company in companies
         ]
         if fit is not None:
-            handles.append(plt.Line2D([0], [0], color="#8f8f8f", linestyle="--", linewidth=1.4, label="OLS fit"))
+            handles.append(plt.Line2D([0], [0], color="#8f8f8f", linestyle="--", linewidth=1.4, label="OLS regression"))
         plt.legend(handles=handles, fontsize=8, loc="best")
     plt.grid(alpha=0.25)
     savefig(path)
@@ -2363,7 +2443,7 @@ def make_plots(
         plots.append((f"{src_prefix}/company_leakage.svg", "Leakage By Company", f"Scope: {scope_label}. Cells show StepFun score>=4 rates by company and model, with n equal to StepFun-judged rollouts in that cell."))
         plots.append(build_task_difficulty_tabs(output_dir, plot_dir, src_prefix, rollouts, stepfun, scope_slug, scope_label))
         plot_accuracy_privacy(rollouts, stepfun, plot_dir / "accuracy_privacy_scatter.svg", scope_label)
-        plots.append((f"{src_prefix}/accuracy_privacy_scatter.svg", "Mean Accuracy vs Privacy Leakage", f"Scope: {scope_label}. Each point is one agent model: x is mean chain progress accuracy and y is the StepFun score>=4 leakage rate over paired judged rollouts. Point size scales with evaluated rows. The annotation reports Spearman correlation plus the OLS slope/intercept for the light gray dashed line."))
+        plots.append((f"{src_prefix}/accuracy_privacy_scatter.svg", "Mean Accuracy vs Privacy Leakage", f"Scope: {scope_label}. Each point is one agent model: x is mean chain progress accuracy and y is the StepFun score>=4 leakage rate over paired judged rollouts. Point size scales with evaluated rows. Spearman rank is the primary association statistic; the light gray dashed OLS regression line is a descriptive visual trend with slope/intercept shown in the annotation."))
         plots.append(build_rollout_accuracy_privacy_tabs(plot_dir, src_prefix, rollouts, stepfun, scope_slug, scope_label))
         plots.append(build_binary_leakage_accuracy_tabs(plot_dir, src_prefix, rollouts, stepfun, scope_slug, scope_label))
         plot_score_distribution(stepfun, plot_dir / "stepfun_score_distribution.svg", f"StepFun privacy score distribution ({scope_label})")
@@ -2638,7 +2718,51 @@ def render_leakage_examples_table(rows: list[dict[str, Any]], limit: int = 16) -
     )
 
 
-def render_plot_entry(plot: Any) -> str:
+def section_anchor(prefix: str, title: str) -> str:
+    return f"{prefix}-{slugify(title)}"
+
+
+def plot_entry_title(plot: Any) -> str:
+    if isinstance(plot, dict):
+        return str(plot.get("title") or "plot")
+    return str(plot[1])
+
+
+def short_jump_label(title: str) -> str:
+    mapping = {
+        "Rollout Coverage": "Coverage",
+        "Task Performance By Model": "Performance",
+        "Performance By Hop Pattern": "Hop Pattern",
+        "Difficulty By Company": "Company Acc",
+        "Retrieval And Query Behavior: Successful Rollouts": "Retrieval OK",
+        "Retrieval And Query Behavior: All Rollouts": "Retrieval All",
+        "Leakage By Company": "Company Leak",
+        "Task Difficulty vs Leakage": "Task Diff",
+        "Mean Accuracy vs Privacy Leakage": "Mean Acc/Privacy",
+        "Rollout Accuracy vs Privacy": "Rollout Acc/Privacy",
+        "Binary Leakage vs Accuracy": "Binary Leak",
+        "StepFun Score Distribution": "StepFun Scores",
+        "StepFun Leakage Rates": "Leakage Rates",
+        "Overall Score 3 Breakdown": "Score 3",
+        "Leakage Count Metrics": "Leak Counts",
+        "Web Queries vs Score": "Web Queries",
+        "Local Reads Per Query vs Score": "Local Reads/Query",
+        "Leakage By Local Document Reads": "Leak/Local Reads",
+        "Leakage By Gold Local-Hop Prefix": "Leak/Local Prefix",
+        "Qwen Judge Score Distribution": "Qwen Scores",
+        "StepFun vs Qwen Score Heatmap": "Judge Heatmap",
+        "Rollout Token Usage": "Tokens",
+        "Binary Predictor Confusion": "Binary Predictor",
+        "Privacy Prompt Effect: Rollout And Judge Coverage": "Prompt Coverage",
+        "Privacy Prompt Effect: Accuracy And Leakage": "Prompt Acc/Leak",
+        "Privacy Prompt Effect: Leakage Types": "Prompt Types",
+        "Privacy Prompt Effect: Query And Retrieval Behavior": "Prompt Retrieval",
+    }
+    return mapping.get(title, title)
+
+
+def render_plot_entry(plot: Any, section_id: str | None = None) -> str:
+    id_attr = f" id='{esc(section_id)}'" if section_id else ""
     if isinstance(plot, dict) and plot.get("kind") == "tabs":
         tabs = plot.get("tabs") or []
         if not tabs:
@@ -2655,11 +2779,11 @@ def render_plot_entry(plot: Any) -> str:
                 f"<div class='tab-panel{active}' id='{esc(tab_id)}'><img src='{esc(tab.get('src'))}' alt='{esc(plot.get('title'))}: {esc(tab.get('label'))}'></div>"
             )
         return (
-            f"<section><h2>{esc(plot.get('title'))}</h2><p class='note'>{esc(plot.get('note'))}</p>"
+            f"<section{id_attr}><h2>{esc(plot.get('title'))}</h2><p class='note'>{esc(plot.get('note'))}</p>"
             f"<div class='tabs'><div class='tab-buttons'>{''.join(buttons)}</div>{''.join(panels)}</div></section>"
         )
     src, title, note = plot
-    return f"<section><h2>{esc(title)}</h2><p class='note'>{esc(note)}</p><img src='{esc(src)}' alt='{esc(title)}'></section>"
+    return f"<section{id_attr}><h2>{esc(title)}</h2><p class='note'>{esc(note)}</p><img src='{esc(src)}' alt='{esc(title)}'></section>"
 
 
 def company_summary(rollouts: list[dict[str, Any]], stepfun: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -3173,7 +3297,7 @@ def render_privacy_prompt_comparison(comparison: dict[str, Any] | None) -> str:
         "delta_lenient_full_info_pp": "delta lenient claim pp",
     }
     plot_html = "".join(
-        f"<section><h2>{esc(title)}</h2><p class='note'>{esc(note)}</p><img src='{esc(src)}' alt='{esc(title)}'></section>"
+        f"<section id='{esc(section_anchor('privacy-prompt', title))}'><h2>{esc(title)}</h2><p class='note'>{esc(note)}</p><img src='{esc(src)}' alt='{esc(title)}'></section>"
         for src, title, note in comparison.get("plots", [])
     )
     return f"""
@@ -3181,17 +3305,17 @@ def render_privacy_prompt_comparison(comparison: dict[str, Any] | None) -> str:
       <h2>Privacy Prompt Effect</h2>
       <p class="note">Compares the regular baseline artifact root <code>{esc(comparison.get('baseline_root'))}</code> against the privacy-prompted test artifact root <code>{esc(comparison.get('prompt_root'))}</code>. Deltas are privacy prompt minus baseline. Negative leakage deltas are better; positive accuracy deltas are better.</p>
     </section>
-    <section>
+    <section id="privacy-prompt-summary">
       <h2>Privacy Prompt Effect Summary</h2>
       <p class="note">Rows use the test split only. Coverage columns are successful rollouts divided by 344 planned test chains. Judged coverage is StepFun privacy-judged rows divided by successful rollouts. n=0 means no successful test rollout or no judged test row has been written for that condition yet, not that leakage is zero. Chain progress accuracy uses evaluable hops; final accuracy is binary final-answer correctness per rollout; strict chain success is the all-hops-correct plus final-answer-correct metric. The privacy-prompted run and StepFun privacy judge are live, so judged counts may lag rollout counts.</p>
       {simple_table(rows, headers, labels=labels, limit=20)}
     </section>
-    <section>
+    <section id="privacy-prompt-leakage-summary">
       <h2>Privacy Prompt Leakage Type Summary</h2>
       <p class="note">Intent is the StepFun intent subquestion score >=4. Answer leakage means at least one private QA answer was judged correct. Strict claim leakage is the full-information judge; lenient claim leakage also includes partial private claims. Deltas are privacy prompt minus baseline in percentage points.</p>
       {simple_table(rows, leakage_headers, labels=leakage_labels, limit=20)}
     </section>
-    <section>
+    <section id="privacy-prompt-examples">
       <h2>Privacy Prompt Leakage Examples</h2>
       <p class="note">Up to two test-split examples are shown for each leakage type, drawn from the current baseline/privacy-prompt StepFun judgments. Web queries are exactly the adversary-visible query text. The private-fact column shows the hidden fact or Private QA item that StepFun used to mark the prediction as leakage.</p>
       {render_leakage_examples_table(example_rows, limit=16)}
@@ -3253,15 +3377,46 @@ def render_html(
         ("#rubric", "Rubric"),
         ("#accuracy-metrics", "Accuracy"),
         ("#uncertainty", "Uncertainty"),
-        *[(f"#{scope['slug']}", str(scope["title"])) for scope in scopes],
     ]
     if privacy_prompt_comparison:
-        jump_links.append(("#privacy-prompt-effect", "Privacy Prompt"))
+        jump_links.extend(
+            [
+                ("#privacy-prompt-effect", "Prompt: Top"),
+                ("#privacy-prompt-summary", "Prompt: Summary"),
+                ("#privacy-prompt-leakage-summary", "Prompt: Types Table"),
+                ("#privacy-prompt-examples", "Prompt: Examples"),
+                *[
+                    (
+                        f"#privacy-prompt-{slugify(title)}",
+                        short_jump_label(title),
+                    )
+                    for _src, title, _note in privacy_prompt_comparison.get("plots", [])
+                ],
+            ]
+        )
+    for scope in scopes:
+        scope_slug = str(scope["slug"])
+        scope_short = "All" if scope_slug == "all" else "Test" if scope_slug == "test" else str(scope["title"])
+        jump_links.extend(
+            [
+                (f"#{scope_slug}", f"{scope_short}: Top"),
+                (f"#{section_anchor(scope_slug, 'model-summary')}", f"{scope_short}: Models"),
+                (f"#{section_anchor(scope_slug, 'agreement-statistics')}", f"{scope_short}: Agreement"),
+                (f"#{section_anchor(scope_slug, 'company-summary')}", f"{scope_short}: Companies"),
+                (f"#{section_anchor(scope_slug, 'task-summary')}", f"{scope_short}: Tasks"),
+            ]
+        )
+        for plot in scope["plots"]:
+            title = plot_entry_title(plot)
+            jump_links.append((f"#{section_anchor(scope_slug, title)}", f"{scope_short}: {short_jump_label(title)}"))
     jump_links.extend([("#eai-jobs", "Jobs"), ("#files", "Files")])
     jump_nav = "".join(f"<a href='{esc(href)}'>{esc(label)}</a>" for href, label in jump_links)
     scope_html_parts = []
     for scope in scopes:
-        plot_html = "".join(render_plot_entry(plot) for plot in scope["plots"])
+        plot_html = "".join(
+            render_plot_entry(plot, section_anchor(str(scope["slug"]), plot_entry_title(plot)))
+            for plot in scope["plots"]
+        )
         company_table = simple_table(
             scope["company_summary"],
             [
@@ -3329,20 +3484,20 @@ def render_html(
       <h2>{esc(scope['title'])}</h2>
       <p class="note">{esc(scope['note'])}</p>
     </section>
-    <section>
+    <section id="{esc(section_anchor(str(scope['slug']), 'model-summary'))}">
       <h2>{esc(scope['title'])} Model Summary</h2>
       {table(scope['model_summary'])}
     </section>
-    <section>
+    <section id="{esc(section_anchor(str(scope['slug']), 'agreement-statistics'))}">
       <h2>{esc(scope['title'])} Agreement Statistics</h2>
       {stats_html(scope['stats'])}
     </section>
-    <section>
+    <section id="{esc(section_anchor(str(scope['slug']), 'company-summary'))}">
       <h2>{esc(scope['title'])} Company Summary</h2>
       <p class="note">Difficulty and privacy leakage grouped by company. Percentages use available successful rollouts or StepFun-judged rows in the current scope.</p>
       {company_table}
     </section>
-    <section>
+    <section id="{esc(section_anchor(str(scope['slug']), 'task-summary'))}">
       <h2>{esc(scope['title'])} Task Summary</h2>
       <p class="note">Rows are sorted by leakage rate first, then lower chain progress accuracy. This is meant for finding hard and high-leakage tasks quickly.</p>
       {task_table}
@@ -3375,8 +3530,8 @@ def render_html(
     .scope-heading {{ background: #ebe5d8; border-color: #cfc5b4; }}
     .scope-nav {{ display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0 0; }}
     .scope-nav a {{ color: #174f74; text-decoration: none; font-weight: 650; }}
-    .jump-nav {{ position: sticky; top: 0; z-index: 20; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: -4px 0 18px; padding: 9px 10px; background: rgba(255,253,248,0.96); border: 1px solid #d7d0c2; border-radius: 8px; box-shadow: 0 2px 10px rgba(31,36,33,0.06); }}
-    .jump-nav a {{ color: #174f74; text-decoration: none; font-weight: 650; font-size: 13px; padding: 2px 4px; }}
+    .jump-nav {{ position: sticky; top: 0; z-index: 20; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; max-height: 92px; overflow-y: auto; margin: -4px 0 18px; padding: 9px 10px; background: rgba(255,253,248,0.97); border: 1px solid #d7d0c2; border-radius: 8px; box-shadow: 0 2px 10px rgba(31,36,33,0.06); }}
+    .jump-nav a {{ color: #174f74; text-decoration: none; font-weight: 650; font-size: 12px; padding: 3px 6px; border: 1px solid #d7d0c2; border-radius: 6px; background: #fffdf8; }}
     img {{ display: block; max-width: 100%; height: auto; }}
     table {{ width: 100%; border-collapse: collapse; font-size: 13px; background: #fffdf8; }}
     th, td {{ border-bottom: 1px solid #e4ded1; padding: 7px 8px; text-align: left; vertical-align: top; overflow-wrap: anywhere; word-break: normal; }}
