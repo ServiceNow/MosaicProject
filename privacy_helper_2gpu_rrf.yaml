@@ -1,0 +1,124 @@
+image: registry.toolkit-sp.yul201.service-now.com/snow.research.tapes/interactive-toolkit:throughput
+name: privacy_helper_2gpu_rrf
+workdir: /home/toolkit/my_code/MosaicProject
+# This helper intentionally points at the shared q30 artifact bundle. The
+# bundle contains the rebuilt 2026-04-15 local indices, BrowseComp embedding
+# shards, BM25 cache, long-document blacklist, and curated web inputs. Keeping
+# all helper-facing artifacts under /mnt/llmd/results avoids hidden dependency
+# on untracked repo-local files in /home/toolkit.
+#
+# This RRF variant keeps the same artifact bundle as privacy_helper_2gpu.yaml,
+# but ranks BrowseComp and local retrieval with reciprocal-rank fusion between
+# lexical BM25 and dense embedding ranks. It is intended for retrieval-debug
+# experiments where gold parent recall is the bottleneck.
+#
+# This variant uses the second helper GPU for BrowseComp dense retrieval via
+# the torch fallback in BrowseCompHybridSearcher. Do not install faiss-gpu-cu12
+# here: the current PyPI wheels abort on H100 with CUDA error 209 ("no kernel
+# image is available for execution on the device") because their FAISS kernels
+# are not built for sm_90.
+command:
+  - /opt/conda/bin/conda
+  - run
+  - -n
+  - pipeline-rl
+  - --no-capture-output
+  - python
+  - -m
+  - trajectory_generation.src.retrieval.privacy_helper_stack
+  - --host
+  - 0.0.0.0
+  - --port
+  - '8012'
+  - --local-index-root
+  - /mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/local_indices_fixeddeps_20260415
+  # Previous local default, kept for debugging old runs:
+  # - /mnt/llmd/results/exps/alexg/privacy_agent/local_indices_fixeddeps_20260415
+  - --workers
+  - '16'
+  - --threadpool-tokens
+  - '16'
+  - --browsecomp-index-glob
+  - /mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/browsecomp_indexes/qwen3-embedding-4b/corpus.shard*_of_*.pkl
+  # Previous local default, kept for debugging old runs:
+  # - /home/toolkit/BrowseComp-Plus/indexes/qwen3-embedding-4b/corpus.shard*_of_*.pkl
+  - --browsecomp-corpus
+  - Tevatron/browsecomp-plus-corpus
+  - --browsecomp-index-device
+  - cuda:1
+  - --browsecomp-bm25-recall-k
+  - '100'
+  - --browsecomp-dense-recall-k
+  - '100'
+  - --browsecomp-rank-mode
+  - rrf
+  - --browsecomp-rrf-k
+  - '20'
+  - --local-rank-mode
+  - rrf
+  - --local-bm25-recall-k
+  - '100'
+  - --local-dense-recall-k
+  - '100'
+  - --local-rrf-k
+  - '20'
+  - --browsecomp-max-chars
+  - '0'
+  - --browsecomp-exclude-doc-ids-file
+  - /mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/helper_inputs/browsecomp_doc_ids_over_10_windows_2026-05-12.txt
+  - --browsecomp-max-doc-windows
+  - '10'
+  - --browsecomp-reader-window-chars
+  - '16000'
+  - --browsecomp-reader-window-overlap-chars
+  - '1000'
+  - --curated-web-docs
+  - /mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/helper_inputs/docs_curated_web_plus_privacy_hopqa_q24.jsonl
+  - --curated-web-chunks
+  - /mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/helper_inputs/chunks_curated_web_base.jsonl
+  - --curated-web-chunks
+  - /mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/helper_inputs/chunks_curated_web_privacy_hopqa_q19.jsonl
+  - --curated-web-chunks
+  - /mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/helper_inputs/chunks_curated_web_privacy_hopqa_q20.jsonl
+  - --curated-web-chunks
+  - /mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/helper_inputs/chunks_curated_web_privacy_hopqa_q21.jsonl
+  - --curated-web-chunks
+  - /mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/helper_inputs/chunks_curated_web_privacy_hopqa_q24.jsonl
+  - --embedding-model
+  - Qwen/Qwen3-Embedding-4B
+data:
+  - 'snow.home.alex_gurung:/home/toolkit'
+  - 'snow.home.alex_gurung:/transformers_cache:ro'
+  - 'snow.research.tapes.data:/mnt/llmd/data:ro'
+  - 'snow.research.rlar.results:/mnt/llmd/results:ro'
+  - 'snow.research.tapes.base_models:/mnt/llmd/base_models:ro'
+environmentVars:
+  - HOME=/home/toolkit
+  - XDG_CACHE_HOME=/home/toolkit/.cache
+  - HF_HOME=/home/toolkit/.cache/huggingface
+  - HF_HUB_CACHE=/home/toolkit/.cache/huggingface/hub
+  - HF_DATASETS_CACHE=/home/toolkit/.cache/huggingface/datasets
+  - HF_HUB_ENABLE_HF_TRANSFER=0
+  - PYTHONNOUSERSITE=1
+  - PYTHONPATH=/home/toolkit/my_code/MosaicProject
+  - PORT=8012
+  - PRIVACY_HELPER_EMBED_PORT=8000
+  - PRIVACY_HELPER_MODEL_CACHE_ROOT=/transformers_cache/hub
+  - OMP_NUM_THREADS=2
+  - MKL_NUM_THREADS=2
+  - OPENBLAS_NUM_THREADS=2
+  - NUMEXPR_NUM_THREADS=2
+options:
+  internal-dns:
+    name: dns-privacy-helper
+    ports:
+      - port: 8012
+        protocol: TCP
+        target-port: 8012
+resources:
+  cpu: 96
+  gpu: 2
+  gpuMem: 80
+  mem: 384
+preemptable: true
+restartable: true

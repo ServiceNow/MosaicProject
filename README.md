@@ -22,6 +22,10 @@ The helper-facing retrieval artifacts are staged under:
 /mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513
 ```
 
+Retrieval RRF audit and launch notes:
+
+[Privacy HopQA retrieval RRF audit, 2026-05-14](./docs/privacy_hopqa_retrieval_rrf_audit_2026-05-14.md)
+
 ## Current Privacy HopQA training launch commands
 
 Current canonical dataset: [Privacy HopQA q30 residual-review dataset](./docs/privacy_hopqa_q30_training_defaults_2026-05-13.md).
@@ -34,6 +38,13 @@ fixed local indices from `local_indices_fixeddeps_20260415`:
 ```bash
 cd /home/toolkit/my_code/MosaicProject
 ACCOUNT=snow.research.adea JOB_SPEC=privacy_helper_2gpu.yaml ./run_privacy_helper.sh
+```
+
+To test the BM25+dense reciprocal-rank-fusion helper instead:
+
+```bash
+cd /home/toolkit/my_code/MosaicProject
+ACCOUNT=snow.research.adea JOB_SPEC=privacy_helper_2gpu_rrf.yaml ./run_privacy_helper.sh
 ```
 
 `run_privacy_hopqa.sh` defaults to the q30 full-dataset train/val/test files.
@@ -68,7 +79,7 @@ REPLICAS=2 \
 MODEL_PATH="Qwen/Qwen3-4B-Instruct-2507" \
 CAPTURE_MODE=planning_only \
 FILTER_ZERO_ADVANTAGE_GROUPS=true \
-EXTRA_OVERRIDES="privacy_hopqa.helper_timeout_s=180 privacy_hopqa.max_parallel_doc_reads=10 actor.llm_max_rollouts=64" \
+EXTRA_OVERRIDES="privacy_hopqa.helper_timeout_s=180 privacy_hopqa.max_parallel_doc_reads=5 actor.llm_max_rollouts=64" \
 bash /home/toolkit/my_code/MosaicProject/run_privacy_hopqa.sh
 ```
 
@@ -88,11 +99,11 @@ REPLICAS=2 \
 MODEL_PATH=/mnt/llmd/base_models/Qwen3-8B \
 CAPTURE_MODE=planning_only \
 FILTER_ZERO_ADVANTAGE_GROUPS=true \
-EXTRA_OVERRIDES="privacy_hopqa.helper_timeout_s=180 privacy_hopqa.max_parallel_doc_reads=10 actor.llm_max_rollouts=64" \
+EXTRA_OVERRIDES="privacy_hopqa.helper_timeout_s=180 privacy_hopqa.max_parallel_doc_reads=5 actor.llm_max_rollouts=64" \
 bash /home/toolkit/my_code/MosaicProject/run_privacy_hopqa.sh
 ```
 
-The normal 4B and 8B jobs train planning calls only (`CAPTURE_MODE=planning_only`), use `actor.llm_max_rollouts=64`, and allow up to 10 concurrent document-reader calls per rollout. Reward/success
+The normal 4B and 8B jobs train planning calls only (`CAPTURE_MODE=planning_only`), use `actor.llm_max_rollouts=64`, and allow up to 5 concurrent document-reader calls per rollout. Reward/success
 metrics are logged by gold pattern and chain length, for example
 `reward_by_pattern/LLW_mean` and `reward_by_chain_length/3_mean`.
 
@@ -184,6 +195,7 @@ Use this as the main index for repo notes:
 - [Privacy HopQA training](./docs/privacy_hopqa_training.md): PipelineRL launch path, helper setup, dataset split, EAI notes, and monitoring.
 - [Privacy HopQA helper fix notes](./docs/privacy_hopqa_helper_fix_2026-05-06.md): helper environment, vLLM, FAISS, and benchmark details.
 - [Privacy HopQA initial-state eval](./docs/privacy_hopqa_initial_state_eval.md): baseline evaluation plan and privacy-evaluator workflow.
+- [Privacy HopQA retrieval RRF audit 2026-05-14](./docs/privacy_hopqa_retrieval_rrf_audit_2026-05-14.md): retrieval-method audit, local Qwen replay, and RRF helper launch commands.
 
 ## Repository Layout
 
