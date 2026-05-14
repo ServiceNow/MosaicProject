@@ -33,18 +33,20 @@ Current canonical dataset: [Privacy HopQA q30 residual-review dataset](./docs/pr
 The repo-level helper specs now read from the shared q30 artifact bundle,
 blacklist long BrowseComp parents, live-filter
 BrowseComp hits to at most ten 16k/1k-overlap reader windows, and serve the
-fixed local indices from `local_indices_fixeddeps_20260415`:
+fixed local indices from `local_indices_fixeddeps_20260415`. The default
+helper now uses BM25+dense reciprocal-rank fusion for both web and local
+retrieval:
 
 ```bash
 cd /home/toolkit/my_code/MosaicProject
 ACCOUNT=snow.research.adea JOB_SPEC=privacy_helper_2gpu.yaml ./run_privacy_helper.sh
 ```
 
-To test the BM25+dense reciprocal-rank-fusion helper instead:
+To test the BM25-only retrieval ablation instead:
 
 ```bash
 cd /home/toolkit/my_code/MosaicProject
-ACCOUNT=snow.research.adea JOB_SPEC=privacy_helper_2gpu_rrf.yaml ./run_privacy_helper.sh
+ACCOUNT=snow.research.adea JOB_SPEC=privacy_helper_2gpu_bm25.yaml ./run_privacy_helper.sh
 ```
 
 `run_privacy_hopqa.sh` defaults to the q30 full-dataset train/val/test files.
@@ -106,6 +108,50 @@ bash /home/toolkit/my_code/MosaicProject/run_privacy_hopqa.sh
 The normal 4B and 8B jobs train planning calls only (`CAPTURE_MODE=planning_only`), use `actor.llm_max_rollouts=64`, and allow up to 5 concurrent document-reader calls per rollout. Reward/success
 metrics are logged by gold pattern and chain length, for example
 `reward_by_pattern/LLW_mean` and `reward_by_chain_length/3_mean`.
+
+Current 4-replica reward comparison runs:
+
+Partial-hop-accuracy outcome reward, where a 4-hop chain with 3 correct hops
+receives reward `0.75`:
+
+```bash
+TS=$(date +%Y%m%d%H%M%S)
+JOB="privacy_hopqa_q30_rrf_4b_hopacc_${TS}"
+
+PIPELINERL_ROOT=/home/toolkit/my_code/PipelineRL \
+OUTPUT_DIR_BASE=/mnt/llmd/results/exps/alexg/reason \
+JOB_NAME="$JOB" \
+WANDB_PROJECT=privacy_hopqa_q30_rrf_reward_compare_20260514 \
+WANDB_GROUP=q30_rrf_hopacc \
+WANDB_NAME="$JOB" \
+REPLICAS=4 \
+MODEL_PATH="Qwen/Qwen3-4B-Instruct-2507" \
+CAPTURE_MODE=planning_only \
+FILTER_ZERO_ADVANTAGE_GROUPS=true \
+EXTRA_OVERRIDES="privacy_hopqa.reward_mode=hop_accuracy privacy_hopqa.training_reward_mode=outcome privacy_hopqa.stop_after_incorrect_hop=false finetune.rl.step_reward_advantages=false finetune.rl.pad_step_rewards_for_advantage=false privacy_hopqa.helper_timeout_s=180 privacy_hopqa.max_parallel_doc_reads=5 actor.llm_max_rollouts=64" \
+bash /home/toolkit/my_code/MosaicProject/run_privacy_hopqa.sh
+```
+
+Prefix-progress step reward, where captured planning steps receive accumulated
+prefix credit and malformed protocol steps are zeroed:
+
+```bash
+TS=$(date +%Y%m%d%H%M%S)
+JOB="privacy_hopqa_q30_rrf_4b_prefix_step_${TS}"
+
+PIPELINERL_ROOT=/home/toolkit/my_code/PipelineRL \
+OUTPUT_DIR_BASE=/mnt/llmd/results/exps/alexg/reason \
+JOB_NAME="$JOB" \
+WANDB_PROJECT=privacy_hopqa_q30_rrf_reward_compare_20260514 \
+WANDB_GROUP=q30_rrf_prefix_step \
+WANDB_NAME="$JOB" \
+REPLICAS=4 \
+MODEL_PATH="Qwen/Qwen3-4B-Instruct-2507" \
+CAPTURE_MODE=planning_only \
+FILTER_ZERO_ADVANTAGE_GROUPS=true \
+EXTRA_OVERRIDES="privacy_hopqa.reward_mode=hop_accuracy privacy_hopqa.training_reward_mode=prefix_progress privacy_hopqa.stop_after_incorrect_hop=true finetune.rl.step_reward_advantages=true finetune.rl.pad_step_rewards_for_advantage=true privacy_hopqa.zero_error_step_reward=true privacy_hopqa.helper_timeout_s=180 privacy_hopqa.max_parallel_doc_reads=5 actor.llm_max_rollouts=64" \
+bash /home/toolkit/my_code/MosaicProject/run_privacy_hopqa.sh
+```
 
 [`trajectory_generation`](./trajectory_generation) shows how we generate multi-hop research questions that rely on both private (enterprise) documents and external web documents (from browsecomp-plus).
 

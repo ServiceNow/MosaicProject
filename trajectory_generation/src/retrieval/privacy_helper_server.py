@@ -164,7 +164,7 @@ def add_helper_arguments(
     argument_target.add_argument(
         "--browsecomp-rank-mode",
         choices=["hybrid", "rrf", "bm25"],
-        default="hybrid",
+        default="rrf",
         help="How to rank BrowseComp BM25/dense candidates: dense rerank hybrid, rank-fusion RRF, or BM25 only.",
     )
     argument_target.add_argument(
@@ -176,7 +176,7 @@ def add_helper_arguments(
     argument_target.add_argument(
         "--local-rank-mode",
         choices=["dense", "rrf", "bm25"],
-        default="dense",
+        default="rrf",
         help="How to rank task-local documents: dense cosine, dense+BM25 RRF, or BM25 only.",
     )
     argument_target.add_argument(

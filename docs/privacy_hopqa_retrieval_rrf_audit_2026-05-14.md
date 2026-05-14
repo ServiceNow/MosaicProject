@@ -15,8 +15,8 @@ The helper now supports explicit rank modes:
 --local-rrf-k 20
 ```
 
-The default helper behavior is unchanged unless these flags are passed. Use `privacy_helper_2gpu_rrf.yaml` to launch the RRF variant.
-Use `privacy_helper_2gpu_bm25.yaml` to launch the BM25-only variant.
+The default helper behavior is now RRF for both BrowseComp/web and local retrieval. `privacy_helper_2gpu.yaml` passes these RRF flags explicitly.
+Use `privacy_helper_2gpu_bm25.yaml` to launch the BM25-only ablation.
 
 RRF score:
 
@@ -403,13 +403,13 @@ Viewer:
 runtime_analysis/privacy_hopqa_privacy_aware_web_query_bm25_dense_2026-05-14_balanced80/index.html
 ```
 
-## Recommended live experiment
+## Recommended live helper
 
-Launch one RRF helper:
+Launch the default RRF helper:
 
 ```bash
 cd /home/toolkit/my_code/MosaicProject
-ACCOUNT=snow.research.adea JOB_SPEC=privacy_helper_2gpu_rrf.yaml ./run_privacy_helper.sh
+ACCOUNT=snow.research.adea JOB_SPEC=privacy_helper_2gpu.yaml ./run_privacy_helper.sh
 ```
 
 Launch a BM25-only helper for ablation:
