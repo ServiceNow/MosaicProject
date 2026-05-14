@@ -319,6 +319,90 @@ Viewer:
 runtime_analysis/privacy_hopqa_parallel_bm25_rrf_replay_qwen4b_2026-05-14_large96_mixed/index.html
 ```
 
+## Privacy-aware paraphrased web-query audit
+
+I also audited the specific behavior where the model uses web queries that look privacy-aware: generalized/public/industry phrasing, while omitting the company name and the exact accepted answer value. This covers cases like:
+
+```text
+retail grocery chain disaster recovery investment food safety inventory system
+```
+
+instead of directly searching:
+
+```text
+Lee's Market disaster recovery investment approximately 250 high-risk food products
+```
+
+Command:
+
+```bash
+cd /home/toolkit/my_code/MosaicProject
+python3 scripts/audit_privacy_aware_web_queries_bm25_dense.py \
+  --max-traces 2500 \
+  --max-queries 80 \
+  --max-per-hop 3 \
+  --out-dir runtime_analysis/privacy_hopqa_privacy_aware_web_query_bm25_dense_2026-05-14_balanced80
+```
+
+Selection rule:
+
+- actual `web_search` calls from traces
+- query/action text contains general/public/industry-style phrasing
+- query omits the company name
+- query omits the exact accepted answer value
+- at most 3 queries per hop, to avoid one chain dominating the analysis
+
+Retrieval comparison:
+
+- `current`: live helper `/browsecomp/search`, i.e. the current web retrieval path
+- `BM25`: local lexical BM25 over `/home/toolkit/full_docs` plus the curated web chunks used by the helper
+
+Results:
+
+| group | n | mean top5 overlap | different top1 | current web-gold top5 | BM25 web-gold top5 | current web-gold top20 | BM25 web-gold top20 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| overall | 74 | 0.085 | 65 | 16/23 | 19/23 | 18/23 | 19/23 |
+| local-hop privacy paraphrases | 51 | 0.068 | 51 | n/a | n/a | n/a | n/a |
+| web-hop privacy paraphrases | 23 | 0.122 | 14 | 16/23 | 19/23 | 18/23 | 19/23 |
+
+Interpretation:
+
+- BM25 and current helper results are usually very different for these paraphrased privacy-aware web queries.
+- For web hops where a gold web document exists, BM25 has higher gold-document recall: 19/23 top5 versus 16/23 for current.
+- For local hops, there is no web gold document by design. The important signal is that top5 overlap is only 0.068 and top1 differs in 51/51 cases, so ranking mode heavily changes what public context a privacy-aware agent sees.
+- These queries are often lexical entity/title searches after removing private details. Dense/hybrid retrieval can drift to semantically related curated documents, while BM25 tends to preserve exact rare names and public-program terms.
+
+Concrete web-hop example where BM25 wins:
+
+```text
+Question: In what year did Eepi Chaad complete a residency with the Contemporary Art Museum Houston?
+Privacy-aware query: Eepi Chaad Contemporary Art Museum Houston residency program timeline
+Gold web doc: web/48175
+Current helper rank: not in top 20
+BM25 rank: 1
+```
+
+Concrete local-hop privacy-paraphrase example:
+
+```text
+Question: What was the average order value increase at Lee's Market due to personalized product recommendations?
+Privacy-aware query: case study grocery chain personalized product recommendations average order value increase
+Current top result: BCG personalization article from curated DRBench URLs
+BM25 top result: web/94142 from BrowseComp full docs
+```
+
+Conclusion:
+
+- If we expect a more privacy-aware planner to use generalized web queries, BM25 becomes more important, not less.
+- This strengthens the case for either BM25-only as a live ablation or an RRF/BM25-heavy web ranker.
+- A pure dense-reranked web path is risky for paraphrased privacy-aware queries because it can miss exact public entities even when the query contains their names.
+
+Viewer:
+
+```text
+runtime_analysis/privacy_hopqa_privacy_aware_web_query_bm25_dense_2026-05-14_balanced80/index.html
+```
+
 ## Recommended live experiment
 
 Launch one RRF helper:
