@@ -346,40 +346,85 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
         k: int = 10,
         mode: str = "bm25",
         max_chars: int | None = None,
+        rrf_k: int = 20,
         **_kwargs,
     ) -> list[RetrievalHit]:
         if not query or k <= 0:
             return []
-        if mode not in {"bm25", "hybrid"}:
-            raise ValueError("BrowseCompHybridSearcher supports mode='bm25' or mode='hybrid'")
-        if self._faiss_index is None or not self.lookup or self.embeddings is None:
+        if mode not in {"bm25", "hybrid", "rrf"}:
+            raise ValueError("BrowseCompHybridSearcher supports mode='bm25', mode='hybrid', or mode='rrf'")
+        if not self.lookup:
+            return []
+
+        bm25_lookup_ranks: dict[int, int] = {}
+        bm25_lookup_scores: dict[int, float] = {}
+
+        if self.bm25 is not None and self._bm25_idx_to_lookup_idx is not None:
+            bm25_k = k if mode == "bm25" else self.bm25_recall_k
+            for rank, bm25_hit in enumerate(self.bm25.search(query, k=bm25_k), start=1):
+                lookup_i = self._bm25_idx_to_lookup_idx.get(int(bm25_hit.doc_idx))
+                if lookup_i is not None:
+                    bm25_lookup_ranks.setdefault(int(lookup_i), rank)
+                    bm25_lookup_scores.setdefault(int(lookup_i), float(bm25_hit.score))
+
+        if mode == "bm25":
+            hits: list[RetrievalHit] = []
+            for lookup_idx, rank in sorted(bm25_lookup_ranks.items(), key=lambda item: item[1])[:k]:
+                raw_docid = str(self.lookup[lookup_idx])
+                doc = self._get_doc(raw_docid)
+                hits.append(
+                    RetrievalHit(
+                        chunk_id=self._normalize_docid(raw_docid),
+                        doc_id=self._normalize_docid(raw_docid),
+                        score=bm25_lookup_scores.get(lookup_idx, 0.0),
+                        text=self._truncate(doc.get("text") or "", max_chars=max_chars),
+                        meta={
+                            "url": doc.get("url") or "",
+                            "raw_docid": raw_docid,
+                            "source": "browsecomp_bm25",
+                        },
+                    )
+                )
+            return hits
+
+        if self._faiss_index is None or self.embeddings is None:
             return []
 
         query_vector = self._encode_query(query).astype(np.float32, copy=False)
-        candidate_lookup_idxs: set[int] = set()
-
-        if self.bm25 is not None and self._bm25_idx_to_lookup_idx is not None:
-            for bm25_hit in self.bm25.search(query, k=self.bm25_recall_k):
-                lookup_i = self._bm25_idx_to_lookup_idx.get(int(bm25_hit.doc_idx))
-                if lookup_i is not None:
-                    candidate_lookup_idxs.add(int(lookup_i))
+        candidate_lookup_idxs: set[int] = set(bm25_lookup_ranks)
+        dense_lookup_ranks: dict[int, int] = {}
 
         dense_k = min(self.dense_recall_k, len(self.lookup))
         if dense_k > 0:
-            for idx in self._search_dense(query_vector, dense_k):
+            for rank, idx in enumerate(self._search_dense(query_vector, dense_k), start=1):
                 if idx >= 0:
-                    candidate_lookup_idxs.add(idx)
+                    dense_lookup_ranks.setdefault(int(idx), rank)
+                    candidate_lookup_idxs.add(int(idx))
 
         if not candidate_lookup_idxs:
             return []
 
-        candidate_list = sorted(candidate_lookup_idxs)
-        rerank_scores = self._rerank_scores(candidate_list, query_vector)
-        ranked = sorted(
-            zip(candidate_list, rerank_scores),
-            key=lambda item: float(item[1]),
-            reverse=True,
-        )
+        if mode == "rrf":
+            rrf_base = max(1, int(rrf_k))
+            ranked = []
+            for lookup_idx in sorted(candidate_lookup_idxs):
+                score = 0.0
+                if lookup_idx in bm25_lookup_ranks:
+                    score += 1.0 / (rrf_base + bm25_lookup_ranks[lookup_idx])
+                if lookup_idx in dense_lookup_ranks:
+                    score += 1.0 / (rrf_base + dense_lookup_ranks[lookup_idx])
+                ranked.append((lookup_idx, score))
+            ranked.sort(key=lambda item: float(item[1]), reverse=True)
+            source = "browsecomp_rrf"
+        else:
+            candidate_list = sorted(candidate_lookup_idxs)
+            rerank_scores = self._rerank_scores(candidate_list, query_vector)
+            ranked = sorted(
+                zip(candidate_list, rerank_scores),
+                key=lambda item: float(item[1]),
+                reverse=True,
+            )
+            source = "browsecomp_hybrid"
 
         hits: list[RetrievalHit] = []
         for lookup_idx, score in ranked[:k]:
@@ -394,7 +439,7 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
                     meta={
                         "url": doc.get("url") or "",
                         "raw_docid": raw_docid,
-                        "source": "browsecomp_hybrid",
+                        "source": source,
                     },
                 )
             )

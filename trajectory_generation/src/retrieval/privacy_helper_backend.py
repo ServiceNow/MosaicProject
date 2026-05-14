@@ -12,6 +12,7 @@ import httpx
 import numpy as np
 
 from trajectory_generation import config
+from trajectory_generation.src.retrieval.bm25 import BM25Index
 from trajectory_generation.src.retrieval.browsecomp import BrowseCompHybridSearcher
 from trajectory_generation.src.retrieval.composite import (
     ExcludedSearcher,
@@ -136,6 +137,19 @@ class LocalTaskIndex:
         )
         self.embeddings = np.load(storage_dir / "embeddings.npy", mmap_mode=mmap_mode)
         self._embedding_norms: np.ndarray | None = None
+        self._bm25_doc_ids: list[str] = []
+        bm25_texts: list[str] = []
+        for doc_id in self.doc_ids:
+            doc_info = self.documents.get(str(doc_id))
+            if not isinstance(doc_info, dict):
+                continue
+            content = str(doc_info.get("content") or "")
+            metadata = json.dumps(doc_info.get("metadata", {}), sort_keys=True)
+            text = f"{content}\n{metadata}".strip()
+            if text:
+                self._bm25_doc_ids.append(str(doc_id))
+                bm25_texts.append(text)
+        self.bm25 = BM25Index(bm25_texts) if bm25_texts else None
 
     @property
     def embedding_norms(self) -> np.ndarray:
@@ -177,6 +191,81 @@ class LocalTaskIndex:
                 }
             )
         return hits
+
+    def bm25_search(self, query: str, k: int) -> list[dict[str, Any]]:
+        if k <= 0 or self.bm25 is None:
+            return []
+
+        hits: list[dict[str, Any]] = []
+        for bm25_hit in self.bm25.search(query, k=k):
+            doc_id = self._bm25_doc_ids[int(bm25_hit.doc_idx)]
+            doc_info = self.documents[doc_id]
+            hits.append(
+                {
+                    "doc_id": doc_id,
+                    "similarity_score": float(bm25_hit.score),
+                    "bm25_score": float(bm25_hit.score),
+                    "content": doc_info["content"],
+                    "metadata": doc_info.get("metadata", {}),
+                    "preview": doc_info.get("content_preview", doc_info["content"][:300]),
+                    "timestamp": doc_info.get("timestamp"),
+                    "retrieval_mode": "bm25",
+                }
+            )
+        return hits
+
+    def rrf_search(
+        self,
+        query_vector: np.ndarray,
+        query: str,
+        *,
+        k: int,
+        threshold: float,
+        dense_k: int,
+        bm25_k: int,
+        rrf_k: int,
+    ) -> list[dict[str, Any]]:
+        dense_hits = self.search(query_vector, k=max(k, dense_k), threshold=threshold)
+        bm25_hits = self.bm25_search(query, k=max(k, bm25_k))
+
+        ranked_by_doc: dict[str, dict[str, int]] = defaultdict(dict)
+        best_hit_by_doc: dict[str, dict[str, Any]] = {}
+
+        for rank, hit in enumerate(dense_hits, start=1):
+            doc_id = str(hit.get("doc_id") or "")
+            if not doc_id:
+                continue
+            ranked_by_doc[doc_id]["dense_rank"] = rank
+            best_hit_by_doc[doc_id] = hit
+
+        for rank, hit in enumerate(bm25_hits, start=1):
+            doc_id = str(hit.get("doc_id") or "")
+            if not doc_id:
+                continue
+            ranked_by_doc[doc_id]["bm25_rank"] = rank
+            best_hit_by_doc.setdefault(doc_id, hit)
+
+        base = max(1, int(rrf_k))
+        scored: list[tuple[float, str]] = []
+        for doc_id, ranks in ranked_by_doc.items():
+            score = 0.0
+            if "dense_rank" in ranks:
+                score += 1.0 / (base + ranks["dense_rank"])
+            if "bm25_rank" in ranks:
+                score += 1.0 / (base + ranks["bm25_rank"])
+            scored.append((score, doc_id))
+
+        scored.sort(key=lambda item: item[0], reverse=True)
+        results: list[dict[str, Any]] = []
+        for score, doc_id in scored[:k]:
+            hit = dict(best_hit_by_doc[doc_id])
+            hit["similarity_score"] = float(score)
+            hit["rrf_score"] = float(score)
+            hit["dense_rank"] = ranked_by_doc[doc_id].get("dense_rank")
+            hit["bm25_rank"] = ranked_by_doc[doc_id].get("bm25_rank")
+            hit["retrieval_mode"] = "rrf"
+            results.append(hit)
+        return results
 
 
 class LocalIndexRepository:
@@ -314,6 +403,12 @@ class PrivacyHelperConfig:
     browsecomp_max_chars: int
     curated_web_docs: str
     curated_web_chunks: list[str]
+    browsecomp_rank_mode: str = "hybrid"
+    browsecomp_rrf_k: int = 20
+    local_rank_mode: str = "dense"
+    local_bm25_recall_k: int = 100
+    local_dense_recall_k: int = 100
+    local_rrf_k: int = 20
     browsecomp_exclude_doc_ids_file: str = ""
     browsecomp_max_doc_windows: int = 10
     browsecomp_reader_window_chars: int = 16000
@@ -373,9 +468,17 @@ class PrivacyHelperBackend:
             "embedding_model": self.embeddings.model_name,
             "embedding_server_ok": self.embeddings.health(),
             "local_index_root": str(self.local_indices.index_root),
+            "local_rank_mode": self.config.local_rank_mode,
+            "local_bm25_recall_k": self.config.local_bm25_recall_k,
+            "local_dense_recall_k": self.config.local_dense_recall_k,
+            "local_rrf_k": self.config.local_rrf_k,
             "local_task_count": self.local_indices.total_tasks,
             "loaded_local_tasks": self.local_indices.loaded_tasks,
             "browsecomp_size": self.browsecomp.size,
+            "browsecomp_rank_mode": self.config.browsecomp_rank_mode,
+            "browsecomp_bm25_recall_k": self.config.browsecomp_bm25_recall_k,
+            "browsecomp_dense_recall_k": self.config.browsecomp_dense_recall_k,
+            "browsecomp_rrf_k": self.config.browsecomp_rrf_k,
             "browsecomp_excluded_doc_count": len(self.browsecomp_excluded_doc_ids),
             "browsecomp_max_doc_windows": self.config.browsecomp_max_doc_windows,
             "browsecomp_max_doc_chars": self.browsecomp_max_doc_chars,
@@ -401,7 +504,22 @@ class PrivacyHelperBackend:
     ) -> list[dict[str, Any]]:
         query_vector = self.embeddings.embed_query(query)
         task_index = self.local_indices.get(task_id)
-        return task_index.search(query_vector, k=k, threshold=threshold)
+        mode = self.config.local_rank_mode
+        if mode == "dense":
+            return task_index.search(query_vector, k=k, threshold=threshold)
+        if mode == "bm25":
+            return task_index.bm25_search(query, k=k)
+        if mode == "rrf":
+            return task_index.rrf_search(
+                query_vector,
+                query,
+                k=k,
+                threshold=threshold,
+                dense_k=self.config.local_dense_recall_k,
+                bm25_k=self.config.local_bm25_recall_k,
+                rrf_k=self.config.local_rrf_k,
+            )
+        raise ValueError(f"Unsupported local_rank_mode={mode!r}")
 
     def _task_web_searcher(self, task_id: str | None) -> Any:
         task_key = task_id or ""
@@ -416,6 +534,11 @@ class PrivacyHelperBackend:
                     self.browsecomp,
                     excluded_doc_ids=self.browsecomp_excluded_doc_ids,
                 )
+            browsecomp_searcher = FixedKwargSearcher(
+                browsecomp_searcher,
+                mode=self.config.browsecomp_rank_mode,
+                rrf_k=self.config.browsecomp_rrf_k,
+            )
 
             searchers: list[tuple[Any, float]] = [
                 (browsecomp_searcher, config.BROWSECOMP_WEB_WEIGHT),
@@ -453,7 +576,7 @@ class PrivacyHelperBackend:
         if char_limit <= 0:
             char_limit = 0
         search_k = max(k, k * 20) if self.browsecomp_max_doc_chars > 0 else k
-        hits = searcher.search(query=query, k=search_k, mode="hybrid", max_chars=char_limit)
+        hits = searcher.search(query=query, k=search_k, max_chars=char_limit)
 
         results: list[dict[str, Any]] = []
         for hit in hits:

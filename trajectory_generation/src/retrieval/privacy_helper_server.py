@@ -162,6 +162,42 @@ def add_helper_arguments(
         help="Dense recall fanout before reranking.",
     )
     argument_target.add_argument(
+        "--browsecomp-rank-mode",
+        choices=["hybrid", "rrf", "bm25"],
+        default="hybrid",
+        help="How to rank BrowseComp BM25/dense candidates: dense rerank hybrid, rank-fusion RRF, or BM25 only.",
+    )
+    argument_target.add_argument(
+        "--browsecomp-rrf-k",
+        type=int,
+        default=20,
+        help="RRF denominator constant for --browsecomp-rank-mode=rrf.",
+    )
+    argument_target.add_argument(
+        "--local-rank-mode",
+        choices=["dense", "rrf", "bm25"],
+        default="dense",
+        help="How to rank task-local documents: dense cosine, dense+BM25 RRF, or BM25 only.",
+    )
+    argument_target.add_argument(
+        "--local-bm25-recall-k",
+        type=int,
+        default=100,
+        help="Local BM25 recall fanout for --local-rank-mode=rrf.",
+    )
+    argument_target.add_argument(
+        "--local-dense-recall-k",
+        type=int,
+        default=100,
+        help="Local dense recall fanout for --local-rank-mode=rrf.",
+    )
+    argument_target.add_argument(
+        "--local-rrf-k",
+        type=int,
+        default=20,
+        help="RRF denominator constant for --local-rank-mode=rrf.",
+    )
+    argument_target.add_argument(
         "--browsecomp-max-chars",
         type=int,
         default=8000,
@@ -239,6 +275,12 @@ def config_from_args(args: argparse.Namespace) -> PrivacyHelperConfig:
         browsecomp_index_device=args.browsecomp_index_device,
         browsecomp_bm25_recall_k=int(args.browsecomp_bm25_recall_k),
         browsecomp_dense_recall_k=int(args.browsecomp_dense_recall_k),
+        browsecomp_rank_mode=args.browsecomp_rank_mode,
+        browsecomp_rrf_k=int(args.browsecomp_rrf_k),
+        local_rank_mode=args.local_rank_mode,
+        local_bm25_recall_k=int(args.local_bm25_recall_k),
+        local_dense_recall_k=int(args.local_dense_recall_k),
+        local_rrf_k=int(args.local_rrf_k),
         browsecomp_max_chars=int(args.browsecomp_max_chars),
         curated_web_docs=args.curated_web_docs,
         curated_web_chunks=curated_chunks,
