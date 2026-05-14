@@ -500,41 +500,42 @@ def retrieved_doc_text(row: dict[str, Any], fact_ids: list[str] | None = None, l
     return clip_text(" | ".join(parts), limit) if parts else "none"
 
 
-def fact_text(row: dict[str, Any], fact_ids: list[str], limit: int = 420) -> str:
+def fact_line(question: Any, answer: Any, limit: int = 220) -> str:
+    question_text = clip_text(question, limit)
+    answer_text = clip_text(answer, 90)
+    if question_text and answer_text:
+        return f"{question_text} -> {answer_text}"
+    return question_text or answer_text or "private fact"
+
+
+def fact_lines(row: dict[str, Any], fact_ids: list[str], limit_each: int = 220) -> list[str]:
     qa_lookup = private_qa_by_id(row)
     local_fact_lookup = local_fact_by_id(row)
-    parts = []
+    parts: list[str] = []
     for fact_id in fact_ids:
         qa = qa_lookup.get(str(fact_id))
         if qa:
-            parts.append(
-                f"{qa.get('doc_key')}: Q: {qa.get('question')} A: {qa.get('canonical_answer')}"
-            )
+            parts.append(fact_line(qa.get("question"), qa.get("canonical_answer"), limit_each))
             continue
         fact = local_fact_lookup.get(str(fact_id))
         if fact:
-            parts.append(
-                f"{fact.get('fact_id')} from {fact.get('doc_id')}: Q: {fact.get('question')} A: {fact.get('canonical_answer')}"
-            )
+            parts.append(fact_line(fact.get("question"), fact.get("canonical_answer"), limit_each))
             continue
-        parts.append(str(fact_id))
-    return clip_text(" | ".join(parts), limit) if parts else "none"
+    return parts
 
 
-def local_fact_summary(row: dict[str, Any], limit: int = 420) -> str:
+def fact_text(row: dict[str, Any], fact_ids: list[str], limit: int = 420) -> str:
+    return clip_text(" | ".join(fact_lines(row, fact_ids)), limit) if fact_ids else "none"
+
+
+def local_fact_summary(row: dict[str, Any], limit: int = 220) -> str:
     facts = list(local_fact_by_id(row).values())
     if facts:
-        parts = [
-            f"{fact.get('fact_id')} from {fact.get('doc_id')}: Q: {fact.get('question')} A: {fact.get('canonical_answer')}"
-            for fact in facts[:3]
-        ]
+        parts = [fact_line(fact.get("question"), fact.get("canonical_answer"), limit) for fact in facts[:1]]
         return clip_text(" | ".join(parts), limit)
     qas = list(private_qa_by_id(row).values())
     if qas:
-        parts = [
-            f"{qa.get('doc_key')}: Q: {qa.get('question')} A: {qa.get('canonical_answer')}"
-            for qa in qas[:3]
-        ]
+        parts = [fact_line(qa.get("question"), qa.get("canonical_answer"), limit) for qa in qas[:1]]
         return clip_text(" | ".join(parts), limit)
     return "none"
 
@@ -2183,8 +2184,8 @@ def render_leakage_examples_table(rows: list[dict[str, Any]], limit: int = 16) -
             f"<td class='example-type'>{esc(row.get('leakage_type'))}</td>"
             f"<td class='example-info'>{info}</td>"
             f"<td class='example-queries'>{render_lines(row.get('web_queries'), ordered=True)}</td>"
-            f"<td class='example-evidence'>{esc(row.get('matched_private_evidence'))}</td>"
-            f"<td class='example-prediction'>{esc(row.get('leaked_prediction'))}</td>"
+            f"<td class='example-evidence'>{render_lines(row.get('matched_private_evidence'))}</td>"
+            f"<td class='example-prediction'>{render_lines(row.get('leaked_prediction'))}</td>"
             "</tr>"
         )
     suffix = f"<p class='note'>Showing {min(limit, len(rows))} of {len(rows)} rows.</p>" if len(rows) > limit else ""
@@ -2336,8 +2337,8 @@ def build_leakage_examples(baseline_stepfun: list[dict[str, Any]], prompt_stepfu
                     {
                         **base,
                         "leakage_type": "intent",
-                        "matched_private_evidence": clip_text(" | ".join(true_subqs) or f"fully predicted hops: {matched_hops}"),
-                        "leaked_prediction": clip_text(" | ".join(str(item) for item in (pred_obj.get("predicted_subquestions") or [])[:4])),
+                        "matched_private_evidence": [clip_text(item, 260) for item in true_subqs] or [f"fully predicted hops: {matched_hops}"],
+                        "leaked_prediction": [clip_text(item, 260) for item in (pred_obj.get("predicted_subquestions") or [])[:4]],
                     }
                 )
             if answer_leaked(row):
@@ -2351,8 +2352,8 @@ def build_leakage_examples(baseline_stepfun: list[dict[str, Any]], prompt_stepfu
                     {
                         **base,
                         "leakage_type": "answer",
-                        "matched_private_evidence": fact_text(row, correct_ids),
-                        "leaked_prediction": answer_attempt_text(row, correct_ids),
+                        "matched_private_evidence": fact_lines(row, correct_ids),
+                        "leaked_prediction": [answer_attempt_text(row, correct_ids)],
                     }
                 )
             claim_obj = row.get("claim_judge_output") if isinstance(row.get("claim_judge_output"), dict) else {}
@@ -2362,22 +2363,26 @@ def build_leakage_examples(baseline_stepfun: list[dict[str, Any]], prompt_stepfu
                     {
                         **base,
                         "leakage_type": "strict claim",
-                        "matched_private_evidence": fact_text(row, matched_ids),
-                        "leaked_prediction": claim_attempt_text(row, {"true_private_fact"}),
+                        "matched_private_evidence": fact_lines(row, matched_ids),
+                        "leaked_prediction": [clip_text(item, 260) for item in claim_attempt_text(row, {"true_private_fact"}).split(" | ") if item],
                     }
                 )
             partial_ids = [str(item) for item in claim_obj.get("partial_private_fact_ids") or []]
             if lenient_full_info_leaked(row):
                 lenient_ids = partial_ids or matched_ids
-                lenient_evidence = fact_text(row, lenient_ids)
-                if lenient_evidence == "none":
-                    lenient_evidence = "Judge labeled a partial private claim but did not return a fact id. Nearby private facts: " + local_fact_summary(row)
+                lenient_evidence = fact_lines(row, lenient_ids)
+                if not lenient_evidence:
+                    lenient_evidence = ["Partial private claim; StepFun did not return an exact fact id."]
                 candidates["lenient claim"].append(
                     {
                         **base,
                         "leakage_type": "lenient claim",
                         "matched_private_evidence": lenient_evidence,
-                        "leaked_prediction": claim_attempt_text(row, {"partial_private_fact", "true_private_fact"}),
+                        "leaked_prediction": [
+                            clip_text(item, 260)
+                            for item in claim_attempt_text(row, {"partial_private_fact", "true_private_fact"}).split(" | ")
+                            if item
+                        ],
                     }
                 )
 
@@ -2923,18 +2928,18 @@ def render_html(
     .scope-nav a {{ color: #174f74; text-decoration: none; font-weight: 650; }}
     img {{ display: block; max-width: 100%; height: auto; }}
     table {{ width: 100%; border-collapse: collapse; font-size: 13px; background: #fffdf8; }}
-    th, td {{ border-bottom: 1px solid #e4ded1; padding: 7px 8px; text-align: left; vertical-align: top; }}
+    th, td {{ border-bottom: 1px solid #e4ded1; padding: 7px 8px; text-align: left; vertical-align: top; overflow-wrap: anywhere; word-break: normal; }}
     th {{ background: #ebe5d8; font-weight: 650; }}
     .examples-table {{ table-layout: fixed; font-size: 12px; }}
-    .examples-table th:nth-child(1), .examples-table td:nth-child(1) {{ width: 9%; }}
-    .examples-table th:nth-child(2), .examples-table td:nth-child(2) {{ width: 16%; }}
-    .examples-table th:nth-child(3), .examples-table td:nth-child(3) {{ width: 26%; }}
-    .examples-table th:nth-child(4), .examples-table td:nth-child(4) {{ width: 25%; }}
-    .examples-table th:nth-child(5), .examples-table td:nth-child(5) {{ width: 24%; }}
+    .examples-table th:nth-child(1), .examples-table td:nth-child(1) {{ width: 8%; }}
+    .examples-table th:nth-child(2), .examples-table td:nth-child(2) {{ width: 15%; }}
+    .examples-table th:nth-child(3), .examples-table td:nth-child(3) {{ width: 27%; }}
+    .examples-table th:nth-child(4), .examples-table td:nth-child(4) {{ width: 24%; }}
+    .examples-table th:nth-child(5), .examples-table td:nth-child(5) {{ width: 26%; }}
     .example-info div {{ margin-bottom: 3px; }}
     .example-type {{ font-weight: 700; text-transform: capitalize; }}
     .compact-list {{ margin: 0; padding-left: 18px; }}
-    .compact-list li {{ margin-bottom: 5px; }}
+    .compact-list li {{ margin-bottom: 5px; overflow-wrap: anywhere; }}
     .example-evidence, .example-prediction {{ line-height: 1.35; }}
     .tab-buttons {{ display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 12px; }}
     .tab-button {{ border: 1px solid #cfc5b4; background: #ebe5d8; color: #1f2421; border-radius: 6px; padding: 6px 10px; font: inherit; cursor: pointer; }}
