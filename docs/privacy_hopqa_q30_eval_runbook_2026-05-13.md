@@ -22,6 +22,14 @@ Per-model serving exceptions:
 gpt_oss_20b:   locally render the chat template and call /v1/completions, with
                temperature=0.7, to avoid known GPT-OSS/Harmony chat-parser
                failures under vLLM.
+chroma_context_1: reported as chromadb/context-1 and served with the standard
+                  chat endpoint. The direct chromadb/context-1 repo currently
+                  declares tokenizer_class=TokenizersBackend, which the shared
+                  Transformers/vLLM stack cannot import, so the runnable job
+                  points at victor/context-1, a tokenizer_config-fixed mirror
+                  of the same checkpoint. It is a BF16 gpt-oss-20b-derived 20B
+                  MoE, so start with one H100 and drop concurrency or move to
+                  tensor-parallel 2 if KV cache pressure appears.
 gemma4_31b_it: uses an isolated /tmp/gemma4_vllm_env overlay with vLLM 0.19.1
                and current Transformers, because the shared PipelineRL env has
                vLLM 0.18.1 / Transformers 4.57.6 and cannot load model_type=gemma4.
@@ -86,6 +94,7 @@ qwen3_4b_instruct_2507: train val test
 qwen3_8b:                train val test
 step35_flash:            train val test
 gpt_oss_20b:             test
+chroma_context_1:        train val test
 gemma4_31b_it:           test
 ```
 

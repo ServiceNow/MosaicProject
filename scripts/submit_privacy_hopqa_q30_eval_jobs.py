@@ -131,6 +131,28 @@ ROLLOUT_JOBS: list[dict[str, Any]] = [
         "trust_remote_code": True,
     },
     {
+        "name": "privacy_hopqa_q30_eval_rollouts_chroma_context_1_20260514",
+        "model_label": "chroma_context_1",
+        "served_model_name": "chromadb/context-1",
+        # The upstream Chroma repo currently declares tokenizer_class=TokenizersBackend,
+        # which the shared Transformers/vLLM stack cannot import. This mirror is the
+        # same Context-1 checkpoint with tokenizer_config patched to PreTrainedTokenizerFast.
+        "model_path": "victor/context-1",
+        "tokenizer_name": "victor/context-1",
+        "splits": ["train", "val", "test"],
+        "gpu": 1,
+        "cpu": 48,
+        "mem": 512,
+        "tp": 1,
+        "concurrency": 10,
+        "max_model_len": 32768,
+        "max_parallel_doc_reads": 10,
+        "hop_plan_attempts": 3,
+        "case_attempts": 5,
+        "temperature": 1.0,
+        "trust_remote_code": True,
+    },
+    {
         "name": "privacy_hopqa_q30_eval_rollouts_gemma4_31b_it_20260513",
         "model_label": "gemma4_31b_it",
         "served_model_name": "google/gemma-4-31B-it",

@@ -46,6 +46,7 @@ MODEL_NAMES = {
     "qwen3_8b": "Qwen3 8B",
     "step35_flash": "Step-3.5 Flash",
     "gpt_oss_20b": "GPT-OSS 20B",
+    "chroma_context_1": "Chroma Context-1",
     "gemma4_31b_it": "Gemma 4 31B IT",
 }
 
@@ -64,6 +65,7 @@ COLORS = {
     "qwen3_8b": "#D55E00",
     "step35_flash": "#009E73",
     "gpt_oss_20b": "#CC79A7",
+    "chroma_context_1": "#56B4E9",
     "gemma4_31b_it": "#E69F00",
 }
 
