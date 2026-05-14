@@ -983,12 +983,37 @@ def logistic_text(fit: dict[str, float] | None) -> str:
     return f"Logistic: OR/10pp={fit['odds_ratio_10pp']:.2f}, p={fit['p']:.3g}"
 
 
+def logistic_probability_text(fit: dict[str, float] | None) -> str:
+    if not fit:
+        return "Fitted p(0/50/100): n/a"
+    probs = logistic_curve(fit, [0.0, 50.0, 100.0])
+    return "Fitted p(0/50/100): " + "/".join(f"{100 * value:.1f}%" for value in probs)
+
+
 def logistic_curve(fit: dict[str, float], xs: list[float]) -> list[float]:
     out = []
     for x in xs:
         eta = max(-40.0, min(40.0, fit["intercept"] + fit["slope"] * (x / 10.0)))
         out.append(1.0 / (1.0 + math.exp(-eta)))
     return out
+
+
+def binned_binary_rates(xs: list[float], ys: list[bool], bin_width: int = 20) -> list[tuple[float, float, int]]:
+    """Empirical yes-rates in fixed accuracy bins for checking the logistic curve."""
+    bins: dict[int, list[bool]] = defaultdict(list)
+    for x, y in zip(xs, ys):
+        index = min(100 // bin_width - 1, max(0, int(x // bin_width)))
+        if x >= 100:
+            index = 100 // bin_width - 1
+        bins[index].append(bool(y))
+    points = []
+    for index in sorted(bins):
+        values = bins[index]
+        low = index * bin_width
+        high = min(100, low + bin_width)
+        center = (low + high) / 2
+        points.append((center, sum(values) / len(values), len(values)))
+    return points
 
 
 def add_stats_box(ax: Any, lines: list[str], x: float = 0.03, y: float = 0.97) -> None:
@@ -1438,6 +1463,33 @@ def plot_binary_leakage_accuracy_grid(
                 zorder=6,
                 label="logistic regression",
             )
+        binned_rates = binned_binary_rates(xs, ys_bool)
+        if binned_rates:
+            bin_xs = [item[0] for item in binned_rates]
+            bin_ys = [item[1] for item in binned_rates]
+            bin_ns = [item[2] for item in binned_rates]
+            ax.plot(
+                bin_xs,
+                bin_ys,
+                color="#1f2421",
+                linewidth=1.1,
+                alpha=0.72,
+                marker="s",
+                markersize=4.2,
+                label="observed 20pp-bin rate",
+                zorder=7,
+            )
+            for x_val, y_val, count in zip(bin_xs, bin_ys, bin_ns):
+                if count >= max(25, len(vals) * 0.05):
+                    ax.text(
+                        x_val,
+                        y_val + 0.045,
+                        f"n={count}",
+                        ha="center",
+                        va="bottom",
+                        fontsize=6.7,
+                        color="#1f2421",
+                    )
         positives = sum(1 for item in ys_bool if item)
         ys_numeric = [1.0 if value else 0.0 for value in ys_bool]
         add_stats_box(
@@ -1448,6 +1500,7 @@ def plot_binary_leakage_accuracy_grid(
                 f"yes={positives} ({pct(positives, len(vals), 1)})",
                 spearman_text(xs, ys_numeric),
                 logistic_text(fit),
+                logistic_probability_text(fit),
             ],
             y=0.95,
         )
@@ -1465,8 +1518,9 @@ def plot_binary_leakage_accuracy_grid(
         plt.Line2D([0], [0], marker="o", color="w", label="no", markerfacecolor="#2f6f9f", markeredgecolor="#1f2421", markersize=6),
         plt.Line2D([0], [0], marker="o", color="w", label="yes", markerfacecolor="#b23a2e", markeredgecolor="#1f2421", markersize=6),
         plt.Line2D([0], [0], color="#5f6368", linestyle="--", linewidth=2.0, label="logistic regression"),
+        plt.Line2D([0], [0], color="#1f2421", marker="s", linewidth=1.1, label="observed 20pp-bin rate", markersize=4),
     ]
-    fig.legend(handles=handles, loc="lower center", ncol=3, bbox_to_anchor=(0.5, -0.01), fontsize=8)
+    fig.legend(handles=handles, loc="lower center", ncol=4, bbox_to_anchor=(0.5, -0.01), fontsize=8)
     fig.text(0.01, 0.01, "Bubble area = n rollouts at exact coordinate; no jitter.", fontsize=8, color="#65706b")
     savefig(path)
 
@@ -1505,6 +1559,7 @@ def build_binary_leakage_accuracy_tabs(
             f"Scope: {scope_label}. Each panel treats a leakage type as yes/no and plots the raw judged rollouts "
             "against chain progress accuracy. Repeated exact coordinates are aggregated into larger bubbles, with no jitter. "
             "The gray dashed curve is an unadjusted one-variable logistic regression; "
+            "the black square line is the empirical yes-rate in 20 percentage-point accuracy bins. "
             "Spearman rank is shown as the monotonic association test for the discrete plotted points. "
             "A logistic curve is omitted only when the panel has one outcome class or too little x-axis variation. "
             "OR/10pp is the odds ratio for a 10 percentage-point increase in chain progress accuracy. The p-value is a Wald "

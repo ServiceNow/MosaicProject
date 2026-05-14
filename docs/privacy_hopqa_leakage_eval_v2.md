@@ -656,3 +656,41 @@ Export StepFun binary labels for training a 4B reward model:
 
 The output contains `privacy_reward_label`, the 1-5 score, leakage-type labels,
 and trace identity fields.
+
+For a prompt-classifier or reward-model-style SFT dataset, export the exact
+web-query-only YES/NO prompt examples:
+
+```bash
+/home/toolkit/.mamba/envs/vllm013/bin/python scripts/export_privacy_hopqa_binary_reward_prompt_dataset.py \
+  --artifact-root /mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_full_regen_20260513 \
+  --artifact-root /mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_privacy_prompt_test_20260513 \
+  --output-dir /mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_binary_reward_prompt_dataset_20260514
+```
+
+This writes `all.jsonl`, `train.jsonl`, `val.jsonl`, `test.jsonl`, and
+`summary.json`. Each row has `messages`, `prompt`, and `completion` fields; the
+assistant completion is exactly `YES` when StepFun's overall score is 4-5 and
+exactly `NO` otherwise. The prompt contains only visible web-query text.
+
+Current live export, 2026-05-14 02:59 UTC:
+
+```text
+rows: 5,301
+positive labels: 622 (11.7%)
+train: 2,219 rows, 292 positives
+val: 359 rows, 44 positives
+test: 2,723 rows, 286 positives
+baseline condition: 3,929 rows, 494 positives
+privacy-prompt condition: 1,372 rows, 128 positives
+```
+
+A first zero-shot Qwen3-4B YES/NO pass on the 359-row validation split is high
+recall but very low precision:
+
+```text
+TP/TN/FP/FN: 35 / 94 / 221 / 9
+accuracy: 35.9%
+precision: 13.7%
+recall: 79.5%
+F1: 23.3%
+```
