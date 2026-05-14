@@ -22,8 +22,9 @@ Per-model serving exceptions:
 gpt_oss_20b:   locally render the chat template and call /v1/completions, with
                temperature=0.7, to avoid known GPT-OSS/Harmony chat-parser
                failures under vLLM.
-chroma_context_1: reported as chromadb/context-1 and served with the standard
-                  chat endpoint. The direct chromadb/context-1 repo currently
+chroma_context_1: reported as chromadb/context-1. It uses the same
+                  completion-template path as GPT-OSS to avoid vLLM Harmony
+                  chat-parser failures. The direct chromadb/context-1 repo currently
                   declares tokenizer_class=TokenizersBackend, which the shared
                   Transformers/vLLM stack cannot import, so the runnable job
                   points at victor/context-1, a tokenizer_config-fixed mirror

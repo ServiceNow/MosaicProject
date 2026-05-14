@@ -150,6 +150,8 @@ ROLLOUT_JOBS: list[dict[str, Any]] = [
         "hop_plan_attempts": 3,
         "case_attempts": 5,
         "temperature": 1.0,
+        "request_api_mode": "completion_template",
+        "request_params_json": {"include_reasoning": False},
         "trust_remote_code": True,
     },
     {
