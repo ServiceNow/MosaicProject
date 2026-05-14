@@ -1,0 +1,583 @@
+{
+  "n_cases": 96,
+  "model": "Qwen/Qwen3-4B-Instruct-2507",
+  "queries_per_hop": 3,
+  "retrieval_top_k_per_query": 5,
+  "max_candidate_cards": 20,
+  "choose_top_k": 3,
+  "max_parallel_doc_reads": 5,
+  "rrf_k": 20,
+  "include_trace_distractors": true,
+  "buckets": {
+    "L": {
+      "current": {
+        "n": 48,
+        "gold_in_candidates": 18,
+        "gold_selected": 14,
+        "positive_reader": 24,
+        "reader_reward_match": 11,
+        "resolver_exact_match": 11,
+        "resolver_reward_match": 11,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "bm25": {
+        "n": 48,
+        "gold_in_candidates": 43,
+        "gold_selected": 32,
+        "positive_reader": 39,
+        "reader_reward_match": 31,
+        "resolver_exact_match": 30,
+        "resolver_reward_match": 30,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "rrf": {
+        "n": 48,
+        "gold_in_candidates": 41,
+        "gold_selected": 33,
+        "positive_reader": 38,
+        "reader_reward_match": 31,
+        "resolver_exact_match": 30,
+        "resolver_reward_match": 30,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      }
+    },
+    "L|easy": {
+      "current": {
+        "n": 12,
+        "gold_in_candidates": 10,
+        "gold_selected": 8,
+        "positive_reader": 8,
+        "reader_reward_match": 8,
+        "resolver_exact_match": 8,
+        "resolver_reward_match": 8,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "bm25": {
+        "n": 12,
+        "gold_in_candidates": 12,
+        "gold_selected": 10,
+        "positive_reader": 11,
+        "reader_reward_match": 11,
+        "resolver_exact_match": 11,
+        "resolver_reward_match": 11,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "rrf": {
+        "n": 12,
+        "gold_in_candidates": 12,
+        "gold_selected": 10,
+        "positive_reader": 11,
+        "reader_reward_match": 11,
+        "resolver_exact_match": 11,
+        "resolver_reward_match": 11,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      }
+    },
+    "L|hard-answer": {
+      "current": {
+        "n": 12,
+        "gold_in_candidates": 2,
+        "gold_selected": 2,
+        "positive_reader": 11,
+        "reader_reward_match": 1,
+        "resolver_exact_match": 1,
+        "resolver_reward_match": 1,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "bm25": {
+        "n": 12,
+        "gold_in_candidates": 9,
+        "gold_selected": 5,
+        "positive_reader": 11,
+        "reader_reward_match": 5,
+        "resolver_exact_match": 5,
+        "resolver_reward_match": 5,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "rrf": {
+        "n": 12,
+        "gold_in_candidates": 9,
+        "gold_selected": 6,
+        "positive_reader": 11,
+        "reader_reward_match": 6,
+        "resolver_exact_match": 6,
+        "resolver_reward_match": 6,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      }
+    },
+    "L|hard-retrieval": {
+      "current": {
+        "n": 12,
+        "gold_in_candidates": 2,
+        "gold_selected": 1,
+        "positive_reader": 0,
+        "reader_reward_match": 0,
+        "resolver_exact_match": 0,
+        "resolver_reward_match": 0,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "bm25": {
+        "n": 12,
+        "gold_in_candidates": 10,
+        "gold_selected": 7,
+        "positive_reader": 6,
+        "reader_reward_match": 5,
+        "resolver_exact_match": 5,
+        "resolver_reward_match": 5,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "rrf": {
+        "n": 12,
+        "gold_in_candidates": 9,
+        "gold_selected": 7,
+        "positive_reader": 6,
+        "reader_reward_match": 5,
+        "resolver_exact_match": 5,
+        "resolver_reward_match": 5,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      }
+    },
+    "L|medium": {
+      "current": {
+        "n": 12,
+        "gold_in_candidates": 4,
+        "gold_selected": 3,
+        "positive_reader": 5,
+        "reader_reward_match": 2,
+        "resolver_exact_match": 2,
+        "resolver_reward_match": 2,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "bm25": {
+        "n": 12,
+        "gold_in_candidates": 12,
+        "gold_selected": 10,
+        "positive_reader": 11,
+        "reader_reward_match": 10,
+        "resolver_exact_match": 9,
+        "resolver_reward_match": 9,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "rrf": {
+        "n": 12,
+        "gold_in_candidates": 11,
+        "gold_selected": 10,
+        "positive_reader": 10,
+        "reader_reward_match": 9,
+        "resolver_exact_match": 8,
+        "resolver_reward_match": 8,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      }
+    },
+    "W": {
+      "current": {
+        "n": 48,
+        "gold_in_candidates": 23,
+        "gold_selected": 19,
+        "positive_reader": 15,
+        "reader_reward_match": 13,
+        "resolver_exact_match": 13,
+        "resolver_reward_match": 14,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "bm25": {
+        "n": 48,
+        "gold_in_candidates": 33,
+        "gold_selected": 28,
+        "positive_reader": 28,
+        "reader_reward_match": 23,
+        "resolver_exact_match": 23,
+        "resolver_reward_match": 24,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "rrf": {
+        "n": 48,
+        "gold_in_candidates": 40,
+        "gold_selected": 29,
+        "positive_reader": 27,
+        "reader_reward_match": 23,
+        "resolver_exact_match": 23,
+        "resolver_reward_match": 24,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      }
+    },
+    "W|easy": {
+      "current": {
+        "n": 12,
+        "gold_in_candidates": 11,
+        "gold_selected": 10,
+        "positive_reader": 9,
+        "reader_reward_match": 9,
+        "resolver_exact_match": 9,
+        "resolver_reward_match": 9,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "bm25": {
+        "n": 12,
+        "gold_in_candidates": 8,
+        "gold_selected": 7,
+        "positive_reader": 7,
+        "reader_reward_match": 6,
+        "resolver_exact_match": 6,
+        "resolver_reward_match": 6,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "rrf": {
+        "n": 12,
+        "gold_in_candidates": 12,
+        "gold_selected": 9,
+        "positive_reader": 9,
+        "reader_reward_match": 8,
+        "resolver_exact_match": 8,
+        "resolver_reward_match": 8,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      }
+    },
+    "W|hard-answer": {
+      "current": {
+        "n": 12,
+        "gold_in_candidates": 3,
+        "gold_selected": 2,
+        "positive_reader": 2,
+        "reader_reward_match": 1,
+        "resolver_exact_match": 1,
+        "resolver_reward_match": 1,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "bm25": {
+        "n": 12,
+        "gold_in_candidates": 9,
+        "gold_selected": 6,
+        "positive_reader": 7,
+        "reader_reward_match": 5,
+        "resolver_exact_match": 5,
+        "resolver_reward_match": 5,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "rrf": {
+        "n": 12,
+        "gold_in_candidates": 8,
+        "gold_selected": 4,
+        "positive_reader": 4,
+        "reader_reward_match": 2,
+        "resolver_exact_match": 2,
+        "resolver_reward_match": 2,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      }
+    },
+    "W|hard-retrieval": {
+      "current": {
+        "n": 12,
+        "gold_in_candidates": 1,
+        "gold_selected": 1,
+        "positive_reader": 0,
+        "reader_reward_match": 0,
+        "resolver_exact_match": 0,
+        "resolver_reward_match": 0,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "bm25": {
+        "n": 12,
+        "gold_in_candidates": 9,
+        "gold_selected": 8,
+        "positive_reader": 8,
+        "reader_reward_match": 7,
+        "resolver_exact_match": 7,
+        "resolver_reward_match": 7,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "rrf": {
+        "n": 12,
+        "gold_in_candidates": 9,
+        "gold_selected": 7,
+        "positive_reader": 6,
+        "reader_reward_match": 6,
+        "resolver_exact_match": 6,
+        "resolver_reward_match": 6,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      }
+    },
+    "W|medium": {
+      "current": {
+        "n": 12,
+        "gold_in_candidates": 8,
+        "gold_selected": 6,
+        "positive_reader": 4,
+        "reader_reward_match": 3,
+        "resolver_exact_match": 3,
+        "resolver_reward_match": 4,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "bm25": {
+        "n": 12,
+        "gold_in_candidates": 7,
+        "gold_selected": 7,
+        "positive_reader": 6,
+        "reader_reward_match": 5,
+        "resolver_exact_match": 5,
+        "resolver_reward_match": 6,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "rrf": {
+        "n": 12,
+        "gold_in_candidates": 11,
+        "gold_selected": 9,
+        "positive_reader": 8,
+        "reader_reward_match": 7,
+        "resolver_exact_match": 7,
+        "resolver_reward_match": 8,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      }
+    },
+    "easy": {
+      "current": {
+        "n": 24,
+        "gold_in_candidates": 21,
+        "gold_selected": 18,
+        "positive_reader": 17,
+        "reader_reward_match": 17,
+        "resolver_exact_match": 17,
+        "resolver_reward_match": 17,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "bm25": {
+        "n": 24,
+        "gold_in_candidates": 20,
+        "gold_selected": 17,
+        "positive_reader": 18,
+        "reader_reward_match": 17,
+        "resolver_exact_match": 17,
+        "resolver_reward_match": 17,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "rrf": {
+        "n": 24,
+        "gold_in_candidates": 24,
+        "gold_selected": 19,
+        "positive_reader": 20,
+        "reader_reward_match": 19,
+        "resolver_exact_match": 19,
+        "resolver_reward_match": 19,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      }
+    },
+    "hard-answer": {
+      "current": {
+        "n": 24,
+        "gold_in_candidates": 5,
+        "gold_selected": 4,
+        "positive_reader": 13,
+        "reader_reward_match": 2,
+        "resolver_exact_match": 2,
+        "resolver_reward_match": 2,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "bm25": {
+        "n": 24,
+        "gold_in_candidates": 18,
+        "gold_selected": 11,
+        "positive_reader": 18,
+        "reader_reward_match": 10,
+        "resolver_exact_match": 10,
+        "resolver_reward_match": 10,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "rrf": {
+        "n": 24,
+        "gold_in_candidates": 17,
+        "gold_selected": 10,
+        "positive_reader": 15,
+        "reader_reward_match": 8,
+        "resolver_exact_match": 8,
+        "resolver_reward_match": 8,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      }
+    },
+    "hard-retrieval": {
+      "current": {
+        "n": 24,
+        "gold_in_candidates": 3,
+        "gold_selected": 2,
+        "positive_reader": 0,
+        "reader_reward_match": 0,
+        "resolver_exact_match": 0,
+        "resolver_reward_match": 0,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "bm25": {
+        "n": 24,
+        "gold_in_candidates": 19,
+        "gold_selected": 15,
+        "positive_reader": 14,
+        "reader_reward_match": 12,
+        "resolver_exact_match": 12,
+        "resolver_reward_match": 12,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "rrf": {
+        "n": 24,
+        "gold_in_candidates": 18,
+        "gold_selected": 14,
+        "positive_reader": 12,
+        "reader_reward_match": 11,
+        "resolver_exact_match": 11,
+        "resolver_reward_match": 11,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      }
+    },
+    "medium": {
+      "current": {
+        "n": 24,
+        "gold_in_candidates": 12,
+        "gold_selected": 9,
+        "positive_reader": 9,
+        "reader_reward_match": 5,
+        "resolver_exact_match": 5,
+        "resolver_reward_match": 6,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "bm25": {
+        "n": 24,
+        "gold_in_candidates": 19,
+        "gold_selected": 17,
+        "positive_reader": 17,
+        "reader_reward_match": 15,
+        "resolver_exact_match": 14,
+        "resolver_reward_match": 15,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      },
+      "rrf": {
+        "n": 24,
+        "gold_in_candidates": 22,
+        "gold_selected": 19,
+        "positive_reader": 18,
+        "reader_reward_match": 16,
+        "resolver_exact_match": 15,
+        "resolver_reward_match": 16,
+        "chooser_parse_errors": 0,
+        "reader_parse_errors": 0,
+        "resolver_parse_errors": 0
+      }
+    }
+  },
+  "overall": {
+    "current": {
+      "n": 96,
+      "gold_in_candidates": 41,
+      "gold_selected": 33,
+      "positive_reader": 39,
+      "reader_reward_match": 24,
+      "resolver_exact_match": 24,
+      "resolver_reward_match": 25,
+      "chooser_parse_errors": 0,
+      "reader_parse_errors": 0,
+      "resolver_parse_errors": 0
+    },
+    "bm25": {
+      "n": 96,
+      "gold_in_candidates": 76,
+      "gold_selected": 60,
+      "positive_reader": 67,
+      "reader_reward_match": 54,
+      "resolver_exact_match": 53,
+      "resolver_reward_match": 54,
+      "chooser_parse_errors": 0,
+      "reader_parse_errors": 0,
+      "resolver_parse_errors": 0
+    },
+    "rrf": {
+      "n": 96,
+      "gold_in_candidates": 81,
+      "gold_selected": 62,
+      "positive_reader": 65,
+      "reader_reward_match": 54,
+      "resolver_exact_match": 53,
+      "resolver_reward_match": 54,
+      "chooser_parse_errors": 0,
+      "reader_parse_errors": 0,
+      "resolver_parse_errors": 0
+    }
+  }
+}

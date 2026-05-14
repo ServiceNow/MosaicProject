@@ -16,6 +16,7 @@ The helper now supports explicit rank modes:
 ```
 
 The default helper behavior is unchanged unless these flags are passed. Use `privacy_helper_2gpu_rrf.yaml` to launch the RRF variant.
+Use `privacy_helper_2gpu_bm25.yaml` to launch the BM25-only variant.
 
 RRF score:
 
@@ -158,7 +159,7 @@ Viewer:
 runtime_analysis/privacy_hopqa_rrf_replay_qwen4b_2026-05-14_large40/index.html
 ```
 
-## Parallel-query chooser replay
+## Parallel-query chooser replay, current vs RRF
 
 The direct top-5 replay above is useful but too optimistic about how evidence reaches the answer. The more realistic replay below uses the production chooser, reader, and resolver prompts:
 
@@ -241,6 +242,83 @@ Viewer:
 runtime_analysis/privacy_hopqa_parallel_rrf_replay_qwen4b_2026-05-14_large96_mixed/index.html
 ```
 
+## Parallel-query chooser replay, current vs BM25-only vs RRF
+
+After the RRF replay, I reran the same realistic setup with BM25-only included as a third mode. BM25-only means no dense reranking in the counterfactual candidate pool: for each actual model query, the top lexical/BM25 parent documents are merged and passed to the same production chooser, reader, and resolver prompts.
+
+Command:
+
+```bash
+cd /home/toolkit/my_code/MosaicProject
+python3 scripts/replay_privacy_hopqa_parallel_rrf_qwen.py \
+  --per-bucket 12 \
+  --workers 8 \
+  --out-dir runtime_analysis/privacy_hopqa_parallel_bm25_rrf_replay_qwen4b_2026-05-14_large96_mixed
+```
+
+Settings are the same as the RRF replay:
+
+```text
+model=Qwen/Qwen3-4B-Instruct-2507
+n_cases=96
+queries_per_hop=3
+retrieval_top_k_per_query=5
+max_candidate_cards=20
+choose_top_k=3
+max_parallel_doc_reads=5
+include_trace_distractors=true
+```
+
+### BM25-inclusive replay results
+
+| bucket | n | current gold in candidates | BM25 gold in candidates | RRF gold in candidates | current gold selected | BM25 gold selected | RRF gold selected | current reward match | BM25 reward match | RRF reward match |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| overall | 96 | 41 | 76 | 81 | 33 | 60 | 62 | 25 | 54 | 54 |
+| local | 48 | 18 | 43 | 41 | 14 | 32 | 33 | 11 | 30 | 30 |
+| web | 48 | 23 | 33 | 40 | 19 | 28 | 29 | 14 | 24 | 24 |
+| easy | 24 | 21 | 20 | 24 | 18 | 17 | 19 | 17 | 17 | 19 |
+| medium | 24 | 12 | 19 | 22 | 9 | 17 | 19 | 6 | 15 | 16 |
+| hard-answer | 24 | 5 | 18 | 17 | 4 | 11 | 10 | 2 | 10 | 8 |
+| hard-retrieval | 24 | 3 | 19 | 18 | 2 | 15 | 14 | 0 | 12 | 11 |
+| local easy | 12 | 10 | 12 | 12 | 8 | 10 | 10 | 8 | 11 | 11 |
+| local medium | 12 | 4 | 12 | 11 | 3 | 10 | 10 | 2 | 9 | 8 |
+| local hard-answer | 12 | 2 | 9 | 9 | 2 | 5 | 6 | 1 | 5 | 6 |
+| local hard-retrieval | 12 | 2 | 10 | 9 | 1 | 7 | 7 | 0 | 5 | 5 |
+| web easy | 12 | 11 | 8 | 12 | 10 | 7 | 9 | 9 | 6 | 8 |
+| web medium | 12 | 8 | 7 | 11 | 6 | 7 | 9 | 4 | 6 | 8 |
+| web hard-answer | 12 | 3 | 9 | 8 | 2 | 6 | 4 | 1 | 5 | 2 |
+| web hard-retrieval | 12 | 1 | 9 | 9 | 1 | 8 | 7 | 0 | 7 | 6 |
+
+Case-level deltas versus current:
+
+| mode | improves | regresses | both correct | neither correct |
+| --- | ---: | ---: | ---: | ---: |
+| BM25-only | 35 | 6 | 19 | 36 |
+| RRF | 33 | 4 | 21 | 38 |
+
+BM25-only versus RRF:
+
+| relationship | count |
+| --- | ---: |
+| RRF correct, BM25 wrong | 9 |
+| BM25 correct, RRF wrong | 9 |
+| both correct | 45 |
+| neither correct | 33 |
+
+Interpretation:
+
+- BM25-only is a serious baseline. In this replay it ties RRF on final reward matches, 54/96.
+- RRF still has slightly better gold-parent coverage, 81/96 versus 76/96, and slightly better gold-selected coverage, 62/96 versus 60/96.
+- BM25-only is stronger in this sample on hard-answer and hard-retrieval reward counts, especially web hard-answer and web hard-retrieval.
+- BM25-only has a clear web-easy regression: 6/12 versus current 9/12 and RRF 8/12. This is the main reason I would not switch directly to BM25-only without a live A/B run.
+- RRF is the safer default retrieval experiment because it preserves dense signal while capturing most BM25 gains. BM25-only is worth launching as a parallel ablation because it may be better for the genuinely hard retrieval failures.
+
+Viewer:
+
+```text
+runtime_analysis/privacy_hopqa_parallel_bm25_rrf_replay_qwen4b_2026-05-14_large96_mixed/index.html
+```
+
 ## Recommended live experiment
 
 Launch one RRF helper:
@@ -248,6 +326,13 @@ Launch one RRF helper:
 ```bash
 cd /home/toolkit/my_code/MosaicProject
 ACCOUNT=snow.research.adea JOB_SPEC=privacy_helper_2gpu_rrf.yaml ./run_privacy_helper.sh
+```
+
+Launch a BM25-only helper for ablation:
+
+```bash
+cd /home/toolkit/my_code/MosaicProject
+ACCOUNT=snow.research.adea JOB_SPEC=privacy_helper_2gpu_bm25.yaml ./run_privacy_helper.sh
 ```
 
 Run a comparable 4B planning-only trainer against that helper:

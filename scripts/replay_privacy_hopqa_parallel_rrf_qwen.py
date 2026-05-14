@@ -317,6 +317,8 @@ def cards_for_mode(
         lexical_hits_by_doc = {parent_doc_id(hit.get("doc_id")): hit for hit in variant.get("lexical_top_docs") or []}
         if mode == "current":
             ranked_docs = [hit_doc_id(hit) for hit in (variant.get("dense_hits") or [])]
+        elif mode == "bm25":
+            ranked_docs = [parent_doc_id(x) for x in variant.get("lexical_doc_ids") or []]
         elif mode == "rrf":
             ranked_docs = rrf_ranked_docs(
                 [str(x) for x in variant.get("dense_doc_ids") or []],
@@ -589,7 +591,7 @@ def run_case(cfg: ReplayConfig, row: dict[str, Any], dataset_map: dict[tuple[str
     shared_distractors = trace_distractor_cards(row, cfg, local_cache, local_index_root)
     context["shared_trace_distractor_count"] = len(shared_distractors)
     modes: dict[str, Any] = {}
-    for mode in ["current", "rrf"]:
+    for mode in ["current", "bm25", "rrf"]:
         modes[mode] = run_mode(cfg, mode, row, variants, context, local_cache, local_index_root, shared_distractors)
     return {"context": context, "modes": modes}
 
@@ -653,7 +655,7 @@ def summarize(cases: list[dict[str, Any]], cfg: ReplayConfig) -> dict[str, Any]:
         }
 
     for bucket, items in sorted(bucket_cases.items()):
-        entry = {"current": metrics(items, "current"), "rrf": metrics(items, "rrf")}
+        entry = {"current": metrics(items, "current"), "bm25": metrics(items, "bm25"), "rrf": metrics(items, "rrf")}
         if bucket == "overall":
             summary["overall"] = entry
         else:
@@ -676,15 +678,16 @@ def summary_table(summary: dict[str, Any]) -> str:
         if not entry:
             continue
         cur = entry["current"]
+        bm25 = entry["bm25"]
         rrf = entry["rrf"]
         n = int(cur.get("n") or 0)
         rows.append(
             "<tr>"
             f"<td>{esc(key)}</td><td>{n}</td>"
-            f"<td>{pct(cur['gold_in_candidates'], n)}</td><td>{pct(rrf['gold_in_candidates'], n)}</td>"
-            f"<td>{pct(cur['gold_selected'], n)}</td><td>{pct(rrf['gold_selected'], n)}</td>"
-            f"<td>{pct(cur['resolver_reward_match'], n)}</td><td>{pct(rrf['resolver_reward_match'], n)}</td>"
-            f"<td>{pct(cur['resolver_exact_match'], n)}</td><td>{pct(rrf['resolver_exact_match'], n)}</td>"
+            f"<td>{pct(cur['gold_in_candidates'], n)}</td><td>{pct(bm25['gold_in_candidates'], n)}</td><td>{pct(rrf['gold_in_candidates'], n)}</td>"
+            f"<td>{pct(cur['gold_selected'], n)}</td><td>{pct(bm25['gold_selected'], n)}</td><td>{pct(rrf['gold_selected'], n)}</td>"
+            f"<td>{pct(cur['resolver_reward_match'], n)}</td><td>{pct(bm25['resolver_reward_match'], n)}</td><td>{pct(rrf['resolver_reward_match'], n)}</td>"
+            f"<td>{pct(cur['resolver_exact_match'], n)}</td><td>{pct(bm25['resolver_exact_match'], n)}</td><td>{pct(rrf['resolver_exact_match'], n)}</td>"
             "</tr>"
         )
     return "".join(rows)
@@ -693,7 +696,7 @@ def summary_table(summary: dict[str, Any]) -> str:
 def case_row(case: dict[str, Any]) -> str:
     ctx = case["context"]
     mode_cells = []
-    for mode in ["current", "rrf"]:
+    for mode in ["current", "bm25", "rrf"]:
         data = case["modes"][mode]
         resolver = data["resolver"]
         chooser = data["chooser"]
@@ -716,12 +719,14 @@ def case_row(case: dict[str, Any]) -> str:
         f"<td>{esc(ctx['hop_type'])}</td><td>{esc(ctx['difficulty'])}</td>"
         f"<td>{esc(ctx['task_id'])} {esc(ctx['chain_id'])} h{esc(ctx['hop_number'])}<br>{esc(ctx['pattern'])}</td>"
         f"<td>{esc(ctx['question'])}<br><b>gold:</b> {esc(ctx['answer'])}<br><b>accepted:</b> {esc(ctx['accepted_variants'][:12])}<br><b>queries:</b><pre>{esc(json.dumps(ctx['queries'], indent=2))}</pre></td>"
-        f"<td>{mode_cells[0]}</td><td>{mode_cells[1]}</td>"
+        f"<td>{mode_cells[0]}</td><td>{mode_cells[1]}</td><td>{mode_cells[2]}</td>"
         "</tr>"
     )
 
 
 def build_viewer(out_dir: Path, cases: list[dict[str, Any]], summary: dict[str, Any]) -> None:
+    bm25_improving = [case for case in cases if not case["modes"]["current"]["resolver"].get("reward_match") and case["modes"]["bm25"]["resolver"].get("reward_match")]
+    bm25_regressing = [case for case in cases if case["modes"]["current"]["resolver"].get("reward_match") and not case["modes"]["bm25"]["resolver"].get("reward_match")]
     improving = [case for case in cases if not case["modes"]["current"]["resolver"].get("reward_match") and case["modes"]["rrf"]["resolver"].get("reward_match")]
     regressing = [case for case in cases if case["modes"]["current"]["resolver"].get("reward_match") and not case["modes"]["rrf"]["resolver"].get("reward_match")]
     html_text = f"""<!doctype html>
@@ -739,15 +744,19 @@ code{{font-size:12px}}
 <p>This replay uses actual observed model queries, merges multiple query result lists, adds opposite-source distractor cards from the trace when available, runs the production document chooser, reads selected documents, and resolves the hop. Previous-hop answers are gold answers to isolate current-hop retrieval and reading behavior.</p>
 <p><span class='badge'>model: {esc(MODEL)}</span><span class='badge'>queries/hop: {esc(summary['queries_per_hop'])}</span><span class='badge'>doc reads: {esc(summary['max_parallel_doc_reads'])}</span></p>
 <h2>Summary</h2>
-<table><thead><tr><th>bucket</th><th>n</th><th>current gold in candidates</th><th>RRF gold in candidates</th><th>current gold selected</th><th>RRF gold selected</th><th>current reward match</th><th>RRF reward match</th><th>current exact</th><th>RRF exact</th></tr></thead><tbody>{summary_table(summary)}</tbody></table>
+<table><thead><tr><th>bucket</th><th>n</th><th>current gold in candidates</th><th>BM25 gold in candidates</th><th>RRF gold in candidates</th><th>current gold selected</th><th>BM25 gold selected</th><th>RRF gold selected</th><th>current reward match</th><th>BM25 reward match</th><th>RRF reward match</th><th>current exact</th><th>BM25 exact</th><th>RRF exact</th></tr></thead><tbody>{summary_table(summary)}</tbody></table>
 <h2>Interpretation aid</h2>
 <p><b>gold in candidates</b> means the gold parent document reached the merged chooser pool. <b>gold selected</b> means Qwen's chooser selected it for reading. <b>reward match</b> is exact accepted variant or token-F1 >= 0.75, matching the current PipelineRL answer-checking mode. <b>exact</b> is exact accepted-variant matching only.</p>
+<h2>BM25 improves reward match ({len(bm25_improving)})</h2>
+<table><thead><tr><th>source</th><th>difficulty</th><th>hop</th><th>question/query</th><th>current</th><th>BM25</th><th>RRF</th></tr></thead><tbody>{''.join(case_row(case) for case in bm25_improving)}</tbody></table>
+<h2>BM25 regresses reward match ({len(bm25_regressing)})</h2>
+<table><thead><tr><th>source</th><th>difficulty</th><th>hop</th><th>question/query</th><th>current</th><th>BM25</th><th>RRF</th></tr></thead><tbody>{''.join(case_row(case) for case in bm25_regressing)}</tbody></table>
 <h2>RRF improves reward match ({len(improving)})</h2>
-<table><thead><tr><th>source</th><th>difficulty</th><th>hop</th><th>question/query</th><th>current</th><th>RRF</th></tr></thead><tbody>{''.join(case_row(case) for case in improving)}</tbody></table>
+<table><thead><tr><th>source</th><th>difficulty</th><th>hop</th><th>question/query</th><th>current</th><th>BM25</th><th>RRF</th></tr></thead><tbody>{''.join(case_row(case) for case in improving)}</tbody></table>
 <h2>RRF regresses reward match ({len(regressing)})</h2>
-<table><thead><tr><th>source</th><th>difficulty</th><th>hop</th><th>question/query</th><th>current</th><th>RRF</th></tr></thead><tbody>{''.join(case_row(case) for case in regressing)}</tbody></table>
+<table><thead><tr><th>source</th><th>difficulty</th><th>hop</th><th>question/query</th><th>current</th><th>BM25</th><th>RRF</th></tr></thead><tbody>{''.join(case_row(case) for case in regressing)}</tbody></table>
 <h2>All cases</h2>
-<table><thead><tr><th>source</th><th>difficulty</th><th>hop</th><th>question/query</th><th>current</th><th>RRF</th></tr></thead><tbody>{''.join(case_row(case) for case in cases)}</tbody></table>
+<table><thead><tr><th>source</th><th>difficulty</th><th>hop</th><th>question/query</th><th>current</th><th>BM25</th><th>RRF</th></tr></thead><tbody>{''.join(case_row(case) for case in cases)}</tbody></table>
 </body></html>"""
     (out_dir / "index.html").write_text(html_text, encoding="utf-8")
 
