@@ -265,6 +265,12 @@ def build_viewer(args: argparse.Namespace) -> None:
         "--output-dir",
         str(args.viewer_output_dir),
     ]
+    if args.viewer_baseline_comparison_artifact_root:
+        cmd.extend(["--baseline-comparison-artifact-root", str(args.viewer_baseline_comparison_artifact_root)])
+    if args.viewer_privacy_prompt_comparison_artifact_root:
+        cmd.extend(["--privacy-prompt-comparison-artifact-root", str(args.viewer_privacy_prompt_comparison_artifact_root)])
+    if args.viewer_skip_privacy_prompt_comparison:
+        cmd.append("--skip-privacy-prompt-comparison")
     for latest_viewer in args.latest_viewer_output:
         cmd.extend(["--latest-output", str(latest_viewer)])
     run_cmd(cmd)
@@ -308,6 +314,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--skip-viewer", action="store_true")
     parser.add_argument("--push-viewer", action="store_true")
     parser.add_argument("--viewer-output-dir", type=Path, default=DEFAULT_VIEWER_DIR)
+    parser.add_argument("--viewer-baseline-comparison-artifact-root", type=Path)
+    parser.add_argument("--viewer-privacy-prompt-comparison-artifact-root", type=Path)
+    parser.add_argument("--viewer-skip-privacy-prompt-comparison", action="store_true")
     parser.add_argument("--latest-viewer-output", type=Path, action="append", default=[])
     args = parser.parse_args()
     if not args.latest_viewer_output:

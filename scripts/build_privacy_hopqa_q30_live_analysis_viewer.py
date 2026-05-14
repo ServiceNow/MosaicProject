@@ -35,6 +35,9 @@ DEFAULT_PRIVACY_PROMPT_ARTIFACT_ROOT = Path(
 DEFAULT_OUTPUT_DIR = Path("/home/toolkit/my_code/MosaicProject/runtime_analysis/privacy_hopqa_q30_live_analysis")
 DEFAULT_DATASET_ROOT = Path("/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset")
 DEFAULT_DATASET_BASENAME = "privacy_hopqa_finalized_2026-05-13_q30_final_residual_review"
+DEFAULT_BINARY_REWARD_PROMPT_DATASET_DIR = Path(
+    "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_binary_reward_prompt_dataset_20260514"
+)
 SPLIT_SIZES = {"train": 559, "val": 98, "test": 344}
 SCORE_VALUES = [1, 2, 3, 4, 5]
 BOOTSTRAP_REPS = 500
@@ -831,6 +834,44 @@ def load_binary(artifact_root: Path) -> list[dict[str, Any]]:
             row["model_label"] = root.name
             row["model_display"] = model_display(root.name)
             rows.append(row)
+    return rows
+
+
+def load_binary_reward_prompt_smoke() -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    summaries = [
+        (
+            "legacy v2",
+            "pre-mosaic descriptive YES/NO prompt",
+            DEFAULT_BINARY_REWARD_PROMPT_DATASET_DIR / "qwen3_4b_yesno_val_summary_v2.json",
+        ),
+        (
+            "mosaic v3",
+            "mosaic-aware descriptive YES/NO prompt",
+            DEFAULT_BINARY_REWARD_PROMPT_DATASET_DIR / "qwen3_4b_yesno_val_summary_v3.json",
+        ),
+    ]
+    for label, description, path in summaries:
+        summary = read_json(path, {})
+        if not isinstance(summary, dict) or not summary:
+            continue
+        rows.append(
+            {
+                "prompt": label,
+                "description": description,
+                "split": "val",
+                "n": summary.get("rows"),
+                "target_pos": summary.get("target_positive"),
+                "pred_pos": summary.get("predicted_positive"),
+                "accuracy": pct(float(summary.get("accuracy") or 0.0), 1.0, 1),
+                "precision": pct(float(summary.get("precision") or 0.0), 1.0, 1),
+                "recall": pct(float(summary.get("recall") or 0.0), 1.0, 1),
+                "specificity": pct(float(summary.get("specificity") or 0.0), 1.0, 1),
+                "f1": pct(float(summary.get("f1") or 0.0), 1.0, 1),
+                "tp_tn_fp_fn": f"{summary.get('tp')} / {summary.get('tn')} / {summary.get('fp')} / {summary.get('fn')}",
+                "output": summary.get("output"),
+            }
+        )
     return rows
 
 
@@ -3422,6 +3463,57 @@ def stats_html(stats: dict[str, Any]) -> str:
     return "<ul>" + "".join(parts) + "</ul>" if parts else "<p class='muted'>Agreement statistics will appear once paired judge rows exist.</p>"
 
 
+def render_binary_reward_prompt_smoke(rows: list[dict[str, Any]]) -> str:
+    if not rows:
+        return """
+    <section id="binary-reward-smoke">
+      <h2>Binary Reward Prompt Smoke</h2>
+      <p class="muted">No saved YES/NO prompt smoke summaries found.</p>
+    </section>
+"""
+    table_html = simple_table(
+        rows,
+        [
+            "prompt",
+            "description",
+            "split",
+            "n",
+            "target_pos",
+            "pred_pos",
+            "accuracy",
+            "precision",
+            "recall",
+            "specificity",
+            "f1",
+            "tp_tn_fp_fn",
+            "output",
+        ],
+        labels={
+            "prompt": "prompt",
+            "description": "description",
+            "split": "split",
+            "n": "n",
+            "target_pos": "target +",
+            "pred_pos": "pred +",
+            "accuracy": "accuracy",
+            "precision": "precision",
+            "recall": "recall",
+            "specificity": "specificity",
+            "f1": "F1",
+            "tp_tn_fp_fn": "TP / TN / FP / FN",
+            "output": "predictions",
+        },
+        limit=10,
+    )
+    return f"""
+    <section id="binary-reward-smoke">
+      <h2>Binary Reward Prompt Smoke</h2>
+      <p class="note">Small saved Qwen3 4B YES/NO smoke runs against the StepFun <code>overall_score &gt;= 4</code> reward label. These are prompt diagnostics, not final reward-model results. The legacy v2 row preserves the old smoke result; v3 is the mosaic-aware prompt.</p>
+      {table_html}
+    </section>
+"""
+
+
 def render_html(
     artifact_root: Path,
     output_dir: Path,
@@ -3429,6 +3521,7 @@ def render_html(
     stepfun: list[dict[str, Any]],
     qwen: list[dict[str, Any]],
     binary: list[dict[str, Any]],
+    binary_reward_prompt_smoke: list[dict[str, Any]],
     scopes: list[dict[str, Any]],
     jobs: list[dict[str, Any]],
     privacy_prompt_comparison: dict[str, Any] | None = None,
@@ -3443,6 +3536,7 @@ def render_html(
         ("#rubric", "Rubric"),
         ("#accuracy-metrics", "Accuracy"),
         ("#uncertainty", "Uncertainty"),
+        ("#binary-reward-smoke", "YES/NO Smoke"),
     ]
     if privacy_prompt_comparison:
         jump_links.extend(
@@ -3571,6 +3665,7 @@ def render_html(
         )
     scope_html = "".join(scope_html_parts)
     privacy_prompt_html = render_privacy_prompt_comparison(privacy_prompt_comparison)
+    binary_reward_prompt_smoke_html = render_binary_reward_prompt_smoke(binary_reward_prompt_smoke)
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -3640,6 +3735,7 @@ def render_html(
       <h2>Uncertainty</h2>
       <p>Bar-plot error bars are nonparametric 95% bootstrap confidence intervals over the rows used by that plotted estimate: rollout rows for agent performance and StepFun-judged rows for privacy rates. These intervals are useful as dataset-sampling uncertainty estimates, but they do not account for judge calibration error or incomplete live judge coverage.</p>
     </section>
+    {binary_reward_prompt_smoke_html}
     {privacy_prompt_html}
     {scope_html}
     <section id="eai-jobs">
@@ -3714,6 +3810,7 @@ def main() -> None:
     stepfun = load_leakage(args.artifact_root, "stepfun")
     qwen = load_leakage(args.artifact_root, "qwen3_4b")
     binary = load_binary(args.artifact_root)
+    binary_reward_prompt_smoke = load_binary_reward_prompt_smoke()
     jobs = load_eai_snapshot(args.output_dir)
     privacy_prompt_comparison = None
     if not args.skip_privacy_prompt_comparison:
@@ -3754,6 +3851,7 @@ def main() -> None:
         stepfun,
         qwen,
         binary,
+        binary_reward_prompt_smoke,
         scopes,
         jobs,
         privacy_prompt_comparison,
@@ -3784,6 +3882,7 @@ def main() -> None:
                 }
                 if privacy_prompt_comparison
                 else None,
+                "binary_reward_prompt_smoke": binary_reward_prompt_smoke,
             },
             indent=2,
         )
