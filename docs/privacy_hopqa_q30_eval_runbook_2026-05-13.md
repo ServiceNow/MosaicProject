@@ -28,9 +28,11 @@ chroma_context_1: reported as chromadb/context-1. It uses the same
                   declares tokenizer_class=TokenizersBackend, which the shared
                   Transformers/vLLM stack cannot import, so the runnable job
                   points at victor/context-1, a tokenizer_config-fixed mirror
-                  of the same checkpoint. It is a BF16 gpt-oss-20b-derived 20B
-                  MoE, so start with one H100 and drop concurrency or move to
-                  tensor-parallel 2 if KV cache pressure appears.
+                  of the same checkpoint. The Context-1 chat template renders
+                  `Reasoning: medium` by default; viewer labels show this as
+                  Chroma Context-1 (medium). It is a BF16 gpt-oss-20b-derived
+                  20B MoE, so start with one H100 and drop concurrency or move
+                  to tensor-parallel 2 if KV cache pressure appears.
 gemma4_31b_it: uses an isolated /tmp/gemma4_vllm_env overlay with vLLM 0.19.1
                and current Transformers, because the shared PipelineRL env has
                vLLM 0.18.1 / Transformers 4.57.6 and cannot load model_type=gemma4.
