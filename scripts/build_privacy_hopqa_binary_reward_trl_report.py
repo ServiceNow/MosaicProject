@@ -66,6 +66,14 @@ def short_variant(value: str) -> str:
     }.get(value, value)
 
 
+def compact_variant(value: str | None) -> str:
+    return {
+        "queries_only": "Queries",
+        "company_context": "Company",
+        "chain_context": "Chain",
+    }.get(value or "", value or "Unknown")
+
+
 def binary_metrics(targets: list[int], probs: list[float], threshold: float) -> dict[str, Any]:
     preds = [1 if prob >= threshold else 0 for prob in probs]
     tn, fp, fn, tp = confusion_matrix(targets, preds, labels=[0, 1]).ravel()
@@ -143,6 +151,55 @@ def lora_label(summary: dict[str, Any]) -> str:
     return f"r{r} a{alpha} {target} d{dropout}"
 
 
+def compact_lora_label(summary: dict[str, Any]) -> str:
+    args = summary.get("args") if isinstance(summary.get("args"), dict) else {}
+    if summary.get("eval_only"):
+        return "Base"
+    r = args.get("lora_r")
+    target = args.get("lora_target_modules") or "default"
+    if r is None:
+        r = 16
+    if target == "all-linear":
+        return f"r{r} all-linear"
+    return f"r{r}"
+
+
+def compact_source(value: str) -> str:
+    return {
+        "Manual Trainer": "Manual",
+        "TRL SFTTrainer": "TRL",
+        "Base": "Base",
+    }.get(value, value)
+
+
+def repeat_label(summary: dict[str, Any]) -> str:
+    args = summary.get("args") if isinstance(summary.get("args"), dict) else {}
+    repeat = args.get("positive_repeat")
+    if repeat is None:
+        return ""
+    try:
+        repeat_int = int(repeat)
+    except Exception:
+        return f"Repeat {repeat}"
+    if repeat_int <= 1:
+        return "No repeat"
+    return f"Repeat x{repeat_int}"
+
+
+def clean_run_label(run: dict[str, Any], multiline: bool = False) -> str:
+    summary = run.get("summary") or {}
+    variant = compact_variant(run.get("variant"))
+    source = compact_source(str(run.get("source") or ""))
+    if summary.get("eval_only"):
+        parts = [variant, "Base"]
+    elif summary.get("label_mode") == "ternary":
+        parts = [variant, source, "1-3 target", compact_lora_label(summary)]
+    else:
+        parts = [variant, source, compact_lora_label(summary), repeat_label(summary)]
+    parts = [part for part in parts if part]
+    return "\n".join(parts) if multiline else " - ".join(parts)
+
+
 def run_name(run_dir: Path, summary: dict[str, Any], source_label: str) -> str:
     trainer = classify_source(summary, source_label)
     variant = short_variant(str(summary.get("variant") or ""))
@@ -193,6 +250,7 @@ def load_binary_runs(root: Path, source_label: str) -> list[dict[str, Any]]:
             "test_rows": len(test_rows),
             "test_positive": sum(test_targets),
         }
+        run["short_label"] = clean_run_label(run)
         runs.append(run)
     return runs
 
@@ -207,19 +265,19 @@ def load_ternary_runs(root: Path, source_label: str) -> list[dict[str, Any]]:
         test_rows = read_jsonl(run_dir / "predictions_test.jsonl")
         if not summary or not test_rows:
             continue
-        runs.append(
-            {
-                "name": run_dir.name,
-                "display": run_name(run_dir, summary, source_label),
-                "source": classify_source(summary, source_label),
-                "variant": summary.get("variant"),
-                "run_dir": str(run_dir),
-                "wandb_url": wandb_url(run_dir),
-                "summary": summary,
-                "lora": lora_label(summary),
-                "eval_loss": trainer_eval_loss(run_dir),
-            }
-        )
+        run = {
+            "name": run_dir.name,
+            "display": run_name(run_dir, summary, source_label),
+            "source": classify_source(summary, source_label),
+            "variant": summary.get("variant"),
+            "run_dir": str(run_dir),
+            "wandb_url": wandb_url(run_dir),
+            "summary": summary,
+            "lora": lora_label(summary),
+            "eval_loss": trainer_eval_loss(run_dir),
+        }
+        run["short_label"] = clean_run_label(run)
+        runs.append(run)
     return runs
 
 
@@ -234,8 +292,8 @@ def dataset_table(manifest: dict[str, Any]) -> str:
             f"<td>{esc(item.get('positive_rows'))}</td><td>{pct(item.get('positive_rate'))}</td></tr>"
         )
     baseline = (
-        "<p class='note'>Random ranking AUC is 0.500. Random AP equals the test positive rate, "
-        f"{pct((split_summary.get('test') or {}).get('positive_rate'))}, but AP is not used as a primary metric in this report.</p>"
+        "<p class='note'>Random ranking AUC is 0.500. The test positive rate is "
+        f"{pct((split_summary.get('test') or {}).get('positive_rate'))}; an always-No classifier has zero recall and zero F1.</p>"
     )
     return (
         "<table><thead><tr><th>Split</th><th>Rows</th><th>Tasks</th><th>Fact-Leak Positive Rows</th><th>Positive Rate</th></tr></thead>"
@@ -285,7 +343,7 @@ def binary_run_table(runs: list[dict[str, Any]]) -> str:
         eval_loss = run.get("eval_loss") or {}
         rows.append(
             "<tr>"
-            f"<td>{esc(run['display'])}</td>"
+            f"<td>{esc(run.get('short_label') or clean_run_label(run))}</td>"
             f"<td>{esc(run['source'])}</td>"
             f"<td>{esc(short_variant(str(run['variant'])))}</td>"
             f"<td>{esc(args.get('positive_repeat'))}</td>"
@@ -306,7 +364,7 @@ def binary_run_table(runs: list[dict[str, Any]]) -> str:
             "</tr>"
         )
     return (
-        "<table><thead><tr><th>Run</th><th>Trainer</th><th>Variant</th><th>Positive Repeat</th><th>LoRA</th>"
+        "<table><thead><tr><th>Test</th><th>Trainer</th><th>Variant</th><th>Positive Repeat</th><th>LoRA</th>"
         "<th>Best Val Loss</th><th>Test ROC AUC</th><th>Precision @0.5</th><th>Recall @0.5</th><th>F1 @0.5</th>"
         "<th>Val F1 Threshold</th><th>Precision @ValThr</th><th>Recall @ValThr</th><th>F1 @ValThr</th>"
         "<th>TP/FP/FN @0.5</th><th>Test Positives</th><th>W&B</th><th>Path</th></tr></thead>"
@@ -324,7 +382,7 @@ def ternary_table(runs: list[dict[str, Any]]) -> str:
         wandb = f"<a href='{esc(run['wandb_url'])}'>W&B</a>" if run.get("wandb_url") else ""
         rows.append(
             "<tr>"
-            f"<td>{esc(run['display'])}</td>"
+            f"<td>{esc(run.get('short_label') or clean_run_label(run))}</td>"
             f"<td>{num(eval_loss.get('best_eval_loss'))}</td>"
             f"<td>{pct(test.get('accuracy'))}</td>"
             f"<td>{pct(test.get('macro_f1'))}</td>"
@@ -339,7 +397,7 @@ def ternary_table(runs: list[dict[str, Any]]) -> str:
             "</tr>"
         )
     return (
-        "<table><thead><tr><th>Run</th><th>Best Val Loss</th><th>Accuracy</th><th>Macro F1</th><th>Macro OVR AUC</th>"
+        "<table><thead><tr><th>Test</th><th>Best Val Loss</th><th>Accuracy</th><th>Macro F1</th><th>Macro OVR AUC</th>"
         "<th>Fact Precision</th><th>Fact Recall</th><th>Fact F1</th><th>Fact-vs-Rest AUC</th><th>Confusion A/B/C</th><th>W&B</th><th>Path</th></tr></thead>"
         f"<tbody>{''.join(rows)}</tbody></table>"
     )
@@ -354,14 +412,14 @@ def best_recommendation(binary_runs: list[dict[str, Any]], ternary_runs: list[di
     if best_f1:
         test = (best_f1["summary"].get("metrics") or {}).get("test") or {}
         pieces.append(
-            f"Best raw-threshold practical F1 is <strong>{esc(best_f1['display'])}</strong>: "
+            f"Best raw-threshold practical F1 is <strong>{esc(best_f1.get('short_label') or clean_run_label(best_f1))}</strong>: "
             f"ROC AUC {num(best_f1['test_roc_auc'])}, precision {pct(test.get('precision'))}, "
             f"recall {pct(test.get('recall'))}, F1 {pct(test.get('f1'))}."
         )
     if best_auc and best_auc is not best_f1:
         test = (best_auc["summary"].get("metrics") or {}).get("test") or {}
         pieces.append(
-            f"Best practical ranking AUC is <strong>{esc(best_auc['display'])}</strong>: "
+            f"Best practical ranking AUC is <strong>{esc(best_auc.get('short_label') or clean_run_label(best_auc))}</strong>: "
             f"AUC {num(best_auc['test_roc_auc'])}, F1 {pct(test.get('f1'))}."
         )
     trl_runs = [run for run in deployable if run["source"] == "TRL SFTTrainer"]
@@ -370,7 +428,7 @@ def best_recommendation(binary_runs: list[dict[str, Any]], ternary_runs: list[di
         if best_trl is not best_f1:
             test = (best_trl["summary"].get("metrics") or {}).get("test") or {}
             pieces.append(
-                f"Best TRL-only run is <strong>{esc(best_trl['display'])}</strong>: "
+                f"Best TRL-only run is <strong>{esc(best_trl.get('short_label') or clean_run_label(best_trl))}</strong>: "
                 f"AUC {num(best_trl['test_roc_auc'])}, precision {pct(test.get('precision'))}, "
                 f"recall {pct(test.get('recall'))}, F1 {pct(test.get('f1'))}."
             )
@@ -385,57 +443,169 @@ def best_recommendation(binary_runs: list[dict[str, Any]], ternary_runs: list[di
     return "<p>" + " ".join(pieces) + "</p>"
 
 
+def trained_binary_runs(runs: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    variant_order = {"queries_only": 0, "company_context": 1, "chain_context": 2}
+    source_order = {"Manual Trainer": 0, "TRL SFTTrainer": 1}
+    return sorted(
+        [run for run in runs if "smoke" not in run["name"] and run["source"] != "Base"],
+        key=lambda run: (
+            variant_order.get(str(run.get("variant")), 9),
+            source_order.get(str(run.get("source")), 9),
+            str(run.get("name")),
+        ),
+    )
+
+
+def binary_matrix_from_metrics(metrics: dict[str, Any]) -> np.ndarray:
+    return np.array(
+        [
+            [int(metrics.get("tn") or 0), int(metrics.get("fp") or 0)],
+            [int(metrics.get("fn") or 0), int(metrics.get("tp") or 0)],
+        ],
+        dtype=int,
+    )
+
+
+def draw_confusion(ax: Any, matrix: np.ndarray, labels: list[str], title: str) -> Any:
+    row_totals = matrix.sum(axis=1, keepdims=True)
+    row_pct = np.divide(matrix, row_totals, out=np.zeros(matrix.shape, dtype=float), where=row_totals != 0)
+    image = ax.imshow(row_pct, cmap="Blues", vmin=0.0, vmax=1.0)
+    ax.set_title(title, fontsize=9, pad=8)
+    ax.set_xticks(np.arange(len(labels)))
+    ax.set_xticklabels(labels, fontsize=8)
+    ax.set_yticks(np.arange(len(labels)))
+    ax.set_yticklabels(labels, fontsize=8)
+    ax.set_xlabel("Predicted", fontsize=8)
+    ax.set_ylabel("True", fontsize=8)
+    for row_idx in range(matrix.shape[0]):
+        for col_idx in range(matrix.shape[1]):
+            value = row_pct[row_idx, col_idx]
+            color = "white" if value >= 0.55 else "#17201d"
+            ax.text(
+                col_idx,
+                row_idx,
+                f"{matrix[row_idx, col_idx]}\n{100 * value:.0f}%",
+                ha="center",
+                va="center",
+                fontsize=8,
+                color=color,
+            )
+    return image
+
+
+def plot_binary_confusion_grid(plot_runs: list[dict[str, Any]], output_dir: Path, source: str, file_stem: str) -> None:
+    if not plot_runs:
+        return
+    ncols = 3
+    nrows = int(np.ceil(len(plot_runs) / ncols))
+    fig, axes = plt.subplots(nrows, ncols, figsize=(12.4, 3.25 * nrows), squeeze=False)
+    image = None
+    for ax, run in zip(axes.ravel(), plot_runs):
+        metrics = ((run["summary"].get("metrics") or {}).get("test") or {}) if source == "raw" else run["test_at_val_f1"]
+        image = draw_confusion(
+            ax,
+            binary_matrix_from_metrics(metrics),
+            ["No", "Leak"],
+            clean_run_label(run, multiline=True),
+        )
+    for ax in axes.ravel()[len(plot_runs) :]:
+        ax.axis("off")
+    if image is not None:
+        fig.colorbar(image, ax=axes.ravel().tolist(), shrink=0.72, label="Percent of true label")
+    fig.subplots_adjust(left=0.06, right=0.90, top=0.96, bottom=0.05, hspace=0.74, wspace=0.36)
+    plot_dir = output_dir / "plots"
+    fig.savefig(plot_dir / f"{file_stem}.svg")
+    fig.savefig(plot_dir / f"{file_stem}.pdf")
+    plt.close(fig)
+
+
+def plot_ternary_runs(runs: list[dict[str, Any]], output_dir: Path) -> None:
+    plot_runs = [run for run in runs if "smoke" not in run["name"]]
+    if not plot_runs:
+        return
+    ncols = min(2, len(plot_runs))
+    nrows = int(np.ceil(len(plot_runs) / ncols))
+    fig, axes = plt.subplots(nrows, ncols, figsize=(5.8 * ncols, 4.5 * nrows), squeeze=False)
+    image = None
+    for ax, run in zip(axes.ravel(), plot_runs):
+        test = (run["summary"].get("metrics") or {}).get("test") or {}
+        matrix = np.array(test.get("confusion_matrix") or [[0, 0, 0], [0, 0, 0], [0, 0, 0]], dtype=int)
+        image = draw_confusion(ax, matrix, ["No", "Intent", "Fact"], clean_run_label(run, multiline=True))
+    for ax in axes.ravel()[len(plot_runs) :]:
+        ax.axis("off")
+    if image is not None:
+        fig.colorbar(image, ax=axes.ravel().tolist(), shrink=0.72, label="Percent of true label")
+    fig.subplots_adjust(left=0.08, right=0.90, top=0.92, bottom=0.08, hspace=0.55, wspace=0.34)
+    plot_dir = output_dir / "plots"
+    fig.savefig(plot_dir / "ternary_confusion.svg")
+    fig.savefig(plot_dir / "ternary_confusion.pdf")
+    plt.close(fig)
+
+
 def plot_binary_runs(runs: list[dict[str, Any]], output_dir: Path) -> None:
     plot_dir = output_dir / "plots"
     plot_dir.mkdir(parents=True, exist_ok=True)
     for stale_plot in plot_dir.glob("*"):
         if stale_plot.is_file():
             stale_plot.unlink()
-    plot_runs = [run for run in runs if "smoke" not in run["name"] and run["source"] != "Base"]
-    plot_runs = sorted(plot_runs, key=lambda run: (str(run["variant"]), run["source"], run["name"]))
+    plot_runs = trained_binary_runs(runs)
     if not plot_runs:
         return
-    labels = [run["display"].replace("Manual Trainer", "Manual").replace("SFTTrainer", "TRL") for run in plot_runs]
-    x = np.arange(len(plot_runs))
-    width = 0.34
+    metric_runs = sorted(
+        plot_runs,
+        key=lambda run: (((run["summary"].get("metrics") or {}).get("test") or {}).get("f1") or -1),
+    )
+    labels = [clean_run_label(run) for run in metric_runs]
+    y = np.arange(len(metric_runs))
+    height = 0.34
 
-    fig, ax = plt.subplots(figsize=(13.8, 5.2))
-    ax.bar(x - width / 2, [run["test_roc_auc"] or 0 for run in plot_runs], width, label="ROC AUC", color="#0072B2")
-    ax.bar(x + width / 2, [((run["summary"].get("metrics") or {}).get("test") or {}).get("f1") or 0 for run in plot_runs], width, label="F1 @0.5", color="#009E73")
-    ax.set_ylim(0, 1.05)
-    ax.set_ylabel("Test Score")
-    ax.set_xticks(x)
-    ax.set_xticklabels(labels, rotation=24, ha="right")
-    ax.grid(axis="y", alpha=0.22)
-    ax.legend(frameon=False, ncols=2, loc="upper center", bbox_to_anchor=(0.5, 1.14))
+    fig, ax = plt.subplots(figsize=(10.8, max(5.4, 0.46 * len(metric_runs) + 1.4)))
+    ax.barh(y - height / 2, [run["test_roc_auc"] or 0 for run in metric_runs], height, label="ROC AUC", color="#0072B2")
+    ax.barh(
+        y + height / 2,
+        [((run["summary"].get("metrics") or {}).get("test") or {}).get("f1") or 0 for run in metric_runs],
+        height,
+        label="F1 at 0.5",
+        color="#009E73",
+    )
+    ax.set_xlim(0, 1.05)
+    ax.set_xlabel("Test Score")
+    ax.set_yticks(y)
+    ax.set_yticklabels(labels, fontsize=9)
+    ax.grid(axis="x", alpha=0.22)
+    ax.legend(frameon=False, ncols=2, loc="lower right")
     fig.tight_layout()
     fig.savefig(plot_dir / "auc_f1_metrics.svg")
     fig.savefig(plot_dir / "auc_f1_metrics.pdf")
     plt.close(fig)
 
     metrics = ["precision", "recall", "f1"]
-    fig, axes = plt.subplots(1, 2, figsize=(13.8, 5.2), sharey=True)
+    fig, axes = plt.subplots(1, 2, figsize=(13.8, max(5.6, 0.46 * len(metric_runs) + 1.6)), sharey=True)
     for ax, title, source in [(axes[0], "Raw Threshold 0.5", "summary"), (axes[1], "Validation F1 Threshold", "test_at_val_f1")]:
         offsets = np.linspace(-0.22, 0.22, len(metrics))
         for metric, offset in zip(metrics, offsets):
             values = []
-            for run in plot_runs:
+            for run in metric_runs:
                 if source == "summary":
                     values.append((((run["summary"].get("metrics") or {}).get("test") or {}).get(metric)) or 0)
                 else:
                     values.append(run[source].get(metric) or 0)
-            ax.bar(x + offset, values, width=0.20, label=metric.title())
+            ax.barh(y + offset, values, height=0.20, label=metric.title())
         ax.set_title(title)
-        ax.set_xticks(x)
-        ax.set_xticklabels(labels, rotation=24, ha="right")
-        ax.set_ylim(0, 1.05)
-        ax.set_ylabel("Test Score")
-        ax.grid(axis="y", alpha=0.22)
-    axes[0].legend(frameon=False, ncols=3, loc="upper center", bbox_to_anchor=(1.05, 1.15))
+        ax.set_xlim(0, 1.05)
+        ax.set_xlabel("Test Score")
+        ax.grid(axis="x", alpha=0.22)
+    axes[0].set_yticks(y)
+    axes[0].set_yticklabels(labels, fontsize=9)
+    axes[1].tick_params(axis="y", labelleft=False)
+    axes[0].legend(frameon=False, ncols=3, loc="lower right")
     fig.tight_layout()
     fig.savefig(plot_dir / "precision_recall_f1.svg")
     fig.savefig(plot_dir / "precision_recall_f1.pdf")
     plt.close(fig)
+
+    plot_binary_confusion_grid(plot_runs, output_dir, "raw", "binary_confusion_0_5")
+    plot_binary_confusion_grid(plot_runs, output_dir, "val_threshold", "binary_confusion_val_threshold")
 
     best = max(plot_runs, key=lambda run: (((run["summary"].get("metrics") or {}).get("test") or {}).get("f1") or -1))
     rows = read_jsonl(Path(best["run_dir"]) / "predictions_test.jsonl")
@@ -448,7 +618,7 @@ def plot_binary_runs(runs: list[dict[str, Any]], output_dir: Path) -> None:
     ax.axvline(best["val_threshold_f1"], color="#222", linestyle="--", linewidth=1.4, label="Val F1 Threshold")
     ax.set_xlabel("Predicted P(Leakage)")
     ax.set_ylabel("Test Rows")
-    ax.set_title(f"Best F1 Run Score Distribution: {best['display']}")
+    ax.set_title(f"Best F1 Score Distribution: {clean_run_label(best)}")
     ax.legend(frameon=False)
     fig.tight_layout()
     fig.savefig(plot_dir / "best_score_distribution.svg")
@@ -467,6 +637,7 @@ def build(args: argparse.Namespace) -> None:
     ternary_runs = load_ternary_runs(args.trl_root, "TRL")
     manifest = read_json(args.manual_root / "dataset" / "manifest.json", {})
     plot_binary_runs(binary_runs, args.output_dir)
+    plot_ternary_runs(ternary_runs, args.output_dir)
     data = {
         "generated_at": iso_now(),
         "manual_root": str(args.manual_root),
@@ -495,10 +666,13 @@ code {{ background: #eef2f0; padding: 1px 4px; border-radius: 4px; white-space: 
 <section><h2>Dataset</h2>{dataset_table(manifest)}</section>
 <section><h2>Training Decisions</h2>{decisions_table()}</section>
 <section><h2>Prompt Variants</h2>{variants_table()}</section>
-<section><h2>Binary Runs</h2>{binary_run_table(binary_runs)}</section>
-<section><h2>Ternary Runs</h2>{ternary_table(ternary_runs)}</section>
-<section><h2>AUC And F1</h2><img src="plots/auc_f1_metrics.svg"></section>
-<section><h2>Precision, Recall, F1</h2><img src="plots/precision_recall_f1.svg"></section>
+<section><h2>Binary Reward Tests</h2>{binary_run_table(binary_runs)}</section>
+<section><h2>1-3 Reward Tests</h2>{ternary_table(ternary_runs)}</section>
+<section><h2>Binary Reward: AUC And F1</h2><img src="plots/auc_f1_metrics.svg"></section>
+<section><h2>Binary Reward: Precision, Recall, F1</h2><img src="plots/precision_recall_f1.svg"></section>
+<section><h2>Binary Reward: Confusion Matrices At 0.5</h2><p class="note">Rows are true labels, columns are predicted labels. Each cell shows count and percent of the true-label row.</p><img src="plots/binary_confusion_0_5.svg"></section>
+<section><h2>Binary Reward: Confusion Matrices At Validation Threshold</h2><p class="note">The validation threshold is selected independently for each run to maximize validation F1.</p><img src="plots/binary_confusion_val_threshold.svg"></section>
+<section><h2>1-3 Reward: Confusion Matrix</h2><p class="note">A = No leakage, B = intent leakage, C = fact leakage. The plot uses readable class names.</p><img src="plots/ternary_confusion.svg"></section>
 <section><h2>Score Distribution</h2><img src="plots/best_score_distribution.svg"></section>
 </body></html>
 """
