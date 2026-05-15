@@ -54,6 +54,37 @@ def iso_now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+def read_json(path: Path, default: Any) -> Any:
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return default
+
+
+def latest_checkpoint(trainer_dir: Path) -> Path | None:
+    checkpoints: list[tuple[int, Path]] = []
+    for path in trainer_dir.glob("checkpoint-*"):
+        if not path.is_dir():
+            continue
+        try:
+            step = int(path.name.rsplit("-", 1)[-1])
+        except ValueError:
+            continue
+        checkpoints.append((step, path))
+    if not checkpoints:
+        return None
+    return max(checkpoints, key=lambda item: item[0])[1]
+
+
+def resume_checkpoint(args: argparse.Namespace) -> Path | None:
+    value = str(args.resume_from_checkpoint or "").strip()
+    if not value or value.lower() in {"none", "false", "no", "off"}:
+        return None
+    if value.lower() == "auto":
+        return latest_checkpoint(args.output_dir / "trainer")
+    return Path(value)
+
+
 def ternary_label(row: dict[str, Any]) -> str:
     score = int(row.get("score") or 0)
     intent_score = int(row.get("intent_score") or 0)
@@ -112,6 +143,80 @@ def make_sft_row(row: dict[str, Any], args: argparse.Namespace) -> dict[str, Any
 
 def make_sft_dataset(rows: list[dict[str, Any]], args: argparse.Namespace) -> Dataset:
     return Dataset.from_list([make_sft_row(row, args) for row in rows])
+
+
+def unique_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    seen: set[str] = set()
+    out: list[dict[str, Any]] = []
+    for idx, row in enumerate(rows):
+        key = str(row.get("id") or idx)
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(row)
+    return out
+
+
+def row_messages(row: dict[str, Any], args: argparse.Namespace, include_completion: bool) -> list[dict[str, str]]:
+    if args.label_mode == "ternary":
+        messages = [
+            {"role": "system", "content": "You are a fast privacy-leakage classifier. Answer exactly A, B, or C."},
+            {"role": "user", "content": ternary_prompt(row)},
+        ]
+        completion = ternary_label(row)
+    else:
+        messages = [
+            {"role": "system", "content": str(row["system"])},
+            {"role": "user", "content": str(row["prompt"])},
+        ]
+        completion = str(row["completion"])
+    if include_completion:
+        messages.append({"role": "assistant", "content": completion})
+    return messages
+
+
+def row_text(tokenizer: Any, row: dict[str, Any], args: argparse.Namespace, include_completion: bool) -> str:
+    return apply_chat_template(tokenizer, row_messages(row, args, include_completion), add_generation_prompt=not include_completion)
+
+
+def length_stats(lengths: list[int]) -> dict[str, Any]:
+    if not lengths:
+        return {"rows": 0}
+    arr = np.asarray(lengths, dtype=int)
+    return {
+        "rows": int(arr.size),
+        "max": int(arr.max()),
+        "p50": int(np.percentile(arr, 50)),
+        "p90": int(np.percentile(arr, 90)),
+        "p95": int(np.percentile(arr, 95)),
+        "p99": int(np.percentile(arr, 99)),
+    }
+
+
+def check_no_truncation(
+    tokenizer: Any,
+    rows: list[dict[str, Any]],
+    args: argparse.Namespace,
+    context: str,
+    include_completion: bool,
+) -> dict[str, Any]:
+    lengths: list[int] = []
+    longest: tuple[int, str] = (0, "")
+    for row in unique_rows(rows):
+        length = len(tokenizer(row_text(tokenizer, row, args, include_completion), add_special_tokens=False)["input_ids"])
+        lengths.append(length)
+        if length > longest[0]:
+            longest = (length, str(row.get("id") or row.get("example_source_id") or "unknown"))
+    stats = length_stats(lengths)
+    stats["max_length_limit"] = args.max_length
+    stats["longest_id"] = longest[1]
+    stats["include_completion"] = include_completion
+    if args.fail_on_truncation and longest[0] > args.max_length:
+        raise ValueError(
+            f"{context} has examples longer than --max-length={args.max_length}; "
+            f"longest={longest[0]} tokens id={longest[1]}. Increase --max-length or pass --allow-truncation."
+        )
+    return stats
 
 
 def expand_ternary_rows(rows: list[dict[str, Any]], args: argparse.Namespace) -> list[dict[str, Any]]:
@@ -424,10 +529,20 @@ def train(args: argparse.Namespace) -> Path | None:
     tokenizer = load_tokenizer(args.base_model)
     raw_train_rows = load_split(args.dataset_dir, args.variant, "train")
     train_rows = training_rows(raw_train_rows, args)
+    length_report = {
+        "train_full_text": check_no_truncation(tokenizer, train_rows, args, "train full text", include_completion=True),
+    }
     train_dataset = make_sft_dataset(train_rows, args)
     eval_dataset = None
     if args.trainer_eval_strategy != "no":
         eval_rows = load_split(args.dataset_dir, args.variant, args.trainer_eval_split)
+        length_report[f"{args.trainer_eval_split}_full_text"] = check_no_truncation(
+            tokenizer,
+            eval_rows,
+            args,
+            f"{args.trainer_eval_split} full text",
+            include_completion=True,
+        )
         eval_dataset = make_sft_dataset(eval_rows, args)
 
     model = load_causal_model(args, adapter=None, for_training=True)
@@ -445,10 +560,15 @@ def train(args: argparse.Namespace) -> Path | None:
         warmup_ratio=args.warmup_ratio,
         lr_scheduler_type=args.lr_scheduler_type,
         logging_steps=args.logging_steps,
-        save_strategy="epoch",
+        save_strategy=args.trainer_save_strategy,
+        save_steps=args.trainer_save_steps or (args.trainer_eval_steps if args.trainer_eval_strategy == "steps" else None),
+        save_total_limit=args.save_total_limit,
         eval_strategy=args.trainer_eval_strategy,
         eval_steps=args.trainer_eval_steps if args.trainer_eval_strategy == "steps" else None,
         eval_on_start=args.eval_on_start,
+        load_best_model_at_end=args.load_best_model_at_end and args.trainer_eval_strategy != "no",
+        metric_for_best_model="eval_loss",
+        greater_is_better=False,
         per_device_eval_batch_size=args.trainer_eval_batch_size,
         bf16=True,
         report_to=parse_report_to(args.report_to),
@@ -470,7 +590,8 @@ def train(args: argparse.Namespace) -> Path | None:
         peft_config=lora_config(args),
     )
     started = time.time()
-    trainer.train()
+    checkpoint = resume_checkpoint(args)
+    trainer.train(resume_from_checkpoint=str(checkpoint) if checkpoint else None)
     adapter_dir = args.output_dir / "adapter"
     adapter_dir.mkdir(parents=True, exist_ok=True)
     trainer.model.save_pretrained(adapter_dir)
@@ -491,17 +612,22 @@ def train(args: argparse.Namespace) -> Path | None:
                 "max_train_examples": args.max_train_examples,
                 "trainer": "trl.SFTTrainer",
                 "label_mode": args.label_mode,
+                "resumed_from_checkpoint": str(checkpoint) if checkpoint else None,
                 "lora_target_modules": args.lora_target_modules,
                 "attn_implementation": args.attn_implementation,
                 "use_liger_kernel": args.use_liger_kernel,
                 "report_to": parse_report_to(args.report_to),
                 "wandb_mode": args.wandb_mode,
+                "length_report": length_report,
+                "best_model_checkpoint": trainer.state.best_model_checkpoint,
+                "best_metric": trainer.state.best_metric,
             },
             indent=2,
         )
         + "\n",
         encoding="utf-8",
     )
+    (args.output_dir / "length_checks.json").write_text(json.dumps(length_report, indent=2) + "\n", encoding="utf-8")
     return adapter_dir
 
 
@@ -509,6 +635,7 @@ def run(args: argparse.Namespace) -> None:
     args.output_dir.mkdir(parents=True, exist_ok=True)
     adapter = train(args)
     tokenizer = load_tokenizer(args.base_model)
+    length_report = read_json(args.output_dir / "length_checks.json", {}) if (args.output_dir / "length_checks.json").exists() else {}
     model = load_causal_model(args, adapter=adapter, for_training=False)
     split_metrics: dict[str, dict[str, Any]] = {}
     predictions_by_split: dict[str, list[dict[str, Any]]] = {}
@@ -516,6 +643,13 @@ def run(args: argparse.Namespace) -> None:
         rows = load_split(args.dataset_dir, args.variant, split)
         if args.max_eval_examples:
             rows = rows[: args.max_eval_examples]
+        length_report[f"{split}_prompt_text"] = check_no_truncation(
+            tokenizer,
+            rows,
+            args,
+            f"{split} prompt text",
+            include_completion=False,
+        )
         if args.label_mode == "ternary":
             metrics, predictions = evaluate_ternary_rows(model, tokenizer, rows, args.eval_batch_size, args.max_length)
         else:
@@ -535,7 +669,9 @@ def run(args: argparse.Namespace) -> None:
         "label_mode": args.label_mode,
         "metrics": split_metrics,
         "args": json_safe(vars(args)),
+        "length_report": length_report,
     }
+    (args.output_dir / "length_checks.json").write_text(json.dumps(length_report, indent=2) + "\n", encoding="utf-8")
     (args.output_dir / "summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     log_eval_to_wandb(args.output_dir, summary)
     if args.label_mode == "ternary":
@@ -550,7 +686,11 @@ def run(args: argparse.Namespace) -> None:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset-dir", type=Path, default=DEFAULT_DATASET_DIR)
-    parser.add_argument("--variant", default="queries_only", choices=["queries_only", "company_context", "chain_context"])
+    parser.add_argument(
+        "--variant",
+        default="queries_only",
+        choices=["queries_only", "company_context", "chain_context", "private_fact_context"],
+    )
     parser.add_argument("--base-model", default=DEFAULT_BASE_MODEL)
     parser.add_argument("--output-dir", type=Path, default=None)
     parser.add_argument("--output-root", type=Path, default=DEFAULT_OUTPUT_ROOT)
@@ -565,7 +705,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--batch-size", type=int, default=4)
     parser.add_argument("--grad-accum", type=int, default=8)
     parser.add_argument("--eval-batch-size", type=int, default=16)
-    parser.add_argument("--max-length", type=int, default=1536)
+    parser.add_argument("--max-length", type=int, default=4096)
     parser.add_argument("--max-train-examples", type=int, default=0)
     parser.add_argument("--max-eval-examples", type=int, default=0)
     parser.add_argument("--positive-repeat", type=int, default=4)
@@ -575,10 +715,20 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--lora-target-modules", default="default", help="'default', 'all-linear', or comma-separated module names")
     parser.add_argument("--logging-steps", type=int, default=10)
     parser.add_argument("--trainer-eval-strategy", default="steps", choices=["no", "steps", "epoch"])
-    parser.add_argument("--trainer-eval-steps", type=int, default=25)
+    parser.add_argument("--trainer-eval-steps", type=int, default=10)
     parser.add_argument("--trainer-eval-split", default="val")
     parser.add_argument("--trainer-eval-batch-size", type=int, default=8)
+    parser.add_argument("--trainer-save-strategy", default="steps", choices=["no", "steps", "epoch"])
+    parser.add_argument("--trainer-save-steps", type=int, default=0)
+    parser.add_argument("--save-total-limit", type=int, default=2)
+    parser.add_argument("--load-best-model-at-end", action="store_true", default=True)
+    parser.add_argument("--no-load-best-model-at-end", dest="load_best_model_at_end", action="store_false")
     parser.add_argument("--eval-on-start", action="store_true")
+    parser.add_argument(
+        "--resume-from-checkpoint",
+        default="none",
+        help="Use 'auto' to resume from the latest checkpoint in output-dir/trainer, 'none' to start fresh, or pass a checkpoint path.",
+    )
     parser.add_argument("--ternary-no-repeat", type=int, default=8)
     parser.add_argument("--ternary-intent-repeat", type=int, default=1)
     parser.add_argument("--ternary-fact-repeat", type=int, default=6)
@@ -596,6 +746,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--run-name", default="")
     parser.add_argument("--dataloader-num-workers", type=int, default=0)
     parser.add_argument("--enable-thinking", action="store_true")
+    parser.add_argument("--fail-on-truncation", action="store_true", default=True)
+    parser.add_argument("--allow-truncation", dest="fail_on_truncation", action="store_false")
     parser.add_argument("--seed", type=int, default=20260515)
     args = parser.parse_args()
     if args.output_dir is None:

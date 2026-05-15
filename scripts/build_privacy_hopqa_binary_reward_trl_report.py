@@ -63,6 +63,7 @@ def short_variant(value: str) -> str:
         "queries_only": "Queries Only",
         "company_context": "Company Context",
         "chain_context": "Chain Context",
+        "private_fact_context": "Private Facts",
     }.get(value, value)
 
 
@@ -71,6 +72,7 @@ def compact_variant(value: str | None) -> str:
         "queries_only": "Queries",
         "company_context": "Company",
         "chain_context": "Chain",
+        "private_fact_context": "Private Facts",
     }.get(value or "", value or "Unknown")
 
 
@@ -110,24 +112,45 @@ def best_threshold(rows: list[dict[str, Any]], objective: str = "f1") -> tuple[f
 
 
 def wandb_url(run_dir: Path) -> str | None:
+    candidates: list[Path] = []
     for pattern in ["wandb/wandb/offline-run-*", "wandb/wandb/run-*"]:
-        for wandb_dir in sorted(run_dir.glob(pattern)):
-            run_id = wandb_dir.name.rsplit("-", 1)[-1]
-            if run_id:
-                return f"https://wandb.ai/alexgurung/privacy_hopqa_binary_reward_sft/runs/{run_id}"
+        candidates.extend(run_dir.glob(pattern))
+    for wandb_dir in sorted(candidates, key=lambda path: path.stat().st_mtime, reverse=True):
+        run_id = wandb_dir.name.rsplit("-", 1)[-1]
+        if run_id:
+            return f"https://wandb.ai/alexgurung/privacy_hopqa_binary_reward_sft/runs/{run_id}"
     return None
 
 
 def trainer_eval_loss(run_dir: Path) -> dict[str, Any]:
     losses: list[float] = []
-    for path in sorted((run_dir / "trainer").glob("checkpoint-*/trainer_state.json")):
+    state_paths = []
+    root_state = run_dir / "trainer" / "trainer_state.json"
+    if root_state.exists():
+        state_paths.append(root_state)
+    state_paths.extend(sorted((run_dir / "trainer").glob("checkpoint-*/trainer_state.json")))
+    seen: set[Path] = set()
+    for path in state_paths:
+        if path in seen:
+            continue
+        seen.add(path)
         state = read_json(path, {})
         for item in state.get("log_history") or []:
             if "eval_loss" in item:
                 losses.append(float(item["eval_loss"]))
+    runtime = read_json(run_dir / "training_runtime.json", {})
+    best_metric = runtime.get("best_metric")
+    if best_metric is not None:
+        try:
+            losses.append(float(best_metric))
+        except Exception:
+            pass
     if not losses:
         return {}
-    return {"best_eval_loss": min(losses), "last_eval_loss": losses[-1], "eval_loss_points": len(losses)}
+    out = {"best_eval_loss": min(losses), "last_eval_loss": losses[-1], "eval_loss_points": len(losses)}
+    if runtime.get("best_model_checkpoint"):
+        out["best_model_checkpoint"] = runtime.get("best_model_checkpoint")
+    return out
 
 
 def classify_source(summary: dict[str, Any], source_label: str) -> str:
@@ -297,7 +320,8 @@ def dataset_table(manifest: dict[str, Any]) -> str:
         )
     baseline = (
         "<p class='note'>Random ranking AUC is 0.500. The test positive rate is "
-        f"{pct((split_summary.get('test') or {}).get('positive_rate'))}; an always-No classifier has zero recall and zero F1.</p>"
+        f"{pct((split_summary.get('test') or {}).get('positive_rate'))}; an always-No classifier has zero recall and zero F1. "
+        "Run tables report the row counts from each run's own prediction files, so older pre-rebuild runs may show different counts.</p>"
     )
     return (
         "<table><thead><tr><th>Split</th><th>Rows</th><th>Tasks</th><th>Fact-Leak Positive Rows</th><th>Positive Rate</th></tr></thead>"
@@ -326,6 +350,7 @@ def variants_table() -> str:
         ("Queries Only", "Only the visible web query sequence. This is the strict deployable setting if the reward model only sees public searches."),
         ("Company Context", "Visible web queries plus company name. This is still cheap at runtime and helps decide whether a query reveals enterprise-private facts."),
         ("Chain Context", "Visible web queries plus company, hop pattern, research question, and subquestions. Diagnostic/oracle-style context, not the main deployable setting."),
+        ("Private Facts", "Visible web queries plus company and the full retrieved-doc Private QA/local-hop fact list. This is an oracle/contextual reward model, useful for testing whether explicit private-fact context improves precision."),
     ]
     return "<table><tbody>" + "".join(f"<tr><th>{esc(k)}</th><td>{esc(v)}</td></tr>" for k, v in rows) + "</tbody></table>"
 
@@ -413,6 +438,7 @@ def ternary_table(runs: list[dict[str, Any]]) -> str:
 def best_recommendation(binary_runs: list[dict[str, Any]], ternary_runs: list[dict[str, Any]]) -> str:
     full_runs = [run for run in binary_runs if "smoke" not in run["name"] and run["source"] != "Base"]
     deployable = [run for run in full_runs if run["variant"] in {"queries_only", "company_context"}]
+    oracle_context = [run for run in full_runs if run["variant"] in {"private_fact_context", "chain_context"}]
     best_f1 = max(deployable, key=lambda run: (((run["summary"].get("metrics") or {}).get("test") or {}).get("f1") or -1), default=None)
     best_auc = max(deployable, key=lambda run: run["test_roc_auc"] or -1, default=None)
     pieces = []
@@ -428,6 +454,14 @@ def best_recommendation(binary_runs: list[dict[str, Any]], ternary_runs: list[di
         pieces.append(
             f"Best practical ranking AUC is <strong>{esc(best_auc.get('short_label') or clean_run_label(best_auc))}</strong>: "
             f"AUC {num(best_auc['test_roc_auc'])}, F1 {pct(test.get('f1'))}."
+        )
+    best_oracle = max(oracle_context, key=lambda run: ((run["summary"].get("metrics") or {}).get("test") or {}).get("f1") or -1, default=None)
+    if best_oracle:
+        test = (best_oracle["summary"].get("metrics") or {}).get("test") or {}
+        pieces.append(
+            f"Best oracle/contextual run is <strong>{esc(best_oracle.get('short_label') or clean_run_label(best_oracle))}</strong>: "
+            f"AUC {num(best_oracle['test_roc_auc'])}, precision {pct(test.get('precision'))}, "
+            f"recall {pct(test.get('recall'))}, F1 {pct(test.get('f1'))}."
         )
     trl_runs = [run for run in deployable if run["source"] == "TRL SFTTrainer"]
     if trl_runs:
@@ -451,7 +485,7 @@ def best_recommendation(binary_runs: list[dict[str, Any]], ternary_runs: list[di
 
 
 def trained_binary_runs(runs: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    variant_order = {"queries_only": 0, "company_context": 1, "chain_context": 2}
+    variant_order = {"queries_only": 0, "company_context": 1, "private_fact_context": 2, "chain_context": 3}
     source_order = {"Manual Trainer": 0, "TRL SFTTrainer": 1}
     return sorted(
         [run for run in runs if "smoke" not in run["name"] and run["source"] != "Base"],
