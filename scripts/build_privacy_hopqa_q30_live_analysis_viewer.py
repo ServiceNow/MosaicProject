@@ -857,34 +857,44 @@ def load_rollouts(artifact_root: Path, problem_lookup: dict[tuple[str, str], dic
 
 
 def load_leakage(artifact_root: Path, judge: str) -> list[dict[str, Any]]:
-    filename = {
-        "stepfun": "privacy_leakage_suite_v2_stepfun_full.jsonl",
-        "qwen3_4b": "privacy_leakage_suite_v2_qwen3_4b_full.jsonl",
+    filenames = {
+        "stepfun": ["privacy_leakage_suite_v2_stepfun_full.jsonl"],
+        "qwen3_4b": [
+            "privacy_leakage_suite_v2_qwen3_4b_full.jsonl",
+            "privacy_leakage_suite_v2_qwen3_4b_local_h100.jsonl",
+        ],
     }[judge]
     rows: list[dict[str, Any]] = []
     for root in model_roots(artifact_root):
-        for row in read_jsonl(root / "tables" / filename):
-            row = dict(row)
-            row["judge"] = judge
-            row["model_run_root"] = str(root)
-            row["model_label"] = str(row.get("model_label") or root.name)
-            row["model_display"] = model_display(row["model_label"])
-            prompt_tokens, completion_tokens = step_usage_tokens(row)
-            row["judge_prompt_tokens"] = prompt_tokens
-            row["judge_completion_tokens"] = completion_tokens
-            rows.append(row)
+        for filename in filenames:
+            for row in read_jsonl(root / "tables" / filename):
+                row = dict(row)
+                row["judge"] = judge
+                row["model_run_root"] = str(root)
+                row["model_label"] = str(row.get("model_label") or root.name)
+                row["model_display"] = model_display(row["model_label"])
+                row["judge_source_file"] = filename
+                prompt_tokens, completion_tokens = step_usage_tokens(row)
+                row["judge_prompt_tokens"] = prompt_tokens
+                row["judge_completion_tokens"] = completion_tokens
+                rows.append(row)
     return dedupe_rows_by_latest(rows, judge)
 
 
 def load_binary(artifact_root: Path) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for root in model_roots(artifact_root):
-        for row in read_jsonl(root / "tables" / "privacy_binary_leakage_predictor_qwen3_4b.jsonl"):
-            row = dict(row)
-            row["model_run_root"] = str(root)
-            row["model_label"] = root.name
-            row["model_display"] = model_display(root.name)
-            rows.append(row)
+        for filename in [
+            "privacy_binary_leakage_predictor_qwen3_4b.jsonl",
+            "privacy_binary_leakage_predictor_qwen3_4b_local_h100.jsonl",
+        ]:
+            for row in read_jsonl(root / "tables" / filename):
+                row = dict(row)
+                row["model_run_root"] = str(root)
+                row["model_label"] = root.name
+                row["model_display"] = model_display(root.name)
+                row["predictor_source_file"] = filename
+                rows.append(row)
     return dedupe_rows_by_latest(rows, "binary_qwen3_4b")
 
 
