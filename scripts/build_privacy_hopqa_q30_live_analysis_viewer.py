@@ -313,6 +313,36 @@ def latest_by_identity(rows: list[dict[str, Any]]) -> dict[tuple[str, str, str, 
     return latest
 
 
+def timestamp_sort_key(row: dict[str, Any], fallback: int) -> tuple[str, int]:
+    timestamp = str(row.get("timestamp") or "")
+    return (timestamp, fallback)
+
+
+def leakage_identity(row: dict[str, Any], judge: str) -> tuple[str, ...]:
+    fingerprint = str(row.get("input_fingerprint") or "")
+    if fingerprint:
+        return (judge, str(row.get("model_label") or ""), fingerprint)
+    return (
+        judge,
+        str(row.get("model_label") or ""),
+        str(row.get("split") or row_split(row)),
+        str(row.get("task_id") or ""),
+        str(row.get("chain_id") or ""),
+        str(row.get("repeat") or 0),
+        str(row.get("trace_path") or ""),
+    )
+
+
+def dedupe_rows_by_latest(rows: list[dict[str, Any]], judge: str) -> list[dict[str, Any]]:
+    latest: dict[tuple[str, ...], tuple[tuple[str, int], dict[str, Any]]] = {}
+    for idx, row in enumerate(rows):
+        key = leakage_identity(row, judge)
+        sort_key = timestamp_sort_key(row, idx)
+        if key not in latest or sort_key >= latest[key][0]:
+            latest[key] = (sort_key, row)
+    return [item[1] for item in sorted(latest.values(), key=lambda item: item[0])]
+
+
 def leakage_trace_key(row: dict[str, Any]) -> str:
     return str(row.get("trace_path") or "")
 
@@ -824,7 +854,7 @@ def load_leakage(artifact_root: Path, judge: str) -> list[dict[str, Any]]:
             row["judge_prompt_tokens"] = prompt_tokens
             row["judge_completion_tokens"] = completion_tokens
             rows.append(row)
-    return rows
+    return dedupe_rows_by_latest(rows, judge)
 
 
 def load_binary(artifact_root: Path) -> list[dict[str, Any]]:
@@ -836,7 +866,7 @@ def load_binary(artifact_root: Path) -> list[dict[str, Any]]:
             row["model_label"] = root.name
             row["model_display"] = model_display(root.name)
             rows.append(row)
-    return rows
+    return dedupe_rows_by_latest(rows, "binary_qwen3_4b")
 
 
 def load_binary_reward_prompt_smoke() -> list[dict[str, Any]]:
