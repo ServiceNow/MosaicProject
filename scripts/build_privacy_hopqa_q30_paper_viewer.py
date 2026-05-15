@@ -13,6 +13,7 @@ import sys
 import tempfile
 from typing import Any
 
+import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.ticker import MaxNLocator
 
@@ -68,13 +69,13 @@ def ensure_clean_dir(path: Path) -> None:
 def paper_style() -> None:
     plt.rcParams.update(
         {
-            "font.size": 13,
-            "axes.labelsize": 14,
-            "axes.titlesize": 14,
-            "xtick.labelsize": 11,
-            "ytick.labelsize": 12,
-            "legend.fontsize": 12,
-            "legend.title_fontsize": 12,
+            "font.size": 11,
+            "axes.labelsize": 12,
+            "axes.titlesize": 12,
+            "xtick.labelsize": 10,
+            "ytick.labelsize": 10,
+            "legend.fontsize": 10,
+            "legend.title_fontsize": 10,
             "axes.spines.top": False,
             "axes.spines.right": False,
             "axes.grid": True,
@@ -108,13 +109,13 @@ def count_yerr(rows: list[dict[str, Any]], key: str) -> list[list[float]]:
 def annotate_ns(ax: Any, positions: list[float], values: list[float], counts: list[int], percent: bool, y_max: float) -> None:
     for x_pos, value, count in zip(positions, values, counts):
         if not math.isfinite(value):
-            ax.text(x_pos, y_max * 0.04, f"n={count}", ha="center", va="bottom", fontsize=9, color="#5d6964")
+            ax.text(x_pos, y_max * 0.04, f"n={count}", ha="center", va="bottom", fontsize=8, color="#5d6964")
             continue
         if percent:
             label = f"{value:.0f}%\nn={count}"
         else:
             label = f"{value:.1f}\nn={count}"
-        ax.text(x_pos, min(y_max * 0.98, value + y_max * 0.025), label, ha="center", va="bottom", fontsize=9)
+        ax.text(x_pos, min(y_max * 0.96, value + y_max * 0.025), label, ha="center", va="bottom", fontsize=8)
 
 
 def model_rows_for_plot(rows: list[dict[str, Any]], require_prompt: bool = False) -> list[dict[str, Any]]:
@@ -131,21 +132,21 @@ def plot_privacy_prompt_accuracy_leakage(rows: list[dict[str, Any]], path: Path)
     labels = [live.model_display(str(row["model_label"])) for row in rows]
     metrics = [
         (
-            "STRICT CHAIN SUCCESS (%)",
+            "Strict Chain Success (%)",
             "baseline_strict_chain_success_rate",
             "prompt_strict_chain_success_rate",
             "baseline_ok",
             "prompt_ok",
         ),
         (
-            "PRIVACY LEAKAGE (%)",
+            "Privacy Leakage (%)",
             "baseline_reward_rate",
             "prompt_reward_rate",
             "baseline_stepfun",
             "prompt_stepfun",
         ),
     ]
-    fig, axes = plt.subplots(1, 2, figsize=(12.8, 4.7), sharey=True)
+    fig, axes = plt.subplots(1, 2, figsize=(12.8, 4.85), sharey=True)
     x = list(range(len(rows)))
     width = 0.36
     error_kw = {"elinewidth": 1.2, "ecolor": "#303633", "capsize": 3.5, "capthick": 1.1}
@@ -184,16 +185,16 @@ def plot_privacy_prompt_accuracy_leakage(rows: list[dict[str, Any]], path: Path)
             yerr=percent_yerr(rows, prompt_key),
             error_kw=error_kw,
         )
-        annotate_ns(ax, baseline_pos, baseline_vals, baseline_counts, percent=True, y_max=112)
-        annotate_ns(ax, prompt_pos, prompt_vals, prompt_counts, percent=True, y_max=112)
+        annotate_ns(ax, baseline_pos, baseline_vals, baseline_counts, percent=True, y_max=124)
+        annotate_ns(ax, prompt_pos, prompt_vals, prompt_counts, percent=True, y_max=124)
         ax.set_ylabel(ylabel)
-        ax.set_xlabel("MODEL")
+        ax.set_xlabel("Model")
         ax.set_xticks(x)
         ax.set_xticklabels(labels, rotation=25, ha="right")
-        ax.set_ylim(0, 112)
+        ax.set_ylim(0, 124)
         ax.set_yticks(range(0, 101, 20))
     handles, legend_labels = axes[0].get_legend_handles_labels()
-    fig.legend(handles, legend_labels, loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.08))
+    fig.legend(handles, legend_labels, loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.16))
     save_figure(fig, path)
 
 
@@ -203,12 +204,12 @@ def plot_privacy_prompt_query_behavior(rows: list[dict[str, Any]], path: Path) -
         return
     labels = [live.model_display(str(row["model_label"])) for row in rows]
     metrics = [
-        ("VISIBLE WEB QUERIES", "baseline_web_queries", "prompt_web_queries"),
-        ("LOCAL DOCUMENT SEARCHES", "baseline_local_searches", "prompt_local_searches"),
-        ("LOCAL DOCUMENT READS", "baseline_local_doc_reads", "prompt_local_doc_reads"),
-        ("WEB DOCUMENT READS", "baseline_web_doc_reads", "prompt_web_doc_reads"),
+        ("Visible Web Queries", "baseline_web_queries", "prompt_web_queries"),
+        ("Local Document Searches", "baseline_local_searches", "prompt_local_searches"),
+        ("Local Document Reads", "baseline_local_doc_reads", "prompt_local_doc_reads"),
+        ("Web Document Reads", "baseline_web_doc_reads", "prompt_web_doc_reads"),
     ]
-    fig, axes = plt.subplots(2, 2, figsize=(13.2, 7.6))
+    fig, axes = plt.subplots(2, 2, figsize=(13.2, 7.9))
     x = list(range(len(rows)))
     width = 0.36
     error_kw = {"elinewidth": 1.1, "ecolor": "#303633", "capsize": 3, "capthick": 1.0}
@@ -240,14 +241,14 @@ def plot_privacy_prompt_query_behavior(rows: list[dict[str, Any]], path: Path) -
         y_max = max([*baseline_vals, *prompt_vals, 1.0]) * 1.32
         annotate_ns(ax, baseline_pos, baseline_vals, baseline_counts, percent=False, y_max=y_max)
         annotate_ns(ax, prompt_pos, prompt_vals, prompt_counts, percent=False, y_max=y_max)
-        ax.set_ylabel(f"{ylabel}\nMEAN COUNT PER ROLLOUT")
-        ax.set_xlabel("MODEL")
+        ax.set_ylabel(f"{ylabel}\nMean Count Per Rollout")
+        ax.set_xlabel("Model")
         ax.set_xticks(x)
         ax.set_xticklabels(labels, rotation=25, ha="right")
         ax.set_ylim(0, y_max)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
     handles, legend_labels = axes.flat[0].get_legend_handles_labels()
-    fig.legend(handles, legend_labels, loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.03))
+    fig.legend(handles, legend_labels, loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.05))
     save_figure(fig, path)
 
 
@@ -282,21 +283,21 @@ def plot_task_performance(rows: list[dict[str, Any]], path: Path) -> None:
     hop_vals = [100 * (row.get("mean_hop_performance") or 0) for row in rows]
     chain_vals = [100 * (row.get("all_chain_correct") or 0) for row in rows]
     ns = [int(row.get("n") or 0) for row in rows]
-    fig, ax = plt.subplots(figsize=(10.6, 4.9))
+    fig, ax = plt.subplots(figsize=(10.6, 5.05))
     hop_pos = [item - width / 2 for item in x]
     chain_pos = [item + width / 2 for item in x]
     error_kw = {"elinewidth": 1.2, "ecolor": "#303633", "capsize": 3.5, "capthick": 1.1}
     ax.bar(hop_pos, hop_vals, width=width, color=HOP_COLOR, label="Mean Hop Performance", yerr=percent_yerr(rows, "mean_hop_performance"), error_kw=error_kw)
     ax.bar(chain_pos, chain_vals, width=width, color=CHAIN_COLOR, label="All-Chain Correct", yerr=percent_yerr(rows, "all_chain_correct"), error_kw=error_kw)
-    annotate_ns(ax, hop_pos, hop_vals, ns, percent=True, y_max=112)
-    annotate_ns(ax, chain_pos, chain_vals, ns, percent=True, y_max=112)
-    ax.set_ylabel("PERCENT OF ROLLOUTS")
-    ax.set_xlabel("MODEL")
+    annotate_ns(ax, hop_pos, hop_vals, ns, percent=True, y_max=124)
+    annotate_ns(ax, chain_pos, chain_vals, ns, percent=True, y_max=124)
+    ax.set_ylabel("Percent of Rollouts")
+    ax.set_xlabel("Model")
     ax.set_xticks(x)
     ax.set_xticklabels(labels, rotation=25, ha="right")
-    ax.set_ylim(0, 112)
+    ax.set_ylim(0, 124)
     ax.set_yticks(range(0, 101, 20))
-    ax.legend(loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.16))
+    ax.legend(loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.20))
     save_figure(fig, path)
 
 
@@ -336,23 +337,304 @@ def plot_retrieval_behavior(rows: list[dict[str, Any]], path: Path) -> None:
     ]
     width = 0.18
     offsets = [-1.5 * width, -0.5 * width, 0.5 * width, 1.5 * width]
-    fig, ax = plt.subplots(figsize=(11.4, 4.9))
+    fig, ax = plt.subplots(figsize=(11.4, 5.1))
     y_max = 1.0
     for offset, (label, key, color) in zip(offsets, series):
         vals = [row.get(key) or 0 for row in rows]
         y_max = max(y_max, *vals)
         ax.bar([item + offset for item in x], vals, width=width, color=color, label=label, yerr=count_yerr(rows, key), error_kw={"elinewidth": 1.0, "ecolor": "#303633", "capsize": 2.5})
-    y_max *= 1.24
+    y_max *= 1.34
     for xi, row in zip(x, rows):
         ax.text(xi, y_max * 0.95, f"n={int(row.get('n') or 0)}", ha="center", va="bottom", fontsize=9)
-    ax.set_ylabel("MEAN COUNT PER ROLLOUT")
-    ax.set_xlabel("MODEL")
+    ax.set_ylabel("Mean Count Per Rollout")
+    ax.set_xlabel("Model")
     ax.set_xticks(x)
     ax.set_xticklabels(labels, rotation=25, ha="right")
     ax.set_ylim(0, y_max)
     ax.yaxis.set_major_locator(MaxNLocator(nbins=6))
-    ax.legend(loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.22))
+    ax.legend(loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.25))
     save_figure(fig, path)
+
+
+def normal_two_sided_p(z_value: float) -> float:
+    return math.erfc(abs(z_value) / math.sqrt(2.0))
+
+
+def logistic_regression(X: list[list[float]], y: list[int], clusters: list[Any] | None = None) -> dict[str, Any] | None:
+    if len(y) < 8 or len(set(y)) < 2:
+        return None
+    design = np.asarray(X, dtype=float)
+    outcomes = np.asarray(y, dtype=float)
+    if design.ndim != 2 or design.shape[0] != outcomes.shape[0]:
+        return None
+    beta = np.zeros(design.shape[1], dtype=float)
+    for _ in range(80):
+        eta = np.clip(design @ beta, -30, 30)
+        prob = 1.0 / (1.0 + np.exp(-eta))
+        weights = np.clip(prob * (1.0 - prob), 1e-8, None)
+        gradient = design.T @ (outcomes - prob)
+        hessian = design.T @ (weights[:, None] * design)
+        try:
+            step = np.linalg.solve(hessian, gradient)
+        except np.linalg.LinAlgError:
+            step = np.linalg.pinv(hessian) @ gradient
+        beta = beta + step
+        if float(np.max(np.abs(step))) < 1e-7:
+            break
+    eta = np.clip(design @ beta, -30, 30)
+    prob = 1.0 / (1.0 + np.exp(-eta))
+    weights = np.clip(prob * (1.0 - prob), 1e-8, None)
+    hessian = design.T @ (weights[:, None] * design)
+    try:
+        hessian_inv = np.linalg.inv(hessian)
+    except np.linalg.LinAlgError:
+        hessian_inv = np.linalg.pinv(hessian)
+    cov = hessian_inv
+    if clusters is not None and len(clusters) == len(y):
+        cluster_values = np.asarray([str(item) for item in clusters])
+        meat = np.zeros((design.shape[1], design.shape[1]), dtype=float)
+        for cluster in sorted(set(cluster_values)):
+            mask = cluster_values == cluster
+            cluster_score = design[mask].T @ (outcomes[mask] - prob[mask])
+            meat += np.outer(cluster_score, cluster_score)
+        n_clusters = len(set(cluster_values))
+        n_obs, n_params = design.shape
+        correction = 1.0
+        if n_clusters > 1 and n_obs > n_params:
+            correction = (n_clusters / (n_clusters - 1)) * ((n_obs - 1) / (n_obs - n_params))
+        cov = correction * hessian_inv @ meat @ hessian_inv
+    se = np.sqrt(np.clip(np.diag(cov), 0, None))
+    z = np.divide(beta, se, out=np.full_like(beta, np.nan), where=se > 0)
+    p_values = [normal_two_sided_p(float(item)) if math.isfinite(float(item)) else None for item in z]
+    return {
+        "beta": beta.tolist(),
+        "se": se.tolist(),
+        "p": p_values,
+        "n": len(y),
+    }
+
+
+def format_p(value: Any) -> str:
+    number = live.as_float(value)
+    if number is None:
+        return "n/a"
+    if number < 0.001:
+        return "<0.001"
+    return f"{number:.3f}"
+
+
+def odds_ratio_text(result: dict[str, Any] | None, index: int) -> str:
+    if not result:
+        return "n/a"
+    beta = result["beta"][index]
+    se = result["se"][index]
+    estimate = math.exp(beta)
+    low = math.exp(beta - 1.96 * se)
+    high = math.exp(beta + 1.96 * se)
+    return f"OR = {estimate:.2f} [{low:.2f}, {high:.2f}]"
+
+
+def spearman_result(xs: list[float], ys: list[int]) -> tuple[float | None, float | None]:
+    if len(xs) < 3 or len(set(xs)) < 2 or len(set(ys)) < 2 or live.scipy_stats is None:
+        return None, None
+    rho, p_value = live.scipy_stats.spearmanr(xs, ys)
+    return float(rho), float(p_value)
+
+
+def leakage_relationship_rows(
+    baseline_rollouts: list[dict[str, Any]],
+    baseline_stepfun: list[dict[str, Any]],
+    prompt_rollouts: list[dict[str, Any]],
+    prompt_stepfun: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    sources = [
+        ("Baseline", baseline_rollouts, baseline_stepfun),
+        ("Privacy Prompt", prompt_rollouts, prompt_stepfun),
+    ]
+    for condition, rollouts, stepfun in sources:
+        rollout_by_trace = {str(row.get("trace_path") or ""): row for row in rollouts if row.get("ok")}
+        for judged in stepfun:
+            rollout = rollout_by_trace.get(str(judged.get("trace_path") or ""))
+            if not rollout:
+                continue
+            accuracy = live.task_accuracy(rollout)
+            if accuracy is None:
+                continue
+            n_hops = live.as_float(judged.get("n_hops") or rollout.get("n_hops"))
+            if n_hops is None:
+                n_hops = float(len(str(judged.get("pattern") or rollout.get("pattern") or "")))
+            if n_hops <= 0:
+                continue
+            rows.append(
+                {
+                    "condition": condition,
+                    "model_label": judged.get("model_label"),
+                    "model": live.model_display(str(judged.get("model_label") or "")),
+                    "task_id": judged.get("task_id"),
+                    "chain_id": judged.get("chain_id"),
+                    "n_hops": int(round(n_hops)),
+                    "chain_progress_accuracy": accuracy,
+                    "privacy_leaked": int(live.reward_positive(judged)),
+                }
+            )
+    return rows
+
+
+def leakage_rate_summary(values: list[int], seed: str) -> tuple[float, float, float]:
+    center, _se, low, high = live.bootstrap_mean_interval(values, seed)
+    if center is None:
+        return math.nan, math.nan, math.nan
+    return 100 * center, 100 * (low if low is not None else center), 100 * (high if high is not None else center)
+
+
+def add_logistic_line(ax: Any, xs: list[float], result: dict[str, Any] | None, scale: float, x_min: float, x_max: float) -> None:
+    if not result:
+        return
+    beta0, beta1 = result["beta"][0], result["beta"][1]
+    grid = np.linspace(x_min, x_max, 100)
+    logits = beta0 + beta1 * (grid * scale)
+    probs = 100 / (1 + np.exp(-np.clip(logits, -30, 30)))
+    ax.plot(grid, probs, color="#7f7f7f", linestyle="--", linewidth=1.5, label="Logistic Fit")
+
+
+def plot_leakage_relationships(rows: list[dict[str, Any]], path: Path) -> dict[str, Any]:
+    stats_rows = leakage_relationship_stats(rows)
+    if not rows:
+        return {"stats_rows": stats_rows}
+    y = [int(row["privacy_leaked"]) for row in rows]
+    chain_x = [float(row["n_hops"]) for row in rows]
+    acc_x = [float(row["chain_progress_accuracy"]) for row in rows]
+    chain_fit = logistic_regression([[1.0, x] for x in chain_x], y)
+    acc_fit = logistic_regression([[1.0, x * 10.0] for x in acc_x], y)
+    fig, axes = plt.subplots(1, 2, figsize=(12.3, 4.75), sharey=True)
+
+    chain_values = sorted({int(row["n_hops"]) for row in rows})
+    for value in chain_values:
+        subset = [int(row["privacy_leaked"]) for row in rows if int(row["n_hops"]) == value]
+        center, low, high = leakage_rate_summary(subset, f"paper-chain-leak-{value}")
+        axes[0].errorbar(
+            value,
+            center,
+            yerr=[[max(0, center - low)], [max(0, high - center)]],
+            fmt="o",
+            markersize=min(18, 5 + 0.35 * len(subset)),
+            color="#0072B2",
+            ecolor="#303633",
+            capsize=3,
+        )
+        axes[0].text(value, min(96, center + 5), f"n={len(subset)}", ha="center", va="bottom", fontsize=8)
+    add_logistic_line(axes[0], chain_x, chain_fit, scale=1.0, x_min=min(chain_x), x_max=max(chain_x))
+    axes[0].set_xlabel("Chain Length (Hops)")
+    axes[0].set_ylabel("Privacy Leakage Rate (%)")
+    axes[0].set_xticks(chain_values)
+    axes[0].set_ylim(0, 104)
+    axes[0].set_yticks(range(0, 101, 20))
+    axes[0].legend(loc="upper center", frameon=False, bbox_to_anchor=(0.5, 1.13))
+
+    bins = [(0.0, 0.2), (0.2, 0.4), (0.4, 0.6), (0.6, 0.8), (0.8, 1.000001)]
+    centers = [10, 30, 50, 70, 90]
+    labels = ["0-20", "20-40", "40-60", "60-80", "80-100"]
+    for (low_edge, high_edge), center_x, label in zip(bins, centers, labels):
+        subset = [
+            int(row["privacy_leaked"])
+            for row in rows
+            if low_edge <= float(row["chain_progress_accuracy"]) < high_edge
+        ]
+        if not subset:
+            continue
+        center, low, high = leakage_rate_summary(subset, f"paper-accuracy-leak-{label}")
+        axes[1].errorbar(
+            center_x,
+            center,
+            yerr=[[max(0, center - low)], [max(0, high - center)]],
+            fmt="o",
+            markersize=min(18, 5 + 0.35 * len(subset)),
+            color="#009E73",
+            ecolor="#303633",
+            capsize=3,
+        )
+        axes[1].text(center_x, min(96, center + 5), f"n={len(subset)}", ha="center", va="bottom", fontsize=8)
+    add_logistic_line(axes[1], acc_x, acc_fit, scale=0.1, x_min=0, x_max=100)
+    axes[1].set_xlabel("Chain Progress Accuracy (%)")
+    axes[1].set_ylabel("Privacy Leakage Rate (%)")
+    axes[1].set_xlim(-2, 102)
+    axes[1].set_xticks(centers)
+    axes[1].set_xticklabels(labels)
+    axes[1].legend(loc="upper center", frameon=False, bbox_to_anchor=(0.5, 1.13))
+    save_figure(fig, path)
+    return {"stats_rows": stats_rows}
+
+
+def leakage_relationship_stats(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    if not rows:
+        return []
+    y = [int(row["privacy_leaked"]) for row in rows]
+    chain_x = [float(row["n_hops"]) for row in rows]
+    acc_x = [float(row["chain_progress_accuracy"]) for row in rows]
+    prompt_x = [1.0 if row["condition"] == "Privacy Prompt" else 0.0 for row in rows]
+    clusters = [row.get("task_id") for row in rows]
+    chain_rho, chain_rho_p = spearman_result(chain_x, y)
+    acc_rho, acc_rho_p = spearman_result(acc_x, y)
+    chain_fit = logistic_regression([[1.0, x] for x in chain_x], y, clusters)
+    acc_fit = logistic_regression([[1.0, x * 10.0] for x in acc_x], y, clusters)
+    adjusted_fit = logistic_regression(
+        [[1.0, chain, acc * 10.0, prompt] for chain, acc, prompt in zip(chain_x, acc_x, prompt_x)],
+        y,
+        clusters,
+    )
+    n = len(rows)
+    return [
+        {
+            "analysis": "Spearman rank",
+            "predictor": "Chain Length",
+            "effect": f"rho = {chain_rho:.2f}" if chain_rho is not None else "n/a",
+            "p_value": format_p(chain_rho_p),
+            "n": n,
+        },
+        {
+            "analysis": "Spearman rank",
+            "predictor": "Chain Progress Accuracy",
+            "effect": f"rho = {acc_rho:.2f}" if acc_rho is not None else "n/a",
+            "p_value": format_p(acc_rho_p),
+            "n": n,
+        },
+        {
+            "analysis": "Bivariate logistic",
+            "predictor": "Chain Length (+1 hop)",
+            "effect": odds_ratio_text(chain_fit, 1),
+            "p_value": format_p(chain_fit["p"][1] if chain_fit else None),
+            "n": n,
+        },
+        {
+            "analysis": "Bivariate logistic",
+            "predictor": "Chain Progress Accuracy (+10 pp)",
+            "effect": odds_ratio_text(acc_fit, 1),
+            "p_value": format_p(acc_fit["p"][1] if acc_fit else None),
+            "n": n,
+        },
+        {
+            "analysis": "Adjusted logistic",
+            "predictor": "Chain Length (+1 hop)",
+            "effect": odds_ratio_text(adjusted_fit, 1),
+            "p_value": format_p(adjusted_fit["p"][1] if adjusted_fit else None),
+            "n": n,
+        },
+        {
+            "analysis": "Adjusted logistic",
+            "predictor": "Chain Progress Accuracy (+10 pp)",
+            "effect": odds_ratio_text(adjusted_fit, 2),
+            "p_value": format_p(adjusted_fit["p"][2] if adjusted_fit else None),
+            "n": n,
+        },
+        {
+            "analysis": "Adjusted logistic",
+            "predictor": "Privacy Prompt (vs. Baseline)",
+            "effect": odds_ratio_text(adjusted_fit, 3),
+            "p_value": format_p(adjusted_fit["p"][3] if adjusted_fit else None),
+            "n": n,
+        },
+    ]
 
 
 def table(headers: list[tuple[str, str]], rows: list[dict[str, Any]]) -> str:
@@ -413,6 +695,69 @@ def retrieval_table_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     ]
 
 
+def latex_escape(value: Any) -> str:
+    text = "" if value is None else str(value)
+    replacements = {
+        "\\": r"\textbackslash{}",
+        "&": r"\&",
+        "%": r"\%",
+        "$": r"\$",
+        "#": r"\#",
+        "_": r"\_",
+        "{": r"\{",
+        "}": r"\}",
+        "~": r"\textasciitilde{}",
+        "^": r"\textasciicircum{}",
+    }
+    return "".join(replacements.get(char, char) for char in text)
+
+
+def latex_p_value(value: Any) -> str:
+    text = "" if value is None else str(value)
+    if text.startswith("<"):
+        return f"$<{latex_escape(text[1:])}$"
+    return latex_escape(text)
+
+
+def latex_effect(value: Any) -> str:
+    text = "" if value is None else str(value)
+    if text.startswith("rho = "):
+        return "$\\rho = " + latex_escape(text.removeprefix("rho = ")) + "$"
+    return latex_escape(text)
+
+
+def leakage_stats_latex(rows: list[dict[str, Any]]) -> str:
+    body = []
+    for row in rows:
+        body.append(
+            " & ".join(
+                [
+                    latex_escape(row.get("analysis")),
+                    latex_escape(row.get("predictor")),
+                    latex_effect(row.get("effect")),
+                    latex_p_value(row.get("p_value")),
+                    latex_escape(row.get("n")),
+                ]
+            )
+            + r" \\"
+        )
+    body_text = "\n".join(body)
+    return rf"""\begin{{table}}[t]
+\small
+\centering
+\begin{{tabular}}{{p{{0.22\linewidth}}p{{0.30\linewidth}}p{{0.22\linewidth}}p{{0.10\linewidth}}p{{0.06\linewidth}}}}
+\toprule
+\textbf{{Analysis}} & \textbf{{Predictor}} & \textbf{{Effect}} & \textbf{{$p$}} & \textbf{{$n$}} \\
+\midrule
+{body_text}
+\bottomrule
+\end{{tabular}}
+\caption{{Relationship between task structure, task performance, and privacy leakage. The outcome is the binary StepFun privacy-leakage label, defined as overall score $\geq 4$. Logistic effects are odds ratios with task-clustered Wald 95\% confidence intervals. Rows use currently StepFun-judged test rollouts from the baseline and privacy-prompted conditions.}}
+\label{{tab:privacy_leakage_relationships}}
+\end{{table}}
+"""
+
+
 def build_prompt_summary(
     baseline_root: Path,
     prompt_root: Path,
@@ -431,10 +776,17 @@ def build_viewer(args: argparse.Namespace) -> None:
     paper_style()
     ensure_clean_dir(args.output_dir)
     plots_dir = args.output_dir / "plots"
+    tables_dir = args.output_dir / "tables"
     problem_lookup = live.load_problem_lookup(args.dataset_root, args.dataset_basename)
     rollouts = live.load_rollouts(args.artifact_root, problem_lookup)
     test_rollouts = live.filter_split(rollouts, "test")
     all_rollouts = rollouts
+    stepfun = live.load_leakage(args.artifact_root, "stepfun")
+    test_stepfun = live.filter_split(stepfun, "test")
+    prompt_rollouts = live.load_rollouts(args.privacy_prompt_artifact_root, problem_lookup)
+    prompt_test_rollouts = live.filter_split(prompt_rollouts, "test")
+    prompt_stepfun = live.load_leakage(args.privacy_prompt_artifact_root, "stepfun")
+    prompt_test_stepfun = live.filter_split(prompt_stepfun, "test")
     prompt_comparison = build_prompt_summary(args.artifact_root, args.privacy_prompt_artifact_root, problem_lookup)
     prompt_rows = prompt_comparison.get("summary") or []
 
@@ -449,6 +801,18 @@ def build_viewer(args: argparse.Namespace) -> None:
     all_retrieval_summary = retrieval_summary(all_rollouts, successful_only=False)
     plot_retrieval_behavior(all_retrieval_summary, plots_dir / "retrieval_behavior_all_rollouts.svg")
 
+    relationship_rows = leakage_relationship_rows(
+        test_rollouts,
+        test_stepfun,
+        prompt_test_rollouts,
+        prompt_test_stepfun,
+    )
+    relationship_result = plot_leakage_relationships(relationship_rows, plots_dir / "leakage_relationships.svg")
+    relationship_stats_rows = relationship_result.get("stats_rows") or []
+    tables_dir.mkdir(parents=True, exist_ok=True)
+    latex_path = tables_dir / "leakage_relationship_stats.tex"
+    latex_path.write_text(leakage_stats_latex(relationship_stats_rows), encoding="utf-8")
+
     generated_at = live.iso_now()
     data = {
         "generated_at": generated_at,
@@ -458,6 +822,8 @@ def build_viewer(args: argparse.Namespace) -> None:
         "test_task_summary": test_task_summary,
         "all_task_summary": all_task_summary,
         "all_retrieval_summary": all_retrieval_summary,
+        "leakage_relationship_rows": relationship_rows,
+        "leakage_relationship_stats": relationship_stats_rows,
     }
     (args.output_dir / "viewer_data.json").write_text(live.json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
@@ -497,6 +863,17 @@ def build_viewer(args: argparse.Namespace) -> None:
         ],
         retrieval_table_rows(all_retrieval_summary),
     )
+    relationship_stats_table = table(
+        [
+            ("analysis", "Analysis"),
+            ("predictor", "Predictor"),
+            ("effect", "Effect"),
+            ("p_value", "p-value"),
+            ("n", "n"),
+        ],
+        relationship_stats_rows,
+    )
+    relationship_stats_latex_text = latex_path.read_text(encoding="utf-8")
     leakage_definition_table = table(
         [
             ("type", "Leakage Type"),
@@ -599,6 +976,15 @@ def build_viewer(args: argparse.Namespace) -> None:
     }}
     th {{ background: #eef2f0; font-weight: 650; }}
     code {{ background: #eef2f0; padding: 1px 4px; border-radius: 4px; }}
+    pre {{
+      white-space: pre-wrap;
+      overflow-x: auto;
+      background: #f2f4f3;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 12px;
+      font-size: 13px;
+    }}
   </style>
 </head>
 <body>
@@ -610,6 +996,7 @@ def build_viewer(args: argparse.Namespace) -> None:
       <a href="#prompt-query">Prompt: Query And Retrieval</a>
       <a href="#task-performance-test">Task Performance</a>
       <a href="#retrieval-all">Retrieval Behavior</a>
+      <a href="#leakage-relationships">Leakage Relationships</a>
       <a href="#tables">Tables</a>
       <a href="#leakage-definitions">Leakage Types</a>
     </nav>
@@ -645,6 +1032,12 @@ def build_viewer(args: argparse.Namespace) -> None:
       <img src="plots/retrieval_behavior_all_rollouts.svg" alt="Retrieval and query behavior for all rollout rows">
       <div class="links"><a href="plots/retrieval_behavior_all_rollouts.svg">SVG</a><a href="plots/retrieval_behavior_all_rollouts.pdf">PDF</a></div>
     </section>
+    <section id="leakage-relationships" class="figure">
+      <h2>Privacy Leakage Relationships</h2>
+      <div class="note">Test split, StepFun-judged baseline and privacy-prompt rollout-condition rows. Points are empirical leakage rates; the gray dashed line is a bivariate logistic fit.</div>
+      <img src="plots/leakage_relationships.svg" alt="Privacy leakage relationships with chain length and accuracy">
+      <div class="links"><a href="plots/leakage_relationships.svg">SVG</a><a href="plots/leakage_relationships.pdf">PDF</a></div>
+    </section>
     <section id="tables">
       <h2>Paper Tables</h2>
       <h3>Privacy Prompt Summary</h3>
@@ -653,6 +1046,10 @@ def build_viewer(args: argparse.Namespace) -> None:
       {task_table}
       <h3>Retrieval Summary: All Rollouts</h3>
       {retrieval_table}
+      <h3>Leakage Relationship Statistics</h3>
+      {relationship_stats_table}
+      <div class="links"><a href="tables/leakage_relationship_stats.tex">LaTeX table</a></div>
+      <pre>{esc(relationship_stats_latex_text)}</pre>
     </section>
     <section id="leakage-definitions">
       <h2>Leakage Type Definitions</h2>

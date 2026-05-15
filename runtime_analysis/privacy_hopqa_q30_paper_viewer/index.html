@@ -70,17 +70,27 @@
     }
     th { background: #eef2f0; font-weight: 650; }
     code { background: #eef2f0; padding: 1px 4px; border-radius: 4px; }
+    pre {
+      white-space: pre-wrap;
+      overflow-x: auto;
+      background: #f2f4f3;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 12px;
+      font-size: 13px;
+    }
   </style>
 </head>
 <body>
   <header>
     <h1>Privacy HopQA q30 Paper Figure Preview</h1>
-    <div class="note">Generated 2026-05-15T01:46:00.660420+00:00. Figures use the live v11 artifacts and are intended as a smaller advisor-facing subset, not a replacement for the diagnostic viewer.</div>
+    <div class="note">Generated 2026-05-15T01:59:19.558683+00:00. Figures use the live v11 artifacts and are intended as a smaller advisor-facing subset, not a replacement for the diagnostic viewer.</div>
     <nav>
       <a href="#prompt-accuracy">Prompt: Accuracy And Leakage</a>
       <a href="#prompt-query">Prompt: Query And Retrieval</a>
       <a href="#task-performance-test">Task Performance</a>
       <a href="#retrieval-all">Retrieval Behavior</a>
+      <a href="#leakage-relationships">Leakage Relationships</a>
       <a href="#tables">Tables</a>
       <a href="#leakage-definitions">Leakage Types</a>
     </nav>
@@ -116,14 +126,43 @@
       <img src="plots/retrieval_behavior_all_rollouts.svg" alt="Retrieval and query behavior for all rollout rows">
       <div class="links"><a href="plots/retrieval_behavior_all_rollouts.svg">SVG</a><a href="plots/retrieval_behavior_all_rollouts.pdf">PDF</a></div>
     </section>
+    <section id="leakage-relationships" class="figure">
+      <h2>Privacy Leakage Relationships</h2>
+      <div class="note">Test split, StepFun-judged baseline and privacy-prompt rollout-condition rows. Points are empirical leakage rates; the gray dashed line is a bivariate logistic fit.</div>
+      <img src="plots/leakage_relationships.svg" alt="Privacy leakage relationships with chain length and accuracy">
+      <div class="links"><a href="plots/leakage_relationships.svg">SVG</a><a href="plots/leakage_relationships.pdf">PDF</a></div>
+    </section>
     <section id="tables">
       <h2>Paper Tables</h2>
       <h3>Privacy Prompt Summary</h3>
-      <table><thead><tr><th>Model</th><th>Baseline Rollouts</th><th>Prompt Rollouts</th><th>Baseline Judged</th><th>Prompt Judged</th><th>Baseline Success</th><th>Prompt Success</th><th>Success Delta (pp)</th><th>Baseline Leakage</th><th>Prompt Leakage</th><th>Leakage Delta (pp)</th></tr></thead><tbody><tr><td>Qwen3 4B</td><td>344</td><td>344</td><td>233</td><td>277</td><td>52.3%</td><td>47.1%</td><td>-5.2</td><td>21.9%</td><td>11.2%</td><td>-10.7</td></tr><tr><td>Qwen3 8B</td><td>270</td><td>344</td><td>0</td><td>142</td><td>53.3%</td><td>52.3%</td><td>-1.0</td><td>n/a</td><td>8.5%</td><td>n/a</td></tr><tr><td>Step-3.5 Flash</td><td>0</td><td>11</td><td>0</td><td>0</td><td>n/a</td><td>81.8%</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td></tr><tr><td>GPT-OSS 20B</td><td>344</td><td>344</td><td>0</td><td>25</td><td>54.4%</td><td>59.9%</td><td>+5.5</td><td>n/a</td><td>16.0%</td><td>n/a</td></tr><tr><td>Chroma Context-1 (medium)</td><td>0</td><td>242</td><td>0</td><td>171</td><td>n/a</td><td>40.1%</td><td>n/a</td><td>n/a</td><td>5.3%</td><td>n/a</td></tr><tr><td>Gemma 4 31B IT</td><td>344</td><td>344</td><td>0</td><td>344</td><td>65.4%</td><td>63.4%</td><td>-2.0</td><td>n/a</td><td>1.5%</td><td>n/a</td></tr></tbody></table>
+      <table><thead><tr><th>Model</th><th>Baseline Rollouts</th><th>Prompt Rollouts</th><th>Baseline Judged</th><th>Prompt Judged</th><th>Baseline Success</th><th>Prompt Success</th><th>Success Delta (pp)</th><th>Baseline Leakage</th><th>Prompt Leakage</th><th>Leakage Delta (pp)</th></tr></thead><tbody><tr><td>Qwen3 4B</td><td>344</td><td>344</td><td>254</td><td>277</td><td>52.3%</td><td>47.1%</td><td>-5.2</td><td>21.3%</td><td>11.2%</td><td>-10.1</td></tr><tr><td>Qwen3 8B</td><td>301</td><td>344</td><td>0</td><td>142</td><td>53.8%</td><td>52.3%</td><td>-1.5</td><td>n/a</td><td>8.5%</td><td>n/a</td></tr><tr><td>Step-3.5 Flash</td><td>0</td><td>11</td><td>0</td><td>0</td><td>n/a</td><td>81.8%</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td></tr><tr><td>GPT-OSS 20B</td><td>344</td><td>344</td><td>0</td><td>25</td><td>54.4%</td><td>59.9%</td><td>+5.5</td><td>n/a</td><td>16.0%</td><td>n/a</td></tr><tr><td>Chroma Context-1 (medium)</td><td>0</td><td>249</td><td>0</td><td>171</td><td>n/a</td><td>39.4%</td><td>n/a</td><td>n/a</td><td>5.3%</td><td>n/a</td></tr><tr><td>Gemma 4 31B IT</td><td>344</td><td>344</td><td>0</td><td>344</td><td>65.4%</td><td>63.4%</td><td>-2.0</td><td>n/a</td><td>1.5%</td><td>n/a</td></tr></tbody></table>
       <h3>Task Performance Summary: Test Split</h3>
-      <table><thead><tr><th>Model</th><th>Rollouts</th><th>Mean Hop Performance</th><th>All-Chain Correct</th></tr></thead><tbody><tr><td>Qwen3 4B</td><td>344</td><td>72.1%</td><td>52.3%</td></tr><tr><td>Qwen3 8B</td><td>269</td><td>68.7%</td><td>53.2%</td></tr><tr><td>GPT-OSS 20B</td><td>344</td><td>72.5%</td><td>54.7%</td></tr><tr><td>Gemma 4 31B IT</td><td>344</td><td>80.4%</td><td>65.4%</td></tr></tbody></table>
+      <table><thead><tr><th>Model</th><th>Rollouts</th><th>Mean Hop Performance</th><th>All-Chain Correct</th></tr></thead><tbody><tr><td>Qwen3 4B</td><td>344</td><td>72.1%</td><td>52.3%</td></tr><tr><td>Qwen3 8B</td><td>300</td><td>70.1%</td><td>53.7%</td></tr><tr><td>GPT-OSS 20B</td><td>344</td><td>72.5%</td><td>54.7%</td></tr><tr><td>Gemma 4 31B IT</td><td>344</td><td>80.4%</td><td>65.4%</td></tr></tbody></table>
       <h3>Retrieval Summary: All Rollouts</h3>
-      <table><thead><tr><th>Model</th><th>Rollout Rows</th><th>Local Searches</th><th>Web Searches</th><th>Local Reads</th><th>Web Reads</th></tr></thead><tbody><tr><td>Qwen3 4B</td><td>1001</td><td>4.69</td><td>4.14</td><td>8.18</td><td>16.05</td></tr><tr><td>Qwen3 8B</td><td>929</td><td>3.19</td><td>6.47</td><td>5.16</td><td>20.18</td></tr><tr><td>Step-3.5 Flash</td><td>21</td><td>1.67</td><td>1.00</td><td>1.05</td><td>1.10</td></tr><tr><td>GPT-OSS 20B</td><td>1001</td><td>3.19</td><td>7.29</td><td>4.74</td><td>21.37</td></tr><tr><td>Chroma Context-1 (medium)</td><td>284</td><td>1.83</td><td>5.23</td><td>3.18</td><td>18.90</td></tr><tr><td>Gemma 4 31B IT</td><td>1001</td><td>9.48</td><td>2.97</td><td>8.33</td><td>6.83</td></tr></tbody></table>
+      <table><thead><tr><th>Model</th><th>Rollout Rows</th><th>Local Searches</th><th>Web Searches</th><th>Local Reads</th><th>Web Reads</th></tr></thead><tbody><tr><td>Qwen3 4B</td><td>1001</td><td>4.69</td><td>4.14</td><td>8.18</td><td>16.05</td></tr><tr><td>Qwen3 8B</td><td>960</td><td>3.21</td><td>6.48</td><td>5.18</td><td>20.31</td></tr><tr><td>Step-3.5 Flash</td><td>25</td><td>1.48</td><td>0.96</td><td>0.92</td><td>0.96</td></tr><tr><td>GPT-OSS 20B</td><td>1001</td><td>3.19</td><td>7.29</td><td>4.74</td><td>21.37</td></tr><tr><td>Chroma Context-1 (medium)</td><td>294</td><td>1.84</td><td>5.28</td><td>3.20</td><td>19.07</td></tr><tr><td>Gemma 4 31B IT</td><td>1001</td><td>9.48</td><td>2.97</td><td>8.33</td><td>6.83</td></tr></tbody></table>
+      <h3>Leakage Relationship Statistics</h3>
+      <table><thead><tr><th>Analysis</th><th>Predictor</th><th>Effect</th><th>p-value</th><th>n</th></tr></thead><tbody><tr><td>Spearman rank</td><td>Chain Length</td><td>rho = 0.12</td><td>&lt;0.001</td><td>1213</td></tr><tr><td>Spearman rank</td><td>Chain Progress Accuracy</td><td>rho = 0.05</td><td>0.097</td><td>1213</td></tr><tr><td>Bivariate logistic</td><td>Chain Length (+1 hop)</td><td>OR = 1.29 [1.13, 1.47]</td><td>&lt;0.001</td><td>1213</td></tr><tr><td>Bivariate logistic</td><td>Chain Progress Accuracy (+10 pp)</td><td>OR = 1.04 [0.99, 1.10]</td><td>0.137</td><td>1213</td></tr><tr><td>Adjusted logistic</td><td>Chain Length (+1 hop)</td><td>OR = 1.27 [1.10, 1.47]</td><td>0.001</td><td>1213</td></tr><tr><td>Adjusted logistic</td><td>Chain Progress Accuracy (+10 pp)</td><td>OR = 1.03 [0.98, 1.09]</td><td>0.266</td><td>1213</td></tr><tr><td>Adjusted logistic</td><td>Privacy Prompt (vs. Baseline)</td><td>OR = 0.26 [0.18, 0.35]</td><td>&lt;0.001</td><td>1213</td></tr></tbody></table>
+      <div class="links"><a href="tables/leakage_relationship_stats.tex">LaTeX table</a></div>
+      <pre>\begin{table}[t]
+\small
+\centering
+\begin{tabular}{p{0.22\linewidth}p{0.30\linewidth}p{0.22\linewidth}p{0.10\linewidth}p{0.06\linewidth}}
+\toprule
+\textbf{Analysis} &amp; \textbf{Predictor} &amp; \textbf{Effect} &amp; \textbf{$p$} &amp; \textbf{$n$} \\
+\midrule
+Spearman rank &amp; Chain Length &amp; $\rho = 0.12$ &amp; $&lt;0.001$ &amp; 1213 \\
+Spearman rank &amp; Chain Progress Accuracy &amp; $\rho = 0.05$ &amp; 0.097 &amp; 1213 \\
+Bivariate logistic &amp; Chain Length (+1 hop) &amp; OR = 1.29 [1.13, 1.47] &amp; $&lt;0.001$ &amp; 1213 \\
+Bivariate logistic &amp; Chain Progress Accuracy (+10 pp) &amp; OR = 1.04 [0.99, 1.10] &amp; 0.137 &amp; 1213 \\
+Adjusted logistic &amp; Chain Length (+1 hop) &amp; OR = 1.27 [1.10, 1.47] &amp; 0.001 &amp; 1213 \\
+Adjusted logistic &amp; Chain Progress Accuracy (+10 pp) &amp; OR = 1.03 [0.98, 1.09] &amp; 0.266 &amp; 1213 \\
+Adjusted logistic &amp; Privacy Prompt (vs. Baseline) &amp; OR = 0.26 [0.18, 0.35] &amp; $&lt;0.001$ &amp; 1213 \\
+\bottomrule
+\end{tabular}
+\caption{Relationship between task structure, task performance, and privacy leakage. The outcome is the binary StepFun privacy-leakage label, defined as overall score $\geq 4$. Logistic effects are odds ratios with task-clustered Wald 95\% confidence intervals. Rows use currently StepFun-judged test rollouts from the baseline and privacy-prompted conditions.}
+\label{tab:privacy_leakage_relationships}
+\end{table}
+</pre>
     </section>
     <section id="leakage-definitions">
       <h2>Leakage Type Definitions</h2>
