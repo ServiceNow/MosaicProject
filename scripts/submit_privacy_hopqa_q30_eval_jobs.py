@@ -109,6 +109,11 @@ ROLLOUT_JOBS: list[dict[str, Any]] = [
         "max_parallel_doc_reads": 10,
         "hop_plan_attempts": 3,
         "case_attempts": 5,
+        # StepFun's vLLM chat parser intermittently aborts or returns 500s on
+        # long agent-stage generations. Render the chat template locally and
+        # call /v1/completions, matching the privacy judge path.
+        "request_api_mode": "completion_template",
+        "request_params_json": {"stop": ["<|im_end|>"]},
     },
     {
         "name": f"privacy_hopqa_q30_eval_rollouts_gpt_oss_20b_{RUN_TAG}",

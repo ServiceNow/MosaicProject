@@ -297,8 +297,9 @@ def row_split(row: dict[str, Any]) -> str:
     return ""
 
 
-def rollout_identity(row: dict[str, Any]) -> tuple[str, str, str, str]:
+def rollout_identity(row: dict[str, Any]) -> tuple[str, str, str, str, str]:
     return (
+        str(row.get("model_label") or ""),
         str(row.get("split") or ""),
         str(row.get("task_id") or ""),
         str(row.get("chain_id") or ""),
@@ -309,7 +310,7 @@ def rollout_identity(row: dict[str, Any]) -> tuple[str, str, str, str]:
 def latest_by_identity(rows: list[dict[str, Any]]) -> dict[tuple[str, str, str, str, str], dict[str, Any]]:
     latest: dict[tuple[str, str, str, str, str], dict[str, Any]] = {}
     for row in rows:
-        latest[(str(row.get("model_label") or ""), *rollout_identity(row))] = row
+        latest[rollout_identity(row)] = row
     return latest
 
 
