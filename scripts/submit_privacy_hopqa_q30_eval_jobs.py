@@ -295,6 +295,7 @@ def privacy_eval_command(
     push_viewer: bool,
     skip_qwen_judge: bool,
     skip_binary_predictor: bool,
+    skip_stepfun_judge: bool,
     skip_viewer: bool,
     viewer_output_dir: Path | None,
     latest_viewer_outputs: list[Path],
@@ -323,6 +324,8 @@ def privacy_eval_command(
         parts.append("--once")
     if push_viewer:
         parts.append("--push-viewer")
+    if skip_stepfun_judge:
+        parts.append("--skip-stepfun-judge")
     if skip_qwen_judge:
         parts.append("--skip-qwen-judge")
     if skip_binary_predictor:
@@ -374,6 +377,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--privacy-once", action="store_true")
     parser.add_argument("--privacy-interval-s", type=int, default=1800)
+    parser.add_argument("--skip-stepfun-judge", action="store_true")
     parser.add_argument("--skip-qwen-judge", action="store_true")
     parser.add_argument("--skip-binary-predictor", action="store_true")
     parser.add_argument("--stepfun-concurrency", type=int, default=None)
@@ -444,6 +448,7 @@ def main() -> None:
             args.push_viewer,
             args.skip_qwen_judge,
             args.skip_binary_predictor,
+            args.skip_stepfun_judge,
             args.skip_viewer,
             args.viewer_output_dir,
             args.latest_viewer_output,

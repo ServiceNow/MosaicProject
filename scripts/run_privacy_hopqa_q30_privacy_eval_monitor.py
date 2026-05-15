@@ -178,27 +178,28 @@ def run_privacy_evals_for_model(args: argparse.Namespace, model_root: Path, qwen
                 str(args.judge_max_tokens),
             ]
         )
-    run_cmd(
-        common
-        + [
-            "--output",
-            str(stepfun_output),
-            "--errors",
-            str(tables / "privacy_leakage_suite_v2_stepfun_full_errors.jsonl"),
-            "--base-url",
-            args.stepfun_base_url,
-            "--model",
-            "step-3.5-flash",
-            "--api-mode",
-            "completion_template",
-            "--concurrency",
-            str(args.stepfun_concurrency),
-            "--timeout",
-            "600",
-            "--max-tokens",
-            str(args.judge_max_tokens),
-        ]
-    )
+    if not args.skip_stepfun_judge:
+        run_cmd(
+            common
+            + [
+                "--output",
+                str(stepfun_output),
+                "--errors",
+                str(tables / "privacy_leakage_suite_v2_stepfun_full_errors.jsonl"),
+                "--base-url",
+                args.stepfun_base_url,
+                "--model",
+                "step-3.5-flash",
+                "--api-mode",
+                "completion_template",
+                "--concurrency",
+                str(args.stepfun_concurrency),
+                "--timeout",
+                "600",
+                "--max-tokens",
+                str(args.judge_max_tokens),
+            ]
+        )
     if stepfun_output.exists() and not args.skip_binary_predictor:
         if not qwen_base_url:
             raise ValueError("qwen_base_url is required unless --skip-binary-predictor is set")
@@ -308,6 +309,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--stepfun-concurrency", type=int, default=48)
     parser.add_argument("--qwen-concurrency", type=int, default=24)
     parser.add_argument("--binary-concurrency", type=int, default=32)
+    parser.add_argument("--skip-stepfun-judge", action="store_true")
     parser.add_argument("--skip-qwen-judge", action="store_true")
     parser.add_argument("--skip-binary-predictor", action="store_true")
     parser.add_argument("--interval-s", type=int, default=1800)
