@@ -198,6 +198,70 @@ def plot_privacy_prompt_accuracy_leakage(rows: list[dict[str, Any]], path: Path)
     save_figure(fig, path)
 
 
+def plot_privacy_prompt_leakage_types(rows: list[dict[str, Any]], path: Path) -> None:
+    rows = [row for row in rows if row.get("baseline_stepfun") or row.get("prompt_stepfun")]
+    if not rows:
+        return
+    labels = [live.model_display(str(row["model_label"])) for row in rows]
+    metrics = [
+        ("Intent Leakage\n(Intent Score >= 4)", "baseline_intent4_rate", "prompt_intent4_rate"),
+        ("Answer Leakage", "baseline_answer_rate", "prompt_answer_rate"),
+        ("Full-Information Claim", "baseline_full_info_rate", "prompt_full_info_rate"),
+        ("Partial Claim", "baseline_lenient_full_info_rate", "prompt_lenient_full_info_rate"),
+    ]
+    fig, axes = plt.subplots(2, 2, figsize=(12.8, 7.65), sharey=True)
+    x = list(range(len(rows)))
+    width = 0.36
+    baseline_counts = [int(row.get("baseline_stepfun") or 0) for row in rows]
+    prompt_counts = [int(row.get("prompt_stepfun") or 0) for row in rows]
+    baseline_pos = [item - width / 2 for item in x]
+    prompt_pos = [item + width / 2 for item in x]
+    error_kw = {"elinewidth": 1.1, "ecolor": "#303633", "capsize": 3, "capthick": 1.0}
+    for ax, (title, baseline_key, prompt_key) in zip(axes.flat, metrics):
+        baseline_vals = [
+            100 * float(row.get(baseline_key))
+            if row.get(baseline_key) is not None and count
+            else math.nan
+            for row, count in zip(rows, baseline_counts)
+        ]
+        prompt_vals = [
+            100 * float(row.get(prompt_key))
+            if row.get(prompt_key) is not None and count
+            else math.nan
+            for row, count in zip(rows, prompt_counts)
+        ]
+        ax.bar(
+            baseline_pos,
+            baseline_vals,
+            width=width,
+            color=BASELINE_COLOR,
+            label="Baseline",
+            yerr=percent_yerr(rows, baseline_key),
+            error_kw=error_kw,
+        )
+        ax.bar(
+            prompt_pos,
+            prompt_vals,
+            width=width,
+            color=PROMPT_COLOR,
+            label="Privacy Prompt",
+            yerr=percent_yerr(rows, prompt_key),
+            error_kw=error_kw,
+        )
+        annotate_ns(ax, baseline_pos, baseline_vals, baseline_counts, percent=True, y_max=124)
+        annotate_ns(ax, prompt_pos, prompt_vals, prompt_counts, percent=True, y_max=124)
+        ax.set_title(title)
+        ax.set_ylabel("StepFun-Judged Rollouts (%)")
+        ax.set_xlabel("Model")
+        ax.set_xticks(x)
+        ax.set_xticklabels(labels, rotation=25, ha="right")
+        ax.set_ylim(0, 124)
+        ax.set_yticks(range(0, 101, 20))
+    handles, legend_labels = axes.flat[0].get_legend_handles_labels()
+    fig.legend(handles, legend_labels, loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.04))
+    save_figure(fig, path)
+
+
 def plot_privacy_prompt_query_behavior(rows: list[dict[str, Any]], path: Path) -> None:
     rows = model_rows_for_plot(rows, require_prompt=True)
     if not rows:
@@ -791,6 +855,7 @@ def build_viewer(args: argparse.Namespace) -> None:
     prompt_rows = prompt_comparison.get("summary") or []
 
     plot_privacy_prompt_accuracy_leakage(prompt_rows, plots_dir / "privacy_prompt_accuracy_leakage.svg")
+    plot_privacy_prompt_leakage_types(prompt_rows, plots_dir / "privacy_prompt_leakage_types.svg")
     plot_privacy_prompt_query_behavior(prompt_rows, plots_dir / "privacy_prompt_query_behavior.svg")
 
     test_task_summary = task_performance_summary(test_rollouts)
@@ -993,6 +1058,7 @@ def build_viewer(args: argparse.Namespace) -> None:
     <div class="note">Generated {esc(generated_at)}. Figures use the live v11 artifacts and are intended as a smaller advisor-facing subset, not a replacement for the diagnostic viewer.</div>
     <nav>
       <a href="#prompt-accuracy">Prompt: Accuracy And Leakage</a>
+      <a href="#prompt-leakage-types">Prompt: Leakage Types</a>
       <a href="#prompt-query">Prompt: Query And Retrieval</a>
       <a href="#task-performance-test">Task Performance</a>
       <a href="#retrieval-all">Retrieval Behavior</a>
@@ -1007,6 +1073,12 @@ def build_viewer(args: argparse.Namespace) -> None:
       <div class="note">Test split. Privacy Leakage is the binary StepFun score >= 4 label: answer leakage, full-information leakage, or multiple answer leaks. This figure includes models with both baseline and privacy-prompt rollouts; leakage bars with no StepFun judgments are omitted and labeled n=0.</div>
       <img src="plots/privacy_prompt_accuracy_leakage.svg" alt="Privacy prompt accuracy and leakage">
       <div class="links"><a href="plots/privacy_prompt_accuracy_leakage.svg">SVG</a><a href="plots/privacy_prompt_accuracy_leakage.pdf">PDF</a></div>
+    </section>
+    <section id="prompt-leakage-types" class="figure">
+      <h2>Privacy Prompt Effect: Leakage Types</h2>
+      <div class="note">Test split. Intent leakage is the StepFun intent score >= 4. Answer leakage means at least one private QA answer was judged correct. Full-information claim is the strict generated-claim judge; partial claim is the lenient diagnostic version. Error bars are 95% bootstrap CIs over StepFun-judged rows.</div>
+      <img src="plots/privacy_prompt_leakage_types.svg" alt="Privacy prompt effect by leakage type">
+      <div class="links"><a href="plots/privacy_prompt_leakage_types.svg">SVG</a><a href="plots/privacy_prompt_leakage_types.pdf">PDF</a></div>
     </section>
     <section id="prompt-query" class="figure">
       <h2>Privacy Prompt Effect: Query And Retrieval Behavior</h2>
