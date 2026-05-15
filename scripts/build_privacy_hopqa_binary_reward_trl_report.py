@@ -250,16 +250,29 @@ def repeat_label(summary: dict[str, Any]) -> str:
     return f"Repeat x{repeat_int}"
 
 
+def base_model_label(summary: dict[str, Any]) -> str:
+    args = summary.get("args") if isinstance(summary.get("args"), dict) else {}
+    raw = str(summary.get("base_model") or args.get("base_model") or "")
+    lowered = raw.lower()
+    if "qwen3-8b" in lowered or "qwen/qwen3-8b" in lowered:
+        return "Qwen3 8B"
+    if "qwen3-4b" in lowered or "qwen/qwen3-4b" in lowered:
+        return "Qwen3 4B"
+    if "qwen3" in lowered:
+        return "Qwen3"
+    return Path(raw).name if raw else "Unknown"
+
+
 def clean_run_label(run: dict[str, Any], multiline: bool = False) -> str:
     summary = run.get("summary") or {}
     variant = compact_variant(run.get("variant"))
     source = compact_source(str(run.get("source") or ""))
     if summary.get("eval_only"):
-        parts = [variant, "Base"]
+        parts = [variant, base_model_label(summary), "Base"]
     elif summary.get("label_mode") == "ternary":
-        parts = [variant, source, "1-3 target", compact_lora_label(summary)]
+        parts = [variant, base_model_label(summary), source, "1-3 target", compact_lora_label(summary)]
     else:
-        parts = [variant, source, compact_lora_label(summary), repeat_label(summary)]
+        parts = [variant, base_model_label(summary), source, compact_lora_label(summary), repeat_label(summary)]
     parts = [part for part in parts if part]
     return "\n".join(parts) if multiline else " - ".join(parts)
 
@@ -419,6 +432,7 @@ def binary_run_table(runs: list[dict[str, Any]]) -> str:
             f"<td>{esc(run.get('short_label') or clean_run_label(run))}</td>"
             f"<td>{esc(source_label(str(run['source'])))}</td>"
             f"<td>{esc(short_variant(str(run['variant'])))}</td>"
+            f"<td>{esc(base_model_label(run['summary']))}</td>"
             f"<td>{esc(args.get('positive_repeat'))}</td>"
             f"<td>{esc(run['lora'])}</td>"
             f"<td>{num(eval_loss.get('best_eval_loss'))}</td>"
@@ -437,7 +451,7 @@ def binary_run_table(runs: list[dict[str, Any]]) -> str:
             "</tr>"
         )
     return (
-        "<table><thead><tr><th>Test</th><th>Trainer</th><th>Variant</th><th>Positive Repeat</th><th>LoRA</th>"
+        "<table><thead><tr><th>Test</th><th>Trainer</th><th>Variant</th><th>Base Model</th><th>Positive Repeat</th><th>LoRA</th>"
         "<th>Best Val Loss</th><th>Test ROC AUC</th><th>Precision @0.5</th><th>Recall @0.5</th><th>F1 @0.5</th>"
         "<th>Val F1 Threshold</th><th>Precision @ValThr</th><th>Recall @ValThr</th><th>F1 @ValThr</th>"
         "<th>TP/FP/FN @0.5</th><th>Test Positives</th><th>W&B</th><th>Path</th></tr></thead>"
