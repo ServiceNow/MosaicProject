@@ -315,6 +315,7 @@ class RunSummary:
     retrieval_impossible_candidates: list[dict] = field(default_factory=list)
     targeted_trace_probe: list[dict] = field(default_factory=list)
     flow_summary: dict = field(default_factory=dict)
+    strict_success_flow_summary: dict = field(default_factory=dict)
 
     @property
     def filtered_fraction(self) -> float:
@@ -510,6 +511,14 @@ def window_has_nonzero(history: list[dict], window_groups: int, from_end: bool) 
     return any(bool(item["nonzero"]) for item in window)
 
 
+def window_has_strict_success(history: list[dict], window_groups: int, from_end: bool) -> bool:
+    if not history:
+        return False
+    ordered = sorted(history, key=lambda item: (item["line"], item["sample_index"]))
+    window = ordered[-window_groups:] if from_end else ordered[:window_groups]
+    return any(float(item.get("outcome_reward_max", 0.0) or 0.0) >= 1.0 - 1e-9 for item in window)
+
+
 def build_flow_summary(chain_rows: list[dict], window_groups: int) -> dict:
     flows: dict[str, dict] = {}
     states = {
@@ -522,6 +531,54 @@ def build_flow_summary(chain_rows: list[dict], window_groups: int) -> dict:
             continue
         start_key = "mixed_adv" if window_has_nonzero(history, window_groups, from_end=False) else "zero_adv"
         end_key = "mixed_adv" if window_has_nonzero(history, window_groups, from_end=True) else "zero_adv"
+        flow_key = f"{start_key}->{end_key}"
+        item = flows.setdefault(
+            flow_key,
+            {
+                "from": start_key,
+                "from_label": states[start_key],
+                "to": end_key,
+                "to_label": states[end_key],
+                "chains": 0,
+                "samples": 0,
+                "examples": [],
+            },
+        )
+        item["chains"] += 1
+        item["samples"] += int(row.get("samples", 0) or 0)
+        if len(item["examples"]) < 8:
+            item["examples"].append(
+                {
+                    "task_id": row["task_id"],
+                    "chain_id": row["chain_id"],
+                    "company": row["company"],
+                    "pattern": row["pattern"],
+                    "samples": row["samples"],
+                    "max_outcome_reward": row["max_outcome_reward"],
+                }
+            )
+    total = sum(item["chains"] for item in flows.values())
+    for item in flows.values():
+        item["chain_fraction"] = pct(item["chains"], total)
+    return {
+        "window_groups": window_groups,
+        "total_chains": total,
+        "flows": flows,
+    }
+
+
+def build_strict_success_flow_summary(chain_rows: list[dict], window_groups: int) -> dict:
+    flows: dict[str, dict] = {}
+    states = {
+        "unsolved": "No strict success",
+        "solved": "At least one strict success",
+    }
+    for row in chain_rows:
+        history = row.get("group_history", [])
+        if not history:
+            continue
+        start_key = "solved" if window_has_strict_success(history, window_groups, from_end=False) else "unsolved"
+        end_key = "solved" if window_has_strict_success(history, window_groups, from_end=True) else "unsolved"
         flow_key = f"{start_key}->{end_key}"
         item = flows.setdefault(
             flow_key,
@@ -653,6 +710,7 @@ def aggregate_groups(summary: RunSummary, groups: dict[str, GroupAccumulator], l
         if row["samples"] >= 16 and row["max_outcome_reward"] < 0.34 and row["nonzero_samples"] == 0
     ][:500]
     summary.flow_summary = build_flow_summary(chain_rows, flow_window_groups)
+    summary.strict_success_flow_summary = build_strict_success_flow_summary(chain_rows, flow_window_groups)
 
 
 def rg_match_count(pattern: str, files: list[Path]) -> int:
@@ -835,6 +893,69 @@ def build_flow_svg(flow_summary: dict) -> str:
     return "".join(parts)
 
 
+def build_strict_success_flow_svg(flow_summary: dict) -> str:
+    flows = flow_summary.get("flows", {})
+    total = int(flow_summary.get("total_chains", 0) or 0)
+    window = int(flow_summary.get("window_groups", 0) or 0)
+    if not flows or total <= 0:
+        return "<div class='empty'>No strict-success flow data.</div>"
+    counts = {
+        "unsolved->unsolved": int(flows.get("unsolved->unsolved", {}).get("chains", 0) or 0),
+        "unsolved->solved": int(flows.get("unsolved->solved", {}).get("chains", 0) or 0),
+        "solved->solved": int(flows.get("solved->solved", {}).get("chains", 0) or 0),
+        "solved->unsolved": int(flows.get("solved->unsolved", {}).get("chains", 0) or 0),
+    }
+    start_unsolved = counts["unsolved->unsolved"] + counts["unsolved->solved"]
+    start_solved = counts["solved->solved"] + counts["solved->unsolved"]
+    width = 980
+    height = 300
+    left_x = 80
+    right_x = 720
+    top_y = 72
+    box_w = 190
+    box_h = 62
+    gap_y = 70
+
+    def label(count: int) -> str:
+        return f"{count:,} ({pct(count, total):.1f}%)"
+
+    def flow_path(y1: float, y2: float, count: int, color: str) -> str:
+        stroke = max(3.0, 34.0 * count / max(total, 1))
+        return (
+            f"<path d='M {left_x + box_w} {y1:.1f} C {left_x + box_w + 170} {y1:.1f}, "
+            f"{right_x - 170} {y2:.1f}, {right_x} {y2:.1f}' "
+            f"fill='none' stroke='{color}' stroke-width='{stroke:.1f}' stroke-linecap='round' opacity='.72'>"
+            f"<title>{count:,} chains ({pct(count, total):.1f}%)</title></path>"
+        )
+
+    parts = [f"<svg viewBox='0 0 {width} {height}'><title>Strict-success flow</title>"]
+    parts.append(f"<text x='70' y='28' class='chart-title'>Strict chain success flow: first {window} group(s) to last {window} group(s)</text>")
+    parts.append(flow_path(top_y + box_h / 2 - 10, top_y + box_h / 2 - 10, counts["unsolved->unsolved"], "#ba7d1c"))
+    parts.append(flow_path(top_y + box_h / 2 + 14, top_y + gap_y + box_h / 2 + 14, counts["unsolved->solved"], "#207a5b"))
+    parts.append(flow_path(top_y + gap_y + box_h / 2 - 14, top_y + box_h / 2 + 14, counts["solved->unsolved"], "#ba7d1c"))
+    parts.append(flow_path(top_y + gap_y + box_h / 2 + 10, top_y + gap_y + box_h / 2 + 10, counts["solved->solved"], "#207a5b"))
+    boxes = [
+        (left_x, top_y, "Initially no strict success", label(start_unsolved), "#f3d9c6"),
+        (left_x, top_y + gap_y, "Initially strict success", label(start_solved), "#d7efe3"),
+        (right_x, top_y, "Finally no strict success", label(counts["unsolved->unsolved"] + counts["solved->unsolved"]), "#f3d9c6"),
+        (right_x, top_y + gap_y, "Finally strict success", label(counts["unsolved->solved"] + counts["solved->solved"]), "#d7efe3"),
+    ]
+    for x, y, title, value, fill in boxes:
+        parts.append(f"<rect x='{x}' y='{y}' width='{box_w}' height='{box_h}' rx='14' fill='{fill}' stroke='#b8ab98'/>")
+        parts.append(f"<text x='{x + 14}' y='{y + 25}' class='flow-label'>{esc(title)}</text>")
+        parts.append(f"<text x='{x + 14}' y='{y + 48}' class='flow-num'>{esc(value)}</text>")
+    flow_labels = [
+        (350, top_y - 12, "unsolved -> unsolved", counts["unsolved->unsolved"]),
+        (390, top_y + 58, "unsolved -> solved", counts["unsolved->solved"]),
+        (390, top_y + gap_y + 4, "solved -> unsolved", counts["solved->unsolved"]),
+        (350, top_y + gap_y + 90, "solved -> solved", counts["solved->solved"]),
+    ]
+    for x, y, text, count in flow_labels:
+        parts.append(f"<text x='{x}' y='{y}' class='tiny'>{esc(text)}: {label(count)}</text>")
+    parts.append("</svg>")
+    return "".join(parts)
+
+
 def table(headers: list[str], rows: list[list[object]], limit: int = 250) -> str:
     head = "".join(f"<th>{esc(header)}</th>" for header in headers)
     body = []
@@ -887,6 +1008,20 @@ def build_html(data: dict) -> str:
                     examples,
                 ]
             )
+        strict_flow_rows = []
+        for flow_key, flow in sorted((run.get("strict_success_flow_summary") or {}).get("flows", {}).items()):
+            examples = ", ".join(f"{item['task_id']}:{item['chain_id']}" for item in flow.get("examples", [])[:5])
+            strict_flow_rows.append(
+                [
+                    flow_key,
+                    flow.get("from_label", ""),
+                    flow.get("to_label", ""),
+                    flow.get("chains", 0),
+                    f"{flow.get('chain_fraction', 0.0):.1f}%",
+                    flow.get("samples", 0),
+                    examples,
+                ]
+            )
         warnings = "".join(f"<li>{esc(warning)}</li>" for warning in run["warnings"])
         latest = run.get("latest_success_distribution", {})
         run_sections.append(
@@ -909,6 +1044,11 @@ def build_html(data: dict) -> str:
     <div class='card'><div class='num'>{100 * float(latest.get('sometimes_success', 0.0)):.1f}%</div><div>latest groups sometimes successful</div></div>
   </div>
   {'<ul class="warnings">' + warnings + '</ul>' if warnings else ''}
+  <div class='panel flow-panel'>{build_strict_success_flow_svg(run.get('strict_success_flow_summary') or {})}</div>
+  <details open><summary>Strict chain-success flow counts</summary>
+    <p>This is the closest version of "unsolvable": "No strict success" means none of the sampled sibling rollouts in that window solved every hop in the chain. "Strict success" means at least one sibling rollout solved the full chain.</p>
+    {table(['flow', 'from', 'to', 'chains', 'chain fraction', 'actor samples', 'examples'], strict_flow_rows)}
+  </details>
   <div class='panel flow-panel'>{build_flow_svg(run.get('flow_summary') or {})}</div>
   <details open><summary>Flow counts</summary>
     <p>The flow uses the first and last configured comparison-group windows for each chain. "Zero advantage" means all sibling rewards were identical in that window, so the preprocessor has no directional RL signal for that chain. "Mixed advantage" means at least one sibling reward differed.</p>
