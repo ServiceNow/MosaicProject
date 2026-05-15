@@ -22,22 +22,17 @@ from pathlib import Path
 from statistics import mean
 
 REPO = Path(__file__).resolve().parents[1]
-DEFAULT_OUT = REPO / "runtime_analysis" / "privacy_hopqa_training_filter_viewer_2026-05-14"
+DEFAULT_OUT = REPO / "runtime_analysis" / "privacy_hopqa_training_filter_viewer_2026-05-15"
 DEFAULT_RUNS = [
     (
-        "4B prefix-step",
-        Path("/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_4b_prefix_step_20260513173122"),
+        "4B hop-accuracy RRF",
+        Path("/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_rrf_4b_hopacc_20260514202306"),
         True,
     ),
     (
-        "4B hop-accuracy",
-        Path("/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_reward_hopacc_4b_20260513140609"),
-        False,
-    ),
-    (
-        "4B binary",
-        Path("/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_reward_binary_4b_20260513140609"),
-        False,
+        "4B prefix-step RRF",
+        Path("/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_rrf_4b_prefix_step_20260514201431"),
+        True,
     ),
 ]
 
@@ -172,6 +167,7 @@ class GroupAccumulator:
     reward_min: float = math.inf
     reward_max: float = -math.inf
     outcome_reward_max: float = -math.inf
+    outcome_reward_min: float = math.inf
     outcome_reward_sum: float = 0.0
     prefix_correct_max: int = 0
 
@@ -182,6 +178,7 @@ class GroupAccumulator:
         self.reward_max = max(self.reward_max, reward)
         self.outcome_reward_sum += outcome_reward
         self.outcome_reward_max = max(self.outcome_reward_max, outcome_reward)
+        self.outcome_reward_min = min(self.outcome_reward_min, outcome_reward)
         self.prefix_correct_max = max(self.prefix_correct_max, prefix_correct_hops)
         self.last_line = max(self.last_line, line_no)
 
@@ -222,6 +219,7 @@ class ChainAccumulator:
     zero_groups_before_first_nonzero: int = 0
     samples_before_first_nonzero: int = 0
     example_group_keys: list[str] = field(default_factory=list)
+    group_history: list[dict] = field(default_factory=list)
 
     def add_group(self, group: GroupAccumulator) -> None:
         nonzero = group.has_nonzero_advantage
@@ -245,6 +243,18 @@ class ChainAccumulator:
         self.max_prefix_correct_hops = max(self.max_prefix_correct_hops, group.prefix_correct_max)
         if len(self.example_group_keys) < 4:
             self.example_group_keys.append(group.group_key)
+        self.group_history.append(
+            {
+                "line": group.first_line,
+                "sample_index": group.first_sample_index,
+                "nonzero": group.has_nonzero_advantage,
+                "count": group.count,
+                "reward_min": group.reward_min if group.reward_min != math.inf else 0.0,
+                "reward_max": group.reward_max if group.reward_max != -math.inf else 0.0,
+                "outcome_reward_min": group.outcome_reward_min if group.outcome_reward_min != math.inf else 0.0,
+                "outcome_reward_max": group.outcome_reward_max if group.outcome_reward_max != -math.inf else 0.0,
+            }
+        )
 
     def to_row(self) -> dict:
         return {
@@ -272,6 +282,7 @@ class ChainAccumulator:
             "zero_groups_before_first_nonzero": self.zero_groups_before_first_nonzero,
             "samples_before_first_nonzero": self.samples_before_first_nonzero,
             "example_group_keys": self.example_group_keys,
+            "group_history": sorted(self.group_history, key=lambda item: (item["line"], item["sample_index"])),
         }
 
 
@@ -303,6 +314,7 @@ class RunSummary:
     became_nonzero_chains: list[dict] = field(default_factory=list)
     retrieval_impossible_candidates: list[dict] = field(default_factory=list)
     targeted_trace_probe: list[dict] = field(default_factory=list)
+    flow_summary: dict = field(default_factory=dict)
 
     @property
     def filtered_fraction(self) -> float:
@@ -490,7 +502,67 @@ def scan_actor_groups(run_label: str, run_dir: Path, max_lines: int) -> tuple[di
     return groups, {"actor_files": len(paths), "actor_bytes": actor_bytes, "actor_lines": line_count, "actor_samples": sample_index}, warnings
 
 
-def aggregate_groups(summary: RunSummary, groups: dict[str, GroupAccumulator], line_bin_size: int) -> None:
+def window_has_nonzero(history: list[dict], window_groups: int, from_end: bool) -> bool:
+    if not history:
+        return False
+    ordered = sorted(history, key=lambda item: (item["line"], item["sample_index"]))
+    window = ordered[-window_groups:] if from_end else ordered[:window_groups]
+    return any(bool(item["nonzero"]) for item in window)
+
+
+def build_flow_summary(chain_rows: list[dict], window_groups: int) -> dict:
+    flows: dict[str, dict] = {}
+    states = {
+        "zero_adv": "Zero advantage",
+        "mixed_adv": "Mixed advantage",
+    }
+    for row in chain_rows:
+        history = row.get("group_history", [])
+        if not history:
+            continue
+        start_key = "mixed_adv" if window_has_nonzero(history, window_groups, from_end=False) else "zero_adv"
+        end_key = "mixed_adv" if window_has_nonzero(history, window_groups, from_end=True) else "zero_adv"
+        flow_key = f"{start_key}->{end_key}"
+        item = flows.setdefault(
+            flow_key,
+            {
+                "from": start_key,
+                "from_label": states[start_key],
+                "to": end_key,
+                "to_label": states[end_key],
+                "chains": 0,
+                "samples": 0,
+                "examples": [],
+            },
+        )
+        item["chains"] += 1
+        item["samples"] += int(row.get("samples", 0) or 0)
+        if len(item["examples"]) < 8:
+            item["examples"].append(
+                {
+                    "task_id": row["task_id"],
+                    "chain_id": row["chain_id"],
+                    "company": row["company"],
+                    "pattern": row["pattern"],
+                    "samples": row["samples"],
+                    "max_outcome_reward": row["max_outcome_reward"],
+                }
+            )
+    total = sum(item["chains"] for item in flows.values())
+    for item in flows.values():
+        item["chain_fraction"] = pct(item["chains"], total)
+    return {
+        "window_groups": window_groups,
+        "total_chains": total,
+        "flows": flows,
+    }
+
+
+def strip_internal_history(row: dict) -> dict:
+    return {key: value for key, value in row.items() if key != "group_history"}
+
+
+def aggregate_groups(summary: RunSummary, groups: dict[str, GroupAccumulator], line_bin_size: int, flow_window_groups: int) -> None:
     chains: dict[str, ChainAccumulator] = {}
     version_stats: dict[int, dict[str, float]] = defaultdict(lambda: {"samples": 0, "nonzero_samples": 0, "reward_sum": 0.0, "groups": 0, "nonzero_groups": 0})
     bins: dict[int, dict[str, float]] = defaultdict(lambda: {"line_start": 0, "line_end": 0, "samples": 0, "nonzero_samples": 0, "groups": 0, "nonzero_groups": 0, "reward_sum": 0.0})
@@ -563,15 +635,24 @@ def aggregate_groups(summary: RunSummary, groups: dict[str, GroupAccumulator], l
 
     chain_rows = [chain.to_row() for chain in chains.values()]
     chain_rows.sort(key=lambda row: (row["nonzero_samples"], row["max_outcome_reward"], -row["samples"]))
-    summary.chains = chain_rows
-    summary.never_nonzero_chains = [row for row in chain_rows if row["samples"] >= 16 and row["nonzero_samples"] == 0][:500]
+    summary.chains = [strip_internal_history(row) for row in chain_rows]
+    summary.never_nonzero_chains = [
+        strip_internal_history(row) for row in chain_rows if row["samples"] >= 16 and row["nonzero_samples"] == 0
+    ][:500]
     summary.became_nonzero_chains = sorted(
-        [row for row in chain_rows if row["first_nonzero_line"] is not None and row["zero_groups_before_first_nonzero"] > 0],
+        [
+            strip_internal_history(row)
+            for row in chain_rows
+            if row["first_nonzero_line"] is not None and row["zero_groups_before_first_nonzero"] > 0
+        ],
         key=lambda row: (-row["samples_before_first_nonzero"], row["first_nonzero_line"] or 0),
     )[:500]
     summary.retrieval_impossible_candidates = [
-        row for row in chain_rows if row["samples"] >= 16 and row["max_outcome_reward"] < 0.34 and row["nonzero_samples"] == 0
+        strip_internal_history(row)
+        for row in chain_rows
+        if row["samples"] >= 16 and row["max_outcome_reward"] < 0.34 and row["nonzero_samples"] == 0
     ][:500]
+    summary.flow_summary = build_flow_summary(chain_rows, flow_window_groups)
 
 
 def rg_match_count(pattern: str, files: list[Path]) -> int:
@@ -691,6 +772,69 @@ def build_svg_line(rows: list[dict], y_key: str, title: str, suffix: str = "%") 
     return "".join(parts)
 
 
+def build_flow_svg(flow_summary: dict) -> str:
+    flows = flow_summary.get("flows", {})
+    total = int(flow_summary.get("total_chains", 0) or 0)
+    window = int(flow_summary.get("window_groups", 0) or 0)
+    if not flows or total <= 0:
+        return "<div class='empty'>No flow data.</div>"
+    counts = {
+        "zero_adv->zero_adv": int(flows.get("zero_adv->zero_adv", {}).get("chains", 0) or 0),
+        "zero_adv->mixed_adv": int(flows.get("zero_adv->mixed_adv", {}).get("chains", 0) or 0),
+        "mixed_adv->mixed_adv": int(flows.get("mixed_adv->mixed_adv", {}).get("chains", 0) or 0),
+        "mixed_adv->zero_adv": int(flows.get("mixed_adv->zero_adv", {}).get("chains", 0) or 0),
+    }
+    start_zero = counts["zero_adv->zero_adv"] + counts["zero_adv->mixed_adv"]
+    start_mixed = counts["mixed_adv->mixed_adv"] + counts["mixed_adv->zero_adv"]
+    width = 980
+    height = 300
+    left_x = 80
+    right_x = 720
+    top_y = 72
+    box_w = 190
+    box_h = 62
+    gap_y = 70
+
+    def label(count: int) -> str:
+        return f"{count:,} ({pct(count, total):.1f}%)"
+
+    def flow_path(y1: float, y2: float, count: int, color: str) -> str:
+        stroke = max(3.0, 34.0 * count / max(total, 1))
+        return (
+            f"<path d='M {left_x + box_w} {y1:.1f} C {left_x + box_w + 170} {y1:.1f}, "
+            f"{right_x - 170} {y2:.1f}, {right_x} {y2:.1f}' "
+            f"fill='none' stroke='{color}' stroke-width='{stroke:.1f}' stroke-linecap='round' opacity='.72'>"
+            f"<title>{count:,} chains ({pct(count, total):.1f}%)</title></path>"
+        )
+
+    parts = [f"<svg viewBox='0 0 {width} {height}'><title>Zero-advantage flow</title>"]
+    parts.append(f"<text x='70' y='28' class='chart-title'>First {window} comparison group(s) to last {window} comparison group(s)</text>")
+    parts.append(flow_path(top_y + box_h / 2 - 10, top_y + box_h / 2 - 10, counts["zero_adv->zero_adv"], "#ba7d1c"))
+    parts.append(flow_path(top_y + box_h / 2 + 14, top_y + gap_y + box_h / 2 + 14, counts["zero_adv->mixed_adv"], "#207a5b"))
+    parts.append(flow_path(top_y + gap_y + box_h / 2 - 14, top_y + box_h / 2 + 14, counts["mixed_adv->zero_adv"], "#ba7d1c"))
+    parts.append(flow_path(top_y + gap_y + box_h / 2 + 10, top_y + gap_y + box_h / 2 + 10, counts["mixed_adv->mixed_adv"], "#207a5b"))
+    boxes = [
+        (left_x, top_y, "Initially zero-advantage", label(start_zero), "#f3d9c6"),
+        (left_x, top_y + gap_y, "Initially mixed-advantage", label(start_mixed), "#d7efe3"),
+        (right_x, top_y, "Finally zero-advantage", label(counts["zero_adv->zero_adv"] + counts["mixed_adv->zero_adv"]), "#f3d9c6"),
+        (right_x, top_y + gap_y, "Finally mixed-advantage", label(counts["zero_adv->mixed_adv"] + counts["mixed_adv->mixed_adv"]), "#d7efe3"),
+    ]
+    for x, y, title, value, fill in boxes:
+        parts.append(f"<rect x='{x}' y='{y}' width='{box_w}' height='{box_h}' rx='14' fill='{fill}' stroke='#b8ab98'/>")
+        parts.append(f"<text x='{x + 14}' y='{y + 25}' class='flow-label'>{esc(title)}</text>")
+        parts.append(f"<text x='{x + 14}' y='{y + 48}' class='flow-num'>{esc(value)}</text>")
+    flow_labels = [
+        (365, top_y - 12, "zero -> zero", counts["zero_adv->zero_adv"]),
+        (405, top_y + 58, "zero -> mixed", counts["zero_adv->mixed_adv"]),
+        (397, top_y + gap_y + 4, "mixed -> zero", counts["mixed_adv->zero_adv"]),
+        (365, top_y + gap_y + 90, "mixed -> mixed", counts["mixed_adv->mixed_adv"]),
+    ]
+    for x, y, text, count in flow_labels:
+        parts.append(f"<text x='{x}' y='{y}' class='tiny'>{esc(text)}: {label(count)}</text>")
+    parts.append("</svg>")
+    return "".join(parts)
+
+
 def table(headers: list[str], rows: list[list[object]], limit: int = 250) -> str:
     head = "".join(f"<th>{esc(header)}</th>" for header in headers)
     body = []
@@ -729,6 +873,20 @@ def build_html(data: dict) -> str:
             ]
             for row in run.get("targeted_trace_probe", [])
         ]
+        flow_rows = []
+        for flow_key, flow in sorted((run.get("flow_summary") or {}).get("flows", {}).items()):
+            examples = ", ".join(f"{item['task_id']}:{item['chain_id']}" for item in flow.get("examples", [])[:5])
+            flow_rows.append(
+                [
+                    flow_key,
+                    flow.get("from_label", ""),
+                    flow.get("to_label", ""),
+                    flow.get("chains", 0),
+                    f"{flow.get('chain_fraction', 0.0):.1f}%",
+                    flow.get("samples", 0),
+                    examples,
+                ]
+            )
         warnings = "".join(f"<li>{esc(warning)}</li>" for warning in run["warnings"])
         latest = run.get("latest_success_distribution", {})
         run_sections.append(
@@ -751,6 +909,11 @@ def build_html(data: dict) -> str:
     <div class='card'><div class='num'>{100 * float(latest.get('sometimes_success', 0.0)):.1f}%</div><div>latest groups sometimes successful</div></div>
   </div>
   {'<ul class="warnings">' + warnings + '</ul>' if warnings else ''}
+  <div class='panel flow-panel'>{build_flow_svg(run.get('flow_summary') or {})}</div>
+  <details open><summary>Flow counts</summary>
+    <p>The flow uses the first and last configured comparison-group windows for each chain. "Zero advantage" means all sibling rewards were identical in that window, so the preprocessor has no directional RL signal for that chain. "Mixed advantage" means at least one sibling reward differed.</p>
+    {table(['flow', 'from', 'to', 'chains', 'chain fraction', 'actor samples', 'examples'], flow_rows)}
+  </details>
   <div class='grid'>
     <div class='panel'>{build_svg_bar(model_rows, ['nonzero', 'zero'], ['non-zero LOO advantage', 'zero LOO advantage'], ['#207a5b', '#d8d1c4'], 'Actor advantage coverage by model version')}</div>
     <div class='panel'>{build_svg_line(run['timeline_bins'], 'nonzero_fraction', 'Non-zero actor advantage fraction over actor-stream time')}</div>
@@ -798,6 +961,9 @@ svg {{ width:100%; max-width:980px; }}
 .axis {{ stroke:#8e826d; stroke-width:1; }}
 .chart-title {{ font-weight:700; font-size:15px; fill:var(--ink); }}
 .tick,.tiny,.legend {{ fill:var(--muted); font-size:10px; }}
+.flow-label {{ fill:var(--ink); font-weight:800; font-size:13px; }}
+.flow-num {{ fill:var(--ink); font-weight:700; font-size:16px; }}
+.flow-panel {{ margin:18px 0; }}
 details {{ background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px; margin:18px 0; }}
 summary {{ cursor:pointer; font-weight:800; }}
 table {{ border-collapse:collapse; width:100%; font-size:12px; margin-top:12px; }}
@@ -843,7 +1009,7 @@ def build(args: argparse.Namespace) -> dict:
             summary.actor_files = int(actor_stats["actor_files"])
             summary.actor_bytes = int(actor_stats["actor_bytes"])
             summary.actor_lines = int(actor_stats["actor_lines"])
-            aggregate_groups(summary, groups, args.line_bin_size)
+            aggregate_groups(summary, groups, args.line_bin_size, args.flow_window_groups)
             summary.targeted_trace_probe = probe_top_never_nonzero_traces(path, summary.never_nonzero_chains, args.trace_probe_limit)
         else:
             summary.warnings.append("Actor stream not scanned by default; pass --scan-all-actor to include this run")
@@ -869,9 +1035,10 @@ def main() -> None:
     parser.add_argument("--out-dir", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--max-actor-lines", type=int, default=0, help="Cap actor JSONL lines per scanned run; 0 scans all lines")
     parser.add_argument("--line-bin-size", type=int, default=100, help="Actor JSONL lines per timeline bin")
+    parser.add_argument("--flow-window-groups", type=int, default=3, help="Comparison groups per chain used for initial/final flow status")
     parser.add_argument("--trace-probe-limit", type=int, default=12, help="Run rg probes over trace files for this many never-nonzero chains")
     parser.add_argument("--scan-all-actor", action="store_true", help="Also scan older comparison runs' actor streams")
-    parser.add_argument("--generated-at", default="2026-05-14")
+    parser.add_argument("--generated-at", default="2026-05-15")
     args = parser.parse_args()
 
     data = build(args)
