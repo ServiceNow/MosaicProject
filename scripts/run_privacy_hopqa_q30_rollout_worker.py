@@ -126,6 +126,8 @@ def run_rollouts(args: argparse.Namespace, model_run_root: Path, base_url: str) 
         args.dataset_basename,
         "--splits",
         *args.splits,
+        "--repeats",
+        str(args.repeats),
         "--helper-url",
         args.helper_url,
         "--helper-timeout-s",
@@ -200,6 +202,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--tokenizer-name", default="")
     parser.add_argument("--base-url", default="")
     parser.add_argument("--splits", nargs="+", default=["test"])
+    parser.add_argument("--repeats", type=int, default=1)
     parser.add_argument("--dataset-root", type=Path, default=DEFAULT_DATASET_ROOT)
     parser.add_argument("--dataset-basename", default=DEFAULT_DATASET_BASENAME)
     parser.add_argument("--helper-url", default=os.environ.get("PRIVACY_AGENT_HELPER_URL", DEFAULT_HELPER_URL))
