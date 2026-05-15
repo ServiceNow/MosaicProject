@@ -167,6 +167,29 @@ def trainer_eval_history(run_dir: Path) -> list[dict[str, Any]]:
     return [points_by_step[step] for step in sorted(points_by_step)]
 
 
+def classifier_eval_history(run_dir: Path) -> list[dict[str, Any]]:
+    """Read reward-classifier metrics logged during TRL eval callbacks."""
+    records: list[dict[str, Any]] = []
+    for item in read_jsonl(run_dir / "classifier_eval_history.jsonl"):
+        metrics = item.get("metrics") if isinstance(item.get("metrics"), dict) else {}
+        if not metrics:
+            continue
+        try:
+            step = int(item.get("step") or 0)
+        except Exception:
+            step = len(records)
+        records.append(
+            {
+                "step": step,
+                "epoch": item.get("epoch"),
+                "split": item.get("split"),
+                "label_mode": item.get("label_mode"),
+                "metrics": metrics,
+            }
+        )
+    return records
+
+
 def classify_source(summary: dict[str, Any], source_label: str) -> str:
     if summary.get("trainer") == "trl.SFTTrainer" or source_label == "TRL":
         return "TRL SFTTrainer"
@@ -283,6 +306,7 @@ def load_binary_runs(root: Path, source_label: str) -> list[dict[str, Any]]:
             "lora": lora_label(summary),
             "eval_loss": trainer_eval_loss(run_dir),
             "eval_history": trainer_eval_history(run_dir),
+            "classifier_eval_history": classifier_eval_history(run_dir),
             "val_roc_auc": roc_auc_score(val_targets, val_probs) if len(set(val_targets)) > 1 else None,
             "val_average_precision": average_precision_score(val_targets, val_probs) if len(set(val_targets)) > 1 else None,
             "test_roc_auc": roc_auc_score(test_targets, test_probs) if len(set(test_targets)) > 1 else None,
@@ -318,6 +342,7 @@ def load_ternary_runs(root: Path, source_label: str) -> list[dict[str, Any]]:
             "lora": lora_label(summary),
             "eval_loss": trainer_eval_loss(run_dir),
             "eval_history": trainer_eval_history(run_dir),
+            "classifier_eval_history": classifier_eval_history(run_dir),
         }
         run["short_label"] = clean_run_label(run)
         runs.append(run)
@@ -356,7 +381,7 @@ def decisions_table() -> str:
         ("Primary Metrics", "ROC AUC for ranking plus precision, recall, and F1 at threshold 0.5 and a validation-selected F1 threshold."),
         ("Splits", "Clean deterministic task-id grouped train/validation/test split."),
         ("Efficiency", "TRL SFTTrainer prompt-completion loss, FlashAttention 2, Liger kernel, fused AdamW, bf16, gradient checkpointing."),
-        ("Logging", "W&B project alexgurung/privacy_hopqa_binary_reward_sft; current TRL runs stream online and log eval_loss."),
+        ("Logging", "W&B project alexgurung/privacy_hopqa_binary_reward_sft; current TRL runs stream online and log eval_loss plus one-token classifier metrics at each eval step."),
     ]
     return "<table><tbody>" + "".join(f"<tr><th>{esc(k)}</th><td>{esc(v)}</td></tr>" for k, v in rows) + "</tbody></table>"
 
@@ -683,6 +708,49 @@ def plot_binary_runs(runs: list[dict[str, Any]], output_dir: Path) -> None:
         fig.savefig(plot_dir / "eval_loss_curves.pdf")
         plt.close(fig)
 
+    classifier_history_runs = [run for run in plot_runs if run.get("classifier_eval_history")]
+    if classifier_history_runs:
+        fig, axes = plt.subplots(1, 2, figsize=(13.6, 5.8), sharex=False, sharey=True)
+        colors = plt.cm.tab20(np.linspace(0, 1, max(1, len(classifier_history_runs))))
+        for color, run in zip(colors, classifier_history_runs):
+            history = run.get("classifier_eval_history") or []
+            steps = [int(point["step"]) for point in history]
+            metric_rows = [point.get("metrics") or {} for point in history]
+            for ax, metric, linestyle in [
+                (axes[0], "roc_auc", "-"),
+                (axes[0], "f1", "--"),
+                (axes[1], "precision", "-"),
+                (axes[1], "recall", "--"),
+            ]:
+                values = [metrics.get(metric) for metrics in metric_rows]
+                valid = [(step, value) for step, value in zip(steps, values) if value is not None]
+                if not valid:
+                    continue
+                x_values = [step for step, _ in valid]
+                y_values = [float(value) for _, value in valid]
+                label = f"{clean_run_label(run)} {metric.replace('_', ' ').title()}"
+                ax.plot(
+                    x_values,
+                    y_values,
+                    linestyle=linestyle,
+                    marker="o",
+                    markersize=2.8,
+                    linewidth=1.35,
+                    color=color,
+                    label=label,
+                )
+        for ax, title in zip(axes, ["Validation AUC And F1", "Validation Precision And Recall"]):
+            ax.set_title(title)
+            ax.set_xlabel("Optimizer Step")
+            ax.set_ylim(-0.03, 1.03)
+            ax.grid(alpha=0.22)
+        axes[0].set_ylabel("Validation Classifier Metric")
+        axes[1].legend(frameon=False, fontsize=6.7, ncols=1, loc="center left", bbox_to_anchor=(1.02, 0.5))
+        fig.tight_layout(rect=(0, 0, 0.68, 1))
+        fig.savefig(plot_dir / "classifier_eval_curves.svg")
+        fig.savefig(plot_dir / "classifier_eval_curves.pdf")
+        plt.close(fig)
+
     plot_binary_confusion_grid(plot_runs, output_dir, "raw", "binary_confusion_0_5")
     plot_binary_confusion_grid(plot_runs, output_dir, "val_threshold", "binary_confusion_val_threshold")
 
@@ -750,6 +818,7 @@ code {{ background: #eef2f0; padding: 1px 4px; border-radius: 4px; white-space: 
 <section><h2>Binary Reward: AUC And F1</h2><img src="plots/auc_f1_metrics.svg"></section>
 <section><h2>Binary Reward: Precision, Recall, F1</h2><img src="plots/precision_recall_f1.svg"></section>
 <section><h2>TRL Validation Loss Curves</h2><p class="note">These are the repeated training-time validation-loss evaluations from TRL trainer state. In W&amp;B this curve is logged as <code>eval/loss</code>; final classifier metrics such as <code>eval/test/roc_auc</code> are logged once after training.</p><img src="plots/eval_loss_curves.svg"></section>
+<section><h2>Reward Classifier Validation Curves</h2><p class="note">These are one-token Yes/No classifier metrics on the validation split, logged at each TRL eval step as <code>reward_eval/val/*</code>. Newer runs include this curve; older runs only have the final split metrics.</p><img src="plots/classifier_eval_curves.svg"></section>
 <section><h2>Binary Reward: Confusion Matrices At 0.5</h2><p class="note">Rows are true labels, columns are predicted labels. Each cell shows count and percent of the true-label row.</p><img src="plots/binary_confusion_0_5.svg"></section>
 <section><h2>Binary Reward: Confusion Matrices At Validation Threshold</h2><p class="note">The validation threshold is selected independently for each run to maximize validation F1.</p><img src="plots/binary_confusion_val_threshold.svg"></section>
 <section><h2>1-3 Reward: Confusion Matrix</h2><p class="note">A = No leakage, B = intent leakage, C = fact leakage. The plot uses readable class names.</p><img src="plots/ternary_confusion.svg"></section>

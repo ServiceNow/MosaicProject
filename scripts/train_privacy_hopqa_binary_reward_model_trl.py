@@ -23,7 +23,7 @@ import torch
 from datasets import Dataset
 from peft import LoraConfig, PeftModel
 from sklearn.metrics import confusion_matrix, precision_recall_fscore_support, roc_auc_score
-from transformers import AutoModelForCausalLM
+from transformers import AutoModelForCausalLM, TrainerCallback
 from trl import SFTConfig, SFTTrainer
 
 from train_privacy_hopqa_binary_reward_model import (
@@ -299,6 +299,19 @@ def log_eval_to_wandb(output_dir: Path, summary: dict[str, Any]) -> None:
             wandb.save(str(file_path), base_path=str(output_dir), policy="now")
 
 
+def log_to_wandb(payload: dict[str, Any], step: int | None = None) -> None:
+    try:
+        import wandb
+    except Exception:
+        return
+    if wandb.run is None:
+        return
+    if step is None:
+        wandb.log(payload)
+    else:
+        wandb.log(payload, step=step)
+
+
 def model_kwargs(args: argparse.Namespace, for_training: bool) -> dict[str, Any]:
     kwargs: dict[str, Any] = {
         "trust_remote_code": True,
@@ -522,6 +535,59 @@ def evaluate_ternary_rows(
     return multiclass_metrics(targets, probs), predictions
 
 
+class RewardClassifierEvalCallback(TrainerCallback):
+    """Log one-token reward-classifier metrics at each TRL eval step."""
+
+    def __init__(self, run_args: argparse.Namespace, tokenizer: Any, eval_rows: list[dict[str, Any]]):
+        self.run_args = run_args
+        self.tokenizer = tokenizer
+        self.eval_rows = eval_rows[: run_args.classifier_eval_max_examples] if run_args.classifier_eval_max_examples else eval_rows
+        self.history_path = run_args.output_dir / "classifier_eval_history.jsonl"
+
+    def on_evaluate(self, args: Any, state: Any, control: Any, model: Any | None = None, **kwargs: Any) -> Any:
+        if model is None or not self.eval_rows:
+            return control
+        was_training = bool(getattr(model, "training", False))
+        if self.run_args.label_mode == "ternary":
+            metrics, _ = evaluate_ternary_rows(
+                model,
+                self.tokenizer,
+                self.eval_rows,
+                self.run_args.eval_batch_size,
+                self.run_args.max_length,
+            )
+        else:
+            metrics, _ = evaluate_rows(
+                model,
+                self.tokenizer,
+                self.eval_rows,
+                self.run_args.eval_batch_size,
+                self.run_args.max_length,
+            )
+        if was_training:
+            model.train()
+        record = {
+            "step": int(state.global_step),
+            "epoch": state.epoch,
+            "split": self.run_args.trainer_eval_split,
+            "label_mode": self.run_args.label_mode,
+            "metrics": json_safe(metrics),
+        }
+        self.history_path.parent.mkdir(parents=True, exist_ok=True)
+        with self.history_path.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+        payload = {
+            f"reward_eval/{self.run_args.trainer_eval_split}/{key}": value
+            for key, value in metrics.items()
+            if isinstance(value, int | float) and value is not None
+        }
+        payload["reward_eval/step"] = int(state.global_step)
+        payload["reward_eval/epoch"] = float(state.epoch or 0.0)
+        wandb_step = int(state.global_step)
+        log_to_wandb(payload, step=wandb_step if wandb_step > 0 else None)
+        return control
+
+
 def train(args: argparse.Namespace) -> Path | None:
     if args.eval_only:
         return args.adapter_path
@@ -534,6 +600,7 @@ def train(args: argparse.Namespace) -> Path | None:
     }
     train_dataset = make_sft_dataset(train_rows, args)
     eval_dataset = None
+    eval_rows: list[dict[str, Any]] = []
     if args.trainer_eval_strategy != "no":
         eval_rows = load_split(args.dataset_dir, args.variant, args.trainer_eval_split)
         length_report[f"{args.trainer_eval_split}_full_text"] = check_no_truncation(
@@ -589,6 +656,8 @@ def train(args: argparse.Namespace) -> Path | None:
         processing_class=tokenizer,
         peft_config=lora_config(args),
     )
+    if args.classifier_eval_during_training and eval_rows:
+        trainer.add_callback(RewardClassifierEvalCallback(args, tokenizer, eval_rows))
     started = time.time()
     checkpoint = resume_checkpoint(args)
     trainer.train(resume_from_checkpoint=str(checkpoint) if checkpoint else None)
@@ -618,6 +687,8 @@ def train(args: argparse.Namespace) -> Path | None:
                 "use_liger_kernel": args.use_liger_kernel,
                 "report_to": parse_report_to(args.report_to),
                 "wandb_mode": args.wandb_mode,
+                "classifier_eval_during_training": args.classifier_eval_during_training,
+                "classifier_eval_max_examples": args.classifier_eval_max_examples,
                 "length_report": length_report,
                 "best_model_checkpoint": trainer.state.best_model_checkpoint,
                 "best_metric": trainer.state.best_metric,
@@ -723,6 +794,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--save-total-limit", type=int, default=2)
     parser.add_argument("--load-best-model-at-end", action="store_true", default=True)
     parser.add_argument("--no-load-best-model-at-end", dest="load_best_model_at_end", action="store_false")
+    parser.add_argument("--classifier-eval-during-training", action="store_true", default=True)
+    parser.add_argument("--no-classifier-eval-during-training", dest="classifier_eval_during_training", action="store_false")
+    parser.add_argument("--classifier-eval-max-examples", type=int, default=0)
     parser.add_argument("--eval-on-start", action="store_true")
     parser.add_argument(
         "--resume-from-checkpoint",
