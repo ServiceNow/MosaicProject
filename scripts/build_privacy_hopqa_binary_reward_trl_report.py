@@ -166,10 +166,14 @@ def compact_lora_label(summary: dict[str, Any]) -> str:
 
 def compact_source(value: str) -> str:
     return {
-        "Manual Trainer": "Manual",
-        "TRL SFTTrainer": "TRL",
+        "Manual Trainer": "Custom SFT",
+        "TRL SFTTrainer": "TRL SFT",
         "Base": "Base",
     }.get(value, value)
+
+
+def source_label(value: str) -> str:
+    return compact_source(value)
 
 
 def repeat_label(summary: dict[str, Any]) -> str:
@@ -305,6 +309,9 @@ def decisions_table() -> str:
     rows = [
         ("Binary Target", "Yes when StepFun overall privacy leakage score is 4 or 5; No for 1-3."),
         ("Ternary Target", "A = no leakage, B = intent-only leakage, C = answer/full-information fact leakage."),
+        ("Trainer Labels", "Custom SFT is the older hand-written Hugging Face Trainer loop; TRL SFT uses TRL's SFTTrainer. Both train the causal LM on label tokens, not a separate classification head."),
+        ("Binary Score", "P(leakage) is softmax(Yes, No) from the next-token logits after the prompt."),
+        ("Threshold", "The 0.5 threshold is the Yes-vs-No argmax. The report also shows a validation-selected threshold chosen to maximize validation F1."),
         ("Evaluation", "Metrics use next-token probabilities for exact label tokens, not sampled generation."),
         ("Primary Metrics", "ROC AUC for ranking plus precision, recall, and F1 at threshold 0.5 and a validation-selected F1 threshold."),
         ("Splits", "Clean deterministic task-id grouped train/validation/test split."),
@@ -344,7 +351,7 @@ def binary_run_table(runs: list[dict[str, Any]]) -> str:
         rows.append(
             "<tr>"
             f"<td>{esc(run.get('short_label') or clean_run_label(run))}</td>"
-            f"<td>{esc(run['source'])}</td>"
+            f"<td>{esc(source_label(str(run['source'])))}</td>"
             f"<td>{esc(short_variant(str(run['variant'])))}</td>"
             f"<td>{esc(args.get('positive_repeat'))}</td>"
             f"<td>{esc(run['lora'])}</td>"
@@ -428,7 +435,7 @@ def best_recommendation(binary_runs: list[dict[str, Any]], ternary_runs: list[di
         if best_trl is not best_f1:
             test = (best_trl["summary"].get("metrics") or {}).get("test") or {}
             pieces.append(
-                f"Best TRL-only run is <strong>{esc(best_trl.get('short_label') or clean_run_label(best_trl))}</strong>: "
+                f"Best TRL SFT run is <strong>{esc(best_trl.get('short_label') or clean_run_label(best_trl))}</strong>: "
                 f"AUC {num(best_trl['test_roc_auc'])}, precision {pct(test.get('precision'))}, "
                 f"recall {pct(test.get('recall'))}, F1 {pct(test.get('f1'))}."
             )

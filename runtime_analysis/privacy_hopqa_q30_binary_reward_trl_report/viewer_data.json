@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-15T16:05:29.585279+00:00",
+  "generated_at": "2026-05-15T16:09:19.884130+00:00",
   "manual_root": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_binary_reward_sft_20260515",
   "trl_root": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_binary_reward_sft_trl_20260515",
   "binary_runs": [
@@ -209,7 +209,7 @@
       },
       "test_rows": 288,
       "test_positive": 61,
-      "short_label": "Chain - Manual - r16 - Repeat x2"
+      "short_label": "Chain - Custom SFT - r16 - Repeat x2"
     },
     {
       "name": "company_context_base_eval_full",
@@ -417,7 +417,7 @@
       },
       "test_rows": 288,
       "test_positive": 61,
-      "short_label": "Company - Manual - r16 - Repeat x2"
+      "short_label": "Company - Custom SFT - r16 - Repeat x2"
     },
     {
       "name": "company_context_lora_full_ep2_rep4",
@@ -521,7 +521,7 @@
       },
       "test_rows": 288,
       "test_positive": 61,
-      "short_label": "Company - Manual - r16 - Repeat x4"
+      "short_label": "Company - Custom SFT - r16 - Repeat x4"
     },
     {
       "name": "queries_only_base_eval_full",
@@ -833,7 +833,7 @@
       },
       "test_rows": 288,
       "test_positive": 61,
-      "short_label": "Queries - Manual - r16 - Repeat x2"
+      "short_label": "Queries - Custom SFT - r16 - Repeat x2"
     },
     {
       "name": "queries_only_lora_full_ep2_rep4",
@@ -937,7 +937,7 @@
       },
       "test_rows": 288,
       "test_positive": 61,
-      "short_label": "Queries - Manual - r16 - Repeat x4"
+      "short_label": "Queries - Custom SFT - r16 - Repeat x4"
     },
     {
       "name": "queries_only_lora_smoke_256",
@@ -1041,7 +1041,7 @@
       },
       "test_rows": 64,
       "test_positive": 14,
-      "short_label": "Queries - Manual - r16 - Repeat x4"
+      "short_label": "Queries - Custom SFT - r16 - Repeat x4"
     },
     {
       "name": "chain_context_trl_full_ep2_rep4",
@@ -1158,7 +1158,7 @@
       },
       "test_rows": 288,
       "test_positive": 61,
-      "short_label": "Chain - TRL - r16 - Repeat x4"
+      "short_label": "Chain - TRL SFT - r16 - Repeat x4"
     },
     {
       "name": "company_context_trl_full_ep2_rep1_r128_alllinear_d0",
@@ -1290,7 +1290,7 @@
       },
       "test_rows": 288,
       "test_positive": 61,
-      "short_label": "Company - TRL - r128 all-linear - No repeat"
+      "short_label": "Company - TRL SFT - r128 all-linear - No repeat"
     },
     {
       "name": "company_context_trl_full_ep2_rep1_r16_default",
@@ -1422,7 +1422,7 @@
       },
       "test_rows": 288,
       "test_positive": 61,
-      "short_label": "Company - TRL - r16 - No repeat"
+      "short_label": "Company - TRL SFT - r16 - No repeat"
     },
     {
       "name": "company_context_trl_full_ep2_rep4",
@@ -1539,7 +1539,7 @@
       },
       "test_rows": 288,
       "test_positive": 61,
-      "short_label": "Company - TRL - r16 - Repeat x4"
+      "short_label": "Company - TRL SFT - r16 - Repeat x4"
     },
     {
       "name": "company_context_trl_full_ep2_rep4_r128_alllinear_d0",
@@ -1671,7 +1671,7 @@
       },
       "test_rows": 288,
       "test_positive": 61,
-      "short_label": "Company - TRL - r128 all-linear - Repeat x4"
+      "short_label": "Company - TRL SFT - r128 all-linear - Repeat x4"
     },
     {
       "name": "company_context_trl_smoke_r128_alllinear_rep1",
@@ -1799,7 +1799,7 @@
       },
       "test_rows": 24,
       "test_positive": 2,
-      "short_label": "Company - TRL - r128 all-linear - No repeat"
+      "short_label": "Company - TRL SFT - r128 all-linear - No repeat"
     },
     {
       "name": "queries_only_trl_full_ep2_rep4",
@@ -1916,7 +1916,7 @@
       },
       "test_rows": 288,
       "test_positive": 61,
-      "short_label": "Queries - TRL - r16 - Repeat x4"
+      "short_label": "Queries - TRL SFT - r16 - Repeat x4"
     },
     {
       "name": "queries_only_trl_smoke_256",
@@ -2033,7 +2033,7 @@
       },
       "test_rows": 80,
       "test_positive": 19,
-      "short_label": "Queries - TRL - r16 - Repeat x2"
+      "short_label": "Queries - TRL SFT - r16 - Repeat x2"
     }
   ],
   "ternary_runs": [
@@ -2192,7 +2192,7 @@
         "last_eval_loss": 0.2171815186738968,
         "eval_loss_points": 18
       },
-      "short_label": "Company - TRL - 1-3 target - r128 all-linear"
+      "short_label": "Company - TRL SFT - 1-3 target - r128 all-linear"
     }
   ],
   "dataset_manifest": {
