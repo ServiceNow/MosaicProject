@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Submit clean 3-repeat Privacy HopQA q30 test-set eval jobs.
+"""Submit clean Privacy HopQA q30 eval jobs.
 
 These runs are intended for paper-quality model comparisons:
-- test split only
-- three independent repeats
+- configurable splits and repeat count
 - no whole-case retries
 - one planner retry attempt
 - training-like generation/context budgets for non-StepFun agents
@@ -171,7 +170,13 @@ def base_submit_cmd(name: str, cpu: int, mem: int, gpu: int, bid: int) -> list[s
     return cmd
 
 
-def rollout_command(model: dict[str, Any], artifact_root: Path, *, privacy_prompt: bool) -> str:
+def rollout_command(
+    model: dict[str, Any],
+    artifact_root: Path,
+    splits: list[str],
+    repeats: int,
+    privacy_prompt: bool,
+) -> str:
     max_model_len = int(model.get("max_model_len", 16384))
     max_tokens = int(model.get("max_tokens", 4096))
     stage_max_tokens = int(model.get("stage_max_tokens", max_tokens))
@@ -189,9 +194,9 @@ def rollout_command(model: dict[str, Any], artifact_root: Path, *, privacy_promp
         "--tokenizer-name",
         model["tokenizer_name"],
         "--splits",
-        "test",
+        *splits,
         "--repeats",
-        "3",
+        str(repeats),
         "--helper-url",
         HELPER_URL,
         "--rollout-concurrency",
@@ -252,13 +257,20 @@ def submit(command: list[str], dry_run: bool) -> None:
         subprocess.run(command, check=True)
 
 
-def write_manifest(root: Path, selected: list[dict[str, Any]], *, privacy_prompt: bool) -> None:
+def write_manifest(
+    root: Path,
+    selected: list[dict[str, Any]],
+    run_tag: str,
+    splits: list[str],
+    repeats: int,
+    privacy_prompt: bool,
+) -> None:
     root.mkdir(parents=True, exist_ok=True)
     manifest = {
         "artifact_root": str(root),
-        "run_tag": RUN_TAG,
-        "splits": ["test"],
-        "repeats": 3,
+        "run_tag": run_tag,
+        "splits": splits,
+        "repeats": repeats,
         "case_attempts": 1,
         "hop_plan_attempts": 1,
         "planner_privacy_prompt": privacy_prompt,
@@ -285,8 +297,11 @@ def write_manifest(root: Path, selected: list[dict[str, Any]], *, privacy_prompt
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--baseline-root", type=Path, default=BASELINE_ROOT)
-    parser.add_argument("--privacy-prompt-root", type=Path, default=PRIVACY_PROMPT_ROOT)
+    parser.add_argument("--run-tag", default=RUN_TAG)
+    parser.add_argument("--baseline-root", type=Path)
+    parser.add_argument("--privacy-prompt-root", type=Path)
+    parser.add_argument("--splits", nargs="+", default=["test"])
+    parser.add_argument("--repeats", type=int, default=3)
     parser.add_argument("--condition", choices=["baseline", "privacy_prompt"], action="append", default=[])
     parser.add_argument("--only-model-label", action="append", default=[])
     parser.add_argument("--skip-model-label", action="append", default=[])
@@ -302,16 +317,33 @@ def main() -> None:
     only = set(args.only_model_label)
     skip = set(args.skip_model_label)
     selected = [model for model in MODELS if (not only or model["model_label"] in only) and model["model_label"] not in skip]
+    baseline_root = args.baseline_root or Path(f"/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_{args.run_tag}")
+    privacy_prompt_root = args.privacy_prompt_root or Path(
+        f"/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_{args.run_tag}_privacy_prompt"
+    )
     for condition in conditions:
         privacy_prompt = condition == "privacy_prompt"
-        root = args.privacy_prompt_root if privacy_prompt else args.baseline_root
-        write_manifest(root, selected, privacy_prompt=privacy_prompt)
+        root = privacy_prompt_root if privacy_prompt else baseline_root
+        write_manifest(
+            root,
+            selected,
+            args.run_tag,
+            list(args.splits),
+            int(args.repeats),
+            privacy_prompt=privacy_prompt,
+        )
         for model in selected:
             suffix = args.job_name_suffix
             if suffix and not suffix.startswith("_"):
                 suffix = "_" + suffix
-            name = f"privacy_hopqa_q30_{RUN_TAG}_{condition}_{model['model_label']}{suffix}"
-            command = rollout_command(model, root, privacy_prompt=privacy_prompt)
+            name = f"privacy_hopqa_q30_{args.run_tag}_{condition}_{model['model_label']}{suffix}"
+            command = rollout_command(
+                model,
+                root,
+                list(args.splits),
+                int(args.repeats),
+                privacy_prompt=privacy_prompt,
+            )
             submit(
                 base_submit_cmd(name, int(model["cpu"]), int(model["mem"]), int(model.get("gpu", 0)), args.bid)
                 + ["--", "/bin/bash", "-lc", command],

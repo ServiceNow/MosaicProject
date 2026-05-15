@@ -307,6 +307,18 @@ def rollout_identity(row: dict[str, Any]) -> tuple[str, str, str, str, str]:
     )
 
 
+def row_planned_repeats(row: dict[str, Any]) -> int:
+    try:
+        return max(1, int(row.get("planned_repeats") or 1))
+    except Exception:
+        return 1
+
+
+def expected_attempts(rows: list[dict[str, Any]], split: str) -> int:
+    repeats = max([row_planned_repeats(row) for row in rows if row_split(row) == split] or [1])
+    return SPLIT_SIZES.get(split, 0) * repeats
+
+
 def latest_by_identity(rows: list[dict[str, Any]]) -> dict[tuple[str, str, str, str, str], dict[str, Any]]:
     latest: dict[tuple[str, str, str, str, str], dict[str, Any]] = {}
     for row in rows:
@@ -824,13 +836,19 @@ def load_rollouts(artifact_root: Path, problem_lookup: dict[tuple[str, str], dic
     for root in model_roots(artifact_root):
         model_label = root.name
         metadata = read_json(root / "config" / "worker_metadata.json", {})
-        planned_splits = ((metadata.get("args") or {}).get("splits") or []) if isinstance(metadata, dict) else []
+        metadata_args = (metadata.get("args") or {}) if isinstance(metadata, dict) else {}
+        planned_splits = (metadata_args.get("splits") or []) if isinstance(metadata_args, dict) else []
+        try:
+            planned_repeats = max(1, int(metadata_args.get("repeats") or 1))
+        except Exception:
+            planned_repeats = 1
         for row in read_jsonl(root / "tables" / "rollout_index.jsonl"):
             row = dict(row)
             row["model_run_root"] = str(root)
             row["model_label"] = str(row.get("model_label") or model_label)
             row["model_display"] = model_display(row["model_label"])
             row["planned_splits"] = planned_splits
+            row["planned_repeats"] = planned_repeats
             row.update(trace_prior_web_features(str(row.get("trace_path") or "")))
             if row.get("ok"):
                 enrich_dependency_metrics(row, problem_lookup)
@@ -1142,11 +1160,13 @@ def annotate_bar_values(
 def plot_progress(rows: list[dict[str, Any]], path: Path, split_scope: str | None = None) -> None:
     ok = [row for row in rows if row.get("ok")]
     labels = []
-    values = []
+    ok_values = []
+    failed_values = []
     expected = []
     for model in ordered_model_labels((row.get("model_label") for row in rows), include_defaults=True):
         all_model_rows = [row for row in rows if row.get("model_label") == model]
         model_rows = [row for row in ok if row.get("model_label") == model]
+        failed_rows = [row for row in all_model_rows if not row.get("ok")]
         if split_scope is not None:
             planned = {split_scope}
         else:
@@ -1160,23 +1180,28 @@ def plot_progress(rows: list[dict[str, Any]], path: Path, split_scope: str | Non
         for split in ["train", "val", "test"]:
             if split not in planned and not any(row.get("split") == split for row in all_model_rows):
                 continue
+            split_rows = [row for row in all_model_rows if row_split(row) == split]
+            planned_repeats = max([row_planned_repeats(row) for row in split_rows] or [1])
             labels.append(f"{model_display(model)}\n{split}")
-            values.append(sum(1 for row in model_rows if row.get("split") == split))
-            expected.append(SPLIT_SIZES.get(split, 0))
+            ok_values.append(sum(1 for row in model_rows if row_split(row) == split))
+            failed_values.append(sum(1 for row in failed_rows if row_split(row) == split))
+            expected.append(SPLIT_SIZES.get(split, 0) * planned_repeats)
     if not labels:
         empty_plot(path, "Rollout coverage by model and split", "No rollout rows have been written yet.")
         return
     plt.figure(figsize=(max(8, len(labels) * 0.75), 5.5))
     x = list(range(len(labels)))
     plt.bar(x, expected, color="#d8d2c6", label="expected")
-    plt.bar(x, values, color="#315c9c", label="completed")
-    y_limit = max([*expected, *values, 1]) * 1.18
+    plt.bar(x, ok_values, color="#315c9c", label="successful")
+    plt.bar(x, failed_values, bottom=ok_values, color="#a65f48", label="failed")
+    completed_values = [ok_value + failed_value for ok_value, failed_value in zip(ok_values, failed_values)]
+    y_limit = max([*expected, *completed_values, 1]) * 1.18
     ax = plt.gca()
-    for xi, value, total in zip(x, values, expected):
-        label = f"n={value}/{total}" if total else f"n={value}"
-        ax.text(xi, min(y_limit, value + max(y_limit * 0.025, 0.5)), label, ha="center", va="bottom", fontsize=8)
+    for xi, completed, ok_value, total in zip(x, completed_values, ok_values, expected):
+        label = f"n={completed}/{total}\nok={ok_value}" if total else f"n={completed}\nok={ok_value}"
+        ax.text(xi, min(y_limit, completed + max(y_limit * 0.025, 0.5)), label, ha="center", va="bottom", fontsize=8)
     plt.xticks(x, labels, rotation=35, ha="right")
-    plt.ylabel("rollouts")
+    plt.ylabel("rollout attempts")
     plt.ylim(0, y_limit)
     plt.title("Rollout coverage by model and split")
     plt.legend()
@@ -1706,7 +1731,7 @@ def plot_privacy_prompt_coverage(summary_rows: list[dict[str, Any]], path: Path)
         return
     labels = [model_display(str(row["model_label"])) for row in rows]
     metrics = [
-        ("successful rollout coverage", "baseline_coverage_rate", "prompt_coverage_rate", "baseline_ok", "prompt_ok", "test chains"),
+        ("successful rollout coverage", "baseline_coverage_rate", "prompt_coverage_rate", "baseline_ok", "prompt_ok", "planned attempts"),
         ("StepFun judged coverage", "baseline_judged_coverage_rate", "prompt_judged_coverage_rate", "baseline_stepfun", "prompt_stepfun", "judged rollouts"),
     ]
     fig, axes = plt.subplots(1, 2, figsize=(12.8, 4.8), sharey=True)
@@ -2565,7 +2590,7 @@ def make_plots(
     src_prefix = f"plots/{scope_slug}"
     scope_label = "Test split only" if scope_split == "test" else "All available splits"
     plot_progress(rollouts, plot_dir / "rollout_progress.svg", split_scope=scope_split)
-    plots.append((f"{src_prefix}/rollout_progress.svg", "Rollout Coverage", "Completed successful rollouts are shown against the planned split sizes. Failed bars in the model table count only unresolved row keys, not old attempts that later succeeded."))
+    plots.append((f"{src_prefix}/rollout_progress.svg", "Rollout Coverage", "Successful and failed rollout attempts are shown against the planned split sizes multiplied by the configured repeat count. Failed bars in the model table count only unresolved row keys, not old attempts that later succeeded."))
     plot_hop_accuracy_summary(rollouts, plot_dir / "hop_accuracy_summary.svg")
     plots.append((f"{src_prefix}/hop_accuracy_summary.svg", "Task Performance By Model", f"Scope: {scope_label}. {chain_progress_definition()} Bars show mean chain progress accuracy, all-hops-correct rate, and final-answer accuracy over successful rollouts. Error bars show 95% bootstrap CIs over rollout rows."))
     plot_pattern_accuracy_heatmap(rollouts, plot_dir / "hop_pattern_accuracy.svg")
@@ -3133,13 +3158,21 @@ def build_privacy_prompt_comparison(
     )
     summary_rows: list[dict[str, Any]] = []
     for model in labels:
-        baseline_ok = [
+        baseline_model_rows = [
             row for row in baseline_rollout_latest.values()
-            if row.get("model_label") == model and row.get("ok")
+            if row.get("model_label") == model
+        ]
+        prompt_model_rows = [
+            row for row in prompt_rollout_latest.values()
+            if row.get("model_label") == model
+        ]
+        baseline_ok = [
+            row for row in baseline_model_rows
+            if row.get("ok")
         ]
         prompt_ok = [
-            row for row in prompt_rollout_latest.values()
-            if row.get("model_label") == model and row.get("ok")
+            row for row in prompt_model_rows
+            if row.get("ok")
         ]
         baseline_sf = [row for row in baseline_step_latest.values() if row.get("model_label") == model]
         prompt_sf = [row for row in prompt_step_latest.values() if row.get("model_label") == model]
@@ -3191,8 +3224,8 @@ def build_privacy_prompt_comparison(
         prompt_full_info = mean_or_none(prompt_full_info_values)
         baseline_lenient_full_info = mean_or_none(baseline_lenient_full_info_values)
         prompt_lenient_full_info = mean_or_none(prompt_lenient_full_info_values)
-        baseline_expected = SPLIT_SIZES["test"]
-        prompt_expected = SPLIT_SIZES["test"]
+        baseline_expected = expected_attempts(baseline_model_rows, "test")
+        prompt_expected = expected_attempts(prompt_model_rows, "test")
         baseline_web_queries = mean_metric(baseline_ok, "visible_web_queries")
         prompt_web_queries = mean_metric(prompt_ok, "visible_web_queries")
 
@@ -3306,7 +3339,7 @@ def build_privacy_prompt_comparison(
             (
                 os.path.relpath(coverage_plot, output_dir).replace(os.sep, "/"),
                 "Privacy Prompt Effect: Rollout And Judge Coverage",
-                "Test split only. Successful rollout coverage is out of the 344 test chains. StepFun judged coverage is out of successful rollouts for that condition. n labels show the numerator for each bar; n=0 means no successful test rollout or no judged test row has been written yet for that condition.",
+                "Test split only. Successful rollout coverage is out of planned test rollout attempts, including repeats. StepFun judged coverage is out of successful rollouts for that condition. n labels show the numerator for each bar; n=0 means no successful test rollout or no judged test row has been written yet for that condition.",
             ),
             (
                 os.path.relpath(accuracy_plot, output_dir).replace(os.sep, "/"),
@@ -3447,7 +3480,7 @@ def render_privacy_prompt_comparison(comparison: dict[str, Any] | None) -> str:
     </section>
     <section id="privacy-prompt-summary">
       <h2>Privacy Prompt Effect Summary</h2>
-      <p class="note">Rows use the test split only. Coverage columns are successful rollouts divided by 344 planned test chains. Judged coverage is StepFun privacy-judged rows divided by successful rollouts. n=0 means no successful test rollout or no judged test row has been written for that condition yet, not that leakage is zero. Chain progress accuracy uses evaluable hops; final accuracy is binary final-answer correctness per rollout; strict chain success is the all-hops-correct plus final-answer-correct metric. The privacy-prompted run and StepFun privacy judge are live, so judged counts may lag rollout counts.</p>
+      <p class="note">Rows use the test split only. Coverage columns are successful rollouts divided by planned test rollout attempts, including repeats. Judged coverage is StepFun privacy-judged rows divided by successful rollouts. n=0 means no successful test rollout or no judged test row has been written for that condition yet, not that leakage is zero. Chain progress accuracy uses evaluable hops; final accuracy is binary final-answer correctness per rollout; strict chain success is the all-hops-correct plus final-answer-correct metric. The privacy-prompted run and StepFun privacy judge are live, so judged counts may lag rollout counts.</p>
       {simple_table(rows, headers, labels=labels, limit=20)}
     </section>
     <section id="privacy-prompt-leakage-summary">
