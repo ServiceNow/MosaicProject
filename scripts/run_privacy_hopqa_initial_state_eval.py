@@ -109,7 +109,7 @@ def training_text_token_totals(training_texts: list[Any]) -> dict[str, int]:
     }
 
 
-def load_completed(index_path: Path, model_label: str) -> set[tuple[str, str, int]]:
+def load_completed(index_path: Path, model_label: str, include_failed: bool = False) -> set[tuple[str, str, int]]:
     completed: set[tuple[str, str, int]] = set()
     if not index_path.exists():
         return completed
@@ -119,7 +119,9 @@ def load_completed(index_path: Path, model_label: str) -> set[tuple[str, str, in
                 row = json.loads(line)
             except json.JSONDecodeError:
                 continue
-            if row.get("model_label") != model_label or not row.get("ok"):
+            if row.get("model_label") != model_label:
+                continue
+            if not row.get("ok") and not include_failed:
                 continue
             completed.add((str(row.get("split")), str(row.get("chain_id")), int(row.get("repeat", 0))))
     return completed
@@ -562,7 +564,7 @@ async def run_all(args: argparse.Namespace) -> None:
 
         privacy_hopqa_llm_adapter.llm_async_generate = completion_template_async_generate
 
-    completed = set() if args.force else load_completed(index_path, model_label)
+    completed = set() if args.force else load_completed(index_path, model_label, include_failed=args.skip_failed)
     total_stats = RunStats()
     async with aiohttp.ClientSession() as session:
         for split_name in args.splits:
@@ -629,6 +631,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--chain-id", action="append", default=[])
     parser.add_argument("--repeats", type=int, default=1)
     parser.add_argument("--case-attempts", type=int, default=1)
+    parser.add_argument(
+        "--skip-failed",
+        action="store_true",
+        help="When resuming, treat prior failed rollout rows as completed instead of retrying them.",
+    )
     parser.add_argument("--case-retry-delay-s", type=float, default=5.0)
     parser.add_argument("--concurrency", type=int, default=16)
     parser.add_argument("--temperature", type=float, default=1.0)

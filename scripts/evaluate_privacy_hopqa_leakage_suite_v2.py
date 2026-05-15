@@ -55,7 +55,19 @@ def iso_now() -> str:
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
     if not path.exists():
         return []
-    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    rows: list[dict[str, Any]] = []
+    for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+        if not line.strip():
+            continue
+        try:
+            rows.append(json.loads(line))
+        except json.JSONDecodeError as exc:
+            print(
+                f"warning: skipping malformed jsonl row {path}:{line_number}: {exc}",
+                file=sys.stderr,
+                flush=True,
+            )
+    return rows
 
 
 def spread_sample(items: list[Path], limit: int) -> list[Path]:

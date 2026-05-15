@@ -175,6 +175,8 @@ def run_rollouts(args: argparse.Namespace, model_run_root: Path, base_url: str) 
     ]
     if args.request_params_json:
         cmd.extend(["--request-params-json", args.request_params_json])
+    if args.skip_failed:
+        cmd.append("--skip-failed")
     if args.planner_privacy_prompt:
         cmd.append("--planner-privacy-prompt")
     if args.max_examples:
@@ -221,6 +223,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-iterations", type=int, default=21)
     parser.add_argument("--hop-plan-attempts", type=int, default=1)
     parser.add_argument("--case-attempts", type=int, default=1)
+    parser.add_argument("--skip-failed", action="store_true")
     parser.add_argument("--case-retry-delay-s", type=float, default=5.0)
     parser.add_argument("--planner-privacy-prompt", action="store_true")
     parser.add_argument("--choose-top-k", type=int, default=3)
