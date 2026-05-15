@@ -123,21 +123,7 @@ def wandb_url(run_dir: Path) -> str | None:
 
 
 def trainer_eval_loss(run_dir: Path) -> dict[str, Any]:
-    losses: list[float] = []
-    state_paths = []
-    root_state = run_dir / "trainer" / "trainer_state.json"
-    if root_state.exists():
-        state_paths.append(root_state)
-    state_paths.extend(sorted((run_dir / "trainer").glob("checkpoint-*/trainer_state.json")))
-    seen: set[Path] = set()
-    for path in state_paths:
-        if path in seen:
-            continue
-        seen.add(path)
-        state = read_json(path, {})
-        for item in state.get("log_history") or []:
-            if "eval_loss" in item:
-                losses.append(float(item["eval_loss"]))
+    losses = [point["eval_loss"] for point in trainer_eval_history(run_dir)]
     runtime = read_json(run_dir / "training_runtime.json", {})
     best_metric = runtime.get("best_metric")
     if best_metric is not None:
@@ -151,6 +137,34 @@ def trainer_eval_loss(run_dir: Path) -> dict[str, Any]:
     if runtime.get("best_model_checkpoint"):
         out["best_model_checkpoint"] = runtime.get("best_model_checkpoint")
     return out
+
+
+def trainer_eval_history(run_dir: Path) -> list[dict[str, Any]]:
+    points_by_step: dict[int, dict[str, Any]] = {}
+    state_paths = []
+    root_state = run_dir / "trainer" / "trainer_state.json"
+    if root_state.exists():
+        state_paths.append(root_state)
+    state_paths.extend(sorted((run_dir / "trainer").glob("checkpoint-*/trainer_state.json")))
+    seen: set[Path] = set()
+    for path in state_paths:
+        if path in seen:
+            continue
+        seen.add(path)
+        state = read_json(path, {})
+        for item in state.get("log_history") or []:
+            if "eval_loss" in item:
+                raw_step = item.get("step")
+                step = int(raw_step if raw_step is not None else len(points_by_step))
+                loss = float(item["eval_loss"])
+                points_by_step[step] = {
+                    "step": step,
+                    "epoch": item.get("epoch"),
+                    "eval_loss": loss,
+                    "eval_mean_token_accuracy": item.get("eval_mean_token_accuracy"),
+                    "eval_entropy": item.get("eval_entropy"),
+                }
+    return [points_by_step[step] for step in sorted(points_by_step)]
 
 
 def classify_source(summary: dict[str, Any], source_label: str) -> str:
@@ -268,6 +282,7 @@ def load_binary_runs(root: Path, source_label: str) -> list[dict[str, Any]]:
             "summary": summary,
             "lora": lora_label(summary),
             "eval_loss": trainer_eval_loss(run_dir),
+            "eval_history": trainer_eval_history(run_dir),
             "val_roc_auc": roc_auc_score(val_targets, val_probs) if len(set(val_targets)) > 1 else None,
             "val_average_precision": average_precision_score(val_targets, val_probs) if len(set(val_targets)) > 1 else None,
             "test_roc_auc": roc_auc_score(test_targets, test_probs) if len(set(test_targets)) > 1 else None,
@@ -302,6 +317,7 @@ def load_ternary_runs(root: Path, source_label: str) -> list[dict[str, Any]]:
             "summary": summary,
             "lora": lora_label(summary),
             "eval_loss": trainer_eval_loss(run_dir),
+            "eval_history": trainer_eval_history(run_dir),
         }
         run["short_label"] = clean_run_label(run)
         runs.append(run)
@@ -645,6 +661,28 @@ def plot_binary_runs(runs: list[dict[str, Any]], output_dir: Path) -> None:
     fig.savefig(plot_dir / "precision_recall_f1.pdf")
     plt.close(fig)
 
+    history_runs = [run for run in plot_runs if run.get("eval_history")]
+    if history_runs:
+        fig, ax = plt.subplots(figsize=(10.6, 5.6))
+        colors = plt.cm.tab20(np.linspace(0, 1, max(1, len(history_runs))))
+        for color, run in zip(colors, history_runs):
+            history = run.get("eval_history") or []
+            steps = [int(point["step"]) for point in history]
+            losses = [float(point["eval_loss"]) for point in history]
+            ax.plot(steps, losses, marker="o", markersize=3.2, linewidth=1.5, color=color, label=clean_run_label(run))
+            if losses:
+                best_idx = int(np.argmin(losses))
+                ax.scatter([steps[best_idx]], [losses[best_idx]], color=color, s=42, edgecolor="#17201d", linewidth=0.7, zorder=3)
+        ax.set_xlabel("Optimizer Step")
+        ax.set_ylabel("Validation Loss")
+        ax.set_title("TRL Validation Loss During Training")
+        ax.grid(alpha=0.22)
+        ax.legend(frameon=False, fontsize=7.5, ncols=1, loc="center left", bbox_to_anchor=(1.02, 0.5))
+        fig.tight_layout(rect=(0, 0, 0.76, 1))
+        fig.savefig(plot_dir / "eval_loss_curves.svg")
+        fig.savefig(plot_dir / "eval_loss_curves.pdf")
+        plt.close(fig)
+
     plot_binary_confusion_grid(plot_runs, output_dir, "raw", "binary_confusion_0_5")
     plot_binary_confusion_grid(plot_runs, output_dir, "val_threshold", "binary_confusion_val_threshold")
 
@@ -711,6 +749,7 @@ code {{ background: #eef2f0; padding: 1px 4px; border-radius: 4px; white-space: 
 <section><h2>1-3 Reward Tests</h2>{ternary_table(ternary_runs)}</section>
 <section><h2>Binary Reward: AUC And F1</h2><img src="plots/auc_f1_metrics.svg"></section>
 <section><h2>Binary Reward: Precision, Recall, F1</h2><img src="plots/precision_recall_f1.svg"></section>
+<section><h2>TRL Validation Loss Curves</h2><p class="note">These are the repeated training-time validation-loss evaluations from TRL trainer state. In W&amp;B this curve is logged as <code>eval/loss</code>; final classifier metrics such as <code>eval/test/roc_auc</code> are logged once after training.</p><img src="plots/eval_loss_curves.svg"></section>
 <section><h2>Binary Reward: Confusion Matrices At 0.5</h2><p class="note">Rows are true labels, columns are predicted labels. Each cell shows count and percent of the true-label row.</p><img src="plots/binary_confusion_0_5.svg"></section>
 <section><h2>Binary Reward: Confusion Matrices At Validation Threshold</h2><p class="note">The validation threshold is selected independently for each run to maximize validation F1.</p><img src="plots/binary_confusion_val_threshold.svg"></section>
 <section><h2>1-3 Reward: Confusion Matrix</h2><p class="note">A = No leakage, B = intent leakage, C = fact leakage. The plot uses readable class names.</p><img src="plots/ternary_confusion.svg"></section>
