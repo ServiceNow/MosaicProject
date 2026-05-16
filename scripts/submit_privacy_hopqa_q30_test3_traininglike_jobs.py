@@ -11,6 +11,7 @@ These runs are intended for paper-quality model comparisons:
 from __future__ import annotations
 
 import argparse
+from datetime import datetime, timezone
 import json
 from pathlib import Path
 import shlex
@@ -46,6 +47,28 @@ MODELS: list[dict[str, Any]] = [
         "served_model_name": "Qwen/Qwen3-4B-Instruct-2507",
         "model_path": "Qwen/Qwen3-4B-Instruct-2507",
         "tokenizer_name": "Qwen/Qwen3-4B-Instruct-2507",
+        "gpu": 1,
+        "cpu": 48,
+        "mem": 384,
+        "tp": 1,
+        "concurrency": 20,
+    },
+    {
+        "model_label": "rrf_4b_hopacc_s102",
+        "served_model_name": "rrf_4b_hopacc_s102",
+        "model_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_rrf_4b_hopacc_20260514202306/finetune/current",
+        "tokenizer_name": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_rrf_4b_hopacc_20260514202306/finetune/current",
+        "gpu": 1,
+        "cpu": 48,
+        "mem": 384,
+        "tp": 1,
+        "concurrency": 20,
+    },
+    {
+        "model_label": "rrf_4b_prefix_step_s109",
+        "served_model_name": "rrf_4b_prefix_step_s109",
+        "model_path": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_rrf_4b_prefix_step_20260514201431/finetune/current",
+        "tokenizer_name": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_rrf_4b_prefix_step_20260514201431/finetune/current",
         "gpu": 1,
         "cpu": 48,
         "mem": 384,
@@ -125,13 +148,13 @@ MODELS: list[dict[str, Any]] = [
 ]
 
 
-def base_submit_cmd(name: str, cpu: int, mem: int, gpu: int, bid: int) -> list[str]:
+def base_submit_cmd(name: str, cpu: int, mem: int, gpu: int, bid: int, account: str) -> list[str]:
     cmd = [
         "eai",
         "job",
         "submit",
         "--account",
-        ACCOUNT,
+        account,
         "--name",
         name,
         "--image",
@@ -264,8 +287,33 @@ def write_manifest(
     splits: list[str],
     repeats: int,
     privacy_prompt: bool,
+    stepfun_url: str,
 ) -> None:
     root.mkdir(parents=True, exist_ok=True)
+    existing: dict[str, Any] = {}
+    manifest_path = root / "job_manifest.json"
+    if manifest_path.exists():
+        try:
+            existing = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            existing = {}
+    model_map = {
+        model.get("model_label"): model
+        for model in existing.get("models", [])
+        if isinstance(model, dict) and model.get("model_label")
+    }
+    for model in selected:
+        model_map[model["model_label"]] = model
+    submissions = list(existing.get("submissions", []))
+    submissions.append(
+        {
+            "submitted_at": datetime.now(timezone.utc).isoformat(),
+            "model_labels": [model["model_label"] for model in selected],
+            "splits": splits,
+            "repeats": repeats,
+            "planner_privacy_prompt": privacy_prompt,
+        }
+    )
     manifest = {
         "artifact_root": str(root),
         "run_tag": run_tag,
@@ -288,11 +336,12 @@ def write_manifest(
             "generation_context_limit_tokens": 65536,
             "generation_context_margin_tokens": 512,
         },
-        "models": selected,
+        "models": list(model_map.values()),
+        "submissions": submissions,
         "helper_url": HELPER_URL,
-        "stepfun_url": STEPFUN_URL,
+        "stepfun_url": stepfun_url,
     }
-    (root / "job_manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
 
 
 def parse_args() -> argparse.Namespace:
@@ -306,6 +355,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--only-model-label", action="append", default=[])
     parser.add_argument("--skip-model-label", action="append", default=[])
     parser.add_argument("--job-name-suffix", default="")
+    parser.add_argument("--stepfun-base-url", default="")
+    parser.add_argument("--account", default=ACCOUNT)
     parser.add_argument("--bid", type=int, default=7)
     parser.add_argument("--dry-run", action="store_true")
     return parser.parse_args()
@@ -316,7 +367,17 @@ def main() -> None:
     conditions = args.condition or ["baseline", "privacy_prompt"]
     only = set(args.only_model_label)
     skip = set(args.skip_model_label)
-    selected = [model for model in MODELS if (not only or model["model_label"] in only) and model["model_label"] not in skip]
+    selected = [
+        dict(model)
+        for model in MODELS
+        if (not only or model["model_label"] in only) and model["model_label"] not in skip
+    ]
+    if args.stepfun_base_url:
+        for model in selected:
+            if model["model_label"] == "step35_flash":
+                # Keep the slow StepFun agent rollouts on the dedicated agent
+                # server; the default StepFun URL is used by older judge runs.
+                model["base_url"] = args.stepfun_base_url
     baseline_root = args.baseline_root or Path(f"/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_{args.run_tag}")
     privacy_prompt_root = args.privacy_prompt_root or Path(
         f"/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_{args.run_tag}_privacy_prompt"
@@ -331,6 +392,7 @@ def main() -> None:
             list(args.splits),
             int(args.repeats),
             privacy_prompt=privacy_prompt,
+            stepfun_url=args.stepfun_base_url or STEPFUN_URL,
         )
         for model in selected:
             suffix = args.job_name_suffix
@@ -345,7 +407,14 @@ def main() -> None:
                 privacy_prompt=privacy_prompt,
             )
             submit(
-                base_submit_cmd(name, int(model["cpu"]), int(model["mem"]), int(model.get("gpu", 0)), args.bid)
+                base_submit_cmd(
+                    name,
+                    int(model["cpu"]),
+                    int(model["mem"]),
+                    int(model.get("gpu", 0)),
+                    args.bid,
+                    args.account,
+                )
                 + ["--", "/bin/bash", "-lc", command],
                 args.dry_run,
             )
