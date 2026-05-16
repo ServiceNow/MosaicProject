@@ -179,6 +179,9 @@ def run_privacy_evals_for_model(args: argparse.Namespace, model_root: Path, qwen
             ]
         )
     if not args.skip_stepfun_judge:
+        # Avoid filling error files with transient connection failures while a
+        # dedicated StepFun judge server is still booting or restarting.
+        wait_for_models(args.stepfun_base_url, args.stepfun_timeout_s)
         run_cmd(
             common
             + [
@@ -305,6 +308,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--qwen-port", type=int, default=8000)
     parser.add_argument("--qwen-max-model-len", type=int, default=32768)
     parser.add_argument("--qwen-timeout-s", type=float, default=1800.0)
+    parser.add_argument("--stepfun-timeout-s", type=float, default=1800.0)
     parser.add_argument("--judge-max-tokens", type=int, default=16000)
     parser.add_argument("--stepfun-concurrency", type=int, default=48)
     parser.add_argument("--qwen-concurrency", type=int, default=24)
