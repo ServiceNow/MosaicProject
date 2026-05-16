@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-16T16:57:54.016704+00:00",
+  "generated_at": "2026-05-16T17:14:06.340412+00:00",
   "artifact_root": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_all1_traininglike_20260515",
   "scopes": {
     "all": {
@@ -43,16 +43,16 @@
           "strict_chain_success_rate": 0.6431870669745958,
           "final_correct_rate": 0.6893764434180139,
           "median_tokens": 85402.0,
-          "stepfun_evals": 303,
-          "stepfun_reward_rate": 0.052805280528052806,
-          "mean_fully_predicted_subquestions": 0.2508250825082508,
-          "mean_correct_private_answers": 0.052805280528052806,
-          "mean_matched_private_claims": 0.006600660066006601,
-          "mean_partial_private_claims": 0.0033003300330033004,
-          "judge_warning_rate": 0.006600660066006601,
-          "stepfun_answer_rate": 0.04950495049504951,
-          "stepfun_full_info_rate": 0.006600660066006601,
-          "stepfun_lenient_full_info_rate": 0.009900990099009901,
+          "stepfun_evals": 318,
+          "stepfun_reward_rate": 0.050314465408805034,
+          "mean_fully_predicted_subquestions": 0.25157232704402516,
+          "mean_correct_private_answers": 0.050314465408805034,
+          "mean_matched_private_claims": 0.006289308176100629,
+          "mean_partial_private_claims": 0.0031446540880503146,
+          "judge_warning_rate": 0.006289308176100629,
+          "stepfun_answer_rate": 0.04716981132075472,
+          "stepfun_full_info_rate": 0.006289308176100629,
+          "stepfun_lenient_full_info_rate": 0.009433962264150943,
           "qwen_evals": 860,
           "qwen_reward_rate": 0.10697674418604651
         },
@@ -185,7 +185,7 @@
           "model": "Step-3.5 Flash",
           "model_label": "step35_flash",
           "rollouts_ok": 168,
-          "rollouts_failed": 282,
+          "rollouts_failed": 286,
           "mean_hop_accuracy": 0.8410714285714286,
           "mean_raw_hop_accuracy": 0.8534722222222222,
           "mean_blocked_hops": 0.20833333333333334,
@@ -203,8 +203,8 @@
           "stepfun_answer_rate": null,
           "stepfun_full_info_rate": null,
           "stepfun_lenient_full_info_rate": null,
-          "qwen_evals": 165,
-          "qwen_reward_rate": 0.16363636363636364
+          "qwen_evals": 167,
+          "qwen_reward_rate": 0.16167664670658682
         }
       ],
       "company_summary": [
@@ -226,11 +226,11 @@
           "mean_hop_accuracy": 0.6472130847953216,
           "all_hops_correct_rate": 0.49396929824561403,
           "final_correct_rate": 0.5685307017543859,
-          "stepfun_evals": 179,
-          "reward_rate": 0.0446927374301676,
-          "answer_rate": 0.0446927374301676,
-          "full_info_rate": 0.0111731843575419,
-          "lenient_full_info_rate": 0.0335195530726257
+          "stepfun_evals": 194,
+          "reward_rate": 0.041237113402061855,
+          "answer_rate": 0.041237113402061855,
+          "full_info_rate": 0.010309278350515464,
+          "lenient_full_info_rate": 0.030927835051546393
         },
         {
           "company": "MediConn Solutions",
@@ -1076,7 +1076,7 @@
           "company": "Lee's Market",
           "pattern": "LLL",
           "rollouts_ok": 84,
-          "stepfun_evals": 17,
+          "stepfun_evals": 18,
           "mean_hop_accuracy": 0.5796485260770975,
           "all_hops_correct_rate": 0.35714285714285715,
           "final_correct_rate": 0.38095238095238093,
@@ -1091,7 +1091,7 @@
           "company": "Lee's Market",
           "pattern": "LLW",
           "rollouts_ok": 71,
-          "stepfun_evals": 7,
+          "stepfun_evals": 16,
           "mean_hop_accuracy": 0.5845070422535211,
           "all_hops_correct_rate": 0.5070422535211268,
           "final_correct_rate": 0.6056338028169014,
@@ -1556,7 +1556,7 @@
           "company": "Lee's Market",
           "pattern": "LLL",
           "rollouts_ok": 102,
-          "stepfun_evals": 8,
+          "stepfun_evals": 13,
           "mean_hop_accuracy": 0.7509803921568627,
           "all_hops_correct_rate": 0.6176470588235294,
           "final_correct_rate": 0.7058823529411765,
@@ -1749,21 +1749,21 @@
       ],
       "stats": {
         "judge_agreement": {
-          "n": 917,
-          "spearman_rho": 0.587541887994707,
-          "spearman_p": 3.305485695344117e-86
+          "n": 932,
+          "spearman_rho": 0.5908568341662026,
+          "spearman_p": 8.427732640880352e-89
         },
         "binary_predictor": {
-          "n": 887,
+          "n": 924,
           "tp": 0,
-          "fp": 177,
-          "tn": 710,
+          "fp": 181,
+          "tn": 743,
           "fn": 0,
-          "accuracy": 0.8004509582863585,
+          "accuracy": 0.8041125541125541,
           "precision": 0.0,
           "recall": null,
           "f1": null,
-          "mcnemar_exact_p": 1.044048714879764e-53
+          "mcnemar_exact_p": 6.525304467998525e-55
         }
       }
     },
@@ -2445,16 +2445,16 @@
           "spearman_p": 7.888885554496038e-68
         },
         "binary_predictor": {
-          "n": 480,
+          "n": 503,
           "tp": 0,
-          "fp": 67,
-          "tn": 413,
+          "fp": 70,
+          "tn": 433,
           "fn": 0,
-          "accuracy": 0.8604166666666667,
+          "accuracy": 0.8608349900596421,
           "precision": 0.0,
           "recall": null,
           "f1": null,
-          "mcnemar_exact_p": 1.3552527156068805e-20
+          "mcnemar_exact_p": 1.6940658945086007e-21
         }
       }
     }
