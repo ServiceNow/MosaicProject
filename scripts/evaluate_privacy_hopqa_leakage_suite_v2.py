@@ -1609,7 +1609,28 @@ async def run_all(args: argparse.Namespace) -> None:
     client = AsyncOpenAI(base_url=base_url, api_key=args.api_key)
     sem = asyncio.Semaphore(args.concurrency)
     lock = asyncio.Lock()
-    results = await asyncio.gather(*(run_case(client, args, p, dataset, qa_index, sem, lock, done, out, err) for p in traces))
+    queue: asyncio.Queue[Path] = asyncio.Queue()
+    for trace in traces:
+        queue.put_nowait(trace)
+    results: list[bool] = []
+
+    async def worker() -> None:
+        # Keep only a bounded number of cases active. The request semaphore
+        # above still controls API pressure; this avoids queuing every prompt
+        # for every rollout before early rows have a chance to finish.
+        while True:
+            try:
+                trace_path = queue.get_nowait()
+            except asyncio.QueueEmpty:
+                return
+            try:
+                ok = await run_case(client, args, trace_path, dataset, qa_index, sem, lock, done, out, err)
+                results.append(ok)
+            finally:
+                queue.task_done()
+
+    n_workers = max(1, min(args.concurrency, len(traces)))
+    await asyncio.gather(*(worker() for _ in range(n_workers)))
     failed = sum(1 for ok in results if not ok)
     print(f"leakage_v2_done ok_traces={len(results) - failed} failed_traces={failed}", flush=True)
     if failed and not args.continue_on_error:
