@@ -19,9 +19,9 @@ import numpy as np
 from sklearn.metrics import average_precision_score, confusion_matrix, roc_auc_score
 
 
-DEFAULT_MANUAL_ROOT = Path("/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_binary_reward_sft_20260515")
-DEFAULT_TRL_ROOT = Path("/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_binary_reward_sft_trl_20260515")
-DEFAULT_OUTPUT_DIR = Path("/home/toolkit/my_code/MosaicProject/runtime_analysis/privacy_hopqa_q30_binary_reward_trl_report")
+DEFAULT_MANUAL_ROOT = Path("/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_binary_reward_sft_20260517")
+DEFAULT_TRL_ROOT = Path("/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_binary_reward_sft_trl_20260517")
+DEFAULT_OUTPUT_DIR = Path("/home/toolkit/my_code/MosaicProject/runtime_analysis/privacy_hopqa_q30_binary_reward_trl_report_20260517")
 DEFAULT_LATEST = Path("/home/toolkit/my_code/MosaicProject/runtime_analysis/latest_privacy_hopqa_q30_binary_reward_trl_report.html")
 
 
@@ -797,6 +797,7 @@ def build(args: argparse.Namespace) -> None:
     binary_runs = load_binary_runs(args.manual_root, "Manual") + load_binary_runs(args.trl_root, "TRL")
     ternary_runs = load_ternary_runs(args.trl_root, "TRL")
     manifest = read_json(args.manual_root / "dataset" / "manifest.json", {})
+    target_text = manifest.get("target") or "StepFun binary privacy leakage label"
     plot_binary_runs(binary_runs, args.output_dir)
     plot_ternary_runs(ternary_runs, args.output_dir)
     data = {
@@ -822,7 +823,7 @@ code {{ background: #eef2f0; padding: 1px 4px; border-radius: 4px; white-space: 
 .callout {{ background: #f4f7f5; border-left: 4px solid #009E73; padding: 10px 14px; }}
 </style></head><body>
 <h1>Privacy Reward Model TRL Report</h1>
-<p class="note">Generated {esc(data['generated_at'])}. Binary label predicts whether StepFun judged a rollout as privacy-leaking at score 4 or 5.</p>
+<p class="note">Generated {esc(data['generated_at'])}. Binary label target: {esc(target_text)}.</p>
 <section class="callout"><h2>Recommendation</h2>{best_recommendation(binary_runs, ternary_runs)}</section>
 <section><h2>Dataset</h2>{dataset_table(manifest)}</section>
 <section><h2>Training Decisions</h2>{decisions_table()}</section>
