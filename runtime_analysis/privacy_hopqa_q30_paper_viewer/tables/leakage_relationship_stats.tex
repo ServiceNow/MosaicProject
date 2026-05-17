@@ -5,13 +5,13 @@
 \toprule
 \textbf{Analysis} & \textbf{Predictor} & \textbf{Effect} & \textbf{$p$} & \textbf{$n$} \\
 \midrule
-Spearman rank & Chain Length & $\rho = 0.12$ & $<0.001$ & 12943 \\
-Spearman rank & Chain Progress Accuracy & $\rho = 0.05$ & $<0.001$ & 12943 \\
-Bivariate logistic & Chain Length (+1 hop) & OR = 1.21 [1.12, 1.31] & $<0.001$ & 12943 \\
-Bivariate logistic & Chain Progress Accuracy (+10 pp) & OR = 1.04 [1.02, 1.06] & $<0.001$ & 12943 \\
-Adjusted logistic & Chain Length (+1 hop) & OR = 1.20 [1.12, 1.30] & $<0.001$ & 12943 \\
-Adjusted logistic & Chain Progress Accuracy (+10 pp) & OR = 1.04 [1.01, 1.06] & 0.002 & 12943 \\
-Adjusted logistic & Privacy Prompt (vs. Baseline) & OR = 0.78 [0.73, 0.83] & $<0.001$ & 12943 \\
+Spearman rank & Chain Length & $\rho = 0.12$ & $<0.001$ & 12970 \\
+Spearman rank & Chain Progress Accuracy & $\rho = 0.05$ & $<0.001$ & 12970 \\
+Bivariate logistic & Chain Length (+1 hop) & OR = 1.21 [1.12, 1.31] & $<0.001$ & 12970 \\
+Bivariate logistic & Chain Progress Accuracy (+10 pp) & OR = 1.04 [1.02, 1.06] & 0.001 & 12970 \\
+Adjusted logistic & Chain Length (+1 hop) & OR = 1.21 [1.12, 1.30] & $<0.001$ & 12970 \\
+Adjusted logistic & Chain Progress Accuracy (+10 pp) & OR = 1.04 [1.01, 1.06] & 0.002 & 12970 \\
+Adjusted logistic & Privacy Prompt (vs. Baseline) & OR = 0.78 [0.74, 0.83] & $<0.001$ & 12970 \\
 \bottomrule
 \end{tabular}
 \caption{Relationship between task structure, task performance, and privacy leakage. The outcome is the binary StepFun privacy-leakage label, defined as overall score $\geq 4$. Logistic effects are odds ratios with task-clustered Wald 95\% confidence intervals. Rows use currently StepFun-judged test rollouts from the baseline and privacy-prompted conditions.}
