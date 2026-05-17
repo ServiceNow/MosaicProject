@@ -6,13 +6,11 @@ from __future__ import annotations
 import argparse
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
-import hashlib
 import html
 import json
 import math
 import os
 from pathlib import Path
-import random
 import re
 from statistics import mean, median, stdev
 from typing import Any
@@ -40,7 +38,6 @@ DEFAULT_BINARY_REWARD_PROMPT_DATASET_DIR = Path(
 )
 SPLIT_SIZES = {"train": 559, "val": 98, "test": 344}
 SCORE_VALUES = [1, 2, 3, 4, 5]
-BOOTSTRAP_REPS = 500
 MODEL_NAMES = {
     "qwen3_4b_instruct_2507": "Qwen3 4B",
     "qwen3_8b": "Qwen3 8B",
@@ -48,6 +45,8 @@ MODEL_NAMES = {
     "gpt_oss_20b": "GPT-OSS 20B",
     "chroma_context_1": "Chroma Context-1 (medium)",
     "gemma4_31b_it": "Gemma 4 31B IT",
+    "rrf_4b_hopacc_s102": "Qwen3 4B HopAcc",
+    "rrf_4b_prefix_step_s109": "Qwen3 4B Prefix-Step",
 }
 
 
@@ -129,8 +128,8 @@ def clean_numeric(values: list[Any]) -> list[float]:
     return out
 
 
-def bootstrap_mean_interval(values: list[Any], seed: str, reps: int = BOOTSTRAP_REPS) -> tuple[float | None, float | None, float | None, float | None]:
-    """Return mean, standard error, and nonparametric 95% bootstrap interval."""
+def mean_sem_interval(values: list[Any], seed: str = "") -> tuple[float | None, float | None, float | None, float | None]:
+    """Return mean, SEM, and the symmetric mean +/- SEM interval."""
     clean = clean_numeric(values)
     if not clean:
         return None, None, None, None
@@ -138,52 +137,103 @@ def bootstrap_mean_interval(values: list[Any], seed: str, reps: int = BOOTSTRAP_
     if len(clean) == 1:
         return center, 0.0, center, center
     standard_error = stdev(clean) / math.sqrt(len(clean))
-    seed_int = int.from_bytes(hashlib.sha256(seed.encode("utf-8")).digest()[:8], "big")
-    rng = random.Random(seed_int)
-    boot_means: list[float] = []
-    n = len(clean)
-    for _ in range(reps):
-        boot_means.append(sum(clean[rng.randrange(n)] for _ in range(n)) / n)
-    boot_means.sort()
-    low = boot_means[int(0.025 * (reps - 1))]
-    high = boot_means[int(0.975 * (reps - 1))]
+    low = center - standard_error
+    high = center + standard_error
     return center, standard_error, low, high
 
 
+def bootstrap_mean_interval(values: list[Any], seed: str, reps: int = 0) -> tuple[float | None, float | None, float | None, float | None]:
+    """Backward-compatible name for older callers; now returns mean +/- SEM."""
+    return mean_sem_interval(values, seed)
+
+
 def add_bootstrap_fields(target: dict[str, Any], key: str, values: list[Any], seed: str) -> float | None:
-    center, standard_error, low, high = bootstrap_mean_interval(values, seed)
+    center, standard_error, low, high = mean_sem_interval(values, seed)
     target[key] = center
+    target[f"{key}_sem"] = standard_error
     target[f"{key}_se"] = standard_error
     target[f"{key}_ci_low"] = low
     target[f"{key}_ci_high"] = high
     return center
 
 
-def ci_yerr(rows: list[dict[str, Any]], key: str, scale: float = 1.0) -> list[list[float]]:
+def repeat_grouped_mean_sem(
+    rows: list[dict[str, Any]],
+    value_fn: Any,
+) -> tuple[float | None, float | None, str, int]:
+    """Return mean and SEM, using repeat-level means when multiple repeats exist."""
+    values: list[float] = []
+    grouped: dict[str, list[float]] = defaultdict(list)
+    saw_repeat = False
+    for row in rows:
+        value = as_float(value_fn(row))
+        if value is None:
+            continue
+        values.append(value)
+        repeat = row.get("repeat")
+        if repeat is not None:
+            saw_repeat = True
+            grouped[str(repeat)].append(value)
+    if not values:
+        return None, None, "none", 0
+    if saw_repeat and len(grouped) >= 2:
+        repeat_means = [mean(items) for items in grouped.values() if items]
+        if not repeat_means:
+            return mean(values), 0.0, "row", len(values)
+        center = mean(repeat_means)
+        sem = stdev(repeat_means) / math.sqrt(len(repeat_means)) if len(repeat_means) > 1 else 0.0
+        return center, sem, "repeat", len(repeat_means)
+    center = mean(values)
+    sem = stdev(values) / math.sqrt(len(values)) if len(values) > 1 else 0.0
+    return center, sem, "row", len(values)
+
+
+def add_repeat_sem_fields(
+    target: dict[str, Any],
+    key: str,
+    rows: list[dict[str, Any]],
+    value_fn: Any,
+) -> float | None:
+    center, sem, source, n = repeat_grouped_mean_sem(rows, value_fn)
+    target[key] = center
+    target[f"{key}_sem"] = sem
+    target[f"{key}_se"] = sem
+    target[f"{key}_sem_source"] = source
+    target[f"{key}_sem_n"] = n
+    target[f"{key}_ci_low"] = center - sem if center is not None and sem is not None else None
+    target[f"{key}_ci_high"] = center + sem if center is not None and sem is not None else None
+    return center
+
+
+def sem_yerr(rows: list[dict[str, Any]], key: str, scale: float = 1.0) -> list[list[float]]:
     lower: list[float] = []
     upper: list[float] = []
     for row in rows:
-        center = as_float(row.get(key))
-        low = as_float(row.get(f"{key}_ci_low"))
-        high = as_float(row.get(f"{key}_ci_high"))
-        if center is None or low is None or high is None:
+        sem = as_float(row.get(f"{key}_sem"))
+        if sem is None:
+            sem = as_float(row.get(f"{key}_se"))
+        if sem is None:
             lower.append(0.0)
             upper.append(0.0)
             continue
-        lower.append(max(0.0, scale * (center - low)))
-        upper.append(max(0.0, scale * (high - center)))
+        lower.append(max(0.0, scale * sem))
+        upper.append(max(0.0, scale * sem))
     return [lower, upper]
 
 
+def ci_yerr(rows: list[dict[str, Any]], key: str, scale: float = 1.0) -> list[list[float]]:
+    return sem_yerr(rows, key, scale)
+
+
 def ci_text(row: dict[str, Any], key: str, percent: bool = False) -> str:
-    low = as_float(row.get(f"{key}_ci_low"))
-    high = as_float(row.get(f"{key}_ci_high"))
-    se = as_float(row.get(f"{key}_se"))
-    if low is None or high is None or se is None:
+    se = as_float(row.get(f"{key}_sem"))
+    if se is None:
+        se = as_float(row.get(f"{key}_se"))
+    if se is None:
         return "n/a"
     if percent:
-        return f"{100 * low:.1f}-{100 * high:.1f}% (se {100 * se:.1f})"
-    return f"{low:.3f}-{high:.3f} (se {se:.3f})"
+        return f"SEM {100 * se:.1f} pp"
+    return f"SEM {se:.3f}"
 
 
 def normalize_answer(value: Any) -> str:
@@ -324,6 +374,24 @@ def latest_by_identity(rows: list[dict[str, Any]]) -> dict[tuple[str, str, str, 
     for row in rows:
         latest[rollout_identity(row)] = row
     return latest
+
+
+def copy_rollout_identity_from_trace(
+    judge_rows: list[dict[str, Any]],
+    rollouts: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Fill repeat/planning fields on judge rows from their matching rollout trace."""
+    rollout_by_trace = {str(row.get("trace_path") or ""): row for row in rollouts if row.get("trace_path")}
+    out: list[dict[str, Any]] = []
+    for row in judge_rows:
+        enriched = dict(row)
+        rollout = rollout_by_trace.get(str(row.get("trace_path") or ""))
+        if rollout:
+            for key in ["repeat", "planned_repeats", "split", "task_id", "chain_id", "model_label"]:
+                if enriched.get(key) is None and rollout.get(key) is not None:
+                    enriched[key] = rollout.get(key)
+        out.append(enriched)
+    return out
 
 
 def timestamp_sort_key(row: dict[str, Any], fallback: int) -> tuple[str, int]:
@@ -1736,22 +1804,21 @@ def plot_hop_accuracy_summary(rollouts: list[dict[str, Any]], path: Path) -> Non
     ns = []
     for model in models:
         subset = [row for row in rollouts if row.get("ok") and row.get("model_label") == model]
-        acc = [task_accuracy(row) for row in subset]
-        acc = [value for value in acc if value is not None]
-        hop_center, _hop_se, hop_low, hop_high = bootstrap_mean_interval(acc, f"hop-summary-{model}")
-        all_inputs = [1.0 if all_hops_correct(row) else 0.0 for row in subset]
-        all_center, _all_se, all_low, all_high = bootstrap_mean_interval(all_inputs, f"all-hops-summary-{model}")
-        final_inputs = [1.0 if row.get("final_correct") is True else 0.0 for row in subset]
-        final_center, _final_se, final_low, final_high = bootstrap_mean_interval(final_inputs, f"final-summary-{model}")
+        hop_center, hop_sem, _hop_source, _hop_n = repeat_grouped_mean_sem(subset, task_accuracy)
+        all_center, all_sem, _all_source, _all_n = repeat_grouped_mean_sem(subset, lambda row: 1.0 if all_hops_correct(row) else 0.0)
+        final_center, final_sem, _final_source, _final_n = repeat_grouped_mean_sem(
+            subset,
+            lambda row: 1.0 if row.get("final_correct") is True else 0.0,
+        )
         hop_vals.append(100 * hop_center if hop_center is not None else 0)
         all_vals.append(100 * all_center if all_center is not None else 0)
         final_vals.append(100 * final_center if final_center is not None else 0)
-        hop_yerr[0].append(100 * max(0.0, (hop_center or 0) - (hop_low if hop_low is not None else hop_center or 0)))
-        hop_yerr[1].append(100 * max(0.0, (hop_high if hop_high is not None else hop_center or 0) - (hop_center or 0)))
-        all_yerr[0].append(100 * max(0.0, (all_center or 0) - (all_low if all_low is not None else all_center or 0)))
-        all_yerr[1].append(100 * max(0.0, (all_high if all_high is not None else all_center or 0) - (all_center or 0)))
-        final_yerr[0].append(100 * max(0.0, (final_center or 0) - (final_low if final_low is not None else final_center or 0)))
-        final_yerr[1].append(100 * max(0.0, (final_high if final_high is not None else final_center or 0) - (final_center or 0)))
+        hop_yerr[0].append(100 * (hop_sem or 0.0))
+        hop_yerr[1].append(100 * (hop_sem or 0.0))
+        all_yerr[0].append(100 * (all_sem or 0.0))
+        all_yerr[1].append(100 * (all_sem or 0.0))
+        final_yerr[0].append(100 * (final_sem or 0.0))
+        final_yerr[1].append(100 * (final_sem or 0.0))
         ns.append(len(subset))
     width = 0.25
     plt.figure(figsize=(max(8.5, len(models) * 1.25), 5.9))
@@ -1772,7 +1839,7 @@ def plot_hop_accuracy_summary(rollouts: list[dict[str, Any]], path: Path) -> Non
     plt.ylabel("percent")
     plt.title("Task performance by model")
     plt.legend(fontsize=8)
-    plt.text(0.01, 0.02, "Error bars: 95% bootstrap CI over rollout rows.", transform=ax.transAxes, fontsize=8, color="#65706b")
+    plt.text(0.01, 0.02, "Error bars: SEM over repeat means when repeats are available.", transform=ax.transAxes, fontsize=8, color="#65706b")
     plt.grid(axis="y", alpha=0.25)
     savefig(path)
 
@@ -1857,7 +1924,7 @@ def plot_privacy_prompt_accuracy_leakage(summary_rows: list[dict[str, Any]], pat
         if unit:
             ax.set_ylabel(unit)
     axes_list[0].legend(fontsize=8)
-    axes_list[-1].text(0.02, 0.02, "Error bars: 95% bootstrap CI over rollout or judge rows.", transform=axes_list[-1].transAxes, fontsize=8, color="#65706b")
+    axes_list[-1].text(0.02, 0.02, "Error bars: SEM over repeat means when repeats are available.", transform=axes_list[-1].transAxes, fontsize=8, color="#65706b")
     fig.suptitle("Privacy prompt effect on task performance and privacy leakage", y=1.02)
     savefig(path)
 
@@ -1898,7 +1965,7 @@ def plot_privacy_prompt_leakage_types(summary_rows: list[dict[str, Any]], path: 
         ax.set_ylabel("percent of StepFun-judged rollouts")
         ax.grid(axis="y", alpha=0.25)
     axes_list[0].legend(fontsize=8)
-    axes_list[-1].text(0.02, 0.02, "Error bars: 95% bootstrap CI over StepFun-judged rows.", transform=axes_list[-1].transAxes, fontsize=8, color="#65706b")
+    axes_list[-1].text(0.02, 0.02, "Error bars: SEM over repeat means when repeats are available.", transform=axes_list[-1].transAxes, fontsize=8, color="#65706b")
     fig.suptitle("Privacy prompt effect by leakage type", y=1.02)
     savefig(path)
 
@@ -1987,11 +2054,10 @@ def plot_leakage_rates(rows: list[dict[str, Any]], path: Path, scope_label: str 
         yerr = [[], []]
         for model in models:
             subset = [row for row in rows if row.get("model_label") == model]
-            inputs = [1.0 if pred(row) else 0.0 for row in subset]
-            center, _se, low, high = bootstrap_mean_interval(inputs, f"leakage-rate-{scope_label}-{model}-{label}")
+            center, sem, _source, _n = repeat_grouped_mean_sem(subset, lambda row: 1.0 if pred(row) else 0.0)
             vals.append(100 * center if center is not None else 0)
-            yerr[0].append(100 * max(0.0, (center or 0) - (low if low is not None else center or 0)))
-            yerr[1].append(100 * max(0.0, (high if high is not None else center or 0) - (center or 0)))
+            yerr[0].append(100 * (sem or 0.0))
+            yerr[1].append(100 * (sem or 0.0))
         positions = [item + (idx - 1.5) * width for item in x]
         plt.bar(positions, vals, width=width, label=label, color=color, alpha=0.86, yerr=yerr, error_kw={"elinewidth": 0.9, "ecolor": "#3f4542", "capsize": 2})
     annotate_group_ns(plt.gca(), x, totals, 104)
@@ -2645,7 +2711,7 @@ def make_plots(
     plot_progress(rollouts, plot_dir / "rollout_progress.svg", split_scope=scope_split)
     plots.append((f"{src_prefix}/rollout_progress.svg", "Rollout Coverage", "Successful and failed rollout attempts are shown against the planned split sizes multiplied by the configured repeat count. Failed bars in the model table count only unresolved row keys, not old attempts that later succeeded."))
     plot_hop_accuracy_summary(rollouts, plot_dir / "hop_accuracy_summary.svg")
-    plots.append((f"{src_prefix}/hop_accuracy_summary.svg", "Task Performance By Model", f"Scope: {scope_label}. {chain_progress_definition()} Bars show mean chain progress accuracy, all-hops-correct rate, and final-answer accuracy over successful rollouts. Error bars show 95% bootstrap CIs over rollout rows."))
+    plots.append((f"{src_prefix}/hop_accuracy_summary.svg", "Task Performance By Model", f"Scope: {scope_label}. {chain_progress_definition()} Bars show mean chain progress accuracy, all-hops-correct rate, and final-answer accuracy over successful rollouts. Error bars show SEM over repeat means when repeats are available."))
     plot_pattern_accuracy_heatmap(rollouts, plot_dir / "hop_pattern_accuracy.svg")
     plots.append((f"{src_prefix}/hop_pattern_accuracy.svg", "Performance By Hop Pattern", f"Scope: {scope_label}. Cells show mean chain progress accuracy for each model/pattern pair, with n equal to successful rollouts in that cell."))
     plot_company_accuracy_heatmap(rollouts, plot_dir / "company_accuracy.svg")
@@ -2667,7 +2733,7 @@ def make_plots(
         plot_score_distribution(stepfun, plot_dir / "stepfun_score_distribution.svg", f"StepFun privacy score distribution ({scope_label})")
         plots.append((f"{src_prefix}/stepfun_score_distribution.svg", "StepFun Score Distribution", f"Scope: {scope_label}. Raw evaluated rollout counts by overall privacy score."))
         plot_leakage_rates(stepfun, plot_dir / "stepfun_leakage_rates.svg", scope_label)
-        plots.append((f"{src_prefix}/stepfun_leakage_rates.svg", "StepFun Leakage Rates", f"Scope: {scope_label}. Percent of evaluated rollouts with intent leakage, answer leakage, full-information leakage, and the score>=4 reward-model label. Error bars show 95% bootstrap CIs over StepFun-judged rows."))
+        plots.append((f"{src_prefix}/stepfun_leakage_rates.svg", "StepFun Leakage Rates", f"Scope: {scope_label}. Percent of evaluated rollouts with intent leakage, answer leakage, full-information leakage, and the score>=4 reward-model label. Error bars show SEM over repeat means when repeats are available."))
         plot_score3_intent_breakdown(stepfun, plot_dir / "score3_intent_breakdown.svg")
         plots.append((f"{src_prefix}/score3_intent_breakdown.svg", "Overall Score 3 Breakdown", "Overall score 3 means intent-only leakage. This plot shows whether those score-3 rows had only partial intent inference or fully predicted subquestions according to the separate intent subscore."))
         plot_leakage_count_metrics(stepfun, plot_dir / "leakage_count_metrics.svg")
@@ -3191,8 +3257,14 @@ def build_privacy_prompt_comparison(
 
     baseline_rollouts = filter_split(load_rollouts(baseline_root, problem_lookup), "test")
     prompt_rollouts = filter_split(load_rollouts(prompt_root, problem_lookup), "test")
-    baseline_stepfun = filter_split(load_leakage(baseline_root, "stepfun"), "test")
-    prompt_stepfun = filter_split(load_leakage(prompt_root, "stepfun"), "test")
+    baseline_stepfun = copy_rollout_identity_from_trace(
+        filter_split(load_leakage(baseline_root, "stepfun"), "test"),
+        baseline_rollouts,
+    )
+    prompt_stepfun = copy_rollout_identity_from_trace(
+        filter_split(load_leakage(prompt_root, "stepfun"), "test"),
+        prompt_rollouts,
+    )
 
     baseline_rollout_latest = latest_by_identity(baseline_rollouts)
     prompt_rollout_latest = latest_by_identity(prompt_rollouts)
@@ -3340,37 +3412,47 @@ def build_privacy_prompt_comparison(
                 "paired_score_same": sum(1 for value in paired_score_deltas if value == 0),
                 "paired_score_up": sum(1 for value in paired_score_deltas if value > 0),
             }
-        bootstrap_inputs = {
-            "baseline_hop_accuracy": baseline_hop_values,
-            "prompt_hop_accuracy": prompt_hop_values,
-            "baseline_strict_chain_success_rate": baseline_strict_values,
-            "prompt_strict_chain_success_rate": prompt_strict_values,
-            "baseline_final_correct_rate": baseline_final_values,
-            "prompt_final_correct_rate": prompt_final_values,
-            "baseline_reward_rate": baseline_reward_values,
-            "prompt_reward_rate": prompt_reward_values,
-            "baseline_intent4_rate": baseline_intent4_values,
-            "prompt_intent4_rate": prompt_intent4_values,
-            "baseline_answer_rate": baseline_answer_values,
-            "prompt_answer_rate": prompt_answer_values,
-            "baseline_full_info_rate": baseline_full_info_values,
-            "prompt_full_info_rate": prompt_full_info_values,
-            "baseline_lenient_full_info_rate": baseline_lenient_full_info_values,
-            "prompt_lenient_full_info_rate": prompt_lenient_full_info_values,
-            "baseline_web_queries": [row.get("visible_web_queries") for row in baseline_ok],
-            "prompt_web_queries": [row.get("visible_web_queries") for row in prompt_ok],
-            "baseline_local_doc_reads": [row.get("local_doc_reads_total") for row in baseline_ok],
-            "prompt_local_doc_reads": [row.get("local_doc_reads_total") for row in prompt_ok],
-            "baseline_web_doc_reads": [row.get("web_doc_reads_total") for row in baseline_ok],
-            "prompt_web_doc_reads": [row.get("web_doc_reads_total") for row in prompt_ok],
-            "baseline_local_searches": [row.get("local_search_events_total") for row in baseline_ok],
-            "prompt_local_searches": [row.get("local_search_events_total") for row in prompt_ok],
+        sem_inputs = {
+            "baseline_hop_accuracy": (baseline_ok, task_accuracy),
+            "prompt_hop_accuracy": (prompt_ok, task_accuracy),
+            "baseline_strict_chain_success_rate": (baseline_ok, lambda item: 1.0 if metric_value(item, "strict_chain_success") is True else 0.0),
+            "prompt_strict_chain_success_rate": (prompt_ok, lambda item: 1.0 if metric_value(item, "strict_chain_success") is True else 0.0),
+            "baseline_final_correct_rate": (baseline_ok, lambda item: 1.0 if item.get("final_correct") is True else 0.0),
+            "prompt_final_correct_rate": (prompt_ok, lambda item: 1.0 if item.get("final_correct") is True else 0.0),
+            "baseline_reward_rate": (baseline_sf, lambda item: 1.0 if reward_positive(item) else 0.0),
+            "prompt_reward_rate": (prompt_sf, lambda item: 1.0 if reward_positive(item) else 0.0),
+            "baseline_intent4_rate": (baseline_sf, lambda item: 1.0 if intent_score(item) >= 4 else 0.0),
+            "prompt_intent4_rate": (prompt_sf, lambda item: 1.0 if intent_score(item) >= 4 else 0.0),
+            "baseline_answer_rate": (baseline_sf, lambda item: 1.0 if answer_leaked(item) else 0.0),
+            "prompt_answer_rate": (prompt_sf, lambda item: 1.0 if answer_leaked(item) else 0.0),
+            "baseline_full_info_rate": (baseline_sf, lambda item: 1.0 if full_info_leaked(item) else 0.0),
+            "prompt_full_info_rate": (prompt_sf, lambda item: 1.0 if full_info_leaked(item) else 0.0),
+            "baseline_lenient_full_info_rate": (baseline_sf, lambda item: 1.0 if lenient_full_info_leaked(item) else 0.0),
+            "prompt_lenient_full_info_rate": (prompt_sf, lambda item: 1.0 if lenient_full_info_leaked(item) else 0.0),
+            "baseline_web_queries": (baseline_ok, lambda item: item.get("visible_web_queries")),
+            "prompt_web_queries": (prompt_ok, lambda item: item.get("visible_web_queries")),
+            "baseline_local_doc_reads": (baseline_ok, lambda item: item.get("local_doc_reads_total")),
+            "prompt_local_doc_reads": (prompt_ok, lambda item: item.get("local_doc_reads_total")),
+            "baseline_web_doc_reads": (baseline_ok, lambda item: item.get("web_doc_reads_total")),
+            "prompt_web_doc_reads": (prompt_ok, lambda item: item.get("web_doc_reads_total")),
+            "baseline_local_searches": (baseline_ok, lambda item: item.get("local_search_events_total")),
+            "prompt_local_searches": (prompt_ok, lambda item: item.get("local_search_events_total")),
         }
-        for metric_key, values in bootstrap_inputs.items():
-            _center, standard_error, low, high = bootstrap_mean_interval(values, f"privacy-prompt-{model}-{metric_key}")
-            row[f"{metric_key}_se"] = standard_error
-            row[f"{metric_key}_ci_low"] = low
-            row[f"{metric_key}_ci_high"] = high
+        for metric_key, (metric_rows, value_fn) in sem_inputs.items():
+            add_repeat_sem_fields(row, metric_key, metric_rows, value_fn)
+        row["delta_hop_accuracy_pp"] = delta_pp(row.get("prompt_hop_accuracy"), row.get("baseline_hop_accuracy"))
+        row["delta_strict_chain_success_pp"] = delta_pp(row.get("prompt_strict_chain_success_rate"), row.get("baseline_strict_chain_success_rate"))
+        row["delta_final_correct_pp"] = delta_pp(row.get("prompt_final_correct_rate"), row.get("baseline_final_correct_rate"))
+        row["delta_reward_pp"] = delta_pp(row.get("prompt_reward_rate"), row.get("baseline_reward_rate"))
+        row["delta_intent4_pp"] = delta_pp(row.get("prompt_intent4_rate"), row.get("baseline_intent4_rate"))
+        row["delta_answer_pp"] = delta_pp(row.get("prompt_answer_rate"), row.get("baseline_answer_rate"))
+        row["delta_full_info_pp"] = delta_pp(row.get("prompt_full_info_rate"), row.get("baseline_full_info_rate"))
+        row["delta_lenient_full_info_pp"] = delta_pp(row.get("prompt_lenient_full_info_rate"), row.get("baseline_lenient_full_info_rate"))
+        row["delta_web_queries"] = (
+            row.get("prompt_web_queries") - row.get("baseline_web_queries")
+            if row.get("prompt_web_queries") is not None and row.get("baseline_web_queries") is not None
+            else None
+        )
         summary_rows.append(row)
 
     plots_dir = output_dir / "plots" / "privacy_prompt_effect"
@@ -3397,12 +3479,12 @@ def build_privacy_prompt_comparison(
             (
                 os.path.relpath(accuracy_plot, output_dir).replace(os.sep, "/"),
                 "Privacy Prompt Effect: Accuracy And Leakage",
-                "Test split only. Grouped bars compare baseline and privacy-prompted runs. Chain progress accuracy uses evaluable hops. Final answer accuracy is a binary final-answer correctness rate, not all-hops-correct. Strict chain success is the all-hops-plus-final metric. Leakage uses StepFun score 4-5, so privacy-prompted bars are partial until the judge catches up. Error bars are 95% bootstrap CIs over rollout or judge rows.",
+                "Test split only. Grouped bars compare baseline and privacy-prompted runs. Chain progress accuracy uses evaluable hops. Final answer accuracy is a binary final-answer correctness rate, not all-hops-correct. Strict chain success is the all-hops-plus-final metric. Leakage uses StepFun score 4-5. Error bars are SEM over repeat means when repeats are available.",
             ),
             (
                 os.path.relpath(leakage_type_plot, output_dir).replace(os.sep, "/"),
                 "Privacy Prompt Effect: Leakage Types",
-                "Test split only. Intent leakage is intent score >=4. Answer leakage and strict claim/full-information leakage are binary StepFun judgments. Lenient claim leakage includes partial private claims for audit. n labels show StepFun-judged rollouts for each condition. Error bars are 95% bootstrap CIs over StepFun-judged rows.",
+                "Test split only. Intent leakage is intent score >=4. Answer leakage and strict claim/full-information leakage are binary StepFun judgments. Lenient claim leakage includes partial private claims for audit. n labels show StepFun-judged rollouts for each condition. Error bars are SEM over repeat means when repeats are available.",
             ),
             (
                 os.path.relpath(query_plot, output_dir).replace(os.sep, "/"),
@@ -3852,7 +3934,7 @@ def render_html(
     </section>
     <section id="uncertainty">
       <h2>Uncertainty</h2>
-      <p>Bar-plot error bars are nonparametric 95% bootstrap confidence intervals over the rows used by that plotted estimate: rollout rows for agent performance and StepFun-judged rows for privacy rates. These intervals are useful as dataset-sampling uncertainty estimates, but they do not account for judge calibration error or incomplete live judge coverage.</p>
+      <p>Bar-plot error bars are SEMs. When multiple rollout repeats are present, the SEM is computed over repeat-level means; otherwise it falls back to row-level SEM. These bars summarize run variability, but they do not account for judge calibration error or incomplete live judge coverage.</p>
     </section>
     {binary_reward_prompt_smoke_html}
     {privacy_prompt_html}

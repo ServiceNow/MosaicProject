@@ -84,11 +84,13 @@
 <body>
   <header>
     <h1>Privacy HopQA q30 Paper Figure Preview</h1>
-    <div class="note">Generated 2026-05-17T14:16:25.084262+00:00. Figures use the live v11 artifacts and are intended as a smaller advisor-facing subset, not a replacement for the diagnostic viewer.</div>
+    <div class="note">Generated 2026-05-17T22:55:15.048273+00:00. Figures use the live v11 artifacts and are intended as a smaller advisor-facing subset, not a replacement for the diagnostic viewer.</div>
     <nav>
       <a href="#prompt-accuracy">Prompt: Accuracy And Leakage</a>
       <a href="#prompt-leakage-types">Prompt: Leakage Types</a>
       <a href="#prompt-query">Prompt: Query And Retrieval</a>
+      <a href="#training-effect">Training Effect</a>
+      <a href="#with-checkpoints">Checkpoint Copies</a>
       <a href="#task-performance-test">Task Performance</a>
       <a href="#retrieval-all">Retrieval Behavior</a>
       <a href="#leakage-relationships">Leakage Relationships</a>
@@ -99,37 +101,65 @@
   <main>
     <section id="prompt-accuracy" class="figure">
       <h2>Privacy Prompt Effect: Accuracy And Leakage</h2>
-      <div class="note">Test split. Privacy Leakage is the binary StepFun score >= 4 label: answer leakage, full-information leakage, or multiple answer leaks. This figure includes models with both baseline and privacy-prompt rollouts; leakage bars with no StepFun judgments are omitted and labeled n=0.</div>
+      <div class="note">Test split, excluding trained checkpoints. Privacy Leakage is the binary StepFun score >= 4 label: answer leakage, full-information leakage, or multiple answer leaks. This figure includes models with both baseline and privacy-prompt rollouts; leakage bars with no StepFun judgments are omitted and labeled n=0.</div>
       <img src="plots/privacy_prompt_accuracy_leakage.svg" alt="Privacy prompt accuracy and leakage">
       <div class="links"><a href="plots/privacy_prompt_accuracy_leakage.svg">SVG</a><a href="plots/privacy_prompt_accuracy_leakage.pdf">PDF</a></div>
     </section>
     <section id="prompt-leakage-types" class="figure">
       <h2>Privacy Prompt Effect: Leakage Types</h2>
-      <div class="note">Test split. Intent leakage is the StepFun intent score >= 4. Answer leakage means at least one private QA answer was judged correct. Full-information claim is the strict generated-claim judge; partial claim is the lenient diagnostic version. Error bars are 95% bootstrap CIs over StepFun-judged rows.</div>
+      <div class="note">Test split, excluding trained checkpoints. Intent leakage is the StepFun intent score >= 4. Answer leakage means at least one private QA answer was judged correct. Full-information claim is the strict generated-claim judge; partial claim is the lenient diagnostic version. Error bars are SEM over repeat means when repeats are available.</div>
       <img src="plots/privacy_prompt_leakage_types.svg" alt="Privacy prompt effect by leakage type">
       <div class="links"><a href="plots/privacy_prompt_leakage_types.svg">SVG</a><a href="plots/privacy_prompt_leakage_types.pdf">PDF</a></div>
     </section>
     <section id="prompt-query" class="figure">
       <h2>Privacy Prompt Effect: Query And Retrieval Behavior</h2>
-      <div class="note">Test split. Counts are means over successful rollout rows for each condition.</div>
+      <div class="note">Test split, excluding trained checkpoints. Counts are means over successful rollout rows for each condition.</div>
       <img src="plots/privacy_prompt_query_behavior.svg" alt="Privacy prompt query and retrieval behavior">
       <div class="links"><a href="plots/privacy_prompt_query_behavior.svg">SVG</a><a href="plots/privacy_prompt_query_behavior.pdf">PDF</a></div>
     </section>
+    <section id="training-effect" class="figure">
+      <h2>Effect Of Training: Accuracy And Privacy</h2>
+      <div class="note">Test split. Arrows start at the base Qwen3 4B model and point to the two trained checkpoints. The x-axis is strict chain success; the y-axis is StepFun score >= 4 privacy leakage. Error bars are SEM over repeat means when repeats are available.</div>
+      <img src="plots/training_effect_accuracy_privacy.svg" alt="Effect of training on accuracy and privacy leakage">
+      <div class="links"><a href="plots/training_effect_accuracy_privacy.svg">SVG</a><a href="plots/training_effect_accuracy_privacy.pdf">PDF</a></div>
+    </section>
+    <section id="with-checkpoints" class="figure">
+      <h2>Checkpoint-Inclusive Copies</h2>
+      <div class="note">These are copies of the main paper plots with the trained checkpoints included. The default plots and tables above exclude checkpoints so the main model comparisons stay clean.</div>
+      <h3>Prompt Accuracy And Leakage</h3>
+      <img src="plots/privacy_prompt_accuracy_leakage_with_checkpoints.svg" alt="Privacy prompt accuracy and leakage with trained checkpoints">
+      <div class="links"><a href="plots/privacy_prompt_accuracy_leakage_with_checkpoints.svg">SVG</a><a href="plots/privacy_prompt_accuracy_leakage_with_checkpoints.pdf">PDF</a></div>
+      <h3>Prompt Leakage Types</h3>
+      <img src="plots/privacy_prompt_leakage_types_with_checkpoints.svg" alt="Privacy prompt leakage types with trained checkpoints">
+      <div class="links"><a href="plots/privacy_prompt_leakage_types_with_checkpoints.svg">SVG</a><a href="plots/privacy_prompt_leakage_types_with_checkpoints.pdf">PDF</a></div>
+      <h3>Prompt Query And Retrieval</h3>
+      <img src="plots/privacy_prompt_query_behavior_with_checkpoints.svg" alt="Privacy prompt query and retrieval behavior with trained checkpoints">
+      <div class="links"><a href="plots/privacy_prompt_query_behavior_with_checkpoints.svg">SVG</a><a href="plots/privacy_prompt_query_behavior_with_checkpoints.pdf">PDF</a></div>
+      <h3>Task Performance</h3>
+      <img src="plots/task_performance_test_with_checkpoints.svg" alt="Task performance with trained checkpoints">
+      <div class="links"><a href="plots/task_performance_test_with_checkpoints.svg">SVG</a><a href="plots/task_performance_test_with_checkpoints.pdf">PDF</a></div>
+      <h3>Task Performance: All Available Splits</h3>
+      <img src="plots/task_performance_all_with_checkpoints.svg" alt="Task performance across all splits with trained checkpoints">
+      <div class="links"><a href="plots/task_performance_all_with_checkpoints.svg">SVG</a><a href="plots/task_performance_all_with_checkpoints.pdf">PDF</a></div>
+      <h3>Retrieval And Query Behavior: All Rollouts</h3>
+      <img src="plots/retrieval_behavior_all_rollouts_with_checkpoints.svg" alt="Retrieval and query behavior with trained checkpoints">
+      <div class="links"><a href="plots/retrieval_behavior_all_rollouts_with_checkpoints.svg">SVG</a><a href="plots/retrieval_behavior_all_rollouts_with_checkpoints.pdf">PDF</a></div>
+    </section>
     <section id="task-performance-test" class="figure">
       <h2>Task Performance By Model</h2>
-      <div class="note">Test split. Mean Hop Performance uses chain-progress hop accuracy; All-Chain Correct requires every hop answer to be correct.</div>
+      <div class="note">Test split, excluding trained checkpoints. Mean Hop Performance uses chain-progress hop accuracy; All-Chain Correct requires every hop answer to be correct.</div>
       <img src="plots/task_performance_test.svg" alt="Task performance by model on test split">
       <div class="links"><a href="plots/task_performance_test.svg">SVG</a><a href="plots/task_performance_test.pdf">PDF</a></div>
     </section>
     <section id="task-performance-all" class="figure">
       <h2>Task Performance By Model: All Available Splits</h2>
-      <div class="note">All currently completed train, validation, and test rollout rows.</div>
+      <div class="note">All currently completed train, validation, and test rollout rows, excluding trained checkpoints.</div>
       <img src="plots/task_performance_all.svg" alt="Task performance by model across all available splits">
       <div class="links"><a href="plots/task_performance_all.svg">SVG</a><a href="plots/task_performance_all.pdf">PDF</a></div>
     </section>
     <section id="retrieval-all" class="figure">
       <h2>Retrieval And Query Behavior: All Rollouts</h2>
-      <div class="note">All currently loaded rollout rows. Failed/incomplete rows without a saved timeline contribute zero parsed events, matching the diagnostic viewer's all-rollouts convention.</div>
+      <div class="note">All currently loaded rollout rows, excluding trained checkpoints. Failed/incomplete rows without a saved timeline contribute zero parsed events, matching the diagnostic viewer's all-rollouts convention.</div>
       <img src="plots/retrieval_behavior_all_rollouts.svg" alt="Retrieval and query behavior for all rollout rows">
       <div class="links"><a href="plots/retrieval_behavior_all_rollouts.svg">SVG</a><a href="plots/retrieval_behavior_all_rollouts.pdf">PDF</a></div>
     </section>
@@ -142,13 +172,15 @@
     <section id="tables">
       <h2>Paper Tables</h2>
       <h3>Privacy Prompt Summary</h3>
-      <table><thead><tr><th>Model</th><th>Baseline Rollouts</th><th>Prompt Rollouts</th><th>Baseline Judged</th><th>Prompt Judged</th><th>Baseline Success</th><th>Prompt Success</th><th>Success Delta (pp)</th><th>Baseline Leakage</th><th>Prompt Leakage</th><th>Leakage Delta (pp)</th></tr></thead><tbody><tr><td>Qwen3 4B</td><td>990</td><td>1005</td><td>343</td><td>343</td><td>52.2%</td><td>46.8%</td><td>-5.5</td><td>43.4%</td><td>30.3%</td><td>-13.1</td></tr><tr><td>Qwen3 8B</td><td>679</td><td>700</td><td>328</td><td>330</td><td>54.5%</td><td>52.7%</td><td>-1.8</td><td>36.3%</td><td>33.0%</td><td>-3.3</td></tr><tr><td>Step-3.5 Flash</td><td>368</td><td>376</td><td>257</td><td>254</td><td>72.3%</td><td>78.7%</td><td>+6.4</td><td>28.0%</td><td>23.2%</td><td>-4.8</td></tr><tr><td>GPT-OSS 20B</td><td>1007</td><td>1011</td><td>344</td><td>344</td><td>55.2%</td><td>61.7%</td><td>+6.5</td><td>56.1%</td><td>42.7%</td><td>-13.4</td></tr><tr><td>Chroma Context-1 (medium)</td><td>592</td><td>627</td><td>315</td><td>316</td><td>20.8%</td><td>28.9%</td><td>+8.1</td><td>18.7%</td><td>18.0%</td><td>-0.7</td></tr><tr><td>Gemma 4 31B IT</td><td>890</td><td>856</td><td>342</td><td>343</td><td>67.0%</td><td>63.2%</td><td>-3.8</td><td>9.6%</td><td>4.1%</td><td>-5.6</td></tr><tr><td>rrf_4b_hopacc_s102</td><td>1003</td><td>1009</td><td>344</td><td>344</td><td>55.8%</td><td>56.3%</td><td>+0.5</td><td>55.5%</td><td>55.2%</td><td>-0.3</td></tr><tr><td>rrf_4b_prefix_step_s109</td><td>987</td><td>992</td><td>344</td><td>344</td><td>56.5%</td><td>55.2%</td><td>-1.3</td><td>47.1%</td><td>51.5%</td><td>+4.4</td></tr></tbody></table>
+      <table><thead><tr><th>Model</th><th>Baseline Rollouts</th><th>Prompt Rollouts</th><th>Baseline Judged</th><th>Prompt Judged</th><th>Baseline Success</th><th>Prompt Success</th><th>Success Delta (pp)</th><th>Baseline Leakage</th><th>Prompt Leakage</th><th>Leakage Delta (pp)</th></tr></thead><tbody><tr><td>Qwen3 4B</td><td>990</td><td>1005</td><td>990</td><td>1005</td><td>52.2%</td><td>46.8%</td><td>-5.4</td><td>37.9%</td><td>26.4%</td><td>-11.5</td></tr><tr><td>Qwen3 8B</td><td>679</td><td>700</td><td>679</td><td>700</td><td>54.5%</td><td>52.7%</td><td>-1.8</td><td>31.1%</td><td>23.9%</td><td>-7.2</td></tr><tr><td>Step-3.5 Flash</td><td>368</td><td>376</td><td>368</td><td>376</td><td>71.9%</td><td>82.1%</td><td>+10.2</td><td>25.3%</td><td>20.3%</td><td>-4.9</td></tr><tr><td>GPT-OSS 20B</td><td>1007</td><td>1011</td><td>1007</td><td>1011</td><td>55.2%</td><td>61.7%</td><td>+6.5</td><td>47.5%</td><td>34.9%</td><td>-12.6</td></tr><tr><td>Chroma Context-1 (medium)</td><td>592</td><td>627</td><td>592</td><td>627</td><td>20.7%</td><td>28.9%</td><td>+8.2</td><td>16.1%</td><td>15.8%</td><td>-0.3</td></tr><tr><td>Gemma 4 31B IT</td><td>890</td><td>856</td><td>890</td><td>856</td><td>67.0%</td><td>63.2%</td><td>-3.8</td><td>8.9%</td><td>2.6%</td><td>-6.3</td></tr></tbody></table>
+      <h3>Training Effect Summary</h3>
+      <table><thead><tr><th>Condition</th><th>Checkpoint</th><th>Accuracy Delta (pp)</th><th>Leakage Delta (pp)</th><th>Rollouts</th><th>Judged</th></tr></thead><tbody><tr><td>Baseline Prompt</td><td>Qwen3 4B HopAcc</td><td>+3.6</td><td>+12.7</td><td>1003</td><td>1003</td></tr><tr><td>Baseline Prompt</td><td>Qwen3 4B Prefix-Step</td><td>+4.3</td><td>+6.6</td><td>987</td><td>987</td></tr><tr><td>Privacy Prompt</td><td>Qwen3 4B HopAcc</td><td>+9.5</td><td>+24.7</td><td>1009</td><td>1009</td></tr><tr><td>Privacy Prompt</td><td>Qwen3 4B Prefix-Step</td><td>+8.5</td><td>+19.7</td><td>992</td><td>992</td></tr></tbody></table>
       <h3>Task Performance Summary: Test Split</h3>
-      <table><thead><tr><th>Model</th><th>Rollouts</th><th>Mean Hop Performance</th><th>All-Chain Correct</th></tr></thead><tbody><tr><td>Qwen3 4B</td><td>990</td><td>72.2%</td><td>52.2%</td></tr><tr><td>Qwen3 8B</td><td>679</td><td>71.5%</td><td>54.5%</td></tr><tr><td>Step-3.5 Flash</td><td>368</td><td>82.0%</td><td>72.3%</td></tr><tr><td>GPT-OSS 20B</td><td>1007</td><td>73.1%</td><td>55.3%</td></tr><tr><td>Chroma Context-1 (medium)</td><td>592</td><td>34.9%</td><td>20.8%</td></tr><tr><td>Gemma 4 31B IT</td><td>890</td><td>81.4%</td><td>67.0%</td></tr><tr><td>rrf_4b_hopacc_s102</td><td>1003</td><td>73.1%</td><td>55.8%</td></tr><tr><td>rrf_4b_prefix_step_s109</td><td>987</td><td>74.1%</td><td>56.5%</td></tr></tbody></table>
+      <table><thead><tr><th>Model</th><th>Rollouts</th><th>Mean Hop Performance</th><th>All-Chain Correct</th></tr></thead><tbody><tr><td>Qwen3 4B</td><td>990</td><td>72.2%</td><td>52.2%</td></tr><tr><td>Qwen3 8B</td><td>679</td><td>71.5%</td><td>54.5%</td></tr><tr><td>Step-3.5 Flash</td><td>368</td><td>81.6%</td><td>71.9%</td></tr><tr><td>GPT-OSS 20B</td><td>1007</td><td>73.1%</td><td>55.3%</td></tr><tr><td>Chroma Context-1 (medium)</td><td>592</td><td>34.9%</td><td>20.7%</td></tr><tr><td>Gemma 4 31B IT</td><td>890</td><td>81.4%</td><td>67.0%</td></tr></tbody></table>
       <h3>Retrieval Summary: All Rollouts</h3>
-      <table><thead><tr><th>Model</th><th>Rollout Rows</th><th>Local Searches</th><th>Web Searches</th><th>Local Reads</th><th>Web Reads</th></tr></thead><tbody><tr><td>Qwen3 4B</td><td>1032</td><td>4.48</td><td>3.49</td><td>7.92</td><td>16.56</td></tr><tr><td>Qwen3 8B</td><td>1032</td><td>2.02</td><td>3.57</td><td>3.42</td><td>13.10</td></tr><tr><td>Step-3.5 Flash</td><td>764</td><td>2.53</td><td>2.11</td><td>2.88</td><td>5.59</td></tr><tr><td>GPT-OSS 20B</td><td>1032</td><td>3.28</td><td>6.31</td><td>5.07</td><td>20.66</td></tr><tr><td>Chroma Context-1 (medium)</td><td>1032</td><td>0.81</td><td>2.26</td><td>1.54</td><td>11.39</td></tr><tr><td>Gemma 4 31B IT</td><td>1032</td><td>7.65</td><td>2.33</td><td>7.09</td><td>6.34</td></tr><tr><td>rrf_4b_hopacc_s102</td><td>1032</td><td>4.11</td><td>5.75</td><td>7.26</td><td>17.11</td></tr><tr><td>rrf_4b_prefix_step_s109</td><td>1032</td><td>5.76</td><td>6.45</td><td>9.11</td><td>22.02</td></tr></tbody></table>
+      <table><thead><tr><th>Model</th><th>Rollout Rows</th><th>Local Searches</th><th>Web Searches</th><th>Local Reads</th><th>Web Reads</th></tr></thead><tbody><tr><td>Qwen3 4B</td><td>1032</td><td>4.48</td><td>3.49</td><td>7.92</td><td>16.56</td></tr><tr><td>Qwen3 8B</td><td>1032</td><td>2.02</td><td>3.57</td><td>3.42</td><td>13.10</td></tr><tr><td>Step-3.5 Flash</td><td>764</td><td>2.66</td><td>2.20</td><td>3.04</td><td>5.83</td></tr><tr><td>GPT-OSS 20B</td><td>1032</td><td>3.28</td><td>6.31</td><td>5.07</td><td>20.66</td></tr><tr><td>Chroma Context-1 (medium)</td><td>1032</td><td>0.81</td><td>2.26</td><td>1.54</td><td>11.39</td></tr><tr><td>Gemma 4 31B IT</td><td>1032</td><td>7.65</td><td>2.33</td><td>7.09</td><td>6.34</td></tr></tbody></table>
       <h3>Leakage Relationship Statistics</h3>
-      <table><thead><tr><th>Analysis</th><th>Predictor</th><th>Effect</th><th>p-value</th><th>n</th></tr></thead><tbody><tr><td>Spearman rank</td><td>Chain Length</td><td>rho = 0.12</td><td>&lt;0.001</td><td>13092</td></tr><tr><td>Spearman rank</td><td>Chain Progress Accuracy</td><td>rho = 0.05</td><td>&lt;0.001</td><td>13092</td></tr><tr><td>Bivariate logistic</td><td>Chain Length (+1 hop)</td><td>OR = 1.21 [1.12, 1.30]</td><td>&lt;0.001</td><td>13092</td></tr><tr><td>Bivariate logistic</td><td>Chain Progress Accuracy (+10 pp)</td><td>OR = 1.04 [1.02, 1.06]</td><td>0.001</td><td>13092</td></tr><tr><td>Adjusted logistic</td><td>Chain Length (+1 hop)</td><td>OR = 1.20 [1.12, 1.30]</td><td>&lt;0.001</td><td>13092</td></tr><tr><td>Adjusted logistic</td><td>Chain Progress Accuracy (+10 pp)</td><td>OR = 1.04 [1.01, 1.06]</td><td>0.002</td><td>13092</td></tr><tr><td>Adjusted logistic</td><td>Privacy Prompt (vs. Baseline)</td><td>OR = 0.78 [0.74, 0.83]</td><td>&lt;0.001</td><td>13092</td></tr></tbody></table>
+      <table><thead><tr><th>Analysis</th><th>Predictor</th><th>Effect</th><th>p-value</th><th>n</th></tr></thead><tbody><tr><td>Spearman rank</td><td>Chain Length</td><td>rho = 0.08</td><td>&lt;0.001</td><td>9101</td></tr><tr><td>Spearman rank</td><td>Chain Progress Accuracy</td><td>rho = 0.03</td><td>0.013</td><td>9101</td></tr><tr><td>Bivariate logistic</td><td>Chain Length (+1 hop)</td><td>OR = 1.16 [1.08, 1.24]</td><td>&lt;0.001</td><td>9101</td></tr><tr><td>Bivariate logistic</td><td>Chain Progress Accuracy (+10 pp)</td><td>OR = 1.02 [1.00, 1.05]</td><td>0.060</td><td>9101</td></tr><tr><td>Adjusted logistic</td><td>Chain Length (+1 hop)</td><td>OR = 1.15 [1.07, 1.24]</td><td>&lt;0.001</td><td>9101</td></tr><tr><td>Adjusted logistic</td><td>Chain Progress Accuracy (+10 pp)</td><td>OR = 1.02 [1.00, 1.05]</td><td>0.075</td><td>9101</td></tr><tr><td>Adjusted logistic</td><td>Privacy Prompt (vs. Baseline)</td><td>OR = 0.65 [0.60, 0.71]</td><td>&lt;0.001</td><td>9101</td></tr></tbody></table>
       <div class="links"><a href="tables/leakage_relationship_stats.tex">LaTeX table</a></div>
       <pre>\begin{table}[t]
 \small
@@ -157,13 +189,13 @@
 \toprule
 \textbf{Analysis} &amp; \textbf{Predictor} &amp; \textbf{Effect} &amp; \textbf{$p$} &amp; \textbf{$n$} \\
 \midrule
-Spearman rank &amp; Chain Length &amp; $\rho = 0.12$ &amp; $&lt;0.001$ &amp; 13092 \\
-Spearman rank &amp; Chain Progress Accuracy &amp; $\rho = 0.05$ &amp; $&lt;0.001$ &amp; 13092 \\
-Bivariate logistic &amp; Chain Length (+1 hop) &amp; OR = 1.21 [1.12, 1.30] &amp; $&lt;0.001$ &amp; 13092 \\
-Bivariate logistic &amp; Chain Progress Accuracy (+10 pp) &amp; OR = 1.04 [1.02, 1.06] &amp; 0.001 &amp; 13092 \\
-Adjusted logistic &amp; Chain Length (+1 hop) &amp; OR = 1.20 [1.12, 1.30] &amp; $&lt;0.001$ &amp; 13092 \\
-Adjusted logistic &amp; Chain Progress Accuracy (+10 pp) &amp; OR = 1.04 [1.01, 1.06] &amp; 0.002 &amp; 13092 \\
-Adjusted logistic &amp; Privacy Prompt (vs. Baseline) &amp; OR = 0.78 [0.74, 0.83] &amp; $&lt;0.001$ &amp; 13092 \\
+Spearman rank &amp; Chain Length &amp; $\rho = 0.08$ &amp; $&lt;0.001$ &amp; 9101 \\
+Spearman rank &amp; Chain Progress Accuracy &amp; $\rho = 0.03$ &amp; 0.013 &amp; 9101 \\
+Bivariate logistic &amp; Chain Length (+1 hop) &amp; OR = 1.16 [1.08, 1.24] &amp; $&lt;0.001$ &amp; 9101 \\
+Bivariate logistic &amp; Chain Progress Accuracy (+10 pp) &amp; OR = 1.02 [1.00, 1.05] &amp; 0.060 &amp; 9101 \\
+Adjusted logistic &amp; Chain Length (+1 hop) &amp; OR = 1.15 [1.07, 1.24] &amp; $&lt;0.001$ &amp; 9101 \\
+Adjusted logistic &amp; Chain Progress Accuracy (+10 pp) &amp; OR = 1.02 [1.00, 1.05] &amp; 0.075 &amp; 9101 \\
+Adjusted logistic &amp; Privacy Prompt (vs. Baseline) &amp; OR = 0.65 [0.60, 0.71] &amp; $&lt;0.001$ &amp; 9101 \\
 \bottomrule
 \end{tabular}
 \caption{Relationship between task structure, task performance, and privacy leakage. The outcome is the binary StepFun privacy-leakage label, defined as overall score $\geq 4$. Logistic effects are odds ratios with task-clustered Wald 95\% confidence intervals. Rows use currently StepFun-judged test rollouts from the baseline and privacy-prompted conditions.}
