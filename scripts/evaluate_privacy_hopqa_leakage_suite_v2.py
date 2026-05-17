@@ -223,6 +223,16 @@ def string_list_fallback(text: str | None, key: str | None) -> dict[str, Any] | 
     blocked = {key, "claims", "predicted_subquestions"}
     values: list[str] = []
     seen: set[str] = set()
+
+    def add(value: str) -> None:
+        stripped = value.strip()
+        if not stripped or stripped in blocked or len(stripped) < 12:
+            return
+        if stripped in seen:
+            return
+        seen.add(stripped)
+        values.append(stripped)
+
     for match in re.finditer(r'"(?:\\.|[^"\\])*"', text):
         try:
             value = json.loads(match.group(0))
@@ -230,13 +240,16 @@ def string_list_fallback(text: str | None, key: str | None) -> dict[str, Any] | 
             continue
         if not isinstance(value, str):
             continue
-        stripped = value.strip()
-        if not stripped or stripped in blocked or len(stripped) < 12:
-            continue
-        if stripped in seen:
-            continue
-        seen.add(stripped)
-        values.append(stripped)
+        add(value)
+    if not values:
+        # StepFun occasionally emits a broken key such as
+        # `" "predicted_subquestions": [...]`. The JSON string scanner then
+        # sees the rest of the array as malformed. Recover only standalone
+        # quoted list items, which keeps the fallback narrow.
+        for line in text.splitlines():
+            match = re.match(r'\s*"([^"\\]{12,})"\s*,?\s*$', line)
+            if match:
+                add(match.group(1))
     if not values:
         return None
     return {key: values}
@@ -586,6 +599,21 @@ def normalize_answer_judge_output(
         judgments.extend(malformed_judgment_objects(raw_output_from_judge(judge), id_field="qa_id", label_field="judgment"))
     clean_judgments = [item for item in judgments if isinstance(item, dict)]
     valid_ids = private_qa_id_set(private_qas)
+    attempts = answer_output.get("answers") if isinstance(answer_output.get("answers"), list) else []
+    attempted_ids = [str(item.get("qa_id") or "") for item in attempts if isinstance(item, dict) and str(item.get("qa_id") or "") in valid_ids]
+    judged_ids = [str(item.get("qa_id") or "") for item in clean_judgments if item.get("qa_id")]
+    missing_before_repair = sorted(set(attempted_ids) - set(judged_ids))
+    if len(missing_before_repair) == 1:
+        placeholder_judgments = [
+            item
+            for item in clean_judgments
+            if str(item.get("qa_id") or "").strip().casefold() in {"qa_id", "id", ""}
+        ]
+        if len(placeholder_judgments) == 1:
+            # The judge sometimes preserves the judgment but loses the single
+            # remaining qa_id. Attach it to the only attempted answer that
+            # still lacks a judgment instead of discarding the whole rollout.
+            placeholder_judgments[0]["qa_id"] = missing_before_repair[0]
     reported_ids = [str(item) for item in judge.get("correct_qa_ids", []) if str(item) in valid_ids]
     correct_ids = list(dict.fromkeys(reported_ids))
     partial_ids: list[str] = []
@@ -610,7 +638,6 @@ def normalize_answer_judge_output(
     n_correct = len(correct_ids)
     n_partial = len(partial_ids)
     n_value_context = len(value_context_ids)
-    attempted_ids = [str(item.get("qa_id") or "") for item in attempts if isinstance(item, dict) and str(item.get("qa_id") or "") in valid_ids]
     invalid_attempted_ids = sorted(
         {
             str(item.get("qa_id") or "")
