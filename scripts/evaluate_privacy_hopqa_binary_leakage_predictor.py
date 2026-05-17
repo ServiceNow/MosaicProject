@@ -208,6 +208,15 @@ def label_for(row: dict[str, Any]) -> bool:
     return bool(row.get("overall_leaked_for_reward") or int(row.get("overall_privacy_score_1_to_5") or 1) >= 4)
 
 
+def source_key(row: dict[str, Any], input_path: str) -> str:
+    """Key the binary prediction to the exact StepFun judgment row, not just the rollout."""
+    fp = str(row.get("input_fingerprint") or row.get("source_input_fingerprint") or "").strip()
+    rollout_id = str(row.get("rollout_id") or "").strip()
+    if fp:
+        return f"{input_path}|{fp}"
+    return f"{input_path}|rollout:{rollout_id}"
+
+
 def metrics(rows: list[dict[str, Any]]) -> dict[str, Any]:
     tp = sum(row["target"] and row["predicted"] for row in rows)
     tn = sum((not row["target"]) and (not row["predicted"]) for row in rows)
@@ -248,6 +257,8 @@ def metrics(rows: list[dict[str, Any]]) -> dict[str, Any]:
 
 async def run(args: argparse.Namespace) -> None:
     rows = [row for row in read_jsonl(Path(args.input)) if row.get("ok")]
+    if args.source_prompt_version:
+        rows = [row for row in rows if int(row.get("prompt_version") or 0) == args.source_prompt_version]
     if args.limit:
         rows = rows[: args.limit]
     client = AsyncOpenAI(api_key=args.api_key, base_url=f"{args.base_url.rstrip('/')}/v1")
@@ -257,7 +268,12 @@ async def run(args: argparse.Namespace) -> None:
     if args.force:
         out.unlink(missing_ok=True)
         err.unlink(missing_ok=True)
-    completed = {row.get("rollout_id") for row in read_jsonl(out) if row.get("ok") and row.get("rollout_id")}
+    input_path = str(args.input)
+    completed = {
+        str(row.get("source_key"))
+        for row in read_jsonl(out)
+        if row.get("ok") and row.get("source_key")
+    }
     print(
         f"binary_leakage_predictor rows={len(rows)} completed={len(completed)} model={args.model} "
         f"concurrency={args.concurrency} max_tokens={args.max_tokens} output={out}",
@@ -267,7 +283,8 @@ async def run(args: argparse.Namespace) -> None:
 
     async def one(row: dict[str, Any]) -> bool:
         rollout_id = str(row.get("rollout_id") or "")
-        if rollout_id in completed:
+        key = source_key(row, input_path)
+        if key in completed:
             return True
         prompt = prompt_for(row)
         async with sem:
@@ -282,7 +299,11 @@ async def run(args: argparse.Namespace) -> None:
             "target_score": row.get("overall_privacy_score_1_to_5"),
             "target_source": row.get("overall_primary_source"),
             "model": args.model,
-            "source_input": str(args.input),
+            "source_input": input_path,
+            "source_input_fingerprint": row.get("input_fingerprint"),
+            "source_prompt_version": row.get("prompt_version"),
+            "source_runner_version": row.get("runner_version"),
+            "source_key": key,
             "prompt": {"system": SYSTEM, "user": prompt},
             "web_queries": render_queries(row).splitlines(),
         }
@@ -299,11 +320,17 @@ async def run(args: argparse.Namespace) -> None:
             "prediction": parsed,
         }
         append_jsonl(out, record)
+        completed.add(key)
         print(f"ok binary_predictor rollout={rollout_id} target={int(record['target'])} pred={int(pred)} correct={record['correct']}", flush=True)
         return True
 
     results = await asyncio.gather(*(one(row) for row in rows))
-    output_rows = [row for row in read_jsonl(out) if row.get("ok")]
+    requested_keys = {source_key(row, input_path) for row in rows}
+    output_rows = [
+        row
+        for row in read_jsonl(out)
+        if row.get("ok") and row.get("source_key") in requested_keys
+    ]
     summary = {
         "generated_at": iso_now(),
         "input": str(args.input),
@@ -336,6 +363,7 @@ def main() -> None:
     parser.add_argument("--timeout", type=float, default=180)
     parser.add_argument("--concurrency", type=int, default=32)
     parser.add_argument("--limit", type=int, default=0)
+    parser.add_argument("--source-prompt-version", type=int, default=0)
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
     asyncio.run(run(args))

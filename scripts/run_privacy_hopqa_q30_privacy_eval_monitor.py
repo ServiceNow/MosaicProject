@@ -16,6 +16,8 @@ from typing import Any
 from urllib.error import URLError
 from urllib.request import urlopen
 
+from scripts.evaluate_privacy_hopqa_leakage_suite_v2 import PROMPT_VERSION as LEAKAGE_PROMPT_VERSION
+
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ARTIFACT_ROOT = Path("/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_mosaic_v11_20260514")
@@ -226,6 +228,8 @@ def run_privacy_evals_for_model(args: argparse.Namespace, model_root: Path, qwen
                 "chat",
                 "--concurrency",
                 str(args.binary_concurrency),
+                "--source-prompt-version",
+                str(LEAKAGE_PROMPT_VERSION),
                 "--max-tokens",
                 "2048",
             ]
@@ -239,8 +243,7 @@ def write_eai_snapshot(viewer_dir: Path) -> None:
         "eai",
         "job",
         "ls",
-        "--account",
-        "snow.research.adea",
+        "--all",
         "--state",
         "all",
         "--limit",

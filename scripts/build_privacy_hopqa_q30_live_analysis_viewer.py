@@ -332,17 +332,40 @@ def timestamp_sort_key(row: dict[str, Any], fallback: int) -> tuple[str, int]:
 
 
 def leakage_identity(row: dict[str, Any], judge: str) -> tuple[str, ...]:
-    fingerprint = str(row.get("input_fingerprint") or "")
-    if fingerprint:
-        return (judge, str(row.get("model_label") or ""), fingerprint)
+    # Privacy prompt versions change the evaluator fingerprint. For live
+    # monitoring we want the newest judgment for the same rollout, not one row
+    # per prompt fingerprint.
+    condition = str(row.get("condition") or row.get("rollout_condition") or row.get("prompt_condition") or "")
+    trace_path = str(row.get("trace_path") or "")
+    rollout_id = str(row.get("rollout_id") or "")
+    if trace_path or rollout_id:
+        return (
+            judge,
+            str(row.get("model_label") or ""),
+            condition,
+            str(row.get("split") or row_split(row)),
+            rollout_id,
+            trace_path,
+        )
+    task_id = str(row.get("task_id") or "")
+    chain_id = str(row.get("chain_id") or "")
+    if task_id or chain_id:
+        return (
+            judge,
+            str(row.get("model_label") or ""),
+            condition,
+            str(row.get("split") or row_split(row)),
+            task_id,
+            chain_id,
+            str(row.get("repeat") or 0),
+        )
     return (
         judge,
         str(row.get("model_label") or ""),
+        condition,
         str(row.get("split") or row_split(row)),
-        str(row.get("task_id") or ""),
-        str(row.get("chain_id") or ""),
         str(row.get("repeat") or 0),
-        str(row.get("trace_path") or ""),
+        str(row.get("input_fingerprint") or ""),
     )
 
 
@@ -878,6 +901,14 @@ def load_leakage(artifact_root: Path, judge: str) -> list[dict[str, Any]]:
                 row["judge_prompt_tokens"] = prompt_tokens
                 row["judge_completion_tokens"] = completion_tokens
                 rows.append(row)
+    prompt_versions = [
+        int(row.get("prompt_version"))
+        for row in rows
+        if row.get("prompt_version") is not None
+    ]
+    if prompt_versions:
+        latest_prompt_version = max(prompt_versions)
+        rows = [row for row in rows if int(row.get("prompt_version") or 0) == latest_prompt_version]
     return dedupe_rows_by_latest(rows, judge)
 
 
@@ -895,6 +926,18 @@ def load_binary(artifact_root: Path) -> list[dict[str, Any]]:
                 row["model_display"] = model_display(root.name)
                 row["predictor_source_file"] = filename
                 rows.append(row)
+    source_prompt_versions = [
+        int(row.get("source_prompt_version"))
+        for row in rows
+        if row.get("source_prompt_version") is not None
+    ]
+    if source_prompt_versions:
+        latest_source_prompt_version = max(source_prompt_versions)
+        rows = [
+            row
+            for row in rows
+            if int(row.get("source_prompt_version") or 0) == latest_source_prompt_version
+        ]
     return dedupe_rows_by_latest(rows, "binary_qwen3_4b")
 
 
