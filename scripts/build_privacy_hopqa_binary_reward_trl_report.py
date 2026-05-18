@@ -102,6 +102,14 @@ def binary_metrics(targets: list[int], probs: list[float], threshold: float) -> 
 def best_threshold(rows: list[dict[str, Any]], objective: str = "f1") -> tuple[float, dict[str, Any]]:
     targets = [int(row["target"]) for row in rows]
     probs = [float(row["prob_yes"]) for row in rows]
+    return best_binary_threshold_from_scores(targets, probs, objective)
+
+
+def best_binary_threshold_from_scores(
+    targets: list[int],
+    probs: list[float],
+    objective: str = "f1",
+) -> tuple[float, dict[str, Any]]:
     candidates = sorted({0.001, 0.01, 0.05, 0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 0.95, 0.99, *probs})
     best: tuple[float, dict[str, Any]] | None = None
     for threshold in candidates:
@@ -270,7 +278,15 @@ def clean_run_label(run: dict[str, Any], multiline: bool = False) -> str:
     if summary.get("eval_only"):
         parts = [variant, base_model_label(summary), "Base"]
     elif summary.get("label_mode") == "ternary":
-        parts = [variant, base_model_label(summary), source, "1-3 target", compact_lora_label(summary)]
+        args = summary.get("args") if isinstance(summary.get("args"), dict) else {}
+        tri = f"tri{args.get('ternary_no_repeat')}-{args.get('ternary_intent_repeat')}-{args.get('ternary_fact_repeat')}"
+        lr = args.get("learning_rate")
+        n_train = args.get("max_train_examples")
+        parts = [variant, base_model_label(summary), source, "1-3 target", tri, compact_lora_label(summary)]
+        if lr:
+            parts.append(f"lr {lr:g}" if isinstance(lr, float) else f"lr {lr}")
+        if n_train:
+            parts.append(f"n={n_train}")
     else:
         parts = [variant, base_model_label(summary), source, compact_lora_label(summary), repeat_label(summary)]
     parts = [part for part in parts if part]
@@ -341,9 +357,19 @@ def load_ternary_runs(root: Path, source_label: str) -> list[dict[str, Any]]:
         summary = read_json(summary_path, {})
         if summary.get("label_mode") != "ternary":
             continue
+        val_rows = read_jsonl(run_dir / "predictions_val.jsonl")
         test_rows = read_jsonl(run_dir / "predictions_test.jsonl")
         if not summary or not test_rows:
             continue
+        val_fact_targets = [1 if row.get("target_label") == "C" else 0 for row in val_rows]
+        val_fact_probs = [float(row.get("prob_fact_leakage") or 0.0) for row in val_rows]
+        test_fact_targets = [1 if row.get("target_label") == "C" else 0 for row in test_rows]
+        test_fact_probs = [float(row.get("prob_fact_leakage") or 0.0) for row in test_rows]
+        val_fact_threshold = None
+        test_fact_at_val_threshold = {}
+        if val_fact_targets and len(set(val_fact_targets)) > 1:
+            val_fact_threshold, _ = best_binary_threshold_from_scores(val_fact_targets, val_fact_probs, "f1")
+            test_fact_at_val_threshold = binary_metrics(test_fact_targets, test_fact_probs, val_fact_threshold)
         run = {
             "name": run_dir.name,
             "display": run_name(run_dir, summary, source_label),
@@ -356,6 +382,8 @@ def load_ternary_runs(root: Path, source_label: str) -> list[dict[str, Any]]:
             "eval_loss": trainer_eval_loss(run_dir),
             "eval_history": trainer_eval_history(run_dir),
             "classifier_eval_history": classifier_eval_history(run_dir),
+            "fact_val_threshold_f1": val_fact_threshold,
+            "fact_test_at_val_f1": test_fact_at_val_threshold,
         }
         run["short_label"] = clean_run_label(run)
         runs.append(run)
@@ -460,12 +488,14 @@ def binary_run_table(runs: list[dict[str, Any]]) -> str:
 
 
 def ternary_table(runs: list[dict[str, Any]]) -> str:
-    if not runs:
+    table_runs = [run for run in runs if "smoke" not in run["name"]]
+    if not table_runs:
         return "<p class='note'>No ternary runs yet.</p>"
     rows = []
-    for run in sorted(runs, key=lambda item: item["name"]):
+    for run in sorted(table_runs, key=lambda item: item["name"]):
         test = (run["summary"].get("metrics") or {}).get("test") or {}
         eval_loss = run.get("eval_loss") or {}
+        fact_at_val = run.get("fact_test_at_val_f1") or {}
         wandb = f"<a href='{esc(run['wandb_url'])}'>W&B</a>" if run.get("wandb_url") else ""
         rows.append(
             "<tr>"
@@ -480,6 +510,10 @@ def ternary_table(runs: list[dict[str, Any]]) -> str:
             f"<td>{pct(test.get('fact_leakage_recall'))}</td>"
             f"<td>{pct(test.get('fact_leakage_f1'))}</td>"
             f"<td>{num(test.get('fact_vs_rest_roc_auc'))}</td>"
+            f"<td>{num(run.get('fact_val_threshold_f1'))}</td>"
+            f"<td>{pct(fact_at_val.get('precision'))}</td>"
+            f"<td>{pct(fact_at_val.get('recall'))}</td>"
+            f"<td>{pct(fact_at_val.get('f1'))}</td>"
             f"<td><code>{esc(test.get('confusion_matrix'))}</code></td>"
             f"<td>{wandb}</td>"
             f"<td><code>{esc(run['run_dir'])}</code></td>"
@@ -488,6 +522,7 @@ def ternary_table(runs: list[dict[str, Any]]) -> str:
     return (
         "<table><thead><tr><th>Test</th><th>Best Val Loss</th><th>Accuracy</th><th>Macro F1</th><th>Macro OVR AUC</th>"
         "<th>No F1</th><th>Intent/Context F1</th><th>Fact Precision</th><th>Fact Recall</th><th>Fact F1</th><th>Fact-vs-Rest AUC</th>"
+        "<th>Fact Val F1 Threshold</th><th>Fact Precision @ValThr</th><th>Fact Recall @ValThr</th><th>Fact F1 @ValThr</th>"
         "<th>Confusion A/B/C</th><th>W&B</th><th>Path</th></tr></thead>"
         f"<tbody>{''.join(rows)}</tbody></table>"
     )
@@ -495,6 +530,7 @@ def ternary_table(runs: list[dict[str, Any]]) -> str:
 
 def best_recommendation(binary_runs: list[dict[str, Any]], ternary_runs: list[dict[str, Any]]) -> str:
     full_runs = [run for run in binary_runs if "smoke" not in run["name"] and run["source"] != "Base"]
+    full_ternary_runs = [run for run in ternary_runs if "smoke" not in run["name"]]
     deployable = [run for run in full_runs if run["variant"] in {"queries_only", "company_context"}]
     oracle_context = [run for run in full_runs if run["variant"] in {"private_fact_context", "chain_context"}]
     best_f1 = max(deployable, key=lambda run: (((run["summary"].get("metrics") or {}).get("test") or {}).get("f1") or -1), default=None)
@@ -532,12 +568,18 @@ def best_recommendation(binary_runs: list[dict[str, Any]], ternary_runs: list[di
                 f"recall {pct(test.get('recall'))}, F1 {pct(test.get('f1'))}."
             )
     pieces.append("The ablation says positive repeat is important for recall/calibration; r=128 all-linear did not clearly improve over r=16 default LoRA.")
-    if ternary_runs:
-        ternary = max(ternary_runs, key=lambda run: ((run["summary"].get("metrics") or {}).get("test") or {}).get("macro_f1") or -1)
+    if full_ternary_runs:
+        ternary = max(
+            full_ternary_runs,
+            key=lambda run: ((run.get("fact_test_at_val_f1") or {}).get("f1") or -1),
+        )
         test = (ternary["summary"].get("metrics") or {}).get("test") or {}
+        fact_at_val = ternary.get("fact_test_at_val_f1") or {}
         pieces.append(
-            f"The ternary setup is useful diagnostically, but fact-leak F1 is only {pct(test.get('fact_leakage_f1'))} "
-            f"with recall {pct(test.get('fact_leakage_recall'))}, below the binary reward model."
+            f"Best ternary fact-vs-rest result is <strong>{esc(ternary.get('short_label') or clean_run_label(ternary))}</strong>: "
+            f"raw fact precision {pct(test.get('fact_leakage_precision'))}, recall {pct(test.get('fact_leakage_recall'))}, "
+            f"F1 {pct(test.get('fact_leakage_f1'))}; with the validation F1 threshold, precision "
+            f"{pct(fact_at_val.get('precision'))}, recall {pct(fact_at_val.get('recall'))}, F1 {pct(fact_at_val.get('f1'))}."
         )
     return "<p>" + " ".join(pieces) + "</p>"
 
