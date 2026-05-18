@@ -95,7 +95,8 @@ E_h = expected source type for hop h from the L/W pattern
 Q_{r,h,t} = 1 if hop_plan call t searched E_h, else 0
 ```
 
-`I_{r,h}` is still useful for analysis, but the current proposed answer value does not divide by iteration count. We keep the answer value correctness-dominant and handle iteration/use-efficiency through alignment and later optional diagnostics.
+`I_{r,h}` is a hop-local iteration count. The answer value divides by it to discourage using unnecessary iterations.
+This is measured from the actual rollout trace. It does not require a separate per-hop hard cap; the harness may still enforce a rollout-level budget such as `2 * num_hops`.
 
 For rollout `r`, hop `h`, stage `s`, and stage-call index `t`:
 
@@ -116,26 +117,26 @@ pos(r,h,s,t) = M_{g,h,s} - n_{r,h,s} + t
 
 ### Answer objective
 
-For `doc_choose` and `hop_resolve`, use hop correctness directly:
+For `doc_choose` and `hop_resolve`, use hop correctness divided by hop-local iteration count:
 
 ```text
-V_answer(r,h,s,t) = C_{r,h}
+V_answer(r,h,s,t) = C_{r,h} / max(I_{r,h}, 1)
 ```
 
 For `hop_plan`, add a simple source-type bonus:
 
 ```text
 V_answer(r,h,hop_plan,t) =
-    C_{r,h} + source_bonus * Q_{r,h,t}
+    (C_{r,h} + source_bonus * Q_{r,h,t}) / max(I_{r,h}, 1)
 ```
 
 Default:
 
 ```text
-source_bonus = 0.5
+source_bonus = 0.25
 ```
 
-This preserves the desired ordering:
+For a fixed hop-iteration count `I`, this preserves the desired ordering:
 
 ```text
 correct + right source      > correct + wrong source
@@ -143,16 +144,17 @@ correct + wrong source      > incorrect + right source
 incorrect + right source    > incorrect + wrong source
 ```
 
-With `source_bonus=0.5`:
+With `source_bonus=0.25`:
 
 ```text
-correct + right source      = 1.5
-correct + wrong source      = 1.0
-incorrect + right source    = 0.5
+correct + right source      = 1.25 / I
+correct + wrong source      = 1.0 / I
+incorrect + right source    = 0.25 / I
 incorrect + wrong source    = 0.0
 ```
 
-This is the raw answer value. It is intentionally not called an advantage. The advantage is computed only after comparing this value against other rollout values in the same aligned bucket. Hop-level success metrics still use `C_{r,h}`; the source bonus is only reward shaping for training.
+This is the raw answer value. It is intentionally not called an advantage. The advantage is computed only after comparing this value against other rollout values in the same aligned bucket. Hop-level success metrics still use `C_{r,h}`; the source bonus and iteration division are only reward shaping for training.
+Across different iteration counts, the iteration penalty is allowed to matter. That is intentional: solving the hop with fewer agent iterations should receive a higher shaped value than solving it slowly.
 
 Prefix padding for answer uses the same value definition. If no real value exists because the hop was never reached, mask that rollout from this hop/stage bucket.
 
@@ -297,71 +299,71 @@ R3: C=0
 Because this is a local hop, the expected source type is `local_document_search`. For `hop_plan`, failed attempts can get source-type partial credit. Assume:
 
 ```text
-source_bonus = 0.5
+source_bonus = 0.25
 ```
 
 For this example, suppose `R3` searched the wrong source type on iter0, then searched local docs on iter1 and iter2:
 
 ```text
 R3 hop_plan iter0: Q=0 -> V_answer=0
-R3 hop_plan iter1: Q=1 -> V_answer=0.5
-R3 hop_plan iter2: Q=1 -> V_answer=0.5
+R3 hop_plan iter1: Q=1 -> V_answer=(0+0.25)/3 = 0.083
+R3 hop_plan iter2: Q=1 -> V_answer=(0+0.25)/3 = 0.083
 ```
 
 For solved rollouts, source bonus is added to correctness. Suppose both `R1` and `R2` searched the expected local corpus on every `hop_plan` call:
 
 ```text
-R1 hop_plan: [1.5]
-R2 hop_plan: [1.5, 1.5]
-R3 hop_plan: [0.0, 0.5, 0.5]
+R1 hop_plan: [1.25]
+R2 hop_plan: [0.625, 0.625]
+R3 hop_plan: [0.0, 0.083, 0.083]
 ```
 
 For `doc_choose` and `hop_resolve`, no source-type bonus is used:
 
 ```text
 R1 doc_choose:  [1.0]
-R2 doc_choose:  [1.0, 1.0]
+R2 doc_choose:  [0.5, 0.5]
 R3 doc_choose:  [0.0, 0.0, 0.0]
 
 R1 hop_resolve: [1.0]
-R2 hop_resolve: [1.0, 1.0]
+R2 hop_resolve: [0.5, 0.5]
 R3 hop_resolve: [0.0, 0.0, 0.0]
 ```
 
 Now align and pad separately for each stage. For `hop_plan`, the longest sequence is length 3:
 
 ```text
-R1 hop_plan padded: [1.5, 1.5, 1.5]
-R2 hop_plan padded: [1.5, 1.5, 1.5]
-R3 hop_plan padded: [0.0, 0.5, 0.5]
+R1 hop_plan padded: [1.25, 1.25, 1.25]
+R2 hop_plan padded: [0.625, 0.625, 0.625]
+R3 hop_plan padded: [0.0, 0.083, 0.083]
 ```
 
 Compute leave-one-out advantages at each aligned position:
 
 ```text
-position 0 values: R1=1.5, R2=1.5, R3=0.0
-  Adv R1 = 1.5 - mean(1.5,0.0) = +0.75
-  Adv R2 = 1.5 - mean(1.5,0.0) = +0.75
-  Adv R3 = 0.0 - mean(1.5,1.5) = -1.5
+position 0 values: R1=1.25, R2=0.625, R3=0.0
+  Adv R1 = 1.25 - mean(0.625,0.0) = +0.938
+  Adv R2 = 0.625 - mean(1.25,0.0) = 0.0
+  Adv R3 = 0.0 - mean(1.25,0.625) = -0.938
 
-position 1 values: R1=1.5, R2=1.5, R3=0.5
-  Adv R1 = 1.5 - mean(1.5,0.5) = +0.5
-  Adv R2 = 1.5 - mean(1.5,0.5) = +0.5
-  Adv R3 = 0.5 - mean(1.5,1.5) = -1.0
+position 1 values: R1=1.25, R2=0.625, R3=0.083
+  Adv R1 = 1.25 - mean(0.625,0.083) = +0.896
+  Adv R2 = 0.625 - mean(1.25,0.083) = -0.042
+  Adv R3 = 0.083 - mean(1.25,0.625) = -0.854
 
-position 2 values: R1=1.5, R2=1.5, R3=0.5
+position 2 values: R1=1.25, R2=0.625, R3=0.083
   same as position 1
 ```
 
 Apply advantages only to real texts, never padded texts:
 
 ```text
-R1 real hop_plan iter0 uses position 2 advantage: +0.5
-R2 real hop_plan iter0 uses position 1 advantage: +0.5
-R2 real hop_plan iter1 uses position 2 advantage: +0.5
-R3 real hop_plan iter0 uses position 0 advantage: -1.5
-R3 real hop_plan iter1 uses position 1 advantage: -1.0
-R3 real hop_plan iter2 uses position 2 advantage: -1.0
+R1 real hop_plan iter0 uses position 2 advantage: +0.896
+R2 real hop_plan iter0 uses position 1 advantage: -0.042
+R2 real hop_plan iter1 uses position 2 advantage: -0.042
+R3 real hop_plan iter0 uses position 0 advantage: -0.938
+R3 real hop_plan iter1 uses position 1 advantage: -0.854
+R3 real hop_plan iter2 uses position 2 advantage: -0.854
 ```
 
 `doc_choose` and `hop_resolve` are calculated the same way, but without source partial credit.
@@ -386,27 +388,27 @@ R2:
 Answer values. Suppose both rollouts searched web in their `hop_plan` calls:
 
 ```text
-R1: C=1 -> V_answer=1.5 for hop_plan, 1.0 for doc_choose/hop_resolve
-R2: C=1 -> V_answer=1.5 for hop_plan, 1.0 for doc_choose/hop_resolve
+R1: C=1, I=1 -> V_answer=1.25 for hop_plan, 1.0 for doc_choose/hop_resolve
+R2: C=1, I=2 -> V_answer=0.625 for hop_plan, 0.5 for doc_choose/hop_resolve
 ```
 
 For `hop_plan`, answer alignment is:
 
 ```text
-R1 hop_plan padded: [1.5, 1.5]
-R2 hop_plan padded: [1.5, 1.5]
+R1 hop_plan padded: [1.25, 1.25]
+R2 hop_plan padded: [0.625, 0.625]
 ```
 
 Answer advantages:
 
 ```text
-position 0: R1=1.5, R2=1.5
-  Adv_answer R1 = 0.0
-  Adv_answer R2 = 0.0
+position 0: R1=1.25, R2=0.625
+  Adv_answer R1 = +0.625
+  Adv_answer R2 = -0.625
 
-position 1: R1=1.5, R2=1.5
-  Adv_answer R1 = 0.0
-  Adv_answer R2 = 0.0
+position 1: R1=1.25, R2=0.625
+  Adv_answer R1 = +0.625
+  Adv_answer R2 = -0.625
 ```
 
 Now compute privacy only for web-query `hop_plan` calls. The privacy classifier sees cumulative web queries across the whole chain. Suppose `R1` never leaks, and `R2` first leaks at its second web query:
@@ -448,21 +450,21 @@ Combine active objectives on real web-query `hop_plan` texts:
 ```text
 R1 hop_plan iter0:
   uses aligned position 1
-  Adv_answer=0.0
+  Adv_answer=+0.625
   Adv_privacy=+1.0
-  combined = 0.5*(0.0) + 0.5*(+1.0) = +0.5
+  combined = 0.5*(+0.625) + 0.5*(+1.0) = +0.8125
 
 R2 hop_plan iter0:
   uses aligned position 0
-  Adv_answer=0.0
+  Adv_answer=-0.625
   Adv_privacy=-0.75
-  combined = 0.5*(0.0) + 0.5*(-0.75) = -0.375
+  combined = 0.5*(-0.625) + 0.5*(-0.75) = -0.6875
 
 R2 hop_plan iter1:
   uses aligned position 1
-  Adv_answer=0.0
+  Adv_answer=-0.625
   Adv_privacy=-1.0
-  combined = 0.5*(0.0) + 0.5*(-1.0) = -0.5
+  combined = 0.5*(-0.625) + 0.5*(-1.0) = -0.8125
 ```
 
 For `doc_choose` and `hop_resolve`, privacy is inactive:
@@ -505,8 +507,8 @@ iter1 plan: web_search
 Answer values for `hop_plan`:
 
 ```text
-iter0: expected source searched? no  -> V_answer=0
-iter1: expected source searched? yes -> V_answer=0.5
+iter0: expected source searched? no  -> V_answer=(0 + 0.25*0)/2 = 0.0
+iter1: expected source searched? yes -> V_answer=(0 + 0.25*1)/2 = 0.125
 ```
 
 Answer values for `doc_choose` and `hop_resolve`:
