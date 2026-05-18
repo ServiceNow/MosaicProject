@@ -6,7 +6,7 @@ Repo for our privacy-aware dataset creation (and eventually agent training)
 
 Use the runbook as the canonical launch path:
 
-[Privacy HopQA runbook, q30, 2026-05-13](./docs/privacy_hopqa_runbook_2026-05-13.md)
+[Privacy HopQA runbook](./docs/privacy_hopqa_runbook.md)
 
 Minimal preflight:
 

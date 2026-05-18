@@ -1,5 +1,7 @@
 # Privacy HopQA q30 runbook
 
+Current canonical runbook: [Privacy HopQA runbook](./privacy_hopqa_runbook.md).
+
 This file is the short command reference for launching Privacy HopQA q30 helper and training jobs.
 
 Current dataset:
