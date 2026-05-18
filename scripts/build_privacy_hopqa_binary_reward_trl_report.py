@@ -474,6 +474,8 @@ def ternary_table(runs: list[dict[str, Any]]) -> str:
             f"<td>{pct(test.get('accuracy'))}</td>"
             f"<td>{pct(test.get('macro_f1'))}</td>"
             f"<td>{num(test.get('macro_ovr_roc_auc'))}</td>"
+            f"<td>{pct(test.get('no_leakage_f1'))}</td>"
+            f"<td>{pct(test.get('intent_or_context_leakage_f1'))}</td>"
             f"<td>{pct(test.get('fact_leakage_precision'))}</td>"
             f"<td>{pct(test.get('fact_leakage_recall'))}</td>"
             f"<td>{pct(test.get('fact_leakage_f1'))}</td>"
@@ -485,7 +487,8 @@ def ternary_table(runs: list[dict[str, Any]]) -> str:
         )
     return (
         "<table><thead><tr><th>Test</th><th>Best Val Loss</th><th>Accuracy</th><th>Macro F1</th><th>Macro OVR AUC</th>"
-        "<th>Fact Precision</th><th>Fact Recall</th><th>Fact F1</th><th>Fact-vs-Rest AUC</th><th>Confusion A/B/C</th><th>W&B</th><th>Path</th></tr></thead>"
+        "<th>No F1</th><th>Intent/Context F1</th><th>Fact Precision</th><th>Fact Recall</th><th>Fact F1</th><th>Fact-vs-Rest AUC</th>"
+        "<th>Confusion A/B/C</th><th>W&B</th><th>Path</th></tr></thead>"
         f"<tbody>{''.join(rows)}</tbody></table>"
     )
 
@@ -626,7 +629,7 @@ def plot_ternary_runs(runs: list[dict[str, Any]], output_dir: Path) -> None:
     for ax, run in zip(axes.ravel(), plot_runs):
         test = (run["summary"].get("metrics") or {}).get("test") or {}
         matrix = np.array(test.get("confusion_matrix") or [[0, 0, 0], [0, 0, 0], [0, 0, 0]], dtype=int)
-        image = draw_confusion(ax, matrix, ["No", "Intent", "Fact"], clean_run_label(run, multiline=True))
+        image = draw_confusion(ax, matrix, ["No", "Intent/Context", "Fact"], clean_run_label(run, multiline=True))
     for ax in axes.ravel()[len(plot_runs) :]:
         ax.axis("off")
     if image is not None:
@@ -836,7 +839,7 @@ code {{ background: #eef2f0; padding: 1px 4px; border-radius: 4px; white-space: 
 <section><h2>Reward Classifier Validation Curves</h2><p class="note">These are one-token Yes/No classifier metrics on the validation split, logged at each TRL eval step as <code>reward_eval/val/*</code>. Newer runs include this curve; older runs only have the final split metrics.</p><img src="plots/classifier_eval_curves.svg"></section>
 <section><h2>Binary Reward: Confusion Matrices At 0.5</h2><p class="note">Rows are true labels, columns are predicted labels. Each cell shows count and percent of the true-label row.</p><img src="plots/binary_confusion_0_5.svg"></section>
 <section><h2>Binary Reward: Confusion Matrices At Validation Threshold</h2><p class="note">The validation threshold is selected independently for each run to maximize validation F1.</p><img src="plots/binary_confusion_val_threshold.svg"></section>
-<section><h2>1-3 Reward: Confusion Matrix</h2><p class="note">A = No leakage, B = intent leakage, C = fact leakage. The plot uses readable class names.</p><img src="plots/ternary_confusion.svg"></section>
+<section><h2>1-3 Reward: Confusion Matrix</h2><p class="note">A = No leakage, B = intent/context leakage, C = fact leakage. The plot uses readable class names.</p><img src="plots/ternary_confusion.svg"></section>
 <section><h2>Score Distribution</h2><img src="plots/best_score_distribution.svg"></section>
 </body></html>
 """
