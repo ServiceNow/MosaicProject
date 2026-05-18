@@ -14,6 +14,7 @@ WANDB_NAME=${WANDB_NAME:-}
 STREAMS_BACKEND=${STREAMS_BACKEND:-files}
 FILTER_ZERO_ADVANTAGE_GROUPS=${FILTER_ZERO_ADVANTAGE_GROUPS:-true}
 REPLICAS=${REPLICAS:-4}
+LEARNING_RATE=${LEARNING_RATE:-1e-6}
 # Previous local default, kept for debugging old runs:
 # /mnt/llmd/results/exps/alexg/privacy_agent/local_indices_fixeddeps_20260415
 LOCAL_INDEX_ROOT=${LOCAL_INDEX_ROOT:-/mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/local_indices_fixeddeps_20260415}
@@ -163,7 +164,7 @@ privacy_hopqa.embedding_provider=huggingface \
 privacy_hopqa.embedding_model=Qwen/Qwen3-Embedding-4B \
 privacy_hopqa.capture_mode=${CAPTURE_MODE} \
 +finetune.rl.filter_zero_advantage_groups=${FILTER_ZERO_ADVANTAGE_GROUPS} \
-finetune.learning_rate=1e-6 \
+finetune.learning_rate=${LEARNING_RATE} \
 finetune.rl.policy_loss=gspo \
 finetune.rl.epsilon_low=3e-3 \
 finetune.rl.epsilon_high=4e-3 \
