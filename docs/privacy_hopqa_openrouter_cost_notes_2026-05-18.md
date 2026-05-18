@@ -170,3 +170,58 @@ length much. For OpenRouter budgeting, keep the conservative 150M input + 20M
 output estimate unless we run a larger random sample; a current-harness Qwen3
 4B-like estimate from this smoke is about 141M input + 7M output for one full
 dataset pass.
+
+## Current-harness Qwen3 4B random sample
+
+Larger local sample:
+
+```text
+runtime_analysis/privacy_hopqa_q30_current_harness_qwen4b_sample50_20260518
+```
+
+Setup:
+
+- model: `Qwen/Qwen3-4B-Instruct-2507`
+- local vLLM on the H100, 16,384 context
+- q30 RRF helper
+- random 50-chain sample: 20 train, 10 val, 20 test
+- current PipelineRL at `e176f10`, including doc-read window-budget fix
+
+The first helper job was cancelled mid-run, causing 21 infrastructure failures.
+Those chains were retried against a fresh helper and all succeeded. The raw
+system-failure records are retained in `tables/rollout_system_errors.jsonl`,
+but the analysis below uses the 50 successful unique rollouts.
+
+Results:
+
+| Metric | Value |
+| --- | ---: |
+| Rollouts | 50 |
+| Successful unique rollouts | 50 |
+| Mean prompt tokens / rollout | 143,962 |
+| Mean output tokens / rollout | 6,632 |
+| Mean total tokens / rollout | 150,594 |
+| Extrapolated full-dataset input tokens | 144.1M |
+| Extrapolated full-dataset output tokens | 6.6M |
+| Mean hop accuracy | 0.705 |
+| Strict chain success | 26 / 50 |
+
+Same-chain comparison against successful rows in the older q30 all1 Qwen3 4B
+run matched 48 of the 50 sampled chains:
+
+| Metric | Current sample | Older all1, same chains | Delta |
+| --- | ---: | ---: | ---: |
+| Mean hop accuracy | 0.699 | 0.713 | -0.014 |
+| Mean conditional hop accuracy | 0.725 | 0.722 | +0.002 |
+| Strict chain success | 25 / 48 | 23 / 48 | +2 chains |
+| Final answer correct | 26 / 48 | 25 / 48 | +1 chain |
+| Prompt tokens | 6.909M | 6.642M | +8.4% |
+| Output tokens | 0.317M | 0.279M | +18.7% |
+| Total tokens | 7.226M | 6.921M | +4.4% |
+
+This larger random sample does not support the optimistic token reduction from
+the 9-chain smoke. It suggests current Qwen3 4B-like full-pass cost is still
+well approximated by about 145M input tokens and 7M output tokens, with strict
+chain success slightly better on this sample but hop accuracy roughly unchanged.
+At the user-provided prices, that one-pass estimate costs about `$460` for
+GPT-5.4-like pricing and about `$247` for GPT-5.1-like pricing.
