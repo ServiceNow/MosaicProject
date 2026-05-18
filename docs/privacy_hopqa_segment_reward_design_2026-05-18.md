@@ -95,7 +95,7 @@ E_h = expected source type for hop h from the L/W pattern
 Q_{r,h,t} = 1 if hop_plan call t searched E_h, else 0
 ```
 
-`I_{r,h}` is a hop-local iteration count, not a global rollout length. It is used only to define the raw answer value below; it is not the advantage.
+`I_{r,h}` is still useful for analysis, but the current proposed answer value does not divide by iteration count. We keep the answer value correctness-dominant and handle iteration/use-efficiency through alignment and later optional diagnostics.
 
 For rollout `r`, hop `h`, stage `s`, and stage-call index `t`:
 
@@ -116,28 +116,43 @@ pos(r,h,s,t) = M_{g,h,s} - n_{r,h,s} + t
 
 ### Answer objective
 
-For `doc_choose` and `hop_resolve`:
+For `doc_choose` and `hop_resolve`, use hop correctness directly:
 
 ```text
-V_answer(r,h,s,t) = C_{r,h} / max(I_{r,h}, 1)
+V_answer(r,h,s,t) = C_{r,h}
 ```
 
-For `hop_plan`, add source-type partial credit when the hop was not solved:
+For `hop_plan`, add a simple source-type bonus:
 
 ```text
 V_answer(r,h,hop_plan,t) =
-    C_{r,h} / max(I_{r,h}, 1)                 if C_{r,h}=1
-    source_credit * Q_{r,h,t}                 if C_{r,h}=0
-    0                                         otherwise
+    C_{r,h} + source_bonus * Q_{r,h,t}
 ```
 
 Default:
 
 ```text
-source_credit = 0.5
+source_bonus = 0.5
 ```
 
-This is the raw answer value. It is intentionally not called an advantage. The advantage is computed only after comparing this value against other rollout values in the same aligned bucket.
+This preserves the desired ordering:
+
+```text
+correct + right source      > correct + wrong source
+correct + wrong source      > incorrect + right source
+incorrect + right source    > incorrect + wrong source
+```
+
+With `source_bonus=0.5`:
+
+```text
+correct + right source      = 1.5
+correct + wrong source      = 1.0
+incorrect + right source    = 0.5
+incorrect + wrong source    = 0.0
+```
+
+This is the raw answer value. It is intentionally not called an advantage. The advantage is computed only after comparing this value against other rollout values in the same aligned bucket. Hop-level success metrics still use `C_{r,h}`; the source bonus is only reward shaping for training.
 
 Prefix padding for answer uses the same value definition. If no real value exists because the hop was never reached, mask that rollout from this hop/stage bucket.
 
@@ -271,18 +286,18 @@ R3:
   hop correct: no
 ```
 
-Compute hop-local correctness and iteration values:
+Compute hop correctness:
 
 ```text
-R1: C=1, I=1 -> correctness/efficiency value = 1/1 = 1.0
-R2: C=1, I=2 -> correctness/efficiency value = 1/2 = 0.5
-R3: C=0, I=3 -> correctness/efficiency value = 0
+R1: C=1
+R2: C=1
+R3: C=0
 ```
 
 Because this is a local hop, the expected source type is `local_document_search`. For `hop_plan`, failed attempts can get source-type partial credit. Assume:
 
 ```text
-source_credit = 0.5
+source_bonus = 0.5
 ```
 
 For this example, suppose `R3` searched the wrong source type on iter0, then searched local docs on iter1 and iter2:
@@ -293,48 +308,48 @@ R3 hop_plan iter1: Q=1 -> V_answer=0.5
 R3 hop_plan iter2: Q=1 -> V_answer=0.5
 ```
 
-For solved rollouts, source partial credit is ignored because the solved-hop value is already used:
+For solved rollouts, source bonus is added to correctness. Suppose both `R1` and `R2` searched the expected local corpus on every `hop_plan` call:
 
 ```text
-R1 hop_plan: [1.0]
-R2 hop_plan: [0.5, 0.5]
+R1 hop_plan: [1.5]
+R2 hop_plan: [1.5, 1.5]
 R3 hop_plan: [0.0, 0.5, 0.5]
 ```
 
-For `doc_choose` and `hop_resolve`, no source-type partial credit is used:
+For `doc_choose` and `hop_resolve`, no source-type bonus is used:
 
 ```text
 R1 doc_choose:  [1.0]
-R2 doc_choose:  [0.5, 0.5]
+R2 doc_choose:  [1.0, 1.0]
 R3 doc_choose:  [0.0, 0.0, 0.0]
 
 R1 hop_resolve: [1.0]
-R2 hop_resolve: [0.5, 0.5]
+R2 hop_resolve: [1.0, 1.0]
 R3 hop_resolve: [0.0, 0.0, 0.0]
 ```
 
 Now align and pad separately for each stage. For `hop_plan`, the longest sequence is length 3:
 
 ```text
-R1 hop_plan padded: [1.0, 1.0, 1.0]
-R2 hop_plan padded: [0.5, 0.5, 0.5]
+R1 hop_plan padded: [1.5, 1.5, 1.5]
+R2 hop_plan padded: [1.5, 1.5, 1.5]
 R3 hop_plan padded: [0.0, 0.5, 0.5]
 ```
 
 Compute leave-one-out advantages at each aligned position:
 
 ```text
-position 0 values: R1=1.0, R2=0.5, R3=0.0
-  Adv R1 = 1.0 - mean(0.5,0.0) = +0.75
-  Adv R2 = 0.5 - mean(1.0,0.0) = 0.0
-  Adv R3 = 0.0 - mean(1.0,0.5) = -0.75
+position 0 values: R1=1.5, R2=1.5, R3=0.0
+  Adv R1 = 1.5 - mean(1.5,0.0) = +0.75
+  Adv R2 = 1.5 - mean(1.5,0.0) = +0.75
+  Adv R3 = 0.0 - mean(1.5,1.5) = -1.5
 
-position 1 values: R1=1.0, R2=0.5, R3=0.5
-  Adv R1 = 1.0 - mean(0.5,0.5) = +0.5
-  Adv R2 = 0.5 - mean(1.0,0.5) = -0.25
-  Adv R3 = 0.5 - mean(1.0,0.5) = -0.25
+position 1 values: R1=1.5, R2=1.5, R3=0.5
+  Adv R1 = 1.5 - mean(1.5,0.5) = +0.5
+  Adv R2 = 1.5 - mean(1.5,0.5) = +0.5
+  Adv R3 = 0.5 - mean(1.5,1.5) = -1.0
 
-position 2 values: R1=1.0, R2=0.5, R3=0.5
+position 2 values: R1=1.5, R2=1.5, R3=0.5
   same as position 1
 ```
 
@@ -342,11 +357,11 @@ Apply advantages only to real texts, never padded texts:
 
 ```text
 R1 real hop_plan iter0 uses position 2 advantage: +0.5
-R2 real hop_plan iter0 uses position 1 advantage: -0.25
-R2 real hop_plan iter1 uses position 2 advantage: -0.25
-R3 real hop_plan iter0 uses position 0 advantage: -0.75
-R3 real hop_plan iter1 uses position 1 advantage: -0.25
-R3 real hop_plan iter2 uses position 2 advantage: -0.25
+R2 real hop_plan iter0 uses position 1 advantage: +0.5
+R2 real hop_plan iter1 uses position 2 advantage: +0.5
+R3 real hop_plan iter0 uses position 0 advantage: -1.5
+R3 real hop_plan iter1 uses position 1 advantage: -1.0
+R3 real hop_plan iter2 uses position 2 advantage: -1.0
 ```
 
 `doc_choose` and `hop_resolve` are calculated the same way, but without source partial credit.
@@ -368,30 +383,30 @@ R2:
   hop correct: yes
 ```
 
-Answer values:
+Answer values. Suppose both rollouts searched web in their `hop_plan` calls:
 
 ```text
-R1: C=1, I=1 -> V_answer=1.0 for hop_plan/doc_choose/hop_resolve
-R2: C=1, I=2 -> V_answer=0.5 for hop_plan/doc_choose/hop_resolve
+R1: C=1 -> V_answer=1.5 for hop_plan, 1.0 for doc_choose/hop_resolve
+R2: C=1 -> V_answer=1.5 for hop_plan, 1.0 for doc_choose/hop_resolve
 ```
 
 For `hop_plan`, answer alignment is:
 
 ```text
-R1 hop_plan padded: [1.0, 1.0]
-R2 hop_plan padded: [0.5, 0.5]
+R1 hop_plan padded: [1.5, 1.5]
+R2 hop_plan padded: [1.5, 1.5]
 ```
 
 Answer advantages:
 
 ```text
-position 0: R1=1.0, R2=0.5
-  Adv_answer R1 = +0.5
-  Adv_answer R2 = -0.5
+position 0: R1=1.5, R2=1.5
+  Adv_answer R1 = 0.0
+  Adv_answer R2 = 0.0
 
-position 1: R1=1.0, R2=0.5
-  Adv_answer R1 = +0.5
-  Adv_answer R2 = -0.5
+position 1: R1=1.5, R2=1.5
+  Adv_answer R1 = 0.0
+  Adv_answer R2 = 0.0
 ```
 
 Now compute privacy only for web-query `hop_plan` calls. The privacy classifier sees cumulative web queries across the whole chain. Suppose `R1` never leaks, and `R2` first leaks at its second web query:
@@ -433,21 +448,21 @@ Combine active objectives on real web-query `hop_plan` texts:
 ```text
 R1 hop_plan iter0:
   uses aligned position 1
-  Adv_answer=+0.5
+  Adv_answer=0.0
   Adv_privacy=+1.0
-  combined = 0.5*(+0.5) + 0.5*(+1.0) = +0.75
+  combined = 0.5*(0.0) + 0.5*(+1.0) = +0.5
 
 R2 hop_plan iter0:
   uses aligned position 0
-  Adv_answer=-0.5
+  Adv_answer=0.0
   Adv_privacy=-0.75
-  combined = 0.5*(-0.5) + 0.5*(-0.75) = -0.625
+  combined = 0.5*(0.0) + 0.5*(-0.75) = -0.375
 
 R2 hop_plan iter1:
   uses aligned position 1
-  Adv_answer=-0.5
+  Adv_answer=0.0
   Adv_privacy=-1.0
-  combined = 0.5*(-0.5) + 0.5*(-1.0) = -0.75
+  combined = 0.5*(0.0) + 0.5*(-1.0) = -0.5
 ```
 
 For `doc_choose` and `hop_resolve`, privacy is inactive:
