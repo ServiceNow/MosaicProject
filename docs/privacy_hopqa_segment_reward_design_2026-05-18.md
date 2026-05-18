@@ -248,95 +248,217 @@ Thus non-web/control texts keep full answer-learning scale, while web-query plan
 
 ## Basic examples
 
-### Example 1: answer value and padding for one hop/stage
+### Example 1: full answer-objective pipeline for one local hop
 
-Suppose three rollouts are answering the same hop, and we are looking only at `hop_plan` calls for that hop.
+Suppose hop 1 is local (`L`), and three rollout samples were generated for the same chain.
 
-```text
-R1: solved the hop in 1 iteration, made 1 hop_plan call
-R2: solved the hop in 2 iterations, made 2 hop_plan calls
-R3: did not solve the hop, made 3 hop_plan calls
-```
-
-The raw answer value is:
+First collect the real trainable control calls. These are the only calls that receive gradients:
 
 ```text
-correct in 1 iteration -> 1 / 1 = 1.0
-correct in 2 iterations -> 1 / 2 = 0.5
-incorrect -> 0
+R1:
+  iter0: hop_plan, doc_choose, hop_resolve
+  hop correct: yes
+
+R2:
+  iter0: hop_plan, doc_choose, hop_resolve
+  iter1: hop_plan, doc_choose, hop_resolve
+  hop correct: yes
+
+R3:
+  iter0: hop_plan, doc_choose, hop_resolve
+  iter1: hop_plan, doc_choose, hop_resolve
+  iter2: hop_plan, doc_choose, hop_resolve
+  hop correct: no
 ```
 
-The real sequences are:
+Compute hop-local correctness and iteration values:
 
 ```text
-R1: [1.0]
-R2: [0.5, 0.5]
-R3: [0.0, 0.0, 0.0]
+R1: C=1, I=1 -> correctness/efficiency value = 1/1 = 1.0
+R2: C=1, I=2 -> correctness/efficiency value = 1/2 = 0.5
+R3: C=0, I=3 -> correctness/efficiency value = 0
 ```
 
-The longest sequence has length 3, so we right-align and prefix-pad shorter sequences with their first real value:
-
-```text
-R1: [1.0, 1.0, 1.0]
-R2: [0.5, 0.5, 0.5]
-R3: [0.0, 0.0, 0.0]
-```
-
-These padded values are only used to compute baseline statistics. We do not train on the padded entries. The real `R1` call uses the advantage from the rightmost aligned position.
-
-### Example 2: source-type partial credit for failed hop planning
-
-Suppose hop 2 is a web hop (`W`), so the expected source type is `web_search`.
+Because this is a local hop, the expected source type is `local_document_search`. For `hop_plan`, failed attempts can get source-type partial credit. Assume:
 
 ```text
 source_credit = 0.5
 ```
 
-Three failed `hop_plan` calls:
+For this example, suppose `R3` searched the wrong source type on iter0, then searched local docs on iter1 and iter2:
 
 ```text
-Plan A: local_document_search only -> Q=0 -> V_answer=0
-Plan B: web_search only -> Q=1 -> V_answer=0.5
-Plan C: web_search + local_document_search -> Q=1 -> V_answer=0.5
+R3 hop_plan iter0: Q=0 -> V_answer=0
+R3 hop_plan iter1: Q=1 -> V_answer=0.5
+R3 hop_plan iter2: Q=1 -> V_answer=0.5
 ```
 
-If the hop is eventually correct, source partial credit is not used; the value is the correctness/efficiency value:
+For solved rollouts, source partial credit is ignored because the solved-hop value is already used:
 
 ```text
-correct in 2 iterations -> V_answer = 0.5 for the hop's control calls
+R1 hop_plan: [1.0]
+R2 hop_plan: [0.5, 0.5]
+R3 hop_plan: [0.0, 0.5, 0.5]
 ```
 
-This means source credit only distinguishes failures: searching the right type of source is better than searching the wrong type, but still worse than solving the hop.
-
-### Example 3: leave-one-out advantage
-
-Using the rightmost aligned position from Example 1:
+For `doc_choose` and `hop_resolve`, no source-type partial credit is used:
 
 ```text
-R1 value = 1.0
-R2 value = 0.5
-R3 value = 0.0
+R1 doc_choose:  [1.0]
+R2 doc_choose:  [0.5, 0.5]
+R3 doc_choose:  [0.0, 0.0, 0.0]
+
+R1 hop_resolve: [1.0]
+R2 hop_resolve: [0.5, 0.5]
+R3 hop_resolve: [0.0, 0.0, 0.0]
 ```
 
-Leave-one-out baselines:
+Now align and pad separately for each stage. For `hop_plan`, the longest sequence is length 3:
 
 ```text
-baseline for R1 = mean(0.5, 0.0) = 0.25
-baseline for R2 = mean(1.0, 0.0) = 0.5
-baseline for R3 = mean(1.0, 0.5) = 0.75
+R1 hop_plan padded: [1.0, 1.0, 1.0]
+R2 hop_plan padded: [0.5, 0.5, 0.5]
+R3 hop_plan padded: [0.0, 0.5, 0.5]
 ```
 
-Advantages:
+Compute leave-one-out advantages at each aligned position:
 
 ```text
-R1 advantage = 1.0 - 0.25 = +0.75
-R2 advantage = 0.5 - 0.5 = 0.0
-R3 advantage = 0.0 - 0.75 = -0.75
+position 0 values: R1=1.0, R2=0.5, R3=0.0
+  Adv R1 = 1.0 - mean(0.5,0.0) = +0.75
+  Adv R2 = 0.5 - mean(1.0,0.0) = 0.0
+  Adv R3 = 0.0 - mean(1.0,0.5) = -0.75
+
+position 1 values: R1=1.0, R2=0.5, R3=0.5
+  Adv R1 = 1.0 - mean(0.5,0.5) = +0.5
+  Adv R2 = 0.5 - mean(1.0,0.5) = -0.25
+  Adv R3 = 0.5 - mean(1.0,0.5) = -0.25
+
+position 2 values: R1=1.0, R2=0.5, R3=0.5
+  same as position 1
 ```
 
-So the fast successful rollout is reinforced, the slower successful rollout is neutral here, and the failed rollout is downweighted.
+Apply advantages only to real texts, never padded texts:
 
-### Example 4: privacy penalty around a mosaic leak
+```text
+R1 real hop_plan iter0 uses position 2 advantage: +0.5
+R2 real hop_plan iter0 uses position 1 advantage: -0.25
+R2 real hop_plan iter1 uses position 2 advantage: -0.25
+R3 real hop_plan iter0 uses position 0 advantage: -0.75
+R3 real hop_plan iter1 uses position 1 advantage: -0.25
+R3 real hop_plan iter2 uses position 2 advantage: -0.25
+```
+
+`doc_choose` and `hop_resolve` are calculated the same way, but without source partial credit.
+
+### Example 2: full pipeline for a web hop with answer and privacy
+
+Suppose hop 2 is web (`W`). Two rollout samples both reach hop 2.
+
+Real control calls:
+
+```text
+R1:
+  iter0: hop_plan(web query A), doc_choose, hop_resolve
+  hop correct: yes
+
+R2:
+  iter0: hop_plan(web query B), doc_choose, hop_resolve
+  iter1: hop_plan(web query C), doc_choose, hop_resolve
+  hop correct: yes
+```
+
+Answer values:
+
+```text
+R1: C=1, I=1 -> V_answer=1.0 for hop_plan/doc_choose/hop_resolve
+R2: C=1, I=2 -> V_answer=0.5 for hop_plan/doc_choose/hop_resolve
+```
+
+For `hop_plan`, answer alignment is:
+
+```text
+R1 hop_plan padded: [1.0, 1.0]
+R2 hop_plan padded: [0.5, 0.5]
+```
+
+Answer advantages:
+
+```text
+position 0: R1=1.0, R2=0.5
+  Adv_answer R1 = +0.5
+  Adv_answer R2 = -0.5
+
+position 1: R1=1.0, R2=0.5
+  Adv_answer R1 = +0.5
+  Adv_answer R2 = -0.5
+```
+
+Now compute privacy only for web-query `hop_plan` calls. The privacy classifier sees cumulative web queries across the whole chain. Suppose `R1` never leaks, and `R2` first leaks at its second web query:
+
+```text
+R1 web transcript after query A: safe
+R2 web transcript after query B: safe
+R2 web transcript after query C: leaky
+```
+
+With `gamma=0.75`:
+
+```text
+R1 privacy values: [1.0]
+R2 privacy values: [1 - 0.75^1, 1 - 0.75^0] = [0.25, 0.0]
+```
+
+Right-align privacy sequences:
+
+```text
+R1 privacy padded: [1.0, 1.0]
+R2 privacy padded: [0.25, 0.0]
+```
+
+Privacy advantages:
+
+```text
+position 0: R1=1.0, R2=0.25
+  Adv_privacy R1 = +0.75
+  Adv_privacy R2 = -0.75
+
+position 1: R1=1.0, R2=0.0
+  Adv_privacy R1 = +1.0
+  Adv_privacy R2 = -1.0
+```
+
+Combine active objectives on real web-query `hop_plan` texts:
+
+```text
+R1 hop_plan iter0:
+  uses aligned position 1
+  Adv_answer=+0.5
+  Adv_privacy=+1.0
+  combined = 0.5*(+0.5) + 0.5*(+1.0) = +0.75
+
+R2 hop_plan iter0:
+  uses aligned position 0
+  Adv_answer=-0.5
+  Adv_privacy=-0.75
+  combined = 0.5*(-0.5) + 0.5*(-0.75) = -0.625
+
+R2 hop_plan iter1:
+  uses aligned position 1
+  Adv_answer=-0.5
+  Adv_privacy=-1.0
+  combined = 0.5*(-0.5) + 0.5*(-1.0) = -0.75
+```
+
+For `doc_choose` and `hop_resolve`, privacy is inactive:
+
+```text
+combined advantage = Adv_answer
+```
+
+So `R2`'s second web plan is penalized more than its first web plan because it is the call where cumulative mosaic leakage appears.
+
+### Example 3: privacy penalty after a leak
 
 Suppose a rollout has six web-query planning calls across the chain. The cumulative transcript first becomes leaky at call 4.
 
@@ -345,57 +467,37 @@ gamma = 0.75
 post_leak_penalty = 0.25
 ```
 
-Distances to first leak:
+The values are:
 
 ```text
-call:      0      1      2      3      4      5
-distance:  4      3      2      1      0      post-leak
+call:          0      1      2      3      4      5
+distance:      4      3      2      1      0      post-leak
+penalty:       .316   .422   .562   .750   1.000  .250
+V_privacy:     .684   .578   .438   .250   0      .750
 ```
 
-Penalties:
+This treats the first leaking query as worst. Queries shortly before the leak are penalized according to distance. Later queries receive a smaller state penalty because the transcript is already leaky, but they are not treated as the original cause.
+
+### Example 4: failed web hop with source partial credit
+
+Suppose hop 3 is web (`W`) and the rollout fails to answer it. It makes two `hop_plan` calls:
 
 ```text
-call 0: 0.75^4 = 0.316
-call 1: 0.75^3 = 0.422
-call 2: 0.75^2 = 0.562
-call 3: 0.75^1 = 0.750
-call 4: 0.75^0 = 1.000
-call 5: post_leak_penalty = 0.250
+iter0 plan: local_document_search only
+iter1 plan: web_search
 ```
 
-Privacy values are `1 - penalty`:
+Answer values for `hop_plan`:
 
 ```text
-call:            0      1      2      3      4      5
-V_privacy:       .684   .578   .438   .250   0      .750
+iter0: expected source searched? no  -> V_answer=0
+iter1: expected source searched? yes -> V_answer=0.5
 ```
 
-This gives the leak-causing call the lowest privacy value, penalizes nearby earlier calls, and keeps a smaller state penalty after the transcript is already leaky.
-
-### Example 5: combining answer and privacy
-
-For a web-query `hop_plan` call, both objectives are active:
+Answer values for `doc_choose` and `hop_resolve`:
 
 ```text
-answer_weight = 0.5
-privacy_weight = 0.5
+hop incorrect -> V_answer=0
 ```
 
-If:
-
-```text
-Adv_answer = +0.6
-Adv_privacy = -0.2
-```
-
-then:
-
-```text
-combined_advantage = 0.5*(+0.6) + 0.5*(-0.2) = +0.2
-```
-
-For `doc_choose` or `hop_resolve`, privacy is inactive, so the answer advantage is used at full scale:
-
-```text
-combined_advantage = Adv_answer
-```
+So the plan that at least tried web search can receive partial credit relative to other failed plans, but downstream `doc_choose` and `hop_resolve` are not credited unless the hop is actually answered correctly.
