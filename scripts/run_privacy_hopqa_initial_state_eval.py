@@ -100,6 +100,20 @@ def iso_now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+def normalize_openai_base_url(base_url: str) -> str:
+    """Return the endpoint root used before `/v1/...` API paths.
+
+    The rollout transport builds OpenAI-compatible paths itself. Hosted APIs
+    such as OpenRouter commonly document the base URL with `/v1` included, so
+    normalize that form here instead of requiring every launch command to know
+    the harness convention.
+    """
+    normalized = base_url.rstrip("/")
+    if normalized.endswith("/v1"):
+        normalized = normalized[:-3].rstrip("/")
+    return normalized
+
+
 def slugify(value: str) -> str:
     text = re.sub(r"[^A-Za-z0-9._-]+", "_", value.strip())
     return text.strip("_").lower() or "model"
@@ -470,6 +484,13 @@ async def run_split_cases(
 async def run_all(args: argparse.Namespace) -> None:
     import aiohttp
 
+    if args.api_key_env:
+        api_token = os.environ.get(args.api_key_env, "")
+        if not api_token:
+            raise ValueError(f"--api-key-env was set to {args.api_key_env!r}, but that environment variable is empty")
+        os.environ["PIPELINERL_LLM_TOKEN"] = api_token
+    args.base_url = normalize_openai_base_url(args.base_url)
+
     pipelinerl_root = Path(args.pipelinerl_root).expanduser()
     (
         OmegaConf,
@@ -677,6 +698,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model-label", required=True)
     parser.add_argument("--model", required=True)
     parser.add_argument("--base-url", required=True, help="OpenAI-compatible base URL without /v1.")
+    parser.add_argument(
+        "--api-key-env",
+        default="",
+        help="Name of an environment variable containing the API key. The value is not written to command logs.",
+    )
     parser.add_argument("--tokenizer-name", default=None)
     parser.add_argument("--dataset-root", default=str(DEFAULT_DATASET_ROOT))
     parser.add_argument("--dataset-basename", default=DEFAULT_DATASET_BASENAME)

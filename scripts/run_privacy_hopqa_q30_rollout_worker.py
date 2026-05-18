@@ -38,7 +38,16 @@ def write_json(path: Path, data: dict[str, Any]) -> None:
     path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
+def normalize_openai_base_url(base_url: str) -> str:
+    """Return the endpoint root used before `/v1/...` API paths."""
+    normalized = base_url.rstrip("/")
+    if normalized.endswith("/v1"):
+        normalized = normalized[:-3].rstrip("/")
+    return normalized
+
+
 def wait_for_models(base_url: str, timeout_s: float) -> None:
+    base_url = normalize_openai_base_url(base_url)
     deadline = time.time() + timeout_s
     url = base_url.rstrip("/") + "/v1/models"
     last_error = ""
@@ -58,6 +67,7 @@ def wait_for_models(base_url: str, timeout_s: float) -> None:
 
 def start_vllm(args: argparse.Namespace, model_run_root: Path) -> subprocess.Popen[bytes] | None:
     if args.base_url:
+        args.base_url = normalize_openai_base_url(args.base_url)
         print(f"using external model endpoint {args.base_url}", flush=True)
         return None
     log_path = model_run_root / "logs" / "vllm.log"
@@ -117,7 +127,7 @@ def run_rollouts(args: argparse.Namespace, model_run_root: Path, base_url: str) 
         "--model",
         args.served_model_name,
         "--base-url",
-        base_url.rstrip("/"),
+        normalize_openai_base_url(base_url),
         "--tokenizer-name",
         args.tokenizer_name or args.model_path or args.served_model_name,
         "--dataset-root",
@@ -177,6 +187,8 @@ def run_rollouts(args: argparse.Namespace, model_run_root: Path, base_url: str) 
     ]
     if args.request_params_json:
         cmd.extend(["--request-params-json", args.request_params_json])
+    if args.api_key_env:
+        cmd.extend(["--api-key-env", args.api_key_env])
     if args.skip_failed:
         cmd.append("--skip-failed")
     if args.planner_privacy_prompt:
@@ -201,6 +213,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model-path", default="")
     parser.add_argument("--tokenizer-name", default="")
     parser.add_argument("--base-url", default="")
+    parser.add_argument(
+        "--api-key-env",
+        default="",
+        help="Name of an environment variable containing the API key. The value is not written to command logs.",
+    )
     parser.add_argument("--splits", nargs="+", default=["test"])
     parser.add_argument("--repeats", type=int, default=1)
     parser.add_argument("--dataset-root", type=Path, default=DEFAULT_DATASET_ROOT)
