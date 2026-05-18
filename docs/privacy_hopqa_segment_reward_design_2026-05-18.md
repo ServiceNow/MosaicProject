@@ -71,7 +71,31 @@ The reward model sees only the company name and the visible web query strings fo
 
 This section is a design target for the next Privacy HopQA reward iteration. It replaces raw global `step_index` alignment with hop/stage-local segment alignment.
 
-### Notation
+### Notation and terms
+
+This section uses `value` for the scalar reward/return assigned before baseline subtraction, and `advantage` only for the leave-one-out normalized training weight.
+
+Indices:
+
+```text
+g = rollout group / chain id
+r = rollout index within group g
+h = hop number in the chain
+s = trainable control stage, one of {hop_plan, doc_choose, hop_resolve}
+t = real call index within (r,h,s), starting at 0
+m = aligned position after right-aligning variable-length call sequences
+```
+
+Per-hop quantities:
+
+```text
+C_{r,h} = 1 if rollout r answered hop h correctly, else 0
+I_{r,h} = number of agent iterations used while working on hop h
+E_h = expected source type for hop h from the L/W pattern
+Q_{r,h,t} = 1 if hop_plan call t searched E_h, else 0
+```
+
+`I_{r,h}` is a hop-local iteration count, not a global rollout length. It is used only to define the raw answer value below; it is not the advantage.
 
 For rollout `r`, hop `h`, stage `s`, and stage-call index `t`:
 
@@ -92,25 +116,16 @@ pos(r,h,s,t) = M_{g,h,s} - n_{r,h,s} + t
 
 ### Answer objective
 
-Let:
-
-```text
-C_{r,h} = 1 if rollout r answered hop h correctly, else 0
-I_{r,h} = number of iterations used on hop h
-E_{r,h} = expected source type for hop h, from the L/W pattern
-Q_{r,h,t} = 1 if hop_plan call t searched E_{r,h}, else 0
-```
-
 For `doc_choose` and `hop_resolve`:
 
 ```text
-A_{r,h,s,t} = C_{r,h} / max(I_{r,h}, 1)
+V_answer(r,h,s,t) = C_{r,h} / max(I_{r,h}, 1)
 ```
 
 For `hop_plan`, add source-type partial credit when the hop was not solved:
 
 ```text
-A_{r,h,hop_plan,t} =
+V_answer(r,h,hop_plan,t) =
     C_{r,h} / max(I_{r,h}, 1)                 if C_{r,h}=1
     source_credit * Q_{r,h,t}                 if C_{r,h}=0
     0                                         otherwise
@@ -122,6 +137,8 @@ Default:
 source_credit = 0.5
 ```
 
+This is the raw answer value. It is intentionally not called an advantage. The advantage is computed only after comparing this value against other rollout values in the same aligned bucket.
+
 Prefix padding for answer uses the same value definition. If no real value exists because the hop was never reached, mask that rollout from this hop/stage bucket.
 
 The answer baseline bucket is:
@@ -130,10 +147,12 @@ The answer baseline bucket is:
 B_answer = (group_id, hop_number, stage, aligned_position)
 ```
 
-The leave-one-out answer advantage for a real text is:
+The leave-one-out answer advantage for a real text `i` is:
 
 ```text
-Adv_answer_i = A_i - mean({A_j : j in B_answer, rollout(j) != rollout(i)})
+Adv_answer_i =
+    V_answer_i
+    - mean({V_answer_j : j in B_answer, rollout(j) != rollout(i)})
 ```
 
 Optionally divide by bucket standard deviation, matching existing RL config behavior.
@@ -161,7 +180,7 @@ Let:
 F_r = first k where L_{r,k}=1, or null if no leak
 ```
 
-The privacy penalty uses discounted distance to the first cumulative leak:
+The privacy penalty uses discounted distance to the first cumulative leak. This is a raw value definition, not the advantage:
 
 ```text
 P_{r,k} =
@@ -179,7 +198,7 @@ max_back = 10
 post_leak_penalty = 0.25
 ```
 
-Equivalently, the privacy value is:
+Equivalently, the raw privacy value is:
 
 ```text
 V_privacy_{r,k} = 1 - P_{r,k}
@@ -196,7 +215,9 @@ Prefix padding for privacy uses the same value convention: pad with the first re
 The privacy advantage for a real web-query planning text is:
 
 ```text
-Adv_privacy_i = V_privacy_i - mean({V_privacy_j : j in B_privacy, rollout(j) != rollout(i)})
+Adv_privacy_i =
+    V_privacy_i
+    - mean({V_privacy_j : j in B_privacy, rollout(j) != rollout(i)})
 ```
 
 ### Combining objectives
