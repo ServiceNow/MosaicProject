@@ -226,7 +226,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-iterations", type=int, default=21)
     parser.add_argument("--hop-plan-attempts", type=int, default=1)
     parser.add_argument("--case-attempts", type=int, default=1)
-    parser.add_argument("--skip-failed", action="store_true")
+    parser.add_argument(
+        "--skip-failed",
+        action="store_true",
+        help="Deprecated compatibility flag. Agent-induced failures are terminal; infrastructure/system failures remain retryable.",
+    )
     parser.add_argument("--case-retry-delay-s", type=float, default=5.0)
     parser.add_argument("--planner-privacy-prompt", action="store_true")
     parser.add_argument("--choose-top-k", type=int, default=3)

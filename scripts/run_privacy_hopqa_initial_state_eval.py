@@ -44,14 +44,56 @@ class RunStats:
     ok: int = 0
     failed: int = 0
     skipped: int = 0
+    system_failed: int = 0
 
-    def record(self, ok: bool, skipped: bool = False) -> None:
-        if skipped:
+    def record(self, status: str) -> None:
+        if status == "skipped":
             self.skipped += 1
-        elif ok:
+        elif status == "system_failed":
+            self.system_failed += 1
+        elif status == "ok":
             self.ok += 1
         else:
             self.failed += 1
+
+
+def classify_failure(error_type: str, error: str) -> str:
+    """Classify rollout failures for scoring and resume.
+
+    Agent failures are model/protocol failures, such as malformed JSON, and
+    count as accuracy errors. Infrastructure and artifact failures are retryable
+    and should not consume a repeat.
+    """
+    message = (error or "").lower()
+    if error_type == "PrivacyHopQALLMInfrastructureError" or "llm infrastructure failure" in message:
+        return "infrastructure"
+    if any(
+        marker in message
+        for marker in [
+            "cannot connect to host",
+            "connection timeout",
+            "server disconnected",
+            "asyncenginedeaderror",
+            "engine background task failed",
+        ]
+    ):
+        return "infrastructure"
+    if "expected exactly one new trace" in message:
+        return "system"
+    if error_type in {"PrivacyHopQAProtocolError", "JSONDecodeError"}:
+        return "agent"
+    if any(marker in message for marker in ["protocol error", "no valid json", "resolver_wipe"]):
+        return "agent"
+    return "system"
+
+
+def failure_counts_for_accuracy(row: dict[str, Any]) -> bool:
+    if row.get("ok"):
+        return True
+    kind = str(row.get("failure_kind") or "").strip().lower()
+    if not kind:
+        kind = classify_failure(str(row.get("error_type") or ""), str(row.get("error") or ""))
+    return kind == "agent"
 
 
 def iso_now() -> str:
@@ -110,6 +152,7 @@ def training_text_token_totals(training_texts: list[Any]) -> dict[str, int]:
 
 
 def load_completed(index_path: Path, model_label: str, include_failed: bool = False) -> set[tuple[str, str, int]]:
+    del include_failed  # Agent-induced failures are always terminal; system failures remain retryable.
     completed: set[tuple[str, str, int]] = set()
     if not index_path.exists():
         return completed
@@ -121,8 +164,9 @@ def load_completed(index_path: Path, model_label: str, include_failed: bool = Fa
                 continue
             if row.get("model_label") != model_label:
                 continue
-            if not row.get("ok") and not include_failed:
-                continue
+            if not row.get("ok"):
+                if not failure_counts_for_accuracy(row):
+                    continue
             completed.add((str(row.get("split")), str(row.get("chain_id")), int(row.get("repeat", 0))))
     return completed
 
@@ -242,7 +286,8 @@ async def run_case(
     index_path: Path,
     error_path: Path,
     attempt_path: Path,
-) -> bool:
+    system_error_path: Path,
+) -> str:
     split_name = case.split_name
     split_output_dir = case.split_output_dir
     problem = case.problem
@@ -303,6 +348,8 @@ async def run_case(
                 }
                 break
             except Exception as exc:
+                failure_kind = classify_failure(type(exc).__name__, str(exc))
+                terminal_failure = attempt >= case_attempts and failure_kind == "agent"
                 row = {
                     "timestamp": iso_now(),
                     "ok": False,
@@ -323,8 +370,10 @@ async def run_case(
                     "attempts_exhausted": attempt >= case_attempts,
                     "error_type": type(exc).__name__,
                     "error": str(exc),
+                    "failure_kind": failure_kind,
+                    "counts_for_accuracy": failure_kind == "agent",
                 }
-                attempt_rows.append({**row, "final_index_row": attempt >= case_attempts})
+                attempt_rows.append({**row, "final_index_row": terminal_failure})
                 if attempt < case_attempts:
                     delay = min(120.0, max(0.0, args.case_retry_delay_s) * (2 ** (attempt - 1)))
                     print(
@@ -338,17 +387,21 @@ async def run_case(
     async with write_lock:
         for attempt_row in attempt_rows:
             append_jsonl(attempt_path, attempt_row)
-        append_jsonl(index_path, row)
-        if not row.get("ok"):
-            append_jsonl(error_path, row)
-        status = "ok" if row.get("ok") else "fail"
+        if row.get("ok") or failure_counts_for_accuracy(row):
+            append_jsonl(index_path, row)
+            if not row.get("ok"):
+                append_jsonl(error_path, row)
+            status = "ok" if row.get("ok") else "agent_failed"
+        else:
+            append_jsonl(system_error_path, row)
+            status = "system_failed"
         print(
             f"{status} model={args.model_label} split={split_name} repeat={repeat} "
             f"chain={chain_id} attempt={row.get('case_attempt')}/{row.get('case_attempts')} "
             f"latency={row.get('latency_s')}s",
             flush=True,
         )
-    return bool(row.get("ok"))
+    return status
 
 
 async def run_split_cases(
@@ -361,6 +414,7 @@ async def run_split_cases(
     index_path: Path,
     error_path: Path,
     attempt_path: Path,
+    system_error_path: Path,
 ) -> RunStats:
     stats = RunStats(queued=len(cases))
     if not cases:
@@ -400,6 +454,7 @@ async def run_split_cases(
                         index_path,
                         error_path,
                         attempt_path,
+                        system_error_path,
                     )
                 stats.record(ok)
             finally:
@@ -433,6 +488,7 @@ async def run_all(args: argparse.Namespace) -> None:
     index_path = tables_dir / "rollout_index.jsonl"
     error_path = tables_dir / "rollout_errors.jsonl"
     attempt_path = tables_dir / "rollout_attempts.jsonl"
+    system_error_path = tables_dir / "rollout_system_errors.jsonl"
     provenance_path = output_root / "config" / "provenance.json"
     provenance_path.parent.mkdir(parents=True, exist_ok=True)
     if not provenance_path.exists() or args.force_provenance:
@@ -590,17 +646,22 @@ async def run_all(args: argparse.Namespace) -> None:
                 index_path,
                 error_path,
                 attempt_path,
+                system_error_path,
             )
             total_stats.queued += split_stats.queued
             total_stats.ok += split_stats.ok
             total_stats.failed += split_stats.failed
+            total_stats.skipped += split_stats.skipped
+            total_stats.system_failed += split_stats.system_failed
             print(
                 f"split_done model={model_label} split={split_name} "
-                f"queued={split_stats.queued} ok={split_stats.ok} failed={split_stats.failed}",
+                f"queued={split_stats.queued} ok={split_stats.ok} failed={split_stats.failed} "
+                f"system_failed={split_stats.system_failed}",
                 flush=True,
             )
     print(
-        f"all_done model={model_label} queued={total_stats.queued} ok={total_stats.ok} failed={total_stats.failed}",
+        f"all_done model={model_label} queued={total_stats.queued} ok={total_stats.ok} "
+        f"failed={total_stats.failed} system_failed={total_stats.system_failed}",
         flush=True,
     )
     if total_stats.failed and not args.continue_on_error:
@@ -634,7 +695,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--skip-failed",
         action="store_true",
-        help="When resuming, treat prior failed rollout rows as completed instead of retrying them.",
+        help="Deprecated compatibility flag. Agent-induced failed rows are always terminal; infrastructure/system failures remain retryable.",
     )
     parser.add_argument("--case-retry-delay-s", type=float, default=5.0)
     parser.add_argument("--concurrency", type=int, default=16)
