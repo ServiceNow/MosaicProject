@@ -95,8 +95,8 @@ E_h = expected source type for hop h from the L/W pattern
 Q_{r,h,t} = 1 if hop_plan call t searched E_h, else 0
 ```
 
-`I_{r,h}` is a hop-local iteration count. The answer value divides by it to discourage using unnecessary iterations.
-This is measured from the actual rollout trace. It does not require a separate per-hop hard cap; the harness may still enforce a rollout-level budget such as `2 * num_hops`.
+`I_{r,h}` is a hop-local iteration count. The answer value divides by it to discourage using unnecessary iterations on that hop.
+This should be measured from the actual rollout trace and bounded by the configured per-hop attempt cap when the harness exposes one. A rollout-level cap can still exist as a global safety budget, but it is not the denominator in the reward formula.
 
 For rollout `r`, hop `h`, stage `s`, and stage-call index `t`:
 
