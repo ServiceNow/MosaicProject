@@ -36,7 +36,7 @@ REPO = Path(__file__).resolve().parents[1]
 DEFAULT_AUDIT_ROWS = REPO / "runtime_analysis/privacy_hopqa_retrieval_method_audit_2026-05-14_large240/retrieval_method_rows.jsonl"
 DEFAULT_DATASET = REPO / "data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review_train.jsonl"
 DEFAULT_OUT_DIR = REPO / "runtime_analysis/privacy_hopqa_rrf_replay_qwen4b_2026-05-14"
-DEFAULT_LOCAL_INDEX_ROOT = Path("/mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/local_indices_fixeddeps_20260415")
+DEFAULT_LOCAL_INDEX_ROOT = Path("/mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/local_indices_goldcoverage_20260519")
 FULL_DOCS_DIR = Path("/home/toolkit/full_docs")
 MODEL = "Qwen/Qwen3-4B-Instruct-2507"
 

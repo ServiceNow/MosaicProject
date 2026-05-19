@@ -39,12 +39,34 @@ Shared retrieval artifacts:
 ## Local-index coverage
 
 Privacy HopQA dataset generation used every usable file under each task's
-`DRxxxx/files/**` directory. Helper local indices must therefore be built from
-the same all-files corpus, not only from `config/env.json`. The old
+`DRxxxx/files/**` directory. Helper local indices must cover that finalized
+gold-document set, not only `config/env.json`. The old
 `local_indices_fixeddeps_20260415` artifact misses local gold documents for
 some finalized q30 hops and should not be used for new training runs.
 
-Build the all-files local index:
+The current helper artifact is:
+
+```text
+/mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/local_indices_goldcoverage_20260519
+```
+
+It was created by copying the old fixed-dependency index root and rebuilding
+the 34 tasks whose finalized q30 local gold documents were absent. This keeps
+the artifact compatible with previous extraction behavior while fixing every
+known impossible local-hop retrieval case. Duplicate-content files preserve all
+source-path aliases in vector-store metadata so gold docs that share identical
+text with sister files still validate correctly.
+
+The missing-task list used for the targeted rebuild is tracked at:
+
+```text
+data_files/privacy_hopqa_final_dataset/missing_local_index_tasks_20260519.txt
+```
+
+To rebuild those coverage-fix tasks again, run the builder with
+`--task-ids-file`, `--local-file-source all-files`, and
+`--index-root .../local_indices_goldcoverage_20260519`. The temporary EAI
+shard specs used on 2026-05-19 are not required for normal launches.
 
 ```bash
 cd /home/toolkit/my_code/MosaicProject
@@ -56,7 +78,7 @@ Validate local gold-document coverage before launching helpers:
 ```bash
 cd /home/toolkit/my_code/MosaicProject
 python3 scripts/validate_privacy_hopqa_local_index_coverage.py \
-  --local-index-root /mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/local_indices_allfiles_20260519
+  --local-index-root /mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/local_indices_goldcoverage_20260519
 ```
 
 Expected result after the rebuild is `missing_local_hops: 0`.
@@ -129,11 +151,14 @@ answer_match_mode=exact_or_f1
 helper_timeout_s=180
 max_parallel_doc_reads=10
 reader_window_chars=10000
-actor.llm_max_rollouts=64
+actor.llm_max_rollouts=32
 eval_every_n_versions=40960
 ```
 
 Only increase `actor.llm_max_rollouts` after helper health is stable.
+For the next call-normalized runs, use `world.actor_fraction=2` and
+`world.finetune_fraction=6` to reduce actor/helper pressure and allocate more
+replica capacity to finetuning.
 
 ## Hop-step additive-cost LR sweep, 50 steps
 
@@ -144,15 +169,18 @@ Reward semantics:
 ```text
 current_hop_correct = 1 if the current hop answer matches, else 0
 searched_expected_source = 1 only for hop_plan calls that searched the hop's expected source type, else 0
+selected_gold_parent = 1 only for doc_choose calls that selected a parent document aliasing the hop's gold doc, else 0
 efficiency_factor = min correct hop LLM calls in the comparison group / this rollout's hop LLM calls
 
 hop_plan base reward = current_hop_correct + 0.25 * searched_expected_source
-doc_choose and hop_resolve base reward = current_hop_correct
+doc_choose base reward = current_hop_correct + 0.25 * selected_gold_parent
+hop_resolve base reward = current_hop_correct
 efficiency bonus = 0.25 * current_hop_correct * efficiency_factor
 final hop-step reward = base reward + efficiency bonus
 ```
 
 Expected source type means the dataset hop type: local hops expect `local_document_search`, and web hops expect `web_search`.
+Selected gold parent uses the same document identity aliasing as the gold-read metrics, so local converted paths, source-file locators, parent IDs, and web evidence-window IDs can match the dataset gold doc without content guessing.
 Hop LLM calls include `hop_plan`, `doc_choose`, `doc_read`, and `hop_resolve` calls for that hop. Search/retrieval calls are not counted.
 The efficiency bonus is additive and only applies to correct hop attempts. This keeps any correct hop above any incorrect hop while still preferring correct rollouts that answered with fewer LLM calls.
 The rollout-level reward is still hop accuracy; the per-call RL advantages use hop/stage buckets from the final hop-step reward.
@@ -173,7 +201,7 @@ training_reward_mode=hop_step
 hop_step_efficiency_metric=llm_calls
 reward_mode=hop_accuracy
 reader_window_chars=10000
-actor.llm_max_rollouts=64
+actor.llm_max_rollouts=32
 eval_every_n_versions=40960
 max_train_steps=50
 interrupt_train_steps=50
@@ -205,7 +233,7 @@ LEARNING_RATE=1e-6 \
 MODEL_PATH="$PRIVACY_HOPQA_MODEL_4B" \
 CAPTURE_MODE=planning_only \
 FILTER_ZERO_ADVANTAGE_GROUPS="$PRIVACY_HOPQA_FILTER_ZERO_ADVANTAGE_GROUPS" \
-EXTRA_OVERRIDES="$PRIVACY_HOPQA_HOP_STEP_REWARD_OVERRIDE $PRIVACY_HOPQA_COMMON_EXTRA_OVERRIDES privacy_hopqa.reader_window_chars=10000 finetune.max_train_steps=50 finetune.interrupt_train_steps=50 finetune.save_checkpoint_steps=10 actor.llm_max_rollouts=64 eval_every_n_versions=40960" \
+EXTRA_OVERRIDES="$PRIVACY_HOPQA_HOP_STEP_REWARD_OVERRIDE $PRIVACY_HOPQA_COMMON_EXTRA_OVERRIDES privacy_hopqa.reader_window_chars=10000 finetune.max_train_steps=50 finetune.interrupt_train_steps=50 finetune.save_checkpoint_steps=10 actor.llm_max_rollouts=32 world.actor_fraction=2 world.finetune_fraction=6 eval_every_n_versions=40960" \
 ./run_privacy_hopqa.sh
 ```
 
@@ -229,43 +257,145 @@ JOB="privacy_hopqa_q30_4b_hopstep_addcost10k_lr1e5_50s_${TS}"
 ## Hop-step call-normalized clipping experiment, 50 steps
 
 This run keeps the additive hop-step reward above, but changes the optimizer
-signal in two ways:
+signal and resource allocation:
 
 ```text
 finetune.rl.normalize_step_loss_by_advantage_group=true
 finetune.rl.epsilon_low=0.03
 finetune.rl.epsilon_high=0.04
+actor.llm_max_rollouts=32
+privacy_hopqa.max_parallel_doc_reads=5
+world.actor_fraction=2
+world.finetune_fraction=6
 ```
 
 Use this when testing whether previous stagnation was caused by overly tight
 GSPO clipping and long multi-step traces contributing too many repeated
-stage-local updates.
+stage-local updates. The lower rollout cap and smaller actor fraction reduce
+helper pressure while the larger finetune fraction gives each replica more
+capacity for optimizer work.
 
-Planned trainer command after the new index is built and the matching helper is running:
+For the next ablation, run two 4-replica trainers at the same time with the
+new local gold-coverage index and separate helpers. This keeps the experiment
+scope small: both runs use the same local-document coverage fixes, call-count
+advantage normalization, clipping, rollout cap, and learning rate. The only
+intentional difference is whether document-choice shaping is enabled.
+
+```text
+shared settings:
+model=Qwen/Qwen3-4B-Instruct-2507
+replicas=4
+learning_rate=1e-6
+testing/eval disabled for speed with eval_every_n_versions=0
+actor.llm_max_rollouts=32
+world.actor_fraction=2
+world.finetune_fraction=6
+finetune.rl.epsilon_low=0.03
+finetune.rl.epsilon_high=0.04
+finetune.rl.normalize_step_loss_by_advantage_group=true
+max_train_steps=50
+interrupt_train_steps=50
+save_checkpoint_steps=10
+
+run A: privacy_hopqa.hop_step_doc_bonus=0.25  # document-choice gold-parent bonus on
+run B: privacy_hopqa.hop_step_doc_bonus=0.0   # document-choice gold-parent bonus off
+```
+
+The source-type hop-plan bonus remains enabled for both runs. The ablation only
+tests whether the document-choice shaping term is helpful or too noisy. If the
+off run is cleaner, keep the local-document coverage fixes and drop only the
+document-choice bonus.
+
+Trainer command for the document-choice-bonus-on run:
 
 ```bash
 cd /home/toolkit/my_code/MosaicProject
 source configs/privacy_hopqa_q30_current.env
 export PATH=/home/toolkit/.local/bin:$PATH
-export PRIVACY_AGENT_HELPER_URL="http://<helper-for-new-index>:8012"
+export PRIVACY_AGENT_HELPER_URL="http://<helper-for-docbonus-on>:8012"
 
 TS=$(date +%Y%m%d%H%M%S)
-JOB="privacy_hopqa_q30_4b_hopstep_callnorm_clip3e2_lr5e7_50s_${TS}"
+JOB="privacy_hopqa_q30_4b_hopstep_callnorm_docbonus_lr1e6_50s_${TS}"
 
 PIPELINERL_ROOT="$PIPELINERL_ROOT" \
 OUTPUT_DIR_BASE="$PRIVACY_HOPQA_OUTPUT_DIR_BASE" \
 LOCAL_INDEX_ROOT="$PRIVACY_AGENT_LOCAL_INDEX_ROOT" \
 JOB_NAME="$JOB" \
-WANDB_PROJECT="privacy_hopqa_q30_hopstep_callnorm_20260519" \
-WANDB_GROUP="hopstep_callnorm_clip3e2_50s" \
+WANDB_PROJECT="privacy_hopqa_q30_docbonus_ablation_20260519" \
+WANDB_GROUP="hopstep_callnorm_clip3e2_lr1e6_50s" \
 WANDB_NAME="$JOB" \
 REPLICAS=4 \
-LEARNING_RATE=5e-7 \
+LEARNING_RATE=1e-6 \
 MODEL_PATH="$PRIVACY_HOPQA_MODEL_4B" \
 CAPTURE_MODE=planning_only \
 FILTER_ZERO_ADVANTAGE_GROUPS="$PRIVACY_HOPQA_FILTER_ZERO_ADVANTAGE_GROUPS" \
-EXTRA_OVERRIDES="$PRIVACY_HOPQA_HOP_STEP_REWARD_OVERRIDE $PRIVACY_HOPQA_COMMON_EXTRA_OVERRIDES privacy_hopqa.reader_window_chars=10000 finetune.max_train_steps=50 finetune.interrupt_train_steps=50 finetune.save_checkpoint_steps=10 actor.llm_max_rollouts=64 eval_every_n_versions=40960 finetune.rl.epsilon_low=0.03 finetune.rl.epsilon_high=0.04 finetune.rl.normalize_step_loss_by_advantage_group=true" \
+EXTRA_OVERRIDES="$PRIVACY_HOPQA_HOP_STEP_REWARD_OVERRIDE $PRIVACY_HOPQA_COMMON_EXTRA_OVERRIDES privacy_hopqa.reader_window_chars=10000 privacy_hopqa.max_parallel_doc_reads=5 privacy_hopqa.hop_step_doc_bonus=0.25 finetune.max_train_steps=50 finetune.interrupt_train_steps=50 finetune.save_checkpoint_steps=10 actor.llm_max_rollouts=32 world.actor_fraction=2 world.finetune_fraction=6 eval_every_n_versions=0 finetune.rl.epsilon_low=0.03 finetune.rl.epsilon_high=0.04 finetune.rl.normalize_step_loss_by_advantage_group=true" \
 ./run_privacy_hopqa.sh
+```
+
+Trainer command for the document-choice-bonus-off run:
+
+```bash
+cd /home/toolkit/my_code/MosaicProject
+source configs/privacy_hopqa_q30_current.env
+export PATH=/home/toolkit/.local/bin:$PATH
+export PRIVACY_AGENT_HELPER_URL="http://<helper-for-docbonus-off>:8012"
+
+TS=$(date +%Y%m%d%H%M%S)
+JOB="privacy_hopqa_q30_4b_hopstep_callnorm_nodocbonus_lr1e6_50s_${TS}"
+
+PIPELINERL_ROOT="$PIPELINERL_ROOT" \
+OUTPUT_DIR_BASE="$PRIVACY_HOPQA_OUTPUT_DIR_BASE" \
+LOCAL_INDEX_ROOT="$PRIVACY_AGENT_LOCAL_INDEX_ROOT" \
+JOB_NAME="$JOB" \
+WANDB_PROJECT="privacy_hopqa_q30_docbonus_ablation_20260519" \
+WANDB_GROUP="hopstep_callnorm_clip3e2_lr1e6_50s" \
+WANDB_NAME="$JOB" \
+REPLICAS=4 \
+LEARNING_RATE=1e-6 \
+MODEL_PATH="$PRIVACY_HOPQA_MODEL_4B" \
+CAPTURE_MODE=planning_only \
+FILTER_ZERO_ADVANTAGE_GROUPS="$PRIVACY_HOPQA_FILTER_ZERO_ADVANTAGE_GROUPS" \
+EXTRA_OVERRIDES="$PRIVACY_HOPQA_HOP_STEP_REWARD_OVERRIDE $PRIVACY_HOPQA_COMMON_EXTRA_OVERRIDES privacy_hopqa.reader_window_chars=10000 privacy_hopqa.max_parallel_doc_reads=5 privacy_hopqa.hop_step_doc_bonus=0.0 finetune.max_train_steps=50 finetune.interrupt_train_steps=50 finetune.save_checkpoint_steps=10 actor.llm_max_rollouts=32 world.actor_fraction=2 world.finetune_fraction=6 eval_every_n_versions=0 finetune.rl.epsilon_low=0.03 finetune.rl.epsilon_high=0.04 finetune.rl.normalize_step_loss_by_advantage_group=true" \
+./run_privacy_hopqa.sh
+```
+
+## Live jobs: 2026-05-19 document-choice-bonus ablation
+
+```text
+wandb_project=privacy_hopqa_q30_docbonus_ablation_20260519
+wandb_group=hopstep_callnorm_clip3e2_lr1e6_50s
+
+doc_bonus=0.25 helper=18e06824-710e-4d11-a025-120628884410
+doc_bonus=0.25 helper_url=http://dns-24e3447c-506e-4b21-92df-156e18db5087-phq30dbon163925:8012
+doc_bonus=0.25 trainer=ae67ed48-e64f-4e26-a578-5c5629014c01
+doc_bonus=0.25 output_dir=/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_4b_hopstep_callnorm_docbonus_fix_lr1e6_50s_20260519164016
+
+doc_bonus=0.0 helper=4dfaab3d-1388-4230-8da6-e3044e48ebae
+doc_bonus=0.0 helper_url=http://dns-24e3447c-506e-4b21-92df-156e18db5087-phq30dboff163939:8012
+doc_bonus=0.0 trainer=6cd6e706-e962-41e2-b4bb-84d0d2dad3bb
+doc_bonus=0.0 output_dir=/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_4b_hopstep_callnorm_nodocbonus_fix_lr1e6_50s_20260519164046
+```
+
+Monitor EAI state:
+
+```bash
+eai job get \
+  18e06824-710e-4d11-a025-120628884410 \
+  4dfaab3d-1388-4230-8da6-e3044e48ebae \
+  ae67ed48-e64f-4e26-a578-5c5629014c01 \
+  6cd6e706-e962-41e2-b4bb-84d0d2dad3bb \
+  --fields id,state,name,runs.state,runs.runTime,runs.exitCode \
+  --format table
+```
+
+Check trainer logs:
+
+```bash
+OUT=/mnt/llmd/results/exps/alexg/reason/<JOB_NAME>
+rg -n "Completed steps|Published weight update request|checkpoint|Saving" "$OUT/finetune/log/info_0.log"
+rg -n "PrivacyHopQAHelperInfrastructureError|retry [2-9]|failed after|Traceback|Exception" \
+  "$OUT/actor/info.log" "$OUT/actor/error.log" "$OUT/preprocess/error.log"
 ```
 
 ## Live jobs: 2026-05-19 hop-step additive-cost LR sweep

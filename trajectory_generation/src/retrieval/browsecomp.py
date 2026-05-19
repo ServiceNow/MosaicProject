@@ -213,6 +213,11 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
     def dense_backend(self) -> str:
         return self._dense_backend
 
+    def _has_dense_backend(self) -> bool:
+        if self._dense_backend.startswith("torch:"):
+            return self._torch_embeddings is not None
+        return self._faiss_index is not None
+
     def _load_torch_dense_backend(self, embeddings: np.ndarray) -> None:
         import torch
 
@@ -255,6 +260,8 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
                 scores = torch.mv(candidate_embs, self._torch_query(query_vector))
             return scores.detach().cpu().numpy()
 
+        if self.embeddings is None:
+            raise RuntimeError("CPU embeddings are required for FAISS hybrid reranking")
         candidate_embs = self.embeddings[candidate_list]
         return candidate_embs @ query_vector
 
@@ -278,27 +285,35 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
         if embeddings.ndim != 2 or embeddings.shape[0] != len(shard_docids):
             raise RuntimeError("BrowseComp index shards are inconsistent")
 
-        index = faiss.IndexFlatIP(int(embeddings.shape[1]))
-        index.add(embeddings)
+        self.lookup = shard_docids
 
         if self.index_device.startswith("cuda"):
             gpu_id = 0
             if ":" in self.index_device:
                 gpu_id = int(self.index_device.split(":", 1)[1])
             if hasattr(faiss, "StandardGpuResources"):
+                index = faiss.IndexFlatIP(int(embeddings.shape[1]))
+                index.add(embeddings)
                 resources = faiss.StandardGpuResources()
                 options = faiss.GpuClonerOptions()
                 options.useFloat16 = True
                 index = faiss.index_cpu_to_gpu(resources, gpu_id, index, options)
                 self._dense_backend = f"faiss_gpu:{gpu_id}"
+                self.embeddings = embeddings
+                self._faiss_index = index
+                return
             else:
                 logger.warning(
                     "faiss-gpu bindings are unavailable; using torch dense retrieval on %s",
                     self.index_device,
                 )
                 self._load_torch_dense_backend(embeddings)
+                self.embeddings = None
+                self._faiss_index = None
+                return
 
-        self.lookup = shard_docids
+        index = faiss.IndexFlatIP(int(embeddings.shape[1]))
+        index.add(embeddings)
         self.embeddings = embeddings
         self._faiss_index = index
 
@@ -387,7 +402,7 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
                 )
             return hits
 
-        if self._faiss_index is None or self.embeddings is None:
+        if not self._has_dense_backend():
             return []
 
         query_vector = self._encode_query(query).astype(np.float32, copy=False)

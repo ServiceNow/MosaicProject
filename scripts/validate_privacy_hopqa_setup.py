@@ -91,7 +91,7 @@ def main() -> int:
     check(union_ids == full_ids, "split ids cover full dataset", failures, f"union={len(union_ids)} full={len(full_ids)}")
 
     artifact_manifest = args.shared_root / "artifact_manifest.json"
-    local_root = args.shared_root / "local_indices_fixeddeps_20260415"
+    local_root = args.shared_root / "local_indices_goldcoverage_20260519"
     browsecomp_glob = str(args.shared_root / "browsecomp_indexes/qwen3-embedding-4b/corpus.shard*_of_*.pkl")
     helper_inputs = args.shared_root / "helper_inputs"
     check(artifact_manifest.exists(), "shared artifact manifest exists", failures, str(artifact_manifest))

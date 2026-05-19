@@ -30,12 +30,24 @@ Retrieval RRF audit and launch notes:
 
 Current canonical dataset: [Privacy HopQA q30 residual-review dataset](./docs/privacy_hopqa_q30_training_defaults_2026-05-13.md).
 
-The repo-level helper specs now read from the shared q30 artifact bundle,
-blacklist long BrowseComp parents, live-filter
-BrowseComp hits to at most ten 16k/1k-overlap reader windows, and serve the
-fixed local indices from `local_indices_fixeddeps_20260415`. The default
-helper now uses BM25+dense reciprocal-rank fusion for both web and local
-retrieval:
+The repo-level helper specs read from the shared q30 artifact bundle, blacklist
+long BrowseComp parents, live-filter BrowseComp hits to at most ten reader
+windows, and use BM25+dense reciprocal-rank fusion for both web and local
+retrieval. Before new runs, validate that the helper local index covers every
+local gold document in the finalized q30 dataset:
+
+```bash
+cd /home/toolkit/my_code/MosaicProject
+python3 scripts/validate_privacy_hopqa_local_index_coverage.py \
+  --local-index-root /mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/local_indices_goldcoverage_20260519
+```
+
+The current local index root is a gold-coverage artifact: it starts from the
+old fixed-dependency index and rebuilds the finalized q30 tasks whose local
+gold documents were absent. This is intentional; do not switch helper specs
+back to `local_indices_fixeddeps_20260415` for new Privacy HopQA runs.
+
+Launch the default helper:
 
 ```bash
 cd /home/toolkit/my_code/MosaicProject

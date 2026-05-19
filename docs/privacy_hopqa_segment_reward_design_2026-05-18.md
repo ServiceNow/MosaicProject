@@ -156,6 +156,26 @@ incorrect + wrong source    = 0.0
 This is the raw answer value. It is intentionally not called an advantage. The advantage is computed only after comparing this value against other rollout values in the same aligned bucket. Hop-level success metrics still use `C_{r,h}`; the source bonus and iteration division are only reward shaping for training.
 Across different iteration counts, the iteration penalty is allowed to matter. That is intentional: solving the hop with fewer agent iterations should receive a higher shaped value than solving it slowly.
 
+### Hop-level LLM-call efficiency
+
+Latency is too noisy for reward shaping, so the current hop-step runs use an LLM-call efficiency factor. For rollout `r` and hop `h`:
+
+```text
+L_{r,h} = number of LLM calls made while working on hop h
+L_min_{g,h} = min({L_{j,h} : rollout j is in comparison group g})
+E_{r,h} = L_min_{g,h} / max(L_{r,h}, 1)
+```
+
+`L_{r,h}` includes `hop_plan`, `doc_choose`, `doc_read`, and `hop_resolve`. It does not include web/local retrieval calls or embedding lookup calls.
+
+The final answer reward used for hop-step advantages is:
+
+```text
+V_final(r,h,s,t) = V_answer(r,h,s,t) * E_{r,h}
+```
+
+This keeps the cheapest rollout for the same chain/hop unchanged and downweights rollouts that used more LLM calls to reach the same hop outcome.
+
 Prefix padding for answer uses the same value definition. If no real value exists because the hop was never reached, mask that rollout from this hop/stage bucket.
 
 The answer baseline bucket is:
