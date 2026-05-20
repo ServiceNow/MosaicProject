@@ -26,6 +26,8 @@ TABLE_TEX_DIR = OUT_DIR / "latex_table_snippets"
 PROMPT_PNG_DIR = OUT_DIR / "overleaf_prompt_pngs"
 PROMPT_OUTPUT_PNG_DIR = OUT_DIR / "overleaf_prompt_output_pngs"
 PROMPT_SHORT_PNG_DIR = OUT_DIR / "overleaf_prompt_short_pngs"
+DATASET_TABLE_DIR = ROOT / "paper_assets" / "privacy_hopqa_dataset_tables"
+DATASET_STATS_JSON = DATASET_TABLE_DIR / "dataset_stats.json"
 
 TRAJECTORY_PROMPTS = ROOT / "trajectory_generation" / "prompts.py"
 SECRET_PROMPTS = ROOT / "trajectory_generation" / "data_prep" / "extract_local_secrets.py"
@@ -248,6 +250,22 @@ def normalize_answer_adversary_output(output: Any) -> dict[str, Any]:
 
 
 PRIVATE_QA_TYPE_ORDER = ["kpi_numeric", "dates", "money", "names", "other_sensitive", "ids", "emails"]
+AWKWARD_EXAMPLE_TERMS = [
+    "at the start of",
+    "at the beginning of",
+    "beginning of the article",
+    "start of the article",
+    "opening sentence",
+    "article",
+    "passage",
+    "excerpt",
+    "according to",
+    "document",
+    "sentence",
+    "paragraph",
+    "quote",
+    "introduced before",
+]
 
 
 def short_private_qa_example(secret_type: str, question: str, answer: str) -> bool:
@@ -305,6 +323,11 @@ def load_private_qa_examples(max_rows: int = len(PRIVATE_QA_TYPE_ORDER)) -> list
     return examples
 
 
+def paper_friendly_example_question(question: Any) -> bool:
+    text = str(question or "").casefold()
+    return not any(term in text for term in AWKWARD_EXAMPLE_TERMS)
+
+
 def load_test_set_examples(max_rows: int = 6) -> list[dict[str, Any]]:
     rows = read_jsonl(FINAL_TEST_SET)
     examples: list[dict[str, Any]] = []
@@ -316,6 +339,12 @@ def load_test_set_examples(max_rows: int = 6) -> list[dict[str, Any]]:
         hops = row.get("hops") or []
         first = hops[0] if hops else {}
         last = hops[-1] if hops else {}
+        final_question = last.get("question") or row.get("global_question")
+        if not (
+            paper_friendly_example_question(first.get("question"))
+            and paper_friendly_example_question(final_question)
+        ):
+            continue
         examples.append(
             {
                 "task_id": row.get("task_id"),
@@ -324,7 +353,7 @@ def load_test_set_examples(max_rows: int = 6) -> list[dict[str, Any]]:
                 "pattern": pattern,
                 "hops": len(hops),
                 "first_question": first.get("question"),
-                "final_question": last.get("question") or row.get("global_question"),
+                "final_question": final_question,
                 "final_answer": row.get("global_answer"),
             }
         )
@@ -911,6 +940,33 @@ def leakage_example_table_latex(sample: dict[str, Any]) -> str:
     return "\n".join(body)
 
 
+def load_dataset_table_snippets() -> list[dict[str, str]]:
+    table_files = [
+        ("dataset_summary_compact", "Dataset Summary Table"),
+        ("dataset_split_summary", "Dataset Split Summary Table"),
+        ("private_qa_secret_type_counts", "Private QA Secret-Type Counts Table"),
+    ]
+    snippets: list[dict[str, str]] = []
+    for snippet_id, name in table_files:
+        path = DATASET_TABLE_DIR / f"{snippet_id}.tex"
+        if not path.exists():
+            continue
+        snippets.append(
+            {
+                "id": snippet_id,
+                "name": name,
+                "latex": path.read_text(encoding="utf-8"),
+            }
+        )
+    return snippets
+
+
+def load_dataset_stats() -> dict[str, Any]:
+    if not DATASET_STATS_JSON.exists():
+        return {}
+    return json.loads(DATASET_STATS_JSON.read_text(encoding="utf-8"))
+
+
 def build_table_snippets(data: dict[str, Any]) -> list[dict[str, str]]:
     private_rows = [
         [row["secret_type"], row["question"], row["answer"]]
@@ -951,6 +1007,7 @@ def build_table_snippets(data: dict[str, Any]) -> list[dict[str, str]]:
             "latex": leakage_example_table_latex(data["leakage_sample"]),
         },
     ]
+    snippets.extend(data.get("dataset_table_snippets") or [])
     return snippets
 
 
@@ -1308,6 +1365,19 @@ def table_snippet_cards(snippets: list[dict[str, str]]) -> str:
 
 
 def render_html(data: dict[str, Any]) -> str:
+    def comma_int(value: Any) -> str:
+        return f"{int(value):,}"
+
+    def short_float(value: Any) -> str:
+        return f"{float(value):.2f}"
+
+    def mean_median_range(summary: dict[str, Any]) -> str:
+        return (
+            f"{short_float(summary.get('mean', 0))} mean / "
+            f"{float(summary.get('median', 0)):.0f} median "
+            f"({summary.get('min', 0)}-{summary.get('max', 0)} range)"
+        )
+
     private_rows = [
         [row["secret_type"], row["question"], row["answer"]]
         for row in data["private_qa_examples"]
@@ -1325,6 +1395,46 @@ def render_html(data: dict[str, Any]) -> str:
         ]
         for row in data["test_set_examples"]
     ]
+    dataset_stats = data.get("dataset_stats") or {}
+    private_stats = dataset_stats.get("private_qa") or {}
+    final_stats = dataset_stats.get("final_privacy_hopqa") or {}
+    full_stats = final_stats.get("Full") or {}
+    dataset_summary_rows = []
+    if private_stats and full_stats:
+        dataset_summary_rows = [
+            ["Private QA Set", "Local documents with private QA", comma_int(private_stats["local_documents"])],
+            ["Private QA Set", "Private question-answer pairs", comma_int(private_stats["private_qa_pairs"])],
+            ["Private QA Set", "Unique private-question strings", comma_int(private_stats["unique_private_questions"])],
+            ["Private QA Set", "Private questions per local document", mean_median_range(private_stats["private_questions_per_doc"])],
+            ["Private QA Set", "Secret types", comma_int(private_stats["n_secret_types"])],
+            ["Private QA Set", "DR tasks covered", comma_int(private_stats["task_count"])],
+            ["Final Privacy HopQA", "Multi-hop questions", comma_int(full_stats["multi_hop_questions"])],
+            ["Final Privacy HopQA", "Hop-level questions", comma_int(full_stats["hop_questions"])],
+            ["Final Privacy HopQA", "Private/local hop questions", comma_int(full_stats["private_local_questions"])],
+            ["Final Privacy HopQA", "Public/web hop questions", comma_int(full_stats["public_web_questions"])],
+            ["Final Privacy HopQA", "Unique local supporting documents", comma_int(full_stats["unique_local_documents"])],
+            ["Final Privacy HopQA", "Unique web supporting documents", comma_int(full_stats["unique_web_documents"])],
+            ["Final Privacy HopQA", "Private hops per local supporting document", mean_median_range(full_stats["private_questions_per_local_doc"])],
+            ["Final Privacy HopQA", "Hops per multi-hop question", mean_median_range(full_stats["hops_per_question"])],
+        ]
+    dataset_split_rows = [
+        [
+            split,
+            comma_int(stat["multi_hop_questions"]),
+            comma_int(stat["hop_questions"]),
+            comma_int(stat["private_local_questions"]),
+            comma_int(stat["public_web_questions"]),
+            comma_int(stat["unique_local_documents"]),
+            short_float(stat["private_questions_per_local_doc"]["mean"]),
+            short_float(stat["hops_per_question"]["mean"]),
+        ]
+        for split in ["Full", "Train", "Val", "Test"]
+        if (stat := final_stats.get(split))
+    ]
+    secret_type_rows = [
+        [secret_type, comma_int(count)]
+        for secret_type, count in sorted((private_stats.get("secret_types") or {}).items())
+    ]
     research_outputs = data["research_sample_outputs"]
     adversary_outputs = data["leakage_sample"]["outputs"]
     source_rows = [[name, path] for name, path in data["sources"].items()]
@@ -1335,6 +1445,9 @@ def render_html(data: dict[str, Any]) -> str:
     table_snippet_items = data.get("table_snippets") or []
     table_snippets = table_snippet_cards(table_snippet_items)
     private_qa_table_controls = table_snippet_inline_control(table_snippet_items, "private_qa_examples")
+    dataset_summary_table_controls = table_snippet_inline_control(table_snippet_items, "dataset_summary_compact")
+    dataset_split_table_controls = table_snippet_inline_control(table_snippet_items, "dataset_split_summary")
+    secret_type_table_controls = table_snippet_inline_control(table_snippet_items, "private_qa_secret_type_counts")
     asset_summary = data.get("asset_summary") or {}
 
     return f"""<!doctype html>
@@ -1595,6 +1708,7 @@ def render_html(data: dict[str, Any]) -> str:
   <p>Self-contained view of prompt templates, research-agent step prompts, adversary prompts, table snippets, and representative outputs used for the Privacy HopQA work. Dynamic inputs are shown as green placeholders so prompt screenshots do not bake in one concrete run.</p>
   <nav>
     <a href="#dataset">Private QA Generation</a>
+    <a href="#dataset-summary">Dataset Summary</a>
     <a href="#research-agent">Research Agent Steps</a>
     <a href="#adversary">Adversary Prompts</a>
     <a href="#latex-assets">LaTeX and PNG Assets</a>
@@ -1613,6 +1727,15 @@ def render_html(data: dict[str, Any]) -> str:
     {table(["Type", "Question", "Answer"], private_rows)}
     <h3>Final Test Split Examples</h3>
     {table(["Task", "Chain", "Company", "Pattern", "Hops", "First Question", "Final Question", "Final Answer"], test_rows)}
+    <h3 id="dataset-summary">Dataset Summary Tables</h3>
+    {dataset_summary_table_controls}
+    {table(["Dataset component", "Statistic", "Value"], dataset_summary_rows)}
+    <h3>Split Summary</h3>
+    {dataset_split_table_controls}
+    {table(["Split", "Questions", "Hops", "Local", "Web", "Local docs", "Local q/doc", "Hops/q"], dataset_split_rows)}
+    <h3>Private QA Secret Types</h3>
+    {secret_type_table_controls}
+    {table(["Secret type", "Private QA pairs"], secret_type_rows)}
     <div class="json-grid">
       {json_panel("Sample Private QA Extraction Output", data["private_qa_examples"][0] if data["private_qa_examples"] else {}, limit=2600)}
     </div>
@@ -1723,6 +1846,7 @@ def build_data() -> dict[str, Any]:
             "adversary_prompts": str(LEAKAGE_PROMPTS),
             "private_qa_inventory": str(PRIVATE_QA_INVENTORY),
             "final_test_split": str(FINAL_TEST_SET),
+            "dataset_summary_tables": str(DATASET_TABLE_DIR),
             "research_sample_trace": str(RESEARCH_SAMPLE_TRACE),
             "leakage_sample": str(leakage_sample.get("source")),
         },
@@ -1731,6 +1855,8 @@ def build_data() -> dict[str, Any]:
         "adversary_prompts": build_adversary_prompts(leakage_sample),
         "private_qa_examples": load_private_qa_examples(),
         "test_set_examples": load_test_set_examples(),
+        "dataset_stats": load_dataset_stats(),
+        "dataset_table_snippets": load_dataset_table_snippets(),
         "research_sample_outputs": load_research_sample_outputs(),
         "leakage_sample": leakage_sample,
     }
@@ -1756,7 +1882,7 @@ def main() -> int:
                 "- `latex_prompt_snippets/`: one copyable `tcolorbox` prompt per file.",
                 "- `latex_prompt_short_snippets/`: short variants with example-heavy sections omitted where available.",
                 "- `latex_prompt_output_snippets/`: prompt boxes paired with sample outputs where available.",
-                "- `latex_table_snippets/`: paper-ready `table*` snippets for examples and leakage cases.",
+                "- `latex_table_snippets/`: paper-ready `table*` snippets for examples, dataset summaries, and leakage cases.",
                 "- `overleaf_prompt_pngs/`: PNG prompt boxes ready for Overleaf upload.",
                 "- `overleaf_prompt_short_pngs/`: PNG short prompt boxes ready for Overleaf upload.",
                 "- `overleaf_prompt_output_pngs/`: PNG prompt-plus-output boxes ready for Overleaf upload.",

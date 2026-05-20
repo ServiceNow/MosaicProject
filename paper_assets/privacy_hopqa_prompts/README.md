@@ -7,7 +7,7 @@ Generated paper-facing prompt appendix for Privacy HopQA.
 - `latex_prompt_snippets/`: one copyable `tcolorbox` prompt per file.
 - `latex_prompt_short_snippets/`: short variants with example-heavy sections omitted where available.
 - `latex_prompt_output_snippets/`: prompt boxes paired with sample outputs where available.
-- `latex_table_snippets/`: paper-ready `table*` snippets for examples and leakage cases.
+- `latex_table_snippets/`: paper-ready `table*` snippets for examples, dataset summaries, and leakage cases.
 - `overleaf_prompt_pngs/`: PNG prompt boxes ready for Overleaf upload.
 - `overleaf_prompt_short_pngs/`: PNG short prompt boxes ready for Overleaf upload.
 - `overleaf_prompt_output_pngs/`: PNG prompt-plus-output boxes ready for Overleaf upload.
