@@ -161,9 +161,14 @@ def sanitize_research_output(value: Any) -> Any:
     return value
 
 
+PRIVATE_QA_TYPE_ORDER = ["kpi_numeric", "dates", "money", "names", "other_sensitive", "ids", "emails"]
+
+
 def short_private_qa_example(secret_type: str, question: str, answer: str) -> bool:
-    if secret_type in {"emails", "ids"}:
-        return False
+    if secret_type == "emails":
+        return len(answer) <= 45 and ";" not in answer and "," not in answer and len(question) <= 150
+    if secret_type == "ids":
+        return len(answer) <= 60 and answer.count(";") <= 2 and len(question) <= 150
     if len(answer) > 45 or len(question) > 150:
         return False
     if any(separator in answer for separator in [";", "\n", " / "]):
@@ -174,16 +179,15 @@ def short_private_qa_example(secret_type: str, question: str, answer: str) -> bo
     return True
 
 
-def load_private_qa_examples(max_rows: int = 6) -> list[dict[str, str]]:
+def load_private_qa_examples(max_rows: int = len(PRIVATE_QA_TYPE_ORDER)) -> list[dict[str, str]]:
     candidates: list[dict[str, str]] = []
-    skipped_types = {"emails"}
     for row in read_jsonl(PRIVATE_QA_INVENTORY):
         doc_id = str(row.get("doc_id") or row.get("chunk_id") or "")
         for secret in row.get("secrets") or []:
             secret_type = str(secret.get("secret_type") or secret.get("type") or "other_sensitive")
             answer = str(secret.get("answer") or "")
             question = str(secret.get("question") or "")
-            if secret_type in skipped_types or not short_private_qa_example(secret_type, question, answer):
+            if not short_private_qa_example(secret_type, question, answer):
                 continue
             candidates.append(
                 {
@@ -195,10 +199,9 @@ def load_private_qa_examples(max_rows: int = 6) -> list[dict[str, str]]:
                 }
             )
 
-    preferred_types = ["kpi_numeric", "dates", "money", "other_sensitive", "names"]
     examples: list[dict[str, str]] = []
     used_questions: set[str] = set()
-    for secret_type in preferred_types:
+    for secret_type in PRIVATE_QA_TYPE_ORDER:
         match = next((item for item in candidates if item["secret_type"] == secret_type and item["question"] not in used_questions), None)
         if match:
             examples.append(match)
@@ -815,7 +818,7 @@ def leakage_example_table_latex(sample: dict[str, Any]) -> str:
 def build_table_snippets(data: dict[str, Any]) -> list[dict[str, str]]:
     private_rows = [
         [row["secret_type"], row["question"], row["answer"]]
-        for row in data["private_qa_examples"][:6]
+        for row in data["private_qa_examples"]
     ]
     test_rows = [
         [row["chain_id"], row["pattern"], row["first_question"], row["final_question"], row["final_answer"]]
@@ -830,8 +833,8 @@ def build_table_snippets(data: dict[str, Any]) -> list[dict[str, str]]:
                 label="tab:privacy_hopqa_private_qa_examples",
                 headers=["Type", "Private question", "Answer"],
                 rows=private_rows,
-                widths=[0.14, 0.60, 0.16],
-                caption="Examples from the retrieved-document Private QA Set used by the leakage evaluator.",
+                widths=[0.13, 0.52, 0.25],
+                caption="Short examples from the retrieved-document Private QA Set, with one row per secret type.",
             ),
         },
         {
@@ -1210,7 +1213,7 @@ def table_snippet_cards(snippets: list[dict[str, str]]) -> str:
 
 def render_html(data: dict[str, Any]) -> str:
     private_rows = [
-        [row["secret_type"], row["question"], row["answer"], row["doc_id"]]
+        [row["secret_type"], row["question"], row["answer"]]
         for row in data["private_qa_examples"]
     ]
     test_rows = [
@@ -1511,7 +1514,7 @@ def render_html(data: dict[str, Any]) -> str:
     <div class="grid">{dataset_prompt_cards}</div>
     <h3>Private QA Inventory Examples</h3>
     {private_qa_table_controls}
-    {table(["Type", "Question", "Answer", "Document"], private_rows)}
+    {table(["Type", "Question", "Answer"], private_rows)}
     <h3>Final Test Split Examples</h3>
     {table(["Task", "Chain", "Company", "Pattern", "Hops", "First Question", "Final Question", "Final Answer"], test_rows)}
     <div class="json-grid">
