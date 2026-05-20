@@ -3,6 +3,7 @@
 Generated paper-facing prompt appendix for Privacy HopQA.
 
 - `index.html`: screenshot-friendly single-page view.
+- `leakage_diagrams.html`: screenshot-friendly page-one diagram concepts for intent, answer, and full-information leakage examples.
 - `prompt_appendix_data.json`: extracted prompts, examples, and sample outputs.
 - `latex_prompt_snippets/`: one copyable `tcolorbox` prompt per file.
 - `latex_prompt_short_snippets/`: short variants with example-heavy sections omitted where available.
