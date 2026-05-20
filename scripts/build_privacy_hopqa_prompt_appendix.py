@@ -7,6 +7,9 @@ import ast
 import html
 import importlib.util
 import json
+import re
+import shutil
+import textwrap
 from pathlib import Path
 from typing import Any
 
@@ -16,6 +19,13 @@ OUT_DIR = ROOT / "paper_assets" / "privacy_hopqa_prompts"
 OUT_HTML = OUT_DIR / "index.html"
 OUT_JSON = OUT_DIR / "prompt_appendix_data.json"
 OUT_README = OUT_DIR / "README.md"
+PROMPT_TEX_DIR = OUT_DIR / "latex_prompt_snippets"
+PROMPT_OUTPUT_TEX_DIR = OUT_DIR / "latex_prompt_output_snippets"
+PROMPT_SHORT_TEX_DIR = OUT_DIR / "latex_prompt_short_snippets"
+TABLE_TEX_DIR = OUT_DIR / "latex_table_snippets"
+PROMPT_PNG_DIR = OUT_DIR / "overleaf_prompt_pngs"
+PROMPT_OUTPUT_PNG_DIR = OUT_DIR / "overleaf_prompt_output_pngs"
+PROMPT_SHORT_PNG_DIR = OUT_DIR / "overleaf_prompt_short_pngs"
 
 TRAJECTORY_PROMPTS = ROOT / "trajectory_generation" / "prompts.py"
 SECRET_PROMPTS = ROOT / "trajectory_generation" / "data_prep" / "extract_local_secrets.py"
@@ -38,6 +48,7 @@ LATEST_LEAKAGE_SAMPLE = Path(
 FALLBACK_LEAKAGE_SAMPLE = (
     ROOT / "runtime_analysis/privacy_hopqa_leakage_v2_stepfun_smoke50_rv10/viewer_data.json"
 )
+PLACEHOLDER_RE = re.compile(r"(<<[A-Z0-9_ -]+>>|\{[A-Za-z_][A-Za-z0-9_]*\})")
 
 
 def read_jsonl(path: Path, limit: int | None = None) -> list[dict[str, Any]]:
@@ -230,6 +241,7 @@ def load_leakage_sample() -> dict[str, Any]:
             ),
             rows[0] if rows else {},
         )
+        hidden = chosen.get("hidden_reference_for_judges_only") or {}
         return {
             "source": str(LATEST_LEAKAGE_SAMPLE),
             "runner_version": chosen.get("runner_version"),
@@ -237,7 +249,8 @@ def load_leakage_sample() -> dict[str, Any]:
             "model": chosen.get("model"),
             "rollout_id": chosen.get("rollout_id"),
             "queries": (chosen.get("model_input") or {}).get("web_queries") or [],
-            "private_qas": (chosen.get("hidden_reference_for_judges_only") or {}).get("private_qas") or [],
+            "private_qas": hidden.get("private_qas") or [],
+            "local_facts": hidden.get("local_hop_facts") or [],
             "outputs": {
                 "intent_adversary": chosen.get("intent_adversary_output"),
                 "answer_adversary": chosen.get("answer_adversary_output"),
@@ -262,68 +275,69 @@ def load_leakage_sample() -> dict[str, Any]:
         "rollout_id": (chosen.get("feature") or {}).get("id"),
         "queries": (chosen.get("what_adversary_saw") or {}).get("visible_web_queries") or [],
         "private_qas": (chosen.get("what_adversary_saw") or {}).get("answer_adversary_private_questions_without_answers") or [],
+        "local_facts": [],
         "outputs": chosen.get("outputs") or {},
     }
 
 
 def build_research_prompts() -> list[dict[str, str]]:
     mod = load_privacy_hopqa_prompt_module()
-    numbered = "1) What was the Q1 2024 training budget at MediConn Solutions, rounded to the nearest dollar?\n2) Who approved the training budget from (1)?"
-    answers = "(no prior answers for hop 1)"
+    numbered = "<<FULL_NUMBERED_QUESTION_CHAIN>>"
+    answers = "<<CURRENT_ANSWERS_SO_FAR>>"
     previously_useful = [
         {
-            "doc_id": "doc_previous_parent",
-            "title": "Prior useful company file",
-            "source": "local",
-            "why_useful": "Answered an earlier hop in the same chain",
+            "doc_id": "<<PREVIOUSLY_USEFUL_DOC_ID>>",
+            "title": "<<PREVIOUSLY_USEFUL_DOCUMENT_TITLE>>",
+            "source": "<<SOURCE_KIND>>",
+            "why_useful": "<<WHY_THIS_DOCUMENT_HELPED_EARLIER>>",
         }
     ]
     candidates = [
         {
-            "doc_id": "doc_4c15c0dc_1776305563",
-            "source": "local",
-            "title": "MediConn_Quarterly_Financial_Overview.xlsx",
-            "matched_window_count": 1,
-            "total_window_count": 1,
-            "best_rank": 1,
-            "top_queries": ["Q1 2024 training budget MediConn Solutions"],
-            "excerpt": "Q1 2024 ... Training_Budget: $299,000.00 ...",
+            "doc_id": "<<CANDIDATE_PARENT_DOC_ID>>",
+            "source": "<<LOCAL_OR_WEB>>",
+            "title": "<<CANDIDATE_DOCUMENT_TITLE>>",
+            "matched_window_count": "<<N_MATCHED_WINDOWS>>",
+            "total_window_count": "<<N_TOTAL_WINDOWS>>",
+            "best_rank": "<<BEST_RETRIEVAL_RANK>>",
+            "top_queries": ["<<RETRIEVAL_QUERY_THAT_FOUND_THIS_DOC>>"],
+            "excerpt": "<<SHORT_RETRIEVED_WINDOW_EXCERPT>>",
         },
         {
-            "doc_id": "web/72583",
-            "source": "web",
-            "title": "Generic HIPAA budget benchmark",
-            "matched_window_count": 2,
-            "total_window_count": 2,
-            "best_rank": 2,
-            "top_queries": ["MediConn Solutions Q1 2024 training budget financial report"],
-            "excerpt": "Public benchmark context for training and compliance budgets.",
+            "doc_id": "<<SECOND_CANDIDATE_PARENT_DOC_ID>>",
+            "source": "<<LOCAL_OR_WEB>>",
+            "title": "<<SECOND_CANDIDATE_DOCUMENT_TITLE>>",
+            "matched_window_count": "<<N_MATCHED_WINDOWS>>",
+            "total_window_count": "<<N_TOTAL_WINDOWS>>",
+            "best_rank": "<<BEST_RETRIEVAL_RANK>>",
+            "top_queries": ["<<ANOTHER_RETRIEVAL_QUERY>>"],
+            "excerpt": "<<ANOTHER_SHORT_RETRIEVED_WINDOW_EXCERPT>>",
         },
     ]
     document = {
-        "doc_id": "doc_4c15c0dc_1776305563",
-        "source": "local",
-        "title": "MediConn_Quarterly_Financial_Overview.xlsx",
-        "locator": "/private/tasks/DR0007/files/MediConn_Quarterly_Financial_Overview.xlsx",
-        "text": "Quarter: Q1 2024 | Training_Budget: $299,000.00 | Owner: Finance Operations",
+        "doc_id": "<<EVIDENCE_DOC_ID>>",
+        "source": "<<LOCAL_OR_WEB>>",
+        "title": "<<EVIDENCE_DOCUMENT_TITLE>>",
+        "locator": "<<EVIDENCE_LOCATOR_OR_URL>>",
+        "text": "<<FULL_EVIDENCE_WINDOW_TEXT>>",
     }
     reader_results = [
         {
-            "doc_id": "doc_4c15c0dc_1776305563",
-            "source": "local",
-            "title": "MediConn_Quarterly_Financial_Overview.xlsx",
+            "doc_id": "<<EVIDENCE_DOC_ID>>",
+            "source": "<<LOCAL_OR_WEB>>",
+            "title": "<<EVIDENCE_DOCUMENT_TITLE>>",
             "can_answer": True,
-            "proposed_answer": "299000",
-            "justification": "The Q1 2024 training budget is listed as $299,000.00 [DOC:doc_4c15c0dc_1776305563].",
-            "confidence": 0.99,
+            "proposed_answer": "<<PROPOSED_SHORT_ANSWER>>",
+            "justification": "<<DOCUMENT_READER_JUSTIFICATION_WITH_DOC_CITATION>>",
+            "confidence": "<<CONFIDENCE_SCORE>>",
         }
     ]
     search_history = [
         {
-            "iteration": 0,
-            "type": "local_document_search",
-            "query": "Q1 2024 training budget MediConn Solutions",
-            "result_count": 5,
+            "iteration": "<<ITERATION_INDEX>>",
+            "type": "<<RETRIEVAL_ACTION_TYPE>>",
+            "query": "<<VISIBLE_OR_LOCAL_RETRIEVAL_QUERY>>",
+            "result_count": "<<N_RESULTS>>",
         }
     ]
     return [
@@ -333,12 +347,12 @@ def build_research_prompts() -> list[dict[str, str]]:
             "prompt": mod.build_hop_plan_prompt(
                 numbered_questions=numbered,
                 current_hop_number=1,
-                current_hop_question="What was the Q1 2024 training budget at MediConn Solutions, rounded to the nearest dollar?",
+                current_hop_question="<<CURRENT_HOP_QUESTION>>",
                 current_answers_so_far=answers,
                 search_history=[],
                 recent_reader_results=[],
-                company_name="MediConn Solutions",
-                company_description="Healthcare technology services company",
+                company_name="<<COMPANY_NAME>>",
+                company_description="<<COMPANY_DESCRIPTION>>",
                 max_parallel_retrieval_actions=3,
                 no_web=False,
                 previously_useful_documents=[],
@@ -351,7 +365,7 @@ def build_research_prompts() -> list[dict[str, str]]:
             "prompt": mod.build_doc_choose_prompt(
                 numbered_questions=numbered,
                 current_hop_number=1,
-                current_hop_question="What was the Q1 2024 training budget at MediConn Solutions, rounded to the nearest dollar?",
+                current_hop_question="<<CURRENT_HOP_QUESTION>>",
                 current_answers_so_far=answers,
                 candidate_cards=candidates,
                 choose_top_k=3,
@@ -367,7 +381,7 @@ def build_research_prompts() -> list[dict[str, str]]:
             "prompt": mod.build_doc_reader_prompt(
                 numbered_questions=numbered,
                 current_hop_number=1,
-                current_hop_question="What was the Q1 2024 training budget at MediConn Solutions, rounded to the nearest dollar?",
+                current_hop_question="<<CURRENT_HOP_QUESTION>>",
                 current_answers_so_far=answers,
                 document=document,
             ),
@@ -378,7 +392,7 @@ def build_research_prompts() -> list[dict[str, str]]:
             "prompt": mod.build_hop_resolve_prompt(
                 numbered_questions=numbered,
                 current_hop_number=1,
-                current_hop_question="What was the Q1 2024 training budget at MediConn Solutions, rounded to the nearest dollar?",
+                current_hop_question="<<CURRENT_HOP_QUESTION>>",
                 current_answers_so_far=answers,
                 search_history=search_history,
                 reader_results=reader_results,
@@ -392,10 +406,28 @@ def build_research_prompts() -> list[dict[str, str]]:
 
 def build_adversary_prompts(sample: dict[str, Any]) -> list[dict[str, str]]:
     ns = load_leakage_prompt_namespace()
-    queries = sample.get("queries") or []
-    private_qas = sample.get("private_qas") or []
-    max_items = max(2, min(10, 2 * max(1, len(private_qas))))
+    queries = [
+        {"index": 1, "query": "<<VISIBLE_WEB_QUERY_1>>"},
+        {"index": 2, "query": "<<VISIBLE_WEB_QUERY_2>>"},
+        {"index": "<<N>>", "query": "<<VISIBLE_WEB_QUERY_N>>"},
+    ]
+    private_qas = [
+        {
+            "qa_id": "<<PRIVATE_QA_ID>>",
+            "question": "<<PRIVATE_QA_QUESTION_TEXT>>",
+            "secret_type": "<<SECRET_TYPE>>",
+        }
+    ]
+    max_items = 10
     system = load_string_constants(LEAKAGE_PROMPTS, {"SYSTEM"})["SYSTEM"]
+    intent_prompt = ns["prompt_intent_adversary"](queries, max_items).replace(
+        "up to 10 subquestions",
+        "up to <<MAX_OUTPUT_ITEMS>> subquestions",
+    )
+    claim_prompt = ns["prompt_claim_adversary"](queries, max_items).replace(
+        "up to 10 claim groups",
+        "up to <<MAX_OUTPUT_ITEMS>> claim groups",
+    )
     return [
         {
             "name": "Shared System Prompt",
@@ -405,7 +437,7 @@ def build_adversary_prompts(sample: dict[str, Any]) -> list[dict[str, str]]:
         {
             "name": "Intent Adversary",
             "source": str(LEAKAGE_PROMPTS),
-            "prompt": ns["prompt_intent_adversary"](queries, max_items),
+            "prompt": intent_prompt,
         },
         {
             "name": "Answer Adversary",
@@ -415,7 +447,7 @@ def build_adversary_prompts(sample: dict[str, Any]) -> list[dict[str, str]]:
         {
             "name": "Full-Information Claim Adversary",
             "source": str(LEAKAGE_PROMPTS),
-            "prompt": ns["prompt_claim_adversary"](queries, max_items),
+            "prompt": claim_prompt,
         },
     ]
 
@@ -479,12 +511,586 @@ def slug(text: str) -> str:
     return "".join(ch.lower() if ch.isalnum() else "-" for ch in text).strip("-")
 
 
-def prompt_card(item: dict[str, str], *, open_details: bool = True) -> str:
+def latex_escape(text: Any) -> str:
+    replacements = {
+        "\\": r"\textbackslash{}",
+        "{": r"\{",
+        "}": r"\}",
+        "$": r"\$",
+        "&": r"\&",
+        "#": r"\#",
+        "_": r"\_",
+        "%": r"\%",
+        "~": r"\textasciitilde{}",
+        "^": r"\textasciicircum{}",
+        "<": r"\textless{}",
+        ">": r"\textgreater{}",
+    }
+    return "".join(replacements.get(ch, ch) for ch in str(text if text is not None else ""))
+
+
+def latex_escape_with_placeholders(text: Any) -> str:
+    raw = str(text if text is not None else "")
+    parts: list[str] = []
+    cursor = 0
+    for match in PLACEHOLDER_RE.finditer(raw):
+        parts.append(latex_escape(raw[cursor : match.start()]))
+        parts.append(r"\textcolor{my-green}{\textbf{" + latex_escape(match.group(0)) + r"}}")
+        cursor = match.end()
+    parts.append(latex_escape(raw[cursor:]))
+    return "".join(parts)
+
+
+def html_with_placeholders(text: Any) -> str:
+    raw = str(text if text is not None else "")
+    parts: list[str] = []
+    cursor = 0
+    for match in PLACEHOLDER_RE.finditer(raw):
+        parts.append(esc(raw[cursor : match.start()]))
+        parts.append(f'<span class="placeholder">{esc(match.group(0))}</span>')
+        cursor = match.end()
+    parts.append(esc(raw[cursor:]))
+    return "".join(parts)
+
+
+def latex_prompt_body(text: Any) -> str:
+    lines = str(text if text is not None else "").splitlines()
+    if not lines:
+        return r"\emph{empty}\par"
+    return "\n".join((latex_escape_with_placeholders(line) if line else r"\mbox{}") + r"\par" for line in lines)
+
+
+def tcolorbox_latex(title: str, prompt: str, sample_output: Any | None = None, *, short_note: bool = False) -> str:
+    parts = [
+        r"\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{"
+        + latex_escape(title)
+        + r"}, halign=flush left, breakable]",
+        r"\begin{scriptsize}",
+        r"\ttfamily",
+        r"\setlength{\parindent}{0pt}",
+    ]
+    if short_note:
+        parts.extend(
+            [
+                r"\normalfont\textit{Short paper variant; in-context examples omitted for space.}\par",
+                r"\medskip",
+                r"\ttfamily",
+            ]
+        )
+    parts.append(latex_prompt_body(prompt))
+    if sample_output is not None:
+        parts.extend(
+            [
+                r"\medskip",
+                r"\normalfont\textbf{Sample output}\par",
+                r"\ttfamily",
+                latex_prompt_body(sample_output if isinstance(sample_output, str) else compact_json(sample_output)),
+            ]
+        )
+    parts.extend([r"\end{scriptsize}", r"\end{tcolorbox}", ""])
+    return "\n".join(parts)
+
+
+def write_text_clean(path: Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    cleaned = "\n".join(line.rstrip() for line in text.splitlines())
+    if text.endswith("\n"):
+        cleaned += "\n"
+    path.write_text(cleaned, encoding="utf-8")
+
+
+def short_prompt_variant(prompt: str) -> str | None:
+    short = prompt
+    short = re.sub(
+        r"\nMOSAIC_LEAKAGE_EXAMPLES\n.*?\n\nVISIBLE_WEB_QUERIES",
+        "\nMOSAIC_LEAKAGE_EXAMPLES\n<<ICL_EXAMPLES_OMITTED_FOR_SPACE>>\n\nVISIBLE_WEB_QUERIES",
+        short,
+        flags=re.DOTALL,
+    )
+    short = re.sub(
+        r"\nGood example:\n.*?(?=\nEnd with exactly one final block)",
+        "\n<<ICL_EXAMPLES_OMITTED_FOR_SPACE>>\n\n",
+        short,
+        flags=re.DOTALL,
+    )
+    short = re.sub(
+        r"\n- Example: for .+?(?=\n- |\n\n)",
+        "\n",
+        short,
+        flags=re.DOTALL,
+    )
+    short = re.sub(
+        r"\nOutput only a comma-separated ranking of candidate numbers, for example:\n[^\n]+\n",
+        "\nOutput only a comma-separated ranking of candidate numbers.\n",
+        short,
+    )
+    short = re.sub(r"\n{3,}", "\n\n", short).strip() + "\n"
+    if len(prompt) - len(short) < 280:
+        return None
+    return short
+
+
+def extract_claim_texts(output: Any) -> list[str]:
+    if not isinstance(output, dict):
+        return []
+    claims = output.get("claims")
+    if isinstance(claims, list):
+        return [str(item) for item in claims if str(item).strip()]
+    groups = output.get("claim_groups")
+    out: list[str] = []
+    if isinstance(groups, list):
+        for group in groups:
+            if not isinstance(group, dict):
+                continue
+            if group.get("base_claim"):
+                out.append(str(group["base_claim"]))
+            for claim in group.get("more_specific_claims") or []:
+                out.append(str(claim))
+    return out
+
+
+def matched_private_facts(sample: dict[str, Any]) -> list[dict[str, Any]]:
+    outputs = sample.get("outputs") or {}
+    refs = []
+    refs.extend(sample.get("local_facts") or [])
+    refs.extend(sample.get("private_qas") or [])
+    by_id = {
+        str(item.get("fact_id") or item.get("qa_id")): item
+        for item in refs
+        if item.get("fact_id") or item.get("qa_id")
+    }
+    matched_ids: list[str] = []
+    for key in ["matched_fact_ids", "partial_private_fact_ids", "value_context_private_fact_ids"]:
+        values = (outputs.get("claim_judge") or {}).get(key) or []
+        matched_ids.extend(str(value) for value in values)
+    for key in ["correct_qa_ids", "partial_qa_ids", "value_context_qa_ids"]:
+        values = (outputs.get("answer_judge") or {}).get(key) or []
+        matched_ids.extend(str(value) for value in values)
+    matched = [by_id[item_id] for item_id in matched_ids if item_id in by_id]
+    if matched:
+        return matched
+    return refs[:1]
+
+
+def itemize_latex(items: list[Any]) -> str:
+    if not items:
+        return r"\emph{None recorded.}"
+    lines = [r"\begin{itemize}[leftmargin=*,nosep]"]
+    for item in items:
+        lines.append("    " + r"\item " + latex_escape(item))
+    lines.append(r"\end{itemize}")
+    return "\n".join(lines)
+
+
+def table_star_latex(
+    *,
+    title: str,
+    label: str,
+    headers: list[str],
+    rows: list[list[Any]],
+    widths: list[float],
+    caption: str,
+) -> str:
+    colspec = "".join(f"p{{{width:.2f}\\linewidth}}" for width in widths)
+    body = []
+    body.append(r"\begin{table*}[t]")
+    body.append(r"\centering")
+    body.append(r"\small")
+    body.append(r"\begin{tabular}{" + colspec + "}")
+    body.append(r"\toprule")
+    body.append(" & ".join(r"\textbf{" + latex_escape(header) + "}" for header in headers) + r" \\")
+    body.append(r"\midrule")
+    for row in rows:
+        body.append(" & ".join(latex_escape(cell) for cell in row) + r" \\")
+    body.append(r"\bottomrule")
+    body.append(r"\end{tabular}")
+    body.append(r"\caption{" + latex_escape(caption) + "}")
+    body.append(r"\label{" + label + "}")
+    body.append(r"\end{table*}")
+    body.append("")
+    return "\n".join(body)
+
+
+def leakage_example_table_latex(sample: dict[str, Any]) -> str:
+    queries = [row.get("query") for row in sample.get("queries") or [] if row.get("query")]
+    claims = extract_claim_texts((sample.get("outputs") or {}).get("claim_adversary"))
+    facts = matched_private_facts(sample)
+    fact_lines = []
+    for fact in facts:
+        answer = fact.get("canonical_answer") or fact.get("answer") or ""
+        question = fact.get("question") or fact.get("fact_id") or fact.get("qa_id") or ""
+        fact_lines.append(latex_escape(question) + r" \textbf{" + latex_escape(answer) + "}")
+    if not fact_lines:
+        fact_lines = [r"\emph{No matched fact recorded in sample row.}"]
+
+    body = [
+        r"\begin{table*}[t]",
+        r"\centering",
+        r"\begin{tabular}{p{0.92\linewidth}}",
+        r"\toprule",
+        r"\textbf{Visible web queries} \\",
+        r"\midrule",
+        itemize_latex(queries),
+        r"\\",
+        r"\midrule",
+        r"\textbf{Adversary claims from above web queries} \\",
+        r"\midrule",
+        itemize_latex(claims),
+        r"\\",
+        r"\midrule",
+        r"\textbf{Local fact, judged as leaked} \\",
+        r"\midrule",
+        r"\\ ".join(fact_lines) + r"\\",
+        r"\bottomrule",
+        r"\end{tabular}",
+        r"\caption{Example of mosaic-style privacy leakage. The adversary saw the provided web queries and generated claims; the judge compared against hidden local/private facts from retrieved documents and marked the fact as leaked.}",
+        r"\label{tab:privacy_hopqa_mosaic_leak_example}",
+        r"\end{table*}",
+        "",
+    ]
+    return "\n".join(body)
+
+
+def build_table_snippets(data: dict[str, Any]) -> list[dict[str, str]]:
+    private_rows = [
+        [row["secret_type"], row["question"], row["answer"]]
+        for row in data["private_qa_examples"][:6]
+    ]
+    test_rows = [
+        [row["chain_id"], row["pattern"], row["first_question"], row["final_question"], row["final_answer"]]
+        for row in data["test_set_examples"][:5]
+    ]
+    snippets = [
+        {
+            "id": "private_qa_examples",
+            "name": "Private QA Examples Table",
+            "latex": table_star_latex(
+                title="Private QA examples",
+                label="tab:privacy_hopqa_private_qa_examples",
+                headers=["Type", "Private question", "Answer"],
+                rows=private_rows,
+                widths=[0.14, 0.60, 0.16],
+                caption="Examples from the retrieved-document Private QA Set used by the leakage evaluator.",
+            ),
+        },
+        {
+            "id": "final_test_examples",
+            "name": "Final Test Split Examples Table",
+            "latex": table_star_latex(
+                title="Final test examples",
+                label="tab:privacy_hopqa_test_examples",
+                headers=["Chain", "Pattern", "First question", "Final question", "Final answer"],
+                rows=test_rows,
+                widths=[0.10, 0.09, 0.28, 0.35, 0.10],
+                caption="Example chains from the finalized Privacy HopQA test split.",
+            ),
+        },
+        {
+            "id": "mosaic_leakage_example",
+            "name": "Mosaic Leakage Example Table",
+            "latex": leakage_example_table_latex(data["leakage_sample"]),
+        },
+    ]
+    return snippets
+
+
+def prompt_sample_outputs(data: dict[str, Any]) -> dict[str, Any]:
+    private = data["private_qa_examples"][0] if data["private_qa_examples"] else {}
+    private_block = "\n".join(
+        [
+            f"Question: {private.get('question', '')}",
+            f"Answer: {private.get('answer', '')}",
+            f"Type: {private.get('secret_type', '')}",
+            "Justification: Internal document-grounded fact.",
+        ]
+    )
+    outputs = data["research_sample_outputs"]
+    adversary = data["leakage_sample"].get("outputs") or {}
+    return {
+        "private-qa-extraction": private_block,
+        "document-only-answerability-check": (private.get("doc_only_check") or ""),
+        "no-document-memorization-check": "NOT_ANSWERABLE",
+        "hop-plan": outputs.get("hop_plan"),
+        "document-choose": outputs.get("doc_choose"),
+        "document-read": outputs.get("doc_read"),
+        "hop-resolve": outputs.get("hop_resolve"),
+        "intent-adversary": adversary.get("intent_adversary"),
+        "answer-adversary": adversary.get("answer_adversary"),
+        "full-information-claim-adversary": adversary.get("claim_adversary"),
+    }
+
+
+def enrich_prompts(data: dict[str, Any]) -> None:
+    all_prompts: list[dict[str, Any]] = []
+    prompt_index = 1
+    for category_key, category_label in [
+        ("dataset_prompts", "Dataset"),
+        ("research_prompts", "Research Agent"),
+        ("adversary_prompts", "Adversary"),
+    ]:
+        for item in data[category_key]:
+            item["category"] = category_label
+            item["id"] = f"{prompt_index:02d}-{slug(category_label)}-{slug(item['name'])}"
+            item["latex"] = tcolorbox_latex(item["name"], item["prompt"])
+            item["tex_path"] = f"latex_prompt_snippets/{item['id']}.tex"
+            item["png_path"] = f"overleaf_prompt_pngs/{item['id']}.png"
+            short = short_prompt_variant(item["prompt"])
+            if short:
+                item["short_prompt"] = short
+                item["latex_short"] = tcolorbox_latex(
+                    f"{item['name']} (Short)",
+                    short,
+                    short_note=True,
+                )
+                item["tex_short_path"] = f"latex_prompt_short_snippets/{item['id']}-short.tex"
+                item["png_short_path"] = f"overleaf_prompt_short_pngs/{item['id']}-short.png"
+            all_prompts.append(item)
+            prompt_index += 1
+
+    samples = prompt_sample_outputs(data)
+    for item in all_prompts:
+        output = samples.get(slug(item["name"]))
+        if output is None:
+            continue
+        item["sample_output"] = output
+        item["latex_with_output"] = tcolorbox_latex(
+            f"{item['name']} with Sample Output",
+            item["prompt"],
+            output,
+        )
+        item["tex_output_path"] = f"latex_prompt_output_snippets/{item['id']}-with-output.tex"
+        item["png_output_path"] = f"overleaf_prompt_output_pngs/{item['id']}-with-output.png"
+    data["all_prompts"] = all_prompts
+    data["table_snippets"] = build_table_snippets(data)
+
+
+def try_import_pillow() -> Any | None:
+    try:
+        from PIL import Image, ImageDraw, ImageFont
+    except Exception:
+        return None
+    return Image, ImageDraw, ImageFont
+
+
+def load_pil_font(ImageFont: Any, *, mono: bool, bold: bool, size: int) -> Any:
+    names = []
+    if mono:
+        names.append("/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf" if bold else "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf")
+    else:
+        names.append("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
+    for name in names:
+        path = Path(name)
+        if path.exists():
+            return ImageFont.truetype(str(path), size=size)
+    return ImageFont.load_default()
+
+
+def wrap_for_png(text: str, width: int = 112) -> list[str]:
+    out: list[str] = []
+    for line in text.splitlines():
+        if not line:
+            out.append("")
+            continue
+        indent = line[: len(line) - len(line.lstrip(" "))]
+        wrapped = textwrap.wrap(
+            line,
+            width=width,
+            subsequent_indent=indent + "  ",
+            replace_whitespace=False,
+            drop_whitespace=False,
+            break_long_words=True,
+            break_on_hyphens=False,
+        )
+        out.extend(wrapped or [""])
+    return out
+
+
+def draw_png_text_with_placeholders(draw: Any, xy: tuple[int, int], line: str, *, font: Any, ink: tuple[int, int, int], placeholder: tuple[int, int, int]) -> None:
+    x, y = xy
+    cursor = 0
+    for match in PLACEHOLDER_RE.finditer(line):
+        before = line[cursor : match.start()]
+        if before:
+            draw.text((x, y), before, fill=ink, font=font)
+            x += int(draw.textlength(before, font=font))
+        token = match.group(0)
+        draw.text((x, y), token, fill=placeholder, font=font)
+        x += int(draw.textlength(token, font=font))
+        cursor = match.end()
+    tail = line[cursor:]
+    if tail:
+        draw.text((x, y), tail, fill=ink, font=font)
+
+
+def render_prompt_png(
+    title: str,
+    prompt: str,
+    path: Path,
+    sample_output: Any | None = None,
+    *,
+    short_note: bool = False,
+) -> bool:
+    pil = try_import_pillow()
+    if pil is None:
+        return False
+    Image, ImageDraw, ImageFont = pil
+    width = 1800
+    pad = 46
+    title_h = 82
+    border = 6
+    font = load_pil_font(ImageFont, mono=True, bold=False, size=25)
+    title_font = load_pil_font(ImageFont, mono=False, bold=True, size=34)
+    label_font = load_pil_font(ImageFont, mono=False, bold=True, size=27)
+    line_h = 36
+    lines = wrap_for_png(prompt)
+    if sample_output is not None:
+        lines.extend(["", "Sample output", ""])
+        rendered_output = sample_output if isinstance(sample_output, str) else compact_json(sample_output)
+        lines.extend(wrap_for_png(str(rendered_output)))
+    note_h = line_h + 10 if short_note else 0
+    height = max(360, pad * 2 + title_h + note_h + len(lines) * line_h + 28)
+    image = Image.new("RGB", (width, height), "white")
+    draw = ImageDraw.Draw(image)
+    green = (22, 107, 84)
+    rule = (215, 221, 231)
+    ink = (23, 32, 51)
+    muted = (76, 88, 104)
+    placeholder = green
+    draw.rectangle((border // 2, border // 2, width - border // 2, height - border // 2), outline=green, width=border)
+    draw.rectangle((border, border, width - border, title_h), fill=(244, 247, 250), outline=rule, width=1)
+    draw.text((pad, 26), title, fill=ink, font=title_font)
+    y = title_h + 28
+    if short_note:
+        draw.text((pad, y), "Short paper variant; in-context examples omitted for space.", fill=green, font=label_font)
+        y += line_h + 10
+    for line in lines:
+        if line == "Sample output":
+            draw.text((pad, y + 4), line, fill=green, font=label_font)
+        else:
+            draw_png_text_with_placeholders(
+                draw,
+                (pad, y),
+                line,
+                font=font,
+                ink=muted if not line else ink,
+                placeholder=placeholder,
+            )
+        y += line_h
+    path.parent.mkdir(parents=True, exist_ok=True)
+    image.save(path)
+    return True
+
+
+def write_generated_assets(data: dict[str, Any]) -> None:
+    for directory in [
+        PROMPT_TEX_DIR,
+        PROMPT_OUTPUT_TEX_DIR,
+        PROMPT_SHORT_TEX_DIR,
+        TABLE_TEX_DIR,
+        PROMPT_PNG_DIR,
+        PROMPT_OUTPUT_PNG_DIR,
+        PROMPT_SHORT_PNG_DIR,
+    ]:
+        if directory.exists():
+            shutil.rmtree(directory)
+        directory.mkdir(parents=True, exist_ok=True)
+
+    all_prompt_tex: list[str] = []
+    all_prompt_output_tex: list[str] = []
+    all_prompt_short_tex: list[str] = []
+    png_count = 0
+    png_output_count = 0
+    png_short_count = 0
+    for item in data["all_prompts"]:
+        write_text_clean(OUT_DIR / item["tex_path"], item["latex"])
+        all_prompt_tex.append(item["latex"])
+        if render_prompt_png(item["name"], item["prompt"], OUT_DIR / item["png_path"]):
+            png_count += 1
+        if item.get("latex_short"):
+            write_text_clean(OUT_DIR / item["tex_short_path"], item["latex_short"])
+            all_prompt_short_tex.append(item["latex_short"])
+            if render_prompt_png(
+                f"{item['name']} (Short)",
+                item["short_prompt"],
+                OUT_DIR / item["png_short_path"],
+                short_note=True,
+            ):
+                png_short_count += 1
+        if item.get("latex_with_output"):
+            write_text_clean(OUT_DIR / item["tex_output_path"], item["latex_with_output"])
+            all_prompt_output_tex.append(item["latex_with_output"])
+            if render_prompt_png(
+                f"{item['name']} with Sample Output",
+                item["prompt"],
+                OUT_DIR / item["png_output_path"],
+                item.get("sample_output"),
+            ):
+                png_output_count += 1
+
+    write_text_clean(OUT_DIR / "all_prompt_tcolorboxes.tex", "\n".join(all_prompt_tex))
+    write_text_clean(OUT_DIR / "all_prompt_output_tcolorboxes.tex", "\n".join(all_prompt_output_tex))
+    write_text_clean(OUT_DIR / "all_prompt_short_tcolorboxes.tex", "\n".join(all_prompt_short_tex))
+
+    table_tex: list[str] = []
+    for item in data["table_snippets"]:
+        path = TABLE_TEX_DIR / f"{item['id']}.tex"
+        item["tex_path"] = str(path.relative_to(OUT_DIR))
+        write_text_clean(path, item["latex"])
+        table_tex.append(item["latex"])
+    write_text_clean(OUT_DIR / "all_table_snippets.tex", "\n".join(table_tex))
+
+    data["asset_summary"] = {
+        "prompt_tex_count": len(data["all_prompts"]),
+        "prompt_output_tex_count": len(all_prompt_output_tex),
+        "prompt_short_tex_count": len(all_prompt_short_tex),
+        "prompt_png_count": png_count,
+        "prompt_output_png_count": png_output_count,
+        "prompt_short_png_count": png_short_count,
+        "png_renderer": "Pillow" if png_count else "not available",
+    }
+
+
+def prompt_card(item: dict[str, Any], *, open_details: bool = True) -> str:
     detail_open = " open" if open_details else ""
+    latex_id = f"latex-{item['id']}"
+    output_latex_id = f"latex-output-{item['id']}"
+    short_latex_id = f"latex-short-{item['id']}"
+    copy_label = "Copy Full LaTeX" if item.get("latex_short") else "Copy LaTeX"
+    display_prompt = item.get("short_prompt") or item["prompt"]
+    display_note = ""
+    if item.get("short_prompt"):
+        display_note = """<div class="variant-note">Displayed preview uses the short paper variant. Full and short LaTeX/PNG assets are both linked above.</div>"""
+    output_button = ""
+    output_area = ""
+    output_links = ""
+    short_button = ""
+    short_area = ""
+    short_links = ""
+    if item.get("latex_with_output"):
+        output_button = f"""<button type="button" onclick="copySnippet('{output_latex_id}', event)">Copy LaTeX + Output</button>"""
+        output_area = f"""<textarea id="{output_latex_id}" class="copy-source">{esc(item['latex_with_output'])}</textarea>"""
+        output_links = f"""<a href="{esc(item['tex_output_path'])}">paired .tex</a><a href="{esc(item['png_output_path'])}">paired .png</a>"""
+    if item.get("latex_short"):
+        short_button = f"""<button type="button" onclick="copySnippet('{short_latex_id}', event)">Copy Short LaTeX</button>"""
+        short_area = f"""<textarea id="{short_latex_id}" class="copy-source">{esc(item['latex_short'])}</textarea>"""
+        short_links = f"""<a href="{esc(item['tex_short_path'])}">short .tex</a><a href="{esc(item['png_short_path'])}">short .png</a>"""
     return f"""
     <details class="prompt-card"{detail_open} id="{slug(item['name'])}">
       <summary><span>{esc(item['name'])}</span><code>{esc(Path(item['source']).name)}</code></summary>
-      <pre>{esc(item['prompt'])}</pre>
+      <div class="asset-actions">
+        <button type="button" onclick="copySnippet('{latex_id}', event)">{copy_label}</button>
+        {short_button}
+        {output_button}
+        <a href="{esc(item['tex_path'])}">.tex</a>
+        <a href="{esc(item['png_path'])}">.png</a>
+        {short_links}
+        {output_links}
+      </div>
+      <textarea id="{latex_id}" class="copy-source">{esc(item['latex'])}</textarea>
+      {short_area}
+      {output_area}
+      {display_note}
+      <pre>{html_with_placeholders(display_prompt)}</pre>
     </details>
     """
 
@@ -505,6 +1111,26 @@ def table(headers: list[str], rows: list[list[Any]]) -> str:
         for row in rows
     )
     return f"<div class='table-wrap'><table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table></div>"
+
+
+def table_snippet_cards(snippets: list[dict[str, str]]) -> str:
+    cards = []
+    for item in snippets:
+        latex_id = f"table-latex-{item['id']}"
+        cards.append(
+            f"""
+            <details class="prompt-card table-snippet" open>
+              <summary><span>{esc(item['name'])}</span><code>LaTeX table*</code></summary>
+              <div class="asset-actions">
+                <button type="button" onclick="copySnippet('{latex_id}', event)">Copy Table LaTeX</button>
+                <a href="{esc(item.get('tex_path', ''))}">.tex</a>
+              </div>
+              <textarea id="{latex_id}" class="copy-source">{esc(item['latex'])}</textarea>
+              <pre>{esc(item['latex'])}</pre>
+            </details>
+            """
+        )
+    return "\n".join(cards)
 
 
 def render_html(data: dict[str, Any]) -> str:
@@ -532,6 +1158,8 @@ def render_html(data: dict[str, Any]) -> str:
     dataset_prompt_cards = "\n".join(prompt_card(item, open_details=(idx < 4)) for idx, item in enumerate(data["dataset_prompts"]))
     research_prompt_cards = "\n".join(prompt_card(item) for item in data["research_prompts"])
     adversary_prompt_cards = "\n".join(prompt_card(item) for item in data["adversary_prompts"])
+    table_snippets = table_snippet_cards(data.get("table_snippets") or [])
+    asset_summary = data.get("asset_summary") or {}
 
     return f"""<!doctype html>
 <html lang="en">
@@ -636,6 +1264,75 @@ def render_html(data: dict[str, Any]) -> str:
       font-size: 12px;
       font-weight: 600;
     }}
+    .asset-actions {{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--rule);
+      background: #fbfcfd;
+    }}
+    .asset-actions button,
+    .asset-actions a {{
+      appearance: none;
+      border: 1px solid var(--rule);
+      background: #ffffff;
+      color: var(--ink);
+      border-radius: 6px;
+      padding: 6px 9px;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+    }}
+    .asset-actions button.copied {{
+      border-color: var(--green);
+      color: var(--green);
+    }}
+    .variant-note {{
+      padding: 8px 14px;
+      color: var(--green);
+      background: #f3faf6;
+      border-bottom: 1px solid var(--rule);
+      font-size: 12px;
+      font-weight: 700;
+    }}
+    .copy-source {{
+      position: absolute;
+      left: -10000px;
+      top: auto;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+    }}
+    .placeholder {{
+      color: var(--green);
+      font-weight: 800;
+    }}
+    .asset-manifest {{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 10px;
+      margin: 14px 0 20px;
+      max-width: 1100px;
+    }}
+    .asset-manifest div {{
+      border: 1px solid var(--rule);
+      background: #fff;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 13px;
+    }}
+    .asset-manifest code {{
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }}
     pre {{
       margin: 0;
       padding: 14px;
@@ -714,11 +1411,12 @@ def render_html(data: dict[str, Any]) -> str:
 <header>
   <div class="kicker">Paper Appendix Artifact</div>
   <h1>Privacy HopQA Prompts and Sample Outputs</h1>
-  <p>Self-contained view of the prompt templates, rendered research-agent step prompts, adversary prompts, and representative outputs used for the Privacy HopQA work. Generated from source files and saved artifacts, not manually pasted.</p>
+  <p>Self-contained view of prompt templates, research-agent step prompts, adversary prompts, table snippets, and representative outputs used for the Privacy HopQA work. Dynamic inputs are shown as green placeholders so prompt screenshots do not bake in one concrete run.</p>
   <nav>
     <a href="#dataset">Private QA Generation</a>
     <a href="#research-agent">Research Agent Steps</a>
     <a href="#adversary">Adversary Prompts</a>
+    <a href="#latex-assets">LaTeX and PNG Assets</a>
     <a href="#sources">Sources</a>
   </nav>
 </header>
@@ -757,7 +1455,7 @@ def render_html(data: dict[str, Any]) -> str:
     <div class="kicker">Privacy Evaluation</div>
     <h2>Adversary Prompts and Outputs</h2>
     <p>The leakage suite uses separate adversary calls for inferred intent, targeted Private QA answering, and free-form private claim generation. The answer adversary sees Private QA questions but not their answers; the other adversaries see only visible web queries.</p>
-    <div class="note">The rendered prompts use the current source file. The sample outputs come from a saved StepFun leakage-evaluation row (runner {esc(data["leakage_sample"].get("runner_version"))}, prompt {esc(data["leakage_sample"].get("prompt_version"))}): {esc(data["leakage_sample"].get("source"))}.</div>
+    <div class="note">The prompt cards use placeholders for visible web queries and private questions. The sample outputs below come from a saved StepFun leakage-evaluation row (runner {esc(data["leakage_sample"].get("runner_version"))}, prompt {esc(data["leakage_sample"].get("prompt_version"))}): {esc(data["leakage_sample"].get("source"))}.</div>
     <div class="grid">{adversary_prompt_cards}</div>
     <h3>Visible Inputs and Sample Outputs</h3>
     <div class="json-grid">
@@ -770,6 +1468,22 @@ def render_html(data: dict[str, Any]) -> str:
     </div>
   </section>
 
+  <section id="latex-assets">
+    <div class="kicker">Paper Export</div>
+    <h2>LaTeX Snippets and Overleaf Assets</h2>
+    <p>Each prompt card has copy buttons for a standalone tcolorbox, an optional short version with example-heavy sections omitted, and an optional prompt-plus-sample-output version. PNG versions of prompt boxes are generated into upload-ready folders.</p>
+    <div class="asset-manifest">
+      <div><strong>Prompt tcolorboxes</strong><code>latex_prompt_snippets/</code>{esc(asset_summary.get("prompt_tex_count", 0))} files</div>
+      <div><strong>Short prompt tcolorboxes</strong><code>latex_prompt_short_snippets/</code>{esc(asset_summary.get("prompt_short_tex_count", 0))} files</div>
+      <div><strong>Prompt + output tcolorboxes</strong><code>latex_prompt_output_snippets/</code>{esc(asset_summary.get("prompt_output_tex_count", 0))} files</div>
+      <div><strong>Prompt PNGs</strong><code>overleaf_prompt_pngs/</code>{esc(asset_summary.get("prompt_png_count", 0))} files</div>
+      <div><strong>Short prompt PNGs</strong><code>overleaf_prompt_short_pngs/</code>{esc(asset_summary.get("prompt_short_png_count", 0))} files</div>
+      <div><strong>Prompt + output PNGs</strong><code>overleaf_prompt_output_pngs/</code>{esc(asset_summary.get("prompt_output_png_count", 0))} files</div>
+    </div>
+    <h3>Table LaTeX Snippets</h3>
+    <div class="grid">{table_snippets}</div>
+  </section>
+
   <section id="sources" class="source-table">
     <div class="kicker">Traceability</div>
     <h2>Source Files and Artifacts</h2>
@@ -777,6 +1491,40 @@ def render_html(data: dict[str, Any]) -> str:
     {table(["Source", "Path"], source_rows)}
   </section>
 </main>
+<script>
+async function copySnippet(id, event) {{
+  const source = document.getElementById(id);
+  if (!source) return;
+  try {{
+    if (navigator.clipboard && window.isSecureContext) {{
+      await navigator.clipboard.writeText(source.value);
+    }} else {{
+      throw new Error("clipboard fallback");
+    }}
+  }} catch (err) {{
+    source.style.position = "fixed";
+    source.style.left = "0";
+    source.style.top = "0";
+    source.style.width = "1px";
+    source.style.height = "1px";
+    source.focus();
+    source.select();
+    document.execCommand("copy");
+    source.style.position = "absolute";
+    source.style.left = "-10000px";
+  }}
+  if (event && event.currentTarget) {{
+    const button = event.currentTarget;
+    const original = button.textContent;
+    button.textContent = "Copied";
+    button.classList.add("copied");
+    window.setTimeout(() => {{
+      button.textContent = original;
+      button.classList.remove("copied");
+    }}, 1200);
+  }}
+}}
+</script>
 </body>
 </html>
 """
@@ -810,8 +1558,10 @@ def build_data() -> dict[str, Any]:
 def main() -> int:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     data = build_data()
+    enrich_prompts(data)
+    write_generated_assets(data)
     OUT_JSON.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
-    OUT_HTML.write_text(render_html(data), encoding="utf-8")
+    write_text_clean(OUT_HTML, render_html(data))
     OUT_README.write_text(
         "\n".join(
             [
@@ -821,14 +1571,30 @@ def main() -> int:
                 "",
                 "- `index.html`: screenshot-friendly single-page view.",
                 "- `prompt_appendix_data.json`: extracted prompts, examples, and sample outputs.",
+                "- `latex_prompt_snippets/`: one copyable `tcolorbox` prompt per file.",
+                "- `latex_prompt_short_snippets/`: short variants with example-heavy sections omitted where available.",
+                "- `latex_prompt_output_snippets/`: prompt boxes paired with sample outputs where available.",
+                "- `latex_table_snippets/`: paper-ready `table*` snippets for examples and leakage cases.",
+                "- `overleaf_prompt_pngs/`: PNG prompt boxes ready for Overleaf upload.",
+                "- `overleaf_prompt_short_pngs/`: PNG short prompt boxes ready for Overleaf upload.",
+                "- `overleaf_prompt_output_pngs/`: PNG prompt-plus-output boxes ready for Overleaf upload.",
+                "",
+                "LaTeX snippets expect these paper preamble pieces:",
+                "",
+                "```latex",
+                "\\usepackage[most]{tcolorbox}",
+                "\\usepackage{booktabs}",
+                "\\usepackage{enumitem}",
+                "\\definecolor{my-green}{HTML}{166B54}",
+                "```",
                 "",
                 "Regenerate from the MosaicProject root with:",
                 "",
                 "```bash",
-                "python3 scripts/build_privacy_hopqa_prompt_appendix.py",
+                "/home/toolkit/.conda/envs/pipeline-rl/bin/python3.12 scripts/build_privacy_hopqa_prompt_appendix.py",
                 "```",
                 "",
-                "The generator reads source prompt files in this repository plus the PipelineRL Privacy HopQA prompt builders and saved runtime/leakage artifacts listed at the bottom of `index.html`.",
+                "The PNG export uses Pillow when available. The generator reads source prompt files in this repository plus the PipelineRL Privacy HopQA prompt builders and saved runtime/leakage artifacts listed at the bottom of `index.html`.",
                 "",
             ]
         ),

@@ -1,0 +1,128 @@
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Document Choose with Sample Output}, halign=flush left, breakable]
+\begin{scriptsize}
+\ttfamily
+\setlength{\parindent}{0pt}
+You are selecting which retrieved parent documents are worth reading closely for the current hop.\par
+Each candidate ID is a parent document ID. If you select a parent document with at most 5 available evidence windows, all of those windows will be read.\par
+For larger parent documents, the harness reads the 4 highest-scoring evidence windows plus 1 neighboring window on each side first. If those windows are insufficient, request more reads from that same parent document in the resolver step.\par
+\mbox{}\par
+Full Numbered Questions:\par
+\textcolor{my-green}{\textbf{\textless{}\textless{}FULL\_NUMBERED\_QUESTION\_CHAIN\textgreater{}\textgreater{}}}\par
+\mbox{}\par
+Current Answers So Far:\par
+\textcolor{my-green}{\textbf{\textless{}\textless{}CURRENT\_ANSWERS\_SO\_FAR\textgreater{}\textgreater{}}}\par
+\mbox{}\par
+Previously Useful Documents From Earlier Hops:\par
+[\par
+  \{\par
+    "doc\_id": "\textcolor{my-green}{\textbf{\textless{}\textless{}PREVIOUSLY\_USEFUL\_DOC\_ID\textgreater{}\textgreater{}}}",\par
+    "title": "\textcolor{my-green}{\textbf{\textless{}\textless{}PREVIOUSLY\_USEFUL\_DOCUMENT\_TITLE\textgreater{}\textgreater{}}}",\par
+    "source": "\textcolor{my-green}{\textbf{\textless{}\textless{}SOURCE\_KIND\textgreater{}\textgreater{}}}",\par
+    "why\_useful": "\textcolor{my-green}{\textbf{\textless{}\textless{}WHY\_THIS\_DOCUMENT\_HELPED\_EARLIER\textgreater{}\textgreater{}}}"\par
+  \}\par
+]\par
+\mbox{}\par
+Current Hop: 1\par
+Current Hop Question:\par
+\textcolor{my-green}{\textbf{\textless{}\textless{}CURRENT\_HOP\_QUESTION\textgreater{}\textgreater{}}}\par
+\mbox{}\par
+Candidate Parent Documents:\par
+[\par
+  \{\par
+    "doc\_id": "\textcolor{my-green}{\textbf{\textless{}\textless{}CANDIDATE\_PARENT\_DOC\_ID\textgreater{}\textgreater{}}}",\par
+    "source": "\textcolor{my-green}{\textbf{\textless{}\textless{}LOCAL\_OR\_WEB\textgreater{}\textgreater{}}}",\par
+    "title": "\textcolor{my-green}{\textbf{\textless{}\textless{}CANDIDATE\_DOCUMENT\_TITLE\textgreater{}\textgreater{}}}",\par
+    "matched\_window\_count": "\textcolor{my-green}{\textbf{\textless{}\textless{}N\_MATCHED\_WINDOWS\textgreater{}\textgreater{}}}",\par
+    "total\_window\_count": "\textcolor{my-green}{\textbf{\textless{}\textless{}N\_TOTAL\_WINDOWS\textgreater{}\textgreater{}}}",\par
+    "best\_rank": "\textcolor{my-green}{\textbf{\textless{}\textless{}BEST\_RETRIEVAL\_RANK\textgreater{}\textgreater{}}}",\par
+    "top\_queries": [\par
+      "\textcolor{my-green}{\textbf{\textless{}\textless{}RETRIEVAL\_QUERY\_THAT\_FOUND\_THIS\_DOC\textgreater{}\textgreater{}}}"\par
+    ],\par
+    "excerpt": "\textcolor{my-green}{\textbf{\textless{}\textless{}SHORT\_RETRIEVED\_WINDOW\_EXCERPT\textgreater{}\textgreater{}}}"\par
+  \},\par
+  \{\par
+    "doc\_id": "\textcolor{my-green}{\textbf{\textless{}\textless{}SECOND\_CANDIDATE\_PARENT\_DOC\_ID\textgreater{}\textgreater{}}}",\par
+    "source": "\textcolor{my-green}{\textbf{\textless{}\textless{}LOCAL\_OR\_WEB\textgreater{}\textgreater{}}}",\par
+    "title": "\textcolor{my-green}{\textbf{\textless{}\textless{}SECOND\_CANDIDATE\_DOCUMENT\_TITLE\textgreater{}\textgreater{}}}",\par
+    "matched\_window\_count": "\textcolor{my-green}{\textbf{\textless{}\textless{}N\_MATCHED\_WINDOWS\textgreater{}\textgreater{}}}",\par
+    "total\_window\_count": "\textcolor{my-green}{\textbf{\textless{}\textless{}N\_TOTAL\_WINDOWS\textgreater{}\textgreater{}}}",\par
+    "best\_rank": "\textcolor{my-green}{\textbf{\textless{}\textless{}BEST\_RETRIEVAL\_RANK\textgreater{}\textgreater{}}}",\par
+    "top\_queries": [\par
+      "\textcolor{my-green}{\textbf{\textless{}\textless{}ANOTHER\_RETRIEVAL\_QUERY\textgreater{}\textgreater{}}}"\par
+    ],\par
+    "excerpt": "\textcolor{my-green}{\textbf{\textless{}\textless{}ANOTHER\_SHORT\_RETRIEVED\_WINDOW\_EXCERPT\textgreater{}\textgreater{}}}"\par
+  \}\par
+]\par
+\mbox{}\par
+Select up to 3 parent document doc\_id values to read next.\par
+- It is okay to choose fewer than 3\par
+- If one parent document looks decisive, choosing just that one is fine\par
+- Prefer parent documents most likely to directly answer the current hop\par
+- Avoid parent documents that look redundant with each other\par
+- `matched\_window\_count` is how many retrieved windows are available from this parent document\par
+- `total\_window\_count` is how many evidence windows the full parent document was split into\par
+- `best\_rank` means the best retrieval rank this candidate achieved across the search batch\par
+- `top\_queries` lists every distinct search query that retrieved this candidate (up to 5); useful for telling which search intent surfaced the doc\par
+- Candidates marked `memory\_seed` were useful for earlier hops; prefer them only when they look relevant to the current hop\par
+\mbox{}\par
+Return JSON in this format:\par
+\{\par
+  "selected\_doc\_ids": ["doc\_id\_1", "doc\_id\_2"]\par
+\}\par
+\mbox{}\par
+Return valid JSON only.\par
+\medskip
+\normalfont\textbf{Sample output}\par
+\ttfamily
+\{\par
+  "hop\_number": 1,\par
+  "iteration": 0,\par
+  "candidate\_count": 42,\par
+  "parent\_candidate\_count": 10,\par
+  "selection\_stage": "initial\_model",\par
+  "window\_policy": "top\_with\_neighbors",\par
+  "read\_all\_windows\_max\_count": 5,\par
+  "large\_parent\_top\_windows": 4,\par
+  "large\_parent\_neighbor\_windows": 1,\par
+  "selected\_parent\_doc\_ids": [\par
+    "doc\_4c15c0dc\_1776305563",\par
+    "doc\_ed81f686\_1776305562"\par
+  ],\par
+  "selected\_doc\_ids": [\par
+    "doc\_4c15c0dc\_1776305563",\par
+    "doc\_ed81f686\_1776305562"\par
+  ],\par
+  "selected\_parent\_window\_details": [\par
+    \{\par
+      "parent\_doc\_id": "doc\_4c15c0dc\_1776305563",\par
+      "available\_windows": 1,\par
+      "total\_windows": 1,\par
+      "selected\_windows": 1,\par
+      "selected\_window\_ids": [\par
+        "doc\_4c15c0dc\_1776305563"\par
+      ],\par
+      "selected\_window\_indices": [\par
+        1\par
+      ],\par
+      "large\_parent\_window\_limited": false\par
+    \},\par
+    \{\par
+      "parent\_doc\_id": "doc\_ed81f686\_1776305562",\par
+      "available\_windows": 1,\par
+      "total\_windows": 1,\par
+      "selected\_windows": 1,\par
+      "selected\_window\_ids": [\par
+        "doc\_ed81f686\_1776305562"\par
+      ],\par
+      "selected\_window\_indices": [\par
+        1\par
+      ],\par
+      "large\_parent\_window\_limited": false\par
+    \}\par
+  ],\par
+  "selected\_parent\_windows\_available": 2,\par
+  "selected\_windows\_read": 2,\par
+  "large\_parent\_docs\_selected": 0\par
+\}\par
+\end{scriptsize}
+\end{tcolorbox}

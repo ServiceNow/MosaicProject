@@ -1,0 +1,34 @@
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Candidate Hop Ranker}, halign=flush left, breakable]
+\begin{scriptsize}
+\ttfamily
+\setlength{\parindent}{0pt}
+Choose the best next hop in this multi-hop QA chain.\par
+\mbox{}\par
+Previous question:\par
+\textcolor{my-green}{\textbf{\{prev\_question\}}}\par
+\mbox{}\par
+Previous answer:\par
+"\textcolor{my-green}{\textbf{\{prev\_answer\}}}"\par
+\mbox{}\par
+Rank the candidates from best to worst.\par
+\mbox{}\par
+Prefer the option where:\par
+- the previous answer really helps find the next fact\par
+- the answer is a new fact, not the bridge value again or obvious arithmetic\par
+- the quote directly supports the question, not just the same document\par
+- the question is specific, simple, and answerable from the cited text\par
+- the answer stands alone as a complete entity, date, or value\par
+- shallow chronology questions are only good when the date itself is the fact\par
+- the answer is distinctive and interesting, not a low-information fragment like a surname, section numeral, generic capitalized word, or bare year/quarter unless that is clearly the core fact\par
+- the question is hard to misinterpret as being about some other entity or document that also mentions the bridge\par
+- one clean sentence beats a setup sentence plus a question\par
+- the question uses only the minimum detail needed to uniquely identify the subject\par
+- broadly meaningful, reusable entities are better than dead-end trivia when both are equally well supported\par
+\mbox{}\par
+Candidates:\par
+\textcolor{my-green}{\textbf{\{candidates\}}}\par
+\mbox{}\par
+Output only a comma-separated ranking of candidate numbers, for example:\par
+2, 1, 3\par
+\end{scriptsize}
+\end{tcolorbox}

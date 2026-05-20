@@ -1,0 +1,49 @@
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Next-Hop Question, Fixed Target (Short)}, halign=flush left, breakable]
+\begin{scriptsize}
+\ttfamily
+\setlength{\parindent}{0pt}
+\normalfont\textit{Short paper variant; in-context examples omitted for space.}\par
+\medskip
+\ttfamily
+Write the next question in this multi-hop QA chain.\par
+\mbox{}\par
+Previous question:\par
+\textcolor{my-green}{\textbf{\{prev\_question\}}}\par
+\mbox{}\par
+Previous answer:\par
+"\textcolor{my-green}{\textbf{\{prev\_answer\}}}"\par
+\mbox{}\par
+Target answer:\par
+"\textcolor{my-green}{\textbf{\{target\_answer\}}}"\par
+\mbox{}\par
+Source excerpt:\par
+\textcolor{my-green}{\textbf{\{source\_excerpt\}}}\par
+\mbox{}\par
+Current document:\par
+\textcolor{my-green}{\textbf{\{doc\_text\}}}\par
+\mbox{}\par
+Write one simple question that uses "\textcolor{my-green}{\textbf{\{prev\_answer\}}}" exactly and asks for one new fact from this document.\par
+Think through a few possible questions first, then choose the best honest one.\par
+Do not force a relationship. If the document only co-mentions the values, or if the hop would require guesswork, arithmetic, or a made-up connection, output NO\_VALID\_QUESTION.\par
+Avoid generic "what year/date/quarter is associated with..." questions unless that date is truly the fact being asked for.\par
+If the answer is a date or time, use the full supported granularity rather than a fragment.\par
+The question must uniquely identify the answer from the quoted evidence. If multiple people, places, sections, dates, or values in the excerpt could fit, output NO\_VALID\_QUESTION.\par
+Write exactly one sentence total. Do not write a setup sentence followed by a second question or any extra sentence fragment.\par
+Use the previous answer as an inline part of that single sentence, not as a separate lead-in.\par
+The goal is to use the previous answer to identify the right subject, event, or record in this document, then ask for exactly one new fact about that identified subject.\par
+If the answer is a named entity, ask for the full entity, not a partial fragment like a surname, section numeral, or single generic word unless the source itself only gives that fragment.\par
+Prefer distinctive, interesting answers and questions over low-information ones. Avoid generic targets like a bare year, quarter, section label, ordinal word, or generic capitalized word unless that is clearly the central fact.\par
+Make the question hard to misread as being about some other person, event, or document that also mentions the same bridge.\par
+Use only the minimum detail needed to uniquely identify the subject. Do not pile on extra descriptors once the subject is already pinned down.\par
+As a soft preference, favor entities and facts that are broadly meaningful or likely to matter to a company researcher: organizations, products, policies, markets, hospitals, countries, technologies, roles, or durable metrics.\par
+Avoid dead-end trivia when possible, especially random individual people, one-off titles, or isolated labels that are unlikely to support a useful next hop, unless the person or label is clearly the main subject of the excerpt.\par
+\mbox{}\par
+\textcolor{my-green}{\textbf{\textless{}\textless{}ICL\_EXAMPLES\_OMITTED\_FOR\_SPACE\textgreater{}\textgreater{}}}\par
+\mbox{}\par
+End with exactly one final block using these labels:\par
+QUOTE: \textless{}exact supporting excerpt(s) from the document; use " | " if needed\textgreater{}\par
+REASONING: \textless{}brief explanation of why this is the best honest option; keep this short and do not reveal long chain-of-thought\textgreater{}\par
+QUESTION: \textless{}one single-line question containing "\textcolor{my-green}{\textbf{\{prev\_answer\}}}"\textgreater{}\par
+ANSWER: \textcolor{my-green}{\textbf{\{target\_answer\}}}\par
+\end{scriptsize}
+\end{tcolorbox}

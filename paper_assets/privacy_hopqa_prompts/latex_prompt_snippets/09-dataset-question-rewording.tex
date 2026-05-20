@@ -1,0 +1,23 @@
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Question Rewording}, halign=flush left, breakable]
+\begin{scriptsize}
+\ttfamily
+\setlength{\parindent}{0pt}
+Fix this multi-hop question to improve clarity. Make minimal edits only.\par
+\mbox{}\par
+PREVIOUS HOPS (for context):\par
+\textcolor{my-green}{\textbf{\{prev\_hops\}}}\par
+\mbox{}\par
+CURRENT QUESTION TO FIX:\par
+\textcolor{my-green}{\textbf{\{question\}}}\par
+\mbox{}\par
+Rules:\par
+1. The question should give enough information (with the previous answer) to find the relevant document. Prefer searchable phrasing; avoid document references ("the document", "this report") that don't add searchable detail.\par
+2. Replace vague phrasing ("implementations", "aligned with") with clearer wording when possible.\par
+3. Prefer linearity: when possible through tiny edits, structure the question so that answering previous questions is needed to search for the relevant document. The agent should need prior answers to formulate an effective search for this question. If this is impossible without larger changes, output the question as-is.\par
+4. Remain fully deterministic: given the full answer chain, there must be exactly one correct answer. Avoid vague questions (e.g. "Who was born on Dec 20th 2012?" has multiple answers).\par
+5. Keep the meaning and structure unchanged. Preserve back-references like (1), (2).\par
+6. Output ONLY the rewritten question, nothing else.\par
+\mbox{}\par
+Rewritten question:\par
+\end{scriptsize}
+\end{tcolorbox}
