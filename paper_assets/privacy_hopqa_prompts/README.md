@@ -4,6 +4,7 @@ Generated paper-facing prompt appendix for Privacy HopQA.
 
 - `index.html`: screenshot-friendly single-page view.
 - `leakage_diagrams.html`: screenshot-friendly page-one diagram concepts for intent, answer, and full-information leakage examples.
+- `leakage_examples.html`: real saved-run web-query traces with adversary predictions and judge labels.
 - `prompt_appendix_data.json`: extracted prompts, examples, and sample outputs.
 - `latex_prompt_snippets/`: one copyable `tcolorbox` prompt per file.
 - `latex_prompt_short_snippets/`: short variants with example-heavy sections omitted where available.
@@ -30,6 +31,12 @@ Regenerate from the MosaicProject root with:
 
 ```bash
 /home/toolkit/.conda/envs/pipeline-rl/bin/python3.12 scripts/build_privacy_hopqa_prompt_appendix.py
+```
+
+Regenerate the leakage examples page with:
+
+```bash
+python3 scripts/build_privacy_hopqa_leakage_examples.py
 ```
 
 The PNG export uses Pillow when available. The generator reads source prompt files in this repository plus the PipelineRL Privacy HopQA prompt builders and saved runtime/leakage artifacts listed at the bottom of `index.html`.
