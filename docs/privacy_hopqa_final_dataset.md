@@ -28,6 +28,19 @@ Patch log and manifest:
 - `data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review.applied_log.jsonl`
 - `data_files/privacy_hopqa_final_dataset/manifest_privacy_hopqa_finalized_2026-05-13_q30_final_residual_review.json`
 
+Live-rollout variant patches applied on 2026-05-19:
+
+- `data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review.variant_format_patch_2026-05-19.jsonl`
+- `data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review.agent_variant_patch_2026-05-19.jsonl`
+- `data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review.broad_trace_variant_patch_2026-05-19.jsonl`
+- `data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review.standard_variant_patch_2026-05-19.jsonl`
+
+These patches update the current trainable full/train/val/test JSONL files in
+place. They add accepted-answer aliases for common safe equivalences observed in
+rollouts, including quarter/date formatting, US/USA/United States aliases,
+currency formatting, percent formatting, and conservative name/punctuation
+variants.
+
 Counts:
 
 | Split | Chains | Hops | Company coverage |

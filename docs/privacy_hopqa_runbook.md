@@ -446,3 +446,140 @@ Older launch records and first-web notes remain in:
 ```text
 docs/privacy_hopqa_runbook_2026-05-13.md
 ```
+
+## Constrained resolver ablation
+
+Use this ablation to test whether reward collapse is driven by verbose
+resolver outputs. Override the launcher defaults with `epsilon_low=0.03` and
+`epsilon_high=0.04`; the launcher currently injects 3e-3/4e-3 earlier in the
+command line, and the later overrides keep this ablation from also testing a
+stricter clipping change.
+
+```text
+baseline resolver:
+  privacy_hopqa.constrained_resolver=false
+  privacy_hopqa.hop_resolve_reward_mode=hop_correct
+
+constrained resolver:
+  privacy_hopqa.constrained_resolver=true
+  privacy_hopqa.hop_resolve_reward_mode=local_decision
+```
+
+`constrained_resolver=true` removes free-form `justification` and `reason`
+fields from the resolver prompt. The resolver can only answer with a short
+answer plus supporting document IDs, request more unread parent documents, or
+request another search. Hop justifications for reports and cross-hop memory are
+then copied from the supporting document-reader results.
+
+`hop_resolve_reward_mode=local_decision` changes only `hop_resolve` traces
+under `training_reward_mode=hop_step`:
+
+```text
+resolver answered this call and answer matches accepted variants: +1
+resolver answered this call and answer does not match:             0
+resolver requested read_more/search_more:                         0
+resolver protocol/JSON error on this call:                       -1
+```
+
+`hop_plan` and `doc_choose` rewards are unchanged. This prevents a long
+intermediate resolver call that only says `read_more` from receiving positive
+reward just because a later resolver call eventually answered the hop.
+
+Trainer command for the constrained resolver run:
+
+```bash
+cd /home/toolkit/my_code/MosaicProject
+source configs/privacy_hopqa_q30_current.env
+export PATH=/home/toolkit/.local/bin:$PATH
+export PRIVACY_AGENT_HELPER_URL="http://<helper-for-constrained-resolver>:8012"
+
+TS=$(date +%Y%m%d%H%M%S)
+JOB="privacy_hopqa_q30_4b_hopstep_constrained_resolver_lr1e6_50s_${TS}"
+
+PIPELINERL_ROOT="$PIPELINERL_ROOT" \
+OUTPUT_DIR_BASE="$PRIVACY_HOPQA_OUTPUT_DIR_BASE" \
+LOCAL_INDEX_ROOT="$PRIVACY_AGENT_LOCAL_INDEX_ROOT" \
+JOB_NAME="$JOB" \
+WANDB_PROJECT="privacy_hopqa_q30_resolver_ablation_20260520" \
+WANDB_GROUP="hopstep_resolver_schema_clip3e2_50s" \
+WANDB_NAME="$JOB" \
+REPLICAS=4 \
+LEARNING_RATE=1e-6 \
+MODEL_PATH="$PRIVACY_HOPQA_MODEL_4B" \
+CAPTURE_MODE=planning_only \
+FILTER_ZERO_ADVANTAGE_GROUPS="$PRIVACY_HOPQA_FILTER_ZERO_ADVANTAGE_GROUPS" \
+EXTRA_OVERRIDES="$PRIVACY_HOPQA_HOP_STEP_REWARD_OVERRIDE $PRIVACY_HOPQA_CONSTRAINED_RESOLVER_OVERRIDE $PRIVACY_HOPQA_COMMON_EXTRA_OVERRIDES privacy_hopqa.reader_window_chars=10000 privacy_hopqa.max_parallel_doc_reads=5 privacy_hopqa.hop_step_doc_bonus=0.0 finetune.max_train_steps=50 finetune.interrupt_train_steps=50 finetune.save_checkpoint_steps=10 actor.llm_max_rollouts=32 world.actor_fraction=2 world.finetune_fraction=6 eval_every_n_versions=40960 finetune.rl.normalize_step_loss_by_advantage_group=true finetune.rl.epsilon_low=0.03 finetune.rl.epsilon_high=0.04" \
+./run_privacy_hopqa.sh
+```
+
+Eval-10 relaunch on 2026-05-20:
+
+```text
+wandb_project=privacy_hopqa_q30_resolver_ablation_20260520
+wandb_group=hopstep_resolver_schema_clip3e2_eval10_50s
+eval_every_n_versions=40960
+
+baseline helper=22675058-28c2-46b6-915c-0bf7300937ee
+baseline helper_url=http://dns-24e3447c-506e-4b21-92df-156e18db5087-phq30rbase020551:8012
+baseline trainer=7bd13535-46f0-4da8-a430-f0cdbf2eb642
+baseline output_dir=/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_4b_hopstep_resolver_base_lr1e6_clip3e2_eval10_50s_20260520025625
+
+constrained helper=358a5d1b-7b92-4c42-b003-a519cda01f51
+constrained helper_url=http://dns-24e3447c-506e-4b21-92df-156e18db5087-phq30rcon020551:8012
+constrained trainer=dff9e914-b48d-4159-827b-c4f3280bfef7
+constrained output_dir=/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_4b_hopstep_resolver_constrained_lr1e6_clip3e2_eval10_50s_20260520025625
+```
+
+Baseline relaunch command:
+
+```bash
+cd /home/toolkit/my_code/MosaicProject
+source configs/privacy_hopqa_q30_current.env
+export PATH=/home/toolkit/.local/bin:$PATH
+export PRIVACY_AGENT_HELPER_URL="http://dns-24e3447c-506e-4b21-92df-156e18db5087-phq30rbase020551:8012"
+
+TS=$(date +%Y%m%d%H%M%S)
+JOB="privacy_hopqa_q30_4b_hopstep_resolver_base_lr1e6_clip3e2_eval10_50s_${TS}"
+
+PIPELINERL_ROOT="$PIPELINERL_ROOT" \
+OUTPUT_DIR_BASE="$PRIVACY_HOPQA_OUTPUT_DIR_BASE" \
+LOCAL_INDEX_ROOT="$PRIVACY_AGENT_LOCAL_INDEX_ROOT" \
+JOB_NAME="$JOB" \
+WANDB_PROJECT="privacy_hopqa_q30_resolver_ablation_20260520" \
+WANDB_GROUP="hopstep_resolver_schema_clip3e2_eval10_50s" \
+WANDB_NAME="$JOB" \
+REPLICAS=4 \
+LEARNING_RATE=1e-6 \
+MODEL_PATH="$PRIVACY_HOPQA_MODEL_4B" \
+CAPTURE_MODE=planning_only \
+FILTER_ZERO_ADVANTAGE_GROUPS="$PRIVACY_HOPQA_FILTER_ZERO_ADVANTAGE_GROUPS" \
+EXTRA_OVERRIDES="$PRIVACY_HOPQA_HOP_STEP_REWARD_OVERRIDE $PRIVACY_HOPQA_COMMON_EXTRA_OVERRIDES privacy_hopqa.reader_window_chars=10000 privacy_hopqa.max_parallel_doc_reads=5 privacy_hopqa.hop_step_doc_bonus=0.0 finetune.max_train_steps=50 finetune.interrupt_train_steps=50 finetune.save_checkpoint_steps=10 actor.llm_max_rollouts=32 world.actor_fraction=2 world.finetune_fraction=6 eval_every_n_versions=40960 finetune.rl.normalize_step_loss_by_advantage_group=true finetune.rl.epsilon_low=0.03 finetune.rl.epsilon_high=0.04" \
+./run_privacy_hopqa.sh
+```
+
+Constrained relaunch command:
+
+```bash
+cd /home/toolkit/my_code/MosaicProject
+source configs/privacy_hopqa_q30_current.env
+export PATH=/home/toolkit/.local/bin:$PATH
+export PRIVACY_AGENT_HELPER_URL="http://dns-24e3447c-506e-4b21-92df-156e18db5087-phq30rcon020551:8012"
+
+TS=$(date +%Y%m%d%H%M%S)
+JOB="privacy_hopqa_q30_4b_hopstep_resolver_constrained_lr1e6_clip3e2_eval10_50s_${TS}"
+
+PIPELINERL_ROOT="$PIPELINERL_ROOT" \
+OUTPUT_DIR_BASE="$PRIVACY_HOPQA_OUTPUT_DIR_BASE" \
+LOCAL_INDEX_ROOT="$PRIVACY_AGENT_LOCAL_INDEX_ROOT" \
+JOB_NAME="$JOB" \
+WANDB_PROJECT="privacy_hopqa_q30_resolver_ablation_20260520" \
+WANDB_GROUP="hopstep_resolver_schema_clip3e2_eval10_50s" \
+WANDB_NAME="$JOB" \
+REPLICAS=4 \
+LEARNING_RATE=1e-6 \
+MODEL_PATH="$PRIVACY_HOPQA_MODEL_4B" \
+CAPTURE_MODE=planning_only \
+FILTER_ZERO_ADVANTAGE_GROUPS="$PRIVACY_HOPQA_FILTER_ZERO_ADVANTAGE_GROUPS" \
+EXTRA_OVERRIDES="$PRIVACY_HOPQA_HOP_STEP_REWARD_OVERRIDE $PRIVACY_HOPQA_CONSTRAINED_RESOLVER_OVERRIDE $PRIVACY_HOPQA_COMMON_EXTRA_OVERRIDES privacy_hopqa.reader_window_chars=10000 privacy_hopqa.max_parallel_doc_reads=5 privacy_hopqa.hop_step_doc_bonus=0.0 finetune.max_train_steps=50 finetune.interrupt_train_steps=50 finetune.save_checkpoint_steps=10 actor.llm_max_rollouts=32 world.actor_fraction=2 world.finetune_fraction=6 eval_every_n_versions=40960 finetune.rl.normalize_step_loss_by_advantage_group=true finetune.rl.epsilon_low=0.03 finetune.rl.epsilon_high=0.04" \
+./run_privacy_hopqa.sh
+```
