@@ -564,7 +564,7 @@ def tcolorbox_latex(title: str, prompt: str, sample_output: Any | None = None, *
     parts = [
         r"\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{"
         + latex_escape(title)
-        + r"}, halign=flush left]",
+        + r"}, halign=flush left, breakable]",
         r"\begin{scriptsize}",
         r"\ttfamily",
         r"\setlength{\parindent}{0pt}",
@@ -1584,12 +1584,13 @@ def main() -> int:
                 "```latex",
                 "\\usepackage{xcolor}",
                 "\\usepackage{tcolorbox}",
+                "\\tcbuselibrary{breakable}",
                 "\\usepackage{booktabs}",
                 "\\usepackage{enumitem}",
                 "\\definecolor{my-green}{HTML}{166B54}",
                 "```",
                 "",
-                "The generated boxes intentionally omit the `breakable` option so they work with a basic `tcolorbox` load. If a very long box must split across pages, add `\\tcbuselibrary{breakable}` and then add `breakable` to that box's option list.",
+                "Equivalent shortcut: `\\usepackage[most]{tcolorbox}` loads the breakable library too. The generated boxes include the `breakable` option so long prompts can continue across page breaks.",
                 "",
                 "Regenerate from the MosaicProject root with:",
                 "",

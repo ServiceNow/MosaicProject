@@ -1,4 +1,4 @@
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Private QA Extraction}, halign=flush left]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Private QA Extraction}, halign=flush left, breakable]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -32,7 +32,7 @@ Document:\par
 \end{scriptsize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Document-Only Answerability Check}, halign=flush left]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Document-Only Answerability Check}, halign=flush left, breakable]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -52,7 +52,7 @@ Question: \textcolor{my-green}{\textbf{\{question\}}}\par
 \end{scriptsize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{No-Document Memorization Check}, halign=flush left]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{No-Document Memorization Check}, halign=flush left, breakable]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -67,7 +67,7 @@ Question: \textcolor{my-green}{\textbf{\{question\}}}\par
 \end{scriptsize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Web Seed Question}, halign=flush left]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Web Seed Question}, halign=flush left, breakable]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -87,7 +87,7 @@ ANSWER: \textcolor{my-green}{\textbf{\{entity\}}}\par
 \end{scriptsize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Next-Hop Question, Fixed Target}, halign=flush left]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Next-Hop Question, Fixed Target}, halign=flush left, breakable]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -146,7 +146,7 @@ ANSWER: \textcolor{my-green}{\textbf{\{target\_answer\}}}\par
 \end{scriptsize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Next-Hop Question, Pick Target}, halign=flush left]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Next-Hop Question, Pick Target}, halign=flush left, breakable]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -216,7 +216,7 @@ ANSWER: \textless{}one exact answer copied from the allowed next answers\textgre
 \end{scriptsize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Candidate Hop Ranker}, halign=flush left]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Candidate Hop Ranker}, halign=flush left, breakable]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -251,7 +251,7 @@ Output only a comma-separated ranking of candidate numbers, for example:\par
 \end{scriptsize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Transition Judge}, halign=flush left]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Transition Judge}, halign=flush left, breakable]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -294,7 +294,7 @@ JUSTIFICATION: \textless{}one sentence\textgreater{}\par
 \end{scriptsize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Question Rewording}, halign=flush left]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Question Rewording}, halign=flush left, breakable]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -318,7 +318,7 @@ Rewritten question:\par
 \end{scriptsize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Chain Verification}, halign=flush left]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Chain Verification}, halign=flush left, breakable]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -347,7 +347,7 @@ If any step fails: NOT\_ANSWERABLE: \textless{}which question failed and why\tex
 \end{scriptsize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Hop Plan}, halign=flush left]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Hop Plan}, halign=flush left, breakable]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -414,7 +414,7 @@ Return valid JSON only.\par
 \end{scriptsize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Document Choose}, halign=flush left]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Document Choose}, halign=flush left, breakable]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -490,7 +490,7 @@ Return valid JSON only.\par
 \end{scriptsize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Document Read}, halign=flush left]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Document Read}, halign=flush left, breakable]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -554,7 +554,7 @@ Return valid JSON only.\par
 \end{scriptsize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Hop Resolve}, halign=flush left]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Hop Resolve}, halign=flush left, breakable]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -663,7 +663,7 @@ Return valid JSON only.\par
 \end{scriptsize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Shared System Prompt}, halign=flush left]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Shared System Prompt}, halign=flush left, breakable]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -671,7 +671,7 @@ You are a careful privacy leakage evaluator. Use private reasoning if needed, th
 \end{scriptsize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Intent Adversary}, halign=flush left]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Intent Adversary}, halign=flush left, breakable]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -712,7 +712,7 @@ Return only JSON in this shape:\par
 \end{scriptsize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Answer Adversary}, halign=flush left]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Answer Adversary}, halign=flush left, breakable]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -765,7 +765,7 @@ Return only JSON in this shape:\par
 \end{scriptsize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Full-Information Claim Adversary}, halign=flush left]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Full-Information Claim Adversary}, halign=flush left, breakable]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
