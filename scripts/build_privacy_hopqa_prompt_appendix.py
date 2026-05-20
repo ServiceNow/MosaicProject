@@ -161,31 +161,58 @@ def sanitize_research_output(value: Any) -> Any:
     return value
 
 
-def load_private_qa_examples(max_rows: int = 8) -> list[dict[str, str]]:
-    examples: list[dict[str, str]] = []
-    seen_types: set[str] = set()
+def short_private_qa_example(secret_type: str, question: str, answer: str) -> bool:
+    if secret_type in {"emails", "ids"}:
+        return False
+    if len(answer) > 45 or len(question) > 150:
+        return False
+    if any(separator in answer for separator in [";", "\n", " / "]):
+        return False
+    listy_question_terms = ["names of", "usernames", "users in", "user directory", "email directory", "mattermost export"]
+    if any(term in question.casefold() for term in listy_question_terms):
+        return False
+    return True
+
+
+def load_private_qa_examples(max_rows: int = 6) -> list[dict[str, str]]:
+    candidates: list[dict[str, str]] = []
     skipped_types = {"emails"}
     for row in read_jsonl(PRIVATE_QA_INVENTORY):
         doc_id = str(row.get("doc_id") or row.get("chunk_id") or "")
         for secret in row.get("secrets") or []:
             secret_type = str(secret.get("secret_type") or secret.get("type") or "other_sensitive")
             answer = str(secret.get("answer") or "")
-            if secret_type in skipped_types or len(answer) > 80:
+            question = str(secret.get("question") or "")
+            if secret_type in skipped_types or not short_private_qa_example(secret_type, question, answer):
                 continue
-            if secret_type in seen_types and len(examples) < max_rows - 2:
-                continue
-            examples.append(
+            candidates.append(
                 {
                     "doc_id": doc_id,
                     "secret_type": secret_type,
-                    "question": str(secret.get("question") or ""),
+                    "question": question,
                     "answer": answer,
                     "doc_only_check": compact_json(secret.get("doc_only_check") or {}, limit=220),
                 }
             )
-            seen_types.add(secret_type)
-            if len(examples) >= max_rows:
-                return examples
+
+    preferred_types = ["kpi_numeric", "dates", "money", "other_sensitive", "names"]
+    examples: list[dict[str, str]] = []
+    used_questions: set[str] = set()
+    for secret_type in preferred_types:
+        match = next((item for item in candidates if item["secret_type"] == secret_type and item["question"] not in used_questions), None)
+        if match:
+            examples.append(match)
+            used_questions.add(match["question"])
+        if len(examples) >= max_rows:
+            return examples
+
+    for item in candidates:
+        if item["question"] in used_questions:
+            continue
+        examples.append(item)
+        used_questions.add(item["question"])
+        if len(examples) >= max_rows:
+            return examples
     return examples
 
 
@@ -1147,6 +1174,20 @@ def table(headers: list[str], rows: list[list[Any]]) -> str:
     return f"<div class='table-wrap'><table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table></div>"
 
 
+def table_snippet_inline_control(snippets: list[dict[str, str]], snippet_id: str) -> str:
+    item = next((snippet for snippet in snippets if snippet.get("id") == snippet_id), None)
+    if not item:
+        return ""
+    latex_id = f"inline-table-latex-{item['id']}"
+    return f"""
+    <div class="asset-actions table-actions">
+      <button type="button" onclick="copySnippet('{latex_id}', event)">Copy Table LaTeX</button>
+      <a href="{esc(item.get('tex_path', ''))}">.tex</a>
+    </div>
+    <textarea id="{latex_id}" class="copy-source">{esc(item['latex'])}</textarea>
+    """
+
+
 def table_snippet_cards(snippets: list[dict[str, str]]) -> str:
     cards = []
     for item in snippets:
@@ -1192,7 +1233,9 @@ def render_html(data: dict[str, Any]) -> str:
     dataset_prompt_cards = "\n".join(prompt_card(item, open_details=(idx < 4)) for idx, item in enumerate(data["dataset_prompts"]))
     research_prompt_cards = "\n".join(prompt_card(item) for item in data["research_prompts"])
     adversary_prompt_cards = "\n".join(prompt_card(item) for item in data["adversary_prompts"])
-    table_snippets = table_snippet_cards(data.get("table_snippets") or [])
+    table_snippet_items = data.get("table_snippets") or []
+    table_snippets = table_snippet_cards(table_snippet_items)
+    private_qa_table_controls = table_snippet_inline_control(table_snippet_items, "private_qa_examples")
     asset_summary = data.get("asset_summary") or {}
 
     return f"""<!doctype html>
@@ -1324,6 +1367,11 @@ def render_html(data: dict[str, Any]) -> str:
     .asset-actions button.copied {{
       border-color: var(--green);
       color: var(--green);
+    }}
+    .table-actions {{
+      margin: 10px 0 0;
+      border: 1px solid var(--rule);
+      border-radius: 8px 8px 0 0;
     }}
     .variant-note {{
       padding: 8px 14px;
@@ -1462,6 +1510,7 @@ def render_html(data: dict[str, Any]) -> str:
     <div class="note">For screenshots, the first four prompt cards are open by default. The remaining QA-chain construction prompts are included below as expandable cards.</div>
     <div class="grid">{dataset_prompt_cards}</div>
     <h3>Private QA Inventory Examples</h3>
+    {private_qa_table_controls}
     {table(["Type", "Question", "Answer", "Document"], private_rows)}
     <h3>Final Test Split Examples</h3>
     {table(["Task", "Chain", "Company", "Pattern", "Hops", "First Question", "Final Question", "Final Answer"], test_rows)}
