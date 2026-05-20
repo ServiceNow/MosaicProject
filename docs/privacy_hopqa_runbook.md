@@ -583,3 +583,68 @@ FILTER_ZERO_ADVANTAGE_GROUPS="$PRIVACY_HOPQA_FILTER_ZERO_ADVANTAGE_GROUPS" \
 EXTRA_OVERRIDES="$PRIVACY_HOPQA_HOP_STEP_REWARD_OVERRIDE $PRIVACY_HOPQA_CONSTRAINED_RESOLVER_OVERRIDE $PRIVACY_HOPQA_COMMON_EXTRA_OVERRIDES privacy_hopqa.reader_window_chars=10000 privacy_hopqa.max_parallel_doc_reads=5 privacy_hopqa.hop_step_doc_bonus=0.0 finetune.max_train_steps=50 finetune.interrupt_train_steps=50 finetune.save_checkpoint_steps=10 actor.llm_max_rollouts=32 world.actor_fraction=2 world.finetune_fraction=6 eval_every_n_versions=40960 finetune.rl.normalize_step_loss_by_advantage_group=true finetune.rl.epsilon_low=0.03 finetune.rl.epsilon_high=0.04" \
 ./run_privacy_hopqa.sh
 ```
+
+## Constrained resolver, 8-replica relaunch
+
+This run continues the constrained resolver ablation without the unconstrained
+baseline. The earlier constrained helper exited successfully after its
+colocated embedding server became unreachable, which left the trainer retrying
+a dead DNS name. `privacy_helper_stack.py` now treats unexpected child-process
+exit as nonzero, so EAI restart policy can restart the helper instead of
+marking it succeeded. SIGTERM-triggered shutdown still exits cleanly.
+
+Live launch on 2026-05-20:
+
+```text
+wandb_project=privacy_hopqa_q30_resolver_ablation_20260520
+wandb_group=hopstep_resolver_constrained_eval10_rep8_50s
+eval_every_n_versions=40960
+
+helper=2456f8b7-3e0d-4c18-868c-a3200b9e498c
+helper_url=http://dns-24e3447c-506e-4b21-92df-156e18db5087-phq30rcon8112637:8012
+trainer=8640c19a-e5c5-4528-bf4c-ba75829f4e19
+trainer_output_dir=/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_4b_hopstep_resolver_constrained_lr1e6_clip3e2_eval10_rep8_50s_20260520112728
+```
+
+Helper command:
+
+```bash
+cd /home/toolkit/my_code/MosaicProject
+source configs/privacy_hopqa_q30_current.env
+export PATH=/home/toolkit/.local/bin:$PATH
+
+TS=$(date +%Y%m%d%H%M%S)
+SHORT=$(date +%H%M%S)
+ACCOUNT="$PRIVACY_HOPQA_ACCOUNT" \
+JOB_SPEC="$PRIVACY_HOPQA_HELPER_JOB_SPEC" \
+JOB_NAME="privacy_helper_q30_resolver_constrained_relaunch8_${TS}" \
+DNS_NAME="phq30rcon8${SHORT}" \
+./run_privacy_helper.sh
+```
+
+Trainer command:
+
+```bash
+cd /home/toolkit/my_code/MosaicProject
+source configs/privacy_hopqa_q30_current.env
+export PATH=/home/toolkit/.local/bin:$PATH
+export PRIVACY_AGENT_HELPER_URL="http://dns-24e3447c-506e-4b21-92df-156e18db5087-phq30rcon8112637:8012"
+
+TS=$(date +%Y%m%d%H%M%S)
+JOB="privacy_hopqa_q30_4b_hopstep_resolver_constrained_lr1e6_clip3e2_eval10_rep8_50s_${TS}"
+
+PIPELINERL_ROOT="$PIPELINERL_ROOT" \
+OUTPUT_DIR_BASE="$PRIVACY_HOPQA_OUTPUT_DIR_BASE" \
+LOCAL_INDEX_ROOT="$PRIVACY_AGENT_LOCAL_INDEX_ROOT" \
+JOB_NAME="$JOB" \
+WANDB_PROJECT="privacy_hopqa_q30_resolver_ablation_20260520" \
+WANDB_GROUP="hopstep_resolver_constrained_eval10_rep8_50s" \
+WANDB_NAME="$JOB" \
+REPLICAS=8 \
+LEARNING_RATE=1e-6 \
+MODEL_PATH="$PRIVACY_HOPQA_MODEL_4B" \
+CAPTURE_MODE=planning_only \
+FILTER_ZERO_ADVANTAGE_GROUPS="$PRIVACY_HOPQA_FILTER_ZERO_ADVANTAGE_GROUPS" \
+EXTRA_OVERRIDES="$PRIVACY_HOPQA_HOP_STEP_REWARD_OVERRIDE $PRIVACY_HOPQA_CONSTRAINED_RESOLVER_OVERRIDE $PRIVACY_HOPQA_COMMON_EXTRA_OVERRIDES privacy_hopqa.reader_window_chars=10000 privacy_hopqa.max_parallel_doc_reads=5 privacy_hopqa.hop_step_doc_bonus=0.0 finetune.max_train_steps=50 finetune.interrupt_train_steps=50 finetune.save_checkpoint_steps=10 actor.llm_max_rollouts=32 world.actor_fraction=2 world.finetune_fraction=6 eval_every_n_versions=40960 finetune.rl.normalize_step_loss_by_advantage_group=true finetune.rl.epsilon_low=0.03 finetune.rl.epsilon_high=0.04" \
+./run_privacy_hopqa.sh
+```

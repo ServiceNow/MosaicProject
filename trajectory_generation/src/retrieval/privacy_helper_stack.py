@@ -261,8 +261,11 @@ def main() -> int:
 
     vllm_process: subprocess.Popen[bytes] | None = None
     helper_process: subprocess.Popen[bytes] | None = None
+    shutdown_requested = False
 
     def handle_signal(signum, _frame) -> None:
+        nonlocal shutdown_requested
+        shutdown_requested = True
         logger.info("Received signal %s, shutting down helper stack", signum)
         stop_process(helper_process)
         stop_process(vllm_process)
@@ -282,9 +285,9 @@ def main() -> int:
 
         while True:
             if vllm_process.poll() is not None:
-                return int(vllm_process.returncode or 0)
+                return int(vllm_process.returncode or 0) if shutdown_requested else int(vllm_process.returncode or 1)
             if helper_process.poll() is not None:
-                return int(helper_process.returncode or 0)
+                return int(helper_process.returncode or 0) if shutdown_requested else int(helper_process.returncode or 1)
             time.sleep(1)
     finally:
         stop_process(helper_process)
