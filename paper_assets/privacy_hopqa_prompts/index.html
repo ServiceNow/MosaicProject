@@ -1282,49 +1282,41 @@ emails &amp; What is the email address of the IT Manager listed in the Mattermos
       <button type="button" onclick="copySnippet('inline-table-latex-dataset_summary_compact', event)">Copy Table LaTeX</button>
       <a href="latex_table_snippets/dataset_summary_compact.tex">.tex</a>
     </div>
-    <textarea id="inline-table-latex-dataset_summary_compact" class="copy-source">\begin{table*}[t]
+    <textarea id="inline-table-latex-dataset_summary_compact" class="copy-source">\begin{table}[t]
 \centering
 \small
-\begin{tabular}{p{0.22\linewidth}p{0.49\linewidth}p{0.22\linewidth}}
+\begin{tabular}{p{0.25\linewidth}p{0.47\linewidth}p{0.20\linewidth}}
 \toprule
 \textbf{Dataset component} &amp; \textbf{Statistic} &amp; \textbf{Value} \\
 \midrule
 Private QA Set &amp; Local documents with private QA &amp; 1,238 \\
  &amp; Private question--answer pairs &amp; 3,686 \\
- &amp; Unique private-question strings &amp; 3,607 \\
- &amp; Private questions per local document &amp; 2.98 mean / 3 median (1--5 range) \\
- &amp; Secret types &amp; 7 \\
- &amp; DR tasks covered &amp; 100 \\
+ &amp; Private QAs per local document &amp; 2.98 mean \\
 \midrule
 Final Privacy HopQA &amp; Multi-hop questions &amp; 1,001 \\
  &amp; Hop-level questions &amp; 3,403 \\
- &amp; Private/local hop questions &amp; 2,228 \\
- &amp; Public/web hop questions &amp; 1,175 \\
+ &amp; Local hops per question, mean [min, max] &amp; 2.23 [0, 5] \\
+ &amp; Web hops per question, mean [min, max] &amp; 1.17 [0, 4] \\
+ &amp; Total hops per question, mean [min, max] &amp; 3.40 [2, 7] \\
  &amp; Unique local supporting documents &amp; 847 \\
  &amp; Unique web supporting documents &amp; 685 \\
- &amp; Private hops per local supporting document &amp; 2.63 mean / 2 median (1--15 range) \\
- &amp; Hops per multi-hop question &amp; 3.40 mean / 3 median (2--7 range) \\
 \bottomrule
 \end{tabular}
-\caption{Privacy HopQA dataset summary. The Private QA Set is the retrieved-document inventory used by the leakage evaluator. The final Privacy HopQA rows are multi-hop questions; private/local and public/web counts are hop-level questions.}
+\caption{Privacy HopQA dataset summary. Bracketed values are [min, max] over multi-hop questions.}
 \label{tab:privacy_hopqa_dataset_summary}
-\end{table*}
+\end{table}
 </textarea>
 
     <div class='table-wrap'><table><thead><tr><th>Dataset component</th><th>Statistic</th><th>Value</th></tr></thead><tbody><tr><td>Private QA Set</td><td>Local documents with private QA</td><td>1,238</td></tr>
 <tr><td>Private QA Set</td><td>Private question-answer pairs</td><td>3,686</td></tr>
-<tr><td>Private QA Set</td><td>Unique private-question strings</td><td>3,607</td></tr>
-<tr><td>Private QA Set</td><td>Private questions per local document</td><td>2.98 mean / 3 median (1-5 range)</td></tr>
-<tr><td>Private QA Set</td><td>Secret types</td><td>7</td></tr>
-<tr><td>Private QA Set</td><td>DR tasks covered</td><td>100</td></tr>
+<tr><td>Private QA Set</td><td>Private QAs per local document</td><td>2.98 mean</td></tr>
 <tr><td>Final Privacy HopQA</td><td>Multi-hop questions</td><td>1,001</td></tr>
 <tr><td>Final Privacy HopQA</td><td>Hop-level questions</td><td>3,403</td></tr>
-<tr><td>Final Privacy HopQA</td><td>Private/local hop questions</td><td>2,228</td></tr>
-<tr><td>Final Privacy HopQA</td><td>Public/web hop questions</td><td>1,175</td></tr>
+<tr><td>Final Privacy HopQA</td><td>Local hops per question, mean [min, max]</td><td>2.23 [0, 5]</td></tr>
+<tr><td>Final Privacy HopQA</td><td>Web hops per question, mean [min, max]</td><td>1.17 [0, 4]</td></tr>
+<tr><td>Final Privacy HopQA</td><td>Total hops per question, mean [min, max]</td><td>3.40 [2, 7]</td></tr>
 <tr><td>Final Privacy HopQA</td><td>Unique local supporting documents</td><td>847</td></tr>
-<tr><td>Final Privacy HopQA</td><td>Unique web supporting documents</td><td>685</td></tr>
-<tr><td>Final Privacy HopQA</td><td>Private hops per local supporting document</td><td>2.63 mean / 2 median (1-15 range)</td></tr>
-<tr><td>Final Privacy HopQA</td><td>Hops per multi-hop question</td><td>3.40 mean / 3 median (2-7 range)</td></tr></tbody></table></div>
+<tr><td>Final Privacy HopQA</td><td>Unique web supporting documents</td><td>685</td></tr></tbody></table></div>
     <h3>Split Summary</h3>
 
     <div class="asset-actions table-actions">
@@ -3453,61 +3445,53 @@ What was the patient satisfaction score for MediConn Solutions in Q4 2022? \text
                 <button type="button" onclick="copySnippet('table-latex-dataset_summary_compact', event)">Copy Table LaTeX</button>
                 <a href="latex_table_snippets/dataset_summary_compact.tex">.tex</a>
               </div>
-              <textarea id="table-latex-dataset_summary_compact" class="copy-source">\begin{table*}[t]
+              <textarea id="table-latex-dataset_summary_compact" class="copy-source">\begin{table}[t]
 \centering
 \small
-\begin{tabular}{p{0.22\linewidth}p{0.49\linewidth}p{0.22\linewidth}}
+\begin{tabular}{p{0.25\linewidth}p{0.47\linewidth}p{0.20\linewidth}}
 \toprule
 \textbf{Dataset component} &amp; \textbf{Statistic} &amp; \textbf{Value} \\
 \midrule
 Private QA Set &amp; Local documents with private QA &amp; 1,238 \\
  &amp; Private question--answer pairs &amp; 3,686 \\
- &amp; Unique private-question strings &amp; 3,607 \\
- &amp; Private questions per local document &amp; 2.98 mean / 3 median (1--5 range) \\
- &amp; Secret types &amp; 7 \\
- &amp; DR tasks covered &amp; 100 \\
+ &amp; Private QAs per local document &amp; 2.98 mean \\
 \midrule
 Final Privacy HopQA &amp; Multi-hop questions &amp; 1,001 \\
  &amp; Hop-level questions &amp; 3,403 \\
- &amp; Private/local hop questions &amp; 2,228 \\
- &amp; Public/web hop questions &amp; 1,175 \\
+ &amp; Local hops per question, mean [min, max] &amp; 2.23 [0, 5] \\
+ &amp; Web hops per question, mean [min, max] &amp; 1.17 [0, 4] \\
+ &amp; Total hops per question, mean [min, max] &amp; 3.40 [2, 7] \\
  &amp; Unique local supporting documents &amp; 847 \\
  &amp; Unique web supporting documents &amp; 685 \\
- &amp; Private hops per local supporting document &amp; 2.63 mean / 2 median (1--15 range) \\
- &amp; Hops per multi-hop question &amp; 3.40 mean / 3 median (2--7 range) \\
 \bottomrule
 \end{tabular}
-\caption{Privacy HopQA dataset summary. The Private QA Set is the retrieved-document inventory used by the leakage evaluator. The final Privacy HopQA rows are multi-hop questions; private/local and public/web counts are hop-level questions.}
+\caption{Privacy HopQA dataset summary. Bracketed values are [min, max] over multi-hop questions.}
 \label{tab:privacy_hopqa_dataset_summary}
-\end{table*}
+\end{table}
 </textarea>
-              <pre>\begin{table*}[t]
+              <pre>\begin{table}[t]
 \centering
 \small
-\begin{tabular}{p{0.22\linewidth}p{0.49\linewidth}p{0.22\linewidth}}
+\begin{tabular}{p{0.25\linewidth}p{0.47\linewidth}p{0.20\linewidth}}
 \toprule
 \textbf{Dataset component} &amp; \textbf{Statistic} &amp; \textbf{Value} \\
 \midrule
 Private QA Set &amp; Local documents with private QA &amp; 1,238 \\
  &amp; Private question--answer pairs &amp; 3,686 \\
- &amp; Unique private-question strings &amp; 3,607 \\
- &amp; Private questions per local document &amp; 2.98 mean / 3 median (1--5 range) \\
- &amp; Secret types &amp; 7 \\
- &amp; DR tasks covered &amp; 100 \\
+ &amp; Private QAs per local document &amp; 2.98 mean \\
 \midrule
 Final Privacy HopQA &amp; Multi-hop questions &amp; 1,001 \\
  &amp; Hop-level questions &amp; 3,403 \\
- &amp; Private/local hop questions &amp; 2,228 \\
- &amp; Public/web hop questions &amp; 1,175 \\
+ &amp; Local hops per question, mean [min, max] &amp; 2.23 [0, 5] \\
+ &amp; Web hops per question, mean [min, max] &amp; 1.17 [0, 4] \\
+ &amp; Total hops per question, mean [min, max] &amp; 3.40 [2, 7] \\
  &amp; Unique local supporting documents &amp; 847 \\
  &amp; Unique web supporting documents &amp; 685 \\
- &amp; Private hops per local supporting document &amp; 2.63 mean / 2 median (1--15 range) \\
- &amp; Hops per multi-hop question &amp; 3.40 mean / 3 median (2--7 range) \\
 \bottomrule
 \end{tabular}
-\caption{Privacy HopQA dataset summary. The Private QA Set is the retrieved-document inventory used by the leakage evaluator. The final Privacy HopQA rows are multi-hop questions; private/local and public/web counts are hop-level questions.}
+\caption{Privacy HopQA dataset summary. Bracketed values are [min, max] over multi-hop questions.}
 \label{tab:privacy_hopqa_dataset_summary}
-\end{table*}
+\end{table}
 </pre>
             </details>
 

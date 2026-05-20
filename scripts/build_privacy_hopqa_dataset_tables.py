@@ -53,6 +53,10 @@ def fmt_float(value: float) -> str:
     return f"{value:.2f}"
 
 
+def mean_min_max(summary: dict[str, Any]) -> str:
+    return f"{fmt_float(float(summary['mean']))} [{summary['min']}, {summary['max']}]"
+
+
 def doc_key(hop: dict[str, Any]) -> str:
     return str(hop.get("doc_id") or hop.get("doc_ref") or "")
 
@@ -102,6 +106,8 @@ def summarize_dataset_split(path: Path) -> dict[str, Any]:
     local_doc_counts: Counter[str] = Counter()
     web_doc_counts: Counter[str] = Counter()
     hop_counts: list[int] = []
+    local_hops_per_question: list[int] = []
+    web_hops_per_question: list[int] = []
     local_hops = 0
     web_hops = 0
     companies: Counter[str] = Counter()
@@ -111,6 +117,8 @@ def summarize_dataset_split(path: Path) -> dict[str, Any]:
     for row in rows:
         hops = row.get("hops") or []
         hop_counts.append(len(hops))
+        row_local_hops = 0
+        row_web_hops = 0
         companies[str(row.get("company") or "unknown")] += 1
         local_to_web_chains += int(bool(row.get("has_local_to_web_transition")))
         web_to_local_chains += int(bool(row.get("has_web_to_local_transition")))
@@ -120,12 +128,16 @@ def summarize_dataset_split(path: Path) -> dict[str, Any]:
             key = doc_key(hop)
             if hop_type == "L":
                 local_hops += 1
+                row_local_hops += 1
                 if key:
                     local_doc_counts[key] += 1
             elif hop_type == "W":
                 web_hops += 1
+                row_web_hops += 1
                 if key:
                     web_doc_counts[key] += 1
+        local_hops_per_question.append(row_local_hops)
+        web_hops_per_question.append(row_web_hops)
 
     local_doc_values = list(local_doc_counts.values())
     return {
@@ -148,6 +160,18 @@ def summarize_dataset_split(path: Path) -> dict[str, Any]:
             "min": min(hop_counts) if hop_counts else 0,
             "max": max(hop_counts) if hop_counts else 0,
         },
+        "local_hops_per_question": {
+            "mean": statistics.mean(local_hops_per_question) if local_hops_per_question else 0.0,
+            "median": statistics.median(local_hops_per_question) if local_hops_per_question else 0.0,
+            "min": min(local_hops_per_question) if local_hops_per_question else 0,
+            "max": max(local_hops_per_question) if local_hops_per_question else 0,
+        },
+        "web_hops_per_question": {
+            "mean": statistics.mean(web_hops_per_question) if web_hops_per_question else 0.0,
+            "median": statistics.median(web_hops_per_question) if web_hops_per_question else 0.0,
+            "min": min(web_hops_per_question) if web_hops_per_question else 0,
+            "max": max(web_hops_per_question) if web_hops_per_question else 0,
+        },
         "local_to_web_chains": local_to_web_chains,
         "web_to_local_chains": web_to_local_chains,
         "companies": dict(sorted(companies.items())),
@@ -161,35 +185,20 @@ def write_text(path: Path, text: str) -> None:
 
 def compact_summary_table(private_qa: dict[str, Any], full: dict[str, Any]) -> str:
     private_q_doc = private_qa["private_questions_per_doc"]
-    local_q_doc = full["private_questions_per_local_doc"]
+    local_hops_q = full["local_hops_per_question"]
+    web_hops_q = full["web_hops_per_question"]
     hops_q = full["hops_per_question"]
     rows = [
         ("Private QA Set", "Local documents with private QA", fmt_int(private_qa["local_documents"])),
         ("Private QA Set", "Private question--answer pairs", fmt_int(private_qa["private_qa_pairs"])),
-        ("Private QA Set", "Unique private-question strings", fmt_int(private_qa["unique_private_questions"])),
-        (
-            "Private QA Set",
-            "Private questions per local document",
-            f"{fmt_float(private_q_doc['mean'])} mean / {private_q_doc['median']:.0f} median ({private_q_doc['min']}--{private_q_doc['max']} range)",
-        ),
-        ("Private QA Set", "Secret types", fmt_int(private_qa["n_secret_types"])),
-        ("Private QA Set", "DR tasks covered", fmt_int(private_qa["task_count"])),
+        ("Private QA Set", "Private QAs per local document", f"{fmt_float(private_q_doc['mean'])} mean"),
         ("Final Privacy HopQA", "Multi-hop questions", fmt_int(full["multi_hop_questions"])),
         ("Final Privacy HopQA", "Hop-level questions", fmt_int(full["hop_questions"])),
-        ("Final Privacy HopQA", "Private/local hop questions", fmt_int(full["private_local_questions"])),
-        ("Final Privacy HopQA", "Public/web hop questions", fmt_int(full["public_web_questions"])),
+        ("Final Privacy HopQA", "Local hops per question, mean [min, max]", mean_min_max(local_hops_q)),
+        ("Final Privacy HopQA", "Web hops per question, mean [min, max]", mean_min_max(web_hops_q)),
+        ("Final Privacy HopQA", "Total hops per question, mean [min, max]", mean_min_max(hops_q)),
         ("Final Privacy HopQA", "Unique local supporting documents", fmt_int(full["unique_local_documents"])),
         ("Final Privacy HopQA", "Unique web supporting documents", fmt_int(full["unique_web_documents"])),
-        (
-            "Final Privacy HopQA",
-            "Private hops per local supporting document",
-            f"{fmt_float(local_q_doc['mean'])} mean / {local_q_doc['median']:.0f} median ({local_q_doc['min']}--{local_q_doc['max']} range)",
-        ),
-        (
-            "Final Privacy HopQA",
-            "Hops per multi-hop question",
-            f"{fmt_float(hops_q['mean'])} mean / {hops_q['median']:.0f} median ({hops_q['min']}--{hops_q['max']} range)",
-        ),
     ]
     body: list[str] = []
     previous_group = ""
@@ -204,19 +213,19 @@ def compact_summary_table(private_qa: dict[str, Any], full: dict[str, Any]) -> s
 
     return "\n".join(
         [
-            r"\begin{table*}[t]",
+            r"\begin{table}[t]",
             r"\centering",
             r"\small",
-            r"\begin{tabular}{p{0.22\linewidth}p{0.49\linewidth}p{0.22\linewidth}}",
+            r"\begin{tabular}{p{0.25\linewidth}p{0.47\linewidth}p{0.20\linewidth}}",
             r"\toprule",
             r"\textbf{Dataset component} & \textbf{Statistic} & \textbf{Value} \\",
             r"\midrule",
             *body,
             r"\bottomrule",
             r"\end{tabular}",
-            r"\caption{Privacy HopQA dataset summary. The Private QA Set is the retrieved-document inventory used by the leakage evaluator. The final Privacy HopQA rows are multi-hop questions; private/local and public/web counts are hop-level questions.}",
+            r"\caption{Privacy HopQA dataset summary. Bracketed values are [min, max] over multi-hop questions.}",
             r"\label{tab:privacy_hopqa_dataset_summary}",
-            r"\end{table*}",
+            r"\end{table}",
             "",
         ]
     )

@@ -460,6 +460,12 @@
           "median": 3,
           "min": 2
         },
+        "local_hops_per_question": {
+          "max": 5,
+          "mean": 2.225774225774226,
+          "median": 2,
+          "min": 0
+        },
         "local_to_web_chains": 710,
         "multi_hop_questions": 1001,
         "private_local_questions": 2228,
@@ -473,6 +479,12 @@
         "source": "/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review.jsonl",
         "unique_local_documents": 847,
         "unique_web_documents": 685,
+        "web_hops_per_question": {
+          "max": 4,
+          "mean": 1.173826173826174,
+          "median": 1,
+          "min": 0
+        },
         "web_to_local_chains": 204
       },
       "Test": {
@@ -485,6 +497,12 @@
           "mean": 3.4156976744186047,
           "median": 3.0,
           "min": 2
+        },
+        "local_hops_per_question": {
+          "max": 4,
+          "mean": 2.2238372093023258,
+          "median": 2.0,
+          "min": 0
         },
         "local_to_web_chains": 249,
         "multi_hop_questions": 344,
@@ -499,6 +517,12 @@
         "source": "/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review_test.jsonl",
         "unique_local_documents": 290,
         "unique_web_documents": 262,
+        "web_hops_per_question": {
+          "max": 4,
+          "mean": 1.191860465116279,
+          "median": 1.0,
+          "min": 0
+        },
         "web_to_local_chains": 68
       },
       "Train": {
@@ -513,6 +537,12 @@
           "median": 3,
           "min": 2
         },
+        "local_hops_per_question": {
+          "max": 5,
+          "mean": 2.223613595706619,
+          "median": 2,
+          "min": 0
+        },
         "local_to_web_chains": 396,
         "multi_hop_questions": 559,
         "private_local_questions": 1243,
@@ -526,6 +556,12 @@
         "source": "/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review_train.jsonl",
         "unique_local_documents": 510,
         "unique_web_documents": 411,
+        "web_hops_per_question": {
+          "max": 4,
+          "mean": 1.1538461538461537,
+          "median": 1,
+          "min": 0
+        },
         "web_to_local_chains": 114
       },
       "Val": {
@@ -540,6 +576,12 @@
           "median": 3.0,
           "min": 2
         },
+        "local_hops_per_question": {
+          "max": 4,
+          "mean": 2.2448979591836733,
+          "median": 2.0,
+          "min": 1
+        },
         "local_to_web_chains": 65,
         "multi_hop_questions": 98,
         "private_local_questions": 220,
@@ -553,6 +595,12 @@
         "source": "/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/privacy_hopqa_finalized_2026-05-13_q30_final_residual_review_val.jsonl",
         "unique_local_documents": 135,
         "unique_web_documents": 85,
+        "web_hops_per_question": {
+          "max": 4,
+          "mean": 1.2244897959183674,
+          "median": 1.0,
+          "min": 0
+        },
         "web_to_local_chains": 22
       }
     },
@@ -584,7 +632,7 @@
     {
       "id": "dataset_summary_compact",
       "name": "Dataset Summary Table",
-      "latex": "\\begin{table*}[t]\n\\centering\n\\small\n\\begin{tabular}{p{0.22\\linewidth}p{0.49\\linewidth}p{0.22\\linewidth}}\n\\toprule\n\\textbf{Dataset component} & \\textbf{Statistic} & \\textbf{Value} \\\\\n\\midrule\nPrivate QA Set & Local documents with private QA & 1,238 \\\\\n & Private question--answer pairs & 3,686 \\\\\n & Unique private-question strings & 3,607 \\\\\n & Private questions per local document & 2.98 mean / 3 median (1--5 range) \\\\\n & Secret types & 7 \\\\\n & DR tasks covered & 100 \\\\\n\\midrule\nFinal Privacy HopQA & Multi-hop questions & 1,001 \\\\\n & Hop-level questions & 3,403 \\\\\n & Private/local hop questions & 2,228 \\\\\n & Public/web hop questions & 1,175 \\\\\n & Unique local supporting documents & 847 \\\\\n & Unique web supporting documents & 685 \\\\\n & Private hops per local supporting document & 2.63 mean / 2 median (1--15 range) \\\\\n & Hops per multi-hop question & 3.40 mean / 3 median (2--7 range) \\\\\n\\bottomrule\n\\end{tabular}\n\\caption{Privacy HopQA dataset summary. The Private QA Set is the retrieved-document inventory used by the leakage evaluator. The final Privacy HopQA rows are multi-hop questions; private/local and public/web counts are hop-level questions.}\n\\label{tab:privacy_hopqa_dataset_summary}\n\\end{table*}\n",
+      "latex": "\\begin{table}[t]\n\\centering\n\\small\n\\begin{tabular}{p{0.25\\linewidth}p{0.47\\linewidth}p{0.20\\linewidth}}\n\\toprule\n\\textbf{Dataset component} & \\textbf{Statistic} & \\textbf{Value} \\\\\n\\midrule\nPrivate QA Set & Local documents with private QA & 1,238 \\\\\n & Private question--answer pairs & 3,686 \\\\\n & Private QAs per local document & 2.98 mean \\\\\n\\midrule\nFinal Privacy HopQA & Multi-hop questions & 1,001 \\\\\n & Hop-level questions & 3,403 \\\\\n & Local hops per question, mean [min, max] & 2.23 [0, 5] \\\\\n & Web hops per question, mean [min, max] & 1.17 [0, 4] \\\\\n & Total hops per question, mean [min, max] & 3.40 [2, 7] \\\\\n & Unique local supporting documents & 847 \\\\\n & Unique web supporting documents & 685 \\\\\n\\bottomrule\n\\end{tabular}\n\\caption{Privacy HopQA dataset summary. Bracketed values are [min, max] over multi-hop questions.}\n\\label{tab:privacy_hopqa_dataset_summary}\n\\end{table}\n",
       "tex_path": "latex_table_snippets/dataset_summary_compact.tex"
     },
     {
@@ -1163,7 +1211,7 @@
     {
       "id": "dataset_summary_compact",
       "name": "Dataset Summary Table",
-      "latex": "\\begin{table*}[t]\n\\centering\n\\small\n\\begin{tabular}{p{0.22\\linewidth}p{0.49\\linewidth}p{0.22\\linewidth}}\n\\toprule\n\\textbf{Dataset component} & \\textbf{Statistic} & \\textbf{Value} \\\\\n\\midrule\nPrivate QA Set & Local documents with private QA & 1,238 \\\\\n & Private question--answer pairs & 3,686 \\\\\n & Unique private-question strings & 3,607 \\\\\n & Private questions per local document & 2.98 mean / 3 median (1--5 range) \\\\\n & Secret types & 7 \\\\\n & DR tasks covered & 100 \\\\\n\\midrule\nFinal Privacy HopQA & Multi-hop questions & 1,001 \\\\\n & Hop-level questions & 3,403 \\\\\n & Private/local hop questions & 2,228 \\\\\n & Public/web hop questions & 1,175 \\\\\n & Unique local supporting documents & 847 \\\\\n & Unique web supporting documents & 685 \\\\\n & Private hops per local supporting document & 2.63 mean / 2 median (1--15 range) \\\\\n & Hops per multi-hop question & 3.40 mean / 3 median (2--7 range) \\\\\n\\bottomrule\n\\end{tabular}\n\\caption{Privacy HopQA dataset summary. The Private QA Set is the retrieved-document inventory used by the leakage evaluator. The final Privacy HopQA rows are multi-hop questions; private/local and public/web counts are hop-level questions.}\n\\label{tab:privacy_hopqa_dataset_summary}\n\\end{table*}\n",
+      "latex": "\\begin{table}[t]\n\\centering\n\\small\n\\begin{tabular}{p{0.25\\linewidth}p{0.47\\linewidth}p{0.20\\linewidth}}\n\\toprule\n\\textbf{Dataset component} & \\textbf{Statistic} & \\textbf{Value} \\\\\n\\midrule\nPrivate QA Set & Local documents with private QA & 1,238 \\\\\n & Private question--answer pairs & 3,686 \\\\\n & Private QAs per local document & 2.98 mean \\\\\n\\midrule\nFinal Privacy HopQA & Multi-hop questions & 1,001 \\\\\n & Hop-level questions & 3,403 \\\\\n & Local hops per question, mean [min, max] & 2.23 [0, 5] \\\\\n & Web hops per question, mean [min, max] & 1.17 [0, 4] \\\\\n & Total hops per question, mean [min, max] & 3.40 [2, 7] \\\\\n & Unique local supporting documents & 847 \\\\\n & Unique web supporting documents & 685 \\\\\n\\bottomrule\n\\end{tabular}\n\\caption{Privacy HopQA dataset summary. Bracketed values are [min, max] over multi-hop questions.}\n\\label{tab:privacy_hopqa_dataset_summary}\n\\end{table}\n",
       "tex_path": "latex_table_snippets/dataset_summary_compact.tex"
     },
     {

@@ -1371,12 +1371,8 @@ def render_html(data: dict[str, Any]) -> str:
     def short_float(value: Any) -> str:
         return f"{float(value):.2f}"
 
-    def mean_median_range(summary: dict[str, Any]) -> str:
-        return (
-            f"{short_float(summary.get('mean', 0))} mean / "
-            f"{float(summary.get('median', 0)):.0f} median "
-            f"({summary.get('min', 0)}-{summary.get('max', 0)} range)"
-        )
+    def mean_min_max(summary: dict[str, Any]) -> str:
+        return f"{short_float(summary.get('mean', 0))} [{summary.get('min', 0)}, {summary.get('max', 0)}]"
 
     private_rows = [
         [row["secret_type"], row["question"], row["answer"]]
@@ -1404,18 +1400,14 @@ def render_html(data: dict[str, Any]) -> str:
         dataset_summary_rows = [
             ["Private QA Set", "Local documents with private QA", comma_int(private_stats["local_documents"])],
             ["Private QA Set", "Private question-answer pairs", comma_int(private_stats["private_qa_pairs"])],
-            ["Private QA Set", "Unique private-question strings", comma_int(private_stats["unique_private_questions"])],
-            ["Private QA Set", "Private questions per local document", mean_median_range(private_stats["private_questions_per_doc"])],
-            ["Private QA Set", "Secret types", comma_int(private_stats["n_secret_types"])],
-            ["Private QA Set", "DR tasks covered", comma_int(private_stats["task_count"])],
+            ["Private QA Set", "Private QAs per local document", f"{short_float(private_stats['private_questions_per_doc']['mean'])} mean"],
             ["Final Privacy HopQA", "Multi-hop questions", comma_int(full_stats["multi_hop_questions"])],
             ["Final Privacy HopQA", "Hop-level questions", comma_int(full_stats["hop_questions"])],
-            ["Final Privacy HopQA", "Private/local hop questions", comma_int(full_stats["private_local_questions"])],
-            ["Final Privacy HopQA", "Public/web hop questions", comma_int(full_stats["public_web_questions"])],
+            ["Final Privacy HopQA", "Local hops per question, mean [min, max]", mean_min_max(full_stats["local_hops_per_question"])],
+            ["Final Privacy HopQA", "Web hops per question, mean [min, max]", mean_min_max(full_stats["web_hops_per_question"])],
+            ["Final Privacy HopQA", "Total hops per question, mean [min, max]", mean_min_max(full_stats["hops_per_question"])],
             ["Final Privacy HopQA", "Unique local supporting documents", comma_int(full_stats["unique_local_documents"])],
             ["Final Privacy HopQA", "Unique web supporting documents", comma_int(full_stats["unique_web_documents"])],
-            ["Final Privacy HopQA", "Private hops per local supporting document", mean_median_range(full_stats["private_questions_per_local_doc"])],
-            ["Final Privacy HopQA", "Hops per multi-hop question", mean_median_range(full_stats["hops_per_question"])],
         ]
     dataset_split_rows = [
         [
