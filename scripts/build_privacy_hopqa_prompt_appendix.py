@@ -49,6 +49,8 @@ FALLBACK_LEAKAGE_SAMPLE = (
     ROOT / "runtime_analysis/privacy_hopqa_leakage_v2_stepfun_smoke50_rv10/viewer_data.json"
 )
 PLACEHOLDER_RE = re.compile(r"(<<[A-Z0-9_ -]+>>|\{[A-Za-z_][A-Za-z0-9_]*\})")
+DOC_ID_RE = re.compile(r"\bdoc_[0-9a-f]{8,}_[0-9]+\b")
+LOCAL_PATH_RE = re.compile(r"/(?:home|mnt)/[^\s\"']+")
 
 
 def read_jsonl(path: Path, limit: int | None = None) -> list[dict[str, Any]]:
@@ -136,6 +138,29 @@ def compact_json(value: Any, *, limit: int | None = None) -> str:
     return text
 
 
+def sanitize_research_output(value: Any) -> Any:
+    if isinstance(value, dict):
+        sanitized: dict[str, Any] = {}
+        for key, item in value.items():
+            if key == "locator":
+                sanitized[key] = "<<EVIDENCE_LOCATOR_OR_URL>>"
+            elif key in {"doc_id", "parent_doc_id", "evidence_window_id"}:
+                sanitized[key] = "<<EVIDENCE_DOC_ID>>"
+            elif key == "title" and isinstance(item, str) and "." in item:
+                sanitized[key] = "<<EVIDENCE_DOCUMENT_TITLE>>"
+            else:
+                sanitized[key] = sanitize_research_output(item)
+        return sanitized
+    if isinstance(value, list):
+        return [sanitize_research_output(item) for item in value]
+    if isinstance(value, str):
+        text = LOCAL_PATH_RE.sub("<<EVIDENCE_LOCATOR_OR_URL>>", value)
+        text = DOC_ID_RE.sub("<<EVIDENCE_DOC_ID>>", text)
+        text = text.replace("MediConn_Quarterly_Financial_Overview.xlsx", "<<EVIDENCE_DOCUMENT_TITLE>>")
+        return text
+    return value
+
+
 def load_private_qa_examples(max_rows: int = 8) -> list[dict[str, str]]:
     examples: list[dict[str, str]] = []
     seen_types: set[str] = set()
@@ -213,18 +238,27 @@ def load_research_sample_outputs() -> dict[str, Any]:
         final = (trace.get("summary") or {}).get("final_report")
         report_text = str(final or "")
 
+    doc_choose_meta = by_stage.get("doc_choose") or {}
+    selected_doc_ids = doc_choose_meta.get("selected_doc_ids") or doc_choose_meta.get("selected_parent_doc_ids") or []
+    doc_choose_output = {
+        "selected_doc_ids": [
+            f"<<SELECTED_PARENT_DOC_ID_{idx}>>"
+            for idx, _ in enumerate(selected_doc_ids[:2] or ["placeholder"], start=1)
+        ]
+    }
+
     return {
         "source_trace": str(RESEARCH_SAMPLE_TRACE),
-        "hop_plan": by_stage.get("hop_plan") or {},
-        "doc_choose": by_stage.get("doc_choose") or {},
-        "doc_read": positive_reader,
-        "hop_resolve": {
+        "hop_plan": sanitize_research_output(by_stage.get("hop_plan") or {}),
+        "doc_choose": doc_choose_output,
+        "doc_read": sanitize_research_output(positive_reader),
+        "hop_resolve": sanitize_research_output({
             "answered": first_hop.get("status") == "answered",
             "answer": first_hop.get("answer"),
             "confidence": first_hop.get("confidence"),
             "justification": first_hop.get("justification"),
             "next_step": "done" if first_hop.get("status") == "answered" else "search_more",
-        },
+        }),
         "final_report_excerpt": report_text[:1400] if report_text else "",
     }
 
@@ -564,7 +598,7 @@ def tcolorbox_latex(title: str, prompt: str, sample_output: Any | None = None, *
     parts = [
         r"\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{"
         + latex_escape(title)
-        + r"}, halign=flush left, breakable]",
+        + r"}, halign=flush left, enhanced, breakable, skin first=enhanced, skin middle=enhanced, skin last=enhanced]",
         r"\begin{scriptsize}",
         r"\ttfamily",
         r"\setlength{\parindent}{0pt}",
@@ -1439,7 +1473,7 @@ def render_html(data: dict[str, Any]) -> str:
   <section id="research-agent">
     <div class="kicker">Rollout Harness</div>
     <h2>Research Agent Step Prompts</h2>
-    <p>These are rendered examples of the PipelineRL Privacy HopQA prompt builders for the four LLM-controlled research-agent stages. The JSON panels show parsed outputs from a saved test rollout.</p>
+    <p>These are rendered examples of the PipelineRL Privacy HopQA prompt builders for the four LLM-controlled research-agent stages. The JSON panels show model-facing sample outputs; harness-only bookkeeping is omitted.</p>
     <div class="grid">{research_prompt_cards}</div>
     <h3>Sample Outputs by Step</h3>
     <div class="json-grid">
@@ -1584,13 +1618,13 @@ def main() -> int:
                 "```latex",
                 "\\usepackage{xcolor}",
                 "\\usepackage{tcolorbox}",
-                "\\tcbuselibrary{breakable}",
+                "\\tcbuselibrary{breakable,skins}",
                 "\\usepackage{booktabs}",
                 "\\usepackage{enumitem}",
                 "\\definecolor{my-green}{HTML}{166B54}",
                 "```",
                 "",
-                "Equivalent shortcut: `\\usepackage[most]{tcolorbox}` loads the breakable library too. The generated boxes include the `breakable` option so long prompts can continue across page breaks.",
+                "Equivalent shortcut: `\\usepackage[most]{tcolorbox}` loads the required tcolorbox libraries too. The generated boxes include `enhanced`, `breakable`, and split-page skin options so long prompts can continue across page breaks.",
                 "",
                 "Regenerate from the MosaicProject root with:",
                 "",

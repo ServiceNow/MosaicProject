@@ -17,13 +17,13 @@ LaTeX snippets expect these paper preamble pieces:
 ```latex
 \usepackage{xcolor}
 \usepackage{tcolorbox}
-\tcbuselibrary{breakable}
+\tcbuselibrary{breakable,skins}
 \usepackage{booktabs}
 \usepackage{enumitem}
 \definecolor{my-green}{HTML}{166B54}
 ```
 
-Equivalent shortcut: `\usepackage[most]{tcolorbox}` loads the breakable library too. The generated boxes include the `breakable` option so long prompts can continue across page breaks.
+Equivalent shortcut: `\usepackage[most]{tcolorbox}` loads the required tcolorbox libraries too. The generated boxes include `enhanced`, `breakable`, and split-page skin options so long prompts can continue across page breaks.
 
 Regenerate from the MosaicProject root with:
 

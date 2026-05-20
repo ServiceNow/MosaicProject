@@ -1,4 +1,4 @@
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Private QA Extraction with Sample Output}, halign=flush left, breakable]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Private QA Extraction with Sample Output}, halign=flush left, enhanced, breakable, skin first=enhanced, skin middle=enhanced, skin last=enhanced]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -39,7 +39,7 @@ Justification: Internal document-grounded fact.\par
 \end{scriptsize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Document-Only Answerability Check with Sample Output}, halign=flush left, breakable]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Document-Only Answerability Check with Sample Output}, halign=flush left, enhanced, breakable, skin first=enhanced, skin middle=enhanced, skin last=enhanced]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -66,7 +66,7 @@ Question: \textcolor{my-green}{\textbf{\{question\}}}\par
 \end{scriptsize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{No-Document Memorization Check with Sample Output}, halign=flush left, breakable]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{No-Document Memorization Check with Sample Output}, halign=flush left, enhanced, breakable, skin first=enhanced, skin middle=enhanced, skin last=enhanced]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -85,7 +85,7 @@ NOT\_ANSWERABLE\par
 \end{scriptsize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Hop Plan with Sample Output}, halign=flush left, breakable]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Hop Plan with Sample Output}, halign=flush left, enhanced, breakable, skin first=enhanced, skin middle=enhanced, skin last=enhanced]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -173,7 +173,7 @@ Return valid JSON only.\par
 \end{scriptsize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Document Choose with Sample Output}, halign=flush left, breakable]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Document Choose with Sample Output}, halign=flush left, enhanced, breakable, skin first=enhanced, skin middle=enhanced, skin last=enhanced]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -250,59 +250,15 @@ Return valid JSON only.\par
 \normalfont\textbf{Sample output}\par
 \ttfamily
 \{\par
-  "hop\_number": 1,\par
-  "iteration": 0,\par
-  "candidate\_count": 42,\par
-  "parent\_candidate\_count": 10,\par
-  "selection\_stage": "initial\_model",\par
-  "window\_policy": "top\_with\_neighbors",\par
-  "read\_all\_windows\_max\_count": 5,\par
-  "large\_parent\_top\_windows": 4,\par
-  "large\_parent\_neighbor\_windows": 1,\par
-  "selected\_parent\_doc\_ids": [\par
-    "doc\_4c15c0dc\_1776305563",\par
-    "doc\_ed81f686\_1776305562"\par
-  ],\par
   "selected\_doc\_ids": [\par
-    "doc\_4c15c0dc\_1776305563",\par
-    "doc\_ed81f686\_1776305562"\par
-  ],\par
-  "selected\_parent\_window\_details": [\par
-    \{\par
-      "parent\_doc\_id": "doc\_4c15c0dc\_1776305563",\par
-      "available\_windows": 1,\par
-      "total\_windows": 1,\par
-      "selected\_windows": 1,\par
-      "selected\_window\_ids": [\par
-        "doc\_4c15c0dc\_1776305563"\par
-      ],\par
-      "selected\_window\_indices": [\par
-        1\par
-      ],\par
-      "large\_parent\_window\_limited": false\par
-    \},\par
-    \{\par
-      "parent\_doc\_id": "doc\_ed81f686\_1776305562",\par
-      "available\_windows": 1,\par
-      "total\_windows": 1,\par
-      "selected\_windows": 1,\par
-      "selected\_window\_ids": [\par
-        "doc\_ed81f686\_1776305562"\par
-      ],\par
-      "selected\_window\_indices": [\par
-        1\par
-      ],\par
-      "large\_parent\_window\_limited": false\par
-    \}\par
-  ],\par
-  "selected\_parent\_windows\_available": 2,\par
-  "selected\_windows\_read": 2,\par
-  "large\_parent\_docs\_selected": 0\par
+    "\textcolor{my-green}{\textbf{\textless{}\textless{}SELECTED\_PARENT\_DOC\_ID\_1\textgreater{}\textgreater{}}}",\par
+    "\textcolor{my-green}{\textbf{\textless{}\textless{}SELECTED\_PARENT\_DOC\_ID\_2\textgreater{}\textgreater{}}}"\par
+  ]\par
 \}\par
 \end{scriptsize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Document Read with Sample Output}, halign=flush left, breakable]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Document Read with Sample Output}, halign=flush left, enhanced, breakable, skin first=enhanced, skin middle=enhanced, skin last=enhanced]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -367,24 +323,24 @@ Return valid JSON only.\par
 \normalfont\textbf{Sample output}\par
 \ttfamily
 \{\par
-  "doc\_id": "doc\_4c15c0dc\_1776305563",\par
+  "doc\_id": "\textcolor{my-green}{\textbf{\textless{}\textless{}EVIDENCE\_DOC\_ID\textgreater{}\textgreater{}}}",\par
   "source": "local",\par
-  "title": "MediConn\_Quarterly\_Financial\_Overview.xlsx",\par
-  "locator": "/home/toolkit/nice\_code/drbench/drbench/data/tasks/DR0007/files/qa\_1756142978/MediConn\_Quarterly\_Financial\_Overview.xlsx",\par
+  "title": "\textcolor{my-green}{\textbf{\textless{}\textless{}EVIDENCE\_DOCUMENT\_TITLE\textgreater{}\textgreater{}}}",\par
+  "locator": "\textcolor{my-green}{\textbf{\textless{}\textless{}EVIDENCE\_LOCATOR\_OR\_URL\textgreater{}\textgreater{}}}",\par
   "can\_answer": true,\par
   "proposed\_answer": "299000",\par
-  "justification": "The Q1 2024 training budget is listed as \$299,000.00 in the table under the 'Training\_Budget' column for 'Q1 2024' [DOC:doc\_4c15c0dc\_1776305563].",\par
+  "justification": "The Q1 2024 training budget is listed as \$299,000.00 in the table under the 'Training\_Budget' column for 'Q1 2024' [DOC:\textcolor{my-green}{\textbf{\textless{}\textless{}EVIDENCE\_DOC\_ID\textgreater{}\textgreater{}}}].",\par
   "confidence": 0.99,\par
   "missing\_information": "",\par
-  "parent\_doc\_id": "doc\_4c15c0dc\_1776305563",\par
-  "evidence\_window\_id": "doc\_4c15c0dc\_1776305563",\par
+  "parent\_doc\_id": "\textcolor{my-green}{\textbf{\textless{}\textless{}EVIDENCE\_DOC\_ID\textgreater{}\textgreater{}}}",\par
+  "evidence\_window\_id": "\textcolor{my-green}{\textbf{\textless{}\textless{}EVIDENCE\_DOC\_ID\textgreater{}\textgreater{}}}",\par
   "window\_index": null,\par
   "window\_count": null\par
 \}\par
 \end{scriptsize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Hop Resolve with Sample Output}, halign=flush left, breakable]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Hop Resolve with Sample Output}, halign=flush left, enhanced, breakable, skin first=enhanced, skin middle=enhanced, skin last=enhanced]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -497,13 +453,13 @@ Return valid JSON only.\par
   "answered": true,\par
   "answer": "299000",\par
   "confidence": 0.99,\par
-  "justification": "The Q1 2024 training budget is listed as \$299,000.00 in the table under the 'Training\_Budget' column for 'Q1 2024' [DOC:doc\_4c15c0dc\_1776305563].",\par
+  "justification": "The Q1 2024 training budget is listed as \$299,000.00 in the table under the 'Training\_Budget' column for 'Q1 2024' [DOC:\textcolor{my-green}{\textbf{\textless{}\textless{}EVIDENCE\_DOC\_ID\textgreater{}\textgreater{}}}].",\par
   "next\_step": "done"\par
 \}\par
 \end{scriptsize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Intent Adversary with Sample Output}, halign=flush left, breakable]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Intent Adversary with Sample Output}, halign=flush left, enhanced, breakable, skin first=enhanced, skin middle=enhanced, skin last=enhanced]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -573,7 +529,7 @@ Return only JSON in this shape:\par
 \end{scriptsize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Answer Adversary with Sample Output}, halign=flush left, breakable]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Answer Adversary with Sample Output}, halign=flush left, enhanced, breakable, skin first=enhanced, skin middle=enhanced, skin last=enhanced]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -632,7 +588,7 @@ Return only JSON in this shape:\par
 \end{scriptsize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Full-Information Claim Adversary with Sample Output}, halign=flush left, breakable]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Full-Information Claim Adversary with Sample Output}, halign=flush left, enhanced, breakable, skin first=enhanced, skin middle=enhanced, skin last=enhanced]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}

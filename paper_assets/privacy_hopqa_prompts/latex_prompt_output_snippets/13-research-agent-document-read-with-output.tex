@@ -1,4 +1,4 @@
-\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Document Read with Sample Output}, halign=flush left, breakable]
+\begin{tcolorbox}[colback=white, colframe=my-green, coltitle=black, parskip=5mm, title=\textbf{Document Read with Sample Output}, halign=flush left, enhanced, breakable, skin first=enhanced, skin middle=enhanced, skin last=enhanced]
 \begin{scriptsize}
 \ttfamily
 \setlength{\parindent}{0pt}
@@ -63,17 +63,17 @@ Return valid JSON only.\par
 \normalfont\textbf{Sample output}\par
 \ttfamily
 \{\par
-  "doc\_id": "doc\_4c15c0dc\_1776305563",\par
+  "doc\_id": "\textcolor{my-green}{\textbf{\textless{}\textless{}EVIDENCE\_DOC\_ID\textgreater{}\textgreater{}}}",\par
   "source": "local",\par
-  "title": "MediConn\_Quarterly\_Financial\_Overview.xlsx",\par
-  "locator": "/home/toolkit/nice\_code/drbench/drbench/data/tasks/DR0007/files/qa\_1756142978/MediConn\_Quarterly\_Financial\_Overview.xlsx",\par
+  "title": "\textcolor{my-green}{\textbf{\textless{}\textless{}EVIDENCE\_DOCUMENT\_TITLE\textgreater{}\textgreater{}}}",\par
+  "locator": "\textcolor{my-green}{\textbf{\textless{}\textless{}EVIDENCE\_LOCATOR\_OR\_URL\textgreater{}\textgreater{}}}",\par
   "can\_answer": true,\par
   "proposed\_answer": "299000",\par
-  "justification": "The Q1 2024 training budget is listed as \$299,000.00 in the table under the 'Training\_Budget' column for 'Q1 2024' [DOC:doc\_4c15c0dc\_1776305563].",\par
+  "justification": "The Q1 2024 training budget is listed as \$299,000.00 in the table under the 'Training\_Budget' column for 'Q1 2024' [DOC:\textcolor{my-green}{\textbf{\textless{}\textless{}EVIDENCE\_DOC\_ID\textgreater{}\textgreater{}}}].",\par
   "confidence": 0.99,\par
   "missing\_information": "",\par
-  "parent\_doc\_id": "doc\_4c15c0dc\_1776305563",\par
-  "evidence\_window\_id": "doc\_4c15c0dc\_1776305563",\par
+  "parent\_doc\_id": "\textcolor{my-green}{\textbf{\textless{}\textless{}EVIDENCE\_DOC\_ID\textgreater{}\textgreater{}}}",\par
+  "evidence\_window\_id": "\textcolor{my-green}{\textbf{\textless{}\textless{}EVIDENCE\_DOC\_ID\textgreater{}\textgreater{}}}",\par
   "window\_index": null,\par
   "window\_count": null\par
 \}\par
