@@ -66,6 +66,38 @@ What was the patient satisfaction score for MediConn Solutions in Q4 2022? \text
 \label{tab:privacy_hopqa_mosaic_leak_example}
 \end{table*}
 
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{p{0.18\linewidth}p{0.18\linewidth}p{0.22\linewidth}p{0.18\linewidth}}
+\toprule
+\textbf{Split} & \textbf{Examples} & \textbf{Leakage-positive} & \textbf{Positive rate} \\
+\midrule
+train & 20,958 & 5,957 & 28.4\% \\
+val & 2,632 & 826 & 31.4\% \\
+test & 3,144 & 910 & 28.9\% \\
+total & 26,734 & 7,693 & 28.8\% \\
+\bottomrule
+\end{tabular}
+\caption{Canonical privacy reward model dataset. Leakage-positive means StepFun judged answer leakage or full-information leakage from visible web queries and private-fact references.}
+\label{tab:privacy_reward_dataset_summary}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{p{0.26\linewidth}p{0.18\linewidth}p{0.22\linewidth}p{0.18\linewidth}}
+\toprule
+\textbf{Source} & \textbf{Examples} & \textbf{Leakage-positive} & \textbf{Positive rate} \\
+\midrule
+full\_v14 & 24,522 & 7,684 & 31.3\% \\
+query\_subset\_v1 & 2,212 & 9 & 0.4\% \\
+\bottomrule
+\end{tabular}
+\caption{Breakdown of the privacy reward model dataset by label source. Full histories are complete agent trajectories; query subsets are random subsets of web-query batches used to improve partial-trajectory supervision.}
+\label{tab:privacy_reward_source_summary}
+\end{table*}
+
 \begin{table}[t]
 \centering
 \small
