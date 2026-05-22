@@ -25,6 +25,18 @@ from scripts import build_privacy_hopqa_q30_live_analysis_viewer as live
 
 
 DEFAULT_OUTPUT_DIR = Path("/home/toolkit/my_code/MosaicProject/runtime_analysis/privacy_hopqa_q30_paper_viewer")
+DEFAULT_FINAL_EVAL_ARTIFACT_ROOT = Path(
+    "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_final_eval_16kgen_32kctx_helperfe_20260522"
+)
+DEFAULT_FINAL_PRIVACY_PROMPT_ARTIFACT_ROOT = Path(
+    "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_final_eval_privacy_prompt_16kgen_32kctx_helperfe_20260522"
+)
+DEFAULT_EXTERNAL_FINAL_ARTIFACT_ROOT = Path(
+    "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_external_final_rollouts_16kgen_32kctx_helperfe_20260522"
+)
+DEFAULT_EXTERNAL_PRIVACY_PROMPT_ARTIFACT_ROOT = Path(
+    "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_external_final_rollouts_privacy_prompt_16kgen_32kctx_helperfe_20260522"
+)
 BASELINE_COLOR = "#5F6F7A"
 PROMPT_COLOR = "#0072B2"
 HOP_COLOR = "#0072B2"
@@ -36,6 +48,29 @@ READ_WEB_COLOR = "#CC79A7"
 BASE_MODEL_LABEL = "qwen3_4b_instruct_2507"
 TRAINED_MODEL_LABELS = ["rrf_4b_hopacc_s102", "rrf_4b_prefix_step_s109"]
 TRAINING_FAMILY_LABELS = [BASE_MODEL_LABEL, *TRAINED_MODEL_LABELS]
+TRAINED_MODEL_COLOR_PALETTE = ["#D55E00", "#0072B2", "#009E73", "#CC79A7", "#E69F00", "#56B4E9"]
+FINAL_SITUATIONAL_LABELS = [
+    "qwen3_4b_instruct_2507",
+    "qwen3_4b_situational_reward_s50",
+    "qwen3_4b_situational_reward_s100",
+]
+
+
+def configure_training_family(args: argparse.Namespace) -> None:
+    global BASE_MODEL_LABEL, TRAINED_MODEL_LABELS, TRAINING_FAMILY_LABELS
+    BASE_MODEL_LABEL = args.base_model_label
+    if args.trained_model_label:
+        TRAINED_MODEL_LABELS = list(dict.fromkeys(args.trained_model_label))
+    TRAINING_FAMILY_LABELS = [BASE_MODEL_LABEL, *TRAINED_MODEL_LABELS]
+    for item in args.model_display_name:
+        if "=" not in item:
+            raise SystemExit("--model-display-name must be LABEL=DISPLAY")
+        label, display = item.split("=", 1)
+        label = label.strip()
+        display = display.strip()
+        if not label or not display:
+            raise SystemExit("--model-display-name must be LABEL=DISPLAY")
+        live.MODEL_NAMES[label] = display
 
 
 def esc(value: Any) -> str:
@@ -341,11 +376,9 @@ def plot_training_effect(rows: list[dict[str, Any]], path: Path) -> list[dict[st
         ("Baseline Prompt", "baseline_strict_chain_success_rate", "baseline_reward_rate", "baseline_attempts", "baseline_stepfun"),
         ("Privacy Prompt", "prompt_strict_chain_success_rate", "prompt_reward_rate", "prompt_attempts", "prompt_stepfun"),
     ]
-    checkpoint_colors = {
-        BASE_MODEL_LABEL: "#1f2421",
-        "rrf_4b_hopacc_s102": "#D55E00",
-        "rrf_4b_prefix_step_s109": "#0072B2",
-    }
+    checkpoint_colors = {BASE_MODEL_LABEL: "#1f2421"}
+    for index, model_label in enumerate(TRAINED_MODEL_LABELS):
+        checkpoint_colors[model_label] = TRAINED_MODEL_COLOR_PALETTE[index % len(TRAINED_MODEL_COLOR_PALETTE)]
     effect_rows: list[dict[str, Any]] = []
     fig, axes = plt.subplots(1, 2, figsize=(12.2, 4.85), sharey=True)
     all_x: list[float] = []
@@ -959,8 +992,220 @@ def build_prompt_summary(
 
 
 def write_latest_redirect(path: Path, target: Path) -> None:
-    rel = os.path.relpath(target, path.parent).replace(os.sep, "/")
-    path.write_text(f"<!doctype html><meta http-equiv='refresh' content='0; url={esc(rel)}'>\n", encoding="utf-8")
+    # Keep "latest" artifacts as real HTML files. Redirect files and symlinks
+    # are fragile when these viewers are opened from copied result folders.
+    shutil.copyfile(target, path)
+
+
+def jsonl_count(path: Path) -> int:
+    if not path.exists():
+        return 0
+    return sum(1 for line in path.read_text(encoding="utf-8").splitlines() if line.strip())
+
+
+def unique_rollout_count(path: Path) -> int:
+    seen: set[tuple[Any, Any, Any]] = set()
+    for row in live.read_jsonl(path):
+        seen.add((row.get("split"), row.get("repeat"), row.get("chain_id")))
+    return len(seen)
+
+
+def unique_identity_rows(path: Path) -> set[tuple[Any, Any, Any]]:
+    return {
+        (row.get("split"), row.get("repeat"), row.get("chain_id"))
+        for row in live.read_jsonl(path)
+    }
+
+
+def model_status_rows(artifact_root: Path, group: str, expected: int = 1032) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for root in live.model_roots(artifact_root):
+        rollout_path = root / "tables" / "rollout_index.jsonl"
+        system_error_path = root / "tables" / "rollout_system_errors.jsonl"
+        privacy_path = root / "tables" / "privacy_leakage_suite_v2_stepfun_full.jsonl"
+        rollout_identities = unique_identity_rows(rollout_path)
+        system_error_identities = unique_identity_rows(system_error_path)
+        unresolved_system_error_identities = system_error_identities - rollout_identities
+        attempted_unique = len(rollout_identities | system_error_identities)
+        rollout_rows = jsonl_count(rollout_path)
+        rollout_unique = len(rollout_identities)
+        system_error_rows = jsonl_count(system_error_path)
+        system_error_unique = len(unresolved_system_error_identities)
+        privacy_rows = jsonl_count(privacy_path)
+        attempt_missing = max(0, expected - attempted_unique)
+        privacy_expected = rollout_unique
+        privacy_missing = max(0, privacy_expected - privacy_rows)
+        if attempt_missing == 0 and privacy_missing == 0:
+            status = "complete"
+        else:
+            waiting: list[str] = []
+            if attempt_missing:
+                waiting.append(f"{attempt_missing} attempts")
+            if privacy_missing:
+                waiting.append(f"{privacy_missing} privacy judgments")
+            status = "waiting for " + ", ".join(waiting)
+        rows.append(
+            {
+                "group": group,
+                "model": live.model_display(root.name),
+                "model_label": root.name,
+                "rollout_rows": rollout_rows,
+                "rollout_unique": rollout_unique,
+                "system_error_rows": system_error_rows,
+                "system_error_unique": system_error_unique,
+                "attempted_unique": attempted_unique,
+                "privacy_rows": privacy_rows,
+                "privacy_expected": privacy_expected,
+                "expected": expected,
+                "status": status,
+            }
+        )
+    order = {label: index for index, label in enumerate(live.MODEL_NAMES)}
+    return sorted(rows, key=lambda row: (row["group"], order.get(str(row["model_label"]), 999), str(row["model_label"])))
+
+
+def final_situational_metric_rows(artifact_root: Path, condition: str, expected: int = 1032) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for model_label in FINAL_SITUATIONAL_LABELS:
+        root = artifact_root / "model_runs" / model_label
+        rollout_rows = live.read_jsonl(root / "tables" / "rollout_index.jsonl")
+        system_error_rows = live.read_jsonl(root / "tables" / "rollout_system_errors.jsonl")
+        privacy_rows = live.read_jsonl(root / "tables" / "privacy_leakage_suite_v2_stepfun_full.jsonl")
+        rollout_identities = {(row.get("split"), row.get("repeat"), row.get("chain_id")) for row in rollout_rows}
+        system_error_identities = {
+            (row.get("split"), row.get("repeat"), row.get("chain_id")) for row in system_error_rows
+        }
+        unresolved_system_error_identities = system_error_identities - rollout_identities
+        rollout_unique = len(rollout_identities)
+        system_error_unique = len(unresolved_system_error_identities)
+        attempted_unique = len(rollout_identities | system_error_identities)
+        privacy_unique = len({row.get("input_fingerprint") for row in privacy_rows if row.get("input_fingerprint")})
+        strict_count = sum(1 for row in rollout_rows if row.get("strict_chain_success") is True or row.get("strict_chain_success") == 1)
+        final_correct_count = sum(1 for row in rollout_rows if row.get("final_correct") is True or row.get("final_correct") == 1)
+        leak_count = sum(1 for row in privacy_rows if row.get("overall_leaked_for_reward") is True or row.get("overall_leaked_for_reward") == 1)
+        strict_privacy_count = sum(1 for row in privacy_rows if row.get("strict_privacy_binary") is True or row.get("strict_privacy_binary") == 1)
+        privacy_expected = rollout_unique
+        complete = attempted_unique >= expected and privacy_unique >= privacy_expected
+        waiting: list[str] = []
+        if attempted_unique < expected:
+            waiting.append(f"{expected - attempted_unique} attempts")
+        if privacy_unique < privacy_expected:
+            waiting.append(f"{privacy_expected - privacy_unique} privacy judgments")
+        status = "complete" if complete else "waiting for " + ", ".join(waiting)
+        accuracy_denominator = attempted_unique or len(rollout_rows)
+        rows.append(
+            {
+                "condition": condition,
+                "model": live.model_display(model_label),
+                "model_label": model_label,
+                "rollout_rows": len(rollout_rows),
+                "rollout_unique": rollout_unique,
+                "system_error_rows": len(system_error_rows),
+                "system_error_unique": system_error_unique,
+                "attempted_unique": attempted_unique,
+                "privacy_rows": len(privacy_rows),
+                "privacy_unique": privacy_unique,
+                "privacy_expected": privacy_expected,
+                "expected": expected,
+                "strict_chain_success_rate": strict_count / accuracy_denominator if accuracy_denominator else None,
+                "final_correct_rate": final_correct_count / accuracy_denominator if accuracy_denominator else None,
+                "privacy_leakage_rate": leak_count / len(privacy_rows) if privacy_rows else None,
+                "strict_privacy_rate": strict_privacy_count / len(privacy_rows) if privacy_rows else None,
+                "status": status,
+                "complete": complete,
+            }
+        )
+    return rows
+
+
+def final_situational_table_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [
+        {
+            "condition": row.get("condition"),
+            "model": row.get("model"),
+            "attempts": f"{row.get('attempted_unique')}/{row.get('expected')}",
+            "successful_rollouts": row.get("rollout_unique"),
+            "system_errors": row.get("system_error_unique"),
+            "privacy_judged": f"{row.get('privacy_unique')}/{row.get('privacy_expected')}",
+            "strict_chain": pct_text(row.get("strict_chain_success_rate")),
+            "privacy_leakage": pct_text(row.get("privacy_leakage_rate")),
+            "strict_privacy": pct_text(row.get("strict_privacy_rate")),
+            "status": row.get("status"),
+        }
+        for row in rows
+    ]
+
+
+def plot_final_situational_training_effect(
+    baseline_rows: list[dict[str, Any]],
+    prompt_rows: list[dict[str, Any]],
+    path: Path,
+) -> None:
+    panels = [("Normal Prompt", baseline_rows), ("Privacy Prompt", prompt_rows)]
+    colors = {
+        "qwen3_4b_instruct_2507": "#1f2421",
+        "qwen3_4b_situational_reward_s50": "#D55E00",
+        "qwen3_4b_situational_reward_s100": "#0072B2",
+    }
+    fig, axes = plt.subplots(1, 2, figsize=(12.2, 4.85), sharey=True)
+    plotted_x: list[float] = []
+    plotted_y: list[float] = []
+    for ax, (title, rows) in zip(axes, panels):
+        available = [
+            row
+            for row in rows
+            if live.as_float(row.get("strict_chain_success_rate")) is not None
+            and live.as_float(row.get("privacy_leakage_rate")) is not None
+        ]
+        if not available:
+            ax.text(0.5, 0.55, "pending rollouts and privacy judgments", ha="center", va="center", transform=ax.transAxes)
+            ax.set_xlim(0, 100)
+            ax.set_ylim(0, 100)
+            ax.set_title(title)
+            ax.set_xlabel("Strict Chain Success (%)")
+            ax.grid(True, alpha=0.25)
+            continue
+        base_row = next((row for row in available if row.get("model_label") == "qwen3_4b_instruct_2507"), None)
+        base_xy = None
+        if base_row:
+            base_xy = (
+                100 * float(base_row["strict_chain_success_rate"]),
+                100 * float(base_row["privacy_leakage_rate"]),
+            )
+        for row in available:
+            model_label = str(row.get("model_label"))
+            x = 100 * float(row["strict_chain_success_rate"])
+            y = 100 * float(row["privacy_leakage_rate"])
+            plotted_x.append(x)
+            plotted_y.append(y)
+            marker = "o" if model_label == "qwen3_4b_instruct_2507" else "s"
+            alpha = 1.0 if row.get("complete") else 0.55
+            ax.scatter(x, y, s=70, marker=marker, color=colors.get(model_label, "#5F6F7A"), alpha=alpha, zorder=3)
+            label = str(row.get("model") or model_label).replace("Qwen3 4B ", "")
+            if not row.get("complete"):
+                label += " (partial)"
+            ax.text(x + 0.7, y + 0.7, label, fontsize=9, color=colors.get(model_label, "#5F6F7A"))
+            if base_xy and model_label != "qwen3_4b_instruct_2507":
+                ax.annotate(
+                    "",
+                    xy=(x, y),
+                    xytext=base_xy,
+                    arrowprops={"arrowstyle": "->", "color": colors.get(model_label, "#5F6F7A"), "lw": 1.3},
+                    zorder=2,
+                )
+        ax.set_title(title)
+        ax.set_xlabel("Strict Chain Success (%)")
+        ax.grid(True, alpha=0.25)
+    axes[0].set_ylabel("Privacy Leakage (%)")
+    if plotted_x and plotted_y:
+        x_min = max(0, min(plotted_x) - 6)
+        x_max = min(100, max(plotted_x) + 10)
+        y_min = max(0, min(plotted_y) - 8)
+        y_max = min(100, max(plotted_y) + 12)
+        for ax in axes:
+            ax.set_xlim(x_min, x_max)
+            ax.set_ylim(y_min, y_max)
+    save_figure(fig, path)
 
 
 def build_viewer(args: argparse.Namespace) -> None:
@@ -1017,6 +1262,28 @@ def build_viewer(args: argparse.Namespace) -> None:
     )
     relationship_result = plot_leakage_relationships(relationship_rows, plots_dir / "leakage_relationships.svg")
     relationship_stats_rows = relationship_result.get("stats_rows") or []
+    final_status_rows = model_status_rows(args.final_eval_artifact_root, "16k/32k final trained-model eval")
+    final_prompt_status_rows = model_status_rows(
+        args.final_privacy_prompt_artifact_root,
+        "16k/32k final trained-model eval: privacy prompt",
+    )
+    external_status_rows = model_status_rows(args.external_final_artifact_root, "16k/32k external-model refresh")
+    external_prompt_status_rows = model_status_rows(
+        args.external_privacy_prompt_artifact_root,
+        "16k/32k external-model refresh: privacy prompt",
+    )
+    status_rows = final_status_rows + final_prompt_status_rows + external_status_rows + external_prompt_status_rows
+    final_normal_training_rows = final_situational_metric_rows(args.final_eval_artifact_root, "Normal Prompt")
+    final_privacy_prompt_training_rows = final_situational_metric_rows(
+        args.final_privacy_prompt_artifact_root,
+        "Privacy Prompt",
+    )
+    final_training_rows = final_normal_training_rows + final_privacy_prompt_training_rows
+    plot_final_situational_training_effect(
+        final_normal_training_rows,
+        final_privacy_prompt_training_rows,
+        plots_dir / "final_situational_training_effect.svg",
+    )
     tables_dir.mkdir(parents=True, exist_ok=True)
     latex_path = tables_dir / "leakage_relationship_stats.tex"
     latex_path.write_text(leakage_stats_latex(relationship_stats_rows), encoding="utf-8")
@@ -1026,6 +1293,12 @@ def build_viewer(args: argparse.Namespace) -> None:
         "generated_at": generated_at,
         "artifact_root": str(args.artifact_root),
         "privacy_prompt_artifact_root": str(args.privacy_prompt_artifact_root),
+        "final_eval_artifact_root": str(args.final_eval_artifact_root),
+        "final_privacy_prompt_artifact_root": str(args.final_privacy_prompt_artifact_root),
+        "external_final_artifact_root": str(args.external_final_artifact_root),
+        "external_privacy_prompt_artifact_root": str(args.external_privacy_prompt_artifact_root),
+        "final_refresh_status": status_rows,
+        "final_situational_training_rows": final_training_rows,
         "privacy_prompt_summary": prompt_rows_main,
         "privacy_prompt_summary_with_checkpoints": prompt_rows,
         "training_effect_rows": training_effect_rows,
@@ -1061,6 +1334,35 @@ def build_viewer(args: argparse.Namespace) -> None:
             ("leak_delta", "Leakage Delta (pp)"),
         ],
         privacy_prompt_table_rows(prompt_rows_main),
+    )
+    refresh_status_table = table(
+        [
+            ("group", "Run Group"),
+            ("model", "Model"),
+            ("attempted_unique", "Attempts"),
+            ("rollout_unique", "Successful Rollouts"),
+            ("system_error_unique", "System Errors"),
+            ("privacy_rows", "Privacy Judgments"),
+            ("privacy_expected", "Privacy Expected"),
+            ("expected", "Expected"),
+            ("status", "Status"),
+        ],
+        status_rows,
+    )
+    final_training_table = table(
+        [
+            ("condition", "Condition"),
+            ("model", "Model"),
+            ("attempts", "Attempts"),
+            ("successful_rollouts", "Successful Rollouts"),
+            ("system_errors", "System Errors"),
+            ("privacy_judged", "Privacy Judged"),
+            ("strict_chain", "Strict Chain Success"),
+            ("privacy_leakage", "Privacy Leakage"),
+            ("strict_privacy", "Strict Privacy Binary"),
+            ("status", "Status"),
+        ],
+        final_situational_table_rows(final_training_rows),
     )
     task_table = table(
         [
@@ -1130,6 +1432,50 @@ def build_viewer(args: argparse.Namespace) -> None:
                 "type": "Lenient Claim Leakage",
                 "definition": "The claim judge marks a generated claim as partially private or approximately matching a private fact.",
                 "paper_status": "Diagnostic audit metric; I would not put it in the main paper plot until we decide how to explain partial private facts.",
+            },
+        ],
+    )
+    plot_status_table = table(
+        [
+            ("section", "Viewer Section"),
+            ("status", "Finalization Status"),
+            ("use", "How To Use It Right Now"),
+        ],
+        [
+            {
+                "section": "Final Refresh Status",
+                "status": "Current snapshot",
+                "use": "Use this as the source of truth for which rows are complete, partial, or still waiting.",
+            },
+            {
+                "section": "Effect Of Training: Accuracy And Privacy",
+                "status": "Mixed: normal prompt finalized; privacy prompt partial",
+                "use": "Normal-prompt Qwen3 4B/base, step50, and step100 points are final 16k/32k results. Privacy-prompt points are interim until their Status column says complete.",
+            },
+            {
+                "section": "Privacy Prompt Effect: Accuracy And Leakage",
+                "status": "Legacy",
+                "use": "Do not use as final paper numbers; this is the older prompt-comparison artifact while the external 16k refresh finishes.",
+            },
+            {
+                "section": "Privacy Prompt Effect: Leakage Types",
+                "status": "Legacy",
+                "use": "Diagnostic only until the refreshed normal/privacy-prompt external evaluations finish and are rebuilt.",
+            },
+            {
+                "section": "Privacy Prompt Effect: Query And Retrieval Behavior",
+                "status": "Legacy",
+                "use": "Diagnostic only; not a final refreshed plot yet.",
+            },
+            {
+                "section": "Checkpoint-Inclusive Copies",
+                "status": "Legacy",
+                "use": "Old checkpoint comparison copies. They are retained for reference, not current final plots.",
+            },
+            {
+                "section": "Task Performance / Retrieval / Leakage Relationships",
+                "status": "Legacy",
+                "use": "Treat these as pre-refresh paper drafts until the 16k external and privacy-prompt jobs are complete.",
             },
         ],
     )
@@ -1219,9 +1565,11 @@ def build_viewer(args: argparse.Namespace) -> None:
 </head>
 <body>
   <header>
-    <h1>Privacy HopQA q30 Paper Figure Preview</h1>
-    <div class="note">Generated {esc(generated_at)}. Figures use the live v11 artifacts and are intended as a smaller advisor-facing subset, not a replacement for the diagnostic viewer.</div>
+    <h1>Privacy HopQA q30 Paper Figure Preview: Legacy Prompt Plots, Final Refresh Pending</h1>
+    <div class="note">Generated {esc(generated_at)}. The normal-prompt final 16k/32k trained-model eval is complete. The matching privacy-prompt eval and both normal/privacy-prompt external-model refreshes are still running; pending/partial rows are called out in the refresh status table.</div>
     <nav>
+      <a href="#plot-status">Plot Status</a>
+      <a href="#refresh-status">Refresh Status</a>
       <a href="#prompt-accuracy">Prompt: Accuracy And Leakage</a>
       <a href="#prompt-leakage-types">Prompt: Leakage Types</a>
       <a href="#prompt-query">Prompt: Query And Retrieval</a>
@@ -1235,33 +1583,44 @@ def build_viewer(args: argparse.Namespace) -> None:
     </nav>
   </header>
   <main>
+    <section id="plot-status">
+      <h2>Plot Finalization Status</h2>
+      <div class="note">This table is the quick read on which figures are currently final. Anything marked partial or legacy should not be copied as a final paper number, even if the plot is rendered below.</div>
+      {plot_status_table}
+    </section>
+    <section id="refresh-status">
+      <h2>Final Refresh Status</h2>
+      <div class="note">Expected count is 344 test chains times 3 repeats = 1032. Attempts include successful rollout rows plus recorded system-error attempts. Rows marked complete can be used as final 16k-generation results; rows marked waiting should not be treated as final paper numbers yet. Privacy judgments are only expected for successful rollout traces.</div>
+      {refresh_status_table}
+    </section>
     <section id="prompt-accuracy" class="figure">
-      <h2>Privacy Prompt Effect: Accuracy And Leakage</h2>
-      <div class="note">Test split, excluding trained checkpoints. Strict Chain Success is over scored rollout attempts: agent-induced failures are zero, while infrastructure/system failures are excluded. Privacy Leakage is over StepFun-judged successful rollouts and uses the binary StepFun score >= 4 label: answer leakage, full-information leakage, or multiple answer leaks.</div>
+      <h2>Privacy Prompt Effect: Accuracy And Leakage (Legacy; Waiting For External 16k Refresh)</h2>
+      <div class="note">Legacy prompt-comparison artifact. Test split, excluding trained checkpoints. Strict Chain Success is over scored rollout attempts: agent-induced failures are zero, while infrastructure/system failures are excluded. Privacy Leakage is over StepFun-judged successful rollouts and uses the binary StepFun score >= 4 label: answer leakage, full-information leakage, or multiple answer leaks.</div>
       <img src="plots/privacy_prompt_accuracy_leakage.svg" alt="Privacy prompt accuracy and leakage">
       <div class="links"><a href="plots/privacy_prompt_accuracy_leakage.svg">SVG</a><a href="plots/privacy_prompt_accuracy_leakage.pdf">PDF</a></div>
     </section>
     <section id="prompt-leakage-types" class="figure">
-      <h2>Privacy Prompt Effect: Leakage Types</h2>
-      <div class="note">Test split, excluding trained checkpoints. Intent leakage is the StepFun intent score >= 4. Answer leakage means at least one private QA answer was judged correct. Full-information claim is the strict generated-claim judge; partial claim is the lenient diagnostic version. Error bars are SEM over repeat means when repeats are available.</div>
+      <h2>Privacy Prompt Effect: Leakage Types (Legacy; Waiting For External 16k Refresh)</h2>
+      <div class="note">Legacy prompt-comparison artifact. Test split, excluding trained checkpoints. Intent leakage is the StepFun intent score >= 4. Answer leakage means at least one private QA answer was judged correct. Full-information claim is the strict generated-claim judge; partial claim is the lenient diagnostic version. Error bars are SEM over repeat means when repeats are available.</div>
       <img src="plots/privacy_prompt_leakage_types.svg" alt="Privacy prompt effect by leakage type">
       <div class="links"><a href="plots/privacy_prompt_leakage_types.svg">SVG</a><a href="plots/privacy_prompt_leakage_types.pdf">PDF</a></div>
     </section>
     <section id="prompt-query" class="figure">
-      <h2>Privacy Prompt Effect: Query And Retrieval Behavior</h2>
-      <div class="note">Test split, excluding trained checkpoints. Counts are means over successful rollout rows for each condition.</div>
+      <h2>Privacy Prompt Effect: Query And Retrieval Behavior (Legacy; Waiting For External 16k Refresh)</h2>
+      <div class="note">Legacy prompt-comparison artifact. Test split, excluding trained checkpoints. Counts are means over successful rollout rows for each condition.</div>
       <img src="plots/privacy_prompt_query_behavior.svg" alt="Privacy prompt query and retrieval behavior">
       <div class="links"><a href="plots/privacy_prompt_query_behavior.svg">SVG</a><a href="plots/privacy_prompt_query_behavior.pdf">PDF</a></div>
     </section>
     <section id="training-effect" class="figure">
-      <h2>Effect Of Training: Accuracy And Privacy</h2>
-      <div class="note">Test split. Arrows start at the base Qwen3 4B model and point to the two trained checkpoints. The x-axis is strict chain success over scored rollout attempts, with agent-induced failures scored as zero; the y-axis is StepFun score >= 4 privacy leakage over judged successful rollouts. Error bars are SEM over repeat means when repeats are available.</div>
-      <img src="plots/training_effect_accuracy_privacy.svg" alt="Effect of training on accuracy and privacy leakage">
-      <div class="links"><a href="plots/training_effect_accuracy_privacy.svg">SVG</a><a href="plots/training_effect_accuracy_privacy.pdf">PDF</a></div>
+      <h2>Effect Of Training: Accuracy And Privacy (Normal Prompt Final; Privacy Prompt Partial)</h2>
+      <div class="note">Final 16k-generation test eval for base Qwen3 4B, situational step 50, and situational step 100. Strict Chain Success counts recorded system-error attempts as failures. Privacy Leakage is only over StepFun-judged successful rollout traces, so privacy-prompt rows remain partial until their privacy judgments catch up.</div>
+      <img src="plots/final_situational_training_effect.svg" alt="Final situational training effect on accuracy and privacy leakage">
+      <div class="links"><a href="plots/final_situational_training_effect.svg">SVG</a><a href="plots/final_situational_training_effect.pdf">PDF</a></div>
+      {final_training_table}
     </section>
     <section id="with-checkpoints" class="figure">
-      <h2>Checkpoint-Inclusive Copies</h2>
-      <div class="note">These are copies of the main paper plots with the trained checkpoints included. The default plots and tables above exclude checkpoints so the main model comparisons stay clean.</div>
+      <h2>Checkpoint-Inclusive Copies (Legacy; Waiting For External 16k Refresh)</h2>
+      <div class="note">Legacy prompt-comparison artifact. These are copies of the main paper plots with the earlier trained checkpoints included. The default plots and tables above exclude checkpoints so the main model comparisons stay clean.</div>
       <h3>Prompt Accuracy And Leakage</h3>
       <img src="plots/privacy_prompt_accuracy_leakage_with_checkpoints.svg" alt="Privacy prompt accuracy and leakage with trained checkpoints">
       <div class="links"><a href="plots/privacy_prompt_accuracy_leakage_with_checkpoints.svg">SVG</a><a href="plots/privacy_prompt_accuracy_leakage_with_checkpoints.pdf">PDF</a></div>
@@ -1282,40 +1641,44 @@ def build_viewer(args: argparse.Namespace) -> None:
       <div class="links"><a href="plots/retrieval_behavior_all_rollouts_with_checkpoints.svg">SVG</a><a href="plots/retrieval_behavior_all_rollouts_with_checkpoints.pdf">PDF</a></div>
     </section>
     <section id="task-performance-test" class="figure">
-      <h2>Task Performance By Model</h2>
-      <div class="note">Test split, excluding trained checkpoints. Mean Hop Performance uses chain-progress hop accuracy for completed rollouts and scores agent-induced failures as zero. Infrastructure/system failures are excluded. All-Chain Correct requires every hop answer to be correct.</div>
+      <h2>Task Performance By Model (Legacy; Waiting For External 16k Refresh)</h2>
+      <div class="note">Legacy prompt-comparison artifact. Test split, excluding trained checkpoints. Mean Hop Performance uses chain-progress hop accuracy for completed rollouts and scores agent-induced failures as zero. Infrastructure/system failures are excluded. All-Chain Correct requires every hop answer to be correct.</div>
       <img src="plots/task_performance_test.svg" alt="Task performance by model on test split">
       <div class="links"><a href="plots/task_performance_test.svg">SVG</a><a href="plots/task_performance_test.pdf">PDF</a></div>
     </section>
     <section id="task-performance-all" class="figure">
-      <h2>Task Performance By Model: All Available Splits</h2>
-      <div class="note">All currently scored train, validation, and test rollout attempts, excluding trained checkpoints. Agent-induced failures are scored as zero for accuracy; infrastructure/system failures are excluded.</div>
+      <h2>Task Performance By Model: All Available Splits (Legacy; Waiting For External 16k Refresh)</h2>
+      <div class="note">Legacy prompt-comparison artifact. All currently scored train, validation, and test rollout attempts, excluding trained checkpoints. Agent-induced failures are scored as zero for accuracy; infrastructure/system failures are excluded.</div>
       <img src="plots/task_performance_all.svg" alt="Task performance by model across all available splits">
       <div class="links"><a href="plots/task_performance_all.svg">SVG</a><a href="plots/task_performance_all.pdf">PDF</a></div>
     </section>
     <section id="retrieval-all" class="figure">
-      <h2>Retrieval And Query Behavior: All Rollouts</h2>
-      <div class="note">All currently loaded rollout rows, excluding trained checkpoints. Failed/incomplete rows without a saved timeline contribute zero parsed events, matching the diagnostic viewer's all-rollouts convention.</div>
+      <h2>Retrieval And Query Behavior: All Rollouts (Legacy; Waiting For External 16k Refresh)</h2>
+      <div class="note">Legacy prompt-comparison artifact. All currently loaded rollout rows, excluding trained checkpoints. Failed/incomplete rows without a saved timeline contribute zero parsed events, matching the diagnostic viewer's all-rollouts convention.</div>
       <img src="plots/retrieval_behavior_all_rollouts.svg" alt="Retrieval and query behavior for all rollout rows">
       <div class="links"><a href="plots/retrieval_behavior_all_rollouts.svg">SVG</a><a href="plots/retrieval_behavior_all_rollouts.pdf">PDF</a></div>
     </section>
     <section id="leakage-relationships" class="figure">
-      <h2>Privacy Leakage Relationships</h2>
-      <div class="note">Test split, StepFun-judged baseline and privacy-prompt rollout-condition rows. Points are empirical leakage rates; the gray dashed line is a bivariate logistic fit.</div>
+      <h2>Privacy Leakage Relationships (Legacy; Waiting For External 16k Refresh)</h2>
+      <div class="note">Legacy prompt-comparison artifact. Test split, StepFun-judged baseline and privacy-prompt rollout-condition rows. Points are empirical leakage rates; the gray dashed line is a bivariate logistic fit.</div>
       <img src="plots/leakage_relationships.svg" alt="Privacy leakage relationships with chain length and accuracy">
       <div class="links"><a href="plots/leakage_relationships.svg">SVG</a><a href="plots/leakage_relationships.pdf">PDF</a></div>
     </section>
     <section id="tables">
-      <h2>Paper Tables</h2>
-      <h3>Privacy Prompt Summary</h3>
+      <h2>Paper Tables (Legacy Except Refresh Status)</h2>
+      <h3>Final Refresh Status</h3>
+      {refresh_status_table}
+      <h3>Final Situational Training Effect</h3>
+      {final_training_table}
+      <h3>Legacy Privacy Prompt Summary (Waiting For External 16k Refresh)</h3>
       {prompt_table}
-      <h3>Training Effect Summary</h3>
+      <h3>Legacy Training Effect Summary (Old Checkpoints; Waiting For External 16k Refresh)</h3>
       {training_effect_table}
-      <h3>Task Performance Summary: Test Split</h3>
+      <h3>Legacy Task Performance Summary: Test Split (Waiting For External 16k Refresh)</h3>
       {task_table}
-      <h3>Retrieval Summary: All Rollouts</h3>
+      <h3>Legacy Retrieval Summary: All Rollouts (Waiting For External 16k Refresh)</h3>
       {retrieval_table}
-      <h3>Leakage Relationship Statistics</h3>
+      <h3>Legacy Leakage Relationship Statistics (Waiting For External 16k Refresh)</h3>
       {relationship_stats_table}
       <div class="links"><a href="tables/leakage_relationship_stats.tex">LaTeX table</a></div>
       <pre>{esc(relationship_stats_latex_text)}</pre>
@@ -1340,10 +1703,30 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--artifact-root", type=Path, default=live.DEFAULT_ARTIFACT_ROOT)
     parser.add_argument("--privacy-prompt-artifact-root", type=Path, default=live.DEFAULT_PRIVACY_PROMPT_ARTIFACT_ROOT)
+    parser.add_argument("--final-eval-artifact-root", type=Path, default=DEFAULT_FINAL_EVAL_ARTIFACT_ROOT)
+    parser.add_argument(
+        "--final-privacy-prompt-artifact-root",
+        type=Path,
+        default=DEFAULT_FINAL_PRIVACY_PROMPT_ARTIFACT_ROOT,
+    )
+    parser.add_argument("--external-final-artifact-root", type=Path, default=DEFAULT_EXTERNAL_FINAL_ARTIFACT_ROOT)
+    parser.add_argument(
+        "--external-privacy-prompt-artifact-root",
+        type=Path,
+        default=DEFAULT_EXTERNAL_PRIVACY_PROMPT_ARTIFACT_ROOT,
+    )
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     parser.add_argument("--dataset-root", type=Path, default=live.DEFAULT_DATASET_ROOT)
     parser.add_argument("--dataset-basename", default=live.DEFAULT_DATASET_BASENAME)
     parser.add_argument("--latest-output", type=Path, action="append", default=[])
+    parser.add_argument("--base-model-label", default=BASE_MODEL_LABEL)
+    parser.add_argument("--trained-model-label", action="append", default=[])
+    parser.add_argument(
+        "--model-display-name",
+        action="append",
+        default=[],
+        help="Display override as LABEL=DISPLAY. May be passed multiple times.",
+    )
     args = parser.parse_args()
     if not args.latest_output:
         args.latest_output = [Path("runtime_analysis/latest_privacy_hopqa_q30_paper_viewer.html")]
@@ -1351,7 +1734,9 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
-    build_viewer(parse_args())
+    args = parse_args()
+    configure_training_family(args)
+    build_viewer(args)
 
 
 if __name__ == "__main__":
