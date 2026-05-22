@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 from collections import Counter
 from datetime import datetime, timezone
+import html
 import json
 from pathlib import Path
 import random
@@ -196,7 +197,11 @@ def add_lora(model: Any, args: argparse.Namespace) -> Any:
 
 
 def binary_metrics(targets: list[int], probs: list[float]) -> dict[str, Any]:
-    preds = [1 if prob >= 0.5 else 0 for prob in probs]
+    return binary_metrics_at_threshold(targets, probs, 0.5)
+
+
+def binary_metrics_at_threshold(targets: list[int], probs: list[float], threshold: float) -> dict[str, Any]:
+    preds = [1 if prob >= threshold else 0 for prob in probs]
     tn, fp, fn, tp = confusion_matrix(targets, preds, labels=[0, 1]).ravel()
     accuracy = (tp + tn) / len(targets) if targets else 0.0
     precision = tp / (tp + fp) if tp + fp else 0.0
@@ -210,6 +215,7 @@ def binary_metrics(targets: list[int], probs: list[float]) -> dict[str, Any]:
         "rows": len(targets),
         "target_positive": int(sum(targets)),
         "predicted_positive": int(sum(preds)),
+        "threshold": threshold,
         "accuracy": accuracy,
         "precision": precision,
         "recall": recall,
@@ -224,6 +230,87 @@ def binary_metrics(targets: list[int], probs: list[float]) -> dict[str, Any]:
         "fp": int(fp),
         "fn": int(fn),
     }
+
+
+def prediction_source(row: dict[str, Any]) -> str:
+    row_id = str(row.get("id") or "")
+    if ":" in row_id:
+        return row_id.split(":", 1)[0]
+    return "unknown"
+
+
+def query_count_bucket(row: dict[str, Any]) -> str:
+    count = row.get("n_web_queries")
+    if count is None:
+        queries = row.get("web_queries") or []
+        count = len(queries)
+    count = int(count or 0)
+    if count <= 1:
+        return "0-1"
+    if count <= 3:
+        return "2-3"
+    if count <= 6:
+        return "4-6"
+    return "7+"
+
+
+def prediction_targets_probs(rows: list[dict[str, Any]]) -> tuple[list[int], list[float]]:
+    return [int(row["target"]) for row in rows], [float(row["prob_yes"]) for row in rows]
+
+
+def threshold_grid() -> list[float]:
+    return [round(value, 2) for value in np.linspace(0.05, 0.95, 19)]
+
+
+def threshold_sweep(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    targets, probs = prediction_targets_probs(rows)
+    if not rows:
+        return {"grid": [], "best": {}, "precision_targets": []}
+    candidate_thresholds = sorted(set(threshold_grid() + [0.5, 0.6, 0.7, 0.8, 0.9] + probs))
+    scored = [(threshold, binary_metrics_at_threshold(targets, probs, threshold)) for threshold in candidate_thresholds]
+    best = {
+        "f1": max(scored, key=lambda item: item[1]["f1"]),
+        "balanced_accuracy": max(scored, key=lambda item: item[1]["balanced_accuracy"]),
+        "accuracy": max(scored, key=lambda item: item[1]["accuracy"]),
+    }
+    precision_targets: list[dict[str, Any]] = []
+    for target_precision in [0.7, 0.75, 0.8, 0.85, 0.9]:
+        candidates = [
+            (threshold, metrics)
+            for threshold, metrics in scored
+            if metrics["precision"] >= target_precision and metrics["predicted_positive"] > 0
+        ]
+        if not candidates:
+            precision_targets.append({"target_precision": target_precision, "threshold": None, "metrics": None})
+            continue
+        threshold, metrics = max(candidates, key=lambda item: item[1]["recall"])
+        precision_targets.append({"target_precision": target_precision, "threshold": threshold, "metrics": metrics})
+    display_thresholds = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+    return {
+        "grid": [
+            {"threshold": threshold, "metrics": binary_metrics_at_threshold(targets, probs, threshold)}
+            for threshold in display_thresholds
+        ],
+        "best": {name: {"threshold": threshold, "metrics": metrics} for name, (threshold, metrics) in best.items()},
+        "precision_targets": precision_targets,
+    }
+
+
+def grouped_metrics(rows: list[dict[str, Any]], group_key: str, threshold: float) -> list[dict[str, Any]]:
+    if group_key == "source":
+        key_fn = prediction_source
+    elif group_key == "query_count":
+        key_fn = query_count_bucket
+    else:
+        raise ValueError(f"unknown group_key={group_key}")
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    for row in rows:
+        grouped.setdefault(key_fn(row), []).append(row)
+    out: list[dict[str, Any]] = []
+    for name, group_rows in sorted(grouped.items()):
+        targets, probs = prediction_targets_probs(group_rows)
+        out.append({"group": name, "metrics": binary_metrics_at_threshold(targets, probs, threshold)})
+    return out
 
 
 @torch.no_grad()
@@ -350,6 +437,29 @@ def plot_eval(output_dir: Path, split_metrics: dict[str, dict[str, Any]], predic
             fig.savefig(plot_dir / f"{split}_roc_pr.pdf")
             plt.close(fig)
 
+        sweep_thresholds = [round(value, 2) for value in np.linspace(0.05, 0.95, 91)]
+        sweep_metrics = [binary_metrics_at_threshold(targets, probs, threshold) for threshold in sweep_thresholds]
+        fig, ax = plt.subplots(figsize=(9.2, 4.8))
+        for metric_name, color in [
+            ("precision", "#0072B2"),
+            ("recall", "#D55E00"),
+            ("f1", "#009E73"),
+            ("accuracy", "#CC79A7"),
+        ]:
+            ax.plot(sweep_thresholds, [metrics[metric_name] for metrics in sweep_metrics], label=metric_name, color=color)
+        ax.axvline(0.5, color="#555", linestyle="--", linewidth=1, label="0.5 default")
+        ax.set_xlabel("Leakage threshold")
+        ax.set_ylabel("Score")
+        ax.set_title(f"{split.title()} Threshold Sweep")
+        ax.set_xlim(0.05, 0.95)
+        ax.set_ylim(0, 1.05)
+        ax.grid(alpha=0.25)
+        ax.legend(frameon=False, ncol=2)
+        fig.tight_layout()
+        fig.savefig(plot_dir / f"{split}_threshold_sweep.svg")
+        fig.savefig(plot_dir / f"{split}_threshold_sweep.pdf")
+        plt.close(fig)
+
 
 def html_report(output_dir: Path, summary: dict[str, Any]) -> None:
     def fmt(value: Any) -> str:
@@ -358,6 +468,31 @@ def html_report(output_dir: Path, summary: dict[str, Any]) -> None:
         if isinstance(value, float):
             return f"{value:.3f}"
         return str(value)
+
+    def cell(value: Any) -> str:
+        return f"<td>{html.escape(fmt(value))}</td>"
+
+    def read_prediction_rows(split: str) -> list[dict[str, Any]]:
+        path = output_dir / f"predictions_{split}.jsonl"
+        if not path.exists():
+            return []
+        with path.open(encoding="utf-8") as handle:
+            return [json.loads(line) for line in handle if line.strip()]
+
+    def metric_cells(metrics: dict[str, Any]) -> str:
+        return "".join(
+            cell(metrics.get(name))
+            for name in [
+                "rows",
+                "target_positive",
+                "predicted_positive",
+                "accuracy",
+                "precision",
+                "recall",
+                "specificity",
+                "f1",
+            ]
+        )
 
     rows = []
     for split, metrics in summary["metrics"].items():
@@ -381,7 +516,117 @@ def html_report(output_dir: Path, summary: dict[str, Any]) -> None:
             )
             + "</tr>"
         )
-    html = f"""<!doctype html>
+    prediction_rows_by_split = {split: read_prediction_rows(split) for split in summary["metrics"]}
+    threshold_sections: list[str] = []
+    source_sections: list[str] = []
+    example_sections: list[str] = []
+    for split, prediction_rows in prediction_rows_by_split.items():
+        if not prediction_rows:
+            continue
+        sweep = threshold_sweep(prediction_rows)
+        best_rows = []
+        for label, item in sweep["best"].items():
+            metrics = item["metrics"]
+            best_rows.append(
+                "<tr>"
+                + cell(label.replace("_", " ").title())
+                + cell(item["threshold"])
+                + metric_cells(metrics)
+                + "</tr>"
+            )
+        precision_rows = []
+        for item in sweep["precision_targets"]:
+            metrics = item["metrics"]
+            precision_rows.append(
+                "<tr>"
+                + cell(f">= {item['target_precision']:.2f}")
+                + cell(item["threshold"])
+                + (metric_cells(metrics) if metrics else "".join(cell(None) for _ in range(8)))
+                + "</tr>"
+            )
+        grid_rows = []
+        for item in sweep["grid"]:
+            grid_rows.append(
+                "<tr>"
+                + cell(item["threshold"])
+                + metric_cells(item["metrics"])
+                + "</tr>"
+            )
+        threshold_sections.append(
+            f"""
+<h3>{html.escape(split.title())}</h3>
+<h4>Best thresholds</h4>
+<table><thead><tr><th>Criterion</th><th>Threshold</th><th>Rows</th><th>Target Yes</th><th>Pred Yes</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>Specificity</th><th>F1</th></tr></thead><tbody>
+{''.join(best_rows)}
+</tbody></table>
+<h4>High-precision operating points</h4>
+<table><thead><tr><th>Target precision</th><th>Threshold</th><th>Rows</th><th>Target Yes</th><th>Pred Yes</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>Specificity</th><th>F1</th></tr></thead><tbody>
+{''.join(precision_rows)}
+</tbody></table>
+<h4>Fixed threshold grid</h4>
+<table><thead><tr><th>Threshold</th><th>Rows</th><th>Target Yes</th><th>Pred Yes</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>Specificity</th><th>F1</th></tr></thead><tbody>
+{''.join(grid_rows)}
+</tbody></table>
+<img src="plots/{html.escape(split)}_threshold_sweep.svg">
+"""
+        )
+        for threshold in [0.5, 0.7, 0.8]:
+            source_rows = []
+            for item in grouped_metrics(prediction_rows, "source", threshold):
+                source_rows.append("<tr>" + cell(item["group"]) + cell(threshold) + metric_cells(item["metrics"]) + "</tr>")
+            query_rows = []
+            for item in grouped_metrics(prediction_rows, "query_count", threshold):
+                query_rows.append("<tr>" + cell(item["group"]) + cell(threshold) + metric_cells(item["metrics"]) + "</tr>")
+            source_sections.append(
+                f"""
+<h3>{html.escape(split.title())}, threshold {threshold:.1f}</h3>
+<h4>By dataset source</h4>
+<table><thead><tr><th>Source</th><th>Threshold</th><th>Rows</th><th>Target Yes</th><th>Pred Yes</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>Specificity</th><th>F1</th></tr></thead><tbody>
+{''.join(source_rows)}
+</tbody></table>
+<h4>By number of visible web queries</h4>
+<table><thead><tr><th>Web-query count</th><th>Threshold</th><th>Rows</th><th>Target Yes</th><th>Pred Yes</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>Specificity</th><th>F1</th></tr></thead><tbody>
+{''.join(query_rows)}
+</tbody></table>
+"""
+            )
+        false_positives = sorted(
+            [row for row in prediction_rows if int(row["target"]) == 0 and float(row["prob_yes"]) >= 0.5],
+            key=lambda row: float(row["prob_yes"]),
+            reverse=True,
+        )[:8]
+        false_negatives = sorted(
+            [row for row in prediction_rows if int(row["target"]) == 1 and float(row["prob_yes"]) < 0.5],
+            key=lambda row: float(row["prob_yes"]),
+        )[:8]
+        example_rows = []
+        for kind, examples in [("False positive", false_positives), ("False negative", false_negatives)]:
+            for row in examples:
+                queries = row.get("web_queries") or []
+                query_text = "\n".join(str(query) for query in queries[:6])
+                if len(queries) > 6:
+                    query_text += f"\n... {len(queries) - 6} more"
+                example_rows.append(
+                    "<tr>"
+                    + cell(kind)
+                    + cell(row.get("id"))
+                    + cell(row.get("prob_yes"))
+                    + cell(row.get("score"))
+                    + cell(row.get("condition"))
+                    + cell(row.get("task_id"))
+                    + f"<td><pre>{html.escape(query_text)}</pre></td>"
+                    + "</tr>"
+                )
+        example_sections.append(
+            f"""
+<h3>{html.escape(split.title())}: most confident 0.5-threshold errors</h3>
+<table><thead><tr><th>Error</th><th>ID</th><th>P(leak)</th><th>StepFun score</th><th>Condition</th><th>Task</th><th>Visible web queries</th></tr></thead><tbody>
+{''.join(example_rows)}
+</tbody></table>
+"""
+        )
+
+    html_doc = f"""<!doctype html>
 <html><head><meta charset="utf-8"><title>Privacy HopQA Binary Reward Model</title>
 <style>
 body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 28px; color: #17201d; }}
@@ -390,18 +635,27 @@ td, th {{ border-bottom: 1px solid #d8dfdc; padding: 7px 10px; text-align: left;
 th {{ background: #eef2f0; }}
 img {{ max-width: 1100px; width: 100%; display: block; margin: 16px 0; }}
 code {{ background: #eef2f0; padding: 1px 4px; border-radius: 4px; }}
+pre {{ white-space: pre-wrap; max-width: 760px; margin: 0; font-size: 12px; }}
 </style></head><body>
 <h1>Privacy HopQA Binary Reward Model</h1>
 <p>Generated {summary["generated_at"]}. Variant: <code>{summary["variant"]}</code>. Base model: <code>{summary["base_model"]}</code>.</p>
 <table><thead><tr><th>Split</th><th>Rows</th><th>Target Yes</th><th>Pred Yes</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>Specificity</th><th>F1</th><th>ROC AUC</th><th>Avg Precision</th></tr></thead><tbody>
 {''.join(rows)}
 </tbody></table>
+<p>Default metrics use threshold <code>0.5</code>. The threshold tables below show how to trade off recall against precision. For a privacy penalty, the soft probability can be used directly, or a higher threshold such as <code>0.7</code>/<code>0.8</code> can be used when false positives are more costly.</p>
 <h2>Metrics</h2><img src="plots/metrics.svg">
 <h2>Validation ROC/PR</h2><img src="plots/val_roc_pr.svg">
 <h2>Test ROC/PR</h2><img src="plots/test_roc_pr.svg">
+<h2>Threshold sweeps</h2>
+{''.join(threshold_sections)}
+<h2>Robustness breakdowns</h2>
+<p><code>full_v14</code> rows are full query-history labels. <code>query_subset_v1</code> rows are random query-subset labels intended to test shorter/partial web-query contexts.</p>
+{''.join(source_sections)}
+<h2>Error examples</h2>
+{''.join(example_sections)}
 </body></html>
 """
-    (output_dir / "index.html").write_text(html, encoding="utf-8")
+    (output_dir / "index.html").write_text(html_doc, encoding="utf-8")
 
 
 def json_safe(value: Any) -> Any:
