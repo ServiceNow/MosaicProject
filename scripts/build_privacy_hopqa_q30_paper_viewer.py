@@ -1026,15 +1026,23 @@ def model_status_rows(artifact_root: Path, group: str, expected: int = 1032) -> 
         rollout_identities = unique_identity_rows(rollout_path)
         system_error_identities = unique_identity_rows(system_error_path)
         unresolved_system_error_identities = system_error_identities - rollout_identities
+        privacy_jsonl_rows = live.read_jsonl(privacy_path)
+        privacy_identities = {
+            row.get("input_fingerprint")
+            for row in privacy_jsonl_rows
+            if row.get("input_fingerprint")
+        }
         attempted_unique = len(rollout_identities | system_error_identities)
         rollout_rows = jsonl_count(rollout_path)
         rollout_unique = len(rollout_identities)
         system_error_rows = jsonl_count(system_error_path)
         system_error_unique = len(unresolved_system_error_identities)
-        privacy_rows = jsonl_count(privacy_path)
+        privacy_rows = len(privacy_identities) if privacy_identities else len(privacy_jsonl_rows)
         attempt_missing = max(0, expected - attempted_unique)
         privacy_expected = rollout_unique
         privacy_missing = max(0, privacy_expected - privacy_rows)
+        attempt_progress_rate = attempted_unique / expected if expected else None
+        privacy_progress_rate = privacy_rows / privacy_expected if privacy_expected else None
         if attempt_missing == 0 and privacy_missing == 0:
             status = "complete"
         else:
@@ -1057,11 +1065,59 @@ def model_status_rows(artifact_root: Path, group: str, expected: int = 1032) -> 
                 "privacy_rows": privacy_rows,
                 "privacy_expected": privacy_expected,
                 "expected": expected,
+                "attempt_missing": attempt_missing,
+                "privacy_missing": privacy_missing,
+                "attempt_progress_rate": attempt_progress_rate,
+                "privacy_progress_rate": privacy_progress_rate,
                 "status": status,
             }
         )
     order = {label: index for index, label in enumerate(live.MODEL_NAMES)}
     return sorted(rows, key=lambda row: (row["group"], order.get(str(row["model_label"]), 999), str(row["model_label"])))
+
+
+def final_situational_status_rows(rows: list[dict[str, Any]], condition: str, group: str) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    for row in rows:
+        if row.get("condition") != condition:
+            continue
+        attempted_unique = int(row.get("attempted_unique") or 0)
+        expected = int(row.get("expected") or 0)
+        privacy_rows = int(row.get("privacy_unique") or row.get("privacy_rows") or 0)
+        privacy_expected = int(row.get("privacy_expected") or 0)
+        attempt_missing = max(0, expected - attempted_unique)
+        privacy_missing = max(0, privacy_expected - privacy_rows)
+        if attempt_missing == 0 and privacy_missing == 0:
+            status = "complete"
+        else:
+            waiting: list[str] = []
+            if attempt_missing:
+                waiting.append(f"{attempt_missing} attempts")
+            if privacy_missing:
+                waiting.append(f"{privacy_missing} privacy judgments")
+            status = "waiting for " + ", ".join(waiting)
+        out.append(
+            {
+                "group": group,
+                "model": row.get("model"),
+                "model_label": row.get("model_label"),
+                "rollout_rows": row.get("rollout_rows"),
+                "rollout_unique": row.get("rollout_unique"),
+                "system_error_rows": row.get("system_error_rows"),
+                "system_error_unique": row.get("system_error_unique"),
+                "attempted_unique": attempted_unique,
+                "privacy_rows": privacy_rows,
+                "privacy_expected": privacy_expected,
+                "expected": expected,
+                "attempt_missing": attempt_missing,
+                "privacy_missing": privacy_missing,
+                "attempt_progress_rate": attempted_unique / expected if expected else None,
+                "privacy_progress_rate": privacy_rows / privacy_expected if privacy_expected else None,
+                "status": status,
+            }
+        )
+    order = {label: index for index, label in enumerate(live.MODEL_NAMES)}
+    return sorted(out, key=lambda row: (row["group"], order.get(str(row["model_label"]), 999), str(row["model_label"])))
 
 
 def final_situational_metric_rows(artifact_root: Path, condition: str, expected: int = 1032) -> list[dict[str, Any]]:
@@ -1134,6 +1190,99 @@ def final_situational_table_rows(rows: list[dict[str, Any]]) -> list[dict[str, A
         }
         for row in rows
     ]
+
+
+def progress_bar_html(value: Any, total: Any, color_class: str = "") -> str:
+    current = live.as_float(value)
+    expected = live.as_float(total)
+    if current is None or expected is None or expected <= 0:
+        return '<div class="progress-empty">n/a</div>'
+    rate = max(0.0, min(1.0, current / expected))
+    class_name = "progress-fill" + (f" {color_class}" if color_class else "")
+    label = f"{int(current):,}/{int(expected):,} ({100 * rate:.1f}%)"
+    return (
+        '<div class="progress-cell">'
+        f'<div class="progress-track" aria-label="{esc(label)}">'
+        f'<div class="{esc(class_name)}" style="width: {100 * rate:.2f}%"></div>'
+        "</div>"
+        f'<div class="progress-label">{esc(label)}</div>'
+        "</div>"
+    )
+
+
+def refresh_progress_table(rows: list[dict[str, Any]]) -> str:
+    headers = ["Run Group", "Model", "Rollout Attempts", "Privacy Judgments", "Remaining", "Status"]
+    head = "".join(f"<th>{esc(label)}</th>" for label in headers)
+    body_rows: list[str] = []
+    for row in rows:
+        missing: list[str] = []
+        if row.get("attempt_missing"):
+            missing.append(f"{row.get('attempt_missing')} attempts")
+        if row.get("privacy_missing"):
+            missing.append(f"{row.get('privacy_missing')} privacy judgments")
+        remaining = ", ".join(missing) if missing else "done"
+        cells = [
+            f"<td>{esc(row.get('group'))}</td>",
+            f"<td>{esc(row.get('model'))}</td>",
+            f"<td>{progress_bar_html(row.get('attempted_unique'), row.get('expected'))}</td>",
+            f"<td>{progress_bar_html(row.get('privacy_rows'), row.get('privacy_expected'), 'privacy')}</td>",
+            f"<td>{esc(remaining)}</td>",
+            f"<td>{esc(row.get('status'))}</td>",
+        ]
+        body_rows.append("<tr>" + "".join(cells) + "</tr>")
+    return f"<table class=\"progress-table\"><thead><tr>{head}</tr></thead><tbody>{''.join(body_rows)}</tbody></table>"
+
+
+def plot_final_refresh_progress(rows: list[dict[str, Any]], path: Path) -> None:
+    if not rows:
+        fig, ax = plt.subplots(figsize=(7, 2.6))
+        ax.text(0.5, 0.5, "no refresh rows found", ha="center", va="center", transform=ax.transAxes)
+        ax.axis("off")
+        save_figure(fig, path)
+        return
+
+    labels = [f"{row.get('model')} - {row.get('group')}" for row in rows]
+    y_pos = np.arange(len(rows))
+    attempt_rates = [
+        min(1.0, max(0.0, float(row.get("attempted_unique") or 0) / float(row.get("expected") or 1)))
+        for row in rows
+    ]
+    privacy_rates = [
+        min(1.0, max(0.0, float(row.get("privacy_rows") or 0) / float(row.get("privacy_expected") or 1)))
+        if row.get("privacy_expected")
+        else 0.0
+        for row in rows
+    ]
+
+    fig_height = max(5.2, 0.34 * len(rows) + 1.6)
+    fig, axes = plt.subplots(1, 2, figsize=(13.5, fig_height), sharey=True)
+    panels = [
+        (axes[0], attempt_rates, "Rollout Attempts", "#0072B2"),
+        (axes[1], privacy_rates, "Privacy Judgments", "#009E73"),
+    ]
+    for ax, rates, title, color in panels:
+        ax.barh(y_pos, [100] * len(rows), color="#e8ecea", edgecolor="none", height=0.72)
+        ax.barh(y_pos, [100 * value for value in rates], color=color, edgecolor="none", height=0.72)
+        ax.set_xlim(0, 100)
+        ax.set_title(title)
+        ax.set_xlabel("Complete (%)")
+        ax.xaxis.set_major_locator(MaxNLocator(5))
+        ax.grid(True, axis="x", alpha=0.25)
+        ax.grid(False, axis="y")
+        for y, rate in zip(y_pos, rates):
+            ax.text(
+                min(99, 100 * rate + 1.2),
+                y,
+                f"{100 * rate:.0f}%",
+                va="center",
+                ha="left",
+                fontsize=8,
+                color="#17201d",
+            )
+    axes[0].set_yticks(y_pos, labels)
+    axes[0].invert_yaxis()
+    fig.suptitle("Final Refresh Progress", y=0.995)
+    save_figure(fig, path)
 
 
 def plot_final_situational_training_effect(
@@ -1262,9 +1411,20 @@ def build_viewer(args: argparse.Namespace) -> None:
     )
     relationship_result = plot_leakage_relationships(relationship_rows, plots_dir / "leakage_relationships.svg")
     relationship_stats_rows = relationship_result.get("stats_rows") or []
-    final_status_rows = model_status_rows(args.final_eval_artifact_root, "16k/32k final trained-model eval")
-    final_prompt_status_rows = model_status_rows(
+    final_normal_training_rows = final_situational_metric_rows(args.final_eval_artifact_root, "Normal Prompt")
+    final_privacy_prompt_training_rows = final_situational_metric_rows(
         args.final_privacy_prompt_artifact_root,
+        "Privacy Prompt",
+    )
+    final_training_rows = final_normal_training_rows + final_privacy_prompt_training_rows
+    final_status_rows = final_situational_status_rows(
+        final_training_rows,
+        "Normal Prompt",
+        "16k/32k final trained-model eval",
+    )
+    final_prompt_status_rows = final_situational_status_rows(
+        final_training_rows,
+        "Privacy Prompt",
         "16k/32k final trained-model eval: privacy prompt",
     )
     external_status_rows = model_status_rows(args.external_final_artifact_root, "16k/32k external-model refresh")
@@ -1273,12 +1433,7 @@ def build_viewer(args: argparse.Namespace) -> None:
         "16k/32k external-model refresh: privacy prompt",
     )
     status_rows = final_status_rows + final_prompt_status_rows + external_status_rows + external_prompt_status_rows
-    final_normal_training_rows = final_situational_metric_rows(args.final_eval_artifact_root, "Normal Prompt")
-    final_privacy_prompt_training_rows = final_situational_metric_rows(
-        args.final_privacy_prompt_artifact_root,
-        "Privacy Prompt",
-    )
-    final_training_rows = final_normal_training_rows + final_privacy_prompt_training_rows
+    plot_final_refresh_progress(status_rows, plots_dir / "final_refresh_progress.svg")
     plot_final_situational_training_effect(
         final_normal_training_rows,
         final_privacy_prompt_training_rows,
@@ -1349,6 +1504,7 @@ def build_viewer(args: argparse.Namespace) -> None:
         ],
         status_rows,
     )
+    refresh_progress_table_html = refresh_progress_table(status_rows)
     final_training_table = table(
         [
             ("condition", "Condition"),
@@ -1493,6 +1649,9 @@ def build_viewer(args: argparse.Namespace) -> None:
       --line: #d8dfdc;
       --panel: #ffffff;
       --bg: #f6f7f6;
+      --progress-bg: #e8ecea;
+      --progress-attempt: #0072B2;
+      --progress-privacy: #009E73;
     }}
     body {{
       margin: 0;
@@ -1551,6 +1710,28 @@ def build_viewer(args: argparse.Namespace) -> None:
       vertical-align: top;
     }}
     th {{ background: #eef2f0; font-weight: 650; }}
+    .progress-table td:nth-child(3),
+    .progress-table td:nth-child(4) {{ min-width: 170px; }}
+    .progress-cell {{ min-width: 160px; }}
+    .progress-track {{
+      height: 10px;
+      background: var(--progress-bg);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid #d4ddda;
+    }}
+    .progress-fill {{
+      height: 100%;
+      background: var(--progress-attempt);
+    }}
+    .progress-fill.privacy {{ background: var(--progress-privacy); }}
+    .progress-label {{
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }}
+    .progress-empty {{ color: var(--muted); font-size: 12px; }}
     code {{ background: #eef2f0; padding: 1px 4px; border-radius: 4px; }}
     pre {{
       white-space: pre-wrap;
@@ -1591,6 +1772,11 @@ def build_viewer(args: argparse.Namespace) -> None:
     <section id="refresh-status">
       <h2>Final Refresh Status</h2>
       <div class="note">Expected count is 344 test chains times 3 repeats = 1032. Attempts include successful rollout rows plus recorded system-error attempts. Rows marked complete can be used as final 16k-generation results; rows marked waiting should not be treated as final paper numbers yet. Privacy judgments are only expected for successful rollout traces.</div>
+      <div class="figure">
+        <img src="plots/final_refresh_progress.svg" alt="Final refresh progress bars">
+        <div class="links"><a href="plots/final_refresh_progress.svg">SVG</a><a href="plots/final_refresh_progress.pdf">PDF</a></div>
+      </div>
+      {refresh_progress_table_html}
       {refresh_status_table}
     </section>
     <section id="prompt-accuracy" class="figure">
