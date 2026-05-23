@@ -2125,11 +2125,17 @@ def build_viewer(args: argparse.Namespace) -> None:
     plot_task_performance(all_task_summary_with_checkpoints, plots_dir / "task_performance_all_with_checkpoints_annotated.svg", annotate=True)
 
     all_retrieval_summary = retrieval_summary(all_rollouts_main, successful_only=False)
+    test_retrieval_summary = retrieval_summary(test_rollouts_main, successful_only=False)
     all_retrieval_summary_with_checkpoints = retrieval_summary(all_rollouts, successful_only=False)
+    test_retrieval_summary_with_checkpoints = retrieval_summary(test_rollouts, successful_only=False)
     plot_retrieval_behavior(all_retrieval_summary, plots_dir / "retrieval_behavior_all_rollouts.svg")
     plot_retrieval_behavior(all_retrieval_summary, plots_dir / "retrieval_behavior_all_rollouts_annotated.svg", annotate=True)
+    plot_retrieval_behavior(test_retrieval_summary, plots_dir / "retrieval_behavior_test_rollouts.svg")
+    plot_retrieval_behavior(test_retrieval_summary, plots_dir / "retrieval_behavior_test_rollouts_annotated.svg", annotate=True)
     plot_retrieval_behavior(all_retrieval_summary_with_checkpoints, plots_dir / "retrieval_behavior_all_rollouts_with_checkpoints.svg")
     plot_retrieval_behavior(all_retrieval_summary_with_checkpoints, plots_dir / "retrieval_behavior_all_rollouts_with_checkpoints_annotated.svg", annotate=True)
+    plot_retrieval_behavior(test_retrieval_summary_with_checkpoints, plots_dir / "retrieval_behavior_test_rollouts_with_checkpoints.svg")
+    plot_retrieval_behavior(test_retrieval_summary_with_checkpoints, plots_dir / "retrieval_behavior_test_rollouts_with_checkpoints_annotated.svg", annotate=True)
 
     relationship_rows = combined_final_relationship_rows(problem_lookup, final_prompt_pairs, include_checkpoints=False)
     relationship_result = plot_leakage_relationships(relationship_rows, plots_dir / "leakage_relationships.svg")
@@ -2251,7 +2257,9 @@ def build_viewer(args: argparse.Namespace) -> None:
         "test_task_summary_with_checkpoints": test_task_summary_with_checkpoints,
         "all_task_summary_with_checkpoints": all_task_summary_with_checkpoints,
         "all_retrieval_summary": all_retrieval_summary,
+        "test_retrieval_summary": test_retrieval_summary,
         "all_retrieval_summary_with_checkpoints": all_retrieval_summary_with_checkpoints,
+        "test_retrieval_summary_with_checkpoints": test_retrieval_summary_with_checkpoints,
         "leakage_relationship_rows": relationship_rows,
         "leakage_relationship_stats": relationship_stats_rows,
     }
@@ -2400,6 +2408,8 @@ def build_viewer(args: argparse.Namespace) -> None:
     ]
     retrieval_rows = retrieval_table_rows(all_retrieval_summary)
     retrieval_table = table(retrieval_headers, retrieval_rows)
+    test_retrieval_rows = retrieval_table_rows(test_retrieval_summary)
+    test_retrieval_table = table(retrieval_headers, test_retrieval_rows)
     relationship_stats_headers = [
         ("analysis", "Analysis"),
         ("predictor", "Predictor"),
@@ -2485,6 +2495,13 @@ def build_viewer(args: argparse.Namespace) -> None:
         "tab:legacy_task_performance_test",
     )
     write_latex_table(
+        tables_dir / "retrieval_behavior_test.tex",
+        retrieval_headers,
+        test_retrieval_rows,
+        "Legacy test-split retrieval-behavior summary from the pre-refresh prompt-comparison artifact.",
+        "tab:legacy_retrieval_behavior_test",
+    )
+    write_latex_table(
         tables_dir / "retrieval_behavior_all.tex",
         retrieval_headers,
         retrieval_rows,
@@ -2566,7 +2583,7 @@ def build_viewer(args: argparse.Namespace) -> None:
             {
                 "section": "Task Performance / Retrieval / Leakage Relationships",
                 "status": "Mixed",
-                "use": "Leakage relationships are recomputed from final 16k test rows. Task-performance and all-split retrieval sections are legacy diagnostics until we wire full final-set summaries.",
+                "use": "Leakage relationships are recomputed from final 16k test rows. Legacy task-performance and retrieval diagnostics now include test-split copies; all-split copies are clearly labeled separately.",
             },
         ],
     )
@@ -2682,7 +2699,7 @@ def build_viewer(args: argparse.Namespace) -> None:
 <body>
   <header>
     <h1>Privacy HopQA q30 Paper Figure Preview: Current Refresh Snapshot</h1>
-    <div class="note">Generated {esc(generated_at)}. The refresh status table is the source of truth for what is final. The main prompt-effect, leakage-relationship, and training-trajectory figures below use the final 16k-generation held-out test split only unless a section is explicitly marked legacy.</div>
+    <div class="note">Generated {esc(generated_at)}. Paper-ready figures use the final 16k-generation held-out test split only. Legacy diagnostic sections are labeled as test split or all available splits, and every all-split diagnostic has a test-split counterpart. Error bars are SEM over repeat means, not raw standard deviation.</div>
     <nav>
       <a href="#plot-status">Plot Status</a>
       <a href="#refresh-status">Refresh Status</a>
@@ -2693,7 +2710,7 @@ def build_viewer(args: argparse.Namespace) -> None:
       <a href="#training-trajectories">Training Trajectories</a>
       <a href="#with-checkpoints">Checkpoint Copies</a>
       <a href="#task-performance-test">Task Performance</a>
-      <a href="#retrieval-all">Retrieval Behavior</a>
+      <a href="#retrieval-test">Retrieval Behavior</a>
       <a href="#leakage-relationships">Leakage Relationships</a>
       <a href="#tables">Tables</a>
       <a href="#leakage-definitions">Leakage Types</a>
@@ -2776,7 +2793,10 @@ def build_viewer(args: argparse.Namespace) -> None:
       <h3>Task Performance: All Available Splits</h3>
       <img src="plots/task_performance_all_with_checkpoints.svg" alt="Task performance across all splits with trained checkpoints">
       <div class="links"><a href="plots/task_performance_all_with_checkpoints.svg">SVG</a><a href="plots/task_performance_all_with_checkpoints.pdf">PDF</a></div>
-      <h3>Retrieval And Query Behavior: All Rollouts</h3>
+      <h3>Retrieval And Query Behavior: Test Split</h3>
+      <img src="plots/retrieval_behavior_test_rollouts_with_checkpoints.svg" alt="Retrieval and query behavior on test split with trained checkpoints">
+      <div class="links"><a href="plots/retrieval_behavior_test_rollouts_with_checkpoints.svg">SVG</a><a href="plots/retrieval_behavior_test_rollouts_with_checkpoints.pdf">PDF</a></div>
+      <h3>Retrieval And Query Behavior: All Available Splits</h3>
       <img src="plots/retrieval_behavior_all_rollouts_with_checkpoints.svg" alt="Retrieval and query behavior with trained checkpoints">
       <div class="links"><a href="plots/retrieval_behavior_all_rollouts_with_checkpoints.svg">SVG</a><a href="plots/retrieval_behavior_all_rollouts_with_checkpoints.pdf">PDF</a></div>
     </section>
@@ -2788,13 +2808,19 @@ def build_viewer(args: argparse.Namespace) -> None:
     </section>
     <section id="task-performance-all" class="figure">
       <h2>Task Performance By Model: All Available Splits (Legacy Diagnostic)</h2>
-      <div class="note">Legacy pre-refresh all-split view. All currently scored train, validation, and test rollout attempts, excluding trained checkpoints. Agent-induced failures are scored as zero for accuracy; infrastructure/system failures are excluded. Final 16k refresh artifacts are held-out test only, so no final entire-set version exists for this refresh.</div>
+      <div class="note">Legacy pre-refresh all-split view. The test-split counterpart is immediately above. All currently scored train, validation, and test rollout attempts, excluding trained checkpoints. Agent-induced failures are scored as zero for accuracy; infrastructure/system failures are excluded. Final 16k refresh artifacts are held-out test only, so no final entire-set version exists for this refresh.</div>
       <img src="plots/task_performance_all.svg" alt="Task performance by model across all available splits">
       <div class="links"><a href="plots/task_performance_all.svg">SVG</a><a href="plots/task_performance_all.pdf">PDF</a><a href="plots/task_performance_all_annotated.svg">Annotated SVG</a></div>
     </section>
+    <section id="retrieval-test" class="figure">
+      <h2>Retrieval And Query Behavior: Test Split (Legacy Diagnostic)</h2>
+      <div class="note">Legacy pre-refresh test split, excluding trained checkpoints. Counts are over currently loaded test rollout rows. This is the test-split counterpart to the all-available-splits retrieval plot below.</div>
+      <img src="plots/retrieval_behavior_test_rollouts.svg" alt="Retrieval and query behavior for test rollout rows">
+      <div class="links"><a href="plots/retrieval_behavior_test_rollouts.svg">SVG</a><a href="plots/retrieval_behavior_test_rollouts.pdf">PDF</a><a href="plots/retrieval_behavior_test_rollouts_annotated.svg">Annotated SVG</a><a href="tables/retrieval_behavior_test.tex">LaTeX table</a></div>
+    </section>
     <section id="retrieval-all" class="figure">
-      <h2>Retrieval And Query Behavior: All Rollouts (Legacy Diagnostic)</h2>
-      <div class="note">Legacy pre-refresh all-split view. All currently loaded rollout rows, excluding trained checkpoints. Failed/incomplete rows without a saved timeline contribute zero parsed events, matching the diagnostic viewer's all-rollouts convention. Final 16k refresh artifacts are held-out test only, so no final entire-set version exists for this refresh.</div>
+      <h2>Retrieval And Query Behavior: All Available Splits (Legacy Diagnostic)</h2>
+      <div class="note">Legacy pre-refresh all-split view. The test-split counterpart is immediately above. All currently loaded train, validation, and test rollout rows, excluding trained checkpoints. Failed/incomplete rows without a saved timeline contribute zero parsed events, matching the diagnostic viewer's all-rollouts convention. Final 16k refresh artifacts are held-out test only, so no final entire-set version exists for this refresh.</div>
       <img src="plots/retrieval_behavior_all_rollouts.svg" alt="Retrieval and query behavior for all rollout rows">
       <div class="links"><a href="plots/retrieval_behavior_all_rollouts.svg">SVG</a><a href="plots/retrieval_behavior_all_rollouts.pdf">PDF</a><a href="plots/retrieval_behavior_all_rollouts_annotated.svg">Annotated SVG</a><a href="tables/retrieval_behavior_all.tex">LaTeX table</a></div>
     </section>
@@ -2835,7 +2861,10 @@ def build_viewer(args: argparse.Namespace) -> None:
       <h3>Legacy Task Performance Summary: Test Split</h3>
       <div class="links"><a href="tables/task_performance_test.tex">LaTeX table</a></div>
       {task_table}
-      <h3>Legacy Retrieval Summary: All Rollouts</h3>
+      <h3>Legacy Retrieval Summary: Test Split</h3>
+      <div class="links"><a href="tables/retrieval_behavior_test.tex">LaTeX table</a></div>
+      {test_retrieval_table}
+      <h3>Legacy Retrieval Summary: All Available Splits</h3>
       <div class="links"><a href="tables/retrieval_behavior_all.tex">LaTeX table</a></div>
       {retrieval_table}
       <h3>Final Leakage Relationship Statistics</h3>

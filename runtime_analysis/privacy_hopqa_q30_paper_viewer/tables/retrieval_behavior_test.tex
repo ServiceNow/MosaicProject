@@ -1,0 +1,17 @@
+\begin{table}[t]
+\small
+\centering
+\begin{tabular}{llllll}
+\toprule
+\textbf{Model} & \textbf{Rollout Rows} & \textbf{Local Searches} & \textbf{Web Searches} & \textbf{Local Reads} & \textbf{Web Reads} \\
+\midrule
+Qwen3 4B & 344 & 4.77 & 3.70 & 8.33 & 17.74 \\
+Qwen3 8B & 340 & 3.30 & 5.66 & 5.40 & 21.02 \\
+GPT-OSS 20B & 344 & 3.36 & 6.48 & 5.27 & 22.35 \\
+Chroma Context-1 & 190 & 2.14 & 4.82 & 3.48 & 20.99 \\
+Gemma 4 31B IT & 344 & 8.94 & 2.84 & 8.14 & 7.56 \\
+\bottomrule
+\end{tabular}
+\caption{Legacy test-split retrieval-behavior summary from the pre-refresh prompt-comparison artifact.}
+\label{tab:legacy_retrieval_behavior_test}
+\end{table}
