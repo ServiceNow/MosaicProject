@@ -69,16 +69,37 @@ PRIVACY_AWARE_SITUATIONAL_LABELS = [
     "qwen3_4b_privreward_tau05_s50",
 ]
 PAPER_MODEL_NAMES = {
-    "qwen3_4b_privreward_tau05_s50": "Qwen3 4B Privacy-aware step50",
+    "chroma_context_1": "Chroma Context-1",
+    "qwen3_4b_situational_reward_s50": "Qwen3 4B Task step50",
+    "qwen3_4b_situational_reward_s100": "Qwen3 4B Task step100",
+    "qwen3_4b_privreward_tau05_s50": "Qwen3 4B Task+Privacy step50",
 }
+TRAINING_CHECKPOINT_LABELS = set(
+    TRAINED_MODEL_LABELS
+    + STANDARD_SITUATIONAL_CHECKPOINT_LABELS
+    + PRIVACY_AWARE_SITUATIONAL_LABELS
+    + [
+        "qwen3_4b_situational_reward_current_s80",
+        "qwen3_4b_situational_reward_live_s98_actor",
+    ]
+)
 
 
 def configure_training_family(args: argparse.Namespace) -> None:
-    global BASE_MODEL_LABEL, TRAINED_MODEL_LABELS, TRAINING_FAMILY_LABELS
+    global BASE_MODEL_LABEL, TRAINED_MODEL_LABELS, TRAINING_FAMILY_LABELS, TRAINING_CHECKPOINT_LABELS
     BASE_MODEL_LABEL = args.base_model_label
     if args.trained_model_label:
         TRAINED_MODEL_LABELS = list(dict.fromkeys(args.trained_model_label))
     TRAINING_FAMILY_LABELS = [BASE_MODEL_LABEL, *TRAINED_MODEL_LABELS]
+    TRAINING_CHECKPOINT_LABELS = set(
+        TRAINED_MODEL_LABELS
+        + STANDARD_SITUATIONAL_CHECKPOINT_LABELS
+        + PRIVACY_AWARE_SITUATIONAL_LABELS
+        + [
+            "qwen3_4b_situational_reward_current_s80",
+            "qwen3_4b_situational_reward_live_s98_actor",
+        ]
+    )
     for item in args.model_display_name:
         if "=" not in item:
             raise SystemExit("--model-display-name must be LABEL=DISPLAY")
@@ -120,6 +141,50 @@ def pp_text(value: Any, digits: int = 1) -> str:
     return f"{number:+.{digits}f}"
 
 
+def pct_pm_text(row: dict[str, Any], key: str, digits: int = 1) -> str:
+    number = live.as_float(row.get(key))
+    if number is None:
+        return "n/a"
+    sem = live.as_float(row.get(f"{key}_sem"))
+    if sem is None:
+        sem = live.as_float(row.get(f"{key}_se"))
+    if sem is None:
+        return f"{100 * number:.{digits}f}%"
+    return f"{100 * number:.{digits}f}% +/- {100 * sem:.{digits}f} pp"
+
+
+def num_pm_text(row: dict[str, Any], key: str, digits: int = 2) -> str:
+    number = live.as_float(row.get(key))
+    if number is None:
+        return "n/a"
+    sem = live.as_float(row.get(f"{key}_sem"))
+    if sem is None:
+        sem = live.as_float(row.get(f"{key}_se"))
+    if sem is None:
+        return f"{number:.{digits}f}"
+    return f"{number:.{digits}f} +/- {sem:.{digits}f}"
+
+
+def ratio_sem_from_rows(rows: list[dict[str, Any]], value_fn: Any) -> tuple[float | None, float | None, str, int]:
+    return live.repeat_grouped_mean_sem(rows, value_fn)
+
+
+def add_rate_fields(
+    row: dict[str, Any],
+    key: str,
+    rows: list[dict[str, Any]],
+    value_fn: Any,
+) -> None:
+    center, sem, source, n = ratio_sem_from_rows(rows, value_fn)
+    row[key] = center
+    row[f"{key}_sem"] = sem
+    row[f"{key}_se"] = sem
+    row[f"{key}_sem_source"] = source
+    row[f"{key}_sem_n"] = n
+    row[f"{key}_ci_low"] = center - sem if center is not None and sem is not None else None
+    row[f"{key}_ci_high"] = center + sem if center is not None and sem is not None else None
+
+
 def ensure_clean_dir(path: Path) -> None:
     if path.exists():
         shutil.rmtree(path)
@@ -158,6 +223,12 @@ def save_figure(fig: Any, path: Path) -> None:
     path.write_text("\n".join(line.rstrip() for line in text.splitlines()) + "\n", encoding="utf-8")
 
 
+def add_minor_grid(ax: Any, *, axis: str = "both") -> None:
+    ax.minorticks_on()
+    ax.grid(True, which="major", axis=axis, alpha=0.25)
+    ax.grid(True, which="minor", axis=axis, alpha=0.12, linestyle="--")
+
+
 def percent_yerr(rows: list[dict[str, Any]], key: str) -> list[list[float]]:
     return live.ci_yerr(rows, key, 100)
 
@@ -186,7 +257,7 @@ def model_rows_for_plot(rows: list[dict[str, Any]], require_prompt: bool = False
 
 
 def is_trained_checkpoint(model_label: Any) -> bool:
-    return str(model_label) in set(TRAINED_MODEL_LABELS)
+    return str(model_label) in TRAINING_CHECKPOINT_LABELS
 
 
 def exclude_trained_models(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -198,11 +269,11 @@ def training_family_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return [row for row in rows if str(row.get("model_label")) in wanted]
 
 
-def plot_privacy_prompt_accuracy_leakage(rows: list[dict[str, Any]], path: Path) -> None:
+def plot_privacy_prompt_accuracy_leakage(rows: list[dict[str, Any]], path: Path, *, annotate: bool = False) -> None:
     rows = model_rows_for_plot(rows, require_prompt=True)
     if not rows:
         return
-    labels = [live.model_display(str(row["model_label"])) for row in rows]
+    labels = [paper_model_display(str(row["model_label"])) for row in rows]
     metrics = [
         (
             "Strict Chain Success (%)",
@@ -258,29 +329,31 @@ def plot_privacy_prompt_accuracy_leakage(rows: list[dict[str, Any]], path: Path)
             yerr=percent_yerr(rows, prompt_key),
             error_kw=error_kw,
         )
-        annotate_ns(ax, baseline_pos, baseline_vals, baseline_counts, percent=True, y_max=124)
-        annotate_ns(ax, prompt_pos, prompt_vals, prompt_counts, percent=True, y_max=124)
+        if annotate:
+            annotate_ns(ax, baseline_pos, baseline_vals, baseline_counts, percent=True, y_max=100)
+            annotate_ns(ax, prompt_pos, prompt_vals, prompt_counts, percent=True, y_max=100)
         ax.set_ylabel(ylabel)
         ax.set_xlabel("Model")
         ax.set_xticks(x)
         ax.set_xticklabels(labels, rotation=25, ha="right")
-        ax.set_ylim(0, 124)
+        ax.set_ylim(0, 100)
         ax.set_yticks(range(0, 101, 20))
+        add_minor_grid(ax, axis="y")
     handles, legend_labels = axes[0].get_legend_handles_labels()
     fig.legend(handles, legend_labels, loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.16))
     save_figure(fig, path)
 
 
-def plot_privacy_prompt_leakage_types(rows: list[dict[str, Any]], path: Path) -> None:
+def plot_privacy_prompt_leakage_types(rows: list[dict[str, Any]], path: Path, *, annotate: bool = False) -> None:
     rows = [row for row in rows if row.get("baseline_stepfun") or row.get("prompt_stepfun")]
     if not rows:
         return
-    labels = [live.model_display(str(row["model_label"])) for row in rows]
+    labels = [paper_model_display(str(row["model_label"])) for row in rows]
     metrics = [
         ("Intent Leakage\n(Intent Score >= 4)", "baseline_intent4_rate", "prompt_intent4_rate"),
         ("Answer Leakage", "baseline_answer_rate", "prompt_answer_rate"),
         ("Full-Information Claim", "baseline_full_info_rate", "prompt_full_info_rate"),
-        ("Partial Claim", "baseline_lenient_full_info_rate", "prompt_lenient_full_info_rate"),
+        ("Lenient Claim Diagnostic", "baseline_lenient_full_info_rate", "prompt_lenient_full_info_rate"),
     ]
     fig, axes = plt.subplots(2, 2, figsize=(12.8, 7.65), sharey=True)
     x = list(range(len(rows)))
@@ -321,25 +394,27 @@ def plot_privacy_prompt_leakage_types(rows: list[dict[str, Any]], path: Path) ->
             yerr=percent_yerr(rows, prompt_key),
             error_kw=error_kw,
         )
-        annotate_ns(ax, baseline_pos, baseline_vals, baseline_counts, percent=True, y_max=124)
-        annotate_ns(ax, prompt_pos, prompt_vals, prompt_counts, percent=True, y_max=124)
+        if annotate:
+            annotate_ns(ax, baseline_pos, baseline_vals, baseline_counts, percent=True, y_max=100)
+            annotate_ns(ax, prompt_pos, prompt_vals, prompt_counts, percent=True, y_max=100)
         ax.set_title(title)
         ax.set_ylabel("StepFun-Judged Rollouts (%)")
         ax.set_xlabel("Model")
         ax.set_xticks(x)
         ax.set_xticklabels(labels, rotation=25, ha="right")
-        ax.set_ylim(0, 124)
+        ax.set_ylim(0, 100)
         ax.set_yticks(range(0, 101, 20))
+        add_minor_grid(ax, axis="y")
     handles, legend_labels = axes.flat[0].get_legend_handles_labels()
     fig.legend(handles, legend_labels, loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.04))
     save_figure(fig, path)
 
 
-def plot_privacy_prompt_query_behavior(rows: list[dict[str, Any]], path: Path) -> None:
+def plot_privacy_prompt_query_behavior(rows: list[dict[str, Any]], path: Path, *, annotate: bool = False) -> None:
     rows = model_rows_for_plot(rows, require_prompt=True)
     if not rows:
         return
-    labels = [live.model_display(str(row["model_label"])) for row in rows]
+    labels = [paper_model_display(str(row["model_label"])) for row in rows]
     metrics = [
         ("Visible Web Queries", "baseline_web_queries", "prompt_web_queries"),
         ("Local Document Searches", "baseline_local_searches", "prompt_local_searches"),
@@ -376,14 +451,16 @@ def plot_privacy_prompt_query_behavior(rows: list[dict[str, Any]], path: Path) -
             error_kw=error_kw,
         )
         y_max = max([*baseline_vals, *prompt_vals, 1.0]) * 1.32
-        annotate_ns(ax, baseline_pos, baseline_vals, baseline_counts, percent=False, y_max=y_max)
-        annotate_ns(ax, prompt_pos, prompt_vals, prompt_counts, percent=False, y_max=y_max)
+        if annotate:
+            annotate_ns(ax, baseline_pos, baseline_vals, baseline_counts, percent=False, y_max=y_max)
+            annotate_ns(ax, prompt_pos, prompt_vals, prompt_counts, percent=False, y_max=y_max)
         ax.set_ylabel(f"{ylabel}\nMean Count Per Rollout")
         ax.set_xlabel("Model")
         ax.set_xticks(x)
         ax.set_xticklabels(labels, rotation=25, ha="right")
         ax.set_ylim(0, y_max)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
+        add_minor_grid(ax, axis="y")
     handles, legend_labels = axes.flat[0].get_legend_handles_labels()
     fig.legend(handles, legend_labels, loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.05))
     save_figure(fig, path)
@@ -427,7 +504,7 @@ def plot_training_effect(rows: list[dict[str, Any]], path: Path) -> list[dict[st
             all_y.append(y)
             color = checkpoint_colors.get(model_label, "#5F6F7A")
             marker = "o" if model_label == BASE_MODEL_LABEL else "s"
-            label = live.model_display(model_label)
+            label = paper_model_display(model_label)
             ax.errorbar(
                 x,
                 y,
@@ -487,7 +564,7 @@ def task_performance_summary(rollouts: list[dict[str, Any]]) -> list[dict[str, A
         subset = [row for row in rollouts if row.get("model_label") == model and live.rollout_counts_for_accuracy(row)]
         row = {
             "model_label": model,
-            "model": live.model_display(model),
+            "model": paper_model_display(model),
             "n": len(subset),
         }
         live.add_repeat_sem_fields(row, "mean_hop_performance", subset, live.attempt_task_accuracy)
@@ -496,7 +573,7 @@ def task_performance_summary(rollouts: list[dict[str, Any]]) -> list[dict[str, A
     return rows
 
 
-def plot_task_performance(rows: list[dict[str, Any]], path: Path) -> None:
+def plot_task_performance(rows: list[dict[str, Any]], path: Path, *, annotate: bool = False) -> None:
     if not rows:
         return
     labels = [row["model"] for row in rows]
@@ -511,14 +588,16 @@ def plot_task_performance(rows: list[dict[str, Any]], path: Path) -> None:
     error_kw = {"elinewidth": 1.2, "ecolor": "#303633", "capsize": 3.5, "capthick": 1.1}
     ax.bar(hop_pos, hop_vals, width=width, color=HOP_COLOR, label="Mean Hop Performance", yerr=percent_yerr(rows, "mean_hop_performance"), error_kw=error_kw)
     ax.bar(chain_pos, chain_vals, width=width, color=CHAIN_COLOR, label="All-Chain Correct", yerr=percent_yerr(rows, "all_chain_correct"), error_kw=error_kw)
-    annotate_ns(ax, hop_pos, hop_vals, ns, percent=True, y_max=124)
-    annotate_ns(ax, chain_pos, chain_vals, ns, percent=True, y_max=124)
+    if annotate:
+        annotate_ns(ax, hop_pos, hop_vals, ns, percent=True, y_max=100)
+        annotate_ns(ax, chain_pos, chain_vals, ns, percent=True, y_max=100)
     ax.set_ylabel("Percent of Rollouts")
     ax.set_xlabel("Model")
     ax.set_xticks(x)
     ax.set_xticklabels(labels, rotation=25, ha="right")
-    ax.set_ylim(0, 124)
+    ax.set_ylim(0, 100)
     ax.set_yticks(range(0, 101, 20))
+    add_minor_grid(ax, axis="y")
     ax.legend(loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.20))
     save_figure(fig, path)
 
@@ -536,7 +615,7 @@ def retrieval_summary(rollouts: list[dict[str, Any]], successful_only: bool) -> 
         subset = [row for row in selected if row.get("model_label") == model]
         row = {
             "model_label": model,
-            "model": live.model_display(model),
+            "model": paper_model_display(model),
             "n": len(subset),
         }
         for out_key, source_key in metrics:
@@ -550,7 +629,7 @@ def retrieval_summary(rollouts: list[dict[str, Any]], successful_only: bool) -> 
     return rows
 
 
-def plot_retrieval_behavior(rows: list[dict[str, Any]], path: Path) -> None:
+def plot_retrieval_behavior(rows: list[dict[str, Any]], path: Path, *, annotate: bool = False) -> None:
     if not rows:
         return
     labels = [row["model"] for row in rows]
@@ -570,8 +649,9 @@ def plot_retrieval_behavior(rows: list[dict[str, Any]], path: Path) -> None:
         y_max = max(y_max, *vals)
         ax.bar([item + offset for item in x], vals, width=width, color=color, label=label, yerr=count_yerr(rows, key), error_kw={"elinewidth": 1.0, "ecolor": "#303633", "capsize": 2.5})
     y_max *= 1.34
-    for xi, row in zip(x, rows):
-        ax.text(xi, y_max * 0.95, f"n={int(row.get('n') or 0)}", ha="center", va="bottom", fontsize=9)
+    if annotate:
+        for xi, row in zip(x, rows):
+            ax.text(xi, y_max * 0.95, f"n={int(row.get('n') or 0)}", ha="center", va="bottom", fontsize=9)
     ax.set_ylabel("Mean Count Per Rollout")
     ax.set_xlabel("Model")
     ax.set_xticks(x)
@@ -724,7 +804,7 @@ def add_logistic_line(ax: Any, xs: list[float], result: dict[str, Any] | None, s
     ax.plot(grid, probs, color="#7f7f7f", linestyle="--", linewidth=1.5, label="Logistic Fit")
 
 
-def plot_leakage_relationships(rows: list[dict[str, Any]], path: Path) -> dict[str, Any]:
+def plot_leakage_relationships(rows: list[dict[str, Any]], path: Path, *, annotate: bool = False) -> dict[str, Any]:
     stats_rows = leakage_relationship_stats(rows)
     if not rows:
         return {"stats_rows": stats_rows}
@@ -749,13 +829,15 @@ def plot_leakage_relationships(rows: list[dict[str, Any]], path: Path) -> dict[s
             ecolor="#303633",
             capsize=3,
         )
-        axes[0].text(value, min(96, center + 5), f"n={len(subset)}", ha="center", va="bottom", fontsize=8)
+        if annotate:
+            axes[0].text(value, min(96, center + 5), f"n={len(subset)}", ha="center", va="bottom", fontsize=8)
     add_logistic_line(axes[0], chain_x, chain_fit, scale=1.0, x_min=min(chain_x), x_max=max(chain_x))
     axes[0].set_xlabel("Chain Length (Hops)")
     axes[0].set_ylabel("Privacy Leakage Rate (%)")
     axes[0].set_xticks(chain_values)
-    axes[0].set_ylim(0, 104)
+    axes[0].set_ylim(0, 100)
     axes[0].set_yticks(range(0, 101, 20))
+    add_minor_grid(axes[0])
     axes[0].legend(loc="upper center", frameon=False, bbox_to_anchor=(0.5, 1.13))
 
     bins = [(0.0, 0.2), (0.2, 0.4), (0.4, 0.6), (0.6, 0.8), (0.8, 1.000001)]
@@ -780,13 +862,15 @@ def plot_leakage_relationships(rows: list[dict[str, Any]], path: Path) -> dict[s
             ecolor="#303633",
             capsize=3,
         )
-        axes[1].text(center_x, min(96, center + 5), f"n={len(subset)}", ha="center", va="bottom", fontsize=8)
+        if annotate:
+            axes[1].text(center_x, min(96, center + 5), f"n={len(subset)}", ha="center", va="bottom", fontsize=8)
     add_logistic_line(axes[1], acc_x, acc_fit, scale=0.1, x_min=0, x_max=100)
     axes[1].set_xlabel("Chain Progress Accuracy (%)")
     axes[1].set_ylabel("Privacy Leakage Rate (%)")
-    axes[1].set_xlim(-2, 102)
+    axes[1].set_xlim(0, 100)
     axes[1].set_xticks(centers)
     axes[1].set_xticklabels(labels)
+    add_minor_grid(axes[1])
     axes[1].legend(loc="upper center", frameon=False, bbox_to_anchor=(0.5, 1.13))
     save_figure(fig, path)
     return {"stats_rows": stats_rows}
@@ -879,7 +963,7 @@ def privacy_prompt_table_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]
     for row in rows:
         out.append(
             {
-                "model": row.get("model"),
+                "model": paper_model_display(row.get("model_label")),
                 "baseline_raw_rows": row.get("baseline_raw_rows"),
                 "prompt_raw_rows": row.get("prompt_raw_rows"),
                 "baseline_n": row.get("baseline_attempts"),
@@ -890,12 +974,54 @@ def privacy_prompt_table_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]
                 "prompt_success_n": row.get("prompt_ok"),
                 "baseline_judged": row.get("baseline_stepfun"),
                 "prompt_judged": row.get("prompt_stepfun"),
-                "baseline_success": pct_text(row.get("baseline_strict_chain_success_rate")),
-                "prompt_success": pct_text(row.get("prompt_strict_chain_success_rate")),
+                "baseline_success": pct_pm_text(row, "baseline_strict_chain_success_rate"),
+                "prompt_success": pct_pm_text(row, "prompt_strict_chain_success_rate"),
                 "success_delta": pp_text(row.get("delta_strict_chain_success_pp")),
-                "baseline_leak": pct_text(row.get("baseline_reward_rate")),
-                "prompt_leak": pct_text(row.get("prompt_reward_rate")),
+                "baseline_leak": pct_pm_text(row, "baseline_reward_rate"),
+                "prompt_leak": pct_pm_text(row, "prompt_reward_rate"),
                 "leak_delta": pp_text(row.get("delta_reward_pp")),
+            }
+        )
+    return out
+
+
+def privacy_prompt_leakage_type_table_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    for row in rows:
+        out.append(
+            {
+                "model": paper_model_display(row.get("model_label")),
+                "baseline_judged": row.get("baseline_stepfun"),
+                "prompt_judged": row.get("prompt_stepfun"),
+                "baseline_intent": pct_pm_text(row, "baseline_intent4_rate"),
+                "prompt_intent": pct_pm_text(row, "prompt_intent4_rate"),
+                "baseline_answer": pct_pm_text(row, "baseline_answer_rate"),
+                "prompt_answer": pct_pm_text(row, "prompt_answer_rate"),
+                "baseline_full": pct_pm_text(row, "baseline_full_info_rate"),
+                "prompt_full": pct_pm_text(row, "prompt_full_info_rate"),
+                "baseline_lenient": pct_pm_text(row, "baseline_lenient_full_info_rate"),
+                "prompt_lenient": pct_pm_text(row, "prompt_lenient_full_info_rate"),
+            }
+        )
+    return out
+
+
+def privacy_prompt_query_table_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    for row in rows:
+        out.append(
+            {
+                "model": paper_model_display(row.get("model_label")),
+                "baseline_successful": row.get("baseline_ok"),
+                "prompt_successful": row.get("prompt_ok"),
+                "baseline_web_queries": num_pm_text(row, "baseline_web_queries"),
+                "prompt_web_queries": num_pm_text(row, "prompt_web_queries"),
+                "baseline_local_searches": num_pm_text(row, "baseline_local_searches"),
+                "prompt_local_searches": num_pm_text(row, "prompt_local_searches"),
+                "baseline_local_reads": num_pm_text(row, "baseline_local_doc_reads"),
+                "prompt_local_reads": num_pm_text(row, "prompt_local_doc_reads"),
+                "baseline_web_reads": num_pm_text(row, "baseline_web_doc_reads"),
+                "prompt_web_reads": num_pm_text(row, "prompt_web_doc_reads"),
             }
         )
     return out
@@ -998,10 +1124,51 @@ def leakage_stats_latex(rows: list[dict[str, Any]]) -> str:
 {body_text}
 \bottomrule
 \end{{tabular}}
-\caption{{Relationship between task structure, task performance, and privacy leakage. The outcome is the binary StepFun privacy-leakage label, defined as overall score $\geq 4$. Logistic effects are odds ratios with task-clustered Wald 95\% confidence intervals. Rows use currently StepFun-judged test rollouts from the baseline and privacy-prompted conditions.}}
+\caption{{Relationship between task structure, task performance, and privacy leakage on the final 16k held-out test refresh. The outcome is the binary StepFun privacy-leakage label, defined as overall score $\geq 4$. Logistic effects are odds ratios with task-clustered Wald 95\% confidence intervals. Rows use StepFun-judged baseline and privacy-prompted rollouts.}}
 \label{{tab:privacy_leakage_relationships}}
 \end{{table}}
 """
+
+
+def latex_table(
+    headers: list[tuple[str, str]],
+    rows: list[dict[str, Any]],
+    caption: str,
+    label: str,
+) -> str:
+    column_spec = "l" * len(headers)
+    header_text = " & ".join(rf"\textbf{{{latex_escape(label)}}}" for _key, label in headers) + r" \\"
+    body = []
+    for row in rows:
+        body.append(" & ".join(latex_escape(row.get(key, "")) for key, _label in headers) + r" \\")
+    body_text = "\n".join(body)
+    return rf"""\begin{{table}}[t]
+\small
+\centering
+\begin{{tabular}}{{{column_spec}}}
+\toprule
+{header_text}
+\midrule
+{body_text}
+\bottomrule
+\end{{tabular}}
+\caption{{{latex_escape(caption)}}}
+\label{{{label}}}
+\end{{table}}
+"""
+
+
+def write_latex_table(
+    path: Path,
+    headers: list[tuple[str, str]],
+    rows: list[dict[str, Any]],
+    caption: str,
+    label: str,
+) -> str:
+    text = latex_table(headers, rows, caption, label)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding="utf-8")
+    return text
 
 
 def build_prompt_summary(
@@ -1011,6 +1178,87 @@ def build_prompt_summary(
 ) -> dict[str, Any]:
     with tempfile.TemporaryDirectory(prefix="privacy_hopqa_paper_prompt_") as tmp:
         return live.build_privacy_prompt_comparison(Path(tmp), problem_lookup, baseline_root, prompt_root) or {}
+
+
+def nonempty_prompt_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    count_keys = [
+        "baseline_raw_rows",
+        "prompt_raw_rows",
+        "baseline_attempts",
+        "prompt_attempts",
+        "baseline_ok",
+        "prompt_ok",
+        "baseline_stepfun",
+        "prompt_stepfun",
+    ]
+    out: list[dict[str, Any]] = []
+    for row in rows:
+        if not any(int(row.get(key) or 0) > 0 for key in count_keys):
+            continue
+        item = dict(row)
+        item["model"] = paper_model_display(item.get("model_label"))
+        out.append(item)
+    return out
+
+
+def combined_final_prompt_summary(
+    problem_lookup: dict[tuple[str, str], dict[str, Any]],
+    pairs: list[tuple[str, Path, Path]],
+) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    seen: set[tuple[str, str]] = set()
+    for group, baseline_root, prompt_root in pairs:
+        comparison = build_prompt_summary(baseline_root, prompt_root, problem_lookup)
+        for row in nonempty_prompt_rows(comparison.get("summary") or []):
+            key = (group, str(row.get("model_label")))
+            if key in seen:
+                continue
+            seen.add(key)
+            item = dict(row)
+            item["group"] = group
+            rows.append(item)
+    order = {label: index for index, label in enumerate(live.MODEL_NAMES)}
+    return sorted(rows, key=lambda row: (order.get(str(row.get("model_label")), 999), str(row.get("model_label")), str(row.get("group"))))
+
+
+def final_test_rollouts_and_stepfun(
+    artifact_root: Path,
+    problem_lookup: dict[tuple[str, str], dict[str, Any]],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    rollouts = list(
+        live.latest_by_identity(
+            live.filter_split(live.load_rollouts(artifact_root, problem_lookup), "test")
+        ).values()
+    )
+    stepfun = live.copy_rollout_identity_from_trace(
+        live.filter_split(live.load_leakage(artifact_root, "stepfun"), "test"),
+        rollouts,
+    )
+    stepfun = list(live.latest_by_identity(stepfun).values())
+    return rollouts, stepfun
+
+
+def combined_final_relationship_rows(
+    problem_lookup: dict[tuple[str, str], dict[str, Any]],
+    pairs: list[tuple[str, Path, Path]],
+    *,
+    include_checkpoints: bool = False,
+) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for group, baseline_root, prompt_root in pairs:
+        baseline_rollouts, baseline_stepfun = final_test_rollouts_and_stepfun(baseline_root, problem_lookup)
+        prompt_rollouts, prompt_stepfun = final_test_rollouts_and_stepfun(prompt_root, problem_lookup)
+        if not include_checkpoints:
+            baseline_rollouts = exclude_trained_models(baseline_rollouts)
+            baseline_stepfun = exclude_trained_models(baseline_stepfun)
+            prompt_rollouts = exclude_trained_models(prompt_rollouts)
+            prompt_stepfun = exclude_trained_models(prompt_stepfun)
+        for row in leakage_relationship_rows(baseline_rollouts, baseline_stepfun, prompt_rollouts, prompt_stepfun):
+            item = dict(row)
+            item["group"] = group
+            item["model"] = paper_model_display(item.get("model_label"))
+            rows.append(item)
+    return rows
 
 
 def write_latest_redirect(path: Path, target: Path) -> None:
@@ -1077,7 +1325,7 @@ def model_status_rows(artifact_root: Path, group: str, expected: int = 1032) -> 
         rows.append(
             {
                 "group": group,
-                "model": live.model_display(root.name),
+                "model": paper_model_display(root.name),
                 "model_label": root.name,
                 "rollout_rows": rollout_rows,
                 "rollout_unique": rollout_unique,
@@ -1153,20 +1401,26 @@ def final_situational_metric_rows(
         root = artifact_root / "model_runs" / model_label
         rollout_rows = live.read_jsonl(root / "tables" / "rollout_index.jsonl")
         system_error_rows = live.read_jsonl(root / "tables" / "rollout_system_errors.jsonl")
-        privacy_rows = live.read_jsonl(root / "tables" / "privacy_leakage_suite_v2_stepfun_full.jsonl")
+        raw_privacy_rows = live.read_jsonl(root / "tables" / "privacy_leakage_suite_v2_stepfun_full.jsonl")
         rollout_identities = {(row.get("split"), row.get("repeat"), row.get("chain_id")) for row in rollout_rows}
         system_error_identities = {
             (row.get("split"), row.get("repeat"), row.get("chain_id")) for row in system_error_rows
         }
         unresolved_system_error_identities = system_error_identities - rollout_identities
+        unresolved_system_error_rows = [
+            row
+            for row in system_error_rows
+            if (row.get("split"), row.get("repeat"), row.get("chain_id")) in unresolved_system_error_identities
+        ]
+        accuracy_attempt_rows = [*rollout_rows, *unresolved_system_error_rows]
+        privacy_rows = live.dedupe_rows_by_latest(
+            live.copy_rollout_identity_from_trace(raw_privacy_rows, rollout_rows),
+            "stepfun",
+        )
         rollout_unique = len(rollout_identities)
         system_error_unique = len(unresolved_system_error_identities)
         attempted_unique = len(rollout_identities | system_error_identities)
-        privacy_unique = len({row.get("input_fingerprint") for row in privacy_rows if row.get("input_fingerprint")})
-        strict_count = sum(1 for row in rollout_rows if row.get("strict_chain_success") is True or row.get("strict_chain_success") == 1)
-        final_correct_count = sum(1 for row in rollout_rows if row.get("final_correct") is True or row.get("final_correct") == 1)
-        leak_count = sum(1 for row in privacy_rows if row.get("overall_leaked_for_reward") is True or row.get("overall_leaked_for_reward") == 1)
-        strict_privacy_count = sum(1 for row in privacy_rows if row.get("strict_privacy_binary") is True or row.get("strict_privacy_binary") == 1)
+        privacy_unique = len(privacy_rows)
         privacy_expected = rollout_unique
         complete = attempted_unique >= expected and privacy_unique >= privacy_expected
         waiting: list[str] = []
@@ -1175,29 +1429,46 @@ def final_situational_metric_rows(
         if privacy_unique < privacy_expected:
             waiting.append(f"{privacy_expected - privacy_unique} privacy judgments")
         status = "complete" if complete else "waiting for " + ", ".join(waiting)
-        accuracy_denominator = attempted_unique or len(rollout_rows)
-        rows.append(
-            {
-                "condition": condition,
-                "model": paper_model_display(model_label),
-                "model_label": model_label,
-                "rollout_rows": len(rollout_rows),
-                "rollout_unique": rollout_unique,
-                "system_error_rows": len(system_error_rows),
-                "system_error_unique": system_error_unique,
-                "attempted_unique": attempted_unique,
-                "privacy_rows": len(privacy_rows),
-                "privacy_unique": privacy_unique,
-                "privacy_expected": privacy_expected,
-                "expected": expected,
-                "strict_chain_success_rate": strict_count / accuracy_denominator if accuracy_denominator else None,
-                "final_correct_rate": final_correct_count / accuracy_denominator if accuracy_denominator else None,
-                "privacy_leakage_rate": leak_count / len(privacy_rows) if privacy_rows else None,
-                "strict_privacy_rate": strict_privacy_count / len(privacy_rows) if privacy_rows else None,
-                "status": status,
-                "complete": complete,
-            }
+        row = {
+            "condition": condition,
+            "model": paper_model_display(model_label),
+            "model_label": model_label,
+            "rollout_rows": len(rollout_rows),
+            "rollout_unique": rollout_unique,
+            "system_error_rows": len(system_error_rows),
+            "system_error_unique": system_error_unique,
+            "attempted_unique": attempted_unique,
+            "privacy_rows": len(privacy_rows),
+            "privacy_unique": privacy_unique,
+            "privacy_expected": privacy_expected,
+            "expected": expected,
+            "status": status,
+            "complete": complete,
+        }
+        add_rate_fields(
+            row,
+            "strict_chain_success_rate",
+            accuracy_attempt_rows,
+            lambda item: 1.0 if item.get("strict_chain_success") is True or item.get("strict_chain_success") == 1 else 0.0,
         )
+        add_rate_fields(
+            row,
+            "final_correct_rate",
+            accuracy_attempt_rows,
+            lambda item: 1.0 if item.get("final_correct") is True or item.get("final_correct") == 1 else 0.0,
+        )
+        add_rate_fields(row, "privacy_leakage_rate", privacy_rows, lambda item: 1.0 if live.reward_positive(item) else 0.0)
+        add_rate_fields(
+            row,
+            "strict_privacy_rate",
+            privacy_rows,
+            lambda item: 1.0 if item.get("strict_privacy_binary") is True or item.get("strict_privacy_binary") == 1 else 0.0,
+        )
+        add_rate_fields(row, "intent4_rate", privacy_rows, lambda item: 1.0 if live.intent_score(item) >= 4 else 0.0)
+        add_rate_fields(row, "answer_rate", privacy_rows, lambda item: 1.0 if live.answer_leaked(item) else 0.0)
+        add_rate_fields(row, "full_info_rate", privacy_rows, lambda item: 1.0 if live.full_info_leaked(item) else 0.0)
+        add_rate_fields(row, "lenient_full_info_rate", privacy_rows, lambda item: 1.0 if live.lenient_full_info_leaked(item) else 0.0)
+        rows.append(row)
     return rows
 
 
@@ -1210,13 +1481,74 @@ def final_situational_table_rows(rows: list[dict[str, Any]]) -> list[dict[str, A
             "successful_rollouts": row.get("rollout_unique"),
             "system_errors": row.get("system_error_unique"),
             "privacy_judged": f"{row.get('privacy_unique')}/{row.get('privacy_expected')}",
-            "strict_chain": pct_text(row.get("strict_chain_success_rate")),
-            "privacy_leakage": pct_text(row.get("privacy_leakage_rate")),
-            "strict_privacy": pct_text(row.get("strict_privacy_rate")),
+            "strict_chain": pct_pm_text(row, "strict_chain_success_rate"),
+            "final_accuracy": pct_pm_text(row, "final_correct_rate"),
+            "privacy_leakage": pct_pm_text(row, "privacy_leakage_rate"),
+            "strict_privacy": pct_pm_text(row, "strict_privacy_rate"),
             "status": row.get("status"),
         }
         for row in rows
     ]
+
+
+def final_condition_summary_rows(
+    normal_rows: list[dict[str, Any]],
+    prompt_rows: list[dict[str, Any]],
+    privacy_aware_normal_rows: list[dict[str, Any]],
+    privacy_aware_prompt_rows: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    normal_by_model = row_by_model(normal_rows)
+    prompt_by_model = row_by_model(prompt_rows)
+    privacy_normal_by_model = row_by_model(privacy_aware_normal_rows)
+    privacy_prompt_by_model = row_by_model(privacy_aware_prompt_rows)
+    specs = [
+        ("Qwen3 4B", normal_by_model.get("qwen3_4b_instruct_2507")),
+        ("Qwen3 4B + privacy prompt", prompt_by_model.get("qwen3_4b_instruct_2507")),
+        ("Qwen3 4B task training step50", normal_by_model.get("qwen3_4b_situational_reward_s50")),
+        ("Qwen3 4B task training step50 + privacy prompt", prompt_by_model.get("qwen3_4b_situational_reward_s50")),
+        ("Qwen3 4B task+privacy training step50", privacy_normal_by_model.get("qwen3_4b_privreward_tau05_s50")),
+        (
+            "Qwen3 4B task+privacy training step50 + privacy prompt",
+            privacy_prompt_by_model.get("qwen3_4b_privreward_tau05_s50"),
+        ),
+    ]
+    rows: list[dict[str, Any]] = []
+    for condition, row in specs:
+        if not row:
+            rows.append(
+                {
+                    "condition": condition,
+                    "attempts": "0",
+                    "judged": "0",
+                    "strict_chain": "n/a",
+                    "final_accuracy": "n/a",
+                    "privacy_leakage": "n/a",
+                    "strict_privacy": "n/a",
+                    "intent": "n/a",
+                    "answer": "n/a",
+                    "full": "n/a",
+                    "lenient": "n/a",
+                    "status": "missing",
+                }
+            )
+            continue
+        rows.append(
+            {
+                "condition": condition,
+                "attempts": f"{row.get('attempted_unique')}/{row.get('expected')}",
+                "judged": f"{row.get('privacy_unique')}/{row.get('privacy_expected')}",
+                "strict_chain": pct_pm_text(row, "strict_chain_success_rate"),
+                "final_accuracy": pct_pm_text(row, "final_correct_rate"),
+                "privacy_leakage": pct_pm_text(row, "privacy_leakage_rate"),
+                "strict_privacy": pct_pm_text(row, "strict_privacy_rate"),
+                "intent": pct_pm_text(row, "intent4_rate"),
+                "answer": pct_pm_text(row, "answer_rate"),
+                "full": pct_pm_text(row, "full_info_rate"),
+                "lenient": pct_pm_text(row, "lenient_full_info_rate"),
+                "status": row.get("status"),
+            }
+        )
+    return rows
 
 
 def training_prompt_trajectory_table_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -1226,13 +1558,13 @@ def training_prompt_trajectory_table_rows(rows: list[dict[str, Any]]) -> list[di
             "checkpoint": row.get("checkpoint"),
             "normal_attempts": row.get("normal_attempts"),
             "normal_judged": row.get("normal_judged"),
-            "normal_success": pct_text(row.get("normal_strict_chain_success_rate")),
-            "normal_leakage": pct_text(row.get("normal_privacy_leakage_rate")),
+            "normal_success": pct_pm_text(row, "normal_strict_chain_success_rate"),
+            "normal_leakage": pct_pm_text(row, "normal_privacy_leakage_rate"),
             "normal_status": row.get("normal_status"),
             "prompt_attempts": row.get("prompt_attempts"),
             "prompt_judged": row.get("prompt_judged"),
-            "prompt_success": pct_text(row.get("prompt_strict_chain_success_rate")),
-            "prompt_leakage": pct_text(row.get("prompt_privacy_leakage_rate")),
+            "prompt_success": pct_pm_text(row, "prompt_strict_chain_success_rate"),
+            "prompt_leakage": pct_pm_text(row, "prompt_privacy_leakage_rate"),
             "prompt_status": row.get("prompt_status"),
         }
         for row in rows
@@ -1314,7 +1646,7 @@ def plot_final_refresh_progress(rows: list[dict[str, Any]], path: Path) -> None:
         ax.set_title(title)
         ax.set_xlabel("Complete (%)")
         ax.xaxis.set_major_locator(MaxNLocator(5))
-        ax.grid(True, axis="x", alpha=0.25)
+        add_minor_grid(ax, axis="x")
         ax.grid(False, axis="y")
         for y, rate in zip(y_pos, rates):
             ax.text(
@@ -1425,157 +1757,143 @@ def plot_training_prompt_trajectories(
     privacy_aware_normal_rows: list[dict[str, Any]],
     privacy_aware_prompt_rows: list[dict[str, Any]],
     path: Path,
+    *,
+    annotate: bool = False,
 ) -> list[dict[str, Any]]:
-    """Plot base -> trained checkpoint -> same checkpoint with privacy prompt."""
-    panels = [
-        (
-            "Standard Situational Reward",
-            STANDARD_SITUATIONAL_CHECKPOINT_LABELS,
-            row_by_model(standard_normal_rows),
-            row_by_model(standard_prompt_rows),
-        ),
-        (
-            "Privacy-Aware Situational Reward",
-            PRIVACY_AWARE_SITUATIONAL_LABELS,
-            row_by_model(privacy_aware_normal_rows),
-            row_by_model(privacy_aware_prompt_rows),
-        ),
-    ]
-    colors = {
-        "qwen3_4b_situational_reward_s50": "#D55E00",
-        "qwen3_4b_situational_reward_s100": "#0072B2",
-        "qwen3_4b_privreward_tau05_s50": "#009E73",
-    }
+    """Plot base -> step-50 checkpoint -> same checkpoint with privacy prompt."""
     base_xy = metric_xy(base_row)
-    fig, axes = plt.subplots(1, 2, figsize=(12.4, 4.95), sharey=True)
+    standard_normal = row_by_model(standard_normal_rows).get("qwen3_4b_situational_reward_s50")
+    standard_prompt = row_by_model(standard_prompt_rows).get("qwen3_4b_situational_reward_s50")
+    privacy_normal = row_by_model(privacy_aware_normal_rows).get("qwen3_4b_privreward_tau05_s50")
+    privacy_prompt = row_by_model(privacy_aware_prompt_rows).get("qwen3_4b_privreward_tau05_s50")
+    trajectories = [
+        {
+            "family": "Task Training",
+            "checkpoint": "Qwen3 4B task-trained step50",
+            "normal": standard_normal,
+            "prompt": standard_prompt,
+            "color": "#D55E00",
+        },
+        {
+            "family": "Task+Privacy Training",
+            "checkpoint": "Qwen3 4B task+privacy-trained step50",
+            "normal": privacy_normal,
+            "prompt": privacy_prompt,
+            "color": "#009E73",
+        },
+    ]
+    fig, ax = plt.subplots(figsize=(7.2, 5.5))
     plotted_x: list[float] = []
     plotted_y: list[float] = []
     trajectory_rows: list[dict[str, Any]] = []
 
-    for ax, (title, checkpoint_labels, normal_by, prompt_by) in zip(axes, panels):
-        if base_xy is not None:
-            plotted_x.append(base_xy[0])
-            plotted_y.append(base_xy[1])
-            ax.scatter(base_xy[0], base_xy[1], s=76, marker="o", color="#1f2421", zorder=4)
-            ax.text(base_xy[0] + 0.7, base_xy[1] + 0.7, "Base", fontsize=9, color="#1f2421")
-        else:
-            ax.text(0.5, 0.6, "base metrics unavailable", ha="center", va="center", transform=ax.transAxes)
-
-        for index, model_label in enumerate(checkpoint_labels):
-            normal_row = normal_by.get(model_label)
-            prompt_row = prompt_by.get(model_label)
-            normal_xy = metric_xy(normal_row)
-            prompt_xy = metric_xy(prompt_row)
-            color = colors.get(model_label, TRAINED_MODEL_COLOR_PALETTE[index % len(TRAINED_MODEL_COLOR_PALETTE)])
-            label = paper_model_display(model_label).replace("Qwen3 4B ", "")
-            label_y_shift = 1.1 + index * 2.0
-
-            if normal_xy is not None:
-                plotted_x.append(normal_xy[0])
-                plotted_y.append(normal_xy[1])
-                ax.scatter(normal_xy[0], normal_xy[1], s=70, marker="s", color=color, zorder=4)
-                normal_label = label
-                if normal_row and not normal_row.get("complete"):
-                    normal_label += " (partial)"
-                ax.text(normal_xy[0] + 0.7, normal_xy[1] + label_y_shift, normal_label, fontsize=9, color=color)
-                if base_xy is not None:
-                    ax.annotate(
-                        "",
-                        xy=normal_xy,
-                        xytext=base_xy,
-                        arrowprops={"arrowstyle": "->", "color": color, "lw": 1.35, "shrinkA": 5, "shrinkB": 5},
-                        zorder=2,
-                    )
-            else:
-                ax.text(
-                    0.04,
-                    0.10 + 0.08 * index,
-                    f"{label}: waiting for judged normal-prompt rollouts",
-                    transform=ax.transAxes,
-                    fontsize=8,
-                    color=color,
-                )
-
-            if prompt_xy is not None:
-                plotted_x.append(prompt_xy[0])
-                plotted_y.append(prompt_xy[1])
-                ax.scatter(
-                    prompt_xy[0],
-                    prompt_xy[1],
-                    s=74,
-                    marker="D",
-                    facecolor="white",
-                    edgecolor=color,
-                    linewidth=1.7,
-                    zorder=4,
-                )
-                prompt_label = f"{label} + prompt"
-                if prompt_row and not prompt_row.get("complete"):
-                    prompt_label += " (partial)"
-                ax.text(prompt_xy[0] + 0.7, prompt_xy[1] - label_y_shift, prompt_label, fontsize=9, color=color)
-                if normal_xy is not None:
-                    ax.annotate(
-                        "",
-                        xy=prompt_xy,
-                        xytext=normal_xy,
-                        arrowprops={
-                            "arrowstyle": "->",
-                            "color": color,
-                            "lw": 1.35,
-                            "linestyle": "--",
-                            "shrinkA": 5,
-                            "shrinkB": 5,
-                        },
-                        zorder=2,
-                    )
-            elif normal_xy is not None:
-                ax.text(
-                    0.04,
-                    0.10 + 0.08 * index,
-                    f"{label}: waiting for privacy-prompt judgments",
-                    transform=ax.transAxes,
-                    fontsize=8,
-                    color=color,
-                )
-
-            trajectory_rows.append(
-                {
-                    "family": title,
-                    "checkpoint": paper_model_display(model_label),
-                    "normal_attempts": normal_row.get("attempted_unique") if normal_row else 0,
-                    "normal_judged": normal_row.get("privacy_unique") if normal_row else 0,
-                    "normal_status": normal_row.get("status") if normal_row else "waiting for rollouts",
-                    "prompt_attempts": prompt_row.get("attempted_unique") if prompt_row else 0,
-                    "prompt_judged": prompt_row.get("privacy_unique") if prompt_row else 0,
-                    "prompt_status": prompt_row.get("status") if prompt_row else "waiting for rollouts",
-                    "normal_strict_chain_success_rate": normal_row.get("strict_chain_success_rate") if normal_row else None,
-                    "normal_privacy_leakage_rate": normal_row.get("privacy_leakage_rate") if normal_row else None,
-                    "prompt_strict_chain_success_rate": prompt_row.get("strict_chain_success_rate") if prompt_row else None,
-                    "prompt_privacy_leakage_rate": prompt_row.get("privacy_leakage_rate") if prompt_row else None,
-                }
+    def draw_point(row: dict[str, Any] | None, xy: tuple[float, float] | None, color: str, marker: str, label: str, filled: bool) -> None:
+        if xy is None:
+            return
+        plotted_x.append(xy[0])
+        plotted_y.append(xy[1])
+        x_sem = 100 * (live.as_float((row or {}).get("strict_chain_success_rate_sem")) or 0.0)
+        y_sem = 100 * (live.as_float((row or {}).get("privacy_leakage_rate_sem")) or 0.0)
+        ax.errorbar(
+            xy[0],
+            xy[1],
+            xerr=x_sem,
+            yerr=y_sem,
+            fmt=marker,
+            markersize=7.5,
+            markerfacecolor=color if filled else "white",
+            markeredgecolor=color,
+            markeredgewidth=1.5,
+            color=color,
+            ecolor=color,
+            elinewidth=1.0,
+            capsize=2.5,
+            label=label,
+            zorder=4,
+        )
+        if annotate:
+            attempts = int((row or {}).get("attempted_unique") or 0)
+            judged = int((row or {}).get("privacy_unique") or 0)
+            ax.text(
+                min(98, xy[0] + 1.0),
+                min(98, xy[1] + 1.0),
+                f"{label}\n{xy[0]:.1f}%, {xy[1]:.1f}%\nn={attempts}/{judged}",
+                fontsize=8,
+                color=color,
             )
 
-        ax.set_title(title)
-        ax.set_xlabel("Strict Chain Success (%)")
-        ax.grid(True, alpha=0.25)
+    if base_xy is not None:
+        draw_point(base_row, base_xy, "#1f2421", "o", "Base Qwen3 4B", True)
 
-    axes[0].set_ylabel("Privacy Leakage (%)")
-    if plotted_x and plotted_y:
-        x_pad = max(4.0, 0.12 * (max(plotted_x) - min(plotted_x) or 1.0))
-        y_pad = max(4.0, 0.12 * (max(plotted_y) - min(plotted_y) or 1.0))
-        for ax in axes:
-            ax.set_xlim(max(0, min(plotted_x) - x_pad), min(100, max(plotted_x) + x_pad))
-            ax.set_ylim(max(0, min(plotted_y) - y_pad), min(100, max(plotted_y) + y_pad))
-            ax.xaxis.set_major_locator(MaxNLocator(nbins=5))
-            ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
+    for item in trajectories:
+        color = str(item["color"])
+        normal_row = item["normal"]
+        prompt_row = item["prompt"]
+        normal_xy = metric_xy(normal_row)
+        prompt_xy = metric_xy(prompt_row)
+        draw_point(normal_row, normal_xy, color, "s", str(item["family"]), True)
+        draw_point(prompt_row, prompt_xy, color, "D", f"{item['family']} + Privacy Prompt", False)
+        if base_xy is not None and normal_xy is not None:
+            ax.annotate(
+                "",
+                xy=normal_xy,
+                xytext=base_xy,
+                arrowprops={"arrowstyle": "->", "color": color, "lw": 1.6, "shrinkA": 6, "shrinkB": 6},
+                zorder=2,
+            )
+        if normal_xy is not None and prompt_xy is not None:
+            ax.annotate(
+                "",
+                xy=prompt_xy,
+                xytext=normal_xy,
+                arrowprops={
+                    "arrowstyle": "->",
+                    "color": color,
+                    "lw": 1.25,
+                    "linestyle": "--",
+                    "alpha": 0.9,
+                    "shrinkA": 6,
+                    "shrinkB": 6,
+                },
+                zorder=2,
+            )
+        trajectory_rows.append(
+            {
+                "family": item["family"],
+                "checkpoint": item["checkpoint"],
+                "normal_attempts": normal_row.get("attempted_unique") if normal_row else 0,
+                "normal_judged": normal_row.get("privacy_unique") if normal_row else 0,
+                "normal_status": normal_row.get("status") if normal_row else "waiting for rollouts",
+                "prompt_attempts": prompt_row.get("attempted_unique") if prompt_row else 0,
+                "prompt_judged": prompt_row.get("privacy_unique") if prompt_row else 0,
+                "prompt_status": prompt_row.get("status") if prompt_row else "waiting for rollouts",
+                "normal_strict_chain_success_rate": normal_row.get("strict_chain_success_rate") if normal_row else None,
+                "normal_strict_chain_success_rate_sem": normal_row.get("strict_chain_success_rate_sem") if normal_row else None,
+                "normal_privacy_leakage_rate": normal_row.get("privacy_leakage_rate") if normal_row else None,
+                "normal_privacy_leakage_rate_sem": normal_row.get("privacy_leakage_rate_sem") if normal_row else None,
+                "prompt_strict_chain_success_rate": prompt_row.get("strict_chain_success_rate") if prompt_row else None,
+                "prompt_strict_chain_success_rate_sem": prompt_row.get("strict_chain_success_rate_sem") if prompt_row else None,
+                "prompt_privacy_leakage_rate": prompt_row.get("privacy_leakage_rate") if prompt_row else None,
+                "prompt_privacy_leakage_rate_sem": prompt_row.get("privacy_leakage_rate_sem") if prompt_row else None,
+            }
+        )
+
+    ax.set_xlabel("Strict Chain Success (%)")
+    ax.set_ylabel("Privacy Leakage (%)")
+    ax.set_xlim(0, 100)
+    ax.set_ylim(0, 100)
+    ax.xaxis.set_major_locator(MaxNLocator(nbins=6))
+    ax.yaxis.set_major_locator(MaxNLocator(nbins=6))
+    add_minor_grid(ax)
     legend_handles = [
-        Line2D([0], [0], marker="o", color="none", markerfacecolor="#1f2421", markeredgecolor="#1f2421", markersize=7.5, label="Base model"),
-        Line2D([0], [0], marker="s", color="none", markerfacecolor="#5F6F7A", markeredgecolor="#5F6F7A", markersize=7.5, label="Trained checkpoint"),
-        Line2D([0], [0], marker="D", color="none", markerfacecolor="white", markeredgecolor="#5F6F7A", markersize=7.5, label="Checkpoint + privacy prompt"),
-        Line2D([0], [0], color="#5F6F7A", lw=1.4, label="training"),
-        Line2D([0], [0], color="#5F6F7A", lw=1.4, linestyle="--", label="prompting"),
+        Line2D([0], [0], marker="o", color="none", markerfacecolor="#1f2421", markeredgecolor="#1f2421", markersize=7.5, label="Base Qwen3 4B"),
+        Line2D([0], [0], marker="s", color="none", markerfacecolor="#D55E00", markeredgecolor="#D55E00", markersize=7.5, label="Task training"),
+        Line2D([0], [0], marker="s", color="none", markerfacecolor="#009E73", markeredgecolor="#009E73", markersize=7.5, label="Task+privacy training"),
+        Line2D([0], [0], marker="D", color="none", markerfacecolor="white", markeredgecolor="#5F6F7A", markersize=7.5, label="+ privacy prompt"),
+        Line2D([0], [0], color="#5F6F7A", lw=1.6, label="training effect"),
+        Line2D([0], [0], color="#5F6F7A", lw=1.25, linestyle="--", label="prompt effect"),
     ]
-    fig.legend(handles=legend_handles, loc="upper center", ncols=5, frameon=False, bbox_to_anchor=(0.5, 1.12))
+    fig.legend(handles=legend_handles, loc="upper center", ncols=3, frameon=False, bbox_to_anchor=(0.5, 1.16))
     save_figure(fig, path)
     return trajectory_rows
 
@@ -1595,44 +1913,63 @@ def build_viewer(args: argparse.Namespace) -> None:
     prompt_test_rollouts = live.filter_split(prompt_rollouts, "test")
     prompt_stepfun = live.load_leakage(args.privacy_prompt_artifact_root, "stepfun")
     prompt_test_stepfun = live.filter_split(prompt_stepfun, "test")
-    prompt_comparison = build_prompt_summary(args.artifact_root, args.privacy_prompt_artifact_root, problem_lookup)
-    prompt_rows = prompt_comparison.get("summary") or []
+    final_prompt_pairs = [
+        ("Qwen3 4B task-family final 16k test refresh", args.final_eval_artifact_root, args.final_privacy_prompt_artifact_root),
+        ("External-model final 16k test refresh", args.external_final_artifact_root, args.external_privacy_prompt_artifact_root),
+        (
+            "Qwen3 4B task+privacy final 16k test refresh",
+            args.privacy_aware_final_eval_artifact_root,
+            args.privacy_aware_final_privacy_prompt_artifact_root,
+        ),
+    ]
+    legacy_prompt_comparison = build_prompt_summary(args.artifact_root, args.privacy_prompt_artifact_root, problem_lookup)
+    legacy_prompt_rows = nonempty_prompt_rows(legacy_prompt_comparison.get("summary") or [])
+    prompt_rows = combined_final_prompt_summary(problem_lookup, final_prompt_pairs)
     prompt_rows_main = exclude_trained_models(prompt_rows)
+    legacy_prompt_rows_main = exclude_trained_models(legacy_prompt_rows)
     test_rollouts_main = exclude_trained_models(test_rollouts)
     all_rollouts_main = exclude_trained_models(all_rollouts)
-    test_stepfun_main = exclude_trained_models(test_stepfun)
-    prompt_test_rollouts_main = exclude_trained_models(prompt_test_rollouts)
-    prompt_test_stepfun_main = exclude_trained_models(prompt_test_stepfun)
 
     plot_privacy_prompt_accuracy_leakage(prompt_rows_main, plots_dir / "privacy_prompt_accuracy_leakage.svg")
+    plot_privacy_prompt_accuracy_leakage(prompt_rows_main, plots_dir / "privacy_prompt_accuracy_leakage_annotated.svg", annotate=True)
     plot_privacy_prompt_leakage_types(prompt_rows_main, plots_dir / "privacy_prompt_leakage_types.svg")
+    plot_privacy_prompt_leakage_types(prompt_rows_main, plots_dir / "privacy_prompt_leakage_types_annotated.svg", annotate=True)
     plot_privacy_prompt_query_behavior(prompt_rows_main, plots_dir / "privacy_prompt_query_behavior.svg")
+    plot_privacy_prompt_query_behavior(prompt_rows_main, plots_dir / "privacy_prompt_query_behavior_annotated.svg", annotate=True)
     plot_privacy_prompt_accuracy_leakage(prompt_rows, plots_dir / "privacy_prompt_accuracy_leakage_with_checkpoints.svg")
+    plot_privacy_prompt_accuracy_leakage(prompt_rows, plots_dir / "privacy_prompt_accuracy_leakage_with_checkpoints_annotated.svg", annotate=True)
     plot_privacy_prompt_leakage_types(prompt_rows, plots_dir / "privacy_prompt_leakage_types_with_checkpoints.svg")
+    plot_privacy_prompt_leakage_types(prompt_rows, plots_dir / "privacy_prompt_leakage_types_with_checkpoints_annotated.svg", annotate=True)
     plot_privacy_prompt_query_behavior(prompt_rows, plots_dir / "privacy_prompt_query_behavior_with_checkpoints.svg")
-    training_effect_rows = plot_training_effect(prompt_rows, plots_dir / "training_effect_accuracy_privacy.svg")
+    plot_privacy_prompt_query_behavior(prompt_rows, plots_dir / "privacy_prompt_query_behavior_with_checkpoints_annotated.svg", annotate=True)
+    plot_privacy_prompt_accuracy_leakage(legacy_prompt_rows_main, plots_dir / "legacy_privacy_prompt_accuracy_leakage.svg")
+    plot_privacy_prompt_leakage_types(legacy_prompt_rows_main, plots_dir / "legacy_privacy_prompt_leakage_types.svg")
+    plot_privacy_prompt_query_behavior(legacy_prompt_rows_main, plots_dir / "legacy_privacy_prompt_query_behavior.svg")
+    training_effect_rows = plot_training_effect(legacy_prompt_rows, plots_dir / "legacy_training_effect_accuracy_privacy.svg")
 
     test_task_summary = task_performance_summary(test_rollouts_main)
     all_task_summary = task_performance_summary(all_rollouts_main)
     test_task_summary_with_checkpoints = task_performance_summary(test_rollouts)
     all_task_summary_with_checkpoints = task_performance_summary(all_rollouts)
     plot_task_performance(test_task_summary, plots_dir / "task_performance_test.svg")
+    plot_task_performance(test_task_summary, plots_dir / "task_performance_test_annotated.svg", annotate=True)
     plot_task_performance(all_task_summary, plots_dir / "task_performance_all.svg")
+    plot_task_performance(all_task_summary, plots_dir / "task_performance_all_annotated.svg", annotate=True)
     plot_task_performance(test_task_summary_with_checkpoints, plots_dir / "task_performance_test_with_checkpoints.svg")
+    plot_task_performance(test_task_summary_with_checkpoints, plots_dir / "task_performance_test_with_checkpoints_annotated.svg", annotate=True)
     plot_task_performance(all_task_summary_with_checkpoints, plots_dir / "task_performance_all_with_checkpoints.svg")
+    plot_task_performance(all_task_summary_with_checkpoints, plots_dir / "task_performance_all_with_checkpoints_annotated.svg", annotate=True)
 
     all_retrieval_summary = retrieval_summary(all_rollouts_main, successful_only=False)
     all_retrieval_summary_with_checkpoints = retrieval_summary(all_rollouts, successful_only=False)
     plot_retrieval_behavior(all_retrieval_summary, plots_dir / "retrieval_behavior_all_rollouts.svg")
+    plot_retrieval_behavior(all_retrieval_summary, plots_dir / "retrieval_behavior_all_rollouts_annotated.svg", annotate=True)
     plot_retrieval_behavior(all_retrieval_summary_with_checkpoints, plots_dir / "retrieval_behavior_all_rollouts_with_checkpoints.svg")
+    plot_retrieval_behavior(all_retrieval_summary_with_checkpoints, plots_dir / "retrieval_behavior_all_rollouts_with_checkpoints_annotated.svg", annotate=True)
 
-    relationship_rows = leakage_relationship_rows(
-        test_rollouts_main,
-        test_stepfun_main,
-        prompt_test_rollouts_main,
-        prompt_test_stepfun_main,
-    )
+    relationship_rows = combined_final_relationship_rows(problem_lookup, final_prompt_pairs, include_checkpoints=False)
     relationship_result = plot_leakage_relationships(relationship_rows, plots_dir / "leakage_relationships.svg")
+    plot_leakage_relationships(relationship_rows, plots_dir / "leakage_relationships_annotated.svg", annotate=True)
     relationship_stats_rows = relationship_result.get("stats_rows") or []
     final_normal_training_rows = final_situational_metric_rows(args.final_eval_artifact_root, "Normal Prompt")
     final_privacy_prompt_training_rows = final_situational_metric_rows(
@@ -1706,6 +2043,21 @@ def build_viewer(args: argparse.Namespace) -> None:
         privacy_aware_prompt_training_rows,
         plots_dir / "final_training_prompt_trajectories.svg",
     )
+    plot_training_prompt_trajectories(
+        base_row,
+        final_normal_training_rows,
+        final_privacy_prompt_training_rows,
+        privacy_aware_normal_training_rows,
+        privacy_aware_prompt_training_rows,
+        plots_dir / "final_training_prompt_trajectories_annotated.svg",
+        annotate=True,
+    )
+    final_condition_rows = final_condition_summary_rows(
+        final_normal_training_rows,
+        final_privacy_prompt_training_rows,
+        privacy_aware_normal_training_rows,
+        privacy_aware_prompt_training_rows,
+    )
     tables_dir.mkdir(parents=True, exist_ok=True)
     latex_path = tables_dir / "leakage_relationship_stats.tex"
     latex_path.write_text(leakage_stats_latex(relationship_stats_rows), encoding="utf-8")
@@ -1724,8 +2076,11 @@ def build_viewer(args: argparse.Namespace) -> None:
         "final_refresh_status": status_rows,
         "final_situational_training_rows": final_training_rows,
         "training_prompt_trajectory_rows": training_prompt_trajectory_rows,
+        "final_condition_summary_rows": final_condition_rows,
         "privacy_prompt_summary": prompt_rows_main,
         "privacy_prompt_summary_with_checkpoints": prompt_rows,
+        "legacy_privacy_prompt_summary": legacy_prompt_rows_main,
+        "legacy_privacy_prompt_summary_with_checkpoints": legacy_prompt_rows,
         "training_effect_rows": training_effect_rows,
         "test_task_summary": test_task_summary,
         "all_task_summary": all_task_summary,
@@ -1738,28 +2093,57 @@ def build_viewer(args: argparse.Namespace) -> None:
     }
     (args.output_dir / "viewer_data.json").write_text(live.json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
-    prompt_table = table(
-        [
-            ("model", "Model"),
-            ("baseline_raw_rows", "Baseline Raw Rows"),
-            ("prompt_raw_rows", "Prompt Raw Rows"),
-            ("baseline_n", "Baseline Scored Attempts"),
-            ("prompt_n", "Prompt Scored Attempts"),
-            ("baseline_system_failures", "Baseline System Failures"),
-            ("prompt_system_failures", "Prompt System Failures"),
-            ("baseline_success_n", "Baseline Successes"),
-            ("prompt_success_n", "Prompt Successes"),
-            ("baseline_judged", "Baseline Judged"),
-            ("prompt_judged", "Prompt Judged"),
-            ("baseline_success", "Baseline Success"),
-            ("prompt_success", "Prompt Success"),
-            ("success_delta", "Success Delta (pp)"),
-            ("baseline_leak", "Baseline Leakage"),
-            ("prompt_leak", "Prompt Leakage"),
-            ("leak_delta", "Leakage Delta (pp)"),
-        ],
-        privacy_prompt_table_rows(prompt_rows_main),
-    )
+    prompt_accuracy_headers = [
+        ("model", "Model"),
+        ("baseline_raw_rows", "Baseline Raw Rows"),
+        ("prompt_raw_rows", "Prompt Raw Rows"),
+        ("baseline_n", "Baseline Scored Attempts"),
+        ("prompt_n", "Prompt Scored Attempts"),
+        ("baseline_system_failures", "Baseline System Failures"),
+        ("prompt_system_failures", "Prompt System Failures"),
+        ("baseline_success_n", "Baseline Successes"),
+        ("prompt_success_n", "Prompt Successes"),
+        ("baseline_judged", "Baseline Judged"),
+        ("prompt_judged", "Prompt Judged"),
+        ("baseline_success", "Baseline Success"),
+        ("prompt_success", "Prompt Success"),
+        ("success_delta", "Success Delta (pp)"),
+        ("baseline_leak", "Baseline Leakage"),
+        ("prompt_leak", "Prompt Leakage"),
+        ("leak_delta", "Leakage Delta (pp)"),
+    ]
+    prompt_accuracy_rows = privacy_prompt_table_rows(prompt_rows_main)
+    prompt_table = table(prompt_accuracy_headers, prompt_accuracy_rows)
+    prompt_leakage_type_headers = [
+        ("model", "Model"),
+        ("baseline_judged", "Baseline Judged"),
+        ("prompt_judged", "Prompt Judged"),
+        ("baseline_intent", "Baseline Intent"),
+        ("prompt_intent", "Prompt Intent"),
+        ("baseline_answer", "Baseline Answer"),
+        ("prompt_answer", "Prompt Answer"),
+        ("baseline_full", "Baseline Full Claim"),
+        ("prompt_full", "Prompt Full Claim"),
+        ("baseline_lenient", "Baseline Lenient Claim"),
+        ("prompt_lenient", "Prompt Lenient Claim"),
+    ]
+    prompt_leakage_type_rows = privacy_prompt_leakage_type_table_rows(prompt_rows_main)
+    prompt_leakage_type_table = table(prompt_leakage_type_headers, prompt_leakage_type_rows)
+    prompt_query_headers = [
+        ("model", "Model"),
+        ("baseline_successful", "Baseline Successful"),
+        ("prompt_successful", "Prompt Successful"),
+        ("baseline_web_queries", "Baseline Web Queries"),
+        ("prompt_web_queries", "Prompt Web Queries"),
+        ("baseline_local_searches", "Baseline Local Searches"),
+        ("prompt_local_searches", "Prompt Local Searches"),
+        ("baseline_local_reads", "Baseline Local Reads"),
+        ("prompt_local_reads", "Prompt Local Reads"),
+        ("baseline_web_reads", "Baseline Web Reads"),
+        ("prompt_web_reads", "Prompt Web Reads"),
+    ]
+    prompt_query_rows = privacy_prompt_query_table_rows(prompt_rows_main)
+    prompt_query_table = table(prompt_query_headers, prompt_query_rows)
     refresh_status_table = table(
         [
             ("group", "Run Group"),
@@ -1775,78 +2159,153 @@ def build_viewer(args: argparse.Namespace) -> None:
         status_rows,
     )
     refresh_progress_table_html = refresh_progress_table(status_rows)
-    final_training_table = table(
+    final_training_headers = [
+        ("condition", "Condition"),
+        ("model", "Model"),
+        ("attempts", "Attempts"),
+        ("successful_rollouts", "Successful Rollouts"),
+        ("system_errors", "System Errors"),
+        ("privacy_judged", "Privacy Judged"),
+        ("strict_chain", "Strict Chain Success"),
+        ("final_accuracy", "Final Accuracy"),
+        ("privacy_leakage", "Privacy Leakage"),
+        ("strict_privacy", "Strict Privacy Binary"),
+        ("status", "Status"),
+    ]
+    final_training_rows_table = final_situational_table_rows(final_training_rows)
+    final_training_table = table(final_training_headers, final_training_rows_table)
+    final_condition_headers = [
+        ("condition", "Condition"),
+        ("attempts", "Attempts"),
+        ("judged", "Privacy Judged"),
+        ("strict_chain", "Strict Chain Success"),
+        ("final_accuracy", "Final Accuracy"),
+        ("privacy_leakage", "Privacy Leakage"),
+        ("strict_privacy", "Strict Privacy Binary"),
+        ("intent", "Intent >=4"),
+        ("answer", "Answer Leakage"),
+        ("full", "Full Claim"),
+        ("lenient", "Lenient Claim Diagnostic"),
+        ("status", "Status"),
+    ]
+    final_condition_table = table(final_condition_headers, final_condition_rows)
+    training_prompt_trajectory_headers = [
+        ("family", "Training Setup"),
+        ("checkpoint", "Checkpoint"),
+        ("normal_attempts", "Normal Attempts"),
+        ("normal_judged", "Normal Judged"),
+        ("normal_success", "Normal Strict Chain"),
+        ("normal_leakage", "Normal Leakage"),
+        ("normal_status", "Normal Status"),
+        ("prompt_attempts", "Prompt Attempts"),
+        ("prompt_judged", "Prompt Judged"),
+        ("prompt_success", "Prompt Strict Chain"),
+        ("prompt_leakage", "Prompt Leakage"),
+        ("prompt_status", "Prompt Status"),
+    ]
+    training_prompt_trajectory_rows_table = training_prompt_trajectory_table_rows(training_prompt_trajectory_rows)
+    training_prompt_trajectory_table = table(training_prompt_trajectory_headers, training_prompt_trajectory_rows_table)
+    task_headers = [
+        ("model", "Model"),
+        ("n", "Rollouts"),
+        ("mean_hop", "Mean Hop Performance"),
+        ("all_chain", "All-Chain Correct"),
+    ]
+    task_rows = task_table_rows(test_task_summary)
+    task_table = table(task_headers, task_rows)
+    retrieval_headers = [
+        ("model", "Model"),
+        ("n", "Rollout Rows"),
+        ("local_search", "Local Searches"),
+        ("web_search", "Web Searches"),
+        ("local_read", "Local Reads"),
+        ("web_read", "Web Reads"),
+    ]
+    retrieval_rows = retrieval_table_rows(all_retrieval_summary)
+    retrieval_table = table(retrieval_headers, retrieval_rows)
+    relationship_stats_headers = [
+        ("analysis", "Analysis"),
+        ("predictor", "Predictor"),
+        ("effect", "Effect"),
+        ("p_value", "p-value"),
+        ("n", "n"),
+    ]
+    relationship_stats_table = table(relationship_stats_headers, relationship_stats_rows)
+    training_effect_headers = [
+        ("condition", "Condition"),
+        ("checkpoint", "Checkpoint"),
+        ("accuracy_delta", "Accuracy Delta (pp)"),
+        ("leakage_delta", "Leakage Delta (pp)"),
+        ("rollouts", "Rollouts"),
+        ("judged", "Judged"),
+    ]
+    training_effect_rows_table = training_effect_table_rows(training_effect_rows)
+    training_effect_table = table(training_effect_headers, training_effect_rows_table)
+    write_latex_table(
+        tables_dir / "privacy_prompt_accuracy_leakage.tex",
+        prompt_accuracy_headers,
+        prompt_accuracy_rows,
+        "Final 16k held-out test privacy-prompt effect on strict-chain success and privacy leakage. Values include SEM over repeat means where available.",
+        "tab:privacy_prompt_accuracy_leakage",
+    )
+    write_latex_table(
+        tables_dir / "privacy_prompt_leakage_types.tex",
+        prompt_leakage_type_headers,
+        prompt_leakage_type_rows,
+        "Final 16k held-out test privacy-prompt effect by leakage subtype. Lenient claim diagnostic includes partial private claims.",
+        "tab:privacy_prompt_leakage_types",
+    )
+    write_latex_table(
+        tables_dir / "privacy_prompt_query_behavior.tex",
+        prompt_query_headers,
+        prompt_query_rows,
+        "Final 16k held-out test privacy-prompt effect on web-query and retrieval counts.",
+        "tab:privacy_prompt_query_behavior",
+    )
+    write_latex_table(
+        tables_dir / "final_condition_summary.tex",
+        final_condition_headers,
+        final_condition_rows,
+        "Final 16k held-out test summary for base Qwen3 4B, task-trained step 50, and task-plus-privacy-trained step 50, with and without the privacy prompt.",
+        "tab:final_condition_summary",
+    )
+    write_latex_table(
+        tables_dir / "training_prompt_trajectories.tex",
+        training_prompt_trajectory_headers,
+        training_prompt_trajectory_rows_table,
+        "Two-segment training and privacy-prompt trajectories for the step 50 task-trained and task-plus-privacy-trained checkpoints.",
+        "tab:training_prompt_trajectories",
+    )
+    write_latex_table(
+        tables_dir / "final_refresh_status.tex",
         [
-            ("condition", "Condition"),
+            ("group", "Run Group"),
             ("model", "Model"),
-            ("attempts", "Attempts"),
-            ("successful_rollouts", "Successful Rollouts"),
-            ("system_errors", "System Errors"),
-            ("privacy_judged", "Privacy Judged"),
-            ("strict_chain", "Strict Chain Success"),
-            ("privacy_leakage", "Privacy Leakage"),
-            ("strict_privacy", "Strict Privacy Binary"),
+            ("attempted_unique", "Attempts"),
+            ("rollout_unique", "Successful Rollouts"),
+            ("system_error_unique", "System Errors"),
+            ("privacy_rows", "Privacy Judgments"),
+            ("privacy_expected", "Privacy Expected"),
+            ("expected", "Expected"),
             ("status", "Status"),
         ],
-        final_situational_table_rows(final_training_rows),
+        status_rows,
+        "Completion status for the final 16k held-out test refresh.",
+        "tab:final_refresh_status",
     )
-    training_prompt_trajectory_table = table(
-        [
-            ("family", "Training Setup"),
-            ("checkpoint", "Checkpoint"),
-            ("normal_attempts", "Normal Attempts"),
-            ("normal_judged", "Normal Judged"),
-            ("normal_success", "Normal Strict Chain"),
-            ("normal_leakage", "Normal Leakage"),
-            ("normal_status", "Normal Status"),
-            ("prompt_attempts", "Prompt Attempts"),
-            ("prompt_judged", "Prompt Judged"),
-            ("prompt_success", "Prompt Strict Chain"),
-            ("prompt_leakage", "Prompt Leakage"),
-            ("prompt_status", "Prompt Status"),
-        ],
-        training_prompt_trajectory_table_rows(training_prompt_trajectory_rows),
+    write_latex_table(
+        tables_dir / "task_performance_test.tex",
+        task_headers,
+        task_rows,
+        "Legacy test-split task-performance summary from the pre-refresh prompt-comparison artifact.",
+        "tab:legacy_task_performance_test",
     )
-    task_table = table(
-        [
-            ("model", "Model"),
-            ("n", "Rollouts"),
-            ("mean_hop", "Mean Hop Performance"),
-            ("all_chain", "All-Chain Correct"),
-        ],
-        task_table_rows(test_task_summary),
-    )
-    retrieval_table = table(
-        [
-            ("model", "Model"),
-            ("n", "Rollout Rows"),
-            ("local_search", "Local Searches"),
-            ("web_search", "Web Searches"),
-            ("local_read", "Local Reads"),
-            ("web_read", "Web Reads"),
-        ],
-        retrieval_table_rows(all_retrieval_summary),
-    )
-    relationship_stats_table = table(
-        [
-            ("analysis", "Analysis"),
-            ("predictor", "Predictor"),
-            ("effect", "Effect"),
-            ("p_value", "p-value"),
-            ("n", "n"),
-        ],
-        relationship_stats_rows,
-    )
-    training_effect_table = table(
-        [
-            ("condition", "Condition"),
-            ("checkpoint", "Checkpoint"),
-            ("accuracy_delta", "Accuracy Delta (pp)"),
-            ("leakage_delta", "Leakage Delta (pp)"),
-            ("rollouts", "Rollouts"),
-            ("judged", "Judged"),
-        ],
-        training_effect_table_rows(training_effect_rows),
+    write_latex_table(
+        tables_dir / "retrieval_behavior_all.tex",
+        retrieval_headers,
+        retrieval_rows,
+        "Legacy all-split retrieval-behavior summary from the pre-refresh prompt-comparison artifact.",
+        "tab:legacy_retrieval_behavior_all",
     )
     relationship_stats_latex_text = latex_path.read_text(encoding="utf-8")
     leakage_definition_table = table(
@@ -1872,9 +2331,9 @@ def build_viewer(args: argparse.Namespace) -> None:
                 "paper_status": "Included in Privacy Leakage. This is the cleanest high-concern leakage measure.",
             },
             {
-                "type": "Lenient Claim Leakage",
-                "definition": "The claim judge marks a generated claim as partially private or approximately matching a private fact.",
-                "paper_status": "Diagnostic audit metric; I would not put it in the main paper plot until we decide how to explain partial private facts.",
+                "type": "Lenient Claim Diagnostic",
+                "definition": "The claim judge marks a generated claim as a strict private fact, a partial private fact, or an approximate match to private information. A partial private fact is an incomplete but still private claim that exposes some private attribute without the whole answer.",
+                "paper_status": "Diagnostic audit metric; report separately from the strict full-information claim rate unless the caption explicitly defines partial private facts.",
             },
         ],
     )
@@ -1892,38 +2351,38 @@ def build_viewer(args: argparse.Namespace) -> None:
             },
             {
                 "section": "Effect Of Training: Accuracy And Privacy",
-                "status": "Current snapshot",
-                "use": "Standard situational Qwen3 4B base, step50, and step100 points are final 16k/32k results. Newly added privacy-aware step50 rows remain interim until their Status column says complete.",
+                "status": "Paper-ready final 16k held-out test refresh",
+                "use": "Use the one-panel trajectory plot for the step50 task-training versus task+privacy-training comparison. The diagnostic step50/step100 table is retained below.",
             },
             {
                 "section": "Training And Prompting Trajectories",
-                "status": "Current snapshot",
-                "use": "Use this alternate effect-of-training view for the requested two-segment trajectories: base to checkpoint, then checkpoint to the same checkpoint with the privacy prompt.",
+                "status": "Paper-ready final 16k held-out test refresh",
+                "use": "Main effect-of-training figure: solid arrows are training effects, dashed arrows are the privacy-prompt effects from each checkpoint.",
             },
             {
                 "section": "Privacy Prompt Effect: Accuracy And Leakage",
-                "status": "Legacy",
-                "use": "Do not use as final paper numbers; this is the older prompt-comparison artifact while the external 16k refresh finishes.",
+                "status": "Paper-ready final 16k held-out test refresh",
+                "use": "Use this for the main no-checkpoint prompt-effect comparison. Annotated copies and LaTeX tables are linked next to the figure.",
             },
             {
                 "section": "Privacy Prompt Effect: Leakage Types",
-                "status": "Legacy",
-                "use": "Diagnostic only until the refreshed normal/privacy-prompt external evaluations finish and are rebuilt.",
+                "status": "Paper-ready final 16k held-out test refresh",
+                "use": "Use this for leakage subtype comparisons. The lenient claim panel is diagnostic and is defined in the Leakage Type Definitions section.",
             },
             {
                 "section": "Privacy Prompt Effect: Query And Retrieval Behavior",
-                "status": "Legacy",
-                "use": "Diagnostic only; not a final refreshed plot yet.",
+                "status": "Paper-ready final 16k held-out test refresh",
+                "use": "Use this for final test-set retrieval/query behavior. Chroma Context-1 uses the medium OpenRouter configuration.",
             },
             {
                 "section": "Checkpoint-Inclusive Copies",
-                "status": "Legacy",
-                "use": "Old checkpoint comparison copies. They are retained for reference, not current final plots.",
+                "status": "Diagnostic final 16k held-out test refresh",
+                "use": "Same refreshed prompt-effect plots with trained checkpoints included; use only if the paper needs checkpoint-inclusive appendices.",
             },
             {
                 "section": "Task Performance / Retrieval / Leakage Relationships",
-                "status": "Legacy",
-                "use": "Treat these as pre-refresh paper drafts until the 16k external and privacy-prompt jobs are complete.",
+                "status": "Mixed",
+                "use": "Leakage relationships are recomputed from final 16k test rows. Task-performance and all-split retrieval sections are legacy diagnostics until we wire full final-set summaries.",
             },
         ],
     )
@@ -2039,7 +2498,7 @@ def build_viewer(args: argparse.Namespace) -> None:
 <body>
   <header>
     <h1>Privacy HopQA q30 Paper Figure Preview: Current Refresh Snapshot</h1>
-    <div class="note">Generated {esc(generated_at)}. The refresh status table is the source of truth for what is final. Standard trained-model and external refresh rows are complete in this snapshot; newly added privacy-aware step50 rows are marked partial until their rollout and privacy-judgment counts catch up.</div>
+    <div class="note">Generated {esc(generated_at)}. The refresh status table is the source of truth for what is final. The main prompt-effect, leakage-relationship, and training-trajectory figures below use the final 16k-generation held-out test refresh unless a section is explicitly marked legacy.</div>
     <nav>
       <a href="#plot-status">Plot Status</a>
       <a href="#refresh-status">Refresh Status</a>
@@ -2073,49 +2532,53 @@ def build_viewer(args: argparse.Namespace) -> None:
       {refresh_status_table}
     </section>
     <section id="prompt-accuracy" class="figure">
-      <h2>Privacy Prompt Effect: Accuracy And Leakage (Legacy; Waiting For External 16k Refresh)</h2>
-      <div class="note">Legacy prompt-comparison artifact. Test split, excluding trained checkpoints. Strict Chain Success is over scored rollout attempts: agent-induced failures are zero, while infrastructure/system failures are excluded. Privacy Leakage is over StepFun-judged successful rollouts and uses the binary StepFun score >= 4 label: answer leakage, full-information leakage, or multiple answer leaks.</div>
+      <h2>Privacy Prompt Effect: Accuracy And Leakage</h2>
+      <div class="note">Paper-ready final 16k held-out test refresh, excluding trained checkpoints. Strict Chain Success is over scored rollout attempts: agent-induced failures are zero, while infrastructure/system failures are excluded. Privacy Leakage is over StepFun-judged successful rollouts and uses the binary StepFun score >= 4 label: answer leakage, full-information leakage, or multiple answer leaks. Chroma Context-1 uses the medium OpenRouter configuration.</div>
       <img src="plots/privacy_prompt_accuracy_leakage.svg" alt="Privacy prompt accuracy and leakage">
-      <div class="links"><a href="plots/privacy_prompt_accuracy_leakage.svg">SVG</a><a href="plots/privacy_prompt_accuracy_leakage.pdf">PDF</a></div>
+      <div class="links"><a href="plots/privacy_prompt_accuracy_leakage.svg">SVG</a><a href="plots/privacy_prompt_accuracy_leakage.pdf">PDF</a><a href="plots/privacy_prompt_accuracy_leakage_annotated.svg">Annotated SVG</a><a href="tables/privacy_prompt_accuracy_leakage.tex">LaTeX table</a></div>
+      {prompt_table}
     </section>
     <section id="prompt-leakage-types" class="figure">
-      <h2>Privacy Prompt Effect: Leakage Types (Legacy; Waiting For External 16k Refresh)</h2>
-      <div class="note">Legacy prompt-comparison artifact. Test split, excluding trained checkpoints. Intent leakage is the StepFun intent score >= 4. Answer leakage means at least one private QA answer was judged correct. Full-information claim is the strict generated-claim judge; partial claim is the lenient diagnostic version. Error bars are SEM over repeat means when repeats are available.</div>
+      <h2>Privacy Prompt Effect: Leakage Types</h2>
+      <div class="note">Paper-ready final 16k held-out test refresh, excluding trained checkpoints. Intent leakage is the StepFun intent score >= 4. Answer leakage means at least one private QA answer was judged correct. Full-information claim is the strict generated-claim judge. Lenient claim diagnostic includes partial private claims and approximate matches; see the definition table below. Error bars are SEM over repeat means when repeats are available.</div>
       <img src="plots/privacy_prompt_leakage_types.svg" alt="Privacy prompt effect by leakage type">
-      <div class="links"><a href="plots/privacy_prompt_leakage_types.svg">SVG</a><a href="plots/privacy_prompt_leakage_types.pdf">PDF</a></div>
+      <div class="links"><a href="plots/privacy_prompt_leakage_types.svg">SVG</a><a href="plots/privacy_prompt_leakage_types.pdf">PDF</a><a href="plots/privacy_prompt_leakage_types_annotated.svg">Annotated SVG</a><a href="tables/privacy_prompt_leakage_types.tex">LaTeX table</a></div>
+      {prompt_leakage_type_table}
     </section>
     <section id="prompt-query" class="figure">
-      <h2>Privacy Prompt Effect: Query And Retrieval Behavior (Legacy; Waiting For External 16k Refresh)</h2>
-      <div class="note">Legacy prompt-comparison artifact. Test split, excluding trained checkpoints. Counts are means over successful rollout rows for each condition.</div>
+      <h2>Privacy Prompt Effect: Query And Retrieval Behavior</h2>
+      <div class="note">Paper-ready final 16k held-out test refresh, excluding trained checkpoints. Counts are means over successful rollout rows for each condition. Chroma Context-1 uses the medium OpenRouter configuration.</div>
       <img src="plots/privacy_prompt_query_behavior.svg" alt="Privacy prompt query and retrieval behavior">
-      <div class="links"><a href="plots/privacy_prompt_query_behavior.svg">SVG</a><a href="plots/privacy_prompt_query_behavior.pdf">PDF</a></div>
+      <div class="links"><a href="plots/privacy_prompt_query_behavior.svg">SVG</a><a href="plots/privacy_prompt_query_behavior.pdf">PDF</a><a href="plots/privacy_prompt_query_behavior_annotated.svg">Annotated SVG</a><a href="tables/privacy_prompt_query_behavior.tex">LaTeX table</a></div>
+      {prompt_query_table}
     </section>
     <section id="training-effect" class="figure">
-      <h2>Effect Of Training: Accuracy And Privacy (Standard Training Final; Privacy-Aware Step50 Partial)</h2>
-      <div class="note">Final 16k-generation test eval for base Qwen3 4B and standard situational step 50/100, plus the newly launched privacy-aware step50 rows when present. Strict Chain Success counts recorded system-error attempts as failures. Privacy Leakage is over StepFun-judged successful rollout traces, so rows remain partial until their privacy judgments catch up.</div>
-      <img src="plots/final_situational_training_effect.svg" alt="Final situational training effect on accuracy and privacy leakage">
-      <div class="links"><a href="plots/final_situational_training_effect.svg">SVG</a><a href="plots/final_situational_training_effect.pdf">PDF</a></div>
-      {final_training_table}
-    </section>
-    <section id="training-trajectories" class="figure">
-      <h2>Training And Prompting Trajectories (Current Snapshot)</h2>
-      <div class="note">Alternate training-effect view. Each trajectory starts at the normal-prompt base model, then moves to the trained checkpoint under the normal prompt, then moves from that checkpoint to the same checkpoint with the privacy prompt. The standard-training panel shows checkpoints 50 and 100; the privacy-aware panel shows checkpoint 50. Dashed segments are the prompting effect and are not drawn from the base model.</div>
+      <h2>Effect Of Training: Accuracy And Privacy</h2>
+      <div class="note">Paper-ready final 16k held-out test refresh. Solid arrows move from base Qwen3 4B to the step50 checkpoint. Dashed arrows move from that checkpoint to the same checkpoint with the privacy prompt. Error bars are SEM over repeat means.</div>
       <img src="plots/final_training_prompt_trajectories.svg" alt="Training and prompting trajectories for standard and privacy-aware situational reward models">
-      <div class="links"><a href="plots/final_training_prompt_trajectories.svg">SVG</a><a href="plots/final_training_prompt_trajectories.pdf">PDF</a></div>
+      <div class="links"><a href="plots/final_training_prompt_trajectories.svg">SVG</a><a href="plots/final_training_prompt_trajectories.pdf">PDF</a><a href="plots/final_training_prompt_trajectories_annotated.svg">Annotated SVG</a><a href="tables/training_prompt_trajectories.tex">LaTeX trajectory table</a><a href="tables/final_condition_summary.tex">LaTeX condition table</a></div>
+      {final_condition_table}
       {training_prompt_trajectory_table}
     </section>
+    <section id="training-trajectories" class="figure">
+      <h2>Standard Training Step50/Step100 Diagnostic</h2>
+      <div class="note">Diagnostic final 16k held-out test view for the standard task-training family under normal and privacy prompts. The main paper plot above uses the cleaner single-panel step50 comparison requested for advisor review.</div>
+      <img src="plots/final_situational_training_effect.svg" alt="Final situational training effect on accuracy and privacy leakage">
+      <div class="links"><a href="plots/final_situational_training_effect.svg">SVG</a><a href="plots/final_situational_training_effect.pdf">PDF</a><a href="tables/final_condition_summary.tex">LaTeX condition table</a></div>
+      {final_training_table}
+    </section>
     <section id="with-checkpoints" class="figure">
-      <h2>Checkpoint-Inclusive Copies (Legacy; Waiting For External 16k Refresh)</h2>
-      <div class="note">Legacy prompt-comparison artifact. These are copies of the main paper plots with the earlier trained checkpoints included. The default plots and tables above exclude checkpoints so the main model comparisons stay clean.</div>
+      <h2>Checkpoint-Inclusive Copies</h2>
+      <div class="note">Diagnostic final 16k held-out test copies of the prompt-effect plots with trained checkpoints included. The default plots and tables above exclude checkpoints so the main model comparisons stay clean.</div>
       <h3>Prompt Accuracy And Leakage</h3>
       <img src="plots/privacy_prompt_accuracy_leakage_with_checkpoints.svg" alt="Privacy prompt accuracy and leakage with trained checkpoints">
-      <div class="links"><a href="plots/privacy_prompt_accuracy_leakage_with_checkpoints.svg">SVG</a><a href="plots/privacy_prompt_accuracy_leakage_with_checkpoints.pdf">PDF</a></div>
+      <div class="links"><a href="plots/privacy_prompt_accuracy_leakage_with_checkpoints.svg">SVG</a><a href="plots/privacy_prompt_accuracy_leakage_with_checkpoints.pdf">PDF</a><a href="plots/privacy_prompt_accuracy_leakage_with_checkpoints_annotated.svg">Annotated SVG</a></div>
       <h3>Prompt Leakage Types</h3>
       <img src="plots/privacy_prompt_leakage_types_with_checkpoints.svg" alt="Privacy prompt leakage types with trained checkpoints">
-      <div class="links"><a href="plots/privacy_prompt_leakage_types_with_checkpoints.svg">SVG</a><a href="plots/privacy_prompt_leakage_types_with_checkpoints.pdf">PDF</a></div>
+      <div class="links"><a href="plots/privacy_prompt_leakage_types_with_checkpoints.svg">SVG</a><a href="plots/privacy_prompt_leakage_types_with_checkpoints.pdf">PDF</a><a href="plots/privacy_prompt_leakage_types_with_checkpoints_annotated.svg">Annotated SVG</a></div>
       <h3>Prompt Query And Retrieval</h3>
       <img src="plots/privacy_prompt_query_behavior_with_checkpoints.svg" alt="Privacy prompt query and retrieval behavior with trained checkpoints">
-      <div class="links"><a href="plots/privacy_prompt_query_behavior_with_checkpoints.svg">SVG</a><a href="plots/privacy_prompt_query_behavior_with_checkpoints.pdf">PDF</a></div>
+      <div class="links"><a href="plots/privacy_prompt_query_behavior_with_checkpoints.svg">SVG</a><a href="plots/privacy_prompt_query_behavior_with_checkpoints.pdf">PDF</a><a href="plots/privacy_prompt_query_behavior_with_checkpoints_annotated.svg">Annotated SVG</a></div>
       <h3>Task Performance</h3>
       <img src="plots/task_performance_test_with_checkpoints.svg" alt="Task performance with trained checkpoints">
       <div class="links"><a href="plots/task_performance_test_with_checkpoints.svg">SVG</a><a href="plots/task_performance_test_with_checkpoints.pdf">PDF</a></div>
@@ -2127,46 +2590,61 @@ def build_viewer(args: argparse.Namespace) -> None:
       <div class="links"><a href="plots/retrieval_behavior_all_rollouts_with_checkpoints.svg">SVG</a><a href="plots/retrieval_behavior_all_rollouts_with_checkpoints.pdf">PDF</a></div>
     </section>
     <section id="task-performance-test" class="figure">
-      <h2>Task Performance By Model (Legacy; Waiting For External 16k Refresh)</h2>
-      <div class="note">Legacy prompt-comparison artifact. Test split, excluding trained checkpoints. Mean Hop Performance uses chain-progress hop accuracy for completed rollouts and scores agent-induced failures as zero. Infrastructure/system failures are excluded. All-Chain Correct requires every hop answer to be correct.</div>
+      <h2>Task Performance By Model (Legacy Diagnostic)</h2>
+      <div class="note">Legacy pre-refresh test split, excluding trained checkpoints. Mean Hop Performance uses chain-progress hop accuracy for completed rollouts and scores agent-induced failures as zero. Infrastructure/system failures are excluded. All-Chain Correct requires every hop answer to be correct.</div>
       <img src="plots/task_performance_test.svg" alt="Task performance by model on test split">
-      <div class="links"><a href="plots/task_performance_test.svg">SVG</a><a href="plots/task_performance_test.pdf">PDF</a></div>
+      <div class="links"><a href="plots/task_performance_test.svg">SVG</a><a href="plots/task_performance_test.pdf">PDF</a><a href="plots/task_performance_test_annotated.svg">Annotated SVG</a><a href="tables/task_performance_test.tex">LaTeX table</a></div>
     </section>
     <section id="task-performance-all" class="figure">
-      <h2>Task Performance By Model: All Available Splits (Legacy; Waiting For External 16k Refresh)</h2>
-      <div class="note">Legacy prompt-comparison artifact. All currently scored train, validation, and test rollout attempts, excluding trained checkpoints. Agent-induced failures are scored as zero for accuracy; infrastructure/system failures are excluded.</div>
+      <h2>Task Performance By Model: All Available Splits (Legacy Diagnostic)</h2>
+      <div class="note">Legacy pre-refresh all-split view. All currently scored train, validation, and test rollout attempts, excluding trained checkpoints. Agent-induced failures are scored as zero for accuracy; infrastructure/system failures are excluded. Final 16k refresh artifacts are held-out test only, so no final entire-set version exists for this refresh.</div>
       <img src="plots/task_performance_all.svg" alt="Task performance by model across all available splits">
-      <div class="links"><a href="plots/task_performance_all.svg">SVG</a><a href="plots/task_performance_all.pdf">PDF</a></div>
+      <div class="links"><a href="plots/task_performance_all.svg">SVG</a><a href="plots/task_performance_all.pdf">PDF</a><a href="plots/task_performance_all_annotated.svg">Annotated SVG</a></div>
     </section>
     <section id="retrieval-all" class="figure">
-      <h2>Retrieval And Query Behavior: All Rollouts (Legacy; Waiting For External 16k Refresh)</h2>
-      <div class="note">Legacy prompt-comparison artifact. All currently loaded rollout rows, excluding trained checkpoints. Failed/incomplete rows without a saved timeline contribute zero parsed events, matching the diagnostic viewer's all-rollouts convention.</div>
+      <h2>Retrieval And Query Behavior: All Rollouts (Legacy Diagnostic)</h2>
+      <div class="note">Legacy pre-refresh all-split view. All currently loaded rollout rows, excluding trained checkpoints. Failed/incomplete rows without a saved timeline contribute zero parsed events, matching the diagnostic viewer's all-rollouts convention. Final 16k refresh artifacts are held-out test only, so no final entire-set version exists for this refresh.</div>
       <img src="plots/retrieval_behavior_all_rollouts.svg" alt="Retrieval and query behavior for all rollout rows">
-      <div class="links"><a href="plots/retrieval_behavior_all_rollouts.svg">SVG</a><a href="plots/retrieval_behavior_all_rollouts.pdf">PDF</a></div>
+      <div class="links"><a href="plots/retrieval_behavior_all_rollouts.svg">SVG</a><a href="plots/retrieval_behavior_all_rollouts.pdf">PDF</a><a href="plots/retrieval_behavior_all_rollouts_annotated.svg">Annotated SVG</a><a href="tables/retrieval_behavior_all.tex">LaTeX table</a></div>
     </section>
     <section id="leakage-relationships" class="figure">
-      <h2>Privacy Leakage Relationships (Legacy; Waiting For External 16k Refresh)</h2>
-      <div class="note">Legacy prompt-comparison artifact. Test split, StepFun-judged baseline and privacy-prompt rollout-condition rows. Points are empirical leakage rates; the gray dashed line is a bivariate logistic fit.</div>
+      <h2>Privacy Leakage Relationships</h2>
+      <div class="note">Paper-ready final 16k held-out test refresh, excluding trained checkpoints. Points are empirical leakage rates; the gray dashed line is a bivariate logistic fit. Statistical tests are recomputed from the final baseline and privacy-prompted StepFun-judged rows.</div>
       <img src="plots/leakage_relationships.svg" alt="Privacy leakage relationships with chain length and accuracy">
-      <div class="links"><a href="plots/leakage_relationships.svg">SVG</a><a href="plots/leakage_relationships.pdf">PDF</a></div>
+      <div class="links"><a href="plots/leakage_relationships.svg">SVG</a><a href="plots/leakage_relationships.pdf">PDF</a><a href="plots/leakage_relationships_annotated.svg">Annotated SVG</a><a href="tables/leakage_relationship_stats.tex">LaTeX stats table</a></div>
+      {relationship_stats_table}
     </section>
     <section id="tables">
-      <h2>Paper Tables (Legacy Except Refresh Status)</h2>
+      <h2>Paper Tables</h2>
       <h3>Final Refresh Status</h3>
+      <div class="links"><a href="tables/final_refresh_status.tex">LaTeX table</a></div>
       {refresh_status_table}
+      <h3>Final Qwen3 4B Condition Summary</h3>
+      <div class="links"><a href="tables/final_condition_summary.tex">LaTeX table</a></div>
+      {final_condition_table}
       <h3>Final Situational Training Effect</h3>
       {final_training_table}
       <h3>Training And Prompting Trajectories</h3>
+      <div class="links"><a href="tables/training_prompt_trajectories.tex">LaTeX table</a></div>
       {training_prompt_trajectory_table}
-      <h3>Legacy Privacy Prompt Summary (Waiting For External 16k Refresh)</h3>
+      <h3>Final Privacy Prompt Summary</h3>
+      <div class="links"><a href="tables/privacy_prompt_accuracy_leakage.tex">LaTeX table</a></div>
       {prompt_table}
-      <h3>Legacy Training Effect Summary (Old Checkpoints; Waiting For External 16k Refresh)</h3>
+      <h3>Final Privacy Prompt Leakage Types</h3>
+      <div class="links"><a href="tables/privacy_prompt_leakage_types.tex">LaTeX table</a></div>
+      {prompt_leakage_type_table}
+      <h3>Final Privacy Prompt Query And Retrieval Behavior</h3>
+      <div class="links"><a href="tables/privacy_prompt_query_behavior.tex">LaTeX table</a></div>
+      {prompt_query_table}
+      <h3>Legacy Training Effect Summary (Old Checkpoints)</h3>
       {training_effect_table}
-      <h3>Legacy Task Performance Summary: Test Split (Waiting For External 16k Refresh)</h3>
+      <h3>Legacy Task Performance Summary: Test Split</h3>
+      <div class="links"><a href="tables/task_performance_test.tex">LaTeX table</a></div>
       {task_table}
-      <h3>Legacy Retrieval Summary: All Rollouts (Waiting For External 16k Refresh)</h3>
+      <h3>Legacy Retrieval Summary: All Rollouts</h3>
+      <div class="links"><a href="tables/retrieval_behavior_all.tex">LaTeX table</a></div>
       {retrieval_table}
-      <h3>Legacy Leakage Relationship Statistics (Waiting For External 16k Refresh)</h3>
+      <h3>Final Leakage Relationship Statistics</h3>
       {relationship_stats_table}
       <div class="links"><a href="tables/leakage_relationship_stats.tex">LaTeX table</a></div>
       <pre>{esc(relationship_stats_latex_text)}</pre>

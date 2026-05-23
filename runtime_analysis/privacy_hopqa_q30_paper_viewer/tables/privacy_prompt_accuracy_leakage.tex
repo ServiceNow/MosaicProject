@@ -1,0 +1,18 @@
+\begin{table}[t]
+\small
+\centering
+\begin{tabular}{lllllllllllllllll}
+\toprule
+\textbf{Model} & \textbf{Baseline Raw Rows} & \textbf{Prompt Raw Rows} & \textbf{Baseline Scored Attempts} & \textbf{Prompt Scored Attempts} & \textbf{Baseline System Failures} & \textbf{Prompt System Failures} & \textbf{Baseline Successes} & \textbf{Prompt Successes} & \textbf{Baseline Judged} & \textbf{Prompt Judged} & \textbf{Baseline Success} & \textbf{Prompt Success} & \textbf{Success Delta (pp)} & \textbf{Baseline Leakage} & \textbf{Prompt Leakage} & \textbf{Leakage Delta (pp)} \\
+\midrule
+Qwen3 4B & 1032 & 974 & 1032 & 974 & 0 & 0 & 1032 & 974 & 1032 & 974 & 48.7\% +/- 1.1 pp & 46.2\% +/- 0.7 pp & -2.6 & 34.0\% +/- 0.4 pp & 25.7\% +/- 1.3 pp & -8.3 \\
+Qwen3 8B & 847 & 987 & 847 & 987 & 0 & 0 & 847 & 987 & 847 & 987 & 48.7\% +/- 1.4 pp & 51.1\% +/- 0.8 pp & +2.3 & 32.6\% +/- 1.9 pp & 26.9\% +/- 0.4 pp & -5.7 \\
+Step-3.5 Flash & 938 & 1032 & 938 & 1032 & 0 & 0 & 938 & 1032 & 938 & 1032 & 51.5\% +/- 0.8 pp & 51.6\% +/- 1.2 pp & +0.1 & 39.8\% +/- 0.5 pp & 39.9\% +/- 0.7 pp & +0.1 \\
+GPT-OSS 20B & 1032 & 1031 & 1032 & 1031 & 0 & 0 & 1032 & 1031 & 1032 & 1031 & 52.4\% +/- 0.8 pp & 58.4\% +/- 0.4 pp & +6.0 & 42.9\% +/- 1.3 pp & 34.8\% +/- 0.3 pp & -8.1 \\
+Chroma Context-1 & 1030 & 1032 & 1030 & 1032 & 0 & 0 & 1030 & 1032 & 1030 & 1032 & 15.2\% +/- 0.8 pp & 25.6\% +/- 0.6 pp & +10.3 & 19.1\% +/- 1.2 pp & 17.9\% +/- 1.7 pp & -1.2 \\
+Gemma 4 31B IT & 892 & 1006 & 892 & 1006 & 0 & 0 & 892 & 1006 & 892 & 1006 & 63.8\% +/- 0.9 pp & 61.0\% +/- 0.8 pp & -2.8 & 9.4\% +/- 0.2 pp & 1.8\% +/- 0.2 pp & -7.6 \\
+\bottomrule
+\end{tabular}
+\caption{Final 16k held-out test privacy-prompt effect on strict-chain success and privacy leakage. Values include SEM over repeat means where available.}
+\label{tab:privacy_prompt_accuracy_leakage}
+\end{table}

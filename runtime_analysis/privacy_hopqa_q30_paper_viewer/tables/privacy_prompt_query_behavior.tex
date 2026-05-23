@@ -1,0 +1,18 @@
+\begin{table}[t]
+\small
+\centering
+\begin{tabular}{lllllllllll}
+\toprule
+\textbf{Model} & \textbf{Baseline Successful} & \textbf{Prompt Successful} & \textbf{Baseline Web Queries} & \textbf{Prompt Web Queries} & \textbf{Baseline Local Searches} & \textbf{Prompt Local Searches} & \textbf{Baseline Local Reads} & \textbf{Prompt Local Reads} & \textbf{Baseline Web Reads} & \textbf{Prompt Web Reads} \\
+\midrule
+Qwen3 4B & 1032 & 974 & 3.83 +/- 0.03 & 3.08 +/- 0.03 & 4.86 +/- 0.08 & 4.53 +/- 0.04 & 8.65 +/- 0.02 & 8.19 +/- 0.11 & 20.02 +/- 0.37 & 16.33 +/- 0.35 \\
+Qwen3 8B & 847 & 987 & 5.76 +/- 0.20 & 4.81 +/- 0.13 & 3.17 +/- 0.03 & 3.25 +/- 0.05 & 5.47 +/- 0.07 & 5.77 +/- 0.10 & 26.31 +/- 0.49 & 22.57 +/- 0.94 \\
+Step-3.5 Flash & 938 & 1032 & 4.82 +/- 0.09 & 4.69 +/- 0.04 & 4.41 +/- 0.11 & 4.22 +/- 0.04 & 7.42 +/- 0.09 & 7.40 +/- 0.02 & 13.64 +/- 0.29 & 13.48 +/- 0.19 \\
+GPT-OSS 20B & 1032 & 1031 & 6.52 +/- 0.06 & 4.44 +/- 0.05 & 3.25 +/- 0.00 & 3.86 +/- 0.04 & 5.15 +/- 0.06 & 5.65 +/- 0.10 & 25.66 +/- 0.49 & 17.28 +/- 0.44 \\
+Chroma Context-1 & 1030 & 1032 & 4.45 +/- 0.12 & 3.22 +/- 0.02 & 1.70 +/- 0.03 & 2.38 +/- 0.04 & 3.45 +/- 0.07 & 4.79 +/- 0.07 & 25.35 +/- 0.58 & 16.80 +/- 0.29 \\
+Gemma 4 31B IT & 892 & 1006 & 3.06 +/- 0.03 & 2.62 +/- 0.02 & 8.83 +/- 0.10 & 9.34 +/- 0.10 & 8.51 +/- 0.08 & 8.86 +/- 0.05 & 10.69 +/- 0.07 & 10.30 +/- 0.04 \\
+\bottomrule
+\end{tabular}
+\caption{Final 16k held-out test privacy-prompt effect on web-query and retrieval counts.}
+\label{tab:privacy_prompt_query_behavior}
+\end{table}

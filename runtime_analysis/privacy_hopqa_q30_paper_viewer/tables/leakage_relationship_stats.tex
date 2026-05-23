@@ -5,15 +5,15 @@
 \toprule
 \textbf{Analysis} & \textbf{Predictor} & \textbf{Effect} & \textbf{$p$} & \textbf{$n$} \\
 \midrule
-Spearman rank & Chain Length & $\rho = 0.08$ & $<0.001$ & 2031 \\
-Spearman rank & Chain Progress Accuracy & $\rho = 0.06$ & 0.005 & 2031 \\
-Bivariate logistic & Chain Length (+1 hop) & OR = 1.18 [1.03, 1.34] & 0.015 & 2031 \\
-Bivariate logistic & Chain Progress Accuracy (+10 pp) & OR = 1.05 [1.00, 1.11] & 0.031 & 2031 \\
-Adjusted logistic & Chain Length (+1 hop) & OR = 1.14 [1.00, 1.30] & 0.057 & 2031 \\
-Adjusted logistic & Chain Progress Accuracy (+10 pp) & OR = 1.04 [0.99, 1.10] & 0.085 & 2031 \\
-Adjusted logistic & Privacy Prompt (vs. Baseline) & OR = 0.38 [0.30, 0.49] & $<0.001$ & 2031 \\
+Spearman rank & Chain Length & $\rho = 0.10$ & $<0.001$ & 11705 \\
+Spearman rank & Chain Progress Accuracy & $\rho = 0.04$ & $<0.001$ & 11705 \\
+Bivariate logistic & Chain Length (+1 hop) & OR = 1.17 [1.11, 1.24] & $<0.001$ & 11705 \\
+Bivariate logistic & Chain Progress Accuracy (+10 pp) & OR = 1.03 [1.01, 1.06] & 0.006 & 11705 \\
+Adjusted logistic & Chain Length (+1 hop) & OR = 1.17 [1.10, 1.23] & $<0.001$ & 11705 \\
+Adjusted logistic & Chain Progress Accuracy (+10 pp) & OR = 1.03 [1.01, 1.06] & 0.011 & 11705 \\
+Adjusted logistic & Privacy Prompt (vs. Baseline) & OR = 0.73 [0.67, 0.80] & $<0.001$ & 11705 \\
 \bottomrule
 \end{tabular}
-\caption{Relationship between task structure, task performance, and privacy leakage. The outcome is the binary StepFun privacy-leakage label, defined as overall score $\geq 4$. Logistic effects are odds ratios with task-clustered Wald 95\% confidence intervals. Rows use currently StepFun-judged test rollouts from the baseline and privacy-prompted conditions.}
+\caption{Relationship between task structure, task performance, and privacy leakage on the final 16k held-out test refresh. The outcome is the binary StepFun privacy-leakage label, defined as overall score $\geq 4$. Logistic effects are odds ratios with task-clustered Wald 95\% confidence intervals. Rows use StepFun-judged baseline and privacy-prompted rollouts.}
 \label{tab:privacy_leakage_relationships}
 \end{table}
