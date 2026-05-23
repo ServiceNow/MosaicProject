@@ -1,0 +1,18 @@
+\begin{table}[t]
+\small
+\centering
+\begin{tabular}{lllllllll}
+\toprule
+\textbf{Model} & \textbf{Baseline Judged} & \textbf{Prompt Judged} & \textbf{Baseline Intent} & \textbf{Prompt Intent} & \textbf{Baseline Answer} & \textbf{Prompt Answer} & \textbf{Baseline Full Claim} & \textbf{Prompt Full Claim} \\
+\midrule
+Qwen3 4B & 1032 & 974 & 51.1\% +/- 1.7 pp & 39.1\% +/- 0.7 pp & 18.7\% +/- 0.3 pp & 14.6\% +/- 0.6 pp & 11.7\% +/- 1.4 pp & 7.7\% +/- 0.5 pp \\
+Qwen3 8B & 847 & 987 & 44.3\% +/- 1.4 pp & 36.3\% +/- 1.9 pp & 14.9\% +/- 1.3 pp & 12.5\% +/- 1.2 pp & 10.3\% +/- 0.9 pp & 7.8\% +/- 0.8 pp \\
+Step-3.5 Flash & 938 & 1032 & 53.9\% +/- 2.0 pp & 54.6\% +/- 0.5 pp & 17.1\% +/- 0.7 pp & 17.7\% +/- 1.7 pp & 14.4\% +/- 1.3 pp & 14.0\% +/- 0.9 pp \\
+GPT-OSS 20B & 1032 & 1031 & 42.2\% +/- 0.3 pp & 36.0\% +/- 0.6 pp & 21.8\% +/- 0.6 pp & 18.3\% +/- 1.1 pp & 14.6\% +/- 0.9 pp & 10.2\% +/- 0.8 pp \\
+Chroma Context-1 & 1030 & 1032 & 25.2\% +/- 0.9 pp & 23.5\% +/- 1.3 pp & 5.7\% +/- 0.7 pp & 5.6\% +/- 1.2 pp & 3.3\% +/- 0.1 pp & 3.2\% +/- 0.5 pp \\
+Gemma 4 31B IT & 892 & 1006 & 25.8\% +/- 0.2 pp & 15.1\% +/- 1.6 pp & 6.1\% +/- 0.2 pp & 1.2\% +/- 0.3 pp & 2.3\% +/- 0.5 pp & 0.4\% +/- 0.3 pp \\
+\bottomrule
+\end{tabular}
+\caption{Final 16k held-out test privacy-prompt effect on the three core leakage types: intent, answer, and full-information claim leakage.}
+\label{tab:privacy_prompt_core_leakage_types}
+\end{table}

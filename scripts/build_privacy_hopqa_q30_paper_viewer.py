@@ -229,6 +229,20 @@ def add_minor_grid(ax: Any, *, axis: str = "both") -> None:
     ax.grid(True, which="minor", axis=axis, alpha=0.12, linestyle="--")
 
 
+def rounded_limits(values: list[float], *, min_pad: float, frac_pad: float = 0.12, step: float = 5.0) -> tuple[float, float]:
+    finite = [value for value in values if math.isfinite(value)]
+    if not finite:
+        return 0.0, 100.0
+    low = min(finite)
+    high = max(finite)
+    pad = max(min_pad, (high - low) * frac_pad)
+    low = max(0.0, step * math.floor((low - pad) / step))
+    high = min(100.0, step * math.ceil((high + pad) / step))
+    if high <= low:
+        high = min(100.0, low + step)
+    return low, high
+
+
 def percent_yerr(rows: list[dict[str, Any]], key: str) -> list[list[float]]:
     return live.ci_yerr(rows, key, 100)
 
@@ -410,22 +424,95 @@ def plot_privacy_prompt_leakage_types(rows: list[dict[str, Any]], path: Path, *,
     save_figure(fig, path)
 
 
+def plot_privacy_prompt_core_leakage_types(rows: list[dict[str, Any]], path: Path, *, annotate: bool = False) -> None:
+    rows = [row for row in rows if row.get("baseline_stepfun") or row.get("prompt_stepfun")]
+    if not rows:
+        return
+    labels = [paper_model_display(str(row["model_label"])) for row in rows]
+    metrics = [
+        ("Intent Leakage\n(Intent Score >= 4)", "baseline_intent4_rate", "prompt_intent4_rate"),
+        ("Answer Leakage", "baseline_answer_rate", "prompt_answer_rate"),
+        ("Full-Information Claim", "baseline_full_info_rate", "prompt_full_info_rate"),
+    ]
+    fig, axes = plt.subplots(1, 3, figsize=(15.2, 4.7), sharey=True)
+    x = list(range(len(rows)))
+    width = 0.36
+    baseline_counts = [int(row.get("baseline_stepfun") or 0) for row in rows]
+    prompt_counts = [int(row.get("prompt_stepfun") or 0) for row in rows]
+    baseline_pos = [item - width / 2 for item in x]
+    prompt_pos = [item + width / 2 for item in x]
+    error_kw = {"elinewidth": 1.1, "ecolor": "#303633", "capsize": 3, "capthick": 1.0}
+    for ax, (title, baseline_key, prompt_key) in zip(axes, metrics):
+        baseline_vals = [
+            100 * float(row.get(baseline_key))
+            if row.get(baseline_key) is not None and count
+            else math.nan
+            for row, count in zip(rows, baseline_counts)
+        ]
+        prompt_vals = [
+            100 * float(row.get(prompt_key))
+            if row.get(prompt_key) is not None and count
+            else math.nan
+            for row, count in zip(rows, prompt_counts)
+        ]
+        ax.bar(
+            baseline_pos,
+            baseline_vals,
+            width=width,
+            color=BASELINE_COLOR,
+            label="Baseline",
+            yerr=percent_yerr(rows, baseline_key),
+            error_kw=error_kw,
+        )
+        ax.bar(
+            prompt_pos,
+            prompt_vals,
+            width=width,
+            color=PROMPT_COLOR,
+            label="Privacy Prompt",
+            yerr=percent_yerr(rows, prompt_key),
+            error_kw=error_kw,
+        )
+        if annotate:
+            annotate_ns(ax, baseline_pos, baseline_vals, baseline_counts, percent=True, y_max=100)
+            annotate_ns(ax, prompt_pos, prompt_vals, prompt_counts, percent=True, y_max=100)
+        ax.set_title(title)
+        ax.set_xlabel("Model")
+        ax.set_xticks(x)
+        ax.set_xticklabels(labels, rotation=25, ha="right")
+        ax.set_ylim(0, 100)
+        ax.set_yticks(range(0, 101, 20))
+        add_minor_grid(ax, axis="y")
+    axes[0].set_ylabel("StepFun-Judged Rollouts (%)")
+    handles, legend_labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, legend_labels, loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.10))
+    save_figure(fig, path)
+
+
 def plot_privacy_prompt_query_behavior(rows: list[dict[str, Any]], path: Path, *, annotate: bool = False) -> None:
     rows = model_rows_for_plot(rows, require_prompt=True)
     if not rows:
         return
     labels = [paper_model_display(str(row["model_label"])) for row in rows]
     metrics = [
-        ("Visible Web Queries", "baseline_web_queries", "prompt_web_queries"),
-        ("Local Document Searches", "baseline_local_searches", "prompt_local_searches"),
-        ("Local Document Reads", "baseline_local_doc_reads", "prompt_local_doc_reads"),
-        ("Web Document Reads", "baseline_web_doc_reads", "prompt_web_doc_reads"),
+        ("Visible Web Queries", "baseline_web_queries", "prompt_web_queries", "search"),
+        ("Local Document Searches", "baseline_local_searches", "prompt_local_searches", "search"),
+        ("Local Document Reads", "baseline_local_doc_reads", "prompt_local_doc_reads", "reads"),
+        ("Web Document Reads", "baseline_web_doc_reads", "prompt_web_doc_reads", "reads"),
     ]
     fig, axes = plt.subplots(2, 2, figsize=(13.2, 7.9))
     x = list(range(len(rows)))
     width = 0.36
     error_kw = {"elinewidth": 1.1, "ecolor": "#303633", "capsize": 3, "capthick": 1.0}
-    for ax, (ylabel, baseline_key, prompt_key) in zip(axes.flat, metrics):
+    group_y_max: dict[str, float] = {}
+    for _ylabel, baseline_key, prompt_key, group in metrics:
+        vals = [
+            *(live.as_float(row.get(baseline_key)) or 0.0 for row in rows),
+            *(live.as_float(row.get(prompt_key)) or 0.0 for row in rows),
+        ]
+        group_y_max[group] = max(group_y_max.get(group, 1.0), *vals, 1.0)
+    group_y_max = {group: value * 1.32 for group, value in group_y_max.items()}
+    for ax, (ylabel, baseline_key, prompt_key, group) in zip(axes.flat, metrics):
         baseline_vals = [row.get(baseline_key) or 0 for row in rows]
         prompt_vals = [row.get(prompt_key) or 0 for row in rows]
         baseline_counts = [int(row.get("baseline_ok") or 0) for row in rows]
@@ -450,7 +537,7 @@ def plot_privacy_prompt_query_behavior(rows: list[dict[str, Any]], path: Path, *
             yerr=count_yerr(rows, prompt_key),
             error_kw=error_kw,
         )
-        y_max = max([*baseline_vals, *prompt_vals, 1.0]) * 1.32
+        y_max = group_y_max[group]
         if annotate:
             annotate_ns(ax, baseline_pos, baseline_vals, baseline_counts, percent=False, y_max=y_max)
             annotate_ns(ax, prompt_pos, prompt_vals, prompt_counts, percent=False, y_max=y_max)
@@ -1001,6 +1088,25 @@ def privacy_prompt_leakage_type_table_rows(rows: list[dict[str, Any]]) -> list[d
                 "prompt_full": pct_pm_text(row, "prompt_full_info_rate"),
                 "baseline_lenient": pct_pm_text(row, "baseline_lenient_full_info_rate"),
                 "prompt_lenient": pct_pm_text(row, "prompt_lenient_full_info_rate"),
+            }
+        )
+    return out
+
+
+def privacy_prompt_core_leakage_type_table_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    for row in rows:
+        out.append(
+            {
+                "model": paper_model_display(row.get("model_label")),
+                "baseline_judged": row.get("baseline_stepfun"),
+                "prompt_judged": row.get("prompt_stepfun"),
+                "baseline_intent": pct_pm_text(row, "baseline_intent4_rate"),
+                "prompt_intent": pct_pm_text(row, "prompt_intent4_rate"),
+                "baseline_answer": pct_pm_text(row, "baseline_answer_rate"),
+                "prompt_answer": pct_pm_text(row, "prompt_answer_rate"),
+                "baseline_full": pct_pm_text(row, "baseline_full_info_rate"),
+                "prompt_full": pct_pm_text(row, "prompt_full_info_rate"),
             }
         )
     return out
@@ -1787,7 +1893,17 @@ def plot_training_prompt_trajectories(
     plotted_y: list[float] = []
     trajectory_rows: list[dict[str, Any]] = []
 
-    def draw_point(row: dict[str, Any] | None, xy: tuple[float, float] | None, color: str, marker: str, label: str, filled: bool) -> None:
+    def draw_point(
+        row: dict[str, Any] | None,
+        xy: tuple[float, float] | None,
+        color: str,
+        marker: str,
+        label: str,
+        filled: bool,
+        *,
+        point_label: str,
+        label_offset: tuple[float, float],
+    ) -> None:
         if xy is None:
             return
         plotted_x.append(xy[0])
@@ -1821,9 +1937,31 @@ def plot_training_prompt_trajectories(
                 fontsize=8,
                 color=color,
             )
+        else:
+            ax.annotate(
+                point_label,
+                xy=xy,
+                xytext=label_offset,
+                textcoords="offset points",
+                fontsize=8.5,
+                color=color,
+                ha="left" if label_offset[0] >= 0 else "right",
+                va="bottom" if label_offset[1] >= 0 else "top",
+                bbox={"boxstyle": "round,pad=0.18", "fc": "white", "ec": "none", "alpha": 0.82},
+                zorder=5,
+            )
 
     if base_xy is not None:
-        draw_point(base_row, base_xy, "#1f2421", "o", "Base Qwen3 4B", True)
+        draw_point(
+            base_row,
+            base_xy,
+            "#1f2421",
+            "o",
+            "Base Qwen3 4B",
+            True,
+            point_label="Base",
+            label_offset=(-10, 10),
+        )
 
     for item in trajectories:
         color = str(item["color"])
@@ -1831,8 +1969,27 @@ def plot_training_prompt_trajectories(
         prompt_row = item["prompt"]
         normal_xy = metric_xy(normal_row)
         prompt_xy = metric_xy(prompt_row)
-        draw_point(normal_row, normal_xy, color, "s", str(item["family"]), True)
-        draw_point(prompt_row, prompt_xy, color, "D", f"{item['family']} + Privacy Prompt", False)
+        is_privacy_family = item["family"] == "Task+Privacy Training"
+        draw_point(
+            normal_row,
+            normal_xy,
+            color,
+            "s",
+            str(item["family"]),
+            True,
+            point_label="Task+Privacy s50" if is_privacy_family else "Task s50",
+            label_offset=(8, 10 if is_privacy_family else 12),
+        )
+        draw_point(
+            prompt_row,
+            prompt_xy,
+            color,
+            "D",
+            f"{item['family']} + Privacy Prompt",
+            False,
+            point_label="Task+Privacy s50 + prompt" if is_privacy_family else "Task s50 + prompt",
+            label_offset=(-8, -12 if is_privacy_family else -18),
+        )
         if base_xy is not None and normal_xy is not None:
             ax.annotate(
                 "",
@@ -1880,8 +2037,10 @@ def plot_training_prompt_trajectories(
 
     ax.set_xlabel("Strict Chain Success (%)")
     ax.set_ylabel("Privacy Leakage (%)")
-    ax.set_xlim(0, 100)
-    ax.set_ylim(0, 100)
+    x_low, x_high = rounded_limits(plotted_x, min_pad=3.0)
+    y_low, y_high = rounded_limits(plotted_y, min_pad=5.0)
+    ax.set_xlim(x_low, x_high)
+    ax.set_ylim(y_low, y_high)
     ax.xaxis.set_major_locator(MaxNLocator(nbins=6))
     ax.yaxis.set_major_locator(MaxNLocator(nbins=6))
     add_minor_grid(ax)
@@ -1932,12 +2091,16 @@ def build_viewer(args: argparse.Namespace) -> None:
 
     plot_privacy_prompt_accuracy_leakage(prompt_rows_main, plots_dir / "privacy_prompt_accuracy_leakage.svg")
     plot_privacy_prompt_accuracy_leakage(prompt_rows_main, plots_dir / "privacy_prompt_accuracy_leakage_annotated.svg", annotate=True)
+    plot_privacy_prompt_core_leakage_types(prompt_rows_main, plots_dir / "privacy_prompt_core_leakage_types.svg")
+    plot_privacy_prompt_core_leakage_types(prompt_rows_main, plots_dir / "privacy_prompt_core_leakage_types_annotated.svg", annotate=True)
     plot_privacy_prompt_leakage_types(prompt_rows_main, plots_dir / "privacy_prompt_leakage_types.svg")
     plot_privacy_prompt_leakage_types(prompt_rows_main, plots_dir / "privacy_prompt_leakage_types_annotated.svg", annotate=True)
     plot_privacy_prompt_query_behavior(prompt_rows_main, plots_dir / "privacy_prompt_query_behavior.svg")
     plot_privacy_prompt_query_behavior(prompt_rows_main, plots_dir / "privacy_prompt_query_behavior_annotated.svg", annotate=True)
     plot_privacy_prompt_accuracy_leakage(prompt_rows, plots_dir / "privacy_prompt_accuracy_leakage_with_checkpoints.svg")
     plot_privacy_prompt_accuracy_leakage(prompt_rows, plots_dir / "privacy_prompt_accuracy_leakage_with_checkpoints_annotated.svg", annotate=True)
+    plot_privacy_prompt_core_leakage_types(prompt_rows, plots_dir / "privacy_prompt_core_leakage_types_with_checkpoints.svg")
+    plot_privacy_prompt_core_leakage_types(prompt_rows, plots_dir / "privacy_prompt_core_leakage_types_with_checkpoints_annotated.svg", annotate=True)
     plot_privacy_prompt_leakage_types(prompt_rows, plots_dir / "privacy_prompt_leakage_types_with_checkpoints.svg")
     plot_privacy_prompt_leakage_types(prompt_rows, plots_dir / "privacy_prompt_leakage_types_with_checkpoints_annotated.svg", annotate=True)
     plot_privacy_prompt_query_behavior(prompt_rows, plots_dir / "privacy_prompt_query_behavior_with_checkpoints.svg")
@@ -2114,6 +2277,19 @@ def build_viewer(args: argparse.Namespace) -> None:
     ]
     prompt_accuracy_rows = privacy_prompt_table_rows(prompt_rows_main)
     prompt_table = table(prompt_accuracy_headers, prompt_accuracy_rows)
+    prompt_core_leakage_type_headers = [
+        ("model", "Model"),
+        ("baseline_judged", "Baseline Judged"),
+        ("prompt_judged", "Prompt Judged"),
+        ("baseline_intent", "Baseline Intent"),
+        ("prompt_intent", "Prompt Intent"),
+        ("baseline_answer", "Baseline Answer"),
+        ("prompt_answer", "Prompt Answer"),
+        ("baseline_full", "Baseline Full Claim"),
+        ("prompt_full", "Prompt Full Claim"),
+    ]
+    prompt_core_leakage_type_rows = privacy_prompt_core_leakage_type_table_rows(prompt_rows_main)
+    prompt_core_leakage_type_table = table(prompt_core_leakage_type_headers, prompt_core_leakage_type_rows)
     prompt_leakage_type_headers = [
         ("model", "Model"),
         ("baseline_judged", "Baseline Judged"),
@@ -2247,6 +2423,13 @@ def build_viewer(args: argparse.Namespace) -> None:
         prompt_accuracy_rows,
         "Final 16k held-out test privacy-prompt effect on strict-chain success and privacy leakage. Values include SEM over repeat means where available.",
         "tab:privacy_prompt_accuracy_leakage",
+    )
+    write_latex_table(
+        tables_dir / "privacy_prompt_core_leakage_types.tex",
+        prompt_core_leakage_type_headers,
+        prompt_core_leakage_type_rows,
+        "Final 16k held-out test privacy-prompt effect on the three core leakage types: intent, answer, and full-information claim leakage.",
+        "tab:privacy_prompt_core_leakage_types",
     )
     write_latex_table(
         tables_dir / "privacy_prompt_leakage_types.tex",
@@ -2540,14 +2723,18 @@ def build_viewer(args: argparse.Namespace) -> None:
     </section>
     <section id="prompt-leakage-types" class="figure">
       <h2>Privacy Prompt Effect: Leakage Types</h2>
-      <div class="note">Paper-ready final 16k held-out test refresh, excluding trained checkpoints. Intent leakage is the StepFun intent score >= 4. Answer leakage means at least one private QA answer was judged correct. Full-information claim is the strict generated-claim judge. Lenient claim diagnostic includes partial private claims and approximate matches; see the definition table below. Error bars are SEM over repeat means when repeats are available.</div>
+      <div class="note">Paper-ready final 16k held-out test refresh, excluding trained checkpoints. The first plot keeps the three core leakage types side by side: intent score >= 4, answer leakage, and full-information claim leakage. The diagnostic four-panel copy below adds the lenient claim diagnostic, which includes partial private claims and approximate matches.</div>
+      <img src="plots/privacy_prompt_core_leakage_types.svg" alt="Privacy prompt effect on core leakage types">
+      <div class="links"><a href="plots/privacy_prompt_core_leakage_types.svg">SVG</a><a href="plots/privacy_prompt_core_leakage_types.pdf">PDF</a><a href="plots/privacy_prompt_core_leakage_types_annotated.svg">Annotated SVG</a><a href="tables/privacy_prompt_core_leakage_types.tex">LaTeX table</a></div>
+      {prompt_core_leakage_type_table}
+      <h3>Diagnostic Four-Metric Breakdown</h3>
       <img src="plots/privacy_prompt_leakage_types.svg" alt="Privacy prompt effect by leakage type">
       <div class="links"><a href="plots/privacy_prompt_leakage_types.svg">SVG</a><a href="plots/privacy_prompt_leakage_types.pdf">PDF</a><a href="plots/privacy_prompt_leakage_types_annotated.svg">Annotated SVG</a><a href="tables/privacy_prompt_leakage_types.tex">LaTeX table</a></div>
       {prompt_leakage_type_table}
     </section>
     <section id="prompt-query" class="figure">
       <h2>Privacy Prompt Effect: Query And Retrieval Behavior</h2>
-      <div class="note">Paper-ready final 16k held-out test refresh, excluding trained checkpoints. Counts are means over successful rollout rows for each condition. Chroma Context-1 uses the medium OpenRouter configuration.</div>
+      <div class="note">Paper-ready final 16k held-out test refresh, excluding trained checkpoints. Counts are means over successful rollout rows for each condition. Web-query/local-search panels share a y-axis scale, and local-read/web-read panels share a y-axis scale, so paired behavior is directly comparable. Chroma Context-1 uses the medium OpenRouter configuration.</div>
       <img src="plots/privacy_prompt_query_behavior.svg" alt="Privacy prompt query and retrieval behavior">
       <div class="links"><a href="plots/privacy_prompt_query_behavior.svg">SVG</a><a href="plots/privacy_prompt_query_behavior.pdf">PDF</a><a href="plots/privacy_prompt_query_behavior_annotated.svg">Annotated SVG</a><a href="tables/privacy_prompt_query_behavior.tex">LaTeX table</a></div>
       {prompt_query_table}
@@ -2573,7 +2760,10 @@ def build_viewer(args: argparse.Namespace) -> None:
       <h3>Prompt Accuracy And Leakage</h3>
       <img src="plots/privacy_prompt_accuracy_leakage_with_checkpoints.svg" alt="Privacy prompt accuracy and leakage with trained checkpoints">
       <div class="links"><a href="plots/privacy_prompt_accuracy_leakage_with_checkpoints.svg">SVG</a><a href="plots/privacy_prompt_accuracy_leakage_with_checkpoints.pdf">PDF</a><a href="plots/privacy_prompt_accuracy_leakage_with_checkpoints_annotated.svg">Annotated SVG</a></div>
-      <h3>Prompt Leakage Types</h3>
+      <h3>Core Leakage Types</h3>
+      <img src="plots/privacy_prompt_core_leakage_types_with_checkpoints.svg" alt="Core privacy prompt leakage types with trained checkpoints">
+      <div class="links"><a href="plots/privacy_prompt_core_leakage_types_with_checkpoints.svg">SVG</a><a href="plots/privacy_prompt_core_leakage_types_with_checkpoints.pdf">PDF</a><a href="plots/privacy_prompt_core_leakage_types_with_checkpoints_annotated.svg">Annotated SVG</a></div>
+      <h3>Prompt Leakage Types: Diagnostic Four-Metric Copy</h3>
       <img src="plots/privacy_prompt_leakage_types_with_checkpoints.svg" alt="Privacy prompt leakage types with trained checkpoints">
       <div class="links"><a href="plots/privacy_prompt_leakage_types_with_checkpoints.svg">SVG</a><a href="plots/privacy_prompt_leakage_types_with_checkpoints.pdf">PDF</a><a href="plots/privacy_prompt_leakage_types_with_checkpoints_annotated.svg">Annotated SVG</a></div>
       <h3>Prompt Query And Retrieval</h3>
@@ -2630,6 +2820,9 @@ def build_viewer(args: argparse.Namespace) -> None:
       <h3>Final Privacy Prompt Summary</h3>
       <div class="links"><a href="tables/privacy_prompt_accuracy_leakage.tex">LaTeX table</a></div>
       {prompt_table}
+      <h3>Final Privacy Prompt Core Leakage Types</h3>
+      <div class="links"><a href="tables/privacy_prompt_core_leakage_types.tex">LaTeX table</a></div>
+      {prompt_core_leakage_type_table}
       <h3>Final Privacy Prompt Leakage Types</h3>
       <div class="links"><a href="tables/privacy_prompt_leakage_types.tex">LaTeX table</a></div>
       {prompt_leakage_type_table}
