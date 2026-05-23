@@ -16,7 +16,7 @@ from typing import Any
 import numpy as np
 from matplotlib.lines import Line2D
 from matplotlib import pyplot as plt
-from matplotlib.ticker import MaxNLocator
+from matplotlib.ticker import MaxNLocator, MultipleLocator
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -229,6 +229,13 @@ def add_minor_grid(ax: Any, *, axis: str = "both") -> None:
     ax.grid(True, which="minor", axis=axis, alpha=0.12, linestyle="--")
 
 
+def set_percent_y_axis(ax: Any) -> None:
+    ax.set_ylim(0, 100)
+    ax.yaxis.set_major_locator(MultipleLocator(10))
+    ax.yaxis.set_minor_locator(MultipleLocator(5))
+    add_minor_grid(ax, axis="y")
+
+
 def rounded_limits(values: list[float], *, min_pad: float, frac_pad: float = 0.12, step: float = 5.0) -> tuple[float, float]:
     finite = [value for value in values if math.isfinite(value)]
     if not finite:
@@ -350,9 +357,7 @@ def plot_privacy_prompt_accuracy_leakage(rows: list[dict[str, Any]], path: Path,
         ax.set_xlabel("Model")
         ax.set_xticks(x)
         ax.set_xticklabels(labels, rotation=25, ha="right")
-        ax.set_ylim(0, 100)
-        ax.set_yticks(range(0, 101, 20))
-        add_minor_grid(ax, axis="y")
+        set_percent_y_axis(ax)
     handles, legend_labels = axes[0].get_legend_handles_labels()
     fig.legend(handles, legend_labels, loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.16))
     save_figure(fig, path)
@@ -412,13 +417,11 @@ def plot_privacy_prompt_leakage_types(rows: list[dict[str, Any]], path: Path, *,
             annotate_ns(ax, baseline_pos, baseline_vals, baseline_counts, percent=True, y_max=100)
             annotate_ns(ax, prompt_pos, prompt_vals, prompt_counts, percent=True, y_max=100)
         ax.set_title(title)
-        ax.set_ylabel("StepFun-Judged Rollouts (%)")
+        ax.set_ylabel("% Occurrence")
         ax.set_xlabel("Model")
         ax.set_xticks(x)
         ax.set_xticklabels(labels, rotation=25, ha="right")
-        ax.set_ylim(0, 100)
-        ax.set_yticks(range(0, 101, 20))
-        add_minor_grid(ax, axis="y")
+        set_percent_y_axis(ax)
     handles, legend_labels = axes.flat[0].get_legend_handles_labels()
     fig.legend(handles, legend_labels, loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.04))
     save_figure(fig, path)
@@ -480,10 +483,8 @@ def plot_privacy_prompt_core_leakage_types(rows: list[dict[str, Any]], path: Pat
         ax.set_xlabel("Model")
         ax.set_xticks(x)
         ax.set_xticklabels(labels, rotation=25, ha="right")
-        ax.set_ylim(0, 100)
-        ax.set_yticks(range(0, 101, 20))
-        add_minor_grid(ax, axis="y")
-    axes[0].set_ylabel("StepFun-Judged Rollouts (%)")
+        set_percent_y_axis(ax)
+    axes[0].set_ylabel("% Occurrence")
     handles, legend_labels = axes[0].get_legend_handles_labels()
     fig.legend(handles, legend_labels, loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.10))
     save_figure(fig, path)
@@ -495,10 +496,10 @@ def plot_privacy_prompt_query_behavior(rows: list[dict[str, Any]], path: Path, *
         return
     labels = [paper_model_display(str(row["model_label"])) for row in rows]
     metrics = [
-        ("Visible Web Queries", "baseline_web_queries", "prompt_web_queries", "search"),
-        ("Local Document Searches", "baseline_local_searches", "prompt_local_searches", "search"),
-        ("Local Document Reads", "baseline_local_doc_reads", "prompt_local_doc_reads", "reads"),
-        ("Web Document Reads", "baseline_web_doc_reads", "prompt_web_doc_reads", "reads"),
+        ("Mean Visible Queries", "baseline_web_queries", "prompt_web_queries", "search"),
+        ("Mean Local Searches", "baseline_local_searches", "prompt_local_searches", "search"),
+        ("Mean Local Reads", "baseline_local_doc_reads", "prompt_local_doc_reads", "reads"),
+        ("Mean Web Reads", "baseline_web_doc_reads", "prompt_web_doc_reads", "reads"),
     ]
     fig, axes = plt.subplots(2, 2, figsize=(13.2, 7.9))
     x = list(range(len(rows)))
@@ -541,7 +542,7 @@ def plot_privacy_prompt_query_behavior(rows: list[dict[str, Any]], path: Path, *
         if annotate:
             annotate_ns(ax, baseline_pos, baseline_vals, baseline_counts, percent=False, y_max=y_max)
             annotate_ns(ax, prompt_pos, prompt_vals, prompt_counts, percent=False, y_max=y_max)
-        ax.set_ylabel(f"{ylabel}\nMean Count Per Rollout")
+        ax.set_ylabel(ylabel)
         ax.set_xlabel("Model")
         ax.set_xticks(x)
         ax.set_xticklabels(labels, rotation=25, ha="right")
@@ -682,9 +683,7 @@ def plot_task_performance(rows: list[dict[str, Any]], path: Path, *, annotate: b
     ax.set_xlabel("Model")
     ax.set_xticks(x)
     ax.set_xticklabels(labels, rotation=25, ha="right")
-    ax.set_ylim(0, 100)
-    ax.set_yticks(range(0, 101, 20))
-    add_minor_grid(ax, axis="y")
+    set_percent_y_axis(ax)
     ax.legend(loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.20))
     save_figure(fig, path)
 
@@ -739,7 +738,7 @@ def plot_retrieval_behavior(rows: list[dict[str, Any]], path: Path, *, annotate:
     if annotate:
         for xi, row in zip(x, rows):
             ax.text(xi, y_max * 0.95, f"n={int(row.get('n') or 0)}", ha="center", va="bottom", fontsize=9)
-    ax.set_ylabel("Mean Count Per Rollout")
+    ax.set_ylabel("Mean Count")
     ax.set_xlabel("Model")
     ax.set_xticks(x)
     ax.set_xticklabels(labels, rotation=25, ha="right")
@@ -922,9 +921,7 @@ def plot_leakage_relationships(rows: list[dict[str, Any]], path: Path, *, annota
     axes[0].set_xlabel("Chain Length (Hops)")
     axes[0].set_ylabel("Privacy Leakage Rate (%)")
     axes[0].set_xticks(chain_values)
-    axes[0].set_ylim(0, 100)
-    axes[0].set_yticks(range(0, 101, 20))
-    add_minor_grid(axes[0])
+    set_percent_y_axis(axes[0])
     axes[0].legend(loc="upper center", frameon=False, bbox_to_anchor=(0.5, 1.13))
 
     bins = [(0.0, 0.2), (0.2, 0.4), (0.4, 0.6), (0.6, 0.8), (0.8, 1.000001)]
@@ -1916,14 +1913,14 @@ def plot_training_prompt_trajectories(
             xerr=x_sem,
             yerr=y_sem,
             fmt=marker,
-            markersize=7.5,
+            markersize=6.2,
             markerfacecolor=color if filled else "white",
             markeredgecolor=color,
-            markeredgewidth=1.5,
+            markeredgewidth=1.35,
             color=color,
             ecolor=color,
-            elinewidth=1.0,
-            capsize=2.5,
+            elinewidth=1.15,
+            capsize=3.0,
             label=label,
             zorder=4,
         )
@@ -1977,7 +1974,7 @@ def plot_training_prompt_trajectories(
             "s",
             str(item["family"]),
             True,
-            point_label="Task+Privacy s50" if is_privacy_family else "Task s50",
+            point_label="Task+Privacy" if is_privacy_family else "Task",
             label_offset=(8, 10 if is_privacy_family else 12),
         )
         draw_point(
@@ -1987,7 +1984,7 @@ def plot_training_prompt_trajectories(
             "D",
             f"{item['family']} + Privacy Prompt",
             False,
-            point_label="Task+Privacy s50 + prompt" if is_privacy_family else "Task s50 + prompt",
+            point_label="Task+Privacy + prompt" if is_privacy_family else "Task + prompt",
             label_offset=(-8, -12 if is_privacy_family else -18),
         )
         if base_xy is not None and normal_xy is not None:
@@ -2037,22 +2034,26 @@ def plot_training_prompt_trajectories(
 
     ax.set_xlabel("Strict Chain Success (%)")
     ax.set_ylabel("Privacy Leakage (%)")
-    x_low, x_high = rounded_limits(plotted_x, min_pad=3.0)
+    x_low, x_high = (45.0, 65.0)
+    if plotted_x and (min(plotted_x) < x_low or max(plotted_x) > x_high):
+        x_low, x_high = rounded_limits(plotted_x, min_pad=3.0)
     y_low, y_high = rounded_limits(plotted_y, min_pad=5.0)
     ax.set_xlim(x_low, x_high)
     ax.set_ylim(y_low, y_high)
-    ax.xaxis.set_major_locator(MaxNLocator(nbins=6))
-    ax.yaxis.set_major_locator(MaxNLocator(nbins=6))
+    ax.set_xticks([x_low, *[tick for tick in [50, 55, 60] if x_low < tick < x_high], x_high])
+    ax.xaxis.set_minor_locator(MultipleLocator(2.5))
+    ax.yaxis.set_major_locator(MultipleLocator(10))
+    ax.yaxis.set_minor_locator(MultipleLocator(5))
     add_minor_grid(ax)
     legend_handles = [
-        Line2D([0], [0], marker="o", color="none", markerfacecolor="#1f2421", markeredgecolor="#1f2421", markersize=7.5, label="Base Qwen3 4B"),
-        Line2D([0], [0], marker="s", color="none", markerfacecolor="#D55E00", markeredgecolor="#D55E00", markersize=7.5, label="Task training"),
-        Line2D([0], [0], marker="s", color="none", markerfacecolor="#009E73", markeredgecolor="#009E73", markersize=7.5, label="Task+privacy training"),
-        Line2D([0], [0], marker="D", color="none", markerfacecolor="white", markeredgecolor="#5F6F7A", markersize=7.5, label="+ privacy prompt"),
+        Line2D([0], [0], marker="o", color="none", markerfacecolor="#1f2421", markeredgecolor="#1f2421", markersize=6.2, label="Base Qwen3 4B"),
+        Line2D([0], [0], marker="s", color="none", markerfacecolor="#D55E00", markeredgecolor="#D55E00", markersize=6.2, label="Task training"),
+        Line2D([0], [0], marker="s", color="none", markerfacecolor="#009E73", markeredgecolor="#009E73", markersize=6.2, label="Task+privacy training"),
+        Line2D([0], [0], marker="D", color="none", markerfacecolor="white", markeredgecolor="#5F6F7A", markersize=6.2, label="+ privacy prompt"),
         Line2D([0], [0], color="#5F6F7A", lw=1.6, label="training effect"),
         Line2D([0], [0], color="#5F6F7A", lw=1.25, linestyle="--", label="prompt effect"),
     ]
-    fig.legend(handles=legend_handles, loc="upper center", ncols=3, frameon=False, bbox_to_anchor=(0.5, 1.16))
+    ax.legend(handles=legend_handles, loc="lower center", ncols=3, frameon=False, bbox_to_anchor=(0.5, 1.01))
     save_figure(fig, path)
     return trajectory_rows
 
@@ -2681,7 +2682,7 @@ def build_viewer(args: argparse.Namespace) -> None:
 <body>
   <header>
     <h1>Privacy HopQA q30 Paper Figure Preview: Current Refresh Snapshot</h1>
-    <div class="note">Generated {esc(generated_at)}. The refresh status table is the source of truth for what is final. The main prompt-effect, leakage-relationship, and training-trajectory figures below use the final 16k-generation held-out test refresh unless a section is explicitly marked legacy.</div>
+    <div class="note">Generated {esc(generated_at)}. The refresh status table is the source of truth for what is final. The main prompt-effect, leakage-relationship, and training-trajectory figures below use the final 16k-generation held-out test split only unless a section is explicitly marked legacy.</div>
     <nav>
       <a href="#plot-status">Plot Status</a>
       <a href="#refresh-status">Refresh Status</a>
@@ -2741,7 +2742,7 @@ def build_viewer(args: argparse.Namespace) -> None:
     </section>
     <section id="training-effect" class="figure">
       <h2>Effect Of Training: Accuracy And Privacy</h2>
-      <div class="note">Paper-ready final 16k held-out test refresh. Solid arrows move from base Qwen3 4B to the step50 checkpoint. Dashed arrows move from that checkpoint to the same checkpoint with the privacy prompt. Error bars are SEM over repeat means.</div>
+      <div class="note">Paper-ready final 16k held-out test refresh. Solid arrows move from base Qwen3 4B to checkpoint 50. Dashed arrows move from checkpoint 50 to the same checkpoint with the privacy prompt. Error bars are SEM over repeat means.</div>
       <img src="plots/final_training_prompt_trajectories.svg" alt="Training and prompting trajectories for standard and privacy-aware situational reward models">
       <div class="links"><a href="plots/final_training_prompt_trajectories.svg">SVG</a><a href="plots/final_training_prompt_trajectories.pdf">PDF</a><a href="plots/final_training_prompt_trajectories_annotated.svg">Annotated SVG</a><a href="tables/training_prompt_trajectories.tex">LaTeX trajectory table</a><a href="tables/final_condition_summary.tex">LaTeX condition table</a></div>
       {final_condition_table}
