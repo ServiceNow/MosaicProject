@@ -47,6 +47,10 @@ MODEL_NAMES = {
     "gemma4_31b_it": "Gemma 4 31B IT",
     "rrf_4b_hopacc_s102": "Qwen3 4B HopAcc",
     "rrf_4b_prefix_step_s109": "Qwen3 4B Prefix-Step",
+    "qwen3_4b_situational_reward_s50": "Qwen3 4B Situational step50",
+    "qwen3_4b_situational_reward_current_s80": "Qwen3 4B Situational step90",
+    "qwen3_4b_situational_reward_s100": "Qwen3 4B Situational step100",
+    "qwen3_4b_situational_reward_live_s98_actor": "Qwen3 4B Situational live actor",
 }
 
 
@@ -288,7 +292,14 @@ def answer_matches(predicted: Any, answers: list[str], f1_threshold: float = 0.7
 
 
 def model_display(model_label: str) -> str:
-    return MODEL_NAMES.get(model_label, model_label)
+    if model_label in MODEL_NAMES:
+        return MODEL_NAMES[model_label]
+    match = re.fullmatch(r"(.+)_iter(\d+)", model_label)
+    if match:
+        return f"{model_display(match.group(1))} iter {match.group(2)}"
+    if model_label.startswith("openrouter_"):
+        return "OpenRouter " + model_label.removeprefix("openrouter_").replace("_", "/")
+    return model_label
 
 
 def model_sort_key(model_label: str) -> tuple[int, str]:
@@ -405,7 +416,11 @@ def model_roots(artifact_root: Path) -> list[Path]:
     root = artifact_root / "model_runs"
     if not root.exists():
         return []
-    return sorted(path for path in root.iterdir() if path.is_dir())
+    return sorted(
+        path
+        for path in root.iterdir()
+        if path.is_dir() and not (path / "config" / "ignore_in_analysis.json").exists()
+    )
 
 
 def row_key(row: dict[str, Any]) -> tuple[str, str, str]:

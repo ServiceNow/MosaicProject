@@ -40,6 +40,10 @@ SITUATIONAL_ROOT = Path(
     "/mnt/llmd/results/exps/alexg/reason/"
     "privacy_hopqa_q30_4b_situational_reward_lr1e6_ga4096_rep4_50s_20260520173055"
 )
+PRIVREWARD_TAU05_ROOT = Path(
+    "/mnt/llmd/results/exps/alexg/reason/"
+    "privacy_hopqa_q30_4b_situational_privreward_tau05_lr1e6_rep8_200s_20260522191644"
+)
 SITUATIONAL_LIVE_ACTOR_URL = "http://dns-7583e47f-7f4f-4369-bd78-28f115897b3e-phrl22d2baf9-3:8080"
 SITUATIONAL_LIVE_ACTOR_MODEL = str(SITUATIONAL_ROOT / "finetune" / "current")
 
@@ -120,6 +124,19 @@ MODELS: list[dict[str, Any]] = [
         "mem": 384,
         "tp": 1,
         "latest_step_hint": 100,
+    },
+    {
+        # Immutable step-50 checkpoint from the privacy-reward tau=0.5 run.
+        "model_label": "qwen3_4b_privreward_tau05_s50",
+        "served_model_name": "qwen3_4b_privreward_tau05_s50",
+        "model_path": str(PRIVREWARD_TAU05_ROOT / "finetune" / "intermediate" / "50"),
+        "tokenizer_name": str(PRIVREWARD_TAU05_ROOT / "finetune" / "intermediate" / "50"),
+        "gpu": 1,
+        "cpu": 48,
+        "mem": 384,
+        "tp": 1,
+        "latest_step_hint": 50,
+        "include_by_default": False,
     },
     {
         # Non-immutable exploratory endpoint: actor vLLM has received weight

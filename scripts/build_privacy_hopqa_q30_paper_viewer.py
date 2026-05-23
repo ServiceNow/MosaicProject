@@ -14,6 +14,7 @@ import tempfile
 from typing import Any
 
 import numpy as np
+from matplotlib.lines import Line2D
 from matplotlib import pyplot as plt
 from matplotlib.ticker import MaxNLocator
 
@@ -37,6 +38,12 @@ DEFAULT_EXTERNAL_FINAL_ARTIFACT_ROOT = Path(
 DEFAULT_EXTERNAL_PRIVACY_PROMPT_ARTIFACT_ROOT = Path(
     "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_external_final_rollouts_privacy_prompt_16kgen_32kctx_helperfe_20260522"
 )
+DEFAULT_PRIVACY_AWARE_FINAL_EVAL_ARTIFACT_ROOT = Path(
+    "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_final_eval_privreward_tau05_s50_16kgen_32kctx_helperfe_20260523"
+)
+DEFAULT_PRIVACY_AWARE_FINAL_PRIVACY_PROMPT_ARTIFACT_ROOT = Path(
+    "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_final_eval_privreward_tau05_s50_privacy_prompt_16kgen_32kctx_helperfe_20260523"
+)
 BASELINE_COLOR = "#5F6F7A"
 PROMPT_COLOR = "#0072B2"
 HOP_COLOR = "#0072B2"
@@ -54,6 +61,16 @@ FINAL_SITUATIONAL_LABELS = [
     "qwen3_4b_situational_reward_s50",
     "qwen3_4b_situational_reward_s100",
 ]
+STANDARD_SITUATIONAL_CHECKPOINT_LABELS = [
+    "qwen3_4b_situational_reward_s50",
+    "qwen3_4b_situational_reward_s100",
+]
+PRIVACY_AWARE_SITUATIONAL_LABELS = [
+    "qwen3_4b_privreward_tau05_s50",
+]
+PAPER_MODEL_NAMES = {
+    "qwen3_4b_privreward_tau05_s50": "Qwen3 4B Privacy-aware step50",
+}
 
 
 def configure_training_family(args: argparse.Namespace) -> None:
@@ -75,6 +92,11 @@ def configure_training_family(args: argparse.Namespace) -> None:
 
 def esc(value: Any) -> str:
     return html.escape("" if value is None else str(value), quote=True)
+
+
+def paper_model_display(model_label: Any) -> str:
+    label = str(model_label)
+    return PAPER_MODEL_NAMES.get(label, live.model_display(label))
 
 
 def pct_text(value: Any, digits: int = 1) -> str:
@@ -1120,9 +1142,14 @@ def final_situational_status_rows(rows: list[dict[str, Any]], condition: str, gr
     return sorted(out, key=lambda row: (row["group"], order.get(str(row["model_label"]), 999), str(row["model_label"])))
 
 
-def final_situational_metric_rows(artifact_root: Path, condition: str, expected: int = 1032) -> list[dict[str, Any]]:
+def final_situational_metric_rows(
+    artifact_root: Path,
+    condition: str,
+    expected: int = 1032,
+    model_labels: list[str] | None = None,
+) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
-    for model_label in FINAL_SITUATIONAL_LABELS:
+    for model_label in (model_labels or FINAL_SITUATIONAL_LABELS):
         root = artifact_root / "model_runs" / model_label
         rollout_rows = live.read_jsonl(root / "tables" / "rollout_index.jsonl")
         system_error_rows = live.read_jsonl(root / "tables" / "rollout_system_errors.jsonl")
@@ -1152,7 +1179,7 @@ def final_situational_metric_rows(artifact_root: Path, condition: str, expected:
         rows.append(
             {
                 "condition": condition,
-                "model": live.model_display(model_label),
+                "model": paper_model_display(model_label),
                 "model_label": model_label,
                 "rollout_rows": len(rollout_rows),
                 "rollout_unique": rollout_unique,
@@ -1187,6 +1214,26 @@ def final_situational_table_rows(rows: list[dict[str, Any]]) -> list[dict[str, A
             "privacy_leakage": pct_text(row.get("privacy_leakage_rate")),
             "strict_privacy": pct_text(row.get("strict_privacy_rate")),
             "status": row.get("status"),
+        }
+        for row in rows
+    ]
+
+
+def training_prompt_trajectory_table_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [
+        {
+            "family": row.get("family"),
+            "checkpoint": row.get("checkpoint"),
+            "normal_attempts": row.get("normal_attempts"),
+            "normal_judged": row.get("normal_judged"),
+            "normal_success": pct_text(row.get("normal_strict_chain_success_rate")),
+            "normal_leakage": pct_text(row.get("normal_privacy_leakage_rate")),
+            "normal_status": row.get("normal_status"),
+            "prompt_attempts": row.get("prompt_attempts"),
+            "prompt_judged": row.get("prompt_judged"),
+            "prompt_success": pct_text(row.get("prompt_strict_chain_success_rate")),
+            "prompt_leakage": pct_text(row.get("prompt_privacy_leakage_rate")),
+            "prompt_status": row.get("prompt_status"),
         }
         for row in rows
     ]
@@ -1357,6 +1404,182 @@ def plot_final_situational_training_effect(
     save_figure(fig, path)
 
 
+def row_by_model(rows: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    return {str(row.get("model_label")): row for row in rows}
+
+
+def metric_xy(row: dict[str, Any] | None) -> tuple[float, float] | None:
+    if not row:
+        return None
+    x_value = live.as_float(row.get("strict_chain_success_rate"))
+    y_value = live.as_float(row.get("privacy_leakage_rate"))
+    if x_value is None or y_value is None:
+        return None
+    return (100 * x_value, 100 * y_value)
+
+
+def plot_training_prompt_trajectories(
+    base_row: dict[str, Any] | None,
+    standard_normal_rows: list[dict[str, Any]],
+    standard_prompt_rows: list[dict[str, Any]],
+    privacy_aware_normal_rows: list[dict[str, Any]],
+    privacy_aware_prompt_rows: list[dict[str, Any]],
+    path: Path,
+) -> list[dict[str, Any]]:
+    """Plot base -> trained checkpoint -> same checkpoint with privacy prompt."""
+    panels = [
+        (
+            "Standard Situational Reward",
+            STANDARD_SITUATIONAL_CHECKPOINT_LABELS,
+            row_by_model(standard_normal_rows),
+            row_by_model(standard_prompt_rows),
+        ),
+        (
+            "Privacy-Aware Situational Reward",
+            PRIVACY_AWARE_SITUATIONAL_LABELS,
+            row_by_model(privacy_aware_normal_rows),
+            row_by_model(privacy_aware_prompt_rows),
+        ),
+    ]
+    colors = {
+        "qwen3_4b_situational_reward_s50": "#D55E00",
+        "qwen3_4b_situational_reward_s100": "#0072B2",
+        "qwen3_4b_privreward_tau05_s50": "#009E73",
+    }
+    base_xy = metric_xy(base_row)
+    fig, axes = plt.subplots(1, 2, figsize=(12.4, 4.95), sharey=True)
+    plotted_x: list[float] = []
+    plotted_y: list[float] = []
+    trajectory_rows: list[dict[str, Any]] = []
+
+    for ax, (title, checkpoint_labels, normal_by, prompt_by) in zip(axes, panels):
+        if base_xy is not None:
+            plotted_x.append(base_xy[0])
+            plotted_y.append(base_xy[1])
+            ax.scatter(base_xy[0], base_xy[1], s=76, marker="o", color="#1f2421", zorder=4)
+            ax.text(base_xy[0] + 0.7, base_xy[1] + 0.7, "Base", fontsize=9, color="#1f2421")
+        else:
+            ax.text(0.5, 0.6, "base metrics unavailable", ha="center", va="center", transform=ax.transAxes)
+
+        for index, model_label in enumerate(checkpoint_labels):
+            normal_row = normal_by.get(model_label)
+            prompt_row = prompt_by.get(model_label)
+            normal_xy = metric_xy(normal_row)
+            prompt_xy = metric_xy(prompt_row)
+            color = colors.get(model_label, TRAINED_MODEL_COLOR_PALETTE[index % len(TRAINED_MODEL_COLOR_PALETTE)])
+            label = paper_model_display(model_label).replace("Qwen3 4B ", "")
+            label_y_shift = 1.1 + index * 2.0
+
+            if normal_xy is not None:
+                plotted_x.append(normal_xy[0])
+                plotted_y.append(normal_xy[1])
+                ax.scatter(normal_xy[0], normal_xy[1], s=70, marker="s", color=color, zorder=4)
+                normal_label = label
+                if normal_row and not normal_row.get("complete"):
+                    normal_label += " (partial)"
+                ax.text(normal_xy[0] + 0.7, normal_xy[1] + label_y_shift, normal_label, fontsize=9, color=color)
+                if base_xy is not None:
+                    ax.annotate(
+                        "",
+                        xy=normal_xy,
+                        xytext=base_xy,
+                        arrowprops={"arrowstyle": "->", "color": color, "lw": 1.35, "shrinkA": 5, "shrinkB": 5},
+                        zorder=2,
+                    )
+            else:
+                ax.text(
+                    0.04,
+                    0.10 + 0.08 * index,
+                    f"{label}: waiting for judged normal-prompt rollouts",
+                    transform=ax.transAxes,
+                    fontsize=8,
+                    color=color,
+                )
+
+            if prompt_xy is not None:
+                plotted_x.append(prompt_xy[0])
+                plotted_y.append(prompt_xy[1])
+                ax.scatter(
+                    prompt_xy[0],
+                    prompt_xy[1],
+                    s=74,
+                    marker="D",
+                    facecolor="white",
+                    edgecolor=color,
+                    linewidth=1.7,
+                    zorder=4,
+                )
+                prompt_label = f"{label} + prompt"
+                if prompt_row and not prompt_row.get("complete"):
+                    prompt_label += " (partial)"
+                ax.text(prompt_xy[0] + 0.7, prompt_xy[1] - label_y_shift, prompt_label, fontsize=9, color=color)
+                if normal_xy is not None:
+                    ax.annotate(
+                        "",
+                        xy=prompt_xy,
+                        xytext=normal_xy,
+                        arrowprops={
+                            "arrowstyle": "->",
+                            "color": color,
+                            "lw": 1.35,
+                            "linestyle": "--",
+                            "shrinkA": 5,
+                            "shrinkB": 5,
+                        },
+                        zorder=2,
+                    )
+            elif normal_xy is not None:
+                ax.text(
+                    0.04,
+                    0.10 + 0.08 * index,
+                    f"{label}: waiting for privacy-prompt judgments",
+                    transform=ax.transAxes,
+                    fontsize=8,
+                    color=color,
+                )
+
+            trajectory_rows.append(
+                {
+                    "family": title,
+                    "checkpoint": paper_model_display(model_label),
+                    "normal_attempts": normal_row.get("attempted_unique") if normal_row else 0,
+                    "normal_judged": normal_row.get("privacy_unique") if normal_row else 0,
+                    "normal_status": normal_row.get("status") if normal_row else "waiting for rollouts",
+                    "prompt_attempts": prompt_row.get("attempted_unique") if prompt_row else 0,
+                    "prompt_judged": prompt_row.get("privacy_unique") if prompt_row else 0,
+                    "prompt_status": prompt_row.get("status") if prompt_row else "waiting for rollouts",
+                    "normal_strict_chain_success_rate": normal_row.get("strict_chain_success_rate") if normal_row else None,
+                    "normal_privacy_leakage_rate": normal_row.get("privacy_leakage_rate") if normal_row else None,
+                    "prompt_strict_chain_success_rate": prompt_row.get("strict_chain_success_rate") if prompt_row else None,
+                    "prompt_privacy_leakage_rate": prompt_row.get("privacy_leakage_rate") if prompt_row else None,
+                }
+            )
+
+        ax.set_title(title)
+        ax.set_xlabel("Strict Chain Success (%)")
+        ax.grid(True, alpha=0.25)
+
+    axes[0].set_ylabel("Privacy Leakage (%)")
+    if plotted_x and plotted_y:
+        x_pad = max(4.0, 0.12 * (max(plotted_x) - min(plotted_x) or 1.0))
+        y_pad = max(4.0, 0.12 * (max(plotted_y) - min(plotted_y) or 1.0))
+        for ax in axes:
+            ax.set_xlim(max(0, min(plotted_x) - x_pad), min(100, max(plotted_x) + x_pad))
+            ax.set_ylim(max(0, min(plotted_y) - y_pad), min(100, max(plotted_y) + y_pad))
+            ax.xaxis.set_major_locator(MaxNLocator(nbins=5))
+            ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
+    legend_handles = [
+        Line2D([0], [0], marker="o", color="none", markerfacecolor="#1f2421", markeredgecolor="#1f2421", markersize=7.5, label="Base model"),
+        Line2D([0], [0], marker="s", color="none", markerfacecolor="#5F6F7A", markeredgecolor="#5F6F7A", markersize=7.5, label="Trained checkpoint"),
+        Line2D([0], [0], marker="D", color="none", markerfacecolor="white", markeredgecolor="#5F6F7A", markersize=7.5, label="Checkpoint + privacy prompt"),
+        Line2D([0], [0], color="#5F6F7A", lw=1.4, label="training"),
+        Line2D([0], [0], color="#5F6F7A", lw=1.4, linestyle="--", label="prompting"),
+    ]
+    fig.legend(handles=legend_handles, loc="upper center", ncols=5, frameon=False, bbox_to_anchor=(0.5, 1.12))
+    save_figure(fig, path)
+    return trajectory_rows
+
+
 def build_viewer(args: argparse.Namespace) -> None:
     paper_style()
     ensure_clean_dir(args.output_dir)
@@ -1416,28 +1639,72 @@ def build_viewer(args: argparse.Namespace) -> None:
         args.final_privacy_prompt_artifact_root,
         "Privacy Prompt",
     )
-    final_training_rows = final_normal_training_rows + final_privacy_prompt_training_rows
+    privacy_aware_normal_training_rows = final_situational_metric_rows(
+        args.privacy_aware_final_eval_artifact_root,
+        "Normal Prompt",
+        model_labels=PRIVACY_AWARE_SITUATIONAL_LABELS,
+    )
+    privacy_aware_prompt_training_rows = final_situational_metric_rows(
+        args.privacy_aware_final_privacy_prompt_artifact_root,
+        "Privacy Prompt",
+        model_labels=PRIVACY_AWARE_SITUATIONAL_LABELS,
+    )
+    final_training_rows = (
+        final_normal_training_rows
+        + final_privacy_prompt_training_rows
+        + privacy_aware_normal_training_rows
+        + privacy_aware_prompt_training_rows
+    )
     final_status_rows = final_situational_status_rows(
-        final_training_rows,
+        final_normal_training_rows,
         "Normal Prompt",
         "16k/32k final trained-model eval",
     )
     final_prompt_status_rows = final_situational_status_rows(
-        final_training_rows,
+        final_privacy_prompt_training_rows,
         "Privacy Prompt",
         "16k/32k final trained-model eval: privacy prompt",
+    )
+    privacy_aware_status_rows = final_situational_status_rows(
+        privacy_aware_normal_training_rows,
+        "Normal Prompt",
+        "16k/32k privacy-aware trained eval",
+    )
+    privacy_aware_prompt_status_rows = final_situational_status_rows(
+        privacy_aware_prompt_training_rows,
+        "Privacy Prompt",
+        "16k/32k privacy-aware trained eval: privacy prompt",
     )
     external_status_rows = model_status_rows(args.external_final_artifact_root, "16k/32k external-model refresh")
     external_prompt_status_rows = model_status_rows(
         args.external_privacy_prompt_artifact_root,
         "16k/32k external-model refresh: privacy prompt",
     )
-    status_rows = final_status_rows + final_prompt_status_rows + external_status_rows + external_prompt_status_rows
+    status_rows = (
+        final_status_rows
+        + final_prompt_status_rows
+        + privacy_aware_status_rows
+        + privacy_aware_prompt_status_rows
+        + external_status_rows
+        + external_prompt_status_rows
+    )
     plot_final_refresh_progress(status_rows, plots_dir / "final_refresh_progress.svg")
     plot_final_situational_training_effect(
         final_normal_training_rows,
         final_privacy_prompt_training_rows,
         plots_dir / "final_situational_training_effect.svg",
+    )
+    base_row = next(
+        (row for row in final_normal_training_rows if row.get("model_label") == BASE_MODEL_LABEL),
+        None,
+    )
+    training_prompt_trajectory_rows = plot_training_prompt_trajectories(
+        base_row,
+        final_normal_training_rows,
+        final_privacy_prompt_training_rows,
+        privacy_aware_normal_training_rows,
+        privacy_aware_prompt_training_rows,
+        plots_dir / "final_training_prompt_trajectories.svg",
     )
     tables_dir.mkdir(parents=True, exist_ok=True)
     latex_path = tables_dir / "leakage_relationship_stats.tex"
@@ -1452,8 +1719,11 @@ def build_viewer(args: argparse.Namespace) -> None:
         "final_privacy_prompt_artifact_root": str(args.final_privacy_prompt_artifact_root),
         "external_final_artifact_root": str(args.external_final_artifact_root),
         "external_privacy_prompt_artifact_root": str(args.external_privacy_prompt_artifact_root),
+        "privacy_aware_final_eval_artifact_root": str(args.privacy_aware_final_eval_artifact_root),
+        "privacy_aware_final_privacy_prompt_artifact_root": str(args.privacy_aware_final_privacy_prompt_artifact_root),
         "final_refresh_status": status_rows,
         "final_situational_training_rows": final_training_rows,
+        "training_prompt_trajectory_rows": training_prompt_trajectory_rows,
         "privacy_prompt_summary": prompt_rows_main,
         "privacy_prompt_summary_with_checkpoints": prompt_rows,
         "training_effect_rows": training_effect_rows,
@@ -1519,6 +1789,23 @@ def build_viewer(args: argparse.Namespace) -> None:
             ("status", "Status"),
         ],
         final_situational_table_rows(final_training_rows),
+    )
+    training_prompt_trajectory_table = table(
+        [
+            ("family", "Training Setup"),
+            ("checkpoint", "Checkpoint"),
+            ("normal_attempts", "Normal Attempts"),
+            ("normal_judged", "Normal Judged"),
+            ("normal_success", "Normal Strict Chain"),
+            ("normal_leakage", "Normal Leakage"),
+            ("normal_status", "Normal Status"),
+            ("prompt_attempts", "Prompt Attempts"),
+            ("prompt_judged", "Prompt Judged"),
+            ("prompt_success", "Prompt Strict Chain"),
+            ("prompt_leakage", "Prompt Leakage"),
+            ("prompt_status", "Prompt Status"),
+        ],
+        training_prompt_trajectory_table_rows(training_prompt_trajectory_rows),
     )
     task_table = table(
         [
@@ -1605,8 +1892,13 @@ def build_viewer(args: argparse.Namespace) -> None:
             },
             {
                 "section": "Effect Of Training: Accuracy And Privacy",
-                "status": "Mixed: normal prompt finalized; privacy prompt partial",
-                "use": "Normal-prompt Qwen3 4B/base, step50, and step100 points are final 16k/32k results. Privacy-prompt points are interim until their Status column says complete.",
+                "status": "Current snapshot",
+                "use": "Standard situational Qwen3 4B base, step50, and step100 points are final 16k/32k results. Newly added privacy-aware step50 rows remain interim until their Status column says complete.",
+            },
+            {
+                "section": "Training And Prompting Trajectories",
+                "status": "Current snapshot",
+                "use": "Use this alternate effect-of-training view for the requested two-segment trajectories: base to checkpoint, then checkpoint to the same checkpoint with the privacy prompt.",
             },
             {
                 "section": "Privacy Prompt Effect: Accuracy And Leakage",
@@ -1746,8 +2038,8 @@ def build_viewer(args: argparse.Namespace) -> None:
 </head>
 <body>
   <header>
-    <h1>Privacy HopQA q30 Paper Figure Preview: Legacy Prompt Plots, Final Refresh Pending</h1>
-    <div class="note">Generated {esc(generated_at)}. The normal-prompt final 16k/32k trained-model eval is complete. The matching privacy-prompt eval and both normal/privacy-prompt external-model refreshes are still running; pending/partial rows are called out in the refresh status table.</div>
+    <h1>Privacy HopQA q30 Paper Figure Preview: Current Refresh Snapshot</h1>
+    <div class="note">Generated {esc(generated_at)}. The refresh status table is the source of truth for what is final. Standard trained-model and external refresh rows are complete in this snapshot; newly added privacy-aware step50 rows are marked partial until their rollout and privacy-judgment counts catch up.</div>
     <nav>
       <a href="#plot-status">Plot Status</a>
       <a href="#refresh-status">Refresh Status</a>
@@ -1755,6 +2047,7 @@ def build_viewer(args: argparse.Namespace) -> None:
       <a href="#prompt-leakage-types">Prompt: Leakage Types</a>
       <a href="#prompt-query">Prompt: Query And Retrieval</a>
       <a href="#training-effect">Training Effect</a>
+      <a href="#training-trajectories">Training Trajectories</a>
       <a href="#with-checkpoints">Checkpoint Copies</a>
       <a href="#task-performance-test">Task Performance</a>
       <a href="#retrieval-all">Retrieval Behavior</a>
@@ -1798,11 +2091,18 @@ def build_viewer(args: argparse.Namespace) -> None:
       <div class="links"><a href="plots/privacy_prompt_query_behavior.svg">SVG</a><a href="plots/privacy_prompt_query_behavior.pdf">PDF</a></div>
     </section>
     <section id="training-effect" class="figure">
-      <h2>Effect Of Training: Accuracy And Privacy (Normal Prompt Final; Privacy Prompt Partial)</h2>
-      <div class="note">Final 16k-generation test eval for base Qwen3 4B, situational step 50, and situational step 100. Strict Chain Success counts recorded system-error attempts as failures. Privacy Leakage is only over StepFun-judged successful rollout traces, so privacy-prompt rows remain partial until their privacy judgments catch up.</div>
+      <h2>Effect Of Training: Accuracy And Privacy (Standard Training Final; Privacy-Aware Step50 Partial)</h2>
+      <div class="note">Final 16k-generation test eval for base Qwen3 4B and standard situational step 50/100, plus the newly launched privacy-aware step50 rows when present. Strict Chain Success counts recorded system-error attempts as failures. Privacy Leakage is over StepFun-judged successful rollout traces, so rows remain partial until their privacy judgments catch up.</div>
       <img src="plots/final_situational_training_effect.svg" alt="Final situational training effect on accuracy and privacy leakage">
       <div class="links"><a href="plots/final_situational_training_effect.svg">SVG</a><a href="plots/final_situational_training_effect.pdf">PDF</a></div>
       {final_training_table}
+    </section>
+    <section id="training-trajectories" class="figure">
+      <h2>Training And Prompting Trajectories (Current Snapshot)</h2>
+      <div class="note">Alternate training-effect view. Each trajectory starts at the normal-prompt base model, then moves to the trained checkpoint under the normal prompt, then moves from that checkpoint to the same checkpoint with the privacy prompt. The standard-training panel shows checkpoints 50 and 100; the privacy-aware panel shows checkpoint 50. Dashed segments are the prompting effect and are not drawn from the base model.</div>
+      <img src="plots/final_training_prompt_trajectories.svg" alt="Training and prompting trajectories for standard and privacy-aware situational reward models">
+      <div class="links"><a href="plots/final_training_prompt_trajectories.svg">SVG</a><a href="plots/final_training_prompt_trajectories.pdf">PDF</a></div>
+      {training_prompt_trajectory_table}
     </section>
     <section id="with-checkpoints" class="figure">
       <h2>Checkpoint-Inclusive Copies (Legacy; Waiting For External 16k Refresh)</h2>
@@ -1856,6 +2156,8 @@ def build_viewer(args: argparse.Namespace) -> None:
       {refresh_status_table}
       <h3>Final Situational Training Effect</h3>
       {final_training_table}
+      <h3>Training And Prompting Trajectories</h3>
+      {training_prompt_trajectory_table}
       <h3>Legacy Privacy Prompt Summary (Waiting For External 16k Refresh)</h3>
       {prompt_table}
       <h3>Legacy Training Effect Summary (Old Checkpoints; Waiting For External 16k Refresh)</h3>
@@ -1900,6 +2202,16 @@ def parse_args() -> argparse.Namespace:
         "--external-privacy-prompt-artifact-root",
         type=Path,
         default=DEFAULT_EXTERNAL_PRIVACY_PROMPT_ARTIFACT_ROOT,
+    )
+    parser.add_argument(
+        "--privacy-aware-final-eval-artifact-root",
+        type=Path,
+        default=DEFAULT_PRIVACY_AWARE_FINAL_EVAL_ARTIFACT_ROOT,
+    )
+    parser.add_argument(
+        "--privacy-aware-final-privacy-prompt-artifact-root",
+        type=Path,
+        default=DEFAULT_PRIVACY_AWARE_FINAL_PRIVACY_PROMPT_ARTIFACT_ROOT,
     )
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     parser.add_argument("--dataset-root", type=Path, default=live.DEFAULT_DATASET_ROOT)
