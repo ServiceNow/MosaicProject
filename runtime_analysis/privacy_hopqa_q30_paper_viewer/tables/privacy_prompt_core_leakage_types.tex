@@ -3,7 +3,7 @@
 \centering
 \begin{tabular}{lllllllll}
 \toprule
-\textbf{Model} & \textbf{Baseline Judged} & \textbf{Prompt Judged} & \textbf{Baseline Intent} & \textbf{Prompt Intent} & \textbf{Baseline Answer} & \textbf{Prompt Answer} & \textbf{Baseline Full Claim} & \textbf{Prompt Full Claim} \\
+\textbf{Model} & \textbf{Baseline Judged} & \textbf{Prompt Judged} & \textbf{Baseline Intent} & \textbf{Prompt Intent} & \textbf{Baseline Answer} & \textbf{Prompt Answer} & \textbf{Baseline Full-Information Leakage} & \textbf{Prompt Full-Information Leakage} \\
 \midrule
 Qwen3 4B & 1032 & 974 & 51.1\% +/- 1.7 pp & 39.1\% +/- 0.7 pp & 18.7\% +/- 0.3 pp & 14.6\% +/- 0.6 pp & 11.7\% +/- 1.4 pp & 7.7\% +/- 0.5 pp \\
 Qwen3 8B & 847 & 987 & 44.3\% +/- 1.4 pp & 36.3\% +/- 1.9 pp & 14.9\% +/- 1.3 pp & 12.5\% +/- 1.2 pp & 10.3\% +/- 0.9 pp & 7.8\% +/- 0.8 pp \\
@@ -13,6 +13,6 @@ Chroma Context-1 & 1030 & 1032 & 25.2\% +/- 0.9 pp & 23.5\% +/- 1.3 pp & 5.7\% +
 Gemma 4 31B IT & 892 & 1006 & 25.8\% +/- 0.2 pp & 15.1\% +/- 1.6 pp & 6.1\% +/- 0.2 pp & 1.2\% +/- 0.3 pp & 2.3\% +/- 0.5 pp & 0.4\% +/- 0.3 pp \\
 \bottomrule
 \end{tabular}
-\caption{Final 16k held-out test privacy-prompt effect on the three core leakage types: intent, answer, and full-information claim leakage.}
+\caption{Final 16k held-out test privacy-prompt effect on the three core leakage types: intent leakage, answer leakage, and Full-Information Leakage.}
 \label{tab:privacy_prompt_core_leakage_types}
 \end{table}

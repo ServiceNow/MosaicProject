@@ -369,9 +369,9 @@ def plot_privacy_prompt_leakage_types(rows: list[dict[str, Any]], path: Path, *,
         return
     labels = [paper_model_display(str(row["model_label"])) for row in rows]
     metrics = [
-        ("Intent Leakage\n(Intent Score >= 4)", "baseline_intent4_rate", "prompt_intent4_rate"),
+        ("Intent Leakage", "baseline_intent4_rate", "prompt_intent4_rate"),
         ("Answer Leakage", "baseline_answer_rate", "prompt_answer_rate"),
-        ("Full-Information Claim", "baseline_full_info_rate", "prompt_full_info_rate"),
+        ("Full-Information Leakage", "baseline_full_info_rate", "prompt_full_info_rate"),
         ("Lenient Claim Diagnostic", "baseline_lenient_full_info_rate", "prompt_lenient_full_info_rate"),
     ]
     fig, axes = plt.subplots(2, 2, figsize=(12.8, 7.65), sharey=True)
@@ -433,9 +433,9 @@ def plot_privacy_prompt_core_leakage_types(rows: list[dict[str, Any]], path: Pat
         return
     labels = [paper_model_display(str(row["model_label"])) for row in rows]
     metrics = [
-        ("Intent Leakage\n(Intent Score >= 4)", "baseline_intent4_rate", "prompt_intent4_rate"),
+        ("Intent Leakage", "baseline_intent4_rate", "prompt_intent4_rate"),
         ("Answer Leakage", "baseline_answer_rate", "prompt_answer_rate"),
-        ("Full-Information Claim", "baseline_full_info_rate", "prompt_full_info_rate"),
+        ("Full-Information Leakage", "baseline_full_info_rate", "prompt_full_info_rate"),
     ]
     fig, axes = plt.subplots(1, 3, figsize=(15.2, 4.7), sharey=True)
     x = list(range(len(rows)))
@@ -2294,8 +2294,8 @@ def build_viewer(args: argparse.Namespace) -> None:
         ("prompt_intent", "Prompt Intent"),
         ("baseline_answer", "Baseline Answer"),
         ("prompt_answer", "Prompt Answer"),
-        ("baseline_full", "Baseline Full Claim"),
-        ("prompt_full", "Prompt Full Claim"),
+        ("baseline_full", "Baseline Full-Information Leakage"),
+        ("prompt_full", "Prompt Full-Information Leakage"),
     ]
     prompt_core_leakage_type_rows = privacy_prompt_core_leakage_type_table_rows(prompt_rows_main)
     prompt_core_leakage_type_table = table(prompt_core_leakage_type_headers, prompt_core_leakage_type_rows)
@@ -2307,8 +2307,8 @@ def build_viewer(args: argparse.Namespace) -> None:
         ("prompt_intent", "Prompt Intent"),
         ("baseline_answer", "Baseline Answer"),
         ("prompt_answer", "Prompt Answer"),
-        ("baseline_full", "Baseline Full Claim"),
-        ("prompt_full", "Prompt Full Claim"),
+        ("baseline_full", "Baseline Full-Information Leakage"),
+        ("prompt_full", "Prompt Full-Information Leakage"),
         ("baseline_lenient", "Baseline Lenient Claim"),
         ("prompt_lenient", "Prompt Lenient Claim"),
     ]
@@ -2369,7 +2369,7 @@ def build_viewer(args: argparse.Namespace) -> None:
         ("strict_privacy", "Strict Privacy Binary"),
         ("intent", "Intent >=4"),
         ("answer", "Answer Leakage"),
-        ("full", "Full Claim"),
+        ("full", "Full-Information Leakage"),
         ("lenient", "Lenient Claim Diagnostic"),
         ("status", "Status"),
     ]
@@ -2439,7 +2439,7 @@ def build_viewer(args: argparse.Namespace) -> None:
         tables_dir / "privacy_prompt_core_leakage_types.tex",
         prompt_core_leakage_type_headers,
         prompt_core_leakage_type_rows,
-        "Final 16k held-out test privacy-prompt effect on the three core leakage types: intent, answer, and full-information claim leakage.",
+        "Final 16k held-out test privacy-prompt effect on the three core leakage types: intent leakage, answer leakage, and Full-Information Leakage.",
         "tab:privacy_prompt_core_leakage_types",
     )
     write_latex_table(
@@ -2534,7 +2534,7 @@ def build_viewer(args: argparse.Namespace) -> None:
             {
                 "type": "Lenient Claim Diagnostic",
                 "definition": "The claim judge marks a generated claim as a strict private fact, a partial private fact, or an approximate match to private information. A partial private fact is an incomplete but still private claim that exposes some private attribute without the whole answer.",
-                "paper_status": "Diagnostic audit metric; report separately from the strict full-information claim rate unless the caption explicitly defines partial private facts.",
+                "paper_status": "Diagnostic audit metric; report separately from Full-Information Leakage unless the caption explicitly defines partial private facts.",
             },
         ],
     )
@@ -2741,7 +2741,7 @@ def build_viewer(args: argparse.Namespace) -> None:
     </section>
     <section id="prompt-leakage-types" class="figure">
       <h2>Privacy Prompt Effect: Leakage Types</h2>
-      <div class="note">Paper-ready final 16k held-out test refresh, excluding trained checkpoints. The first plot keeps the three core leakage types side by side: intent score >= 4, answer leakage, and full-information claim leakage. The diagnostic four-panel copy below adds the lenient claim diagnostic, which includes partial private claims and approximate matches.</div>
+      <div class="note">Paper-ready final 16k held-out test refresh, excluding trained checkpoints. The first plot keeps the three core leakage types side by side: Intent Leakage, Answer Leakage, and Full-Information Leakage. The diagnostic four-panel copy below adds the lenient claim diagnostic, which includes partial private claims and approximate matches.</div>
       <img src="plots/privacy_prompt_core_leakage_types.svg" alt="Privacy prompt effect on core leakage types">
       <div class="links"><a href="plots/privacy_prompt_core_leakage_types.svg">SVG</a><a href="plots/privacy_prompt_core_leakage_types.pdf">PDF</a><a href="plots/privacy_prompt_core_leakage_types_annotated.svg">Annotated SVG</a><a href="tables/privacy_prompt_core_leakage_types.tex">LaTeX table</a></div>
       {prompt_core_leakage_type_table}
