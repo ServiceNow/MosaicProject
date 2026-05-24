@@ -16,7 +16,7 @@ from typing import Any
 import numpy as np
 from matplotlib.lines import Line2D
 from matplotlib import pyplot as plt
-from matplotlib.ticker import MaxNLocator, MultipleLocator
+from matplotlib.ticker import MaxNLocator, MultipleLocator, NullLocator
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -234,6 +234,7 @@ def set_percent_y_axis(ax: Any) -> None:
     ax.yaxis.set_major_locator(MultipleLocator(10))
     ax.yaxis.set_minor_locator(MultipleLocator(5))
     add_minor_grid(ax, axis="y")
+    ax.xaxis.set_minor_locator(NullLocator())
 
 
 def rounded_limits(values: list[float], *, min_pad: float, frac_pad: float = 0.12, step: float = 5.0) -> tuple[float, float]:
@@ -679,7 +680,7 @@ def plot_task_performance(rows: list[dict[str, Any]], path: Path, *, annotate: b
     if annotate:
         annotate_ns(ax, hop_pos, hop_vals, ns, percent=True, y_max=100)
         annotate_ns(ax, chain_pos, chain_vals, ns, percent=True, y_max=100)
-    ax.set_ylabel("Percent of Rollouts")
+    ax.set_ylabel("% of Rollouts")
     ax.set_xlabel("Model")
     ax.set_xticks(x)
     ax.set_xticklabels(labels, rotation=25, ha="right")
@@ -738,10 +739,11 @@ def plot_retrieval_behavior(rows: list[dict[str, Any]], path: Path, *, annotate:
     if annotate:
         for xi, row in zip(x, rows):
             ax.text(xi, y_max * 0.95, f"n={int(row.get('n') or 0)}", ha="center", va="bottom", fontsize=9)
-    ax.set_ylabel("Mean Count")
+    ax.set_ylabel("Mean Count per Rollout")
     ax.set_xlabel("Model")
     ax.set_xticks(x)
     ax.set_xticklabels(labels, rotation=25, ha="right")
+    ax.xaxis.set_minor_locator(NullLocator())
     ax.set_ylim(0, y_max)
     ax.yaxis.set_major_locator(MaxNLocator(nbins=6))
     ax.legend(loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.25))
@@ -890,6 +892,10 @@ def add_logistic_line(ax: Any, xs: list[float], result: dict[str, Any] | None, s
     ax.plot(grid, probs, color="#7f7f7f", linestyle="--", linewidth=1.5, label="Logistic Fit")
 
 
+def relationship_marker_size(n_items: int) -> float:
+    return min(9.0, 3.8 + 0.16 * math.sqrt(max(0, n_items)))
+
+
 def plot_leakage_relationships(rows: list[dict[str, Any]], path: Path, *, annotate: bool = False) -> dict[str, Any]:
     stats_rows = leakage_relationship_stats(rows)
     if not rows:
@@ -910,7 +916,7 @@ def plot_leakage_relationships(rows: list[dict[str, Any]], path: Path, *, annota
             center,
             yerr=[[max(0, center - low)], [max(0, high - center)]],
             fmt="o",
-            markersize=min(18, 5 + 0.35 * len(subset)),
+            markersize=relationship_marker_size(len(subset)),
             color="#0072B2",
             ecolor="#303633",
             capsize=3,
@@ -941,7 +947,7 @@ def plot_leakage_relationships(rows: list[dict[str, Any]], path: Path, *, annota
             center,
             yerr=[[max(0, center - low)], [max(0, high - center)]],
             fmt="o",
-            markersize=min(18, 5 + 0.35 * len(subset)),
+            markersize=relationship_marker_size(len(subset)),
             color="#009E73",
             ecolor="#303633",
             capsize=3,
@@ -1902,6 +1908,7 @@ def metric_xy(row: dict[str, Any] | None) -> tuple[float, float] | None:
 
 def plot_training_prompt_trajectories(
     base_row: dict[str, Any] | None,
+    base_prompt_row: dict[str, Any] | None,
     standard_normal_rows: list[dict[str, Any]],
     standard_prompt_rows: list[dict[str, Any]],
     privacy_aware_normal_rows: list[dict[str, Any]],
@@ -1912,6 +1919,7 @@ def plot_training_prompt_trajectories(
 ) -> list[dict[str, Any]]:
     """Plot base -> step-50 checkpoint -> same checkpoint with privacy prompt."""
     base_xy = metric_xy(base_row)
+    base_prompt_xy = metric_xy(base_prompt_row)
     standard_normal = row_by_model(standard_normal_rows).get("qwen3_4b_situational_reward_s50")
     standard_prompt = row_by_model(standard_prompt_rows).get("qwen3_4b_situational_reward_s50")
     privacy_normal = row_by_model(privacy_aware_normal_rows).get("qwen3_4b_privreward_tau05_s50")
@@ -2006,6 +2014,54 @@ def plot_training_prompt_trajectories(
             point_label="Base",
             label_offset=(-10, 10),
         )
+    if base_prompt_xy is not None:
+        draw_point(
+            base_prompt_row,
+            base_prompt_xy,
+            "#1f2421",
+            "D",
+            "Base Qwen3 4B + Privacy Prompt",
+            False,
+            point_label="Base + prompt",
+            label_offset=(10, -12),
+        )
+    if base_xy is not None and base_prompt_xy is not None:
+        ax.annotate(
+            "",
+            xy=base_prompt_xy,
+            xytext=base_xy,
+            arrowprops={
+                "arrowstyle": "->",
+                "color": "#1f2421",
+                "lw": 1.25,
+                "linestyle": "--",
+                "alpha": 0.9,
+                "shrinkA": 6,
+                "shrinkB": 6,
+            },
+            zorder=2,
+        )
+    if base_row is not None or base_prompt_row is not None:
+        trajectory_rows.append(
+            {
+                "family": "Base Model",
+                "checkpoint": "Qwen3 4B base",
+                "normal_attempts": base_row.get("attempted_unique") if base_row else 0,
+                "normal_judged": base_row.get("privacy_unique") if base_row else 0,
+                "normal_status": base_row.get("status") if base_row else "waiting for rollouts",
+                "prompt_attempts": base_prompt_row.get("attempted_unique") if base_prompt_row else 0,
+                "prompt_judged": base_prompt_row.get("privacy_unique") if base_prompt_row else 0,
+                "prompt_status": base_prompt_row.get("status") if base_prompt_row else "waiting for rollouts",
+                "normal_strict_chain_success_rate": base_row.get("strict_chain_success_rate") if base_row else None,
+                "normal_strict_chain_success_rate_sem": base_row.get("strict_chain_success_rate_sem") if base_row else None,
+                "normal_privacy_leakage_rate": base_row.get("privacy_leakage_rate") if base_row else None,
+                "normal_privacy_leakage_rate_sem": base_row.get("privacy_leakage_rate_sem") if base_row else None,
+                "prompt_strict_chain_success_rate": base_prompt_row.get("strict_chain_success_rate") if base_prompt_row else None,
+                "prompt_strict_chain_success_rate_sem": base_prompt_row.get("strict_chain_success_rate_sem") if base_prompt_row else None,
+                "prompt_privacy_leakage_rate": base_prompt_row.get("privacy_leakage_rate") if base_prompt_row else None,
+                "prompt_privacy_leakage_rate_sem": base_prompt_row.get("privacy_leakage_rate_sem") if base_prompt_row else None,
+            }
+        )
 
     for item in trajectories:
         color = str(item["color"])
@@ -2082,8 +2138,13 @@ def plot_training_prompt_trajectories(
     ax.set_xlabel("Strict Chain Success (%)")
     ax.set_ylabel("Privacy Leakage (%)")
     x_low, x_high = (45.0, 65.0)
-    if plotted_x and (min(plotted_x) < x_low or max(plotted_x) > x_high):
-        x_low, x_high = rounded_limits(plotted_x, min_pad=3.0)
+    if plotted_x:
+        min_x = min(plotted_x)
+        max_x = max(plotted_x)
+        if min_x < x_low:
+            x_low = max(0.0, math.floor(min_x * 2.0) / 2.0)
+        if max_x > x_high:
+            x_high = min(100.0, math.ceil(max_x + 0.5))
     y_low, y_high = rounded_limits(plotted_y, min_pad=5.0)
     ax.set_xlim(x_low, x_high)
     ax.set_ylim(y_low, y_high)
@@ -2252,8 +2313,13 @@ def build_viewer(args: argparse.Namespace) -> None:
         (row for row in final_normal_training_rows if row.get("model_label") == BASE_MODEL_LABEL),
         None,
     )
+    base_prompt_row = next(
+        (row for row in final_privacy_prompt_training_rows if row.get("model_label") == BASE_MODEL_LABEL),
+        None,
+    )
     training_prompt_trajectory_rows = plot_training_prompt_trajectories(
         base_row,
+        base_prompt_row,
         final_normal_training_rows,
         final_privacy_prompt_training_rows,
         privacy_aware_normal_training_rows,
@@ -2262,6 +2328,7 @@ def build_viewer(args: argparse.Namespace) -> None:
     )
     plot_training_prompt_trajectories(
         base_row,
+        base_prompt_row,
         final_normal_training_rows,
         final_privacy_prompt_training_rows,
         privacy_aware_normal_training_rows,
@@ -2514,7 +2581,7 @@ def build_viewer(args: argparse.Namespace) -> None:
         tables_dir / "training_prompt_trajectories.tex",
         training_prompt_trajectory_headers,
         training_prompt_trajectory_rows_table,
-        "Two-segment training and privacy-prompt trajectories for the step 50 task-trained and task-plus-privacy-trained checkpoints.",
+        "Base-model prompt effect plus two-segment training and privacy-prompt trajectories for the step 50 task-trained and task-plus-privacy-trained checkpoints.",
         "tab:training_prompt_trajectories",
     )
     write_latex_table(
@@ -2605,7 +2672,7 @@ def build_viewer(args: argparse.Namespace) -> None:
             {
                 "section": "Training And Prompting Trajectories",
                 "status": "Paper-ready final 16k held-out test refresh",
-                "use": "Main effect-of-training figure: solid arrows are training effects, dashed arrows are the privacy-prompt effects from each checkpoint.",
+                "use": "Main effect-of-training figure: solid arrows are training effects, dashed arrows are privacy-prompt effects from the base model and each checkpoint.",
             },
             {
                 "section": "Privacy Prompt Effect: Accuracy And Leakage",
@@ -2806,7 +2873,7 @@ def build_viewer(args: argparse.Namespace) -> None:
     </section>
     <section id="training-effect" class="figure">
       <h2>Effect Of Training: Accuracy And Privacy</h2>
-      <div class="note">Paper-ready final 16k held-out test refresh. Solid arrows move from base Qwen3 4B to checkpoint 50. Dashed arrows move from checkpoint 50 to the same checkpoint with the privacy prompt. Error bars are SEM over repeat means.</div>
+      <div class="note">Paper-ready final 16k held-out test refresh. Solid arrows move from base Qwen3 4B to checkpoint 50. Dashed arrows show the privacy-prompt effect for the base model and for each checkpoint. Error bars are SEM over repeat means.</div>
       <img src="plots/final_training_prompt_trajectories.svg" alt="Training and prompting trajectories for standard and privacy-aware situational reward models">
       <div class="links"><a href="plots/final_training_prompt_trajectories.svg">SVG</a><a href="plots/final_training_prompt_trajectories.pdf">PDF</a><a href="plots/final_training_prompt_trajectories_annotated.svg">Annotated SVG</a><a href="tables/training_prompt_trajectories.tex">LaTeX trajectory table</a><a href="tables/final_condition_summary.tex">LaTeX condition table</a></div>
       {final_condition_table}
