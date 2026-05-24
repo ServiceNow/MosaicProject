@@ -1319,6 +1319,8 @@ def latex_table(
     rows: list[dict[str, Any]],
     caption: str,
     label: str,
+    *,
+    raw_caption: bool = False,
 ) -> str:
     column_spec = "l" * len(headers)
     header_text = " & ".join(rf"\textbf{{{latex_escape(label)}}}" for _key, label in headers) + r" \\"
@@ -1326,6 +1328,7 @@ def latex_table(
     for row in rows:
         body.append(" & ".join(latex_escape(row.get(key, "")) for key, _label in headers) + r" \\")
     body_text = "\n".join(body)
+    caption_text = caption if raw_caption else latex_escape(caption)
     return rf"""\begin{{table}}[t]
 \small
 \centering
@@ -1336,7 +1339,7 @@ def latex_table(
 {body_text}
 \bottomrule
 \end{{tabular}}
-\caption{{{latex_escape(caption)}}}
+\caption{{{caption_text}}}
 \label{{{label}}}
 \end{{table}}
 """
@@ -1348,8 +1351,10 @@ def write_latex_table(
     rows: list[dict[str, Any]],
     caption: str,
     label: str,
+    *,
+    raw_caption: bool = False,
 ) -> str:
-    text = latex_table(headers, rows, caption, label)
+    text = latex_table(headers, rows, caption, label, raw_caption=raw_caption)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text, encoding="utf-8")
     return text
@@ -2538,6 +2543,15 @@ def build_viewer(args: argparse.Namespace) -> None:
         ("status", "Status"),
     ]
     final_condition_table = table(final_condition_headers, final_condition_rows)
+    final_condition_latex_headers = [
+        ("condition", "Condition"),
+        ("strict_chain", "Strict Chain Success"),
+        ("final_accuracy", "Final Accuracy"),
+        ("privacy_leakage", "Privacy Leakage"),
+        ("intent", "Intent Leakage"),
+        ("answer", "Answer Leakage"),
+        ("full", "Full-Information Leakage"),
+    ]
     training_prompt_trajectory_headers = [
         ("family", "Training Setup"),
         ("checkpoint", "Checkpoint"),
@@ -2622,10 +2636,11 @@ def build_viewer(args: argparse.Namespace) -> None:
     )
     write_latex_table(
         tables_dir / "final_condition_summary.tex",
-        final_condition_headers,
+        final_condition_latex_headers,
         final_condition_rows,
-        "Final 16k held-out test summary for base Qwen3 4B, task-trained step 50, and task+PA-DR-trained step 50, with and without the privacy prompt.",
+        r"Effect of training on \qwenthreeb, evaluated with and without the privacy-aware prompt.",
         "tab:final_condition_summary",
+        raw_caption=True,
     )
     write_latex_table(
         tables_dir / "training_prompt_trajectories.tex",
