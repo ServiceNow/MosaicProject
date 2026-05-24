@@ -1,0 +1,20 @@
+\begin{table*}[t]
+\small
+\centering
+\begin{tabular}{lllll}
+\toprule
+\textbf{Model} & \textbf{Mean Web Queries} & \textbf{Mean Web Reads} & \textbf{Mean Local Searches} & \textbf{Mean Local Reads} \\
+\midrule
+\qwenthreeb & 3.83 {\scriptsize $\pm$ 0.03} & 20.02 {\scriptsize $\pm$ 0.37} & 4.86 {\scriptsize $\pm$ 0.08} & 8.65 {\scriptsize $\pm$ 0.02} \\
+\quad + privacy prompt & 3.18 {\scriptsize $\pm$ 0.05} & 16.92 {\scriptsize $\pm$ 0.35} & 4.79 {\scriptsize $\pm$ 0.04} & 8.56 {\scriptsize $\pm$ 0.05} \\
+\midrule
+Task & 7.38 {\scriptsize $\pm$ 0.03} & 25.87 {\scriptsize $\pm$ 0.26} & 5.49 {\scriptsize $\pm$ 0.05} & 9.27 {\scriptsize $\pm$ 0.10} \\
+\quad + privacy prompt & 7.46 {\scriptsize $\pm$ 0.06} & 25.90 {\scriptsize $\pm$ 0.21} & 5.42 {\scriptsize $\pm$ 0.03} & 9.31 {\scriptsize $\pm$ 0.06} \\
+\midrule
+PA-DR & 5.48 {\scriptsize $\pm$ 0.09} & 24.66 {\scriptsize $\pm$ 0.30} & 7.61 {\scriptsize $\pm$ 0.03} & 9.84 {\scriptsize $\pm$ 0.04} \\
+\quad + privacy prompt & 5.10 {\scriptsize $\pm$ 0.07} & 23.81 {\scriptsize $\pm$ 0.43} & 7.98 {\scriptsize $\pm$ 0.06} & 9.99 {\scriptsize $\pm$ 0.13} \\
+\bottomrule
+\end{tabular}
+\caption{Effect of step-100 training on query and retrieval behavior for \qwenthreeb. Values are means per successful rollout; values after $\pm$ are SEMs over repeat means.}
+\label{tab:final_training_behavior_s100}
+\end{table*}
