@@ -1,18 +1,20 @@
-\begin{table}[t]
+\begin{table*}[t]
 \small
 \centering
 \begin{tabular}{lllllll}
 \toprule
-\textbf{Condition} & \textbf{Strict Chain Success} & \textbf{Final Accuracy} & \textbf{Privacy Leakage} & \textbf{Intent Leakage} & \textbf{Answer Leakage} & \textbf{Full-Information Leakage} \\
+\textbf{Model} & \textbf{Strict Chain Success} & \textbf{Final Accuracy} & \textbf{Privacy Leakage} & \textbf{Intent Leakage} & \textbf{Answer Leakage} & \textbf{Full-Information Leakage} \\
 \midrule
-Qwen3 4B & 48.7\% +/- 1.1 pp & 61.5\% +/- 1.0 pp & 34.0\% +/- 0.4 pp & 51.1\% +/- 1.7 pp & 18.7\% +/- 0.3 pp & 11.7\% +/- 1.4 pp \\
-Qwen3 4B + privacy prompt & 44.5\% +/- 0.8 pp & 55.9\% +/- 0.8 pp & 25.5\% +/- 1.1 pp & 39.2\% +/- 0.8 pp & 14.4\% +/- 0.5 pp & 7.9\% +/- 0.7 pp \\
-Qwen3 4B task training step50 & 56.6\% +/- 0.3 pp & 66.1\% +/- 0.3 pp & 54.9\% +/- 1.7 pp & 68.2\% +/- 0.8 pp & 32.0\% +/- 1.0 pp & 22.5\% +/- 0.7 pp \\
-Qwen3 4B task training step50 + privacy prompt & 58.6\% +/- 0.5 pp & 67.0\% +/- 0.7 pp & 55.1\% +/- 1.5 pp & 66.8\% +/- 1.7 pp & 33.8\% +/- 1.2 pp & 22.3\% +/- 0.8 pp \\
-Qwen3 4B task+PA-DR training step50 & 60.4\% +/- 0.3 pp & 68.0\% +/- 0.8 pp & 22.2\% +/- 1.6 pp & 36.3\% +/- 1.0 pp & 7.9\% +/- 0.7 pp & 2.9\% +/- 0.4 pp \\
-Qwen3 4B task+PA-DR training step50 + privacy prompt & 57.4\% +/- 1.0 pp & 67.8\% +/- 0.6 pp & 18.2\% +/- 1.7 pp & 33.9\% +/- 0.5 pp & 6.9\% +/- 0.9 pp & 3.6\% +/- 0.4 pp \\
+\qwenthreeb & 48.7\% {\scriptsize $\pm$ 1.1} & 61.5\% {\scriptsize $\pm$ 1.0} & 34.0\% {\scriptsize $\pm$ 0.4} & 51.1\% {\scriptsize $\pm$ 1.7} & 18.7\% {\scriptsize $\pm$ 0.3} & 11.7\% {\scriptsize $\pm$ 1.4} \\
++ privacy prompt & 44.5\% {\scriptsize $\pm$ 0.8} & 55.9\% {\scriptsize $\pm$ 0.8} & 25.5\% {\scriptsize $\pm$ 1.1} & 39.2\% {\scriptsize $\pm$ 0.8} & 14.4\% {\scriptsize $\pm$ 0.5} & 7.9\% {\scriptsize $\pm$ 0.7} \\
+\midrule
+Task Training & 56.6\% {\scriptsize $\pm$ 0.3} & 66.1\% {\scriptsize $\pm$ 0.3} & 54.9\% {\scriptsize $\pm$ 1.7} & 68.2\% {\scriptsize $\pm$ 0.8} & 32.0\% {\scriptsize $\pm$ 1.0} & 22.5\% {\scriptsize $\pm$ 0.7} \\
++ privacy prompt & 58.6\% {\scriptsize $\pm$ 0.5} & 67.0\% {\scriptsize $\pm$ 0.7} & 55.1\% {\scriptsize $\pm$ 1.5} & 66.8\% {\scriptsize $\pm$ 1.7} & 33.8\% {\scriptsize $\pm$ 1.2} & 22.3\% {\scriptsize $\pm$ 0.8} \\
+\midrule
+Task+PA-DR Training & {\bfseries 60.4\% {\scriptsize $\pm$ 0.3}} & {\bfseries 68.0\% {\scriptsize $\pm$ 0.8}} & 22.2\% {\scriptsize $\pm$ 1.6} & 36.3\% {\scriptsize $\pm$ 1.0} & 7.9\% {\scriptsize $\pm$ 0.7} & {\bfseries 2.9\% {\scriptsize $\pm$ 0.4}} \\
++ privacy prompt & 57.4\% {\scriptsize $\pm$ 1.0} & 67.8\% {\scriptsize $\pm$ 0.6} & {\bfseries 18.2\% {\scriptsize $\pm$ 1.7}} & {\bfseries 33.9\% {\scriptsize $\pm$ 0.5}} & {\bfseries 6.9\% {\scriptsize $\pm$ 0.9}} & 3.6\% {\scriptsize $\pm$ 0.4} \\
 \bottomrule
 \end{tabular}
-\caption{Effect of training on \qwenthreeb, evaluated with and without the privacy-aware prompt.}
-\label{tab:final_condition_summary}
-\end{table}
+\caption{Effect of training on \qwenthreeb, evaluated with and without the privacy-aware prompt. Values after $\pm$ are SEMs in percentage points.}
+\label{tab:training_effect_summary}
+\end{table*}

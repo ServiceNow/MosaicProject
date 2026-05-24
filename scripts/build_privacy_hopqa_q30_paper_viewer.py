@@ -153,6 +153,30 @@ def pct_pm_text(row: dict[str, Any], key: str, digits: int = 1) -> str:
     return f"{100 * number:.{digits}f}% +/- {100 * sem:.{digits}f} pp"
 
 
+def latex_pct_pm_cell(row: dict[str, Any], key: str, *, bold: bool = False, digits: int = 1) -> str:
+    number = live.as_float(row.get(f"{key}_value"))
+    if number is None:
+        return "n/a"
+    sem = live.as_float(row.get(f"{key}_sem"))
+    text = rf"{100 * number:.{digits}f}\%"
+    if sem is not None:
+        text = rf"{text} {{\scriptsize $\pm$ {100 * sem:.{digits}f}}}"
+    if bold:
+        return rf"{{\bfseries {text}}}"
+    return text
+
+
+def latex_num_pm_cell(row: dict[str, Any], key: str, *, digits: int = 2) -> str:
+    number = live.as_float(row.get(key))
+    if number is None:
+        return "n/a"
+    sem = live.as_float(row.get(f"{key}_sem"))
+    text = f"{number:.{digits}f}"
+    if sem is not None:
+        text = rf"{text} {{\scriptsize $\pm$ {sem:.{digits}f}}}"
+    return text
+
+
 def num_pm_text(row: dict[str, Any], key: str, digits: int = 2) -> str:
     number = live.as_float(row.get(key))
     if number is None:
@@ -1688,6 +1712,27 @@ def final_situational_metric_rows(
         add_rate_fields(row, "answer_rate", privacy_rows, lambda item: 1.0 if live.answer_leaked(item) else 0.0)
         add_rate_fields(row, "full_info_rate", privacy_rows, lambda item: 1.0 if live.full_info_leaked(item) else 0.0)
         add_rate_fields(row, "lenient_full_info_rate", privacy_rows, lambda item: 1.0 if live.lenient_full_info_leaked(item) else 0.0)
+        ok_rollout_rows = [item for item in rollout_rows if item.get("ok")]
+        trace_feature_cache: dict[str, dict[str, int]] = {}
+
+        def trace_feature_value(item: dict[str, Any], metric_key: str) -> int:
+            trace_path = str(item.get("trace_path") or "")
+            if trace_path not in trace_feature_cache:
+                trace_feature_cache[trace_path] = live.trace_prior_web_features(trace_path)
+            return int(trace_feature_cache[trace_path].get(metric_key) or 0)
+
+        for output_key, source_key in [
+            ("web_queries", "web_search_events_total"),
+            ("web_reads", "web_doc_reads_total"),
+            ("local_searches", "local_search_events_total"),
+            ("local_reads", "local_doc_reads_total"),
+        ]:
+            live.add_repeat_sem_fields(
+                row,
+                output_key,
+                ok_rollout_rows,
+                lambda item, metric_key=source_key: trace_feature_value(item, metric_key),
+            )
         rows.append(row)
     return rows
 
@@ -1752,6 +1797,20 @@ def final_condition_summary_rows(
                 }
             )
             continue
+        raw_metrics = {
+            "strict_chain": "strict_chain_success_rate",
+            "final_accuracy": "final_correct_rate",
+            "privacy_leakage": "privacy_leakage_rate",
+            "strict_privacy": "strict_privacy_rate",
+            "intent": "intent4_rate",
+            "answer": "answer_rate",
+            "full": "full_info_rate",
+            "lenient": "lenient_full_info_rate",
+        }
+        raw_fields: dict[str, Any] = {}
+        for output_key, source_key in raw_metrics.items():
+            raw_fields[f"{output_key}_value"] = live.as_float(row.get(source_key))
+            raw_fields[f"{output_key}_sem"] = live.as_float(row.get(f"{source_key}_sem"))
         rows.append(
             {
                 "condition": condition,
@@ -1766,9 +1825,192 @@ def final_condition_summary_rows(
                 "full": pct_pm_text(row, "full_info_rate"),
                 "lenient": pct_pm_text(row, "lenient_full_info_rate"),
                 "status": row.get("status"),
+                **raw_fields,
             }
         )
     return rows
+
+
+def training_effect_summary_latex(rows: list[dict[str, Any]]) -> str:
+    metric_specs = [
+        ("strict_chain", "max"),
+        ("final_accuracy", "max"),
+        ("privacy_leakage", "min"),
+        ("intent", "min"),
+        ("answer", "min"),
+        ("full", "min"),
+    ]
+    best: dict[str, float] = {}
+    for key, direction in metric_specs:
+        values = [
+            value
+            for row in rows
+            if (value := live.as_float(row.get(f"{key}_value"))) is not None
+        ]
+        if not values:
+            continue
+        best[key] = max(values) if direction == "max" else min(values)
+    display_labels = [
+        r"\qwenthreeb",
+        "+ privacy prompt",
+        "Task Training",
+        "+ privacy prompt",
+        "Task+PA-DR Training",
+        "+ privacy prompt",
+    ]
+    body: list[str] = []
+    for index, (row, label) in enumerate(zip(rows, display_labels)):
+        if index in {2, 4}:
+            body.append(r"\midrule")
+        cells = [label]
+        for key, _direction in metric_specs:
+            value = live.as_float(row.get(f"{key}_value"))
+            is_best = value is not None and key in best and math.isclose(value, best[key], rel_tol=0.0, abs_tol=1e-12)
+            cells.append(latex_pct_pm_cell(row, key, bold=is_best))
+        body.append(" & ".join(cells) + r" \\")
+    body_text = "\n".join(body)
+    return rf"""\begin{{table*}}[t]
+\small
+\centering
+\begin{{tabular}}{{lllllll}}
+\toprule
+\textbf{{Model}} & \textbf{{Strict Chain Success}} & \textbf{{Final Accuracy}} & \textbf{{Privacy Leakage}} & \textbf{{Intent Leakage}} & \textbf{{Answer Leakage}} & \textbf{{Full-Information Leakage}} \\
+\midrule
+{body_text}
+\bottomrule
+\end{{tabular}}
+\caption{{Effect of training on \qwenthreeb, evaluated with and without the privacy-aware prompt. Values after $\pm$ are SEMs in percentage points.}}
+\label{{tab:training_effect_summary}}
+\end{{table*}}
+"""
+
+
+def write_training_effect_summary_latex(path: Path, rows: list[dict[str, Any]]) -> str:
+    text = training_effect_summary_latex(rows)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding="utf-8")
+    return text
+
+
+def final_training_behavior_rows(
+    normal_rows: list[dict[str, Any]],
+    prompt_rows: list[dict[str, Any]],
+    privacy_aware_normal_rows: list[dict[str, Any]],
+    privacy_aware_prompt_rows: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    normal_by_model = row_by_model(normal_rows)
+    prompt_by_model = row_by_model(prompt_rows)
+    privacy_normal_by_model = row_by_model(privacy_aware_normal_rows)
+    privacy_prompt_by_model = row_by_model(privacy_aware_prompt_rows)
+    specs = [
+        ("Base", "Qwen3 4B", "Normal", normal_by_model.get("qwen3_4b_instruct_2507")),
+        ("Base", "Qwen3 4B + privacy prompt", "Privacy Prompt", prompt_by_model.get("qwen3_4b_instruct_2507")),
+        ("Task step 50", "Qwen3 4B task training step50", "Normal", normal_by_model.get("qwen3_4b_situational_reward_s50")),
+        (
+            "Task step 50",
+            "Qwen3 4B task training step50 + privacy prompt",
+            "Privacy Prompt",
+            prompt_by_model.get("qwen3_4b_situational_reward_s50"),
+        ),
+        (
+            "Task+PA-DR step 50",
+            "Qwen3 4B task+PA-DR training step50",
+            "Normal",
+            privacy_normal_by_model.get("qwen3_4b_privreward_tau05_s50"),
+        ),
+        (
+            "Task+PA-DR step 50",
+            "Qwen3 4B task+PA-DR training step50 + privacy prompt",
+            "Privacy Prompt",
+            privacy_prompt_by_model.get("qwen3_4b_privreward_tau05_s50"),
+        ),
+    ]
+    rows: list[dict[str, Any]] = []
+    for training_state, condition, prompt_state, row in specs:
+        if not row:
+            rows.append(
+                {
+                    "training_state": training_state,
+                    "condition": condition,
+                    "prompt_state": prompt_state,
+                    "successful_rollouts": 0,
+                    "web_queries": None,
+                    "web_reads": None,
+                    "local_searches": None,
+                    "local_reads": None,
+                }
+            )
+            continue
+        rows.append(
+            {
+                "training_state": training_state,
+                "condition": condition,
+                "prompt_state": prompt_state,
+                "successful_rollouts": row.get("ok_rollout_unique"),
+                "web_queries": row.get("web_queries"),
+                "web_queries_sem": row.get("web_queries_sem"),
+                "web_reads": row.get("web_reads"),
+                "web_reads_sem": row.get("web_reads_sem"),
+                "local_searches": row.get("local_searches"),
+                "local_searches_sem": row.get("local_searches_sem"),
+                "local_reads": row.get("local_reads"),
+                "local_reads_sem": row.get("local_reads_sem"),
+            }
+        )
+    return rows
+
+
+def final_training_behavior_table_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [
+        {
+            "condition": row.get("condition"),
+            "web_queries": num_pm_text(row, "web_queries"),
+            "web_reads": num_pm_text(row, "web_reads"),
+            "local_searches": num_pm_text(row, "local_searches"),
+            "local_reads": num_pm_text(row, "local_reads"),
+        }
+        for row in rows
+    ]
+
+
+def final_training_behavior_latex(rows: list[dict[str, Any]]) -> str:
+    display_labels = [
+        r"\qwenthreeb",
+        "+ privacy prompt",
+        "Task Training",
+        "+ privacy prompt",
+        "Task+PA-DR Training",
+        "+ privacy prompt",
+    ]
+    metric_keys = ["web_queries", "web_reads", "local_searches", "local_reads"]
+    body: list[str] = []
+    for index, (row, label) in enumerate(zip(rows, display_labels)):
+        if index in {2, 4}:
+            body.append(r"\midrule")
+        cells = [label, *(latex_num_pm_cell(row, key) for key in metric_keys)]
+        body.append(" & ".join(cells) + r" \\")
+    body_text = "\n".join(body)
+    return rf"""\begin{{table*}}[t]
+\small
+\centering
+\begin{{tabular}}{{lllll}}
+\toprule
+\textbf{{Model}} & \textbf{{Mean Web Queries}} & \textbf{{Mean Web Reads}} & \textbf{{Mean Local Searches}} & \textbf{{Mean Local Reads}} \\
+\midrule
+{body_text}
+\bottomrule
+\end{{tabular}}
+\caption{{Effect of training on query and retrieval behavior for \qwenthreeb. Values are means per successful rollout; values after $\pm$ are SEMs over repeat means.}}
+\label{{tab:final_training_behavior}}
+\end{{table*}}
+"""
+
+
+def write_final_training_behavior_latex(path: Path, rows: list[dict[str, Any]]) -> str:
+    text = final_training_behavior_latex(rows)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding="utf-8")
+    return text
 
 
 def training_prompt_trajectory_table_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -2237,6 +2479,76 @@ def plot_training_prompt_trajectories(
     return trajectory_rows
 
 
+def plot_final_training_behavior(rows: list[dict[str, Any]], path: Path) -> None:
+    if not rows:
+        return
+    states = ["Base", "Task step 50", "Task+PA-DR step 50"]
+    state_labels = ["Base", "Task\nstep 50", "Task+PA-DR\nstep 50"]
+    row_map = {(row.get("training_state"), row.get("prompt_state")): row for row in rows}
+    normal_rows = [row_map.get((state, "Normal")) or {} for state in states]
+    prompt_rows = [row_map.get((state, "Privacy Prompt")) or {} for state in states]
+    metrics = [
+        ("Mean Web Queries", "web_queries", "search"),
+        ("Mean Web Reads", "web_reads", "reads"),
+        ("Mean Local Searches", "local_searches", "search"),
+        ("Mean Local Reads", "local_reads", "reads"),
+    ]
+    group_y_max: dict[str, float] = {}
+    for _title, key, group in metrics:
+        values = [
+            live.as_float(row.get(key))
+            for row in [*normal_rows, *prompt_rows]
+            if live.as_float(row.get(key)) is not None
+        ]
+        group_y_max[group] = max(group_y_max.get(group, 1.0), *values, 1.0)
+    group_y_max = {group: value * 1.16 for group, value in group_y_max.items()}
+
+    fig, axes = plt.subplots(2, 2, figsize=(8.8, 5.8))
+    x = list(range(len(states)))
+    width = 0.34
+    error_kw = {"elinewidth": 1.0, "ecolor": "#303633", "capsize": 2.6, "capthick": 0.9}
+    for ax, (title, key, group) in zip(axes.flat, metrics):
+        normal_vals = [
+            value if (value := live.as_float(row.get(key))) is not None else math.nan
+            for row in normal_rows
+        ]
+        prompt_vals = [
+            value if (value := live.as_float(row.get(key))) is not None else math.nan
+            for row in prompt_rows
+        ]
+        normal_pos = [item - width / 2 for item in x]
+        prompt_pos = [item + width / 2 for item in x]
+        ax.bar(
+            normal_pos,
+            normal_vals,
+            width=width,
+            color=BASELINE_COLOR,
+            label="Normal Prompt",
+            yerr=count_yerr(normal_rows, key),
+            error_kw=error_kw,
+        )
+        ax.bar(
+            prompt_pos,
+            prompt_vals,
+            width=width,
+            color=PROMPT_COLOR,
+            label="Privacy-Aware Prompt",
+            yerr=count_yerr(prompt_rows, key),
+            error_kw=error_kw,
+        )
+        ax.set_title(title)
+        ax.set_xticks(x)
+        ax.set_xticklabels(state_labels)
+        ax.xaxis.set_minor_locator(NullLocator())
+        set_nice_count_y_axis(ax, group_y_max[group], target_ticks=5)
+    axes[0, 0].set_ylabel("Mean Count per Rollout")
+    axes[1, 0].set_ylabel("Mean Count per Rollout")
+    fig.supxlabel("Training State", y=0.02)
+    handles, labels = axes[0, 0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.04))
+    save_figure(fig, path)
+
+
 def build_viewer(args: argparse.Namespace) -> None:
     paper_style()
     ensure_clean_dir(args.output_dir)
@@ -2401,6 +2713,13 @@ def build_viewer(args: argparse.Namespace) -> None:
         privacy_aware_normal_training_rows,
         privacy_aware_prompt_training_rows,
     )
+    final_training_behavior_rows_data = final_training_behavior_rows(
+        final_normal_training_rows,
+        final_privacy_prompt_training_rows,
+        privacy_aware_normal_training_rows,
+        privacy_aware_prompt_training_rows,
+    )
+    plot_final_training_behavior(final_training_behavior_rows_data, plots_dir / "final_training_behavior.svg")
     tables_dir.mkdir(parents=True, exist_ok=True)
     latex_path = tables_dir / "leakage_relationship_stats.tex"
     latex_path.write_text(leakage_stats_latex(relationship_stats_rows), encoding="utf-8")
@@ -2420,6 +2739,7 @@ def build_viewer(args: argparse.Namespace) -> None:
         "final_situational_training_rows": final_training_rows,
         "training_prompt_trajectory_rows": training_prompt_trajectory_rows,
         "final_condition_summary_rows": final_condition_rows,
+        "final_training_behavior_rows": final_training_behavior_rows_data,
         "privacy_prompt_summary": prompt_rows_main,
         "privacy_prompt_summary_with_checkpoints": prompt_rows,
         "legacy_privacy_prompt_summary": legacy_prompt_rows_main,
@@ -2543,15 +2863,15 @@ def build_viewer(args: argparse.Namespace) -> None:
         ("status", "Status"),
     ]
     final_condition_table = table(final_condition_headers, final_condition_rows)
-    final_condition_latex_headers = [
-        ("condition", "Condition"),
-        ("strict_chain", "Strict Chain Success"),
-        ("final_accuracy", "Final Accuracy"),
-        ("privacy_leakage", "Privacy Leakage"),
-        ("intent", "Intent Leakage"),
-        ("answer", "Answer Leakage"),
-        ("full", "Full-Information Leakage"),
+    final_training_behavior_headers = [
+        ("condition", "Model"),
+        ("web_queries", "Mean Web Queries"),
+        ("web_reads", "Mean Web Reads"),
+        ("local_searches", "Mean Local Searches"),
+        ("local_reads", "Mean Local Reads"),
     ]
+    final_training_behavior_rows_table = final_training_behavior_table_rows(final_training_behavior_rows_data)
+    final_training_behavior_table = table(final_training_behavior_headers, final_training_behavior_rows_table)
     training_prompt_trajectory_headers = [
         ("family", "Training Setup"),
         ("checkpoint", "Checkpoint"),
@@ -2634,14 +2954,8 @@ def build_viewer(args: argparse.Namespace) -> None:
         "Final 16k held-out test privacy-prompt effect on web-query and retrieval counts.",
         "tab:privacy_prompt_query_behavior",
     )
-    write_latex_table(
-        tables_dir / "final_condition_summary.tex",
-        final_condition_latex_headers,
-        final_condition_rows,
-        r"Effect of training on \qwenthreeb, evaluated with and without the privacy-aware prompt.",
-        "tab:final_condition_summary",
-        raw_caption=True,
-    )
+    write_training_effect_summary_latex(tables_dir / "final_condition_summary.tex", final_condition_rows)
+    write_final_training_behavior_latex(tables_dir / "final_training_behavior.tex", final_training_behavior_rows_data)
     write_latex_table(
         tables_dir / "training_prompt_trajectories.tex",
         training_prompt_trajectory_headers,
@@ -2738,6 +3052,11 @@ def build_viewer(args: argparse.Namespace) -> None:
                 "section": "Training And Prompting Trajectories",
                 "status": "Paper-ready final 16k held-out test refresh",
                 "use": "Main effect-of-training figure: solid arrows are training effects, dashed arrows are privacy-prompt effects from the base model and each checkpoint.",
+            },
+            {
+                "section": "Effect Of Training: Query And Retrieval Behavior",
+                "status": "Paper-ready final 16k held-out test refresh",
+                "use": "Use this to compare how task training and task+PA-DR training change web query/read and local search/read behavior for Qwen3 4B.",
             },
             {
                 "section": "Privacy Prompt Effect: Accuracy And Leakage",
@@ -2887,6 +3206,7 @@ def build_viewer(args: argparse.Namespace) -> None:
       <a href="#prompt-leakage-types">Prompt: Leakage Types</a>
       <a href="#prompt-query">Prompt: Query And Retrieval</a>
       <a href="#training-effect">Training Effect</a>
+      <a href="#training-behavior">Training Behavior</a>
       <a href="#training-trajectories">Training Trajectories</a>
       <a href="#with-checkpoints">Checkpoint Copies</a>
       <a href="#task-performance-test">Task Performance</a>
@@ -2994,6 +3314,13 @@ def build_viewer(args: argparse.Namespace) -> None:
       {final_condition_table}
       {training_prompt_trajectory_table}
     </section>
+    <section id="training-behavior" class="figure">
+      <h2>Effect Of Training: Query And Retrieval Behavior</h2>
+      <div class="note">Paper-ready final 16k held-out test refresh for Qwen3 4B. Counts are means per successful rollout. Paired bars compare normal prompting with the privacy-aware prompt at the base model, task-training checkpoint 50, and task+PA-DR checkpoint 50.</div>
+      <img src="plots/final_training_behavior.svg" alt="Training effect on query and retrieval behavior">
+      <div class="links"><a href="plots/final_training_behavior.svg">SVG</a><a href="plots/final_training_behavior.pdf">PDF</a><a href="tables/final_training_behavior.tex">LaTeX table</a></div>
+      {final_training_behavior_table}
+    </section>
     <section id="training-trajectories" class="figure">
       <h2>Standard Training Step50/Step100 Diagnostic</h2>
       <div class="note">Diagnostic final 16k held-out test view for the standard task-training family under normal and privacy prompts. The main paper plot above uses the cleaner single-panel step50 comparison requested for advisor review.</div>
@@ -3062,6 +3389,9 @@ def build_viewer(args: argparse.Namespace) -> None:
       <h3>Training And Prompting Trajectories</h3>
       <div class="links"><a href="tables/training_prompt_trajectories.tex">LaTeX table</a></div>
       {training_prompt_trajectory_table}
+      <h3>Final Training Behavior Summary</h3>
+      <div class="links"><a href="tables/final_training_behavior.tex">LaTeX table</a></div>
+      {final_training_behavior_table}
       <h3>Final Privacy Prompt Summary</h3>
       <div class="links"><a href="tables/privacy_prompt_accuracy_leakage.tex">LaTeX table</a></div>
       {prompt_table}
