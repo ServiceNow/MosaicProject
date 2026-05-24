@@ -72,7 +72,7 @@ PAPER_MODEL_NAMES = {
     "chroma_context_1": "Chroma Context-1",
     "qwen3_4b_situational_reward_s50": "Qwen3 4B Task step50",
     "qwen3_4b_situational_reward_s100": "Qwen3 4B Task step100",
-    "qwen3_4b_privreward_tau05_s50": "Qwen3 4B Task+Privacy step50",
+    "qwen3_4b_privreward_tau05_s50": "Qwen3 4B Task+PA-DR step50",
 }
 TRAINING_CHECKPOINT_LABELS = set(
     TRAINED_MODEL_LABELS
@@ -1721,9 +1721,9 @@ def final_condition_summary_rows(
         ("Qwen3 4B + privacy prompt", prompt_by_model.get("qwen3_4b_instruct_2507")),
         ("Qwen3 4B task training step50", normal_by_model.get("qwen3_4b_situational_reward_s50")),
         ("Qwen3 4B task training step50 + privacy prompt", prompt_by_model.get("qwen3_4b_situational_reward_s50")),
-        ("Qwen3 4B task+privacy training step50", privacy_normal_by_model.get("qwen3_4b_privreward_tau05_s50")),
+        ("Qwen3 4B task+PA-DR training step50", privacy_normal_by_model.get("qwen3_4b_privreward_tau05_s50")),
         (
-            "Qwen3 4B task+privacy training step50 + privacy prompt",
+            "Qwen3 4B task+PA-DR training step50 + privacy prompt",
             privacy_prompt_by_model.get("qwen3_4b_privreward_tau05_s50"),
         ),
     ]
@@ -2006,8 +2006,8 @@ def plot_training_prompt_trajectories(
             "color": "#D55E00",
         },
         {
-            "family": "Task+Privacy Training",
-            "checkpoint": "Qwen3 4B task+privacy-trained step50",
+            "family": "Task+PA-DR Training",
+            "checkpoint": "Qwen3 4B task+PA-DR-trained step50",
             "normal": privacy_normal,
             "prompt": privacy_prompt,
             "color": "#009E73",
@@ -2142,7 +2142,7 @@ def plot_training_prompt_trajectories(
         prompt_row = item["prompt"]
         normal_xy = metric_xy(normal_row)
         prompt_xy = metric_xy(prompt_row)
-        is_privacy_family = item["family"] == "Task+Privacy Training"
+        is_privacy_family = item["family"] == "Task+PA-DR Training"
         draw_point(
             normal_row,
             normal_xy,
@@ -2150,7 +2150,7 @@ def plot_training_prompt_trajectories(
             "s",
             str(item["family"]),
             True,
-            point_label="Task+Privacy" if is_privacy_family else "Task",
+            point_label="Task+PA-DR" if is_privacy_family else "Task",
             label_offset=(8, 10 if is_privacy_family else 12),
         )
         draw_point(
@@ -2160,7 +2160,7 @@ def plot_training_prompt_trajectories(
             "D",
             f"{item['family']} + Privacy Prompt",
             False,
-            point_label="Task+Privacy + prompt" if is_privacy_family else "Task + prompt",
+            point_label="Task+PA-DR + prompt" if is_privacy_family else "Task + prompt",
             label_offset=(-8, -12 if is_privacy_family else -18),
         )
         if base_xy is not None and normal_xy is not None:
@@ -2222,7 +2222,7 @@ def plot_training_prompt_trajectories(
     legend_handles = [
         Line2D([0], [0], marker="o", color="none", markerfacecolor="#1f2421", markeredgecolor="#1f2421", markersize=6.2, label="Base Qwen3 4B"),
         Line2D([0], [0], marker="s", color="none", markerfacecolor="#D55E00", markeredgecolor="#D55E00", markersize=6.2, label="Task training"),
-        Line2D([0], [0], marker="s", color="none", markerfacecolor="#009E73", markeredgecolor="#009E73", markersize=6.2, label="Task+privacy training"),
+        Line2D([0], [0], marker="s", color="none", markerfacecolor="#009E73", markeredgecolor="#009E73", markersize=6.2, label="Task+PA-DR training"),
         Line2D([0], [0], marker="D", color="none", markerfacecolor="white", markeredgecolor="#5F6F7A", markersize=6.2, label="+ privacy prompt"),
         Line2D([0], [0], color="#5F6F7A", lw=1.6, label="training effect"),
         Line2D([0], [0], color="#5F6F7A", lw=1.25, linestyle="--", label="prompt effect"),
@@ -2251,7 +2251,7 @@ def build_viewer(args: argparse.Namespace) -> None:
         ("Qwen3 4B task-family final 16k test refresh", args.final_eval_artifact_root, args.final_privacy_prompt_artifact_root),
         ("External-model final 16k test refresh", args.external_final_artifact_root, args.external_privacy_prompt_artifact_root),
         (
-            "Qwen3 4B task+privacy final 16k test refresh",
+            "Qwen3 4B task+PA-DR final 16k test refresh",
             args.privacy_aware_final_eval_artifact_root,
             args.privacy_aware_final_privacy_prompt_artifact_root,
         ),
@@ -2349,12 +2349,12 @@ def build_viewer(args: argparse.Namespace) -> None:
     privacy_aware_status_rows = final_situational_status_rows(
         privacy_aware_normal_training_rows,
         "Normal Prompt",
-        "16k/32k privacy-aware trained eval",
+        "16k/32k PA-DR trained eval",
     )
     privacy_aware_prompt_status_rows = final_situational_status_rows(
         privacy_aware_prompt_training_rows,
         "Privacy Prompt",
-        "16k/32k privacy-aware trained eval: privacy prompt",
+        "16k/32k PA-DR trained eval: privacy prompt",
     )
     external_status_rows = model_status_rows(args.external_final_artifact_root, "16k/32k external-model refresh")
     external_prompt_status_rows = model_status_rows(
@@ -2640,14 +2640,14 @@ def build_viewer(args: argparse.Namespace) -> None:
         tables_dir / "final_condition_summary.tex",
         final_condition_headers,
         final_condition_rows,
-        "Final 16k held-out test summary for base Qwen3 4B, task-trained step 50, and task-plus-privacy-trained step 50, with and without the privacy prompt.",
+        "Final 16k held-out test summary for base Qwen3 4B, task-trained step 50, and task+PA-DR-trained step 50, with and without the privacy prompt.",
         "tab:final_condition_summary",
     )
     write_latex_table(
         tables_dir / "training_prompt_trajectories.tex",
         training_prompt_trajectory_headers,
         training_prompt_trajectory_rows_table,
-        "Base-model prompt effect plus two-segment training and privacy-prompt trajectories for the step 50 task-trained and task-plus-privacy-trained checkpoints.",
+        "Base-model prompt effect plus two-segment training and privacy-prompt trajectories for the step 50 task-trained and task+PA-DR-trained checkpoints.",
         "tab:training_prompt_trajectories",
     )
     write_latex_table(
@@ -2733,7 +2733,7 @@ def build_viewer(args: argparse.Namespace) -> None:
             {
                 "section": "Effect Of Training: Accuracy And Privacy",
                 "status": "Paper-ready final 16k held-out test refresh",
-                "use": "Use the one-panel trajectory plot for the step50 task-training versus task+privacy-training comparison. The diagnostic step50/step100 table is retained below.",
+                "use": "Use the one-panel trajectory plot for the step50 task-training versus task+PA-DR-training comparison. The diagnostic step50/step100 table is retained below.",
             },
             {
                 "section": "Training And Prompting Trajectories",
@@ -2940,7 +2940,7 @@ def build_viewer(args: argparse.Namespace) -> None:
     <section id="training-effect" class="figure">
       <h2>Effect Of Training: Accuracy And Privacy</h2>
       <div class="note">Paper-ready final 16k held-out test refresh. Solid arrows move from base Qwen3 4B to checkpoint 50. Dashed arrows show the privacy-prompt effect for the base model and for each checkpoint. Error bars are SEM over repeat means.</div>
-      <img src="plots/final_training_prompt_trajectories.svg" alt="Training and prompting trajectories for standard and privacy-aware situational reward models">
+      <img src="plots/final_training_prompt_trajectories.svg" alt="Training and prompting trajectories for standard and PA-DR situational reward models">
       <div class="links"><a href="plots/final_training_prompt_trajectories.svg">SVG</a><a href="plots/final_training_prompt_trajectories.pdf">PDF</a><a href="plots/final_training_prompt_trajectories_annotated.svg">Annotated SVG</a><a href="tables/training_prompt_trajectories.tex">LaTeX trajectory table</a><a href="tables/final_condition_summary.tex">LaTeX condition table</a></div>
       {final_condition_table}
       {training_prompt_trajectory_table}

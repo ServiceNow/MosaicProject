@@ -124,8 +124,8 @@
       "status": "complete"
     },
     {
-      "group": "16k/32k privacy-aware trained eval",
-      "model": "Qwen3 4B Task+Privacy step50",
+      "group": "16k/32k PA-DR trained eval",
+      "model": "Qwen3 4B Task+PA-DR step50",
       "model_label": "qwen3_4b_privreward_tau05_s50",
       "rollout_rows": 1032,
       "rollout_unique": 1032,
@@ -143,8 +143,8 @@
       "status": "complete"
     },
     {
-      "group": "16k/32k privacy-aware trained eval: privacy prompt",
-      "model": "Qwen3 4B Task+Privacy step50",
+      "group": "16k/32k PA-DR trained eval: privacy prompt",
+      "model": "Qwen3 4B Task+PA-DR step50",
       "model_label": "qwen3_4b_privreward_tau05_s50",
       "rollout_rows": 1032,
       "rollout_unique": 1032,
@@ -897,7 +897,7 @@
     },
     {
       "condition": "Normal Prompt",
-      "model": "Qwen3 4B Task+Privacy step50",
+      "model": "Qwen3 4B Task+PA-DR step50",
       "model_label": "qwen3_4b_privreward_tau05_s50",
       "rollout_rows": 1032,
       "rollout_unique": 1032,
@@ -970,7 +970,7 @@
     },
     {
       "condition": "Privacy Prompt",
-      "model": "Qwen3 4B Task+Privacy step50",
+      "model": "Qwen3 4B Task+PA-DR step50",
       "model_label": "qwen3_4b_privreward_tau05_s50",
       "rollout_rows": 1032,
       "rollout_unique": 1032,
@@ -1080,8 +1080,8 @@
       "prompt_privacy_leakage_rate_sem": 0.015228908571222617
     },
     {
-      "family": "Task+Privacy Training",
-      "checkpoint": "Qwen3 4B task+privacy-trained step50",
+      "family": "Task+PA-DR Training",
+      "checkpoint": "Qwen3 4B task+PA-DR-trained step50",
       "normal_attempts": 1032,
       "normal_judged": 1032,
       "normal_status": "complete",
@@ -1156,7 +1156,7 @@
       "status": "complete"
     },
     {
-      "condition": "Qwen3 4B task+privacy training step50",
+      "condition": "Qwen3 4B task+PA-DR training step50",
       "attempts": "1032/1032",
       "judged": "1032/1032",
       "strict_chain": "60.4% +/- 0.3 pp",
@@ -1170,7 +1170,7 @@
       "status": "complete"
     },
     {
-      "condition": "Qwen3 4B task+privacy training step50 + privacy prompt",
+      "condition": "Qwen3 4B task+PA-DR training step50 + privacy prompt",
       "attempts": "1032/1032",
       "judged": "1032/1032",
       "strict_chain": "57.4% +/- 1.0 pp",
@@ -4468,7 +4468,7 @@
       "group": "Qwen3 4B task-family final 16k test refresh"
     },
     {
-      "model": "Qwen3 4B Task+Privacy step50",
+      "model": "Qwen3 4B Task+PA-DR step50",
       "model_label": "qwen3_4b_privreward_tau05_s50",
       "baseline_expected": 344,
       "prompt_expected": 344,
@@ -4670,7 +4670,7 @@
       "prompt_local_searches_sem_n": 3,
       "prompt_local_searches_ci_low": 7.053200946113438,
       "prompt_local_searches_ci_high": 7.113465720553228,
-      "group": "Qwen3 4B task+privacy final 16k test refresh"
+      "group": "Qwen3 4B task+PA-DR final 16k test refresh"
     }
   ],
   "legacy_privacy_prompt_summary": [
