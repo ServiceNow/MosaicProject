@@ -44,17 +44,8 @@ PADR_S100_LABEL = "qwen3_4b_privreward_tau05_s100"
 STEP100_QUERY_EXAMPLE_MODELS = [BASE_LABEL, TASK_S100_LABEL, PADR_S100_LABEL]
 STEP100_QUERY_EXAMPLE_PRIORITY_CASES = [
     ("2", "DR0058", "144d8a03"),  # password policy -> malicious domains
-    ("1", "DR0059", "9ecba6eb"),  # vulnerability remediation -> Mandiant trends
     ("1", "DR0046", "7ad0fe34"),  # cloud migration -> nation-state attack
     ("2", "DR0100", "c6d82d2b"),  # interoperability APIs -> zero-trust adoption
-    ("2", "DR0100", "3360308b"),  # cloud migration -> healthcare supply-chain cloud
-    ("2", "DR0088", "75298db3"),  # anomaly detection -> cybercrime forecasts
-    ("0", "DR0088", "4823d54b"),  # anomaly detection -> AI observability
-    ("0", "DR0056", "73dd065a"),  # AI chatbot adoption -> Military Health System
-    ("2", "DR0086", "052c70a3"),  # onboarding program -> New Hampshire Privacy Act
-    ("1", "DR0044", "b1f1522c"),  # marketing shift -> Facebook ad revenue
-    ("0", "DR0007", "0e6cec0e"),  # partner training -> AI earnings-call prevalence
-    ("2", "DR0006", "9a8b5e8d"),  # training expense -> regulatory enforcement
 ]
 
 SUMMARY_METRICS = {
@@ -496,7 +487,7 @@ def latex_step100_query_examples(rows: list[dict[str, Any]]) -> str:
 {body_text}
 \bottomrule
 \end{{tabular}}
-\caption{{Candidate held-out test examples from checkpoint 100 where the base and task-trained \qwenthreeb rollouts are judged privacy-leaking, while the PA-DR rollout for the same test-chain repeat is below the privacy-leakage threshold. All three rollouts have strict chain success; this compact paper table shows selected web queries, while the viewer and JSON include exhaustive web-query bundles. Leakage types are not mutually exclusive.}}
+\caption{{Representative held-out test examples from checkpoint 100 where the base and task-trained \qwenthreeb rollouts are judged privacy-leaking, while the PA-DR rollout for the same test-chain repeat has no judged leakage. All three rollouts have strict chain success; this compact paper table shows selected web queries, while the viewer and JSON include exhaustive web-query bundles. Leakage types are not mutually exclusive.}}
 \label{{tab:paired_query_leakage_examples_s100}}
 \end{{table*}}
 """
@@ -808,7 +799,7 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
     checkpoints = checkpoint_rows(rows)
     behavior = behavior_rows(rows)
     status = status_rows(rows)
-    query_examples = step100_query_example_rows(limit=12)
+    query_examples = step100_query_example_rows(limit=3)
 
     plot_training_effect(rows, plots_dir / "training_effect_step100.svg")
     plot_core_leakage_types(summary, plots_dir / "core_leakage_types_step100.svg")
@@ -1037,7 +1028,7 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
     </section>
     <section id="query-examples">
       <h2>Step100 Query Leakage Examples</h2>
-      <div class="note">Review-prioritized held-out test cases using the final checkpoint defaults: base Qwen3 4B, Task step100, and PA-DR step100. Rows require strict chain success for all three rollouts, at least one web hop, base and Task privacy leakage, and PA-DR below the privacy-leakage threshold. Query cells show every web query made by that rollout.</div>
+      <div class="note">Paper-prioritized held-out test cases using the final checkpoint defaults: base Qwen3 4B, Task step100, and PA-DR step100. Rows require strict chain success for all three rollouts, at least one web hop, base and Task privacy leakage, and no judged PA-DR leakage. Query cells show every web query made by that rollout.</div>
       <div class="links"><a href="tables/paired_leakage_examples_s100.tex">LaTeX table</a><a href="tables/paired_leakage_examples_s100.json">JSON rows</a></div>
       {query_examples_table}
     </section>
