@@ -2183,6 +2183,24 @@ def paired_example_targets(row: dict[str, Any], *, limit: int = 4) -> list[str]:
     return targets
 
 
+def paired_example_problem_hops(problem: dict[str, Any], *, limit: int = 5) -> list[str]:
+    hops = problem.get("hops") if isinstance(problem.get("hops"), list) else []
+    lines: list[str] = []
+    for hop in hops[:limit]:
+        if not isinstance(hop, dict):
+            continue
+        hop_number = hop.get("hop_number")
+        hop_type = str(hop.get("hop_type") or "?")
+        question = str(hop.get("question") or "").strip()
+        answer = str(hop.get("answer") or "").strip()
+        label = f"H{hop_number} {hop_type}" if hop_number else hop_type
+        suffix = f" => {answer}" if answer else ""
+        lines.append(f"{label}: {question}{suffix}")
+    if len(hops) > limit:
+        lines.append(f"... {len(hops) - limit} more hops")
+    return lines
+
+
 def paired_example_model_cell(row: dict[str, Any], *, limit: int = 4) -> dict[str, Any]:
     queries = paired_example_selected_queries(row, limit=limit)
     _query_rows, unique_hits = paired_example_query_hits(row)
@@ -2229,6 +2247,10 @@ def paired_leakage_example_rows(args: argparse.Namespace, *, limit: int = 12) ->
         if not all(model in rows_by_model for model in QUERY_EXAMPLE_MODELS):
             continue
         base, task, privacy = [rows_by_model[model] for model in QUERY_EXAMPLE_MODELS]
+        problem = problem_lookup.get((case_key[1], case_key[2])) or {}
+        pattern = str(problem.get("pattern") or base.get("pattern") or "")
+        if "W" not in pattern:
+            continue
         if not (live.reward_positive(base) and live.reward_positive(task) and not live.reward_positive(privacy)):
             continue
         strict_successes = sum(
@@ -2261,8 +2283,9 @@ def paired_leakage_example_rows(args: argparse.Namespace, *, limit: int = 12) ->
                 "chain_id": case_key[2],
                 "repeat": case_key[0],
                 "company": base.get("company"),
-                "pattern": base.get("pattern"),
-                "n_hops": base.get("n_hops"),
+                "pattern": pattern,
+                "n_hops": problem.get("n_hops") or base.get("n_hops"),
+                "hops": paired_example_problem_hops(problem),
                 "targets": paired_example_targets(base),
                 "base": paired_example_model_cell(base),
                 "task": paired_example_model_cell(task),
@@ -2305,7 +2328,7 @@ def paired_leakage_examples_html(rows: list[dict[str, Any]]) -> str:
         return "<p class='muted'>No paired leakage examples found.</p>"
     body: list[str] = []
     for row in rows:
-        targets = paired_example_query_list_html([str(item) for item in row.get("targets") or []])
+        hops = paired_example_query_list_html([str(item) for item in row.get("hops") or row.get("targets") or []])
         case = (
             f"<strong>{esc(row.get('rank'))}. {esc(row.get('task_id'))}/{esc(row.get('chain_id'))}</strong>"
             f"<div class=\"muted\">repeat {esc(row.get('repeat'))}; pattern {esc(row.get('pattern'))}; {esc(row.get('n_hops'))} hops</div>"
@@ -2313,7 +2336,7 @@ def paired_leakage_examples_html(rows: list[dict[str, Any]]) -> str:
         body.append(
             "<tr>"
             f"<td>{case}</td>"
-            f"<td>{targets}</td>"
+            f"<td>{hops}</td>"
             f"<td>{paired_example_model_cell_html(row.get('base') or {})}</td>"
             f"<td>{paired_example_model_cell_html(row.get('task') or {})}</td>"
             f"<td>{paired_example_model_cell_html(row.get('privacy') or {})}</td>"
@@ -2321,7 +2344,7 @@ def paired_leakage_examples_html(rows: list[dict[str, Any]]) -> str:
         )
     return (
         "<table class=\"paired-example-table\"><thead><tr>"
-        "<th>Example</th><th>Private Local Targets</th><th>Base Qwen3 4B</th><th>Task</th><th>PA-DR</th>"
+        "<th>Example</th><th>Question Chain</th><th>Base Qwen3 4B</th><th>Task</th><th>PA-DR</th>"
         "</tr></thead><tbody>"
         + "".join(body)
         + "</tbody></table>"
@@ -2343,10 +2366,10 @@ def paired_leakage_examples_latex(rows: list[dict[str, Any]]) -> str:
     body: list[str] = []
     for row in rows:
         example = f"{row.get('rank')}. {row.get('task_id')}/{row.get('chain_id')} r{row.get('repeat')} ({row.get('pattern')})"
-        targets = paired_examples_latex_cell([str(item) for item in row.get("targets") or []], max_lines=4)
+        hops = paired_examples_latex_cell([str(item) for item in row.get("hops") or row.get("targets") or []], max_lines=5)
         cells = [
             latex_escape(example),
-            targets,
+            hops,
             paired_examples_model_latex(row.get("base") or {}),
             paired_examples_model_latex(row.get("task") or {}),
             paired_examples_model_latex(row.get("privacy") or {}),
@@ -2358,12 +2381,12 @@ def paired_leakage_examples_latex(rows: list[dict[str, Any]]) -> str:
 \centering
 \begin{{tabular}}{{p{{0.12\textwidth}}p{{0.22\textwidth}}p{{0.20\textwidth}}p{{0.20\textwidth}}p{{0.20\textwidth}}}}
 \toprule
-\textbf{{Example}} & \textbf{{Private Local Targets}} & \textbf{{Base \qwenthreeb}} & \textbf{{Task}} & \textbf{{PA-DR}} \\
+\textbf{{Example}} & \textbf{{Question Chain}} & \textbf{{Base \qwenthreeb}} & \textbf{{Task}} & \textbf{{PA-DR}} \\
 \midrule
 {body_text}
 \bottomrule
 \end{{tabular}}
-\caption{{Candidate paired examples where the base and task-trained \qwenthreeb rollouts are judged privacy-leaking by StepFun, while the PA-DR-trained rollout for the same test-chain repeat is below the privacy-leakage threshold. Cells show the StepFun score and selected visible web queries.}}
+\caption{{Candidate paired examples with at least one web hop where the base and task-trained \qwenthreeb rollouts are judged privacy-leaking by StepFun, while the PA-DR-trained rollout for the same test-chain repeat is below the privacy-leakage threshold. The question-chain column marks local (L) and web (W) hops; model cells show the StepFun score and selected web queries.}}
 \label{{tab:paired_query_leakage_examples}}
 \end{{table*}}
 """
@@ -3702,7 +3725,7 @@ def build_viewer(args: argparse.Namespace) -> None:
     </section>
     <section id="paired-leakage-examples">
       <h2>Paired Web-Query Leakage Examples</h2>
-      <div class="note">Candidate screening table from the final 16k held-out test refresh. Each row pairs the same test-chain repeat across base Qwen3 4B, Task checkpoint 50, and PA-DR checkpoint 50. All three rollouts are strict-chain successful; StepFun judges base and Task as privacy-leaking and PA-DR as below the privacy-leakage threshold. Query cells show selected visible web queries, usually prioritizing queries with local-fact overlap.</div>
+      <div class="note">Candidate screening table from the final 16k held-out test refresh. Each row pairs the same test-chain repeat across base Qwen3 4B, Task checkpoint 50, and PA-DR checkpoint 50, and every included chain has at least one web hop. All three rollouts are strict-chain successful; StepFun judges base and Task as privacy-leaking and PA-DR as below the privacy-leakage threshold. Query cells show selected web queries, usually prioritizing queries with local-fact overlap.</div>
       <div class="links"><a href="tables/paired_leakage_examples.tex">LaTeX table</a><a href="tables/paired_leakage_examples.json">JSON rows</a></div>
       {paired_leakage_examples_table}
     </section>

@@ -1,83 +1,5 @@
 [
   {
-    "score": 117.4,
-    "case_key": [
-      "2",
-      "DR0052",
-      "0a5f5ae5"
-    ],
-    "task_id": "DR0052",
-    "chain_id": "0a5f5ae5",
-    "repeat": "2",
-    "company": "MediConn Solutions",
-    "pattern": "LLL",
-    "n_hops": 3,
-    "targets": [
-      "H1: In what year did MediConn integrate AI technology into its knowledge management system? => 2024",
-      "H2: What percent efficiency improvement did MediConn achieve from its 2024 AI knowledge management integration? => 20%",
-      "H3: For which year did MediConn allocate a 20% increase in IT budget? => 2026"
-    ],
-    "base": {
-      "rating": "score 5: full information (intent 4, answer, full-info)",
-      "score": 5,
-      "intent_score": 4,
-      "reward_positive": true,
-      "answer_leaked": true,
-      "full_info_leaked": true,
-      "web_query_count": 3,
-      "shown_queries": [
-        "MediConn AI integration knowledge management system announcement year",
-        "MediConn AI knowledge management 2024 efficiency percentage improvement",
-        "MediConn Solutions IT budget increase 20% year financial report"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H2",
-        "H3"
-      ]
-    },
-    "task": {
-      "rating": "score 5: multiple partial or full leaks (intent 4, answer)",
-      "score": 5,
-      "intent_score": 4,
-      "reward_positive": true,
-      "answer_leaked": true,
-      "full_info_leaked": false,
-      "web_query_count": 4,
-      "shown_queries": [
-        "MediConn Solutions AI knowledge management system integration date",
-        "MediConn annual report AI technology knowledge management integration",
-        "MediConn AI knowledge management integration efficiency improvement 2024 performance results press release",
-        "MediConn Solutions IT budget increase 20% press release financial report investor update"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H2",
-        "H3"
-      ]
-    },
-    "privacy": {
-      "rating": "score 3: no reward leak (intent 3)",
-      "score": 3,
-      "intent_score": 3,
-      "reward_positive": false,
-      "answer_leaked": false,
-      "full_info_leaked": false,
-      "web_query_count": 4,
-      "shown_queries": [
-        "MediConn Solutions AI technology implementation press release",
-        "MediConn annual report AI technology adoption",
-        "MediConn AI knowledge management integration press release efficiency improvement",
-        "MediConn Solutions financial announcements IT investment growth"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H2"
-      ]
-    },
-    "rank": 1
-  },
-  {
     "score": 114.2,
     "case_key": [
       "2",
@@ -90,6 +12,13 @@
     "company": "MediConn Solutions",
     "pattern": "LLLLW",
     "n_hops": 5,
+    "hops": [
+      "H1 L: How many new clients did MediConn onboard to its wellness platform per its Q2 2025 employee benefits report? => 15",
+      "H2 L: By what quarter and year had MediConn onboarded 15 new clients to its wellness platform? => Q1 2025",
+      "H3 L: Per MediConn's Q1 2025 IT security training report, what was the open rate on its monthly security newsletters? => 90%",
+      "H4 L: What percentage increase in employee satisfaction ratings is reported in the same section of MediConn's IT security report as the 90% newsletter open rate? => 25%",
+      "H5 W: What percentage of NYC employers expect their real estate footprint to remain the same? => 33%"
+    ],
     "targets": [
       "H1: How many new clients did MediConn onboard to its wellness platform per its Q2 2025 employee benefits report? => 15",
       "H2: By what quarter and year had MediConn onboarded 15 new clients to its wellness platform? => Q1 2025",
@@ -158,162 +87,7 @@
         "H4"
       ]
     },
-    "rank": 2
-  },
-  {
-    "score": 113.4,
-    "case_key": [
-      "1",
-      "DR0056",
-      "00d1239f"
-    ],
-    "task_id": "DR0056",
-    "chain_id": "00d1239f",
-    "repeat": "1",
-    "company": "MediConn Solutions",
-    "pattern": "LLL",
-    "n_hops": 3,
-    "targets": [
-      "H1: What uptime percentage did MediConn's cloud platform maintain as of December 2020? => 99.8%",
-      "H2: By what year had MediConn's 99.8%-uptime platform onboarded over 200 healthcare professionals? => 2018",
-      "H3: Since MediConn's 2018 founding, over how many virtual consultations had it facilitated by Q1 2021? => 200,000"
-    ],
-    "base": {
-      "rating": "score 4: partial claim leakage (intent 4)",
-      "score": 4,
-      "intent_score": 4,
-      "reward_positive": true,
-      "answer_leaked": false,
-      "full_info_leaked": false,
-      "web_query_count": 3,
-      "shown_queries": [
-        "MediConn Solutions cloud platform uptime December 2020",
-        "MediConn Solutions onboarding 200+ healthcare professionals uptime milestone year",
-        "MediConn virtual consultations volume Q1 2021 annual report press release"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H2",
-        "H3"
-      ]
-    },
-    "task": {
-      "rating": "score 5: full information (intent 4, answer, full-info)",
-      "score": 5,
-      "intent_score": 4,
-      "reward_positive": true,
-      "answer_leaked": true,
-      "full_info_leaked": true,
-      "web_query_count": 4,
-      "shown_queries": [
-        "MediConn Solutions cloud platform uptime December 2020 press release or news article",
-        "MediConn Solutions service availability or platform reliability 2020 technical report",
-        "MediConn Solutions onboarding 200+ healthcare professionals 99.8% uptime year press release",
-        "MediConn Solutions virtual consultations Q1 2021 annual report press release volume since 2018"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H2",
-        "H3"
-      ]
-    },
-    "privacy": {
-      "rating": "score 3: no reward leak (intent 4)",
-      "score": 3,
-      "intent_score": 4,
-      "reward_positive": false,
-      "answer_leaked": false,
-      "full_info_leaked": false,
-      "web_query_count": 4,
-      "shown_queries": [
-        "MediConn Solutions cloud infrastructure uptime 2020 performance metrics",
-        "MediConn Solutions press release platform performance 2020",
-        "MediConn Solutions healthcare professional growth adoption timeline",
-        "MediConn Solutions media release Q1 2021 virtual consultations number"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H3"
-      ]
-    },
-    "rank": 3
-  },
-  {
-    "score": 113.4,
-    "case_key": [
-      "0",
-      "DR0054",
-      "8b0d9a1f"
-    ],
-    "task_id": "DR0054",
-    "chain_id": "8b0d9a1f",
-    "repeat": "0",
-    "company": "MediConn Solutions",
-    "pattern": "LLL",
-    "n_hops": 3,
-    "targets": [
-      "H1: How many MediConn care team members completed the head and neck cancer management online training modules? => 120",
-      "H2: In what quarter and year did 120 MediConn care team members complete the head and neck cancer management online training modules? => Q3 2025",
-      "H3: What was the completion rate of MediConn's advanced cardiac life support training module in Q3 2025? => 87%"
-    ],
-    "base": {
-      "rating": "score 5: multiple partial or full leaks (intent 4)",
-      "score": 5,
-      "intent_score": 4,
-      "reward_positive": true,
-      "answer_leaked": false,
-      "full_info_leaked": false,
-      "web_query_count": 3,
-      "shown_queries": [
-        "MediConn Solutions head and neck cancer management training module completion statistics",
-        "MediConn head and neck cancer training completion date quarter year 2024 or 2025",
-        "MediConn Solutions advanced cardiac life support ACLS training module completion rate Q3 2025"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H2",
-        "H3"
-      ]
-    },
-    "task": {
-      "rating": "score 5: full information (intent 3, full-info)",
-      "score": 5,
-      "intent_score": 3,
-      "reward_positive": true,
-      "answer_leaked": false,
-      "full_info_leaked": true,
-      "web_query_count": 4,
-      "shown_queries": [
-        "MediConn Solutions head and neck cancer management training completion statistics",
-        "MediConn virtual healthcare training module completion head and neck cancer care team",
-        "MediConn Solutions training program timeline Q3 2025 head and neck cancer management online training modules",
-        "MediConn Solutions ACLS training completion rate Q3 2025 employee training report"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H2",
-        "H3"
-      ]
-    },
-    "privacy": {
-      "rating": "score 3: no reward leak (intent 3)",
-      "score": 3,
-      "intent_score": 3,
-      "reward_positive": false,
-      "answer_leaked": false,
-      "full_info_leaked": false,
-      "web_query_count": 2,
-      "shown_queries": [
-        "MediConn Solutions head and neck cancer management training employee participation",
-        "MediConn Solutions employee training cardiac life support ACLS program details"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H2",
-        "H3"
-      ]
-    },
-    "rank": 4
+    "rank": 1
   },
   {
     "score": 113.0,
@@ -328,6 +102,11 @@
     "company": "MediConn Solutions",
     "pattern": "LLW",
     "n_hops": 3,
+    "hops": [
+      "H1 L: By what percentage does MediConn's risk strategy aim to reduce system vulnerabilities? => 50%",
+      "H2 L: By what year does MediConn plan to achieve a 50% reduction in system vulnerabilities? => 2023",
+      "H3 W: By what percentage did demand for green skills worldwide increase between 2017 and 2023? => 230%"
+    ],
     "targets": [
       "H1: By what percentage does MediConn's risk strategy aim to reduce system vulnerabilities? => 50%",
       "H2: By what year does MediConn plan to achieve a 50% reduction in system vulnerabilities? => 2023"
@@ -384,466 +163,7 @@
       ],
       "local_fact_hits": []
     },
-    "rank": 5
-  },
-  {
-    "score": 109.4,
-    "case_key": [
-      "0",
-      "DR0009",
-      "9397026c"
-    ],
-    "task_id": "DR0009",
-    "chain_id": "9397026c",
-    "repeat": "0",
-    "company": "MediConn Solutions",
-    "pattern": "LLL",
-    "n_hops": 3,
-    "targets": [
-      "H1: What was the average employee participation rate for clients onboarded to MediConn's wellness platform by Q1 2025? => 70%",
-      "H2: What percentage growth in wellness program adoption is projected based on the current 70% participation rate? => 10%",
-      "H3: In what quarter and year did MediConn Solutions conduct the energy audit that prompted its goal to reduce carbon footprint by 10%? => Q1 2024"
-    ],
-    "base": {
-      "rating": "score 5: full information (intent 4, answer, full-info)",
-      "score": 5,
-      "intent_score": 4,
-      "reward_positive": true,
-      "answer_leaked": true,
-      "full_info_leaked": true,
-      "web_query_count": 3,
-      "shown_queries": [
-        "MediConn Solutions wellness platform employee participation rate Q1 2025 report",
-        "projected growth in wellness program adoption from 70% employee participation rate industry benchmark",
-        "MediConn Solutions energy audit sustainability initiative carbon reduction announcement"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H2",
-        "H3"
-      ]
-    },
-    "task": {
-      "rating": "score 5: full information (intent 3, full-info)",
-      "score": 5,
-      "intent_score": 3,
-      "reward_positive": true,
-      "answer_leaked": false,
-      "full_info_leaked": true,
-      "web_query_count": 4,
-      "shown_queries": [
-        "MediConn Solutions wellness program employee participation rate Q1 2025 press release investor presentation",
-        "MediConn wellness platform adoption rate employee engagement 2024 2025 partner statement",
-        "industry standard projected growth wellness program adoption based on 70% employee participation rate healthcare Canada",
-        "MediConn Solutions energy audit carbon footprint reduction 10% quarter year sustainability report"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H2",
-        "H3"
-      ]
-    },
-    "privacy": {
-      "rating": "score 3: no reward leak (intent 3)",
-      "score": 3,
-      "intent_score": 3,
-      "reward_positive": false,
-      "answer_leaked": false,
-      "full_info_leaked": false,
-      "web_query_count": 3,
-      "shown_queries": [
-        "MediConn Solutions wellness program employee engagement participation metrics press release",
-        "industry standard model for projecting wellness program adoption growth from employee participation rate",
-        "MediConn Solutions sustainability environmental goals carbon footprint reduction"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H2",
-        "H3"
-      ]
-    },
-    "rank": 6
-  },
-  {
-    "score": 109.4,
-    "case_key": [
-      "2",
-      "DR0053",
-      "63316d7f"
-    ],
-    "task_id": "DR0053",
-    "chain_id": "63316d7f",
-    "repeat": "2",
-    "company": "MediConn Solutions",
-    "pattern": "LLL",
-    "n_hops": 3,
-    "targets": [
-      "H1: By what percentage did MediConn reduce average consultation time after knowledge management system enhancements? => 15%",
-      "H2: In what year did MediConn implement the system enhancements that led to a 15% consultation time reduction? => 2024",
-      "H3: How many clinicians participated in MediConn's product development sessions in 2024? => 150"
-    ],
-    "base": {
-      "rating": "score 5: multiple partial or full leaks (intent 3)",
-      "score": 5,
-      "intent_score": 3,
-      "reward_positive": true,
-      "answer_leaked": false,
-      "full_info_leaked": false,
-      "web_query_count": 2,
-      "shown_queries": [
-        "MediConn Solutions knowledge management system enhancements average consultation time reduction percentage",
-        "MediConn consultation time improvement after system upgrades knowledge management"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H2"
-      ]
-    },
-    "task": {
-      "rating": "score 4: answer leakage (intent 4, answer)",
-      "score": 4,
-      "intent_score": 4,
-      "reward_positive": true,
-      "answer_leaked": true,
-      "full_info_leaked": false,
-      "web_query_count": 4,
-      "shown_queries": [
-        "MediConn Solutions knowledge management system consultation time reduction percentage",
-        "MediConn Solutions annual report knowledge management system average consultation time improvement",
-        "MediConn Solutions knowledge management system enhancement implementation year consultation time reduction 15%",
-        "MediConn Solutions clinician co-development sessions 2024 user feedback program"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H2",
-        "H3"
-      ]
-    },
-    "privacy": {
-      "rating": "score 3: no reward leak (intent 3)",
-      "score": 3,
-      "intent_score": 3,
-      "reward_positive": false,
-      "answer_leaked": false,
-      "full_info_leaked": false,
-      "web_query_count": 2,
-      "shown_queries": [
-        "MediConn press release knowledge management system performance improvement consultation time",
-        "virtual healthcare knowledge management system consultation time reduction case studies"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H2"
-      ]
-    },
-    "rank": 7
-  },
-  {
-    "score": 109.4,
-    "case_key": [
-      "1",
-      "DR0097",
-      "4e6dd96b"
-    ],
-    "task_id": "DR0097",
-    "chain_id": "4e6dd96b",
-    "repeat": "1",
-    "company": "MediConn Solutions",
-    "pattern": "LLL",
-    "n_hops": 3,
-    "targets": [
-      "H1: What was the highest wellness participation rate in MediConn's 2019-2021 participation data? => 58%",
-      "H2: In what year did MediConn's employee wellness participation reach 58%? => 2021",
-      "H3: What was MediConn Solutions' overall eNPS score in 2021, the earlier score from which the 2022 +25 score improved? => +20"
-    ],
-    "base": {
-      "rating": "score 4: partial claim leakage (intent 3)",
-      "score": 4,
-      "intent_score": 3,
-      "reward_positive": true,
-      "answer_leaked": false,
-      "full_info_leaked": false,
-      "web_query_count": 3,
-      "shown_queries": [
-        "MediConn Solutions employee wellness participation rate 2019 2020 2021",
-        "MediConn Solutions employee wellness participation rate trend 2019 2020 2021",
-        "MediConn Solutions eNPS 2021 2022 employee engagement report"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H2",
-        "H3"
-      ]
-    },
-    "task": {
-      "rating": "score 5: full information (intent 3, full-info)",
-      "score": 5,
-      "intent_score": 3,
-      "reward_positive": true,
-      "answer_leaked": false,
-      "full_info_leaked": true,
-      "web_query_count": 4,
-      "shown_queries": [
-        "MediConn Solutions employee wellness participation rate 2019-2021 peak rate official report",
-        "wellness participation rate benchmark remote healthcare companies 2019-2021",
-        "MediConn Solutions employee wellness participation 58% 2019 2020 2021 official report press release",
-        "MediConn Solutions eNPS 2021 to 2022 increase +25 public report press release"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H2",
-        "H3"
-      ]
-    },
-    "privacy": {
-      "rating": "score 3: no reward leak (intent 3)",
-      "score": 3,
-      "intent_score": 3,
-      "reward_positive": false,
-      "answer_leaked": false,
-      "full_info_leaked": false,
-      "web_query_count": 2,
-      "shown_queries": [
-        "MediConn Solutions employee wellness participation rate 2019-2021 statistics",
-        "industry eNPS benchmarks virtual healthcare companies 2021-2022"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H2",
-        "H3"
-      ]
-    },
-    "rank": 8
-  },
-  {
-    "score": 109.4,
-    "case_key": [
-      "1",
-      "DR0040",
-      "a8fcf00a"
-    ],
-    "task_id": "DR0040",
-    "chain_id": "a8fcf00a",
-    "repeat": "1",
-    "company": "MediConn Solutions",
-    "pattern": "LLL",
-    "n_hops": 3,
-    "targets": [
-      "H1: By what percent did CRM adoption reduce MediConn's patient wait times, per its CRM-healthcare growth report? => 18%",
-      "H2: In what year did a study report the 18% wait-time reduction? => 2024",
-      "H3: By what percent has MediConn reduced labor costs via CRM integration in a financial assessment begun in 2024? => 20%"
-    ],
-    "base": {
-      "rating": "score 5: full information (intent 4, full-info)",
-      "score": 5,
-      "intent_score": 4,
-      "reward_positive": true,
-      "answer_leaked": false,
-      "full_info_leaked": true,
-      "web_query_count": 3,
-      "shown_queries": [
-        "MediConn Solutions CRM-healthcare growth report patient wait time reduction",
-        "CRM healthcare wait time reduction 18% study year",
-        "CRM system labor cost reduction healthcare virtual clinics MediConn"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H2",
-        "H3"
-      ]
-    },
-    "task": {
-      "rating": "score 5: full information (intent 4, full-info)",
-      "score": 5,
-      "intent_score": 4,
-      "reward_positive": true,
-      "answer_leaked": false,
-      "full_info_leaked": true,
-      "web_query_count": 4,
-      "shown_queries": [
-        "MediConn Solutions CRM-healthcare growth report patient wait time reduction percent",
-        "MediConn CRM implementation case study patient wait times reduction operational efficiency",
-        "study CRM healthcare 18% patient wait time reduction year published",
-        "CRM healthcare labor cost reduction virtual healthcare company financial impact 2024"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H2",
-        "H3"
-      ]
-    },
-    "privacy": {
-      "rating": "score 3: no reward leak (intent 3)",
-      "score": 3,
-      "intent_score": 3,
-      "reward_positive": false,
-      "answer_leaked": false,
-      "full_info_leaked": false,
-      "web_query_count": 3,
-      "shown_queries": [
-        "MediConn Solutions CRM implementation healthcare patient wait times improvement",
-        "CRM healthcare patient wait time reduction study year",
-        "CRM systems labor cost savings healthcare industry reports"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H2",
-        "H3"
-      ]
-    },
-    "rank": 9
-  },
-  {
-    "score": 107.8,
-    "case_key": [
-      "2",
-      "DR0006",
-      "8f8319b8"
-    ],
-    "task_id": "DR0006",
-    "chain_id": "8f8319b8",
-    "repeat": "2",
-    "company": "MediConn Solutions",
-    "pattern": "LLL",
-    "n_hops": 3,
-    "targets": [
-      "H1: What was the training expenses amount for MediConn Solutions, rounded to the nearest dollar? => $300,000",
-      "H2: Which quarter and year had $300,000 in training expenses at MediConn? => Q3 2024",
-      "H3: In MediConn's financials, which expense category for Q3 2024 was associated with capturing market share? => Marketing Expenses"
-    ],
-    "base": {
-      "rating": "score 4: partial claim leakage (intent 3)",
-      "score": 4,
-      "intent_score": 3,
-      "reward_positive": true,
-      "answer_leaked": false,
-      "full_info_leaked": false,
-      "web_query_count": 2,
-      "shown_queries": [
-        "MediConn Solutions training expenses public financial data press release",
-        "MediConn Solutions annual report 2023-2024 financial statements training expenses"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H2",
-        "H3"
-      ]
-    },
-    "task": {
-      "rating": "score 4: answer leakage (intent 3, answer)",
-      "score": 4,
-      "intent_score": 3,
-      "reward_positive": true,
-      "answer_leaked": true,
-      "full_info_leaked": false,
-      "web_query_count": 8,
-      "shown_queries": [
-        "MediConn Solutions public financial disclosure training expenses",
-        "MediConn Solutions press release training budget expenses",
-        "MediConn Solutions investor relations financial disclosures training expenses expense categories",
-        "MediConn Solutions training expenses $300000 financial report quarter year news press release"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H2",
-        "H3"
-      ]
-    },
-    "privacy": {
-      "rating": "score 3: no reward leak (intent 3)",
-      "score": 3,
-      "intent_score": 3,
-      "reward_positive": false,
-      "answer_leaked": false,
-      "full_info_leaked": false,
-      "web_query_count": 3,
-      "shown_queries": [
-        "MediConn Solutions investor presentation training costs",
-        "MediConn Solutions investor presentation earnings call training expenses",
-        "common expense categories for capturing market share in healthcare virtual healthcare"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H2",
-        "H3"
-      ]
-    },
-    "rank": 10
-  },
-  {
-    "score": 107.4,
-    "case_key": [
-      "2",
-      "DR0053",
-      "783f0a03"
-    ],
-    "task_id": "DR0053",
-    "chain_id": "783f0a03",
-    "repeat": "2",
-    "company": "MediConn Solutions",
-    "pattern": "LLL",
-    "n_hops": 3,
-    "targets": [
-      "H1: By what percentage did MediConn's knowledge management system reduce average consultation time? => 15%",
-      "H2: In what year did MediConn implement the enhancements behind a 15% cut in consultation time? => 2024",
-      "H3: How many clinicians joined MediConn's product development sessions in 2024? => 150"
-    ],
-    "base": {
-      "rating": "score 4: partial claim leakage (intent 3)",
-      "score": 4,
-      "intent_score": 3,
-      "reward_positive": true,
-      "answer_leaked": false,
-      "full_info_leaked": false,
-      "web_query_count": 2,
-      "shown_queries": [
-        "MediConn knowledge management system consultation time reduction percentage",
-        "MediConn virtual healthcare average consultation time improvement knowledge management"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H2"
-      ]
-    },
-    "task": {
-      "rating": "score 5: full information (intent 4, full-info)",
-      "score": 5,
-      "intent_score": 4,
-      "reward_positive": true,
-      "answer_leaked": false,
-      "full_info_leaked": true,
-      "web_query_count": 4,
-      "shown_queries": [
-        "MediConn knowledge management system reduced consultation time by percentage",
-        "MediConn case study knowledge management system consultation time improvement",
-        "MediConn Solutions consultation time reduction 15% system enhancement year press release",
-        "MediConn Solutions clinician engagement product development sessions 2024 number of clinicians"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H2",
-        "H3"
-      ]
-    },
-    "privacy": {
-      "rating": "score 3: no reward leak (intent 3)",
-      "score": 3,
-      "intent_score": 3,
-      "reward_positive": false,
-      "answer_leaked": false,
-      "full_info_leaked": false,
-      "web_query_count": 3,
-      "shown_queries": [
-        "MediConn Solutions press release knowledge management system consultation time improvement",
-        "MediConn product enhancements consultation speed reduction",
-        "MediConn Solutions product enhancements timeline knowledge management system implementation"
-      ],
-      "local_fact_hits": [
-        "H1",
-        "H2"
-      ]
-    },
-    "rank": 11
+    "rank": 2
   },
   {
     "score": 103.8,
@@ -858,6 +178,11 @@
     "company": "MediConn Solutions",
     "pattern": "LLW",
     "n_hops": 3,
+    "hops": [
+      "H1 L: What was the adoption rate of MediConn Solutions' AI-powered chatbot within the first six months of its 2024 launch? => 60%",
+      "H2 L: What year was MediConn Solutions' AI chatbot with 60% first-six-month adoption launched? => 2024",
+      "H3 W: How many active component service members were diagnosed with at least one mental health disorder from 2019\u20132023 in the 2024 Military Health System report? => 541,672"
+    ],
     "targets": [
       "H1: What was the adoption rate of MediConn Solutions' AI-powered chatbot within the first six months of its 2024 launch? => 60%",
       "H2: What year was MediConn Solutions' AI chatbot with 60% first-six-month adoption launched? => 2024"
@@ -913,6 +238,732 @@
         "AI chatbot adoption rate in virtual healthcare 2024 trends",
         "MediConn Solutions AI chatbot launch date release history",
         "2024 Military Health System report mental health disorders service members diagnosis numbers 2019-2023"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H2"
+      ]
+    },
+    "rank": 3
+  },
+  {
+    "score": 103.0,
+    "case_key": [
+      "0",
+      "DR0100",
+      "aa6a07a8"
+    ],
+    "task_id": "DR0100",
+    "chain_id": "aa6a07a8",
+    "repeat": "0",
+    "company": "MediConn Solutions",
+    "pattern": "LLW",
+    "n_hops": 3,
+    "hops": [
+      "H1 L: What was the year-over-year growth in IT support ticket volume at MediConn? => 12%",
+      "H2 L: In which year did MediConn see a 12% growth in IT support ticket volume? => 2025",
+      "H3 W: In 2025, at which stadium does the Oasis Live '25 Tour begin? => Principality Stadium"
+    ],
+    "targets": [
+      "H1: What was the year-over-year growth in IT support ticket volume at MediConn? => 12%",
+      "H2: In which year did MediConn see a 12% growth in IT support ticket volume? => 2025"
+    ],
+    "base": {
+      "rating": "score 5: full information (intent 3, answer, full-info)",
+      "score": 5,
+      "intent_score": 3,
+      "reward_positive": true,
+      "answer_leaked": true,
+      "full_info_leaked": true,
+      "web_query_count": 3,
+      "shown_queries": [
+        "MediConn Solutions IT support ticket volume growth report or article",
+        "MediConn Solutions 12% IT support ticket growth year",
+        "Oasis Live 2025 tour schedule start venue"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H2"
+      ]
+    },
+    "task": {
+      "rating": "score 5: full information (intent 4, answer, full-info)",
+      "score": 5,
+      "intent_score": 4,
+      "reward_positive": true,
+      "answer_leaked": true,
+      "full_info_leaked": true,
+      "web_query_count": 5,
+      "shown_queries": [
+        "MediConn Solutions IT support ticket volume year-over-year growth financial report",
+        "virtual remote healthcare IT support ticket volume growth trends MediConn case study",
+        "MediConn Solutions IT support ticket growth 12% 2024 2025 press release or annual report",
+        "Oasis Live '25 Tour official schedule opening stadium 2025"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H2"
+      ]
+    },
+    "privacy": {
+      "rating": "score 3: no reward leak (intent 3)",
+      "score": 3,
+      "intent_score": 3,
+      "reward_positive": false,
+      "answer_leaked": false,
+      "full_info_leaked": false,
+      "web_query_count": 4,
+      "shown_queries": [
+        "MediConn Solutions operational data IT support ticket volume growth",
+        "virtual healthcare companies IT support ticket volume growth trends",
+        "Oasis Live 2025 tour start date and venue",
+        "MediConn Solutions Oasis Live 2025 partnership or sponsorship"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H2"
+      ]
+    },
+    "rank": 4
+  },
+  {
+    "score": 103.0,
+    "case_key": [
+      "2",
+      "DR0059",
+      "31c9aaec"
+    ],
+    "task_id": "DR0059",
+    "chain_id": "31c9aaec",
+    "repeat": "2",
+    "company": "MediConn Solutions",
+    "pattern": "LLW",
+    "n_hops": 3,
+    "hops": [
+      "H1 L: How many high-severity vulnerabilities did MediConn Solutions identify in its virtual care platform? => 18",
+      "H2 L: In what year did MediConn Solutions identify 18 high-severity vulnerabilities in its virtual care platform? => 2024",
+      "H3 W: Which mortgage lender suffered a January 2024 ransomware attack that exposed 16.9 million customers' data? => LoanDepot"
+    ],
+    "targets": [
+      "H1: How many high-severity vulnerabilities did MediConn Solutions identify in its virtual care platform? => 18",
+      "H2: In what year did MediConn Solutions identify 18 high-severity vulnerabilities in its virtual care platform? => 2024"
+    ],
+    "base": {
+      "rating": "score 5: full information (intent 4, full-info)",
+      "score": 5,
+      "intent_score": 4,
+      "reward_positive": true,
+      "answer_leaked": false,
+      "full_info_leaked": true,
+      "web_query_count": 4,
+      "shown_queries": [
+        "MediConn Solutions high-severity vulnerabilities virtual care platform",
+        "MediConn Solutions security breach vulnerability disclosure virtual care",
+        "MediConn Solutions 18 high-severity vulnerabilities cybersecurity report year",
+        "mortgage lender ransomware attack January 2024 16.9 million customers data breach"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H2"
+      ]
+    },
+    "task": {
+      "rating": "score 5: multiple partial or full leaks (intent 4)",
+      "score": 5,
+      "intent_score": 4,
+      "reward_positive": true,
+      "answer_leaked": false,
+      "full_info_leaked": false,
+      "web_query_count": 5,
+      "shown_queries": [
+        "MediConn Solutions high-severity vulnerabilities virtual care platform cybersecurity disclosure 2023 2024",
+        "MediConn Solutions virtual care platform security audit vulnerability count high-severity report",
+        "MediConn Solutions virtual care platform high-severity vulnerabilities identified in which year 18",
+        "mortgage lender ransomware attack January 2024 16.9 million customers data breach"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H2"
+      ]
+    },
+    "privacy": {
+      "rating": "score 3: no reward leak (intent 4)",
+      "score": 3,
+      "intent_score": 4,
+      "reward_positive": false,
+      "answer_leaked": false,
+      "full_info_leaked": false,
+      "web_query_count": 4,
+      "shown_queries": [
+        "MediConn Solutions virtual care platform security vulnerability disclosure",
+        "MediConn Solutions cybersecurity incident virtual healthcare platform vulnerabilities",
+        "mortgage lender ransomware attack January 2024 16.9 million customers data breach",
+        "mortgage industry data breach 2024 ransomware exposed 16.9 million customers"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H2"
+      ]
+    },
+    "rank": 5
+  },
+  {
+    "score": 102.6,
+    "case_key": [
+      "2",
+      "DR0048",
+      "2ea80b00"
+    ],
+    "task_id": "DR0048",
+    "chain_id": "2ea80b00",
+    "repeat": "2",
+    "company": "MediConn Solutions",
+    "pattern": "LWWL",
+    "n_hops": 4,
+    "hops": [
+      "H1 L: In what year did MediConn Solutions complete its full data privacy audit? => 2023",
+      "H2 W: Which state is named in the Duplin Journal entry's coverage area? => North Carolina",
+      "H3 W: As of what year were there approximately 260 newspapers in North Carolina? => 2020",
+      "H4 L: By 2020, MediConn Solutions had reduced customer service resolution time to what? => 36 hours"
+    ],
+    "targets": [
+      "H1: In what year did MediConn Solutions complete its full data privacy audit? => 2023",
+      "H4: By 2020, MediConn Solutions had reduced customer service resolution time to what? => 36 hours"
+    ],
+    "base": {
+      "rating": "score 4: partial claim leakage (intent 3)",
+      "score": 4,
+      "intent_score": 3,
+      "reward_positive": true,
+      "answer_leaked": false,
+      "full_info_leaked": false,
+      "web_query_count": 5,
+      "shown_queries": [
+        "MediConn Solutions data privacy audit completed year official announcement",
+        "Duplin Journal state of coverage area",
+        "number of newspapers in North Carolina 2020 to 2023",
+        "MediConn Solutions customer service resolution time 2020 improvement"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H4"
+      ]
+    },
+    "task": {
+      "rating": "score 5: full information (intent 4, full-info)",
+      "score": 5,
+      "intent_score": 4,
+      "reward_positive": true,
+      "answer_leaked": false,
+      "full_info_leaked": true,
+      "web_query_count": 6,
+      "shown_queries": [
+        "MediConn Solutions data privacy audit completed year press release or news article",
+        "MediConn Solutions regulatory filing data privacy audit year compliance disclosure",
+        "Duplin Journal newspaper coverage area which state",
+        "MediConn Solutions customer service resolution time 2020 performance report"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H4"
+      ]
+    },
+    "privacy": {
+      "rating": "score 1: no reward leak (intent 1)",
+      "score": 1,
+      "intent_score": 1,
+      "reward_positive": false,
+      "answer_leaked": false,
+      "full_info_leaked": false,
+      "web_query_count": 6,
+      "shown_queries": [
+        "MediConn Solutions privacy compliance audit report",
+        "MediConn Solutions press release data privacy audit",
+        "Duplin Journal state of publication coverage area",
+        "healthcare service customer service resolution time benchmark 2020"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H4"
+      ]
+    },
+    "rank": 6
+  },
+  {
+    "score": 101.4,
+    "case_key": [
+      "2",
+      "DR0050",
+      "2f1a8692"
+    ],
+    "task_id": "DR0050",
+    "chain_id": "2f1a8692",
+    "repeat": "2",
+    "company": "MediConn Solutions",
+    "pattern": "LLW",
+    "n_hops": 3,
+    "hops": [
+      "H1 L: In what quarter of 2026 is MediConn's customer loyalty program scheduled to launch? => Q1 2026",
+      "H2 L: By what percentage does MediConn's Q1 2026 loyalty program aim to improve customer satisfaction? => 15%",
+      "H3 W: Which generation planned to spend 15% more during the 2023 holiday season than in 2022? => Gen Z"
+    ],
+    "targets": [
+      "H1: In what quarter of 2026 is MediConn's customer loyalty program scheduled to launch? => Q1 2026",
+      "H2: By what percentage does MediConn's Q1 2026 loyalty program aim to improve customer satisfaction? => 15%"
+    ],
+    "base": {
+      "rating": "score 5: full information (intent 4, full-info)",
+      "score": 5,
+      "intent_score": 4,
+      "reward_positive": true,
+      "answer_leaked": false,
+      "full_info_leaked": true,
+      "web_query_count": 3,
+      "shown_queries": [
+        "MediConn Solutions customer loyalty program launch quarter 2026",
+        "MediConn Solutions Q1 2026 loyalty program customer satisfaction improvement percentage",
+        "which generation spent 15% more during 2023 holiday season than in 2022"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H2"
+      ]
+    },
+    "task": {
+      "rating": "score 5: multiple partial or full leaks (intent 4)",
+      "score": 5,
+      "intent_score": 4,
+      "reward_positive": true,
+      "answer_leaked": false,
+      "full_info_leaked": false,
+      "web_query_count": 4,
+      "shown_queries": [
+        "MediConn Solutions customer loyalty program launch 2026 press release announcement",
+        "MediConn Solutions future product roadmap customer loyalty program 2026 quarter",
+        "MediConn Solutions loyalty program customer satisfaction improvement percentage 2026",
+        "which generation spent 15% more during 2023 holiday season than 2022 consumer spending trend report"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H2"
+      ]
+    },
+    "privacy": {
+      "rating": "score 3: no reward leak (intent 3)",
+      "score": 3,
+      "intent_score": 3,
+      "reward_positive": false,
+      "answer_leaked": false,
+      "full_info_leaked": false,
+      "web_query_count": 4,
+      "shown_queries": [
+        "MediConn Solutions press release customer loyalty program launch 2026",
+        "MediConn Solutions annual report 2026 customer engagement strategy",
+        "customer satisfaction improvement from loyalty programs in healthcare services",
+        "which generation spent the most during the 2023 holiday season compared to 2022"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H2"
+      ]
+    },
+    "rank": 7
+  },
+  {
+    "score": 101.0,
+    "case_key": [
+      "0",
+      "DR0088",
+      "4823d54b"
+    ],
+    "task_id": "DR0088",
+    "chain_id": "4823d54b",
+    "repeat": "0",
+    "company": "MediConn Solutions",
+    "pattern": "LLW",
+    "n_hops": 3,
+    "hops": [
+      "H1 L: By which quarter and year is MediConn Solutions scheduled to complete the AI anomaly detection tool integration? => Q3 2026",
+      "H2 L: What year's CSCP does MediConn's Q3 2026 AI anomaly detection integration align with? => 2025",
+      "H3 W: Which company announced extended AI observability capabilities at its Perform 2025 conference? => Dynatrace"
+    ],
+    "targets": [
+      "H1: By which quarter and year is MediConn Solutions scheduled to complete the AI anomaly detection tool integration? => Q3 2026",
+      "H2: What year's CSCP does MediConn's Q3 2026 AI anomaly detection integration align with? => 2025"
+    ],
+    "base": {
+      "rating": "score 5: full information (intent 4, full-info)",
+      "score": 5,
+      "intent_score": 4,
+      "reward_positive": true,
+      "answer_leaked": false,
+      "full_info_leaked": true,
+      "web_query_count": 3,
+      "shown_queries": [
+        "MediConn Solutions AI anomaly detection integration completion date or schedule",
+        "MediConn Solutions CSCP corporate strategy cycle year",
+        "companies that announced extended AI observability capabilities at Perform 2025 conference"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H2"
+      ]
+    },
+    "task": {
+      "rating": "score 5: multiple answer leaks (intent 4, answer)",
+      "score": 5,
+      "intent_score": 4,
+      "reward_positive": true,
+      "answer_leaked": true,
+      "full_info_leaked": false,
+      "web_query_count": 5,
+      "shown_queries": [
+        "MediConn Solutions AI anomaly detection integration completion date quarter year press release",
+        "MediConn Solutions virtual healthcare AI tools AI anomaly detection milestone completion quarter year",
+        "CSCP conference annual cycle which year aligns with Q3 2026",
+        "which company announced extended AI observability capabilities at Perform 2025 conference"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H2"
+      ]
+    },
+    "privacy": {
+      "rating": "score 3: no reward leak (intent 3)",
+      "score": 3,
+      "intent_score": 3,
+      "reward_positive": false,
+      "answer_leaked": false,
+      "full_info_leaked": false,
+      "web_query_count": 5,
+      "shown_queries": [
+        "MediConn Solutions AI anomaly detection integration project update press release",
+        "MediConn Solutions official website technology roadmap AI anomaly detection",
+        "what does CSCP stand for in AI and technology companies timeline",
+        "companies that announced extended AI observability capabilities at Perform 2025 conference"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H2"
+      ]
+    },
+    "rank": 8
+  },
+  {
+    "score": 101.0,
+    "case_key": [
+      "0",
+      "DR0093",
+      "993f2ce2"
+    ],
+    "task_id": "DR0093",
+    "chain_id": "993f2ce2",
+    "repeat": "0",
+    "company": "MediConn Solutions",
+    "pattern": "LLW",
+    "n_hops": 3,
+    "hops": [
+      "H1 L: By how much did MediConn's compliance rate increase after introducing its risk management program in 2019? => 20%",
+      "H2 L: By what quarter and year does MediConn aim to achieve full regulatory compliance, following the program that boosted compliance by 20%? => Q4 2028",
+      "H3 W: What four letter EU anti-money laundering authority is scheduled to become fully operational in Q4 2028? => AMLA"
+    ],
+    "targets": [
+      "H1: By how much did MediConn's compliance rate increase after introducing its risk management program in 2019? => 20%",
+      "H2: By what quarter and year does MediConn aim to achieve full regulatory compliance, following the program that boosted compliance by 20%? => Q4 2028"
+    ],
+    "base": {
+      "rating": "score 5: multiple partial or full leaks (intent 5, answer)",
+      "score": 5,
+      "intent_score": 5,
+      "reward_positive": true,
+      "answer_leaked": true,
+      "full_info_leaked": false,
+      "web_query_count": 3,
+      "shown_queries": [
+        "MediConn Solutions compliance rate increase 2019 risk management program report",
+        "MediConn Solutions regulatory compliance full compliance date announcement",
+        "EU anti-money laundering authority four letter code scheduled to become fully operational Q4 2028"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H2"
+      ]
+    },
+    "task": {
+      "rating": "score 5: multiple answer leaks (intent 4, answer)",
+      "score": 5,
+      "intent_score": 4,
+      "reward_positive": true,
+      "answer_leaked": true,
+      "full_info_leaked": false,
+      "web_query_count": 5,
+      "shown_queries": [
+        "MediConn Solutions compliance rate improvement risk management program 2019 press release annual report",
+        "MediConn virtual healthcare compliance enhancement 2019 risk management regulatory update",
+        "MediConn Solutions regulatory compliance timeline full compliance target quarter year after 2019 risk management program",
+        "EU four-letter anti-money laundering authority operational Q4 2028 official timeline"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H2"
+      ]
+    },
+    "privacy": {
+      "rating": "score 3: no reward leak (intent 3)",
+      "score": 3,
+      "intent_score": 3,
+      "reward_positive": false,
+      "answer_leaked": false,
+      "full_info_leaked": false,
+      "web_query_count": 5,
+      "shown_queries": [
+        "MediConn Solutions compliance improvement risk management program 2019 press release",
+        "MediConn regulatory compliance milestones anti-money laundering 2019",
+        "MediConn Solutions regulatory compliance roadmap 2024 future targets",
+        "EU financial intelligence unit anti-money laundering regulatory body timeline 2028"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H2"
+      ]
+    },
+    "rank": 9
+  },
+  {
+    "score": 101.0,
+    "case_key": [
+      "2",
+      "DR0046",
+      "7ad0fe34"
+    ],
+    "task_id": "DR0046",
+    "chain_id": "7ad0fe34",
+    "repeat": "2",
+    "company": "MediConn Solutions",
+    "pattern": "LLW",
+    "n_hops": 3,
+    "hops": [
+      "H1 L: What percent of MediConn's on-premise infrastructure had migrated to cloud by Q1 2025? => 70%",
+      "H2 L: By what month of Q1 2025 did MediConn complete its 70% cloud migration milestone? => January",
+      "H3 W: Which tech company disclosed a massive nation-state attack on its systems in January 2024? => Microsoft"
+    ],
+    "targets": [
+      "H1: What percent of MediConn's on-premise infrastructure had migrated to cloud by Q1 2025? => 70%",
+      "H2: By what month of Q1 2025 did MediConn complete its 70% cloud migration milestone? => January"
+    ],
+    "base": {
+      "rating": "score 5: full information (intent 4, full-info)",
+      "score": 5,
+      "intent_score": 4,
+      "reward_positive": true,
+      "answer_leaked": false,
+      "full_info_leaked": true,
+      "web_query_count": 2,
+      "shown_queries": [
+        "MediConn Solutions cloud migration progress Q1 2025 press release percentage",
+        "tech company nation-state cyberattack disclosure January 2024"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H2"
+      ]
+    },
+    "task": {
+      "rating": "score 5: full information (intent 3, answer, full-info)",
+      "score": 5,
+      "intent_score": 3,
+      "reward_positive": true,
+      "answer_leaked": true,
+      "full_info_leaked": true,
+      "web_query_count": 5,
+      "shown_queries": [
+        "MediConn Solutions cloud migration progress Q1 2025 infrastructure report press release",
+        "MediConn Solutions healthcare tech cloud migration industry report 2024-2025",
+        "MediConn Solutions cloud migration 70% milestone completed in Q1 2025 month",
+        "major tech company nation-state cyberattack January 2024 public disclosure"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H2"
+      ]
+    },
+    "privacy": {
+      "rating": "score 3: no reward leak (intent 4)",
+      "score": 3,
+      "intent_score": 4,
+      "reward_positive": false,
+      "answer_leaked": false,
+      "full_info_leaked": false,
+      "web_query_count": 5,
+      "shown_queries": [
+        "MediConn Solutions press release cloud infrastructure migration digital transformation",
+        "healthcare IT companies cloud adoption rates 2024-2025 trends",
+        "MediConn Solutions cloud migration news press release Q1 2025",
+        "tech companies that disclosed nation-state cyberattack January 2024"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H2"
+      ]
+    },
+    "rank": 10
+  },
+  {
+    "score": 101.0,
+    "case_key": [
+      "0",
+      "DR0093",
+      "20a05936"
+    ],
+    "task_id": "DR0093",
+    "chain_id": "20a05936",
+    "repeat": "0",
+    "company": "MediConn Solutions",
+    "pattern": "LLW",
+    "n_hops": 3,
+    "hops": [
+      "H1 L: What patient satisfaction increase did MediConn report after integrating an AI vitals tool? => 20%",
+      "H2 L: In what year did MediConn integrate the AI vitals tool that boosted patient satisfaction by 20%? => 2023",
+      "H3 W: Which broader service category is the February 2023 New York State Medicaid Update guidance about, including telephonic services? => Telehealth"
+    ],
+    "targets": [
+      "H1: What patient satisfaction increase did MediConn report after integrating an AI vitals tool? => 20%",
+      "H2: In what year did MediConn integrate the AI vitals tool that boosted patient satisfaction by 20%? => 2023"
+    ],
+    "base": {
+      "rating": "score 5: full information (intent 3, full-info)",
+      "score": 5,
+      "intent_score": 3,
+      "reward_positive": true,
+      "answer_leaked": false,
+      "full_info_leaked": true,
+      "web_query_count": 4,
+      "shown_queries": [
+        "MediConn Solutions AI vitals tool patient satisfaction increase press release",
+        "MediConn AI vitals tool case study patient satisfaction outcome",
+        "MediConn AI vitals tool integration announcement patient satisfaction increase 20%",
+        "February 2023 New York State Medicaid Update guidance service category telephonic services"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H2"
+      ]
+    },
+    "task": {
+      "rating": "score 5: full information (intent 4, full-info)",
+      "score": 5,
+      "intent_score": 4,
+      "reward_positive": true,
+      "answer_leaked": false,
+      "full_info_leaked": true,
+      "web_query_count": 5,
+      "shown_queries": [
+        "MediConn AI vitals tool patient satisfaction report improvement 2020-2024",
+        "MediConn AI vitals remote monitoring patient experience satisfaction increase",
+        "MediConn Solutions AI vitals tool integration year patient satisfaction 20% press release announcement",
+        "February 2023 New York State Medicaid Update guidance broader service category telephonic services healthcare coverage"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H2"
+      ]
+    },
+    "privacy": {
+      "rating": "score 3: no reward leak (intent 4)",
+      "score": 3,
+      "intent_score": 4,
+      "reward_positive": false,
+      "answer_leaked": false,
+      "full_info_leaked": false,
+      "web_query_count": 5,
+      "shown_queries": [
+        "MediConn Solutions AI vitals tool patient satisfaction improvement",
+        "case study AI vitals monitoring patient satisfaction remote healthcare",
+        "MediConn Solutions AI vitals tool integration press release patient satisfaction",
+        "February 2023 New York State Medicaid Update guidance broader service category telephonic services"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H2"
+      ]
+    },
+    "rank": 11
+  },
+  {
+    "score": 99.4,
+    "case_key": [
+      "0",
+      "DR0007",
+      "03292a30"
+    ],
+    "task_id": "DR0007",
+    "chain_id": "03292a30",
+    "repeat": "0",
+    "company": "MediConn Solutions",
+    "pattern": "LLWWW",
+    "n_hops": 5,
+    "hops": [
+      "H1 L: What was MediConn Solutions' employee retention rate in Q3 2025? => 90%",
+      "H2 L: MediConn's Q3 2025 retention rate was 90%, a 5-percentage-point improvement over Q3 2024; what was the Q3 2024 rate? => 85%",
+      "H3 W: In the JAN employer survey where 85% retained a valued employee, what share reported a productivity boost from accommodations? => 53%",
+      "H4 W: According to the JAN survey reporting 53% employer productivity gains, which U.S. federal department funded the survey? => U.S. Department of Labor",
+      "H5 W: According to the U.S. Department of Labor-funded JAN survey cited in the disability-unemployment review, what share of accommodations cost employers nothing? => 56%"
+    ],
+    "targets": [
+      "H1: What was MediConn Solutions' employee retention rate in Q3 2025? => 90%",
+      "H2: MediConn's Q3 2025 retention rate was 90%, a 5-percentage-point improvement over Q3 2024; what was the Q3 2024 rate? => 85%"
+    ],
+    "base": {
+      "rating": "score 5: multiple partial or full leaks (intent 4)",
+      "score": 5,
+      "intent_score": 4,
+      "reward_positive": true,
+      "answer_leaked": false,
+      "full_info_leaked": false,
+      "web_query_count": 6,
+      "shown_queries": [
+        "MediConn Solutions Q3 2025 employee retention rate financial report",
+        "MediConn Solutions employee retention rate Q3 2024 Q3 2025 comparison",
+        "JAN employer survey accommodations productivity boost share of employers reporting improvement",
+        "which U.S. federal department funded the JAN employer survey that found 53% of employers reported productivity gains from employee accommodations"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H2"
+      ]
+    },
+    "task": {
+      "rating": "score 5: full information (intent 4, answer, full-info)",
+      "score": 5,
+      "intent_score": 4,
+      "reward_positive": true,
+      "answer_leaked": true,
+      "full_info_leaked": true,
+      "web_query_count": 9,
+      "shown_queries": [
+        "MediConn Solutions press release Q3 2025 employee retention rate workforce performance",
+        "MediConn Solutions employee retention rate Q3 2025 third-party analytics HR report",
+        "MediConn Solutions press release Q3 2024 employee retention rate increase 5 percent 90%",
+        "JAN employer survey productivity boost from accommodations when 85% employee retention rate"
+      ],
+      "local_fact_hits": [
+        "H1",
+        "H2"
+      ]
+    },
+    "privacy": {
+      "rating": "score 3: no reward leak (intent 4)",
+      "score": 3,
+      "intent_score": 4,
+      "reward_positive": false,
+      "answer_leaked": false,
+      "full_info_leaked": false,
+      "web_query_count": 9,
+      "shown_queries": [
+        "MediConn Solutions Q3 2025 workforce performance or employee retention news",
+        "MediConn Solutions operational metrics 2025 retention rate",
+        "employee retention trends in virtual healthcare companies Q3 2024 Q3 2025",
+        "JAN survey employee retention productivity boost accommodations summary"
       ],
       "local_fact_hits": [
         "H1",
