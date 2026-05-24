@@ -1,0 +1,68 @@
+{
+  "created_at": "2026-05-23T22:56:46.632894+00:00",
+  "dry_run": false,
+  "jobs": [
+    {
+      "artifact_root": "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_final_eval_privacy_prompt_16kgen_32kctx_helperfe_20260522",
+      "runner": "final",
+      "model_label": "qwen3_4b_situational_reward_s50",
+      "missing_identities": 7,
+      "target_chain_ids": 7,
+      "repeat_counts": {
+        "0": 5,
+        "2": 2
+      },
+      "error_counts": {
+        "PrivacyHopQALLMInfrastructureError": 7
+      },
+      "job_name": "phq30_final_eval_privacy_prompt_16kgen_32kctx_helperfe_20260522_qwen3_4b_situational_reward_s50_sysfix3",
+      "submit_command": [
+        "eai",
+        "job",
+        "submit",
+        "--account",
+        "snow.research.adea",
+        "--name",
+        "phq30_final_eval_privacy_prompt_16kgen_32kctx_helperfe_20260522_qwen3_4b_situational_reward_s50_sysfix3",
+        "--image",
+        "registry.toolkit-sp.yul201.service-now.com/snow.research.tapes/interactive-toolkit:throughput",
+        "--preemptable",
+        "--restartable",
+        "--bid",
+        "7",
+        "--cpu",
+        "48",
+        "--mem",
+        "384",
+        "--data",
+        "snow.home.alex_gurung:/home/toolkit:rw",
+        "--data",
+        "snow.home.alex_gurung:/transformers_cache:rw",
+        "--data",
+        "snow.research.tapes.data:/mnt/llmd/data:ro",
+        "--data",
+        "snow.research.rlar.results:/mnt/llmd/results:rw",
+        "--data",
+        "snow.research.tapes.base_models:/mnt/llmd/base_models:ro",
+        "--env",
+        "HOME=/home/toolkit",
+        "--env",
+        "HF_HOME=/transformers_cache",
+        "--env",
+        "HF_DATASETS_CACHE=/transformers_cache",
+        "--env",
+        "PYTHONPATH=/home/toolkit/my_code/PipelineRL:/home/toolkit/my_code/MosaicProject",
+        "--workdir",
+        "/home/toolkit/my_code/MosaicProject",
+        "--gpu",
+        "1",
+        "--gpu-mem",
+        "80",
+        "--",
+        "/bin/bash",
+        "-lc",
+        "/home/toolkit/.conda/envs/pipeline-rl/bin/python scripts/run_privacy_hopqa_q30_rollout_worker.py --artifact-root /mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_final_eval_privacy_prompt_16kgen_32kctx_helperfe_20260522 --model-label qwen3_4b_situational_reward_s50 --served-model-name qwen3_4b_situational_reward_s50 --model-path /mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_4b_situational_reward_lr1e6_ga4096_rep4_50s_20260520173055/finetune/intermediate/50 --tokenizer-name /mnt/llmd/results/exps/alexg/reason/privacy_hopqa_q30_4b_situational_reward_lr1e6_ga4096_rep4_50s_20260520173055/finetune/intermediate/50 --dataset-root /home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset --dataset-basename privacy_hopqa_finalized_2026-05-20_q30_hume_safe_variants --splits test --repeats 3 --helper-url http://dns-24e3447c-506e-4b21-92df-156e18db5087-phq30fev221410:8012 --helper-timeout-s 180 --rollout-concurrency 8 --tensor-parallel-size 1 --max-model-len 32768 --max-tokens 16384 --stage-max-tokens 16384 --generation-context-limit-tokens 32768 --generation-context-margin-tokens 128 --max-iterations 14 --hop-plan-attempts 1 --case-attempts 1 --case-retry-delay-s 0 --temperature 1.0 --choose-top-k 3 --retrieval-top-k 5 --max-candidate-cards 20 --max-parallel-retrieval-actions 3 --max-parallel-doc-reads 5 --vllm-extra-arg=--max-num-seqs --vllm-extra-arg 8 --vllm-extra-arg=--max-num-batched-tokens --vllm-extra-arg 4096 --vllm-extra-arg=--generation-config --vllm-extra-arg vllm --planner-privacy-prompt --chain-id 021adc26 --chain-id 1e2b0182 --chain-id 475f2654 --chain-id 5c011bde --chain-id 6fdf48ea --chain-id 875e7974 --chain-id f699d44e"
+      ]
+    }
+  ]
+}

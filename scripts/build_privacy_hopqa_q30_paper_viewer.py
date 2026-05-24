@@ -1396,23 +1396,38 @@ def model_status_rows(artifact_root: Path, group: str, expected: int = 1032) -> 
         rollout_path = root / "tables" / "rollout_index.jsonl"
         system_error_path = root / "tables" / "rollout_system_errors.jsonl"
         privacy_path = root / "tables" / "privacy_leakage_suite_v2_stepfun_full.jsonl"
-        rollout_identities = unique_identity_rows(rollout_path)
+        rollout_jsonl_rows = live.read_jsonl(rollout_path)
+        rollout_identities = {
+            (row.get("split"), row.get("repeat"), row.get("chain_id"))
+            for row in rollout_jsonl_rows
+        }
+        ok_rollout_identities = {
+            (row.get("split"), row.get("repeat"), row.get("chain_id"))
+            for row in rollout_jsonl_rows
+            if row.get("ok")
+        }
         system_error_identities = unique_identity_rows(system_error_path)
         unresolved_system_error_identities = system_error_identities - rollout_identities
         privacy_jsonl_rows = live.read_jsonl(privacy_path)
-        privacy_identities = {
-            row.get("input_fingerprint")
-            for row in privacy_jsonl_rows
-            if row.get("input_fingerprint")
+        privacy_rows_deduped = live.dedupe_rows_by_latest(
+            live.copy_rollout_identity_from_trace(privacy_jsonl_rows, rollout_jsonl_rows),
+            "stepfun",
+        )
+        privacy_rollout_identities = {
+            (row.get("split"), row.get("repeat"), row.get("chain_id"))
+            for row in privacy_rows_deduped
+            if row.get("chain_id") is not None
         }
         attempted_unique = len(rollout_identities | system_error_identities)
-        rollout_rows = jsonl_count(rollout_path)
+        rollout_rows = len(rollout_jsonl_rows)
         rollout_unique = len(rollout_identities)
+        ok_rollout_unique = len(ok_rollout_identities)
         system_error_rows = jsonl_count(system_error_path)
         system_error_unique = len(unresolved_system_error_identities)
-        privacy_rows = len(privacy_identities) if privacy_identities else len(privacy_jsonl_rows)
+        privacy_rows = len(privacy_rollout_identities & ok_rollout_identities)
+        privacy_extra_unique = len(privacy_rollout_identities - ok_rollout_identities)
         attempt_missing = max(0, expected - attempted_unique)
-        privacy_expected = rollout_unique
+        privacy_expected = ok_rollout_unique
         privacy_missing = max(0, privacy_expected - privacy_rows)
         attempt_progress_rate = attempted_unique / expected if expected else None
         privacy_progress_rate = privacy_rows / privacy_expected if privacy_expected else None
@@ -1432,10 +1447,13 @@ def model_status_rows(artifact_root: Path, group: str, expected: int = 1032) -> 
                 "model_label": root.name,
                 "rollout_rows": rollout_rows,
                 "rollout_unique": rollout_unique,
+                "ok_rollout_unique": ok_rollout_unique,
                 "system_error_rows": system_error_rows,
                 "system_error_unique": system_error_unique,
                 "attempted_unique": attempted_unique,
+                "privacy_jsonl_rows": len(privacy_jsonl_rows),
                 "privacy_rows": privacy_rows,
+                "privacy_extra_unique": privacy_extra_unique,
                 "privacy_expected": privacy_expected,
                 "expected": expected,
                 "attempt_missing": attempt_missing,
@@ -1476,6 +1494,7 @@ def final_situational_status_rows(rows: list[dict[str, Any]], condition: str, gr
                 "model_label": row.get("model_label"),
                 "rollout_rows": row.get("rollout_rows"),
                 "rollout_unique": row.get("rollout_unique"),
+                "ok_rollout_unique": row.get("ok_rollout_unique"),
                 "system_error_rows": row.get("system_error_rows"),
                 "system_error_unique": row.get("system_error_unique"),
                 "attempted_unique": attempted_unique,
@@ -1506,6 +1525,11 @@ def final_situational_metric_rows(
         system_error_rows = live.read_jsonl(root / "tables" / "rollout_system_errors.jsonl")
         raw_privacy_rows = live.read_jsonl(root / "tables" / "privacy_leakage_suite_v2_stepfun_full.jsonl")
         rollout_identities = {(row.get("split"), row.get("repeat"), row.get("chain_id")) for row in rollout_rows}
+        ok_rollout_identities = {
+            (row.get("split"), row.get("repeat"), row.get("chain_id"))
+            for row in rollout_rows
+            if row.get("ok")
+        }
         system_error_identities = {
             (row.get("split"), row.get("repeat"), row.get("chain_id")) for row in system_error_rows
         }
@@ -1521,10 +1545,11 @@ def final_situational_metric_rows(
             "stepfun",
         )
         rollout_unique = len(rollout_identities)
+        ok_rollout_unique = len(ok_rollout_identities)
         system_error_unique = len(unresolved_system_error_identities)
         attempted_unique = len(rollout_identities | system_error_identities)
         privacy_unique = len(privacy_rows)
-        privacy_expected = rollout_unique
+        privacy_expected = ok_rollout_unique
         complete = attempted_unique >= expected and privacy_unique >= privacy_expected
         waiting: list[str] = []
         if attempted_unique < expected:
@@ -1538,6 +1563,7 @@ def final_situational_metric_rows(
             "model_label": model_label,
             "rollout_rows": len(rollout_rows),
             "rollout_unique": rollout_unique,
+            "ok_rollout_unique": ok_rollout_unique,
             "system_error_rows": len(system_error_rows),
             "system_error_unique": system_error_unique,
             "attempted_unique": attempted_unique,
@@ -2334,7 +2360,7 @@ def build_viewer(args: argparse.Namespace) -> None:
             ("group", "Run Group"),
             ("model", "Model"),
             ("attempted_unique", "Attempts"),
-            ("rollout_unique", "Successful Rollouts"),
+            ("ok_rollout_unique", "Successful Rollouts"),
             ("system_error_unique", "System Errors"),
             ("privacy_rows", "Privacy Judgments"),
             ("privacy_expected", "Privacy Expected"),
@@ -2476,7 +2502,7 @@ def build_viewer(args: argparse.Namespace) -> None:
             ("group", "Run Group"),
             ("model", "Model"),
             ("attempted_unique", "Attempts"),
-            ("rollout_unique", "Successful Rollouts"),
+            ("ok_rollout_unique", "Successful Rollouts"),
             ("system_error_unique", "System Errors"),
             ("privacy_rows", "Privacy Judgments"),
             ("privacy_expected", "Privacy Expected"),
