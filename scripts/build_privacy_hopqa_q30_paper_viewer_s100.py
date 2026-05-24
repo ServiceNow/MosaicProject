@@ -259,7 +259,7 @@ def latex_training_summary(rows: list[dict[str, Any]]) -> str:
 {body_text}
 \bottomrule
 \end{{tabular}}
-\caption{{Effect of RL training on \qwenthreeb, evaluated with and without the privacy-aware prompt. This step-100 snapshot uses checkpoint 100 for both task-performance training and PA-DR. Values after $\pm$ are SEMs in percentage points; PA-DR step100 is near-final with a small number of pending StepFun privacy judgments in this snapshot.}}
+\caption{{Effect of RL training on \qwenthreeb, evaluated with and without the privacy-aware prompt, using checkpoint 100 for both training runs. We train one model purely on task performance and one with our Privacy Aware-Deep Research (PA-DR) method that also penalizes privacy leakage. Values after $\pm$ are SEMs in percentage points.}}
 \label{{tab:training_effect_summary_s100}}
 \end{{table*}}
 """
@@ -304,14 +304,14 @@ def write_text(path: Path, text: str) -> None:
 
 def plot_training_effect(rows: dict[str, dict[str, Any]], path: Path) -> None:
     specs = [
-        ("base_normal", "Base", "#1f2421", "o", True, (-8, 10)),
-        ("base_prompt", "Base + prompt", "#1f2421", "D", False, (8, -14)),
-        ("task_s100_normal", "Task", "#D55E00", "s", True, (8, 8)),
-        ("task_s100_prompt", "Task + prompt", "#D55E00", "D", False, (-8, -14)),
-        ("padr_s100_normal", "PA-DR", "#009E73", "s", True, (8, 8)),
-        ("padr_s100_prompt", "PA-DR + prompt", "#009E73", "D", False, (8, -16)),
+        ("base_normal", "Base", "#1f2421", "o", True, (-10, 10)),
+        ("base_prompt", "Base + prompt", "#1f2421", "D", False, (10, -12)),
+        ("task_s100_normal", "Task", "#D55E00", "s", True, (8, 12)),
+        ("task_s100_prompt", "Task + prompt", "#D55E00", "D", False, (-8, -18)),
+        ("padr_s100_normal", "PA-DR", "#009E73", "s", True, (8, 10)),
+        ("padr_s100_prompt", "PA-DR + prompt", "#009E73", "D", False, (-8, -12)),
     ]
-    fig, ax = plt.subplots(figsize=(7.2, 5.45))
+    fig, ax = plt.subplots(figsize=(7.2, 5.5))
     points: dict[str, tuple[float, float]] = {}
     for key, label, color, marker, filled, label_offset in specs:
         row = rows[key]
@@ -328,14 +328,14 @@ def plot_training_effect(rows: dict[str, dict[str, Any]], path: Path) -> None:
             xerr=100 * (base.live.as_float(row.get("strict_chain_success_rate_sem")) or 0.0),
             yerr=100 * (base.live.as_float(row.get("privacy_leakage_rate_sem")) or 0.0),
             fmt=marker,
-            markersize=5.8,
+            markersize=6.2,
             markerfacecolor=color if filled else "white",
             markeredgecolor=color,
-            markeredgewidth=1.25,
+            markeredgewidth=1.35,
             color=color,
             ecolor=color,
-            elinewidth=1.0,
-            capsize=2.8,
+            elinewidth=1.15,
+            capsize=3.0,
             alpha=alpha,
             zorder=4,
         )
@@ -356,8 +356,6 @@ def plot_training_effect(rows: dict[str, dict[str, Any]], path: Path) -> None:
         ("base_normal", "task_s100_normal", "#D55E00", "-"),
         ("base_normal", "padr_s100_normal", "#009E73", "-"),
         ("base_normal", "base_prompt", "#1f2421", "--"),
-        ("task_s100_normal", "task_s100_prompt", "#D55E00", "--"),
-        ("padr_s100_normal", "padr_s100_prompt", "#009E73", "--"),
     ]
     for start_key, end_key, color, linestyle in arrows:
         if start_key not in points or end_key not in points:
@@ -369,7 +367,7 @@ def plot_training_effect(rows: dict[str, dict[str, Any]], path: Path) -> None:
             arrowprops={
                 "arrowstyle": "->",
                 "color": color,
-                "lw": 1.35 if linestyle == "--" else 1.65,
+                "lw": 1.25 if linestyle == "--" else 1.6,
                 "linestyle": linestyle,
                 "alpha": 0.9,
                 "shrinkA": 6,
@@ -387,44 +385,65 @@ def plot_training_effect(rows: dict[str, dict[str, Any]], path: Path) -> None:
     ax.yaxis.set_minor_locator(MultipleLocator(5))
     base.add_minor_grid(ax)
     handles = [
-        Line2D([0], [0], marker="o", color="none", markerfacecolor="#1f2421", markeredgecolor="#1f2421", markersize=6, label="Base"),
-        Line2D([0], [0], marker="s", color="none", markerfacecolor="#D55E00", markeredgecolor="#D55E00", markersize=6, label="Task"),
-        Line2D([0], [0], marker="s", color="none", markerfacecolor="#009E73", markeredgecolor="#009E73", markersize=6, label="PA-DR"),
-        Line2D([0], [0], marker="D", color="none", markerfacecolor="white", markeredgecolor="#5F6F7A", markersize=6, label="+ privacy prompt"),
+        Line2D([0], [0], marker="o", color="none", markerfacecolor="#1f2421", markeredgecolor="#1f2421", markersize=6.2, label="Base Qwen3 4B"),
+        Line2D([0], [0], marker="s", color="none", markerfacecolor="#D55E00", markeredgecolor="#D55E00", markersize=6.2, label="Task training"),
+        Line2D([0], [0], marker="s", color="none", markerfacecolor="#009E73", markeredgecolor="#009E73", markersize=6.2, label="Task+PA-DR training"),
+        Line2D([0], [0], marker="D", color="none", markerfacecolor="white", markeredgecolor="#5F6F7A", markersize=6.2, label="+ privacy prompt"),
         Line2D([0], [0], color="#5F6F7A", lw=1.6, label="training effect"),
-        Line2D([0], [0], color="#5F6F7A", lw=1.25, linestyle="--", label="prompt effect"),
     ]
     ax.legend(handles=handles, loc="lower center", ncols=3, frameon=False, bbox_to_anchor=(0.5, 1.01))
-    ax.set_title("Effect of Step-100 Training")
     base.save_figure(fig, path)
 
 
 def plot_core_leakage_types(rows: list[dict[str, Any]], path: Path) -> None:
+    if len(rows) < 6:
+        return
     metrics = [
         ("Intent Leakage", "intent"),
         ("Answer Leakage", "answer"),
         ("Full-Information Leakage", "full"),
     ]
-    labels = ["Base", "Base + prompt", "Task", "Task + prompt", "PA-DR", "PA-DR + prompt"]
-    colors = ["#1f2421", "#7a7f7a", "#D55E00", "#E69F00", "#009E73", "#56B4E9"]
-    fig, ax = plt.subplots(figsize=(8.2, 4.6))
-    x = list(range(len(metrics)))
-    width = 0.12
-    offsets = [(index - (len(rows) - 1) / 2) * width for index in range(len(rows))]
-    for row, label, color, offset in zip(rows, labels, colors, offsets):
-        values = [100 * (base.live.as_float(row.get(f"{key}_value")) or 0.0) for _name, key in metrics]
-        yerr = [100 * (base.live.as_float(row.get(f"{key}_sem")) or 0.0) for _name, key in metrics]
-        ax.bar([item + offset for item in x], values, width=width, color=color, label=label, yerr=yerr, error_kw={"elinewidth": 0.8, "capsize": 2})
-    ax.set_xticks(x)
-    ax.set_xticklabels([name for name, _key in metrics])
-    ax.set_ylabel("% Occurrence")
-    ax.set_ylim(0, 75)
-    ax.set_yticks([0, 10, 20, 30, 40, 50, 60, 70])
-    ax.yaxis.set_minor_locator(MultipleLocator(5))
-    ax.xaxis.set_minor_locator(NullLocator())
-    base.add_minor_grid(ax, axis="y")
-    ax.legend(loc="upper center", bbox_to_anchor=(0.5, 1.18), ncols=3, frameon=False)
-    ax.set_title("Core Leakage Types")
+    normal_rows = [rows[0], rows[2], rows[4]]
+    prompt_rows = [rows[1], rows[3], rows[5]]
+    labels = ["Base", "Task", "PA-DR"]
+    fig, axes = plt.subplots(1, 3, figsize=(15.2, 4.7), sharey=True)
+    x = list(range(len(labels)))
+    width = 0.36
+    normal_pos = [item - width / 2 for item in x]
+    prompt_pos = [item + width / 2 for item in x]
+    error_kw = {"elinewidth": 1.1, "ecolor": "#303633", "capsize": 3, "capthick": 1.0}
+    for ax, (title, key) in zip(axes, metrics):
+        normal_vals = [100 * (base.live.as_float(row.get(f"{key}_value")) or 0.0) for row in normal_rows]
+        prompt_vals = [100 * (base.live.as_float(row.get(f"{key}_value")) or 0.0) for row in prompt_rows]
+        normal_yerr = [100 * (base.live.as_float(row.get(f"{key}_sem")) or 0.0) for row in normal_rows]
+        prompt_yerr = [100 * (base.live.as_float(row.get(f"{key}_sem")) or 0.0) for row in prompt_rows]
+        ax.bar(
+            normal_pos,
+            normal_vals,
+            width=width,
+            color=base.BASELINE_COLOR,
+            label="Baseline",
+            yerr=normal_yerr,
+            error_kw=error_kw,
+        )
+        ax.bar(
+            prompt_pos,
+            prompt_vals,
+            width=width,
+            color=base.PROMPT_COLOR,
+            label="Privacy Prompt",
+            yerr=prompt_yerr,
+            error_kw=error_kw,
+        )
+        ax.set_title(title)
+        ax.set_xlabel("Model")
+        ax.set_xticks(x)
+        ax.set_xticklabels(labels)
+        ax.xaxis.set_minor_locator(NullLocator())
+        base.set_percent_y_axis(ax)
+    axes[0].set_ylabel("% Occurrence")
+    handles, legend_labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, legend_labels, loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.10))
     base.save_figure(fig, path)
 
 
@@ -625,6 +644,36 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
         ],
         behavior_rows_for_html(behavior),
     )
+    missing_by_condition = {
+        str(row.get("condition")): int(row.get("missing_privacy_judgments") or 0)
+        for row in status
+    }
+    total_missing = sum(missing_by_condition.values())
+    if total_missing:
+        padr_normal_missing = missing_by_condition.get("PA-DR step100", 0)
+        padr_prompt_missing = missing_by_condition.get("PA-DR step100 + privacy prompt", 0)
+        max_denominator_effect = 100.0 * max(missing_by_condition.values()) / 1032.0
+        status_note = (
+            f"Some StepFun privacy judgments are still pending. PA-DR step100 normal prompt is missing "
+            f"{padr_normal_missing} and PA-DR step100 privacy prompt is missing {padr_prompt_missing}."
+        )
+        status_callout = (
+            '<div class="warning">'
+            + base.esc(
+                "Use rows with pending judgments as near-final until the missing StepFun judgments are resolved "
+                f"or intentionally counted as failures. The maximum denominator effect is about {max_denominator_effect:.1f} "
+                "percentage points in this snapshot."
+            )
+            + "</div>"
+        )
+        training_effect_note = (
+            "Step100 default comparison on held-out test rollouts. Error bars are SEM over repeat means. "
+            "Asterisks mark near-final rows with missing StepFun privacy judgments."
+        )
+    else:
+        status_note = "All step100 default rows are complete at 1032/1032 StepFun privacy judgments."
+        status_callout = ""
+        training_effect_note = "Step100 default comparison on held-out test rollouts. Error bars are SEM over repeat means."
 
     html = f"""<!doctype html>
 <html lang="en">
@@ -652,17 +701,17 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
 <body>
   <header>
     <h1>Privacy HopQA Q30 Step100 Paper Viewer</h1>
-    <div class="note">Slim paper-facing snapshot. The default trained checkpoints are Task step100 and PA-DR step100. PA-DR step100 is near-final: normal prompt is missing 5 StepFun privacy judgments and privacy prompt is missing 1.</div>
+    <div class="note">Slim paper-facing snapshot. The default trained checkpoints are Task step100 and PA-DR step100. {base.esc(status_note)}</div>
   </header>
   <main>
     <section id="status">
       <h2>Status</h2>
-      <div class="warning">Use the PA-DR step100 rows as near-final until the missing StepFun judgments are resolved or intentionally counted as failures. The maximum denominator effect is about 0.5 percentage points for normal PA-DR step100 and 0.1 percentage points for prompted PA-DR step100.</div>
+{status_callout}
       {status_table}
     </section>
     <section id="training-effect">
       <h2>Effect Of Training: Accuracy And Privacy</h2>
-      <div class="note">Step100 default comparison on held-out test rollouts. Error bars are SEM over repeat means. Asterisks mark near-final rows with missing StepFun privacy judgments.</div>
+      <div class="note">{base.esc(training_effect_note)}</div>
       <img src="plots/training_effect_step100.svg" alt="Step100 training effect on strict chain success and privacy leakage">
       <div class="links"><a href="plots/training_effect_step100.svg">SVG</a><a href="plots/training_effect_step100.pdf">PDF</a><a href="tables/training_effect_summary_s100.tex">LaTeX table</a></div>
       {summary_table}
