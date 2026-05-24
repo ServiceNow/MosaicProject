@@ -245,20 +245,22 @@ def add_arrow(ax: Any, series: dict[str, str], start: dict[str, Any], end: dict[
 
 def add_gradient_keys(ax: Any) -> None:
     key_specs = [
-        (0.055, "Task step", SERIES[0]),
-        (0.265, "PA-DR step", SERIES[1]),
+        (1.02, "Task", SERIES[0]),
+        (1.085, "PA-DR", SERIES[1]),
     ]
     for left, title, series in key_specs:
-        key_ax = ax.inset_axes([left, 0.91, 0.17, 0.035])
+        key_ax = ax.inset_axes([left, 0.30, 0.025, 0.40])
         gradient = [
-            [interpolate_color(series["dark_color"], series["light_color"], index / 99.0) for index in range(100)]
+            [interpolate_color(series["dark_color"], series["light_color"], index / 99.0)]
+            for index in range(100)
         ]
-        key_ax.imshow(gradient, aspect="auto", extent=[0, 100, 0, 1])
+        key_ax.imshow(gradient, aspect="auto", extent=[0, 1, 0, 100], origin="lower")
         key_ax.set_title(title, fontsize=7.5, color=series["color"], pad=1.0)
-        key_ax.set_yticks([])
-        key_ax.set_xticks([0, 100])
-        key_ax.set_xticklabels(["0", "100"], fontsize=6.8)
-        key_ax.tick_params(axis="x", length=2, pad=1)
+        key_ax.set_xticks([])
+        key_ax.set_yticks([0, 100])
+        key_ax.set_yticklabels(["0", "100"], fontsize=6.8)
+        key_ax.tick_params(axis="y", length=2, pad=1)
+        key_ax.yaxis.tick_right()
         for spine in key_ax.spines.values():
             spine.set_color("#303633")
             spine.set_linewidth(0.6)
@@ -344,10 +346,11 @@ def plot_panel(ax: Any, rows: list[dict[str, Any]]) -> None:
             add_arrow(ax, series, start, end)
         final_xy = (xs[-1], ys[-1])
         point_label = "Task" if series["family"] == "task_reward" else "PA-DR"
+        label_offset = (12, 1) if series["family"] == "task_reward" else (6, 1)
         ax.annotate(
             point_label,
             xy=final_xy,
-            xytext=(6, 1),
+            xytext=label_offset,
             textcoords="offset points",
             fontsize=8.5,
             color=series["color"],
