@@ -262,7 +262,7 @@ def add_gradient_keys(ax: Any) -> None:
         cax = ax.inset_axes([left, 0.20, 0.030, 0.58])
         mappable = ScalarMappable(norm=norm, cmap=step_cmap(series))
         colorbar = ax.figure.colorbar(mappable, cax=cax, orientation="vertical", ticks=ticks)
-        colorbar.ax.set_title(title, fontsize=7.5, color=series["color"], pad=2.0)
+        colorbar.ax.set_title(title, fontsize=7.5, color=series["color"], pad=5.0)
         colorbar.ax.tick_params(labelsize=6.4, length=0, width=0, pad=1.5)
         colorbar.outline.set_visible(False)
         colorbar.solids.set_edgecolor("face")
