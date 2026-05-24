@@ -23,7 +23,7 @@ TRACE_DIR = Path(
 STAGES = [
     ("hop_plan", "Plan"),
     ("search", "Retrieve"),
-    ("doc_choose", "Select docs"),
+    ("doc_choose", "Choose docs"),
     ("doc_read", "Read docs"),
     ("hop_resolve", "Resolve"),
 ]
@@ -131,8 +131,8 @@ def add_event_lanes(hops: list[dict]) -> list[dict]:
 
     plot_events = []
     y_cursor = 0.0
-    lane_height = 0.096
-    group_gap = 0.25
+    lane_height = 0.106
+    group_gap = 0.275
     for hop in hops:
         lane_ends: list[float] = []
         hop_events = sorted(hop["events"], key=lambda event: (event["start_s"], event["end_s"]))
@@ -164,18 +164,18 @@ def make_plot(data: dict) -> None:
     plt.rcParams.update(
         {
             "font.family": "DejaVu Sans",
-            "font.size": 10,
-            "axes.titlesize": 13,
-            "axes.labelsize": 11,
-            "xtick.labelsize": 9,
-            "ytick.labelsize": 10,
-            "legend.fontsize": 9,
+            "font.size": 11,
+            "axes.titlesize": 14,
+            "axes.labelsize": 12,
+            "xtick.labelsize": 10,
+            "ytick.labelsize": 11,
+            "legend.fontsize": 10,
             "pdf.fonttype": 42,
             "ps.fonttype": 42,
         }
     )
-    fig, ax = plt.subplots(figsize=(14.2, 3.15))
-    bar_h = 0.078
+    fig, ax = plt.subplots(figsize=(14.2, 3.5))
+    bar_h = 0.088
     for idx, hop in enumerate(hops):
         if idx % 2 == 0:
             ax.axhspan(hop["row_start_y"], hop["row_end_y"], color="#f4f7f5", zorder=0)
@@ -215,8 +215,8 @@ def make_plot(data: dict) -> None:
     ax.tick_params(axis="y", length=0)
     handles = [Patch(facecolor=STAGE_COLORS[stage], label=label) for stage, label in STAGES]
     handles.append(Patch(facecolor="#009E73", edgecolor="#1e2723", label="Read found answer"))
-    ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, 1.10), ncol=6, frameon=False)
-    fig.tight_layout(rect=(0, 0.04, 1, 0.90))
+    ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, 1.11), ncol=6, frameon=False)
+    fig.tight_layout(rect=(0, 0.04, 1, 0.89))
     for suffix in ("svg", "pdf"):
         fig.savefig(PLOTS_DIR / f"example_rollout_timeline.{suffix}", bbox_inches="tight")
     plt.close(fig)
