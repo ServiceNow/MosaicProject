@@ -17,7 +17,7 @@ TABLES_DIR = OUT_DIR / "tables"
 TRACE_DIR = Path(
     "/mnt/llmd/results/exps/alexg/reason/"
     "privacy_hopqa_q30_4b_situational_privreward_tau05_lr1e6_rep8_200s_20260522191644/"
-    "privacy_hopqa_runs/DR0001_035c3d89_001b9f03"
+    "privacy_hopqa_runs/DR0001_25cbf112_298ad369"
 )
 
 STAGES = [
@@ -105,6 +105,19 @@ def collect() -> dict:
                 "question": hop.get("question"),
                 "answer": hop.get("answer"),
                 "stage_rows": stage_rows,
+                "events": [
+                    {
+                        "stage": event.get("stage"),
+                        "label": STAGE_LABEL[event.get("stage")],
+                        "start_s": float(event.get("start_s", 0.0)),
+                        "end_s": float(event.get("end_s", 0.0)),
+                        "duration_s": max(0.0, float(event.get("end_s", 0.0)) - float(event.get("start_s", 0.0))),
+                        "meta": event.get("meta") or {},
+                    }
+                    for event in events
+                    if event.get("stage") in STAGE_LABEL
+                    and (event.get("meta") or {}).get("hop_number") == hop_number
+                ],
                 "web_queries": web_queries,
                 "local_queries": local_queries,
                 "gold_doc_ref": hop.get("gold_doc_ref"),
@@ -113,9 +126,60 @@ def collect() -> dict:
     return {"summary": summary, "hops": hop_rows}
 
 
+def add_event_lanes(hops: list[dict]) -> list[dict]:
+    """Assign overlapping events to compact lanes within each hop row."""
+
+    plot_events = []
+    y_cursor = 0.0
+    lane_height = 0.13
+    group_gap = 0.34
+    for hop in hops:
+        lane_ends: list[float] = []
+        hop_events = sorted(hop["events"], key=lambda event: (event["start_s"], event["end_s"]))
+        for event in hop_events:
+            lane = 0
+            while lane < len(lane_ends) and event["start_s"] < lane_ends[lane] - 1e-6:
+                lane += 1
+            if lane == len(lane_ends):
+                lane_ends.append(event["end_s"])
+            else:
+                lane_ends[lane] = event["end_s"]
+            event = dict(event)
+            event["lane"] = lane
+            event["y"] = y_cursor + lane * lane_height
+            plot_events.append(event)
+        lane_count = max(1, len(lane_ends))
+        hop["label_y"] = y_cursor + (lane_count - 1) * lane_height / 2
+        hop["lane_count"] = lane_count
+        y_cursor += lane_count * lane_height + group_gap
+    return plot_events
+
+
+def event_label(event: dict) -> str:
+    stage = event["stage"]
+    meta = event["meta"]
+    if stage == "hop_plan":
+        actions = meta.get("planned_actions") or []
+        return f"Plan {len(actions)}"
+    if stage == "search":
+        action_type = str(meta.get("action_type") or "").replace("_search", "")
+        return action_type.title() if action_type else "Retrieve"
+    if stage == "doc_choose":
+        return "Select"
+    if stage == "doc_read":
+        if meta.get("can_answer"):
+            return "Read: answer"
+        source = meta.get("source")
+        return f"Read {source}" if source else "Read"
+    if stage == "hop_resolve":
+        return "Resolve" if meta.get("answered") else "Resolve?"
+    return STAGE_LABEL.get(stage, stage)
+
+
 def make_plot(data: dict) -> None:
     PLOTS_DIR.mkdir(parents=True, exist_ok=True)
     hops = data["hops"]
+    plot_events = add_event_lanes(hops)
     plt.rcParams.update(
         {
             "font.family": "DejaVu Sans",
@@ -129,52 +193,54 @@ def make_plot(data: dict) -> None:
             "ps.fonttype": 42,
         }
     )
-    fig, ax = plt.subplots(figsize=(7.2, 3.9))
-    y_gap = 0.9
-    bar_h = 0.45
-    y_positions = []
-    y_labels = []
-    for idx, hop in enumerate(hops):
-        y = (len(hops) - 1 - idx) * y_gap
-        y_positions.append(y)
-        y_labels.append(
-            f"H{hop['hop_number']} {hop['hop_type']} → {hop.get('answer') or 'unanswered'}\n{short(hop.get('question') or '', 44)}"
+    fig, ax = plt.subplots(figsize=(7.3, 4.8))
+    bar_h = 0.095
+    for event in plot_events:
+        start = event["start_s"]
+        width = max(event["duration_s"], 0.08)
+        stage = event["stage"]
+        edgecolor = "#1e2723" if stage == "doc_read" and event["meta"].get("can_answer") else "white"
+        linewidth = 0.9 if edgecolor != "white" else 0.45
+        ax.broken_barh(
+            [(start, width)],
+            (event["y"] - bar_h / 2, bar_h),
+            facecolors=STAGE_COLORS[stage],
+            edgecolors=edgecolor,
+            linewidth=linewidth,
+            alpha=0.95,
         )
-        for stage in hop["stage_rows"]:
-            start = stage["start_s"]
-            width = stage["duration_s"]
-            ax.broken_barh(
-                [(start, width)],
-                (y - bar_h / 2, bar_h),
-                facecolors=STAGE_COLORS[stage["stage"]],
-                edgecolors="white",
-                linewidth=0.7,
-            )
-            if width >= 8:
-                label = stage["label"]
-                if stage["event_count"] > 1 and stage["stage"] in {"search", "doc_read"}:
-                    label += f" ×{stage['event_count']}"
-                ax.text(start + width / 2, y, label, ha="center", va="center", color="white", fontsize=7, fontweight="bold")
+        label = event_label(event)
+        if width >= 5.0 or label == "Read: answer":
+            color = "#1e2723" if label == "Read: answer" else "white"
+            ax.text(start + width / 2, event["y"], label, ha="center", va="center", color=color, fontsize=6.2, fontweight="bold")
+
+    y_positions = [hop["label_y"] for hop in hops]
+    y_labels = [
+        f"H{hop['hop_number']} {hop['hop_type']} -> {hop.get('answer') or 'unanswered'}\n{short(hop.get('question') or '', 46)}"
+        for hop in hops
+    ]
 
     duration = float(data["summary"].get("duration_s") or 0.0)
-    ax.set_xlim(0, max(duration, max(stage["end_s"] for hop in hops for stage in hop["stage_rows"])) * 1.02)
+    ax.set_xlim(0, max(duration, max(event["end_s"] for event in plot_events)) * 1.02)
     ax.set_yticks(y_positions)
     ax.set_yticklabels(y_labels)
+    ax.invert_yaxis()
     ax.set_xlabel("Seconds since rollout start")
-    ax.set_title("Example Privacy HopQA rollout timeline")
+    ax.set_title("Example Privacy HopQA rollout: parallel harness stages over time")
     ax.grid(axis="x", color="#d8dfdc", linewidth=0.8)
     ax.set_axisbelow(True)
     ax.spines[["top", "right", "left"]].set_visible(False)
     ax.tick_params(axis="y", length=0)
     handles = [Patch(facecolor=STAGE_COLORS[stage], label=label) for stage, label in STAGES]
-    ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.27), ncol=5, frameon=False)
+    handles.append(Patch(facecolor="#009E73", edgecolor="#1e2723", label="Read found answer"))
+    ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.23), ncol=3, frameon=False)
     caption = (
         f"Trace {data['summary']['task_id']}_{data['summary']['chain_id']}; "
         f"{data['summary']['resolved_hops']}/{data['summary']['total_hops']} hops resolved; "
-        f"{data['summary']['duration_s']:.0f}s total. Parallel calls are shown as one critical-path stage span."
+        f"{data['summary']['duration_s']:.0f}s total. Stacked bars within a hop are parallel calls, not sequential work."
     )
     fig.text(0.01, 0.01, caption, fontsize=7.5, color="#5d6964")
-    fig.tight_layout(rect=(0, 0.09, 1, 1))
+    fig.tight_layout(rect=(0, 0.1, 1, 1))
     for suffix in ("svg", "pdf"):
         fig.savefig(PLOTS_DIR / f"example_rollout_timeline.{suffix}", bbox_inches="tight")
     plt.close(fig)
