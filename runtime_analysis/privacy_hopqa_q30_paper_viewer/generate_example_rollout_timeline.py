@@ -215,14 +215,13 @@ def make_plot(data: dict) -> None:
     ax.set_yticklabels(y_labels)
     ax.invert_yaxis()
     ax.set_xlabel("Seconds since rollout start")
-    ax.set_title("Example Privacy HopQA rollout: parallel harness stages over wall-clock time")
     ax.grid(axis="x", color="#d8dfdc", linewidth=0.8)
     ax.set_axisbelow(True)
     ax.spines[["top", "right", "left"]].set_visible(False)
     ax.tick_params(axis="y", length=0)
     handles = [Patch(facecolor=STAGE_COLORS[stage], label=label) for stage, label in STAGES]
     handles.append(Patch(facecolor="#009E73", edgecolor="#1e2723", label="Read found answer"))
-    ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, 1.18), ncol=6, frameon=False)
+    ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, 1.10), ncol=6, frameon=False)
     caption = (
         f"Trace {data['summary']['task_id']}_{data['summary']['chain_id']}; "
         f"{data['summary']['resolved_hops']}/{data['summary']['total_hops']} hops resolved; "
@@ -230,7 +229,7 @@ def make_plot(data: dict) -> None:
         f"{question_caption(hops)}"
     )
     fig.text(0.01, 0.015, caption, fontsize=8.3, color="#5d6964")
-    fig.tight_layout(rect=(0, 0.23, 1, 0.94))
+    fig.tight_layout(rect=(0, 0.23, 1, 0.91))
     for suffix in ("svg", "pdf"):
         fig.savefig(PLOTS_DIR / f"example_rollout_timeline.{suffix}", bbox_inches="tight")
     plt.close(fig)
