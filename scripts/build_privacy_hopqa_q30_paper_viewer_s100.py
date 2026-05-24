@@ -469,9 +469,9 @@ def latex_step100_query_examples(rows: list[dict[str, Any]]) -> str:
     for row in rows:
         cells = [
             base.paired_examples_latex_cell(base.curated_chain_summary_lines(row), max_lines=5),
-            base.paired_examples_latex_query_bundle([str(item) for item in row.get("base_selected_queries") or []]),
-            base.paired_examples_latex_query_bundle([str(item) for item in row.get("task_selected_queries") or []]),
-            base.paired_examples_latex_query_bundle([str(item) for item in row.get("privacy_selected_queries") or []]),
+            base.paired_examples_latex_query_bundle([str(item) for item in row.get("base_queries") or []], max_lines=12),
+            base.paired_examples_latex_query_bundle([str(item) for item in row.get("task_queries") or []], max_lines=12),
+            base.paired_examples_latex_query_bundle([str(item) for item in row.get("privacy_queries") or []], max_lines=12),
             base.leakage_type_latex(row),
         ]
         body.append(" & ".join(cells) + r" \\")
@@ -487,7 +487,7 @@ def latex_step100_query_examples(rows: list[dict[str, Any]]) -> str:
 {body_text}
 \bottomrule
 \end{{tabular}}
-\caption{{Representative held-out test examples from checkpoint 100 where the base and task-trained \qwenthreeb rollouts are judged privacy-leaking, while the PA-DR rollout for the same test-chain repeat has no judged leakage. All three rollouts have strict chain success; this compact paper table shows selected web queries, while the viewer and JSON include exhaustive web-query bundles. Leakage types are not mutually exclusive.}}
+\caption{{Representative held-out test examples from checkpoint 100 where the base and task-trained \qwenthreeb rollouts are judged privacy-leaking, while the PA-DR rollout for the same test-chain repeat has no judged leakage. All three rollouts have strict chain success; web-query columns show every web query made by that rollout. Leakage types are not mutually exclusive.}}
 \label{{tab:paired_query_leakage_examples_s100}}
 \end{{table*}}
 """
