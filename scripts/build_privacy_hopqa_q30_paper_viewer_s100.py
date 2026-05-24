@@ -221,7 +221,7 @@ def behavior_rows(rows: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
 def latex_training_summary(rows: list[dict[str, Any]]) -> str:
     metric_specs = [
         ("strict_chain", "max"),
-        ("final_accuracy", "max"),
+        ("per_hop_accuracy", "max"),
         ("privacy_leakage", "min"),
         ("intent", "min"),
         ("answer", "min"),
@@ -256,7 +256,7 @@ def latex_training_summary(rows: list[dict[str, Any]]) -> str:
 \centering
 \begin{{tabular}}{{@{{}}lcccccc@{{}}}}
 \toprule
-\textbf{{Model}} & \textbf{{\shortstack{{Strict Chain\\Success ($\uparrow$)}}}} & \textbf{{\shortstack{{Final\\Accuracy ($\uparrow$)}}}} & \textbf{{\shortstack{{Privacy\\Leakage ($\downarrow$)}}}} & \textbf{{\shortstack{{Intent\\Leakage ($\downarrow$)}}}} & \textbf{{\shortstack{{Answer\\Leakage ($\downarrow$)}}}} & \textbf{{\shortstack{{Full-Information\\Leakage ($\downarrow$)}}}} \\
+\textbf{{Model}} & \textbf{{\shortstack{{Strict Chain\\Success ($\uparrow$)}}}} & \textbf{{\shortstack{{Hop-Level\\Accuracy ($\uparrow$)}}}} & \textbf{{\shortstack{{Privacy\\Leakage ($\downarrow$)}}}} & \textbf{{\shortstack{{Intent\\Leakage ($\downarrow$)}}}} & \textbf{{\shortstack{{Answer\\Leakage ($\downarrow$)}}}} & \textbf{{\shortstack{{Full-Information\\Leakage ($\downarrow$)}}}} \\
 \midrule
 {body_text}
 \bottomrule
@@ -315,10 +315,10 @@ def plot_training_effect(rows: dict[str, dict[str, Any]], path: Path) -> None:
     specs = [
         ("base_normal", "Base", "#1f2421", "o", True, (-7, 7), "right", "bottom"),
         ("base_prompt", "Base + prompt", "#1f2421", "D", False, (7, -7), "left", "top"),
-        ("task_s100_normal", "Task", "#D55E00", "s", True, (6, 1), "left", "center"),
-        ("task_s100_prompt", "Task + prompt", "#D55E00", "D", False, (-6, -1), "right", "center"),
-        ("padr_s100_normal", "PA-DR", "#009E73", "s", True, (6, 1), "left", "center"),
-        ("padr_s100_prompt", "PA-DR + prompt", "#009E73", "D", False, (-6, -1), "right", "center"),
+        ("task_s100_normal", "Task", "#D55E00", "s", True, (8, 8), "left", "bottom"),
+        ("task_s100_prompt", "Task + prompt", "#D55E00", "D", False, (-8, -8), "right", "top"),
+        ("padr_s100_normal", "PA-DR", "#009E73", "s", True, (8, 7), "left", "bottom"),
+        ("padr_s100_prompt", "PA-DR + prompt", "#009E73", "D", False, (-8, -7), "right", "top"),
     ]
     fig, ax = plt.subplots(figsize=(7.2, 5.5))
     points: dict[str, tuple[float, float]] = {}
@@ -623,7 +623,7 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
         [
             ("condition", "Condition"),
             ("strict_chain", "Strict Chain"),
-            ("final_accuracy", "Final Accuracy"),
+            ("per_hop_accuracy", "Hop-Level Accuracy"),
             ("privacy_leakage", "Privacy Leakage"),
             ("intent", "Intent Leakage"),
             ("answer", "Answer Leakage"),

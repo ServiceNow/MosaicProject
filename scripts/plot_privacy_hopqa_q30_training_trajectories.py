@@ -243,6 +243,27 @@ def add_arrow(ax: Any, series: dict[str, str], start: dict[str, Any], end: dict[
     ax.add_patch(arrow)
 
 
+def add_gradient_keys(ax: Any) -> None:
+    key_specs = [
+        (0.055, "Task step", SERIES[0]),
+        (0.265, "PA-DR step", SERIES[1]),
+    ]
+    for left, title, series in key_specs:
+        key_ax = ax.inset_axes([left, 0.91, 0.17, 0.035])
+        gradient = [
+            [interpolate_color(series["dark_color"], series["light_color"], index / 99.0) for index in range(100)]
+        ]
+        key_ax.imshow(gradient, aspect="auto", extent=[0, 100, 0, 1])
+        key_ax.set_title(title, fontsize=7.5, color=series["color"], pad=1.0)
+        key_ax.set_yticks([])
+        key_ax.set_xticks([0, 100])
+        key_ax.set_xticklabels(["0", "100"], fontsize=6.8)
+        key_ax.tick_params(axis="x", length=2, pad=1)
+        for spine in key_ax.spines.values():
+            spine.set_color("#303633")
+            spine.set_linewidth(0.6)
+
+
 def plot_panel(ax: Any, rows: list[dict[str, Any]]) -> None:
     base_row = next((row for row in rows if int(row["step"]) == 0), None)
     if base_row:
@@ -344,6 +365,7 @@ def plot_panel(ax: Any, rows: list[dict[str, Any]]) -> None:
     ax.xaxis.set_minor_locator(MultipleLocator(2.5))
     ax.yaxis.set_minor_locator(MultipleLocator(5))
     paper.add_minor_grid(ax)
+    add_gradient_keys(ax)
 
 
 def write_outputs(rows: list[dict[str, Any]], output_dir: Path) -> None:
@@ -389,20 +411,7 @@ def plot(rows: list[dict[str, Any]], output_dir: Path) -> None:
         )
         for series in SERIES
     )
-    handles.append(
-        Line2D(
-            [0],
-            [0],
-            marker="s",
-            color="#5F6F7A",
-            markerfacecolor="white",
-            markeredgecolor="#5F6F7A",
-            label="gradient: step 20 -> 100",
-            markersize=6.2,
-            linewidth=1.25,
-        )
-    )
-    ax.legend(handles=handles, loc="lower center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.01))
+    ax.legend(handles=handles, loc="lower center", ncols=3, frameon=False, bbox_to_anchor=(0.5, 1.01))
     fig.tight_layout()
     for suffix in ["svg", "pdf", "png"]:
         fig.savefig(output_dir / f"training_trajectory_accuracy_privacy_arrows.{suffix}", bbox_inches="tight", dpi=180)
