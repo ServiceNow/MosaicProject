@@ -18,12 +18,14 @@ from matplotlib import pyplot as plt
 from matplotlib.colors import to_rgb
 from matplotlib.lines import Line2D
 from matplotlib.patches import FancyArrowPatch
+from matplotlib.ticker import MultipleLocator
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts import build_privacy_hopqa_q30_live_analysis_viewer as live
+from scripts import build_privacy_hopqa_q30_paper_viewer as paper
 from scripts.evaluate_privacy_hopqa_leakage_suite_v2 import terminal_model_error_fingerprints
 
 
@@ -48,20 +50,20 @@ NORMAL_STEPS = [20, 40, 60, 80, 100]
 SERIES = [
     {
         "family": "task_reward",
-        "display": "Task reward",
+        "display": "Task training",
         "prefix": "qwen3_4b_situational_reward",
-        "color": "#0072B2",
-        "dark_color": "#004C7A",
-        "light_color": "#56B4E9",
-        "marker": "o",
+        "color": "#D55E00",
+        "dark_color": "#8A3A00",
+        "light_color": "#F0A64A",
+        "marker": "s",
     },
     {
         "family": "privacy_aware_tau05",
-        "display": "Task + PA-DR (tau=0.5)",
+        "display": "Task+PA-DR training",
         "prefix": "qwen3_4b_privreward_tau05",
-        "color": "#D55E00",
-        "dark_color": "#9B3F00",
-        "light_color": "#E69F00",
+        "color": "#009E73",
+        "dark_color": "#005C43",
+        "light_color": "#62BFA5",
         "marker": "s",
     },
 ]
@@ -160,11 +162,15 @@ def metric_row(condition: str, series: dict[str, str], step: int, root: Path) ->
         rollouts,
         live.attempt_task_accuracy,
     )
+    strict_chain, strict_chain_sem, strict_chain_sem_source, strict_chain_n = repeat_grouped_rate(
+        rollouts,
+        lambda row: 1.0 if row.get("strict_chain_success") is True or row.get("strict_chain_success") == 1 else 0.0,
+    )
     leakage_rate, leakage_sem, leakage_sem_source, leakage_n = repeat_grouped_rate(
         leakage,
         lambda row: 1.0 if live.reward_positive(row) else 0.0,
     )
-    if accuracy is None or leakage_rate is None:
+    if strict_chain is None or accuracy is None or leakage_rate is None:
         return None
     return {
         "condition": condition,
@@ -177,6 +183,10 @@ def metric_row(condition: str, series: dict[str, str], step: int, root: Path) ->
         "accuracy_sem": accuracy_sem,
         "accuracy_sem_source": accuracy_sem_source,
         "accuracy_sem_n": accuracy_n,
+        "strict_chain_success": strict_chain,
+        "strict_chain_success_sem": strict_chain_sem,
+        "strict_chain_success_sem_source": strict_chain_sem_source,
+        "strict_chain_success_sem_n": strict_chain_n,
         "privacy_leakage_rate": leakage_rate,
         "privacy_leakage_sem": leakage_sem,
         "privacy_leakage_sem_source": leakage_sem_source,
@@ -214,8 +224,8 @@ def step_color(series: dict[str, str], step: int) -> tuple[float, float, float]:
 
 
 def add_arrow(ax: Any, series: dict[str, str], start: dict[str, Any], end: dict[str, Any]) -> None:
-    x0, y0 = pct(start["accuracy"]), pct(start["privacy_leakage_rate"])
-    x1, y1 = pct(end["accuracy"]), pct(end["privacy_leakage_rate"])
+    x0, y0 = pct(start["strict_chain_success"]), pct(start["privacy_leakage_rate"])
+    x1, y1 = pct(end["strict_chain_success"]), pct(end["privacy_leakage_rate"])
     if abs(x1 - x0) < 0.05 and abs(y1 - y0) < 0.05:
         return
     color = step_color(series, int(end["step"]))
@@ -224,9 +234,9 @@ def add_arrow(ax: Any, series: dict[str, str], start: dict[str, Any], end: dict[
         (x1, y1),
         arrowstyle="-|>",
         mutation_scale=10,
-        linewidth=1.5,
+        linewidth=1.35,
         color=color,
-        alpha=0.64,
+        alpha=0.78,
         shrinkA=7,
         shrinkB=7,
     )
@@ -234,46 +244,106 @@ def add_arrow(ax: Any, series: dict[str, str], start: dict[str, Any], end: dict[
 
 
 def plot_panel(ax: Any, rows: list[dict[str, Any]]) -> None:
+    base_row = next((row for row in rows if int(row["step"]) == 0), None)
+    if base_row:
+        base_xy = (pct(base_row["strict_chain_success"]), pct(base_row["privacy_leakage_rate"]))
+        err = ax.errorbar(
+            base_xy[0],
+            base_xy[1],
+            xerr=pct(base_row.get("strict_chain_success_sem")),
+            yerr=pct(base_row.get("privacy_leakage_sem")),
+            fmt="o",
+            markersize=6.2,
+            markerfacecolor="#1f2421",
+            markeredgecolor="#1f2421",
+            markeredgewidth=1.35,
+            color="#1f2421",
+            ecolor="#1f2421",
+            elinewidth=1.15,
+            capsize=3.0,
+            zorder=5,
+        )
+        for capline in err[1]:
+            capline.set_color("#1f2421")
+            capline.set_markeredgecolor("#1f2421")
+            capline.set_markerfacecolor("#1f2421")
+        ax.annotate(
+            "Base",
+            xy=base_xy,
+            xytext=(-7, 7),
+            textcoords="offset points",
+            fontsize=8.5,
+            color="#1f2421",
+            ha="right",
+            va="bottom",
+            bbox={"boxstyle": "round,pad=0.16", "fc": "white", "ec": "none", "alpha": 0.90},
+            zorder=6,
+        )
     for series in SERIES:
         data = sorted(
-            [row for row in rows if row["family"] == series["family"]],
+            [row for row in rows if row["family"] == series["family"] and int(row["step"]) > 0],
             key=lambda row: row["step"],
         )
         if not data:
             continue
-        xs = [pct(row["accuracy"]) for row in data]
+        xs = [pct(row["strict_chain_success"]) for row in data]
         ys = [pct(row["privacy_leakage_rate"]) for row in data]
-        xerr = [pct(row.get("accuracy_sem")) for row in data]
+        xerr = [pct(row.get("strict_chain_success_sem")) for row in data]
         yerr = [pct(row.get("privacy_leakage_sem")) for row in data]
         colors = [step_color(series, int(row["step"])) for row in data]
         for x, y, xerr_value, yerr_value, color in zip(xs, ys, xerr, yerr, colors):
-            ax.errorbar(
+            err = ax.errorbar(
                 [x],
                 [y],
                 xerr=[[xerr_value], [xerr_value]],
                 yerr=[[yerr_value], [yerr_value]],
                 fmt="none",
                 ecolor=color,
-                elinewidth=0.9,
-                capsize=2,
-                alpha=0.46,
+                elinewidth=1.05,
+                capsize=2.8,
+                alpha=0.58,
             )
+            for capline in err[1]:
+                capline.set_color(color)
+                capline.set_markeredgecolor(color)
+                capline.set_markerfacecolor(color)
         ax.scatter(
             xs,
             ys,
             c=colors,
             marker=series["marker"],
-            s=46,
+            s=40,
             edgecolors=series["color"],
-            linewidths=1.0,
+            linewidths=1.15,
             alpha=0.96,
+            zorder=4,
         )
-        for start, end in zip(data, data[1:]):
+        chain = ([base_row] if base_row else []) + data
+        for start, end in zip(chain, chain[1:]):
             add_arrow(ax, series, start, end)
-    ax.set_title("Normal prompt\nbase -> every 20 steps -> 100", fontsize=11)
-    ax.set_xlabel("Chain progress accuracy (%)")
-    ax.set_ylabel("StepFun privacy leakage (% score 4-5)")
-    ax.grid(alpha=0.25)
+        final_xy = (xs[-1], ys[-1])
+        point_label = "Task" if series["family"] == "task_reward" else "PA-DR"
+        ax.annotate(
+            point_label,
+            xy=final_xy,
+            xytext=(6, 1),
+            textcoords="offset points",
+            fontsize=8.5,
+            color=series["color"],
+            ha="left",
+            va="center",
+            bbox={"boxstyle": "round,pad=0.16", "fc": "white", "ec": "none", "alpha": 0.90},
+            zorder=6,
+        )
+    ax.set_xlabel("Strict Chain Success (%)")
+    ax.set_ylabel("Privacy Leakage (%)")
+    ax.set_xlim(40, 65)
+    ax.set_ylim(0, 60)
+    ax.set_xticks([40, 45, 50, 55, 60, 65])
+    ax.set_yticks([0, 10, 20, 30, 40, 50, 60])
+    ax.xaxis.set_minor_locator(MultipleLocator(2.5))
+    ax.yaxis.set_minor_locator(MultipleLocator(5))
+    paper.add_minor_grid(ax)
 
 
 def write_outputs(rows: list[dict[str, Any]], output_dir: Path) -> None:
@@ -285,54 +355,61 @@ def write_outputs(rows: list[dict[str, Any]], output_dir: Path) -> None:
     )
     with (output_dir / "training_trajectory_metrics.csv").open("w", encoding="utf-8", newline="") as handle:
         fieldnames = list(rows_sorted[0].keys()) if rows_sorted else []
-        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer = csv.DictWriter(handle, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows_sorted)
 
 
 def plot(rows: list[dict[str, Any]], output_dir: Path) -> None:
-    all_x = [pct(row["accuracy"]) for row in rows]
-    all_y = [pct(row["privacy_leakage_rate"]) for row in rows]
-    x_min, x_max = min(all_x), max(all_x)
-    y_min, y_max = min(all_y), max(all_y)
-    x_pad = max(2.0, (x_max - x_min) * 0.15)
-    y_pad = max(3.0, (y_max - y_min) * 0.15)
-
-    fig, ax = plt.subplots(1, 1, figsize=(7.7, 5.7))
+    paper.paper_style()
+    fig, ax = plt.subplots(1, 1, figsize=(7.2, 5.5))
     plot_panel(ax, rows)
-    ax.set_xlim(max(0, x_min - x_pad), min(100, x_max + x_pad))
-    ax.set_ylim(max(0, y_min - y_pad), min(100, y_max + y_pad))
-    ax.tick_params(axis="both", labelsize=9)
     handles = [
         Line2D(
             [0],
             [0],
+            marker="o",
+            color="none",
+            markerfacecolor="#1f2421",
+            markeredgecolor="#1f2421",
+            label="Base Qwen3 4B",
+            markersize=6.2,
+        ),
+    ]
+    handles.extend(
+        Line2D(
+            [0],
+            [0],
             marker=series["marker"],
-            color=series["color"],
+            color="none",
             markerfacecolor=step_color(series, 80),
             markeredgecolor=series["color"],
             label=series["display"],
-            markersize=6,
-            linewidth=1.5,
+            markersize=6.2,
         )
         for series in SERIES
-    ]
-    fig.legend(handles=handles, loc="upper center", ncol=2, bbox_to_anchor=(0.5, 0.93), frameon=False)
-    fig.suptitle("Training trajectory: task performance vs privacy leakage", y=0.995, fontsize=13)
-    fig.text(
-        0.5,
-        -0.01,
-        "Each point is one checkpoint on test rollouts. Error bars are SEM over repeat means. "
-        "Privacy leakage uses successful StepFun judgments; terminal model-output errors are counted separately in the metrics CSV.",
-        ha="center",
-        va="top",
-        fontsize=8.5,
-        color="#4f5b5f",
     )
-    fig.tight_layout(rect=(0, 0.04, 1, 0.88))
+    handles.append(
+        Line2D(
+            [0],
+            [0],
+            marker="s",
+            color="#5F6F7A",
+            markerfacecolor="white",
+            markeredgecolor="#5F6F7A",
+            label="gradient: step 20 -> 100",
+            markersize=6.2,
+            linewidth=1.25,
+        )
+    )
+    ax.legend(handles=handles, loc="lower center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.01))
+    fig.tight_layout()
     for suffix in ["svg", "pdf", "png"]:
         fig.savefig(output_dir / f"training_trajectory_accuracy_privacy_arrows.{suffix}", bbox_inches="tight", dpi=180)
     plt.close(fig)
+    svg_path = output_dir / "training_trajectory_accuracy_privacy_arrows.svg"
+    text = svg_path.read_text(encoding="utf-8")
+    svg_path.write_text("\n".join(line.rstrip() for line in text.splitlines()) + "\n", encoding="utf-8")
 
 
 def main() -> None:

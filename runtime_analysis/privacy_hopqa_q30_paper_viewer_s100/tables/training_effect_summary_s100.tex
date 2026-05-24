@@ -3,16 +3,16 @@
 \centering
 \begin{tabular}{@{}lcccccc@{}}
 \toprule
-\textbf{Model} & \textbf{\shortstack{Strict Chain\\Success}} & \textbf{\shortstack{Per-Hop\\Accuracy}} & \textbf{\shortstack{Privacy\\Leakage}} & \textbf{\shortstack{Intent\\Leakage}} & \textbf{\shortstack{Answer\\Leakage}} & \textbf{\shortstack{Full-Information\\Leakage}} \\
+\textbf{Model} & \textbf{\shortstack{Strict Chain\\Success ($\uparrow$)}} & \textbf{\shortstack{Final\\Accuracy ($\uparrow$)}} & \textbf{\shortstack{Privacy\\Leakage ($\downarrow$)}} & \textbf{\shortstack{Intent\\Leakage ($\downarrow$)}} & \textbf{\shortstack{Answer\\Leakage ($\downarrow$)}} & \textbf{\shortstack{Full-Information\\Leakage ($\downarrow$)}} \\
 \midrule
-\qwenthreeb & 48.7\% {\scriptsize $\pm$ 1.1} & 73.1\% {\scriptsize $\pm$ 1.3} & 34.0\% {\scriptsize $\pm$ 0.4} & 51.1\% {\scriptsize $\pm$ 1.7} & 18.7\% {\scriptsize $\pm$ 0.3} & 11.7\% {\scriptsize $\pm$ 1.4} \\
-\quad + privacy prompt & 44.5\% {\scriptsize $\pm$ 0.8} & 71.3\% {\scriptsize $\pm$ 0.3} & 25.5\% {\scriptsize $\pm$ 1.1} & 39.2\% {\scriptsize $\pm$ 0.8} & 14.4\% {\scriptsize $\pm$ 0.5} & 7.9\% {\scriptsize $\pm$ 0.7} \\
+\qwenthreeb & 48.7\% {\scriptsize $\pm$ 1.1} & 61.5\% {\scriptsize $\pm$ 1.0} & 34.0\% {\scriptsize $\pm$ 0.4} & 51.1\% {\scriptsize $\pm$ 1.7} & 18.7\% {\scriptsize $\pm$ 0.3} & 11.7\% {\scriptsize $\pm$ 1.4} \\
+\quad + privacy prompt & 44.5\% {\scriptsize $\pm$ 0.8} & 55.9\% {\scriptsize $\pm$ 0.8} & 25.5\% {\scriptsize $\pm$ 1.1} & 39.2\% {\scriptsize $\pm$ 0.8} & 14.4\% {\scriptsize $\pm$ 0.5} & 7.9\% {\scriptsize $\pm$ 0.7} \\
 \midrule
-Task Training & {\bfseries 59.3\% {\scriptsize $\pm$ 0.2}} & 79.0\% {\scriptsize $\pm$ 0.5} & 51.7\% {\scriptsize $\pm$ 1.3} & 63.5\% {\scriptsize $\pm$ 0.3} & 28.5\% {\scriptsize $\pm$ 0.6} & 17.1\% {\scriptsize $\pm$ 1.7} \\
-\quad + privacy prompt & 58.9\% {\scriptsize $\pm$ 0.2} & 78.5\% {\scriptsize $\pm$ 0.1} & 52.0\% {\scriptsize $\pm$ 1.2} & 62.8\% {\scriptsize $\pm$ 0.5} & 29.0\% {\scriptsize $\pm$ 0.7} & 19.1\% {\scriptsize $\pm$ 1.2} \\
+Task Training & {\bfseries 59.3\% {\scriptsize $\pm$ 0.2}} & 67.7\% {\scriptsize $\pm$ 0.2} & 51.7\% {\scriptsize $\pm$ 1.3} & 63.5\% {\scriptsize $\pm$ 0.3} & 28.5\% {\scriptsize $\pm$ 0.6} & 17.1\% {\scriptsize $\pm$ 1.7} \\
+\quad + privacy prompt & 58.9\% {\scriptsize $\pm$ 0.2} & 67.2\% {\scriptsize $\pm$ 0.6} & 52.0\% {\scriptsize $\pm$ 1.2} & 62.8\% {\scriptsize $\pm$ 0.5} & 29.0\% {\scriptsize $\pm$ 0.7} & 19.1\% {\scriptsize $\pm$ 1.2} \\
 \midrule
-Task+PA-DR Training & 58.7\% {\scriptsize $\pm$ 0.9} & {\bfseries 79.4\% {\scriptsize $\pm$ 0.6}} & 9.9\% {\scriptsize $\pm$ 0.3} & 29.8\% {\scriptsize $\pm$ 0.3} & {\bfseries 3.3\% {\scriptsize $\pm$ 0.3}} & 1.7\% {\scriptsize $\pm$ 0.3} \\
-\quad + privacy prompt & {\bfseries 59.3\% {\scriptsize $\pm$ 0.7}} & 78.8\% {\scriptsize $\pm$ 0.2} & {\bfseries 7.6\% {\scriptsize $\pm$ 0.8}} & {\bfseries 23.4\% {\scriptsize $\pm$ 0.7}} & 4.0\% {\scriptsize $\pm$ 0.2} & {\bfseries 1.1\% {\scriptsize $\pm$ 0.5}} \\
+Task+PA-DR Training & 58.7\% {\scriptsize $\pm$ 0.9} & 66.8\% {\scriptsize $\pm$ 1.2} & 9.9\% {\scriptsize $\pm$ 0.3} & 29.8\% {\scriptsize $\pm$ 0.3} & {\bfseries 3.3\% {\scriptsize $\pm$ 0.3}} & 1.7\% {\scriptsize $\pm$ 0.3} \\
+\quad + privacy prompt & {\bfseries 59.3\% {\scriptsize $\pm$ 0.7}} & {\bfseries 68.1\% {\scriptsize $\pm$ 1.0}} & {\bfseries 7.6\% {\scriptsize $\pm$ 0.8}} & {\bfseries 23.4\% {\scriptsize $\pm$ 0.7}} & 4.0\% {\scriptsize $\pm$ 0.2} & {\bfseries 1.1\% {\scriptsize $\pm$ 0.5}} \\
 \bottomrule
 \end{tabular}
 \caption{Effect of RL training on \qwenthreeb, evaluated with and without the privacy-aware prompt, using checkpoint 100 for both training runs. We train one model purely on task performance and one with our Privacy Aware-Deep Research (PA-DR) method that also penalizes privacy leakage. Values after $\pm$ are SEMs in percentage points.}

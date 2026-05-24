@@ -25,6 +25,7 @@ from scripts import build_privacy_hopqa_q30_paper_viewer as base
 
 DEFAULT_OUTPUT_DIR = Path("/home/toolkit/my_code/MosaicProject/runtime_analysis/privacy_hopqa_q30_paper_viewer_s100")
 DEFAULT_LATEST_OUTPUT = Path("/home/toolkit/my_code/MosaicProject/runtime_analysis/latest_privacy_hopqa_q30_paper_viewer_s100.html")
+TRAJECTORY_DIR = Path("../privacy_hopqa_q30_training_trajectory_20260524")
 PADR_S100_NORMAL_ROOT = Path(
     "/mnt/llmd/results/exps/alexg/reason/"
     "privacy_hopqa_q30_final_eval_missing_ckpts_16kgen_32kctx_helperfe_20260524"
@@ -42,6 +43,7 @@ PADR_S100_LABEL = "qwen3_4b_privreward_tau05_s100"
 
 SUMMARY_METRICS = {
     "strict_chain": "strict_chain_success_rate",
+    "final_accuracy": "final_correct_rate",
     "per_hop_accuracy": "mean_hop_accuracy",
     "privacy_leakage": "privacy_leakage_rate",
     "strict_privacy": "strict_privacy_rate",
@@ -219,7 +221,7 @@ def behavior_rows(rows: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
 def latex_training_summary(rows: list[dict[str, Any]]) -> str:
     metric_specs = [
         ("strict_chain", "max"),
-        ("per_hop_accuracy", "max"),
+        ("final_accuracy", "max"),
         ("privacy_leakage", "min"),
         ("intent", "min"),
         ("answer", "min"),
@@ -254,7 +256,7 @@ def latex_training_summary(rows: list[dict[str, Any]]) -> str:
 \centering
 \begin{{tabular}}{{@{{}}lcccccc@{{}}}}
 \toprule
-\textbf{{Model}} & \textbf{{\shortstack{{Strict Chain\\Success}}}} & \textbf{{\shortstack{{Per-Hop\\Accuracy}}}} & \textbf{{\shortstack{{Privacy\\Leakage}}}} & \textbf{{\shortstack{{Intent\\Leakage}}}} & \textbf{{\shortstack{{Answer\\Leakage}}}} & \textbf{{\shortstack{{Full-Information\\Leakage}}}} \\
+\textbf{{Model}} & \textbf{{\shortstack{{Strict Chain\\Success ($\uparrow$)}}}} & \textbf{{\shortstack{{Final\\Accuracy ($\uparrow$)}}}} & \textbf{{\shortstack{{Privacy\\Leakage ($\downarrow$)}}}} & \textbf{{\shortstack{{Intent\\Leakage ($\downarrow$)}}}} & \textbf{{\shortstack{{Answer\\Leakage ($\downarrow$)}}}} & \textbf{{\shortstack{{Full-Information\\Leakage ($\downarrow$)}}}} \\
 \midrule
 {body_text}
 \bottomrule
@@ -297,6 +299,13 @@ def latex_behavior_summary(rows: list[dict[str, Any]]) -> str:
 """
 
 
+def latex_details(title: str, latex_text: str) -> str:
+    return (
+        f"<details class=\"latex-block\"><summary>{base.esc(title)}</summary>"
+        f"<pre><code>{base.esc(latex_text)}</code></pre></details>"
+    )
+
+
 def write_text(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text, encoding="utf-8")
@@ -304,16 +313,16 @@ def write_text(path: Path, text: str) -> None:
 
 def plot_training_effect(rows: dict[str, dict[str, Any]], path: Path) -> None:
     specs = [
-        ("base_normal", "Base", "#1f2421", "o", True, (-10, 10)),
-        ("base_prompt", "Base + prompt", "#1f2421", "D", False, (10, -12)),
-        ("task_s100_normal", "Task", "#D55E00", "s", True, (8, 12)),
-        ("task_s100_prompt", "Task + prompt", "#D55E00", "D", False, (-8, -18)),
-        ("padr_s100_normal", "PA-DR", "#009E73", "s", True, (8, 10)),
-        ("padr_s100_prompt", "PA-DR + prompt", "#009E73", "D", False, (-8, -12)),
+        ("base_normal", "Base", "#1f2421", "o", True, (-7, 7), "right", "bottom"),
+        ("base_prompt", "Base + prompt", "#1f2421", "D", False, (7, -7), "left", "top"),
+        ("task_s100_normal", "Task", "#D55E00", "s", True, (6, 1), "left", "center"),
+        ("task_s100_prompt", "Task + prompt", "#D55E00", "D", False, (-6, -1), "right", "center"),
+        ("padr_s100_normal", "PA-DR", "#009E73", "s", True, (6, 1), "left", "center"),
+        ("padr_s100_prompt", "PA-DR + prompt", "#009E73", "D", False, (-6, -1), "right", "center"),
     ]
     fig, ax = plt.subplots(figsize=(7.2, 5.5))
     points: dict[str, tuple[float, float]] = {}
-    for key, label, color, marker, filled, label_offset in specs:
+    for key, label, color, marker, filled, label_offset, label_ha, label_va in specs:
         row = rows[key]
         x = base.live.as_float(row.get("strict_chain_success_rate"))
         y = base.live.as_float(row.get("privacy_leakage_rate"))
@@ -347,9 +356,9 @@ def plot_training_effect(rows: dict[str, dict[str, Any]], path: Path) -> None:
             textcoords="offset points",
             fontsize=8.5,
             color=color,
-            ha="left" if label_offset[0] >= 0 else "right",
-            va="bottom" if label_offset[1] >= 0 else "top",
-            bbox={"boxstyle": "round,pad=0.18", "fc": "white", "ec": "none", "alpha": 0.84},
+            ha=label_ha,
+            va=label_va,
+            bbox={"boxstyle": "round,pad=0.16", "fc": "white", "ec": "none", "alpha": 0.90},
             zorder=5,
         )
     arrows = [
@@ -509,6 +518,7 @@ def table_rows_for_html(rows: list[dict[str, Any]], include_status: bool = False
         item = {
             "condition": row["condition"],
             "strict_chain": row["strict_chain"],
+            "final_accuracy": row["final_accuracy"],
             "per_hop_accuracy": row["per_hop_accuracy"],
             "privacy_leakage": row["privacy_leakage"],
             "intent": row["intent"],
@@ -554,27 +564,28 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
     plot_core_leakage_types(summary, plots_dir / "core_leakage_types_step100.svg")
     plot_behavior(behavior, plots_dir / "training_behavior_step100.svg")
 
-    write_text(tables_dir / "training_effect_summary_s100.tex", latex_training_summary(summary))
-    write_text(tables_dir / "training_behavior_s100.tex", latex_behavior_summary(behavior))
-    write_text(
-        tables_dir / "checkpoint_choice_s50_s100.tex",
-        base.latex_table(
-            [
-                ("condition", "Condition"),
-                ("strict_chain", "Strict Chain"),
-                ("per_hop_accuracy", "Per-Hop Accuracy"),
-                ("privacy_leakage", "Privacy Leakage"),
-                ("intent", "Intent Leakage"),
-                ("answer", "Answer Leakage"),
-                ("full", "Full-Information Leakage"),
-                ("judged", "Judged"),
-                ("status", "Status"),
-            ],
-            table_rows_for_html(checkpoints, include_status=True),
-            "Checkpoint choice diagnostic comparing step50 and step100. Values after +/- are SEMs in percentage points.",
-            "tab:checkpoint_choice_s50_s100",
-        ),
+    training_effect_latex = latex_training_summary(summary)
+    behavior_latex = latex_behavior_summary(behavior)
+    checkpoint_latex = base.latex_table(
+        [
+            ("condition", "Condition"),
+            ("strict_chain", "Strict Chain"),
+            ("final_accuracy", "Final Accuracy"),
+            ("per_hop_accuracy", "Per-Hop Accuracy"),
+            ("privacy_leakage", "Privacy Leakage"),
+            ("intent", "Intent Leakage"),
+            ("answer", "Answer Leakage"),
+            ("full", "Full-Information Leakage"),
+            ("judged", "Judged"),
+            ("status", "Status"),
+        ],
+        table_rows_for_html(checkpoints, include_status=True),
+        "Checkpoint choice diagnostic comparing step50 and step100. Values after +/- are SEMs in percentage points.",
+        "tab:checkpoint_choice_s50_s100",
     )
+    write_text(tables_dir / "training_effect_summary_s100.tex", training_effect_latex)
+    write_text(tables_dir / "training_behavior_s100.tex", behavior_latex)
+    write_text(tables_dir / "checkpoint_choice_s50_s100.tex", checkpoint_latex)
     write_text(
         output_dir / "viewer_data.json",
         json.dumps(
@@ -612,7 +623,7 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
         [
             ("condition", "Condition"),
             ("strict_chain", "Strict Chain"),
-            ("per_hop_accuracy", "Per-Hop Accuracy"),
+            ("final_accuracy", "Final Accuracy"),
             ("privacy_leakage", "Privacy Leakage"),
             ("intent", "Intent Leakage"),
             ("answer", "Answer Leakage"),
@@ -624,6 +635,7 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
         [
             ("condition", "Condition"),
             ("strict_chain", "Strict Chain"),
+            ("final_accuracy", "Final Accuracy"),
             ("per_hop_accuracy", "Per-Hop Accuracy"),
             ("privacy_leakage", "Privacy Leakage"),
             ("intent", "Intent Leakage"),
@@ -644,6 +656,9 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
         ],
         behavior_rows_for_html(behavior),
     )
+    training_effect_latex_block = latex_details("Copy LaTeX: Training Effect Summary", training_effect_latex)
+    behavior_latex_block = latex_details("Copy LaTeX: Query And Retrieval Behavior", behavior_latex)
+    checkpoint_latex_block = latex_details("Copy LaTeX: Checkpoint Choice Diagnostic", checkpoint_latex)
     missing_by_condition = {
         str(row.get("condition")): int(row.get("missing_privacy_judgments") or 0)
         for row in status
@@ -693,8 +708,14 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
     table {{ border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 13px; }}
     th, td {{ border-bottom: 1px solid #dfe4df; padding: 8px 9px; text-align: left; vertical-align: top; }}
     th {{ background: #f0f3f0; font-weight: 650; }}
+    .asset-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 14px 0; }}
+    .asset-card {{ border: 1px solid #dfe4df; border-radius: 6px; padding: 12px; background: #fbfcfb; }}
+    .asset-card h3 {{ margin: 0 0 8px; font-size: 15px; }}
     .links a {{ display: inline-block; margin: 0 12px 8px 0; color: #0b63a3; text-decoration: none; }}
     .links a:hover {{ text-decoration: underline; }}
+    details.latex-block {{ margin: 14px 0 8px; }}
+    details.latex-block summary {{ cursor: pointer; color: #0b63a3; font-weight: 650; }}
+    pre {{ overflow-x: auto; white-space: pre; background: #f4f6f4; border: 1px solid #dfe4df; border-radius: 6px; padding: 12px; font-size: 12px; line-height: 1.35; }}
     .warning {{ color: #755100; background: #fff7dd; border: 1px solid #ead392; padding: 10px 12px; border-radius: 6px; }}
   </style>
 </head>
@@ -709,12 +730,32 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
 {status_callout}
       {status_table}
     </section>
+    <section id="paper-assets">
+      <h2>Paper Assets</h2>
+      <div class="note">One-place index for the step100 plots, LaTeX tables, and source data generated by this viewer.</div>
+      <div class="asset-grid">
+        <div class="asset-card"><h3>Training Effect</h3><div class="links"><a href="plots/training_effect_step100.svg">SVG</a><a href="plots/training_effect_step100.pdf">PDF</a><a href="tables/training_effect_summary_s100.tex">LaTeX</a></div></div>
+        <div class="asset-card"><h3>Training Trajectory</h3><div class="links"><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_accuracy_privacy_arrows.svg">SVG</a><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_accuracy_privacy_arrows.pdf">PDF</a><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_metrics.csv">CSV</a><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_metrics.json">JSON</a></div></div>
+        <div class="asset-card"><h3>Core Leakage Types</h3><div class="links"><a href="plots/core_leakage_types_step100.svg">SVG</a><a href="plots/core_leakage_types_step100.pdf">PDF</a></div></div>
+        <div class="asset-card"><h3>Query And Retrieval Behavior</h3><div class="links"><a href="plots/training_behavior_step100.svg">SVG</a><a href="plots/training_behavior_step100.pdf">PDF</a><a href="tables/training_behavior_s100.tex">LaTeX</a></div></div>
+        <div class="asset-card"><h3>Checkpoint Choice</h3><div class="links"><a href="tables/checkpoint_choice_s50_s100.tex">LaTeX</a><a href="viewer_data.json">JSON data</a></div></div>
+      </div>
+      {training_effect_latex_block}
+      {behavior_latex_block}
+      {checkpoint_latex_block}
+    </section>
     <section id="training-effect">
       <h2>Effect Of Training: Accuracy And Privacy</h2>
       <div class="note">{base.esc(training_effect_note)}</div>
       <img src="plots/training_effect_step100.svg" alt="Step100 training effect on strict chain success and privacy leakage">
       <div class="links"><a href="plots/training_effect_step100.svg">SVG</a><a href="plots/training_effect_step100.pdf">PDF</a><a href="tables/training_effect_summary_s100.tex">LaTeX table</a></div>
       {summary_table}
+    </section>
+    <section id="training-trajectory">
+      <h2>Training Trajectory: Accuracy And Privacy</h2>
+      <div class="note">Normal-prompt checkpoint trajectory on held-out test rollouts. Error bars are SEM over repeat means; color gradient encodes checkpoint step.</div>
+      <img src="{TRAJECTORY_DIR.as_posix()}/training_trajectory_accuracy_privacy_arrows.svg" alt="Checkpoint training trajectory for strict chain success and privacy leakage">
+      <div class="links"><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_accuracy_privacy_arrows.svg">SVG</a><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_accuracy_privacy_arrows.pdf">PDF</a><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_metrics.csv">CSV</a><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_metrics.json">JSON</a></div>
     </section>
     <section id="core-leakage-types">
       <h2>Core Leakage Types</h2>
