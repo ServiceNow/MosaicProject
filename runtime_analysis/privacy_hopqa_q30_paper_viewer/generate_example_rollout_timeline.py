@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import html
 import json
+import textwrap
 from collections import defaultdict
 from pathlib import Path
 
@@ -45,6 +46,11 @@ def load_json(path: Path):
 def short(text: str, n: int = 52) -> str:
     text = " ".join(str(text).split())
     return text if len(text) <= n else text[: n - 1] + "…"
+
+
+def question_caption(hops: list[dict], width: int = 180) -> str:
+    questions = " ".join(f"H{hop['hop_number']}: {hop.get('question') or ''}" for hop in hops)
+    return "\n".join(textwrap.wrap(questions, width=width))
 
 
 def stage_interval(events: list[dict]) -> tuple[float, float] | None:
@@ -164,17 +170,17 @@ def make_plot(data: dict) -> None:
     plt.rcParams.update(
         {
             "font.family": "DejaVu Sans",
-            "font.size": 9,
-            "axes.titlesize": 12,
-            "axes.labelsize": 10,
-            "xtick.labelsize": 8,
-            "ytick.labelsize": 8,
-            "legend.fontsize": 8,
+            "font.size": 10,
+            "axes.titlesize": 13,
+            "axes.labelsize": 11,
+            "xtick.labelsize": 9,
+            "ytick.labelsize": 10,
+            "legend.fontsize": 9,
             "pdf.fonttype": 42,
             "ps.fonttype": 42,
         }
     )
-    fig, ax = plt.subplots(figsize=(13.8, 3.1))
+    fig, ax = plt.subplots(figsize=(13.8, 4.25))
     bar_h = 0.064
     for idx, hop in enumerate(hops):
         if idx % 2 == 0:
@@ -216,14 +222,15 @@ def make_plot(data: dict) -> None:
     ax.tick_params(axis="y", length=0)
     handles = [Patch(facecolor=STAGE_COLORS[stage], label=label) for stage, label in STAGES]
     handles.append(Patch(facecolor="#009E73", edgecolor="#1e2723", label="Read found answer"))
-    ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.33), ncol=6, frameon=False)
+    ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, 1.18), ncol=6, frameon=False)
     caption = (
         f"Trace {data['summary']['task_id']}_{data['summary']['chain_id']}; "
         f"{data['summary']['resolved_hops']}/{data['summary']['total_hops']} hops resolved; "
-        f"{data['summary']['duration_s']:.0f}s total. Multiple bars on the same hop row are parallel calls, not sequential work."
+        f"{data['summary']['duration_s']:.0f}s total. Multiple bars on the same hop row are parallel calls, not sequential work.\n"
+        f"{question_caption(hops)}"
     )
-    fig.text(0.01, 0.01, caption, fontsize=7.5, color="#5d6964")
-    fig.tight_layout(rect=(0, 0.13, 1, 1))
+    fig.text(0.01, 0.015, caption, fontsize=8.3, color="#5d6964")
+    fig.tight_layout(rect=(0, 0.23, 1, 0.94))
     for suffix in ("svg", "pdf"):
         fig.savefig(PLOTS_DIR / f"example_rollout_timeline.{suffix}", bbox_inches="tight")
     plt.close(fig)
