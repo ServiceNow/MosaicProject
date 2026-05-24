@@ -1,0 +1,335 @@
+{
+  "summary": {
+    "task_id": "DR0001",
+    "chain_id": "035c3d89",
+    "iterations_used": 5,
+    "resolved_hops": 5,
+    "total_hops": 5,
+    "searches_total": 12,
+    "docs_read": 25,
+    "document_memory_parent_docs": 3,
+    "duration_s": 364.6260144999251,
+    "stalled": false,
+    "llm_calls_total": 40,
+    "prompt_tokens": 130492,
+    "output_tokens": 6539,
+    "total_tokens": 137031,
+    "retrieval_summary": {
+      "candidate_parent_docs_after_parent_trim": 53,
+      "candidate_parent_docs_before_parent_trim": 53,
+      "candidate_windows_after_parent_trim": 87,
+      "candidate_windows_before_parent_trim": 87,
+      "document_memory_parent_docs": 3,
+      "max_selected_parent_windows_available": 5,
+      "max_selected_parent_windows_read": 5,
+      "memory_seed_parent_docs": 6,
+      "memory_seed_windows": 8,
+      "selected_parent_docs": 15,
+      "selected_parent_windows_available": 25,
+      "selected_windows_read": 25,
+      "gold_parent_hops": 5,
+      "gold_parent_retrieved_before_trim_hops": 5,
+      "gold_parent_retrieved_hops": 5,
+      "gold_parent_read_hops": 5,
+      "gold_parent_retrieved_before_trim_rate": 1.0,
+      "gold_parent_retrieved_rate": 1.0,
+      "gold_parent_read_rate": 1.0,
+      "gold_parent_missed_after_trim_hops": 0,
+      "gold_parent_retrieved_not_read_hops": 0,
+      "selected_window_read_ratio": 1.0,
+      "large_parent_window_read_ratio": 0.0
+    },
+    "stopped_after_incorrect_hop": false,
+    "total_errors": 0,
+    "parse_errors_total": 0,
+    "context_overflow_errors": 0,
+    "errors_by_stage": {},
+    "errors_by_kind": {},
+    "errors_by_stage_kind": {},
+    "parse_errors_by_stage": {}
+  },
+  "hops": [
+    {
+      "hop_number": 1,
+      "hop_type": "L",
+      "status": "answered",
+      "question": "How many high-risk food products did Lee's Market track in its inventory management system as of Q3 2024?",
+      "answer": "250",
+      "stage_rows": [
+        {
+          "stage": "hop_plan",
+          "label": "Plan",
+          "start_s": 1.4e-05,
+          "end_s": 10.688012,
+          "duration_s": 10.687998,
+          "event_count": 1
+        },
+        {
+          "stage": "search",
+          "label": "Retrieve",
+          "start_s": 12.561721,
+          "end_s": 31.178002,
+          "duration_s": 18.616281,
+          "event_count": 3
+        },
+        {
+          "stage": "doc_choose",
+          "label": "Select docs",
+          "start_s": 34.086668,
+          "end_s": 41.000905,
+          "duration_s": 6.914237,
+          "event_count": 1
+        },
+        {
+          "stage": "doc_read",
+          "label": "Read docs",
+          "start_s": 43.280928,
+          "end_s": 53.517696,
+          "duration_s": 10.236767999999998,
+          "event_count": 3
+        },
+        {
+          "stage": "hop_resolve",
+          "label": "Resolve",
+          "start_s": 55.139264,
+          "end_s": 61.848003,
+          "duration_s": 6.708739000000001,
+          "event_count": 1
+        }
+      ],
+      "web_queries": [
+        "Lee's Market food safety inventory tracking food product risk reporting 2024",
+        "Lee's Market high-risk food products inventory management news 2024"
+      ],
+      "local_queries": [
+        "Lee's Market inventory management system high-risk food products Q3 2024"
+      ],
+      "gold_doc_ref": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0001/files/IN002_pdf/food-safety-compliance.md"
+    },
+    {
+      "hop_number": 2,
+      "hop_type": "L",
+      "status": "answered",
+      "question": "What is Lee's Market's disaster recovery infrastructure investment for the system tracking approximately 250 high-risk food products?",
+      "answer": "$250,000",
+      "stage_rows": [
+        {
+          "stage": "hop_plan",
+          "label": "Plan",
+          "start_s": 61.848085,
+          "end_s": 74.63254,
+          "duration_s": 12.784455000000008,
+          "event_count": 1
+        },
+        {
+          "stage": "search",
+          "label": "Retrieve",
+          "start_s": 75.666827,
+          "end_s": 87.965,
+          "duration_s": 12.298173000000006,
+          "event_count": 3
+        },
+        {
+          "stage": "doc_choose",
+          "label": "Select docs",
+          "start_s": 92.215071,
+          "end_s": 104.167367,
+          "duration_s": 11.952296000000004,
+          "event_count": 1
+        },
+        {
+          "stage": "doc_read",
+          "label": "Read docs",
+          "start_s": 105.035991,
+          "end_s": 111.734725,
+          "duration_s": 6.698734000000002,
+          "event_count": 3
+        },
+        {
+          "stage": "hop_resolve",
+          "label": "Resolve",
+          "start_s": 116.163803,
+          "end_s": 134.197157,
+          "duration_s": 18.033354000000003,
+          "event_count": 1
+        }
+      ],
+      "web_queries": [
+        "disaster recovery investment for food safety inventory systems industry standard"
+      ],
+      "local_queries": [
+        "Lee's Market disaster recovery infrastructure investment food inventory system",
+        "Lee's Market food safety compliance disaster recovery budget"
+      ],
+      "gold_doc_ref": "/home/toolkit/nice_code/drbench/drbench/data/tasks/DR0001/files/IN002_pdf/food-safety-compliance.md"
+    },
+    {
+      "hop_number": 3,
+      "hop_type": "W",
+      "status": "answered",
+      "question": "What is the maximum amount of each one-time supplemental incentive grant that can be awarded under the 250,000 allocation?",
+      "answer": "30,000",
+      "stage_rows": [
+        {
+          "stage": "hop_plan",
+          "label": "Plan",
+          "start_s": 134.197237,
+          "end_s": 139.906678,
+          "duration_s": 5.709440999999998,
+          "event_count": 1
+        },
+        {
+          "stage": "search",
+          "label": "Retrieve",
+          "start_s": 141.843133,
+          "end_s": 157.810649,
+          "duration_s": 15.967516000000018,
+          "event_count": 2
+        },
+        {
+          "stage": "doc_choose",
+          "label": "Select docs",
+          "start_s": 160.062856,
+          "end_s": 168.846572,
+          "duration_s": 8.783715999999998,
+          "event_count": 1
+        },
+        {
+          "stage": "doc_read",
+          "label": "Read docs",
+          "start_s": 176.208103,
+          "end_s": 188.06549,
+          "duration_s": 11.857387000000017,
+          "event_count": 4
+        },
+        {
+          "stage": "hop_resolve",
+          "label": "Resolve",
+          "start_s": 191.42497,
+          "end_s": 197.463079,
+          "duration_s": 6.0381089999999915,
+          "event_count": 1
+        }
+      ],
+      "web_queries": [
+        "one-time supplemental incentive grant maximum amount per provider food safety supply chain program"
+      ],
+      "local_queries": [
+        "one-time supplemental incentive grants caps maximum amount per grant disaster recovery allocation $250000 high-risk food products"
+      ],
+      "gold_doc_ref": "/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/curated_source_shortdocs_q19_2026-05-12/texts/035c3d89_hop3_58963.txt"
+    },
+    {
+      "hop_number": 4,
+      "hop_type": "W",
+      "status": "answered",
+      "question": "Which state's CERDEP program includes one-time supplemental incentive grants capped at $30,000 for private providers?",
+      "answer": "South Carolina",
+      "stage_rows": [
+        {
+          "stage": "hop_plan",
+          "label": "Plan",
+          "start_s": 197.463161,
+          "end_s": 203.040597,
+          "duration_s": 5.577435999999977,
+          "event_count": 1
+        },
+        {
+          "stage": "search",
+          "label": "Retrieve",
+          "start_s": 203.770814,
+          "end_s": 216.700054,
+          "duration_s": 12.929239999999993,
+          "event_count": 2
+        },
+        {
+          "stage": "doc_choose",
+          "label": "Select docs",
+          "start_s": 221.012772,
+          "end_s": 241.570017,
+          "duration_s": 20.557244999999995,
+          "event_count": 1
+        },
+        {
+          "stage": "doc_read",
+          "label": "Read docs",
+          "start_s": 242.268219,
+          "end_s": 264.02918,
+          "duration_s": 21.76096100000001,
+          "event_count": 6
+        },
+        {
+          "stage": "hop_resolve",
+          "label": "Resolve",
+          "start_s": 266.008002,
+          "end_s": 273.155567,
+          "duration_s": 7.147565000000043,
+          "event_count": 1
+        }
+      ],
+      "web_queries": [
+        "CERDEP program state by state private provider one-time supplemental grants capped at $30,000"
+      ],
+      "local_queries": [
+        "Lee's Market CERDEP program state-specific private provider grants $30,000"
+      ],
+      "gold_doc_ref": "/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/curated_source_shortdocs_q19_2026-05-12/texts/035c3d89_hop4_58963.txt"
+    },
+    {
+      "hop_number": 5,
+      "hop_type": "W",
+      "status": "answered",
+      "question": "What is the average spending per public school student in South Carolina?",
+      "answer": "$17,567",
+      "stage_rows": [
+        {
+          "stage": "hop_plan",
+          "label": "Plan",
+          "start_s": 273.155652,
+          "end_s": 284.022091,
+          "duration_s": 10.866439000000014,
+          "event_count": 1
+        },
+        {
+          "stage": "search",
+          "label": "Retrieve",
+          "start_s": 285.181769,
+          "end_s": 292.171321,
+          "duration_s": 6.989552000000003,
+          "event_count": 2
+        },
+        {
+          "stage": "doc_choose",
+          "label": "Select docs",
+          "start_s": 293.121666,
+          "end_s": 298.899769,
+          "duration_s": 5.778102999999987,
+          "event_count": 1
+        },
+        {
+          "stage": "doc_read",
+          "label": "Read docs",
+          "start_s": 300.419706,
+          "end_s": 352.588003,
+          "duration_s": 52.168296999999995,
+          "event_count": 9
+        },
+        {
+          "stage": "hop_resolve",
+          "label": "Resolve",
+          "start_s": 357.18735,
+          "end_s": 364.594208,
+          "duration_s": 7.406858,
+          "event_count": 1
+        }
+      ],
+      "web_queries": [
+        "average spending per public school student in South Carolina"
+      ],
+      "local_queries": [
+        "public school spending South Carolina"
+      ],
+      "gold_doc_ref": "/home/toolkit/my_code/MosaicProject/data_files/privacy_hopqa_final_dataset/curated_source_shortdocs_q19_2026-05-12/texts/035c3d89_hop5_40371.txt"
+    }
+  ]
+}

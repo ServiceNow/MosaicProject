@@ -1,0 +1,40 @@
+{
+  "measurement": "critical_path_wall_clock_seconds",
+  "source_sample": "300 recent q30 training traces",
+  "parallel_stage_definition": "max(end_s) - min(start_s) within each parallel search/read stage",
+  "rows": [
+    {
+      "group": "All attempted web hops",
+      "n_web_hops": 329,
+      "mean_total_s": 227.8,
+      "median_total_s": 81.1,
+      "plan_s": 15.6,
+      "retrieve_s": 24.4,
+      "select_docs_s": 10.7,
+      "read_docs_s": 102.5,
+      "resolve_s": 74.6
+    },
+    {
+      "group": "Answered web hops",
+      "n_web_hops": 262,
+      "mean_total_s": 115.2,
+      "median_total_s": 74.7,
+      "plan_s": 9.8,
+      "retrieve_s": 15.8,
+      "select_docs_s": 9.0,
+      "read_docs_s": 50.5,
+      "resolve_s": 30.0
+    },
+    {
+      "group": "Unanswered web hops",
+      "n_web_hops": 67,
+      "mean_total_s": 668.1,
+      "median_total_s": 666.1,
+      "plan_s": 38.0,
+      "retrieve_s": 58.2,
+      "select_docs_s": 17.3,
+      "read_docs_s": 305.9,
+      "resolve_s": 248.8
+    }
+  ]
+}
