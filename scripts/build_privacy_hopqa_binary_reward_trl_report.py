@@ -27,6 +27,7 @@ DEFAULT_LATEST = Path("/home/toolkit/my_code/MosaicProject/runtime_analysis/late
 DEFAULT_REWARD_DATASET_DIR = Path(
     "/mnt/llmd/results/exps/alexg/reason/privacy_hopqa_query_subset_privacy_labels_20260521/dataset_combined_canonical"
 )
+SELECTED_REWARD_MODEL_RUN = "private_fact_context_4b_r128_subsetmix_lr5e5_8gpu_resume200_20260521"
 
 
 def esc(value: Any) -> str:
@@ -59,6 +60,35 @@ def pct(value: Any) -> str:
 def num(value: Any) -> str:
     if value is None:
         return "n/a"
+    return f"{float(value):.3f}"
+
+
+def latex_escape(value: Any) -> str:
+    text = "" if value is None else str(value)
+    replacements = {
+        "\\": r"\textbackslash{}",
+        "&": r"\&",
+        "%": r"\%",
+        "$": r"\$",
+        "#": r"\#",
+        "_": r"\_",
+        "{": r"\{",
+        "}": r"\}",
+        "~": r"\textasciitilde{}",
+        "^": r"\textasciicircum{}",
+    }
+    return "".join(replacements.get(char, char) for char in text)
+
+
+def latex_pct(value: Any) -> str:
+    if value is None:
+        return "--"
+    return f"{100 * float(value):.1f}\\%"
+
+
+def latex_num(value: Any) -> str:
+    if value is None:
+        return "--"
     return f"{float(value):.3f}"
 
 
@@ -203,6 +233,9 @@ def classifier_eval_history(run_dir: Path) -> list[dict[str, Any]]:
 
 
 def classify_source(summary: dict[str, Any], source_label: str) -> str:
+    args = summary.get("args") if isinstance(summary.get("args"), dict) else {}
+    if summary.get("eval_only") and not (summary.get("adapter") or args.get("adapter_path")):
+        return "Base"
     if summary.get("trainer") == "trl.SFTTrainer" or source_label == "TRL":
         return "TRL SFTTrainer"
     if summary.get("eval_only"):
@@ -277,10 +310,18 @@ def base_model_label(summary: dict[str, Any]) -> str:
 
 def clean_run_label(run: dict[str, Any], multiline: bool = False) -> str:
     summary = run.get("summary") or {}
+    args = summary.get("args") if isinstance(summary.get("args"), dict) else {}
+    name = str(run.get("name") or "")
+    if name == SELECTED_REWARD_MODEL_RUN:
+        return "Trained reward model"
+    if summary.get("eval_only") and not (summary.get("adapter") or args.get("adapter_path")):
+        return "Base Qwen3-4B"
+    if summary.get("eval_only") and "canonical_1ep" in name:
+        return "Canonical 1-epoch reward model"
     variant = compact_variant(run.get("variant"))
     source = compact_source(str(run.get("source") or ""))
     if summary.get("eval_only"):
-        parts = [variant, base_model_label(summary), "Base"]
+        parts = [variant, base_model_label(summary), "Adapter Eval" if args.get("adapter_path") else "Base"]
     elif summary.get("label_mode") == "ternary":
         args = summary.get("args") if isinstance(summary.get("args"), dict) else {}
         tri = f"tri{args.get('ternary_no_repeat')}-{args.get('ternary_intent_repeat')}-{args.get('ternary_fact_repeat')}"
@@ -302,7 +343,7 @@ def run_name(run_dir: Path, summary: dict[str, Any], source_label: str) -> str:
     variant = short_variant(str(summary.get("variant") or ""))
     args = summary.get("args") if isinstance(summary.get("args"), dict) else {}
     if summary.get("eval_only"):
-        return f"{variant} Base"
+        return f"{variant} Adapter Eval" if args.get("adapter_path") else f"{variant} Base"
     if summary.get("label_mode") == "ternary":
         suffix = f"ternary ep{args.get('epochs')} tri{args.get('ternary_no_repeat')}-{args.get('ternary_intent_repeat')}-{args.get('ternary_fact_repeat')} {lora_label(summary)}"
     else:
@@ -795,6 +836,107 @@ def binary_run_table(runs: list[dict[str, Any]]) -> str:
     )
 
 
+def is_base_reward_run(run: dict[str, Any]) -> bool:
+    summary = run.get("summary") if isinstance(run.get("summary"), dict) else {}
+    args = summary.get("args") if isinstance(summary.get("args"), dict) else {}
+    return bool(summary.get("eval_only")) and not (summary.get("adapter") or args.get("adapter_path"))
+
+
+def reward_summary_runs(runs: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    base_candidates = [
+        run
+        for run in runs
+        if is_base_reward_run(run) and run.get("variant") == "private_fact_context" and "smoke" not in str(run.get("name"))
+    ]
+    trained_candidates = [
+        run
+        for run in runs
+        if run.get("variant") == "private_fact_context"
+        and not is_base_reward_run(run)
+        and "smoke" not in str(run.get("name"))
+    ]
+    selected = next((run for run in trained_candidates if run.get("name") == SELECTED_REWARD_MODEL_RUN), None)
+    if selected is None and trained_candidates:
+        selected = max(
+            trained_candidates,
+            key=lambda run: (((run.get("summary") or {}).get("metrics") or {}).get("test") or {}).get("f1") or -1,
+        )
+    out: list[dict[str, Any]] = []
+    if base_candidates:
+        out.append(max(base_candidates, key=lambda run: run.get("test_rows") or 0))
+    if selected is not None:
+        out.append(selected)
+    return out
+
+
+def reward_summary_label(run: dict[str, Any]) -> str:
+    if is_base_reward_run(run):
+        return "Base Qwen3-4B"
+    return "Trained reward model"
+
+
+def reward_summary_table(runs: list[dict[str, Any]]) -> str:
+    rows = []
+    for run in runs:
+        test = ((run.get("summary") or {}).get("metrics") or {}).get("test") or {}
+        rows.append(
+            "<tr>"
+            f"<td>{esc(reward_summary_label(run))}</td>"
+            f"<td>{num(run.get('test_roc_auc'))}</td>"
+            f"<td>{pct(test.get('precision'))}</td>"
+            f"<td>{pct(test.get('recall'))}</td>"
+            f"<td>{pct(test.get('f1'))}</td>"
+            f"<td>{esc(test.get('tp'))}/{esc(test.get('fp'))}/{esc(test.get('fn'))}</td>"
+            f"<td>{esc(run.get('test_positive'))}/{esc(run.get('test_rows'))}</td>"
+            "</tr>"
+        )
+    return (
+        "<table><thead><tr><th>Model</th><th>ROC AUC</th><th>Precision @0.5</th><th>Recall @0.5</th>"
+        "<th>F1 @0.5</th><th>TP/FP/FN @0.5</th><th>Test Positives</th></tr></thead>"
+        f"<tbody>{''.join(rows)}</tbody></table>"
+    )
+
+
+def reward_summary_latex(runs: list[dict[str, Any]]) -> str:
+    body = []
+    for run in runs:
+        test = ((run.get("summary") or {}).get("metrics") or {}).get("test") or {}
+        body.append(
+            " & ".join(
+                [
+                    latex_escape(reward_summary_label(run)),
+                    latex_num(run.get("test_roc_auc")),
+                    latex_pct(test.get("precision")),
+                    latex_pct(test.get("recall")),
+                    latex_pct(test.get("f1")),
+                ]
+            )
+            + r" \\"
+        )
+    return "\n".join(
+        [
+            r"\begin{table}[t]",
+            r"\small",
+            r"\centering",
+            r"\begin{tabular}{@{}lcccc@{}}",
+            r"\toprule",
+            r"\textbf{Model} & \textbf{ROC AUC ($\uparrow$)} & \textbf{Precision ($\uparrow$)} & \textbf{Recall ($\uparrow$)} & \textbf{F1 ($\uparrow$)} \\",
+            r"\midrule",
+            *body,
+            r"\bottomrule",
+            r"\end{tabular}",
+            (
+                r"\caption{Current privacy reward-model classification performance on the held-out canonical "
+                r"query-privacy test split. The trained reward model is the selected private-facts Qwen3-4B "
+                r"classifier used by the privacy reward server. Metrics use the default 0.5 Yes-vs-No threshold.}"
+            ),
+            r"\label{tab:privacy_reward_model_base_vs_trained}",
+            r"\end{table}",
+            "",
+        ]
+    )
+
+
 def ternary_table(runs: list[dict[str, Any]]) -> str:
     table_runs = [run for run in runs if "smoke" not in run["name"]]
     if not table_runs:
@@ -1163,12 +1305,31 @@ def build(args: argparse.Namespace) -> None:
     prompt_rows = prompt_examples(binary_runs + ternary_runs)
     plot_binary_runs(binary_runs, args.output_dir)
     plot_ternary_runs(ternary_runs, args.output_dir)
+    summary_runs = reward_summary_runs(binary_runs)
+    tables_dir = args.output_dir / "tables"
+    tables_dir.mkdir(parents=True, exist_ok=True)
+    (tables_dir / "reward_model_base_vs_trained.tex").write_text(
+        reward_summary_latex(summary_runs),
+        encoding="utf-8",
+    )
     data = {
         "generated_at": iso_now(),
         "manual_root": str(args.manual_root),
         "trl_root": str(args.trl_root),
         "binary_runs": binary_runs,
         "ternary_runs": ternary_runs,
+        "reward_model_summary_runs": [
+            {
+                "name": run.get("name"),
+                "label": reward_summary_label(run),
+                "run_dir": run.get("run_dir"),
+                "test_roc_auc": run.get("test_roc_auc"),
+                "test_metrics": ((run.get("summary") or {}).get("metrics") or {}).get("test") or {},
+                "test_rows": run.get("test_rows"),
+                "test_positive": run.get("test_positive"),
+            }
+            for run in summary_runs
+        ],
         "dataset_manifest": manifest,
         "reward_dataset_stats": reward_stats,
         "prompt_examples": prompt_rows,
@@ -1187,6 +1348,8 @@ code {{ background: #eef2f0; padding: 1px 4px; border-radius: 4px; white-space: 
 pre {{ background: #101816; color: #edf6f0; border-radius: 8px; padding: 12px; overflow-x: auto; white-space: pre-wrap; font-size: 12px; line-height: 1.35; }}
 .note {{ color: #5d6964; }}
 .callout {{ background: #f4f7f5; border-left: 4px solid #009E73; padding: 10px 14px; }}
+.links {{ display: flex; gap: 12px; flex-wrap: wrap; margin: 8px 0 12px; }}
+.links a {{ color: #075f46; text-decoration: none; font-weight: 650; }}
 .prompt-card {{ border: 1px solid #d8dfdc; border-radius: 8px; padding: 10px 12px; margin: 12px 0; }}
 .prompt-card summary {{ cursor: pointer; font-weight: 650; }}
 </style></head><body>
@@ -1199,6 +1362,7 @@ pre {{ background: #101816; color: #edf6f0; border-radius: 8px; padding: 12px; o
 <section><h2>Prompt Variants</h2>{variants_table()}</section>
 <section><h2>Paper Prompt Box</h2>{reward_prompt_latex_section()}</section>
 <section><h2>Concrete Reward-Model Prompt Examples</h2>{prompt_examples_section(prompt_rows)}</section>
+<section><h2>Reward Model Summary</h2><div class="links"><a href="tables/reward_model_base_vs_trained.tex">LaTeX table</a></div>{reward_summary_table(summary_runs)}</section>
 <section><h2>Binary Reward Tests</h2>{binary_run_table(binary_runs)}</section>
 <section><h2>1-3 Reward Tests</h2>{ternary_table(ternary_runs)}</section>
 <section><h2>Binary Reward: AUC And F1</h2><img src="plots/auc_f1_metrics.svg"></section>

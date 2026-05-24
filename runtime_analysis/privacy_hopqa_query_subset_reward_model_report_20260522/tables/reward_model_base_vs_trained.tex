@@ -1,0 +1,14 @@
+\begin{table}[t]
+\small
+\centering
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Model} & \textbf{ROC AUC ($\uparrow$)} & \textbf{Precision ($\uparrow$)} & \textbf{Recall ($\uparrow$)} & \textbf{F1 ($\uparrow$)} \\
+\midrule
+Base Qwen3-4B & 0.541 & 29.3\% & 100.0\% & 45.3\% \\
+Trained reward model & 0.878 & 62.5\% & 76.3\% & 68.7\% \\
+\bottomrule
+\end{tabular}
+\caption{Current privacy reward-model classification performance on the held-out canonical query-privacy test split. The trained reward model is the selected private-facts Qwen3-4B classifier used by the privacy reward server. Metrics use the default 0.5 Yes-vs-No threshold.}
+\label{tab:privacy_reward_model_base_vs_trained}
+\end{table}
