@@ -1852,11 +1852,11 @@ def training_effect_summary_latex(rows: list[dict[str, Any]]) -> str:
         best[key] = max(values) if direction == "max" else min(values)
     display_labels = [
         r"\qwenthreeb",
-        "+ privacy prompt",
+        r"\quad + privacy prompt",
         "Task Training",
-        "+ privacy prompt",
+        r"\quad + privacy prompt",
         "Task+PA-DR Training",
-        "+ privacy prompt",
+        r"\quad + privacy prompt",
     ]
     body: list[str] = []
     for index, (row, label) in enumerate(zip(rows, display_labels)):
@@ -1872,14 +1872,14 @@ def training_effect_summary_latex(rows: list[dict[str, Any]]) -> str:
     return rf"""\begin{{table*}}[t]
 \small
 \centering
-\begin{{tabular}}{{lllllll}}
+\begin{{tabular}}{{@{{}}lcccccc@{{}}}}
 \toprule
-\textbf{{Model}} & \textbf{{Strict Chain Success}} & \textbf{{Final Accuracy}} & \textbf{{Privacy Leakage}} & \textbf{{Intent Leakage}} & \textbf{{Answer Leakage}} & \textbf{{Full-Information Leakage}} \\
+\textbf{{Model}} & \textbf{{\shortstack{{Strict Chain\\Success}}}} & \textbf{{\shortstack{{Final\\Accuracy}}}} & \textbf{{\shortstack{{Privacy\\Leakage}}}} & \textbf{{\shortstack{{Intent\\Leakage}}}} & \textbf{{\shortstack{{Answer\\Leakage}}}} & \textbf{{\shortstack{{Full-Information\\Leakage}}}} \\
 \midrule
 {body_text}
 \bottomrule
 \end{{tabular}}
-\caption{{Effect of training on \qwenthreeb, evaluated with and without the privacy-aware prompt. Values after $\pm$ are SEMs in percentage points.}}
+\caption{{Effect of RL training on \qwenthreeb, evaluated with and without the privacy-aware prompt. We train two models, one purely on task-performance, and one with our Privacy Aware-Deep Research (PA-DR) method that also penalizes privacy leakage. Values after $\pm$ are SEMs in percentage points.}}
 \label{{tab:training_effect_summary}}
 \end{{table*}}
 """
