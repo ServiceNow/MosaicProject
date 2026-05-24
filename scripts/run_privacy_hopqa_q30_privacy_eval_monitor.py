@@ -155,7 +155,6 @@ def run_privacy_evals_for_model(args: argparse.Namespace, model_root: Path, qwen
         "--max-private-questions",
         "200",
         "--continue-on-error",
-        "--skip-terminal-model-errors",
     ]
     # Run the fast Qwen judge first when requested so comparison plots update
     # while the StepFun ground-truth judge, which is much slower, catches up.

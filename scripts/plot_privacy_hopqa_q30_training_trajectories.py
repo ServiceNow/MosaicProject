@@ -108,7 +108,15 @@ def read_model_rows(root: Path, model_label: str) -> tuple[list[dict[str, Any]],
         for row in leakage
         if live.row_split(row) == "test" and row.get("ok") and live.rollout_identity(row) in ok_rollout_ids
     ]
-    terminal_errors = len(terminal_model_error_fingerprints(tables / "privacy_leakage_suite_v2_stepfun_full_errors.jsonl"))
+    ok_fingerprints = {
+        str(row.get("input_fingerprint"))
+        for row in raw_leakage
+        if row.get("ok") and row.get("input_fingerprint")
+    }
+    terminal_errors = len(
+        terminal_model_error_fingerprints(tables / "privacy_leakage_suite_v2_stepfun_full_errors.jsonl")
+        - ok_fingerprints
+    )
     return rollout_latest, leakage, terminal_errors
 
 
