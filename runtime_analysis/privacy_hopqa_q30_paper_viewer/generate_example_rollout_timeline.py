@@ -131,8 +131,8 @@ def add_event_lanes(hops: list[dict]) -> list[dict]:
 
     plot_events = []
     y_cursor = 0.0
-    lane_height = 0.13
-    group_gap = 0.34
+    lane_height = 0.085
+    group_gap = 0.24
     for hop in hops:
         lane_ends: list[float] = []
         hop_events = sorted(hop["events"], key=lambda event: (event["start_s"], event["end_s"]))
@@ -151,29 +151,10 @@ def add_event_lanes(hops: list[dict]) -> list[dict]:
         lane_count = max(1, len(lane_ends))
         hop["label_y"] = y_cursor + (lane_count - 1) * lane_height / 2
         hop["lane_count"] = lane_count
+        hop["row_start_y"] = y_cursor - lane_height * 0.65
+        hop["row_end_y"] = y_cursor + (lane_count - 1) * lane_height + lane_height * 0.65
         y_cursor += lane_count * lane_height + group_gap
     return plot_events
-
-
-def event_label(event: dict) -> str:
-    stage = event["stage"]
-    meta = event["meta"]
-    if stage == "hop_plan":
-        actions = meta.get("planned_actions") or []
-        return f"Plan {len(actions)}"
-    if stage == "search":
-        action_type = str(meta.get("action_type") or "").replace("_search", "")
-        return action_type.title() if action_type else "Retrieve"
-    if stage == "doc_choose":
-        return "Select"
-    if stage == "doc_read":
-        if meta.get("can_answer"):
-            return "Read: answer"
-        source = meta.get("source")
-        return f"Read {source}" if source else "Read"
-    if stage == "hop_resolve":
-        return "Resolve" if meta.get("answered") else "Resolve?"
-    return STAGE_LABEL.get(stage, stage)
 
 
 def make_plot(data: dict) -> None:
@@ -193,14 +174,17 @@ def make_plot(data: dict) -> None:
             "ps.fonttype": 42,
         }
     )
-    fig, ax = plt.subplots(figsize=(7.3, 4.8))
-    bar_h = 0.095
+    fig, ax = plt.subplots(figsize=(13.8, 3.1))
+    bar_h = 0.064
+    for idx, hop in enumerate(hops):
+        if idx % 2 == 0:
+            ax.axhspan(hop["row_start_y"], hop["row_end_y"], color="#f4f7f5", zorder=0)
     for event in plot_events:
         start = event["start_s"]
         width = max(event["duration_s"], 0.08)
         stage = event["stage"]
         edgecolor = "#1e2723" if stage == "doc_read" and event["meta"].get("can_answer") else "white"
-        linewidth = 0.9 if edgecolor != "white" else 0.45
+        linewidth = 1.1 if edgecolor != "white" else 0.35
         ax.broken_barh(
             [(start, width)],
             (event["y"] - bar_h / 2, bar_h),
@@ -208,15 +192,14 @@ def make_plot(data: dict) -> None:
             edgecolors=edgecolor,
             linewidth=linewidth,
             alpha=0.95,
+            zorder=3,
         )
-        label = event_label(event)
-        if width >= 5.0 or label == "Read: answer":
-            color = "#1e2723" if label == "Read: answer" else "white"
-            ax.text(start + width / 2, event["y"], label, ha="center", va="center", color=color, fontsize=6.2, fontweight="bold")
+        if stage == "doc_read" and event["meta"].get("can_answer"):
+            ax.plot(start + width / 2, event["y"], marker="o", markersize=3.4, color="#1e2723", zorder=4)
 
     y_positions = [hop["label_y"] for hop in hops]
     y_labels = [
-        f"H{hop['hop_number']} {hop['hop_type']} -> {hop.get('answer') or 'unanswered'}\n{short(hop.get('question') or '', 46)}"
+        f"H{hop['hop_number']} {hop['hop_type']} -> {hop.get('answer') or 'unanswered'}"
         for hop in hops
     ]
 
@@ -226,21 +209,21 @@ def make_plot(data: dict) -> None:
     ax.set_yticklabels(y_labels)
     ax.invert_yaxis()
     ax.set_xlabel("Seconds since rollout start")
-    ax.set_title("Example Privacy HopQA rollout: parallel harness stages over time")
+    ax.set_title("Example Privacy HopQA rollout: parallel harness stages over wall-clock time")
     ax.grid(axis="x", color="#d8dfdc", linewidth=0.8)
     ax.set_axisbelow(True)
     ax.spines[["top", "right", "left"]].set_visible(False)
     ax.tick_params(axis="y", length=0)
     handles = [Patch(facecolor=STAGE_COLORS[stage], label=label) for stage, label in STAGES]
     handles.append(Patch(facecolor="#009E73", edgecolor="#1e2723", label="Read found answer"))
-    ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.23), ncol=3, frameon=False)
+    ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.33), ncol=6, frameon=False)
     caption = (
         f"Trace {data['summary']['task_id']}_{data['summary']['chain_id']}; "
         f"{data['summary']['resolved_hops']}/{data['summary']['total_hops']} hops resolved; "
-        f"{data['summary']['duration_s']:.0f}s total. Stacked bars within a hop are parallel calls, not sequential work."
+        f"{data['summary']['duration_s']:.0f}s total. Multiple bars on the same hop row are parallel calls, not sequential work."
     )
     fig.text(0.01, 0.01, caption, fontsize=7.5, color="#5d6964")
-    fig.tight_layout(rect=(0, 0.1, 1, 1))
+    fig.tight_layout(rect=(0, 0.13, 1, 1))
     for suffix in ("svg", "pdf"):
         fig.savefig(PLOTS_DIR / f"example_rollout_timeline.{suffix}", bbox_inches="tight")
     plt.close(fig)
