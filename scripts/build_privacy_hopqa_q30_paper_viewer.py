@@ -4,10 +4,12 @@
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import html
 import math
 import os
 from pathlib import Path
+import re
 import shutil
 import sys
 import tempfile
@@ -2014,6 +2016,366 @@ def write_final_training_behavior_latex(path: Path, rows: list[dict[str, Any]]) 
     return text
 
 
+QUERY_EXAMPLE_MODELS = [
+    "qwen3_4b_instruct_2507",
+    "qwen3_4b_situational_reward_s50",
+    "qwen3_4b_privreward_tau05_s50",
+]
+QUERY_EXAMPLE_STOPWORDS = {
+    "about",
+    "above",
+    "after",
+    "and",
+    "any",
+    "are",
+    "before",
+    "between",
+    "company",
+    "did",
+    "does",
+    "during",
+    "for",
+    "from",
+    "had",
+    "has",
+    "have",
+    "how",
+    "into",
+    "its",
+    "less",
+    "many",
+    "more",
+    "much",
+    "over",
+    "per",
+    "percent",
+    "percentage",
+    "project",
+    "projected",
+    "q1",
+    "q2",
+    "q3",
+    "q4",
+    "quarter",
+    "rate",
+    "same",
+    "since",
+    "solution",
+    "solutions",
+    "target",
+    "targets",
+    "than",
+    "that",
+    "the",
+    "their",
+    "this",
+    "under",
+    "was",
+    "were",
+    "what",
+    "when",
+    "where",
+    "which",
+    "who",
+    "whom",
+    "why",
+    "with",
+    "year",
+}
+
+
+def query_example_tokens(text: Any, *, extra_stopwords: set[str] | None = None) -> set[str]:
+    stopwords = QUERY_EXAMPLE_STOPWORDS | (extra_stopwords or set())
+    return {
+        token
+        for token in re.findall(r"[a-zA-Z0-9]+", "" if text is None else str(text).lower())
+        if len(token) > 2 and token not in stopwords
+    }
+
+
+def paired_example_web_queries(row: dict[str, Any]) -> list[str]:
+    model_input = row.get("model_input") if isinstance(row.get("model_input"), dict) else {}
+    queries: list[str] = []
+    for item in model_input.get("web_queries") or []:
+        if isinstance(item, dict) and item.get("query"):
+            queries.append(str(item.get("query")))
+    return queries
+
+
+def paired_example_local_facts(row: dict[str, Any]) -> list[dict[str, Any]]:
+    hidden = row.get("hidden_reference_for_judges_only") if isinstance(row.get("hidden_reference_for_judges_only"), dict) else {}
+    facts = hidden.get("local_hop_facts") if isinstance(hidden.get("local_hop_facts"), list) else []
+    return [fact for fact in facts if isinstance(fact, dict)]
+
+
+def paired_example_fact_terms(fact: dict[str, Any], *, company_stopwords: set[str]) -> set[str]:
+    terms = query_example_tokens(fact.get("question"), extra_stopwords=company_stopwords)
+    for answer in [fact.get("canonical_answer"), *((fact.get("accepted_answers") or [])[:3])]:
+        terms.update(query_example_tokens(answer, extra_stopwords=company_stopwords))
+    return terms
+
+
+def paired_example_query_hits(row: dict[str, Any]) -> tuple[list[dict[str, Any]], set[str]]:
+    facts = paired_example_local_facts(row)
+    company_stopwords = query_example_tokens(row.get("company"))
+    fact_terms = {
+        str(fact.get("fact_id") or f"H{idx + 1}"): paired_example_fact_terms(fact, company_stopwords=company_stopwords)
+        for idx, fact in enumerate(facts)
+    }
+    query_rows: list[dict[str, Any]] = []
+    unique_hits: set[str] = set()
+    for idx, query in enumerate(paired_example_web_queries(row), start=1):
+        query_terms = query_example_tokens(query, extra_stopwords=company_stopwords)
+        hit_ids: list[str] = []
+        hit_terms: list[str] = []
+        for fact_id, terms in fact_terms.items():
+            overlap = sorted(query_terms & terms)
+            if len(overlap) >= 2:
+                hit_ids.append(fact_id)
+                hit_terms.extend(overlap[:4])
+        unique_hits.update(hit_ids)
+        query_rows.append(
+            {
+                "index": idx,
+                "query": query,
+                "hit_fact_ids": hit_ids,
+                "hit_terms": sorted(set(hit_terms)),
+            }
+        )
+    return query_rows, unique_hits
+
+
+def paired_example_selected_queries(row: dict[str, Any], *, limit: int = 4) -> list[str]:
+    query_rows, _hits = paired_example_query_hits(row)
+    ranked = sorted(
+        query_rows,
+        key=lambda item: (-len(item.get("hit_fact_ids") or []), -len(item.get("hit_terms") or []), int(item.get("index") or 0)),
+    )
+    selected_indexes = {int(item.get("index") or 0) for item in ranked[:limit]}
+    selected = [item for item in query_rows if int(item.get("index") or 0) in selected_indexes]
+    if not selected:
+        selected = query_rows[:limit]
+    return [str(item.get("query") or "") for item in selected[:limit]]
+
+
+def paired_example_leakage_label(row: dict[str, Any]) -> str:
+    score = live.score(row)
+    if live.reward_positive(row):
+        source = str(row.get("overall_primary_source") or "leak").replace("_", " ")
+    else:
+        source = "no reward leak"
+    flags: list[str] = [f"intent {live.intent_score(row)}"]
+    if live.answer_leaked(row):
+        flags.append("answer")
+    if live.full_info_leaked(row):
+        flags.append("full-info")
+    return f"score {score}: {source} ({', '.join(flags)})"
+
+
+def paired_example_targets(row: dict[str, Any], *, limit: int = 4) -> list[str]:
+    targets: list[str] = []
+    for fact in paired_example_local_facts(row)[:limit]:
+        fact_id = str(fact.get("fact_id") or "")
+        prefix = f"{fact_id}: " if fact_id else ""
+        answer = str(fact.get("canonical_answer") or "").strip()
+        suffix = f" => {answer}" if answer else ""
+        targets.append(f"{prefix}{fact.get('question')}{suffix}")
+    return targets
+
+
+def paired_example_model_cell(row: dict[str, Any], *, limit: int = 4) -> dict[str, Any]:
+    queries = paired_example_selected_queries(row, limit=limit)
+    _query_rows, unique_hits = paired_example_query_hits(row)
+    return {
+        "rating": paired_example_leakage_label(row),
+        "score": live.score(row),
+        "intent_score": live.intent_score(row),
+        "reward_positive": live.reward_positive(row),
+        "answer_leaked": live.answer_leaked(row),
+        "full_info_leaked": live.full_info_leaked(row),
+        "web_query_count": len(paired_example_web_queries(row)),
+        "shown_queries": queries,
+        "local_fact_hits": sorted(unique_hits),
+    }
+
+
+def paired_leakage_example_rows(args: argparse.Namespace, *, limit: int = 12) -> list[dict[str, Any]]:
+    problem_lookup = live.load_problem_lookup(args.dataset_root, args.dataset_basename)
+    normal_rollouts = live.load_rollouts(args.final_eval_artifact_root, problem_lookup)
+    normal_stepfun = live.copy_rollout_identity_from_trace(
+        live.load_leakage(args.final_eval_artifact_root, "stepfun"),
+        normal_rollouts,
+    )
+    privacy_rollouts = live.load_rollouts(args.privacy_aware_final_eval_artifact_root, problem_lookup)
+    privacy_stepfun = live.copy_rollout_identity_from_trace(
+        live.load_leakage(args.privacy_aware_final_eval_artifact_root, "stepfun"),
+        privacy_rollouts,
+    )
+    rollout_by_identity = {
+        live.rollout_identity(row): row
+        for row in [*normal_rollouts, *privacy_rollouts]
+        if row.get("model_label") in QUERY_EXAMPLE_MODELS and row.get("split") == "test"
+    }
+    by_case: dict[tuple[str, str, str], dict[str, dict[str, Any]]] = {}
+    for row in [*normal_stepfun, *privacy_stepfun]:
+        model_label = str(row.get("model_label") or "")
+        if model_label not in QUERY_EXAMPLE_MODELS or row.get("split") != "test":
+            continue
+        case_key = (str(row.get("repeat") or 0), str(row.get("task_id") or ""), str(row.get("chain_id") or ""))
+        by_case.setdefault(case_key, {})[model_label] = row
+
+    candidates: list[dict[str, Any]] = []
+    for case_key, rows_by_model in by_case.items():
+        if not all(model in rows_by_model for model in QUERY_EXAMPLE_MODELS):
+            continue
+        base, task, privacy = [rows_by_model[model] for model in QUERY_EXAMPLE_MODELS]
+        if not (live.reward_positive(base) and live.reward_positive(task) and not live.reward_positive(privacy)):
+            continue
+        strict_successes = sum(
+            1
+            for model in QUERY_EXAMPLE_MODELS
+            if rollout_by_identity.get((model, "test", case_key[1], case_key[2], case_key[0]), {}).get("strict_chain_success")
+        )
+        if strict_successes < 3:
+            continue
+        final_correct = sum(
+            1
+            for model in QUERY_EXAMPLE_MODELS
+            if rollout_by_identity.get((model, "test", case_key[1], case_key[2], case_key[0]), {}).get("final_correct")
+        )
+        _base_hits, base_unique_hits = paired_example_query_hits(base)
+        _task_hits, task_unique_hits = paired_example_query_hits(task)
+        _privacy_hits, privacy_unique_hits = paired_example_query_hits(privacy)
+        score = 0.0
+        score += 20.0 * strict_successes + 5.0 * final_correct
+        score += 8.0 * len(base_unique_hits) + 8.0 * len(task_unique_hits) - 10.0 * len(privacy_unique_hits)
+        score += 4.0 * (live.score(base) - 3) + 4.0 * (live.score(task) - 3) + 3.0 * (3 - live.score(privacy))
+        score += 2.0 * max(0, live.web_query_count(base) - live.web_query_count(privacy))
+        score += 2.0 * max(0, live.web_query_count(task) - live.web_query_count(privacy))
+        score -= 0.4 * max(live.web_query_count(base), live.web_query_count(task), live.web_query_count(privacy))
+        candidates.append(
+            {
+                "score": score,
+                "case_key": case_key,
+                "task_id": case_key[1],
+                "chain_id": case_key[2],
+                "repeat": case_key[0],
+                "company": base.get("company"),
+                "pattern": base.get("pattern"),
+                "n_hops": base.get("n_hops"),
+                "targets": paired_example_targets(base),
+                "base": paired_example_model_cell(base),
+                "task": paired_example_model_cell(task),
+                "privacy": paired_example_model_cell(privacy),
+            }
+        )
+    candidates.sort(key=lambda row: float(row.get("score") or 0.0), reverse=True)
+    selected: list[dict[str, Any]] = []
+    task_counts: Counter[str] = Counter()
+    seen_chains: set[tuple[str, str]] = set()
+    for row in candidates:
+        chain_key = (str(row.get("task_id") or ""), str(row.get("chain_id") or ""))
+        if chain_key in seen_chains:
+            continue
+        if task_counts[str(row.get("task_id") or "")] >= 2:
+            continue
+        seen_chains.add(chain_key)
+        task_counts[str(row.get("task_id") or "")] += 1
+        row["rank"] = len(selected) + 1
+        selected.append(row)
+        if len(selected) >= limit:
+            break
+    return selected
+
+
+def paired_example_query_list_html(queries: list[str]) -> str:
+    items = "".join(f"<li>{esc(query)}</li>" for query in queries)
+    return f"<ol class=\"query-list\">{items}</ol>" if items else "<span class=\"muted\">none</span>"
+
+
+def paired_example_model_cell_html(cell: dict[str, Any]) -> str:
+    rating = esc(cell.get("rating"))
+    count = int(cell.get("web_query_count") or 0)
+    queries = paired_example_query_list_html([str(item) for item in cell.get("shown_queries") or []])
+    return f"<div class=\"rating\">{rating}; {count} web queries total</div>{queries}"
+
+
+def paired_leakage_examples_html(rows: list[dict[str, Any]]) -> str:
+    if not rows:
+        return "<p class='muted'>No paired leakage examples found.</p>"
+    body: list[str] = []
+    for row in rows:
+        targets = paired_example_query_list_html([str(item) for item in row.get("targets") or []])
+        case = (
+            f"<strong>{esc(row.get('rank'))}. {esc(row.get('task_id'))}/{esc(row.get('chain_id'))}</strong>"
+            f"<div class=\"muted\">repeat {esc(row.get('repeat'))}; pattern {esc(row.get('pattern'))}; {esc(row.get('n_hops'))} hops</div>"
+        )
+        body.append(
+            "<tr>"
+            f"<td>{case}</td>"
+            f"<td>{targets}</td>"
+            f"<td>{paired_example_model_cell_html(row.get('base') or {})}</td>"
+            f"<td>{paired_example_model_cell_html(row.get('task') or {})}</td>"
+            f"<td>{paired_example_model_cell_html(row.get('privacy') or {})}</td>"
+            "</tr>"
+        )
+    return (
+        "<table class=\"paired-example-table\"><thead><tr>"
+        "<th>Example</th><th>Private Local Targets</th><th>Base Qwen3 4B</th><th>Task</th><th>PA-DR</th>"
+        "</tr></thead><tbody>"
+        + "".join(body)
+        + "</tbody></table>"
+    )
+
+
+def paired_examples_latex_cell(lines: list[str], *, max_lines: int = 4) -> str:
+    escaped = [latex_escape(line) for line in lines[:max_lines]]
+    return r"\newline ".join(escaped) if escaped else "n/a"
+
+
+def paired_examples_model_latex(cell: dict[str, Any]) -> str:
+    lines = [str(cell.get("rating") or "")]
+    lines.extend(f"{idx}. {query}" for idx, query in enumerate(cell.get("shown_queries") or [], start=1))
+    return paired_examples_latex_cell(lines, max_lines=5)
+
+
+def paired_leakage_examples_latex(rows: list[dict[str, Any]]) -> str:
+    body: list[str] = []
+    for row in rows:
+        example = f"{row.get('rank')}. {row.get('task_id')}/{row.get('chain_id')} r{row.get('repeat')} ({row.get('pattern')})"
+        targets = paired_examples_latex_cell([str(item) for item in row.get("targets") or []], max_lines=4)
+        cells = [
+            latex_escape(example),
+            targets,
+            paired_examples_model_latex(row.get("base") or {}),
+            paired_examples_model_latex(row.get("task") or {}),
+            paired_examples_model_latex(row.get("privacy") or {}),
+        ]
+        body.append(" & ".join(cells) + r" \\")
+    body_text = "\n\\midrule\n".join(body)
+    return rf"""\begin{{table*}}[t]
+\scriptsize
+\centering
+\begin{{tabular}}{{p{{0.12\textwidth}}p{{0.22\textwidth}}p{{0.20\textwidth}}p{{0.20\textwidth}}p{{0.20\textwidth}}}}
+\toprule
+\textbf{{Example}} & \textbf{{Private Local Targets}} & \textbf{{Base \qwenthreeb}} & \textbf{{Task}} & \textbf{{PA-DR}} \\
+\midrule
+{body_text}
+\bottomrule
+\end{{tabular}}
+\caption{{Candidate paired examples where the base and task-trained \qwenthreeb rollouts are judged privacy-leaking by StepFun, while the PA-DR-trained rollout for the same test-chain repeat is below the privacy-leakage threshold. Cells show the StepFun score and selected visible web queries.}}
+\label{{tab:paired_query_leakage_examples}}
+\end{{table*}}
+"""
+
+
+def write_paired_leakage_examples_latex(path: Path, rows: list[dict[str, Any]]) -> str:
+    text = paired_leakage_examples_latex(rows)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding="utf-8")
+    return text
+
+
 def training_prompt_trajectory_table_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return [
         {
@@ -2721,6 +3083,8 @@ def build_viewer(args: argparse.Namespace) -> None:
         privacy_aware_prompt_training_rows,
     )
     plot_final_training_behavior(final_training_behavior_rows_data, plots_dir / "final_training_behavior.svg")
+    paired_leakage_rows = paired_leakage_example_rows(args, limit=12)
+    paired_leakage_examples_table = paired_leakage_examples_html(paired_leakage_rows)
     tables_dir.mkdir(parents=True, exist_ok=True)
     latex_path = tables_dir / "leakage_relationship_stats.tex"
     latex_path.write_text(leakage_stats_latex(relationship_stats_rows), encoding="utf-8")
@@ -2741,6 +3105,7 @@ def build_viewer(args: argparse.Namespace) -> None:
         "training_prompt_trajectory_rows": training_prompt_trajectory_rows,
         "final_condition_summary_rows": final_condition_rows,
         "final_training_behavior_rows": final_training_behavior_rows_data,
+        "paired_leakage_example_rows": paired_leakage_rows,
         "privacy_prompt_summary": prompt_rows_main,
         "privacy_prompt_summary_with_checkpoints": prompt_rows,
         "legacy_privacy_prompt_summary": legacy_prompt_rows_main,
@@ -2957,6 +3322,11 @@ def build_viewer(args: argparse.Namespace) -> None:
     )
     write_training_effect_summary_latex(tables_dir / "final_condition_summary.tex", final_condition_rows)
     write_final_training_behavior_latex(tables_dir / "final_training_behavior.tex", final_training_behavior_rows_data)
+    write_paired_leakage_examples_latex(tables_dir / "paired_leakage_examples.tex", paired_leakage_rows)
+    (tables_dir / "paired_leakage_examples.json").write_text(
+        live.json.dumps(paired_leakage_rows, indent=2) + "\n",
+        encoding="utf-8",
+    )
     write_latex_table(
         tables_dir / "training_prompt_trajectories.tex",
         training_prompt_trajectory_headers,
@@ -3161,6 +3531,13 @@ def build_viewer(args: argparse.Namespace) -> None:
       vertical-align: top;
     }}
     th {{ background: #eef2f0; font-weight: 650; }}
+    .muted {{ color: var(--muted); }}
+    .paired-example-table td {{ min-width: 220px; }}
+    .paired-example-table td:first-child {{ min-width: 135px; }}
+    .paired-example-table td:nth-child(2) {{ min-width: 260px; }}
+    .query-list {{ margin: 0; padding-left: 18px; }}
+    .query-list li {{ margin: 0 0 5px; }}
+    .rating {{ color: var(--muted); font-size: 12px; margin-bottom: 6px; }}
     .progress-table td:nth-child(3),
     .progress-table td:nth-child(4) {{ min-width: 170px; }}
     .progress-cell {{ min-width: 160px; }}
@@ -3208,6 +3585,7 @@ def build_viewer(args: argparse.Namespace) -> None:
       <a href="#prompt-query">Prompt: Query And Retrieval</a>
       <a href="#training-effect">Training Effect</a>
       <a href="#training-behavior">Training Behavior</a>
+      <a href="#paired-leakage-examples">Leakage Examples</a>
       <a href="#training-trajectories">Training Trajectories</a>
       <a href="#with-checkpoints">Checkpoint Copies</a>
       <a href="#task-performance-test">Task Performance</a>
@@ -3321,6 +3699,12 @@ def build_viewer(args: argparse.Namespace) -> None:
       <img src="plots/final_training_behavior.svg" alt="Training effect on query and retrieval behavior">
       <div class="links"><a href="plots/final_training_behavior.svg">SVG</a><a href="plots/final_training_behavior.pdf">PDF</a><a href="tables/final_training_behavior.tex">LaTeX table</a></div>
       {final_training_behavior_table}
+    </section>
+    <section id="paired-leakage-examples">
+      <h2>Paired Web-Query Leakage Examples</h2>
+      <div class="note">Candidate screening table from the final 16k held-out test refresh. Each row pairs the same test-chain repeat across base Qwen3 4B, Task checkpoint 50, and PA-DR checkpoint 50. All three rollouts are strict-chain successful; StepFun judges base and Task as privacy-leaking and PA-DR as below the privacy-leakage threshold. Query cells show selected visible web queries, usually prioritizing queries with local-fact overlap.</div>
+      <div class="links"><a href="tables/paired_leakage_examples.tex">LaTeX table</a><a href="tables/paired_leakage_examples.json">JSON rows</a></div>
+      {paired_leakage_examples_table}
     </section>
     <section id="training-trajectories" class="figure">
       <h2>Standard Training Step50/Step100 Diagnostic</h2>
