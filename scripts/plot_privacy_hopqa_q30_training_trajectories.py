@@ -15,6 +15,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 from matplotlib import pyplot as plt
+from matplotlib.colors import Normalize
 from matplotlib.lines import Line2D
 from matplotlib.patches import FancyArrowPatch
 
@@ -53,7 +54,10 @@ PRIVACY_PROMPT_PRIVREWARD_S100_ROOT = Path(
 DEFAULT_OUTPUT_DIR = ROOT / "runtime_analysis" / "privacy_hopqa_q30_training_trajectory_20260524"
 
 BASE_LABEL = "qwen3_4b_instruct_2507"
-STEPS = list(range(10, 101, 10))
+NORMAL_STEPS = [20, 40, 60, 80, 100]
+PRIVACY_PROMPT_STEPS = [0, 50, 100]
+STEP_NORM = Normalize(vmin=0, vmax=100)
+STEP_CMAP = plt.get_cmap("viridis")
 
 
 SERIES = [
@@ -199,12 +203,12 @@ def metric_row(condition: str, series: dict[str, str], step: int, root: Path) ->
 def collect_rows() -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for series in SERIES:
-        for step in [0, *STEPS]:
+        for step in [0, *NORMAL_STEPS]:
             root = normal_root_for(model_label_for(series, step))
             row = metric_row("normal_prompt", series, step, root)
             if row:
                 rows.append(row)
-        for step in [0, 50, 100]:
+        for step in PRIVACY_PROMPT_STEPS:
             label = model_label_for(series, step)
             root = privacy_prompt_root_for(label)
             if root is None:
@@ -219,11 +223,16 @@ def pct(value: float | None) -> float:
     return 100.0 * float(value or 0.0)
 
 
-def add_arrow(ax: Any, start: dict[str, Any], end: dict[str, Any], color: str) -> None:
+def step_color(step: int) -> Any:
+    return STEP_CMAP(STEP_NORM(step))
+
+
+def add_arrow(ax: Any, start: dict[str, Any], end: dict[str, Any]) -> None:
     x0, y0 = pct(start["accuracy"]), pct(start["privacy_leakage_rate"])
     x1, y1 = pct(end["accuracy"]), pct(end["privacy_leakage_rate"])
     if abs(x1 - x0) < 0.05 and abs(y1 - y0) < 0.05:
         return
+    color = step_color(int(end["step"]))
     arrow = FancyArrowPatch(
         (x0, y0),
         (x1, y1),
@@ -238,20 +247,6 @@ def add_arrow(ax: Any, start: dict[str, Any], end: dict[str, Any], color: str) -
     ax.add_patch(arrow)
 
 
-def label_offset(row: dict[str, Any], index: int) -> tuple[float, float]:
-    if row["step"] == 0:
-        return 7.0, -1.5
-    if row["condition"] == "normal_prompt" and row["family"] == "task_reward":
-        offsets = [(2, 7), (8, -5), (-14, 7), (8, 7), (-15, -8), (8, 7), (-14, 7), (8, -8), (-14, 7), (8, 7)]
-        return offsets[(index - 1) % len(offsets)]
-    if row["condition"] == "normal_prompt" and row["family"] == "privacy_aware_tau05":
-        offsets = [(4, -11), (-14, -9), (5, 6), (-16, 5), (6, -9), (-16, -8), (6, 6), (-15, -9), (6, 6), (-14, -9)]
-        return offsets[(index - 1) % len(offsets)]
-    if row["family"] == "task_reward":
-        return 5.0, 7.0
-    return 5.0, -11.0
-
-
 def plot_panel(ax: Any, rows: list[dict[str, Any]], condition: str, title: str, include_all_steps: bool) -> None:
     condition_rows = [row for row in rows if row["condition"] == condition]
     for series in SERIES:
@@ -263,6 +258,7 @@ def plot_panel(ax: Any, rows: list[dict[str, Any]], condition: str, title: str, 
             continue
         xs = [pct(row["accuracy"]) for row in data]
         ys = [pct(row["privacy_leakage_rate"]) for row in data]
+        steps = [int(row["step"]) for row in data]
         xerr = [pct(row.get("accuracy_sem")) for row in data]
         yerr = [pct(row.get("privacy_leakage_sem")) for row in data]
         ax.errorbar(
@@ -270,32 +266,27 @@ def plot_panel(ax: Any, rows: list[dict[str, Any]], condition: str, title: str, 
             ys,
             xerr=xerr,
             yerr=yerr,
-            fmt=series["marker"],
-            color=series["color"],
+            fmt="none",
             ecolor=series["color"],
             elinewidth=0.9,
             capsize=2,
-            markersize=5.8,
-            markeredgecolor="#1f2421",
-            markeredgewidth=0.5,
-            alpha=0.95,
-            label=series["display"],
+            alpha=0.55,
+        )
+        ax.scatter(
+            xs,
+            ys,
+            c=steps,
+            cmap=STEP_CMAP,
+            norm=STEP_NORM,
+            marker=series["marker"],
+            s=42,
+            edgecolors=series["color"],
+            linewidths=0.9,
+            alpha=0.96,
         )
         for start, end in zip(data, data[1:]):
-            add_arrow(ax, start, end, series["color"])
-        for index, (row, x, y) in enumerate(zip(data, xs, ys)):
-            label = "base" if row["step"] == 0 else str(row["step"])
-            dx, dy = label_offset(row, index)
-            ax.annotate(
-                label,
-                (x, y),
-                xytext=(dx, dy),
-                textcoords="offset points",
-                fontsize=7,
-                color=series["color"],
-                bbox={"boxstyle": "round,pad=0.13", "facecolor": "white", "edgecolor": "none", "alpha": 0.72},
-            )
-    subtitle = "base -> every 10 steps -> 100" if include_all_steps else "available privacy-prompt evals: base, 50, 100"
+            add_arrow(ax, start, end)
+    subtitle = "base -> every 20 steps -> 100" if include_all_steps else "available privacy-prompt evals: base, 50, 100"
     ax.set_title(f"{title}\n{subtitle}", fontsize=11)
     ax.set_xlabel("Chain progress accuracy (%)")
     ax.grid(alpha=0.25)
@@ -332,10 +323,27 @@ def plot(rows: list[dict[str, Any]], output_dir: Path) -> None:
         ax.set_ylim(max(0, y_min - y_pad), min(100, y_max + y_pad))
         ax.tick_params(axis="both", labelsize=9)
     handles = [
-        Line2D([0], [0], marker=series["marker"], color=series["color"], label=series["display"], markersize=6, linewidth=1.5)
+        Line2D(
+            [0],
+            [0],
+            marker=series["marker"],
+            color=series["color"],
+            markerfacecolor="#77808a",
+            markeredgecolor=series["color"],
+            label=series["display"],
+            markersize=6,
+            linewidth=1.5,
+        )
         for series in SERIES
     ]
     fig.legend(handles=handles, loc="upper center", ncol=2, bbox_to_anchor=(0.5, 0.94), frameon=False)
+    sm = plt.cm.ScalarMappable(norm=STEP_NORM, cmap=STEP_CMAP)
+    sm.set_array([])
+    fig.subplots_adjust(left=0.065, right=0.885, top=0.76, bottom=0.18, wspace=0.08)
+    colorbar_axis = fig.add_axes([0.905, 0.25, 0.016, 0.50])
+    colorbar = fig.colorbar(sm, cax=colorbar_axis)
+    colorbar.set_label("checkpoint step", fontsize=8.5)
+    colorbar.ax.tick_params(labelsize=8)
     fig.suptitle("Training trajectory: task performance vs privacy leakage", y=0.995, fontsize=13)
     fig.text(
         0.5,
@@ -347,7 +355,6 @@ def plot(rows: list[dict[str, Any]], output_dir: Path) -> None:
         fontsize=8.5,
         color="#4f5b5f",
     )
-    fig.tight_layout(rect=(0, 0.04, 1, 0.90), w_pad=2.2)
     for suffix in ["svg", "pdf", "png"]:
         fig.savefig(output_dir / f"training_trajectory_accuracy_privacy_arrows.{suffix}", bbox_inches="tight", dpi=180)
     plt.close(fig)
