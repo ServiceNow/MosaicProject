@@ -2287,29 +2287,17 @@ def build_viewer(args: argparse.Namespace) -> None:
 
     test_task_summary = task_performance_summary(test_rollouts_main)
     all_task_summary = task_performance_summary(all_rollouts_main)
-    test_task_summary_with_checkpoints = task_performance_summary(test_rollouts)
-    all_task_summary_with_checkpoints = task_performance_summary(all_rollouts)
     plot_task_performance(test_task_summary, plots_dir / "task_performance_test.svg")
     plot_task_performance(test_task_summary, plots_dir / "task_performance_test_annotated.svg", annotate=True)
     plot_task_performance(all_task_summary, plots_dir / "task_performance_all.svg")
     plot_task_performance(all_task_summary, plots_dir / "task_performance_all_annotated.svg", annotate=True)
-    plot_task_performance(test_task_summary_with_checkpoints, plots_dir / "task_performance_test_with_checkpoints.svg")
-    plot_task_performance(test_task_summary_with_checkpoints, plots_dir / "task_performance_test_with_checkpoints_annotated.svg", annotate=True)
-    plot_task_performance(all_task_summary_with_checkpoints, plots_dir / "task_performance_all_with_checkpoints.svg")
-    plot_task_performance(all_task_summary_with_checkpoints, plots_dir / "task_performance_all_with_checkpoints_annotated.svg", annotate=True)
 
     all_retrieval_summary = retrieval_summary(all_rollouts_main, successful_only=False)
     test_retrieval_summary = retrieval_summary(test_rollouts_main, successful_only=False)
-    all_retrieval_summary_with_checkpoints = retrieval_summary(all_rollouts, successful_only=False)
-    test_retrieval_summary_with_checkpoints = retrieval_summary(test_rollouts, successful_only=False)
     plot_retrieval_behavior(all_retrieval_summary, plots_dir / "retrieval_behavior_all_rollouts.svg")
     plot_retrieval_behavior(all_retrieval_summary, plots_dir / "retrieval_behavior_all_rollouts_annotated.svg", annotate=True)
     plot_retrieval_behavior(test_retrieval_summary, plots_dir / "retrieval_behavior_test_rollouts.svg")
     plot_retrieval_behavior(test_retrieval_summary, plots_dir / "retrieval_behavior_test_rollouts_annotated.svg", annotate=True)
-    plot_retrieval_behavior(all_retrieval_summary_with_checkpoints, plots_dir / "retrieval_behavior_all_rollouts_with_checkpoints.svg")
-    plot_retrieval_behavior(all_retrieval_summary_with_checkpoints, plots_dir / "retrieval_behavior_all_rollouts_with_checkpoints_annotated.svg", annotate=True)
-    plot_retrieval_behavior(test_retrieval_summary_with_checkpoints, plots_dir / "retrieval_behavior_test_rollouts_with_checkpoints.svg")
-    plot_retrieval_behavior(test_retrieval_summary_with_checkpoints, plots_dir / "retrieval_behavior_test_rollouts_with_checkpoints_annotated.svg", annotate=True)
 
     relationship_rows = combined_final_relationship_rows(problem_lookup, final_prompt_pairs, include_checkpoints=False)
     relationship_result = plot_leakage_relationships(relationship_rows, plots_dir / "leakage_relationships.svg")
@@ -2434,12 +2422,8 @@ def build_viewer(args: argparse.Namespace) -> None:
         "training_effect_rows": training_effect_rows,
         "test_task_summary": test_task_summary,
         "all_task_summary": all_task_summary,
-        "test_task_summary_with_checkpoints": test_task_summary_with_checkpoints,
-        "all_task_summary_with_checkpoints": all_task_summary_with_checkpoints,
         "all_retrieval_summary": all_retrieval_summary,
         "test_retrieval_summary": test_retrieval_summary,
-        "all_retrieval_summary_with_checkpoints": all_retrieval_summary_with_checkpoints,
-        "test_retrieval_summary_with_checkpoints": test_retrieval_summary_with_checkpoints,
         "leakage_relationship_rows": relationship_rows,
         "leakage_relationship_stats": relationship_stats_rows,
     }
@@ -2967,18 +2951,7 @@ def build_viewer(args: argparse.Namespace) -> None:
       <h3>Prompt Query And Retrieval</h3>
       <img src="plots/privacy_prompt_query_behavior_with_checkpoints.svg" alt="Privacy prompt query and retrieval behavior with trained checkpoints">
       <div class="links"><a href="plots/privacy_prompt_query_behavior_with_checkpoints.svg">SVG</a><a href="plots/privacy_prompt_query_behavior_with_checkpoints.pdf">PDF</a><a href="plots/privacy_prompt_query_behavior_with_checkpoints_annotated.svg">Annotated SVG</a></div>
-      <h3>Task Performance</h3>
-      <img src="plots/task_performance_test_with_checkpoints.svg" alt="Task performance with trained checkpoints">
-      <div class="links"><a href="plots/task_performance_test_with_checkpoints.svg">SVG</a><a href="plots/task_performance_test_with_checkpoints.pdf">PDF</a></div>
-      <h3>Task Performance: All Available Splits</h3>
-      <img src="plots/task_performance_all_with_checkpoints.svg" alt="Task performance across all splits with trained checkpoints">
-      <div class="links"><a href="plots/task_performance_all_with_checkpoints.svg">SVG</a><a href="plots/task_performance_all_with_checkpoints.pdf">PDF</a></div>
-      <h3>Retrieval And Query Behavior: Test Split</h3>
-      <img src="plots/retrieval_behavior_test_rollouts_with_checkpoints.svg" alt="Retrieval and query behavior on test split with trained checkpoints">
-      <div class="links"><a href="plots/retrieval_behavior_test_rollouts_with_checkpoints.svg">SVG</a><a href="plots/retrieval_behavior_test_rollouts_with_checkpoints.pdf">PDF</a></div>
-      <h3>Retrieval And Query Behavior: All Available Splits</h3>
-      <img src="plots/retrieval_behavior_all_rollouts_with_checkpoints.svg" alt="Retrieval and query behavior with trained checkpoints">
-      <div class="links"><a href="plots/retrieval_behavior_all_rollouts_with_checkpoints.svg">SVG</a><a href="plots/retrieval_behavior_all_rollouts_with_checkpoints.pdf">PDF</a></div>
+      <div class="note">Checkpoint-inclusive task and retrieval diagnostics were removed from this final section because the old files were legacy rollout-only views, not final StepFun-judged refresh figures. Use the accuracy/leakage plot above and the final condition table for checkpoint-inclusive paper numbers.</div>
     </section>
     <section id="task-performance-test" class="figure">
       <h2>Task Performance By Model (Legacy Diagnostic)</h2>
