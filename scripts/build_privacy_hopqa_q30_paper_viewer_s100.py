@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import json
 import math
 import os
@@ -40,6 +41,21 @@ TASK_S50_LABEL = "qwen3_4b_situational_reward_s50"
 TASK_S100_LABEL = "qwen3_4b_situational_reward_s100"
 PADR_S50_LABEL = "qwen3_4b_privreward_tau05_s50"
 PADR_S100_LABEL = "qwen3_4b_privreward_tau05_s100"
+STEP100_QUERY_EXAMPLE_MODELS = [BASE_LABEL, TASK_S100_LABEL, PADR_S100_LABEL]
+STEP100_QUERY_EXAMPLE_PRIORITY_CASES = [
+    ("2", "DR0058", "144d8a03"),  # password policy -> malicious domains
+    ("1", "DR0059", "9ecba6eb"),  # vulnerability remediation -> Mandiant trends
+    ("1", "DR0046", "7ad0fe34"),  # cloud migration -> nation-state attack
+    ("2", "DR0100", "c6d82d2b"),  # interoperability APIs -> zero-trust adoption
+    ("2", "DR0100", "3360308b"),  # cloud migration -> healthcare supply-chain cloud
+    ("2", "DR0088", "75298db3"),  # anomaly detection -> cybercrime forecasts
+    ("0", "DR0088", "4823d54b"),  # anomaly detection -> AI observability
+    ("0", "DR0056", "73dd065a"),  # AI chatbot adoption -> Military Health System
+    ("2", "DR0086", "052c70a3"),  # onboarding program -> New Hampshire Privacy Act
+    ("1", "DR0044", "b1f1522c"),  # marketing shift -> Facebook ad revenue
+    ("0", "DR0007", "0e6cec0e"),  # partner training -> AI earnings-call prevalence
+    ("2", "DR0006", "9a8b5e8d"),  # training expense -> regulatory enforcement
+]
 
 SUMMARY_METRICS = {
     "strict_chain": "strict_chain_success_rate",
@@ -306,6 +322,170 @@ def latex_details(title: str, latex_text: str) -> str:
     )
 
 
+def step100_query_example_rows(*, limit: int = 14) -> list[dict[str, Any]]:
+    problem_lookup = base.live.load_problem_lookup(base.live.DEFAULT_DATASET_ROOT, base.live.DEFAULT_DATASET_BASENAME)
+    standard_rollouts = base.live.load_rollouts(base.DEFAULT_FINAL_EVAL_ARTIFACT_ROOT, problem_lookup)
+    standard_stepfun = base.live.copy_rollout_identity_from_trace(
+        base.live.load_leakage(base.DEFAULT_FINAL_EVAL_ARTIFACT_ROOT, "stepfun"),
+        standard_rollouts,
+    )
+    padr_rollouts = base.live.load_rollouts(PADR_S100_NORMAL_ROOT, problem_lookup)
+    padr_stepfun = base.live.copy_rollout_identity_from_trace(
+        base.live.load_leakage(PADR_S100_NORMAL_ROOT, "stepfun"),
+        padr_rollouts,
+    )
+    rollout_by_identity = {
+        base.live.rollout_identity(row): row
+        for row in [*standard_rollouts, *padr_rollouts]
+        if row.get("model_label") in STEP100_QUERY_EXAMPLE_MODELS and row.get("split") == "test"
+    }
+    by_case: dict[tuple[str, str, str], dict[str, dict[str, Any]]] = {}
+    for row in [*standard_stepfun, *padr_stepfun]:
+        model_label = str(row.get("model_label") or "")
+        if model_label not in STEP100_QUERY_EXAMPLE_MODELS or row.get("split") != "test":
+            continue
+        case_key = (str(row.get("repeat") or 0), str(row.get("task_id") or ""), str(row.get("chain_id") or ""))
+        by_case.setdefault(case_key, {})[model_label] = row
+
+    candidates: list[dict[str, Any]] = []
+    for case_key, rows_by_model in by_case.items():
+        if not all(model in rows_by_model for model in STEP100_QUERY_EXAMPLE_MODELS):
+            continue
+        base_row, task_row, privacy_row = [rows_by_model[model] for model in STEP100_QUERY_EXAMPLE_MODELS]
+        problem = problem_lookup.get((case_key[1], case_key[2])) or {}
+        pattern = str(problem.get("pattern") or base_row.get("pattern") or "")
+        if "W" not in pattern:
+            continue
+        strict_successes = sum(
+            1
+            for model in STEP100_QUERY_EXAMPLE_MODELS
+            if rollout_by_identity.get((model, "test", case_key[1], case_key[2], case_key[0]), {}).get(
+                "strict_chain_success"
+            )
+        )
+        if strict_successes < 3:
+            continue
+        if not (
+            base.live.reward_positive(base_row)
+            and base.live.reward_positive(task_row)
+            and not base.live.reward_positive(privacy_row)
+        ):
+            continue
+
+        _base_hits, base_unique_hits = base.paired_example_query_hits(base_row)
+        _task_hits, task_unique_hits = base.paired_example_query_hits(task_row)
+        _privacy_hits, privacy_unique_hits = base.paired_example_query_hits(privacy_row)
+        base_leakage_types = base.leakage_type_labels(base_row)
+        task_leakage_types = base.leakage_type_labels(task_row)
+        privacy_leakage_types = base.leakage_type_labels(privacy_row)
+        score = 0.0
+        score += 18.0 * strict_successes
+        score += 8.0 * len(base_unique_hits) + 8.0 * len(task_unique_hits) - 8.0 * len(privacy_unique_hits)
+        score += 5.0 * len(base_leakage_types) + 6.0 * len(task_leakage_types) - 3.0 * len(privacy_leakage_types)
+        score += 3.5 * (base.live.score(base_row) - 3) + 4.0 * (base.live.score(task_row) - 3)
+        score += 2.0 * max(0, base.live.web_query_count(task_row) - base.live.web_query_count(privacy_row))
+        score -= 0.35 * max(
+            base.live.web_query_count(base_row),
+            base.live.web_query_count(task_row),
+            base.live.web_query_count(privacy_row),
+        )
+        if base_leakage_types and task_leakage_types:
+            score += 8.0
+        if int(problem.get("n_hops") or base_row.get("n_hops") or 0) <= 3:
+            score += 4.0
+        candidates.append(
+            {
+                "score": score,
+                "case_key": case_key,
+                "task_id": case_key[1],
+                "chain_id": case_key[2],
+                "repeat": case_key[0],
+                "topic": f"{case_key[1]}/{case_key[2]}",
+                "pattern": pattern,
+                "n_hops": problem.get("n_hops") or base_row.get("n_hops"),
+                "hops": base.paired_example_problem_hops(problem),
+                "questions": base.paired_example_problem_questions(problem),
+                "base_score": base.live.score(base_row),
+                "task_score": base.live.score(task_row),
+                "privacy_score": base.live.score(privacy_row),
+                "base_rating": base.paired_example_leakage_label(base_row),
+                "task_rating": base.paired_example_leakage_label(task_row),
+                "privacy_rating": base.paired_example_leakage_label(privacy_row),
+                "base_leakage_types": base_leakage_types,
+                "task_leakage_types": task_leakage_types,
+                "privacy_leakage_types": privacy_leakage_types,
+                "base_queries": base.paired_example_selected_queries(base_row, limit=3),
+                "task_queries": base.paired_example_selected_queries(task_row, limit=3),
+                "privacy_queries": base.paired_example_selected_queries(privacy_row, limit=3),
+                "base_web_query_count": base.live.web_query_count(base_row),
+                "task_web_query_count": base.live.web_query_count(task_row),
+                "privacy_web_query_count": base.live.web_query_count(privacy_row),
+            }
+        )
+    candidates.sort(key=lambda row: float(row.get("score") or 0.0), reverse=True)
+
+    candidate_by_case = {tuple(str(part) for part in row.get("case_key") or ()): row for row in candidates}
+    selected: list[dict[str, Any]] = []
+    task_counts: Counter[str] = Counter()
+    seen_chains: set[tuple[str, str]] = set()
+
+    def maybe_select(row: dict[str, Any]) -> bool:
+        chain_key = (str(row.get("task_id") or ""), str(row.get("chain_id") or ""))
+        if chain_key in seen_chains:
+            return False
+        if task_counts[str(row.get("task_id") or "")] >= 2:
+            return False
+        seen_chains.add(chain_key)
+        task_counts[str(row.get("task_id") or "")] += 1
+        row["selection_source"] = row.get("selection_source") or "ranked"
+        row["rank"] = len(selected) + 1
+        selected.append(row)
+        return True
+
+    for case_key in STEP100_QUERY_EXAMPLE_PRIORITY_CASES:
+        row = candidate_by_case.get(tuple(case_key))
+        if row is None:
+            continue
+        row["selection_source"] = "review-prioritized"
+        maybe_select(row)
+        if len(selected) >= limit:
+            break
+    for row in candidates:
+        if len(selected) >= limit:
+            break
+        maybe_select(row)
+    return selected
+
+
+def latex_step100_query_examples(rows: list[dict[str, Any]]) -> str:
+    body: list[str] = []
+    for row in rows:
+        cells = [
+            base.paired_examples_latex_cell(base.curated_chain_summary_lines(row), max_lines=5),
+            base.paired_examples_latex_query_bundle([str(item) for item in row.get("base_queries") or []]),
+            base.paired_examples_latex_query_bundle([str(item) for item in row.get("task_queries") or []]),
+            base.paired_examples_latex_query_bundle([str(item) for item in row.get("privacy_queries") or []]),
+            base.leakage_type_latex(row),
+        ]
+        body.append(" & ".join(cells) + r" \\")
+    body_text = "\n\\midrule\n".join(body)
+    return rf"""\begin{{table*}}[t]
+\scriptsize
+\centering
+\setlength{{\tabcolsep}}{{3pt}}
+\begin{{tabular}}{{@{{}}p{{0.24\textwidth}}p{{0.18\textwidth}}p{{0.18\textwidth}}p{{0.18\textwidth}}p{{0.16\textwidth}}@{{}}}}
+\toprule
+\textbf{{Question Chain}} & \textbf{{Base \qwenthreeb Web Queries}} & \textbf{{Task Web Queries}} & \textbf{{PA-DR Web Queries}} & \textbf{{Leakage Types}} \\
+\midrule
+{body_text}
+\bottomrule
+\end{{tabular}}
+\caption{{Candidate held-out test examples from checkpoint 100 where the base and task-trained \qwenthreeb rollouts are judged privacy-leaking, while the PA-DR rollout for the same test-chain repeat is below the privacy-leakage threshold. Query bundles show selected web queries; leakage types are not mutually exclusive.}}
+\label{{tab:paired_query_leakage_examples_s100}}
+\end{{table*}}
+"""
+
+
 def write_text(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text, encoding="utf-8")
@@ -559,6 +739,7 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
     checkpoints = checkpoint_rows(rows)
     behavior = behavior_rows(rows)
     status = status_rows(rows)
+    query_examples = step100_query_example_rows(limit=12)
 
     plot_training_effect(rows, plots_dir / "training_effect_step100.svg")
     plot_core_leakage_types(summary, plots_dir / "core_leakage_types_step100.svg")
@@ -566,6 +747,7 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
 
     training_effect_latex = latex_training_summary(summary)
     behavior_latex = latex_behavior_summary(behavior)
+    query_examples_latex = latex_step100_query_examples(query_examples)
     checkpoint_latex = base.latex_table(
         [
             ("condition", "Condition"),
@@ -585,6 +767,8 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
     )
     write_text(tables_dir / "training_effect_summary_s100.tex", training_effect_latex)
     write_text(tables_dir / "training_behavior_s100.tex", behavior_latex)
+    write_text(tables_dir / "paired_leakage_examples_s100.tex", query_examples_latex)
+    write_text(tables_dir / "paired_leakage_examples_s100.json", json.dumps(query_examples, indent=2) + "\n")
     write_text(tables_dir / "checkpoint_choice_s50_s100.tex", checkpoint_latex)
     write_text(
         output_dir / "viewer_data.json",
@@ -594,6 +778,7 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
                 "summary_rows": summary,
                 "checkpoint_rows": checkpoints,
                 "behavior_rows": behavior,
+                "paired_leakage_example_rows": query_examples,
                 "artifact_roots": {
                     "standard_normal": str(base.DEFAULT_FINAL_EVAL_ARTIFACT_ROOT),
                     "standard_privacy_prompt": str(base.DEFAULT_FINAL_PRIVACY_PROMPT_ARTIFACT_ROOT),
@@ -658,7 +843,9 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
     )
     training_effect_latex_block = latex_details("Copy LaTeX: Training Effect Summary", training_effect_latex)
     behavior_latex_block = latex_details("Copy LaTeX: Query And Retrieval Behavior", behavior_latex)
+    query_examples_latex_block = latex_details("Copy LaTeX: Step100 Query Examples", query_examples_latex)
     checkpoint_latex_block = latex_details("Copy LaTeX: Checkpoint Choice Diagnostic", checkpoint_latex)
+    query_examples_table = base.curated_paired_leakage_examples_html(query_examples)
     missing_by_condition = {
         str(row.get("condition")): int(row.get("missing_privacy_judgments") or 0)
         for row in status
@@ -708,6 +895,13 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
     table {{ border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 13px; }}
     th, td {{ border-bottom: 1px solid #dfe4df; padding: 8px 9px; text-align: left; vertical-align: top; }}
     th {{ background: #f0f3f0; font-weight: 650; }}
+    .muted {{ color: #6b7772; }}
+    .rating {{ font-weight: 650; color: #303633; margin-bottom: 5px; }}
+    .query-list {{ margin: 0; padding-left: 18px; }}
+    .query-list li {{ margin: 0 0 4px; }}
+    .paper-example-table {{ font-size: 12px; }}
+    .paper-example-table th:nth-child(1), .paper-example-table td:nth-child(1) {{ width: 11%; }}
+    .paper-example-table th:nth-child(2), .paper-example-table td:nth-child(2) {{ width: 23%; }}
     .asset-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 14px 0; }}
     .asset-card {{ border: 1px solid #dfe4df; border-radius: 6px; padding: 12px; background: #fbfcfb; }}
     .asset-card h3 {{ margin: 0 0 8px; font-size: 15px; }}
@@ -738,10 +932,12 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
         <div class="asset-card"><h3>Training Trajectory</h3><div class="links"><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_accuracy_privacy_arrows.svg">SVG</a><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_accuracy_privacy_arrows.pdf">PDF</a><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_metrics.csv">CSV</a><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_metrics.json">JSON</a></div></div>
         <div class="asset-card"><h3>Core Leakage Types</h3><div class="links"><a href="plots/core_leakage_types_step100.svg">SVG</a><a href="plots/core_leakage_types_step100.pdf">PDF</a></div></div>
         <div class="asset-card"><h3>Query And Retrieval Behavior</h3><div class="links"><a href="plots/training_behavior_step100.svg">SVG</a><a href="plots/training_behavior_step100.pdf">PDF</a><a href="tables/training_behavior_s100.tex">LaTeX</a></div></div>
+        <div class="asset-card"><h3>Step100 Query Examples</h3><div class="links"><a href="#query-examples">Viewer table</a><a href="tables/paired_leakage_examples_s100.tex">LaTeX</a><a href="tables/paired_leakage_examples_s100.json">JSON</a></div></div>
         <div class="asset-card"><h3>Checkpoint Choice</h3><div class="links"><a href="tables/checkpoint_choice_s50_s100.tex">LaTeX</a><a href="viewer_data.json">JSON data</a></div></div>
       </div>
       {training_effect_latex_block}
       {behavior_latex_block}
+      {query_examples_latex_block}
       {checkpoint_latex_block}
     </section>
     <section id="training-effect">
@@ -769,6 +965,12 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
       <img src="plots/training_behavior_step100.svg" alt="Step100 training effect on query and retrieval behavior">
       <div class="links"><a href="plots/training_behavior_step100.svg">SVG</a><a href="plots/training_behavior_step100.pdf">PDF</a><a href="tables/training_behavior_s100.tex">LaTeX table</a></div>
       {behavior_table}
+    </section>
+    <section id="query-examples">
+      <h2>Step100 Query Leakage Examples</h2>
+      <div class="note">Review-prioritized held-out test cases using the final checkpoint defaults: base Qwen3 4B, Task step100, and PA-DR step100. Rows require strict chain success for all three rollouts, at least one web hop, base and Task privacy leakage, and PA-DR below the privacy-leakage threshold.</div>
+      <div class="links"><a href="tables/paired_leakage_examples_s100.tex">LaTeX table</a><a href="tables/paired_leakage_examples_s100.json">JSON rows</a></div>
+      {query_examples_table}
     </section>
     <section id="checkpoint-choice">
       <h2>Checkpoint Choice: Step50 Vs Step100</h2>
