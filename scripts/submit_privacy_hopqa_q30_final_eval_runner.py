@@ -58,8 +58,8 @@ COMMON_ROLLOUT_ARGS: dict[str, Any] = {
     "generation_context_margin_tokens": 128,
     "max_iterations": 14,
     "hop_plan_attempts": 1,
-    "case_attempts": 1,
-    "case_retry_delay_s": 0,
+    "case_attempts": 3,
+    "case_retry_delay_s": 10,
     "temperature": 1.0,
     "choose_top_k": 3,
     "retrieval_top_k": 5,
@@ -76,6 +76,24 @@ COMMON_ROLLOUT_ARGS: dict[str, Any] = {
         "vllm",
     ],
 }
+
+
+def immutable_checkpoint_model(label_prefix: str, run_root: Path, step: int) -> dict[str, Any]:
+    checkpoint = run_root / "finetune" / "intermediate" / str(step)
+    model_label = f"{label_prefix}_s{step}"
+    return {
+        "model_label": model_label,
+        "served_model_name": model_label,
+        "model_path": str(checkpoint),
+        "tokenizer_name": str(checkpoint),
+        "gpu": 1,
+        "cpu": 48,
+        "mem": 384,
+        "tp": 1,
+        "latest_step_hint": step,
+        "include_by_default": False,
+    }
+
 
 MODELS: list[dict[str, Any]] = [
     {
@@ -138,6 +156,14 @@ MODELS: list[dict[str, Any]] = [
         "latest_step_hint": 50,
         "include_by_default": False,
     },
+    *[
+        immutable_checkpoint_model("qwen3_4b_situational_reward", SITUATIONAL_ROOT, step)
+        for step in (10, 20, 30, 40, 60, 70, 80, 90)
+    ],
+    *[
+        immutable_checkpoint_model("qwen3_4b_privreward_tau05", PRIVREWARD_TAU05_ROOT, step)
+        for step in (10, 20, 30, 40, 60, 70, 80, 90, 100, 110)
+    ],
     {
         # Non-immutable exploratory endpoint: actor vLLM has received weight
         # updates after step 90 even though no HF checkpoint has been exported.

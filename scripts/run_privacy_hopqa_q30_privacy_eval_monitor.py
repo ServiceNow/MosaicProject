@@ -72,6 +72,8 @@ def discover_model_roots(artifact_root: Path) -> list[Path]:
     if not model_runs.exists():
         return []
     for path in sorted(model_runs.iterdir()):
+        if (path / "config" / "ignore_in_analysis.json").exists():
+            continue
         if path.is_dir() and (path / "tables" / "rollout_index.jsonl").exists():
             roots.append(path)
     return roots
@@ -153,6 +155,7 @@ def run_privacy_evals_for_model(args: argparse.Namespace, model_root: Path, qwen
         "--max-private-questions",
         "200",
         "--continue-on-error",
+        "--skip-terminal-model-errors",
     ]
     # Run the fast Qwen judge first when requested so comparison plots update
     # while the StepFun ground-truth judge, which is much slower, catches up.
@@ -328,6 +331,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--viewer-privacy-prompt-comparison-artifact-root", type=Path)
     parser.add_argument("--viewer-skip-privacy-prompt-comparison", action="store_true")
     parser.add_argument("--latest-viewer-output", type=Path, action="append", default=[])
+    parser.add_argument(
+        "--only-model-label",
+        action="append",
+        default=[],
+        help="If set, only evaluate model_runs with these directory names.",
+    )
     args = parser.parse_args()
     if not args.latest_viewer_output:
         args.latest_viewer_output = list(DEFAULT_LATEST_VIEWERS)
@@ -355,7 +364,10 @@ def main() -> None:
             wait_for_models(qwen_base_url, args.qwen_timeout_s)
         while True:
             print(f"privacy eval monitor pass started {iso_now()}", flush=True)
+            only_model_labels = set(args.only_model_label or [])
             for model_root in discover_model_roots(args.artifact_root):
+                if only_model_labels and model_root.name not in only_model_labels:
+                    continue
                 run_privacy_evals_for_model(args, model_root, qwen_base_url)
             if not args.skip_viewer:
                 build_viewer(args)

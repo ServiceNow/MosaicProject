@@ -12,6 +12,7 @@ import argparse
 import asyncio
 from dataclasses import dataclass
 from datetime import datetime, timezone
+import fcntl
 import json
 import os
 from pathlib import Path
@@ -27,7 +28,7 @@ DEFAULT_DATASET_BASENAME = "privacy_hopqa_finalized_2026-05-11"
 DEFAULT_PIPELINERL_ROOT = Path(os.environ.get("PIPELINERL_ROOT", "/home/toolkit/my_code/PipelineRL"))
 DEFAULT_TASK_DATA_ROOT = Path("/home/toolkit/nice_code/drbench/drbench/data/tasks")
 DEFAULT_LOCAL_INDEX_ROOT = Path("/mnt/llmd/results/exps/alexg/privacy_hopqa_shared/q30_final_residual_review_20260513/local_indices_goldcoverage_20260519")
-RUNNER_VERSION = 3
+RUNNER_VERSION = 4
 
 
 @dataclass(frozen=True)
@@ -131,8 +132,14 @@ def read_jsonl(path: Path) -> list[dict[str, Any]]:
 
 def append_jsonl(path: Path, row: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+    lock_path = path.with_name(path.name + ".lock")
+    with lock_path.open("a", encoding="utf-8") as lock_handle:
+        fcntl.flock(lock_handle.fileno(), fcntl.LOCK_EX)
+        try:
+            with path.open("a", encoding="utf-8") as handle:
+                handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+        finally:
+            fcntl.flock(lock_handle.fileno(), fcntl.LOCK_UN)
 
 
 def training_text_token_totals(training_texts: list[Any]) -> dict[str, int]:
@@ -193,6 +200,12 @@ def select_rows(rows: list[dict[str, Any]], args: argparse.Namespace) -> list[di
     if args.task_id:
         wanted = {str(value) for value in args.task_id}
         selected = [row for row in selected if str(row.get("task_id")) in wanted]
+    if args.row_shard_count > 1:
+        selected = [
+            row
+            for idx, row in enumerate(selected)
+            if idx % args.row_shard_count == args.row_shard_index
+        ]
     if args.max_examples:
         selected = selected[: args.max_examples]
     return selected
@@ -363,7 +376,7 @@ async def run_case(
                 break
             except Exception as exc:
                 failure_kind = classify_failure(type(exc).__name__, str(exc))
-                terminal_failure = attempt >= case_attempts and failure_kind == "agent"
+                terminal_failure = failure_kind == "agent" or attempt >= case_attempts
                 row = {
                     "timestamp": iso_now(),
                     "ok": False,
@@ -381,14 +394,14 @@ async def run_case(
                     "attempt_latency_s": round(time.time() - attempt_started, 3),
                     "case_attempt": attempt,
                     "case_attempts": case_attempts,
-                    "attempts_exhausted": attempt >= case_attempts,
+                    "attempts_exhausted": terminal_failure,
                     "error_type": type(exc).__name__,
                     "error": str(exc),
                     "failure_kind": failure_kind,
                     "counts_for_accuracy": failure_kind == "agent",
                 }
                 attempt_rows.append({**row, "final_index_row": terminal_failure})
-                if attempt < case_attempts:
+                if failure_kind != "agent" and attempt < case_attempts:
                     delay = min(120.0, max(0.0, args.case_retry_delay_s) * (2 ** (attempt - 1)))
                     print(
                         f"retry model={args.model_label} split={split_name} repeat={repeat} "
@@ -547,18 +560,23 @@ async def run_all(args: argparse.Namespace) -> None:
         and avoids that parser while preserving the same chat template.
         """
 
+        completion_template_direct: bool = False
+
         async def agenerate(self, prompt: Any, session: aiohttp.ClientSession, **kwargs: Any) -> Any:
             headers = {"Content-Type": "application/json"}
             if self.api_token:
                 headers |= {"Authorization": f"Bearer {self.api_token}"}
             self.load_tokenizer()
             chat_kwargs = dict(self.chat_template_kwargs) if self.chat_template_kwargs else {}
+            direct_generation_prompt = bool(getattr(self, "completion_template_direct", False))
             rendered_prompt = self.tokenizer.apply_chat_template(
                 prompt.messages,
                 tokenize=False,
-                add_generation_prompt=True,
+                add_generation_prompt=not direct_generation_prompt,
                 **chat_kwargs,
             )
+            if direct_generation_prompt:
+                rendered_prompt = rendered_prompt.rstrip() + "\n<|im_start|>assistant\n"
 
             def _plain(value: Any) -> Any:
                 return OmegaConf.to_container(value, resolve=True) if OmegaConf.is_config(value) else value
@@ -616,14 +634,17 @@ async def run_all(args: argparse.Namespace) -> None:
 
             return LLMStream(generator=_gen(), prompt=prompt)
 
-    llm_cls = CompletionTemplateLLM if args.request_api_mode == "completion_template" else TrainableLLM
+    use_completion_template = args.request_api_mode in {"completion_template", "completion_template_direct"}
+    llm_cls = CompletionTemplateLLM if use_completion_template else TrainableLLM
     llm = llm_cls(
         model_name=args.model,
         tokenizer_name=args.tokenizer_name or args.model,
         base_url=args.base_url.rstrip("/"),
         parameters=request_parameters,
     )
-    if args.request_api_mode == "completion_template":
+    if args.request_api_mode == "completion_template_direct":
+        llm.completion_template_direct = True
+    if use_completion_template:
         from pipelinerl.domains.privacy_hopqa import llm_adapter as privacy_hopqa_llm_adapter
 
         async def completion_template_async_generate(
@@ -634,52 +655,74 @@ async def run_all(args: argparse.Namespace) -> None:
             parameters_override: dict[str, Any] | None = None,
         ) -> Any:
             # PrivacyHopQALLMAdapter normally calls PipelineRL's async helper,
-            # which is hardwired to /v1/chat/completions. GPT-OSS needs the
-            # completions endpoint to avoid vLLM's Harmony chat response parser.
+            # which is hardwired to /v1/chat/completions. Some models need the
+            # completions endpoint to avoid chat response parsers or reasoning-only
+            # assistant prefill in their chat templates.
             stream = await llm.agenerate(prompt, session, **(parameters_override or {}))
             return stream.get_llm_call()
 
         privacy_hopqa_llm_adapter.llm_async_generate = completion_template_async_generate
 
     completed = set() if args.force else load_completed(index_path, model_label, include_failed=args.skip_failed)
+    if args.repeat_id:
+        repeat_ids = sorted(set(args.repeat_id))
+        invalid = [repeat_id for repeat_id in repeat_ids if repeat_id < 0 or repeat_id >= args.repeats]
+        if invalid:
+            raise ValueError(f"--repeat-id values must be in [0, {args.repeats - 1}], got {invalid}")
+    else:
+        repeat_ids = list(range(args.repeats))
+    if args.row_shard_count < 1:
+        raise ValueError("--row-shard-count must be >= 1")
+    if args.row_shard_index < 0 or args.row_shard_index >= args.row_shard_count:
+        raise ValueError(
+            f"--row-shard-index must be in [0, {args.row_shard_count - 1}], got {args.row_shard_index}"
+        )
     total_stats = RunStats()
     async with aiohttp.ClientSession() as session:
         for split_name in args.splits:
             split_path = Path(args.dataset_root).expanduser() / f"{args.dataset_basename}_{split_name}.jsonl"
             rows = select_rows(read_jsonl(split_path), args)
-            split_output_dir = output_root / "rollouts" / model_label / split_name
-            split_output_dir.mkdir(parents=True, exist_ok=True)
-            cfg = build_cfg(args, split_output_dir, OmegaConf)
-            cases: list[RunCase] = []
-            for repeat in range(args.repeats):
+            for repeat in repeat_ids:
+                if args.repeat_id:
+                    split_output_dir = output_root / "rollouts" / model_label / split_name / f"repeat_{repeat}"
+                else:
+                    split_output_dir = output_root / "rollouts" / model_label / split_name
+                split_output_dir.mkdir(parents=True, exist_ok=True)
+                cfg = build_cfg(args, split_output_dir, OmegaConf)
+                cases: list[RunCase] = []
                 for row in rows:
                     key = (split_name, str(row.get("chain_id")), repeat)
                     if key not in completed:
                         cases.append(RunCase(split_name, split_output_dir, row, repeat))
-            print(f"model={model_label} split={split_name} queued={len(cases)} rows={len(rows)}", flush=True)
-            split_stats = await run_split_cases(
-                args,
-                cases,
-                llm,
-                cfg,
-                generate_privacy_hopqa_rollout,
-                session,
-                index_path,
-                error_path,
-                attempt_path,
-                system_error_path,
-            )
-            total_stats.queued += split_stats.queued
-            total_stats.ok += split_stats.ok
-            total_stats.failed += split_stats.failed
-            total_stats.skipped += split_stats.skipped
-            total_stats.system_failed += split_stats.system_failed
-            print(
-                f"split_done model={model_label} split={split_name} "
-                f"queued={split_stats.queued} ok={split_stats.ok} failed={split_stats.failed} "
-                f"system_failed={split_stats.system_failed}",
-                flush=True,
-            )
+                print(
+                    f"model={model_label} split={split_name} repeat={repeat} "
+                    f"row_shard={args.row_shard_index}/{args.row_shard_count} "
+                    f"queued={len(cases)} rows={len(rows)}",
+                    flush=True,
+                )
+                split_stats = await run_split_cases(
+                    args,
+                    cases,
+                    llm,
+                    cfg,
+                    generate_privacy_hopqa_rollout,
+                    session,
+                    index_path,
+                    error_path,
+                    attempt_path,
+                    system_error_path,
+                )
+                total_stats.queued += split_stats.queued
+                total_stats.ok += split_stats.ok
+                total_stats.failed += split_stats.failed
+                total_stats.skipped += split_stats.skipped
+                total_stats.system_failed += split_stats.system_failed
+                print(
+                    f"split_done model={model_label} split={split_name} repeat={repeat} "
+                    f"queued={split_stats.queued} ok={split_stats.ok} failed={split_stats.failed} "
+                    f"system_failed={split_stats.system_failed}",
+                    flush=True,
+                )
     print(
         f"all_done model={model_label} queued={total_stats.queued} ok={total_stats.ok} "
         f"failed={total_stats.failed} system_failed={total_stats.system_failed}",
@@ -716,6 +759,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-examples", type=int, default=0)
     parser.add_argument("--task-id", action="append", default=[])
     parser.add_argument("--chain-id", action="append", default=[])
+    parser.add_argument("--repeat-id", action="append", type=int, default=[])
+    parser.add_argument("--row-shard-index", type=int, default=0)
+    parser.add_argument("--row-shard-count", type=int, default=1)
     parser.add_argument("--repeats", type=int, default=1)
     parser.add_argument("--case-attempts", type=int, default=1)
     parser.add_argument(
@@ -726,7 +772,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--case-retry-delay-s", type=float, default=5.0)
     parser.add_argument("--concurrency", type=int, default=16)
     parser.add_argument("--temperature", type=float, default=1.0)
-    parser.add_argument("--max-tokens", type=int, default=4096)
+    parser.add_argument("--max-tokens", type=int, default=16384)
     parser.add_argument(
         "--request-params-json",
         default="",
@@ -734,17 +780,17 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--request-api-mode",
-        choices=["chat", "completion_template"],
+        choices=["chat", "completion_template", "completion_template_direct"],
         default="chat",
         help="Use chat completions normally, or render chat locally and call /v1/completions.",
     )
     parser.add_argument("--capture-mode", default="all_calls")
-    parser.add_argument("--generation-context-limit-tokens", type=int, default=16384)
+    parser.add_argument("--generation-context-limit-tokens", type=int, default=32768)
     parser.add_argument("--generation-context-margin-tokens", type=int, default=128)
-    parser.add_argument("--hop-plan-max-tokens", type=int, default=1024)
-    parser.add_argument("--doc-choose-max-tokens", type=int, default=1024)
-    parser.add_argument("--doc-read-max-tokens", type=int, default=768)
-    parser.add_argument("--hop-resolve-max-tokens", type=int, default=1024)
+    parser.add_argument("--hop-plan-max-tokens", type=int, default=16384)
+    parser.add_argument("--doc-choose-max-tokens", type=int, default=16384)
+    parser.add_argument("--doc-read-max-tokens", type=int, default=16384)
+    parser.add_argument("--hop-resolve-max-tokens", type=int, default=16384)
     parser.add_argument("--answer-match-f1-threshold", type=float, default=0.75)
     parser.add_argument("--max-iterations", type=int, default=21)
     parser.add_argument("--hop-plan-attempts", type=int, default=1)

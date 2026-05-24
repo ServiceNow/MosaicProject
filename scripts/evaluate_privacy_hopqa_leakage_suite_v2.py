@@ -1605,8 +1605,91 @@ async def call_claim_judge_validated(
     return last_judge, last_error
 
 
-def completed(path: Path) -> set[str]:
-    return {str(row["input_fingerprint"]) for row in read_jsonl(path) if row.get("ok") and row.get("input_fingerprint")}
+ERROR_FIELDS = (
+    "error",
+    "intent_error",
+    "answer_error",
+    "claim_error",
+    "intent_judge_error",
+    "answer_judge_error",
+    "claim_judge_error",
+)
+
+INFRA_ERROR_MARKERS = (
+    "apiconnectionerror",
+    "apitimeouterror",
+    "apiresponsevalidationerror",
+    "apistatuserror",
+    "internalservererror",
+    "ratelimiterror",
+    "timeout",
+    "timed out",
+    "connection",
+    "connecterror",
+    "readerror",
+    "remoteprotocolerror",
+    "server disconnected",
+    "http 5",
+    "502",
+    "503",
+    "504",
+)
+
+
+def error_payloads(row: dict[str, Any]) -> list[Any]:
+    return [row[key] for key in ERROR_FIELDS if row.get(key)]
+
+
+def error_status_strings(payload: Any) -> list[str]:
+    if isinstance(payload, str):
+        return [payload]
+    if isinstance(payload, dict):
+        values: list[str] = []
+        for key in ("error", "type", "message"):
+            if isinstance(payload.get(key), str):
+                values.append(payload[key])
+        return values
+    return []
+
+
+def payload_has_infra_error(payload: Any) -> bool:
+    for text in error_status_strings(payload):
+        lower = text.lower()
+        if any(marker in lower for marker in INFRA_ERROR_MARKERS):
+            return True
+    if isinstance(payload, dict):
+        return any(payload_has_infra_error(payload.get(key)) for key in ERROR_FIELDS if payload.get(key))
+    return False
+
+
+def payload_has_terminal_model_error(payload: Any) -> bool:
+    if isinstance(payload, dict):
+        if payload.get("error") == "json_parse_failed":
+            return True
+        if payload.get("validation_error"):
+            return True
+        return any(payload_has_terminal_model_error(payload.get(key)) for key in ERROR_FIELDS if payload.get(key))
+    return False
+
+
+def terminal_model_error_fingerprints(path: Path) -> set[str]:
+    fingerprints: set[str] = set()
+    for row in read_jsonl(path):
+        fp = row.get("input_fingerprint")
+        if not fp:
+            continue
+        payloads = error_payloads(row)
+        if payloads and any(payload_has_terminal_model_error(payload) for payload in payloads):
+            if not any(payload_has_infra_error(payload) for payload in payloads):
+                fingerprints.add(str(fp))
+    return fingerprints
+
+
+def completed(path: Path, terminal_error_path: Path | None = None) -> set[str]:
+    done = {str(row["input_fingerprint"]) for row in read_jsonl(path) if row.get("ok") and row.get("input_fingerprint")}
+    if terminal_error_path is not None:
+        done.update(terminal_model_error_fingerprints(terminal_error_path))
+    return done
 
 
 def derive_overall(intent_judge: dict[str, Any], answer_judge: dict[str, Any], claim_judge: dict[str, Any]) -> dict[str, Any]:
@@ -1927,13 +2010,15 @@ async def run_all(args: argparse.Namespace) -> None:
         traces = spread_sample(traces, args.limit)
     elif args.limit:
         traces = traces[: args.limit]
+    terminal_errors = terminal_model_error_fingerprints(err) if args.skip_terminal_model_errors else set()
     done = completed(out)
+    done.update(terminal_errors)
     base_url = args.base_url.rstrip("/")
     if not base_url.endswith("/v1"):
         base_url += "/v1"
     print(
         f"leakage_v2 traces={len(traces)} candidates={total_candidates} sample_mode={args.sample_mode} "
-        f"completed={len(done)} model={args.model} "
+        f"completed={len(done)} terminal_model_errors={len(terminal_errors)} model={args.model} "
         f"api_mode={args.api_mode} concurrency={args.concurrency} max_tokens={args.max_tokens} "
         f"private_qa_docs={len(qa_index)} output={out}",
         flush=True,
@@ -2000,6 +2085,14 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--continue-on-error", action="store_true")
+    parser.add_argument(
+        "--skip-terminal-model-errors",
+        action="store_true",
+        help=(
+            "Treat prior JSON parse and judge validation failures as terminal model-caused "
+            "errors for resume purposes, while leaving connection/timeout/server errors retryable."
+        ),
+    )
     return parser.parse_args()
 
 
