@@ -1701,6 +1701,7 @@ def final_situational_metric_rows(
             accuracy_attempt_rows,
             lambda item: 1.0 if item.get("final_correct") is True or item.get("final_correct") == 1 else 0.0,
         )
+        add_rate_fields(row, "mean_hop_accuracy", accuracy_attempt_rows, live.attempt_task_accuracy)
         add_rate_fields(row, "privacy_leakage_rate", privacy_rows, lambda item: 1.0 if live.reward_positive(item) else 0.0)
         add_rate_fields(
             row,
@@ -1747,7 +1748,7 @@ def final_situational_table_rows(rows: list[dict[str, Any]]) -> list[dict[str, A
             "system_errors": row.get("system_error_unique"),
             "privacy_judged": f"{row.get('privacy_unique')}/{row.get('privacy_expected')}",
             "strict_chain": pct_pm_text(row, "strict_chain_success_rate"),
-            "final_accuracy": pct_pm_text(row, "final_correct_rate"),
+            "per_hop_accuracy": pct_pm_text(row, "mean_hop_accuracy"),
             "privacy_leakage": pct_pm_text(row, "privacy_leakage_rate"),
             "strict_privacy": pct_pm_text(row, "strict_privacy_rate"),
             "status": row.get("status"),
@@ -1786,7 +1787,7 @@ def final_condition_summary_rows(
                     "attempts": "0",
                     "judged": "0",
                     "strict_chain": "n/a",
-                    "final_accuracy": "n/a",
+                    "per_hop_accuracy": "n/a",
                     "privacy_leakage": "n/a",
                     "strict_privacy": "n/a",
                     "intent": "n/a",
@@ -1799,7 +1800,7 @@ def final_condition_summary_rows(
             continue
         raw_metrics = {
             "strict_chain": "strict_chain_success_rate",
-            "final_accuracy": "final_correct_rate",
+            "per_hop_accuracy": "mean_hop_accuracy",
             "privacy_leakage": "privacy_leakage_rate",
             "strict_privacy": "strict_privacy_rate",
             "intent": "intent4_rate",
@@ -1817,7 +1818,7 @@ def final_condition_summary_rows(
                 "attempts": f"{row.get('attempted_unique')}/{row.get('expected')}",
                 "judged": f"{row.get('privacy_unique')}/{row.get('privacy_expected')}",
                 "strict_chain": pct_pm_text(row, "strict_chain_success_rate"),
-                "final_accuracy": pct_pm_text(row, "final_correct_rate"),
+                "per_hop_accuracy": pct_pm_text(row, "mean_hop_accuracy"),
                 "privacy_leakage": pct_pm_text(row, "privacy_leakage_rate"),
                 "strict_privacy": pct_pm_text(row, "strict_privacy_rate"),
                 "intent": pct_pm_text(row, "intent4_rate"),
@@ -1834,7 +1835,7 @@ def final_condition_summary_rows(
 def training_effect_summary_latex(rows: list[dict[str, Any]]) -> str:
     metric_specs = [
         ("strict_chain", "max"),
-        ("final_accuracy", "max"),
+        ("per_hop_accuracy", "max"),
         ("privacy_leakage", "min"),
         ("intent", "min"),
         ("answer", "min"),
@@ -1874,7 +1875,7 @@ def training_effect_summary_latex(rows: list[dict[str, Any]]) -> str:
 \centering
 \begin{{tabular}}{{@{{}}lcccccc@{{}}}}
 \toprule
-\textbf{{Model}} & \textbf{{\shortstack{{Strict Chain\\Success}}}} & \textbf{{\shortstack{{Final\\Accuracy}}}} & \textbf{{\shortstack{{Privacy\\Leakage}}}} & \textbf{{\shortstack{{Intent\\Leakage}}}} & \textbf{{\shortstack{{Answer\\Leakage}}}} & \textbf{{\shortstack{{Full-Information\\Leakage}}}} \\
+\textbf{{Model}} & \textbf{{\shortstack{{Strict Chain\\Success}}}} & \textbf{{\shortstack{{Per-Hop\\Accuracy}}}} & \textbf{{\shortstack{{Privacy\\Leakage}}}} & \textbf{{\shortstack{{Intent\\Leakage}}}} & \textbf{{\shortstack{{Answer\\Leakage}}}} & \textbf{{\shortstack{{Full-Information\\Leakage}}}} \\
 \midrule
 {body_text}
 \bottomrule
@@ -1905,22 +1906,22 @@ def final_training_behavior_rows(
     specs = [
         ("Base", "Qwen3 4B", "Normal", normal_by_model.get("qwen3_4b_instruct_2507")),
         ("Base", "Qwen3 4B + privacy prompt", "Privacy Prompt", prompt_by_model.get("qwen3_4b_instruct_2507")),
-        ("Task step 50", "Qwen3 4B task training step50", "Normal", normal_by_model.get("qwen3_4b_situational_reward_s50")),
+        ("Task", "Task", "Normal", normal_by_model.get("qwen3_4b_situational_reward_s50")),
         (
-            "Task step 50",
-            "Qwen3 4B task training step50 + privacy prompt",
+            "Task",
+            "Task + privacy prompt",
             "Privacy Prompt",
             prompt_by_model.get("qwen3_4b_situational_reward_s50"),
         ),
         (
-            "Task+PA-DR step 50",
-            "Qwen3 4B task+PA-DR training step50",
+            "PA-DR",
+            "PA-DR",
             "Normal",
             privacy_normal_by_model.get("qwen3_4b_privreward_tau05_s50"),
         ),
         (
-            "Task+PA-DR step 50",
-            "Qwen3 4B task+PA-DR training step50 + privacy prompt",
+            "PA-DR",
+            "PA-DR + privacy prompt",
             "Privacy Prompt",
             privacy_prompt_by_model.get("qwen3_4b_privreward_tau05_s50"),
         ),
@@ -1976,11 +1977,11 @@ def final_training_behavior_table_rows(rows: list[dict[str, Any]]) -> list[dict[
 def final_training_behavior_latex(rows: list[dict[str, Any]]) -> str:
     display_labels = [
         r"\qwenthreeb",
-        "+ privacy prompt",
-        "Task Training",
-        "+ privacy prompt",
-        "Task+PA-DR Training",
-        "+ privacy prompt",
+        r"\quad + privacy prompt",
+        "Task",
+        r"\quad + privacy prompt",
+        "PA-DR",
+        r"\quad + privacy prompt",
     ]
     metric_keys = ["web_queries", "web_reads", "local_searches", "local_reads"]
     body: list[str] = []
@@ -2482,8 +2483,8 @@ def plot_training_prompt_trajectories(
 def plot_final_training_behavior(rows: list[dict[str, Any]], path: Path) -> None:
     if not rows:
         return
-    states = ["Base", "Task step 50", "Task+PA-DR step 50"]
-    state_labels = ["Base", "Task\nstep 50", "Task+PA-DR\nstep 50"]
+    states = ["Base", "Task", "PA-DR"]
+    state_labels = ["Base", "Task", "PA-DR"]
     row_map = {(row.get("training_state"), row.get("prompt_state")): row for row in rows}
     normal_rows = [row_map.get((state, "Normal")) or {} for state in states]
     prompt_rows = [row_map.get((state, "Privacy Prompt")) or {} for state in states]
@@ -2841,7 +2842,7 @@ def build_viewer(args: argparse.Namespace) -> None:
         ("system_errors", "System Errors"),
         ("privacy_judged", "Privacy Judged"),
         ("strict_chain", "Strict Chain Success"),
-        ("final_accuracy", "Final Accuracy"),
+        ("per_hop_accuracy", "Per-Hop Accuracy"),
         ("privacy_leakage", "Privacy Leakage"),
         ("strict_privacy", "Strict Privacy Binary"),
         ("status", "Status"),
@@ -2853,7 +2854,7 @@ def build_viewer(args: argparse.Namespace) -> None:
         ("attempts", "Attempts"),
         ("judged", "Privacy Judged"),
         ("strict_chain", "Strict Chain Success"),
-        ("final_accuracy", "Final Accuracy"),
+        ("per_hop_accuracy", "Per-Hop Accuracy"),
         ("privacy_leakage", "Privacy Leakage"),
         ("strict_privacy", "Strict Privacy Binary"),
         ("intent", "Intent Leakage"),
@@ -3316,7 +3317,7 @@ def build_viewer(args: argparse.Namespace) -> None:
     </section>
     <section id="training-behavior" class="figure">
       <h2>Effect Of Training: Query And Retrieval Behavior</h2>
-      <div class="note">Paper-ready final 16k held-out test refresh for Qwen3 4B. Counts are means per successful rollout. Paired bars compare normal prompting with the privacy-aware prompt at the base model, task-training checkpoint 50, and task+PA-DR checkpoint 50.</div>
+      <div class="note">Paper-ready final 16k held-out test refresh for Qwen3 4B. Counts are means per successful rollout. Paired bars compare normal prompting with the privacy-aware prompt for the base model, Task checkpoint 50, and PA-DR checkpoint 50.</div>
       <img src="plots/final_training_behavior.svg" alt="Training effect on query and retrieval behavior">
       <div class="links"><a href="plots/final_training_behavior.svg">SVG</a><a href="plots/final_training_behavior.pdf">PDF</a><a href="tables/final_training_behavior.tex">LaTeX table</a></div>
       {final_training_behavior_table}
