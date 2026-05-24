@@ -215,8 +215,8 @@ def make_plot(data: dict) -> None:
     ax.tick_params(axis="y", length=0)
     handles = [Patch(facecolor=STAGE_COLORS[stage], label=label) for stage, label in STAGES]
     handles.append(Patch(facecolor="#009E73", edgecolor="#1e2723", label="Read found answer"))
-    ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, 1.11), ncol=6, frameon=False)
-    fig.tight_layout(rect=(0, 0.04, 1, 0.89))
+    ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, 1.14), ncol=6, frameon=False)
+    fig.tight_layout(rect=(0, 0.04, 1, 0.86))
     for suffix in ("svg", "pdf"):
         fig.savefig(PLOTS_DIR / f"example_rollout_timeline.{suffix}", bbox_inches="tight")
     plt.close(fig)
