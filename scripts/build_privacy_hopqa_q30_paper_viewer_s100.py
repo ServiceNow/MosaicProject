@@ -372,6 +372,10 @@ def step100_query_example_rows(*, limit: int = 14) -> list[dict[str, Any]]:
         ):
             continue
 
+        base_rollout = rollout_by_identity.get((BASE_LABEL, "test", case_key[1], case_key[2], case_key[0]), {})
+        task_rollout = rollout_by_identity.get((TASK_S100_LABEL, "test", case_key[1], case_key[2], case_key[0]), {})
+        privacy_rollout = rollout_by_identity.get((PADR_S100_LABEL, "test", case_key[1], case_key[2], case_key[0]), {})
+
         _base_hits, base_unique_hits = base.paired_example_query_hits(base_row)
         _task_hits, task_unique_hits = base.paired_example_query_hits(task_row)
         _privacy_hits, privacy_unique_hits = base.paired_example_query_hits(privacy_row)
@@ -414,12 +418,24 @@ def step100_query_example_rows(*, limit: int = 14) -> list[dict[str, Any]]:
                 "base_leakage_types": base_leakage_types,
                 "task_leakage_types": task_leakage_types,
                 "privacy_leakage_types": privacy_leakage_types,
-                "base_queries": base.paired_example_selected_queries(base_row, limit=3),
-                "task_queries": base.paired_example_selected_queries(task_row, limit=3),
-                "privacy_queries": base.paired_example_selected_queries(privacy_row, limit=3),
+                "base_queries": base.paired_example_web_queries(base_row),
+                "task_queries": base.paired_example_web_queries(task_row),
+                "privacy_queries": base.paired_example_web_queries(privacy_row),
+                "base_selected_queries": base.paired_example_selected_queries(base_row, limit=3),
+                "task_selected_queries": base.paired_example_selected_queries(task_row, limit=3),
+                "privacy_selected_queries": base.paired_example_selected_queries(privacy_row, limit=3),
                 "base_web_query_count": base.live.web_query_count(base_row),
                 "task_web_query_count": base.live.web_query_count(task_row),
                 "privacy_web_query_count": base.live.web_query_count(privacy_row),
+                "base_hop_accuracy": base.live.task_accuracy(base_rollout),
+                "task_hop_accuracy": base.live.task_accuracy(task_rollout),
+                "privacy_hop_accuracy": base.live.task_accuracy(privacy_rollout),
+                "base_strict_chain_success": bool(base_rollout.get("strict_chain_success")),
+                "task_strict_chain_success": bool(task_rollout.get("strict_chain_success")),
+                "privacy_strict_chain_success": bool(privacy_rollout.get("strict_chain_success")),
+                "base_final_correct": bool(base_rollout.get("final_correct")),
+                "task_final_correct": bool(task_rollout.get("final_correct")),
+                "privacy_final_correct": bool(privacy_rollout.get("final_correct")),
             }
         )
     candidates.sort(key=lambda row: float(row.get("score") or 0.0), reverse=True)
@@ -462,9 +478,9 @@ def latex_step100_query_examples(rows: list[dict[str, Any]]) -> str:
     for row in rows:
         cells = [
             base.paired_examples_latex_cell(base.curated_chain_summary_lines(row), max_lines=5),
-            base.paired_examples_latex_query_bundle([str(item) for item in row.get("base_queries") or []]),
-            base.paired_examples_latex_query_bundle([str(item) for item in row.get("task_queries") or []]),
-            base.paired_examples_latex_query_bundle([str(item) for item in row.get("privacy_queries") or []]),
+            base.paired_examples_latex_query_bundle([str(item) for item in row.get("base_selected_queries") or []]),
+            base.paired_examples_latex_query_bundle([str(item) for item in row.get("task_selected_queries") or []]),
+            base.paired_examples_latex_query_bundle([str(item) for item in row.get("privacy_selected_queries") or []]),
             base.leakage_type_latex(row),
         ]
         body.append(" & ".join(cells) + r" \\")
@@ -480,10 +496,63 @@ def latex_step100_query_examples(rows: list[dict[str, Any]]) -> str:
 {body_text}
 \bottomrule
 \end{{tabular}}
-\caption{{Candidate held-out test examples from checkpoint 100 where the base and task-trained \qwenthreeb rollouts are judged privacy-leaking, while the PA-DR rollout for the same test-chain repeat is below the privacy-leakage threshold. Query bundles show selected web queries; leakage types are not mutually exclusive.}}
+\caption{{Candidate held-out test examples from checkpoint 100 where the base and task-trained \qwenthreeb rollouts are judged privacy-leaking, while the PA-DR rollout for the same test-chain repeat is below the privacy-leakage threshold. All three rollouts have strict chain success; this compact paper table shows selected web queries, while the viewer and JSON include exhaustive web-query bundles. Leakage types are not mutually exclusive.}}
 \label{{tab:paired_query_leakage_examples_s100}}
 \end{{table*}}
 """
+
+
+def query_example_accuracy_text(row: dict[str, Any], prefix: str) -> str:
+    hop_accuracy = base.live.as_float(row.get(f"{prefix}_hop_accuracy"))
+    hop_text = f"{100.0 * hop_accuracy:.0f}% hop accuracy" if hop_accuracy is not None else "hop accuracy n/a"
+    chain_text = "strict chain success" if row.get(f"{prefix}_strict_chain_success") else "strict chain failure"
+    final_text = "final correct" if row.get(f"{prefix}_final_correct") else "final incorrect"
+    return f"{hop_text}; {chain_text}; {final_text}"
+
+
+def step100_query_model_cell_html(row: dict[str, Any], prefix: str) -> str:
+    leakage = base.leakage_type_text([str(item) for item in row.get(f"{prefix}_leakage_types") or []])
+    queries = [str(item) for item in row.get(f"{prefix}_queries") or []]
+    count = int(row.get(f"{prefix}_web_query_count") or len(queries))
+    return (
+        f"<div class=\"rating\">{base.esc(leakage)}</div>"
+        f"<div class=\"muted\">{base.esc(query_example_accuracy_text(row, prefix))}; {count} web queries total</div>"
+        f"{base.paired_example_query_list_html(queries)}"
+    )
+
+
+def step100_query_examples_html(rows: list[dict[str, Any]]) -> str:
+    if not rows:
+        return "<p class='muted'>No step100 query examples found.</p>"
+    body: list[str] = []
+    for row in rows:
+        case = (
+            f"<strong>{base.esc(row.get('rank'))}. {base.esc(row.get('task_id'))}/{base.esc(row.get('chain_id'))}</strong>"
+            f"<div class=\"muted\">r{base.esc(row.get('repeat'))}; {base.esc(row.get('pattern'))}; "
+            f"{base.esc(row.get('n_hops'))} hops</div>"
+        )
+        leakage_types = (
+            f"{base.leakage_type_html(row, 'base_leakage_types', 'Base')}<br>"
+            f"{base.leakage_type_html(row, 'task_leakage_types', 'Task')}<br>"
+            f"{base.leakage_type_html(row, 'privacy_leakage_types', 'PA-DR')}"
+        )
+        body.append(
+            "<tr>"
+            f"<td>{case}</td>"
+            f"<td>{base.curated_chain_summary_html(row)}</td>"
+            f"<td>{step100_query_model_cell_html(row, 'base')}</td>"
+            f"<td>{step100_query_model_cell_html(row, 'task')}</td>"
+            f"<td>{step100_query_model_cell_html(row, 'privacy')}</td>"
+            f"<td>{leakage_types}</td>"
+            "</tr>"
+        )
+    return (
+        "<table class=\"paper-example-table\"><thead><tr>"
+        "<th>Case</th><th>Question Chain</th><th>Base Qwen3 4B Queries</th><th>Task Queries</th><th>PA-DR Queries</th><th>Leakage Types</th>"
+        "</tr></thead><tbody>"
+        + "".join(body)
+        + "</tbody></table>"
+    )
 
 
 def write_text(path: Path, text: str) -> None:
@@ -845,7 +914,7 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
     behavior_latex_block = latex_details("Copy LaTeX: Query And Retrieval Behavior", behavior_latex)
     query_examples_latex_block = latex_details("Copy LaTeX: Step100 Query Examples", query_examples_latex)
     checkpoint_latex_block = latex_details("Copy LaTeX: Checkpoint Choice Diagnostic", checkpoint_latex)
-    query_examples_table = base.curated_paired_leakage_examples_html(query_examples)
+    query_examples_table = step100_query_examples_html(query_examples)
     missing_by_condition = {
         str(row.get("condition")): int(row.get("missing_privacy_judgments") or 0)
         for row in status
@@ -968,7 +1037,7 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
     </section>
     <section id="query-examples">
       <h2>Step100 Query Leakage Examples</h2>
-      <div class="note">Review-prioritized held-out test cases using the final checkpoint defaults: base Qwen3 4B, Task step100, and PA-DR step100. Rows require strict chain success for all three rollouts, at least one web hop, base and Task privacy leakage, and PA-DR below the privacy-leakage threshold.</div>
+      <div class="note">Review-prioritized held-out test cases using the final checkpoint defaults: base Qwen3 4B, Task step100, and PA-DR step100. Rows require strict chain success for all three rollouts, at least one web hop, base and Task privacy leakage, and PA-DR below the privacy-leakage threshold. Query cells show every web query made by that rollout.</div>
       <div class="links"><a href="tables/paired_leakage_examples_s100.tex">LaTeX table</a><a href="tables/paired_leakage_examples_s100.json">JSON rows</a></div>
       {query_examples_table}
     </section>
