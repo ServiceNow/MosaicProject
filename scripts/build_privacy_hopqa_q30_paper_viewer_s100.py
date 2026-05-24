@@ -316,7 +316,7 @@ def plot_training_effect(rows: dict[str, dict[str, Any]], path: Path) -> None:
         ("base_normal", "Base", "#1f2421", "o", True, (-7, 7), "right", "bottom"),
         ("base_prompt", "Base + prompt", "#1f2421", "D", False, (7, -7), "left", "top"),
         ("task_s100_normal", "Task", "#D55E00", "s", True, (8, 8), "left", "bottom"),
-        ("task_s100_prompt", "Task + prompt", "#D55E00", "D", False, (-14, 10), "right", "bottom"),
+        ("task_s100_prompt", "Task + prompt", "#D55E00", "D", False, (-14, 0), "right", "center"),
         ("padr_s100_normal", "PA-DR", "#009E73", "s", True, (8, 7), "left", "bottom"),
         ("padr_s100_prompt", "PA-DR + prompt", "#009E73", "D", False, (0, -11), "center", "top"),
     ]

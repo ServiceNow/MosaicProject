@@ -15,7 +15,8 @@ import matplotlib
 
 matplotlib.use("Agg")
 from matplotlib import pyplot as plt
-from matplotlib.colors import to_rgb
+from matplotlib.cm import ScalarMappable
+from matplotlib.colors import LinearSegmentedColormap, Normalize, to_rgb
 from matplotlib.lines import Line2D
 from matplotlib.patches import FancyArrowPatch
 from matplotlib.ticker import MultipleLocator
@@ -223,6 +224,13 @@ def step_color(series: dict[str, str], step: int) -> tuple[float, float, float]:
     return interpolate_color(series["dark_color"], series["light_color"], step / 100.0)
 
 
+def step_cmap(series: dict[str, str]) -> LinearSegmentedColormap:
+    return LinearSegmentedColormap.from_list(
+        f"{series['family']}_step",
+        [series["dark_color"], series["light_color"]],
+    )
+
+
 def add_arrow(ax: Any, series: dict[str, str], start: dict[str, Any], end: dict[str, Any]) -> None:
     x0, y0 = pct(start["strict_chain_success"]), pct(start["privacy_leakage_rate"])
     x1, y1 = pct(end["strict_chain_success"]), pct(end["privacy_leakage_rate"])
@@ -244,26 +252,21 @@ def add_arrow(ax: Any, series: dict[str, str], start: dict[str, Any], end: dict[
 
 
 def add_gradient_keys(ax: Any) -> None:
+    norm = Normalize(vmin=0, vmax=100)
     key_specs = [
-        (1.02, "Task", SERIES[0]),
-        (1.085, "PA-DR", SERIES[1]),
+        (1.025, "Task", SERIES[0]),
+        (1.105, "PA-DR", SERIES[1]),
     ]
     for left, title, series in key_specs:
-        key_ax = ax.inset_axes([left, 0.30, 0.025, 0.40])
-        gradient = [
-            [interpolate_color(series["dark_color"], series["light_color"], index / 99.0)]
-            for index in range(100)
-        ]
-        key_ax.imshow(gradient, aspect="auto", extent=[0, 1, 0, 100], origin="lower")
-        key_ax.set_title(title, fontsize=7.5, color=series["color"], pad=1.0)
-        key_ax.set_xticks([])
-        key_ax.set_yticks([0, 100])
-        key_ax.set_yticklabels(["0", "100"], fontsize=6.8)
-        key_ax.tick_params(axis="y", length=2, pad=1)
-        key_ax.yaxis.tick_right()
-        for spine in key_ax.spines.values():
-            spine.set_color("#303633")
-            spine.set_linewidth(0.6)
+        cax = ax.inset_axes([left, 0.30, 0.030, 0.40])
+        mappable = ScalarMappable(norm=norm, cmap=step_cmap(series))
+        colorbar = ax.figure.colorbar(mappable, cax=cax, orientation="vertical", ticks=[0, 50, 100])
+        colorbar.ax.set_title(title, fontsize=7.5, color=series["color"], pad=2.0)
+        colorbar.ax.tick_params(labelsize=6.8, length=2, width=0.6, color="#303633", pad=1)
+        colorbar.outline.set_edgecolor("#5F6F7A")
+        colorbar.outline.set_linewidth(0.6)
+        if series["family"] == "privacy_aware_tau05":
+            colorbar.set_label("Checkpoint step", fontsize=7.5, labelpad=4)
 
 
 def plot_panel(ax: Any, rows: list[dict[str, Any]]) -> None:
