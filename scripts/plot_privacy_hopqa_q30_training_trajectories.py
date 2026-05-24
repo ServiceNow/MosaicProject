@@ -253,18 +253,22 @@ def add_arrow(ax: Any, series: dict[str, str], start: dict[str, Any], end: dict[
 
 def add_gradient_keys(ax: Any) -> None:
     norm = Normalize(vmin=0, vmax=100)
+    ticks = [0, 20, 40, 60, 80, 100]
     key_specs = [
         (1.025, "Task", SERIES[0]),
         (1.105, "PA-DR", SERIES[1]),
     ]
     for left, title, series in key_specs:
-        cax = ax.inset_axes([left, 0.30, 0.030, 0.40])
+        cax = ax.inset_axes([left, 0.20, 0.030, 0.58])
         mappable = ScalarMappable(norm=norm, cmap=step_cmap(series))
-        colorbar = ax.figure.colorbar(mappable, cax=cax, orientation="vertical", ticks=[0, 50, 100])
+        colorbar = ax.figure.colorbar(mappable, cax=cax, orientation="vertical", ticks=ticks)
         colorbar.ax.set_title(title, fontsize=7.5, color=series["color"], pad=2.0)
-        colorbar.ax.tick_params(labelsize=6.8, length=2, width=0.6, color="#303633", pad=1)
-        colorbar.outline.set_edgecolor("#5F6F7A")
-        colorbar.outline.set_linewidth(0.6)
+        colorbar.ax.tick_params(labelsize=6.4, length=0, width=0, pad=1.5)
+        colorbar.outline.set_visible(False)
+        colorbar.solids.set_edgecolor("face")
+        colorbar.solids.set_linewidth(0)
+        for spine in colorbar.ax.spines.values():
+            spine.set_visible(False)
         if series["family"] == "privacy_aware_tau05":
             colorbar.set_label("Checkpoint step", fontsize=7.5, labelpad=4)
 
