@@ -16,7 +16,7 @@ from typing import Any
 import numpy as np
 from matplotlib.lines import Line2D
 from matplotlib import pyplot as plt
-from matplotlib.ticker import MaxNLocator, MultipleLocator, NullLocator
+from matplotlib.ticker import MultipleLocator, NullLocator
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -235,6 +235,88 @@ def set_percent_y_axis(ax: Any) -> None:
     ax.yaxis.set_minor_locator(MultipleLocator(5))
     add_minor_grid(ax, axis="y")
     ax.xaxis.set_minor_locator(NullLocator())
+
+
+def set_labeled_percent_y_axis(ax: Any, low: float, high: float) -> None:
+    ax.set_ylim(low, high)
+    ax.set_yticks(list(np.arange(low, high + 0.1, 10.0)))
+    ax.yaxis.set_minor_locator(MultipleLocator(5))
+    add_minor_grid(ax, axis="y")
+
+
+def nice_tick_step(span: float, *, target_ticks: int = 5) -> float:
+    if span <= 0 or not math.isfinite(span):
+        return 1.0
+    rough = span / max(1, target_ticks)
+    exponent = math.floor(math.log10(rough))
+    scale = 10**exponent
+    for multiplier in (1.0, 2.0, 2.5, 5.0, 10.0):
+        step = multiplier * scale
+        if rough <= step:
+            return step
+    return 10.0 * scale
+
+
+def nice_upper(value: float, *, target_ticks: int = 5, min_upper: float = 1.0) -> tuple[float, float]:
+    upper = max(min_upper, value if math.isfinite(value) else min_upper)
+    step = nice_tick_step(upper, target_ticks=target_ticks)
+    return step * math.ceil(upper / step), step
+
+
+def nice_limits(
+    values: list[float],
+    *,
+    pad: float,
+    target_ticks: int = 5,
+    lower_bound: float = 0.0,
+    upper_bound: float = 100.0,
+) -> tuple[float, float, float]:
+    finite = [value for value in values if math.isfinite(value)]
+    if not finite:
+        return lower_bound, upper_bound, nice_tick_step(upper_bound - lower_bound, target_ticks=target_ticks)
+    low_value = max(lower_bound, min(finite) - pad)
+    high_value = min(upper_bound, max(finite) + pad)
+    step = nice_tick_step(high_value - low_value, target_ticks=target_ticks)
+    low = max(lower_bound, step * math.floor(low_value / step))
+    high = min(upper_bound, step * math.ceil(high_value / step))
+    if high <= low:
+        high = min(upper_bound, low + step)
+    return low, high, step
+
+
+def ticks_between(low: float, high: float, step: float) -> list[float]:
+    count = int(round((high - low) / step))
+    ticks = [low + index * step for index in range(count + 1)]
+    ticks[-1] = high
+    return ticks
+
+
+def set_nice_count_y_axis(ax: Any, requested_upper: float, *, target_ticks: int = 5) -> float:
+    high, step = nice_upper(requested_upper, target_ticks=target_ticks)
+    ax.set_ylim(0, high)
+    ax.set_yticks(ticks_between(0.0, high, step))
+    ax.yaxis.set_minor_locator(MultipleLocator(step / 2.0))
+    add_minor_grid(ax, axis="y")
+    return high
+
+
+def set_nice_percent_limits(
+    ax: Any,
+    x_values: list[float],
+    y_values: list[float],
+    *,
+    x_pad: float,
+    y_pad: float,
+    target_ticks: int = 5,
+) -> None:
+    x_low, x_high, x_step = nice_limits(x_values, pad=x_pad, target_ticks=target_ticks)
+    y_low, y_high, y_step = nice_limits(y_values, pad=y_pad, target_ticks=target_ticks)
+    ax.set_xlim(x_low, x_high)
+    ax.set_ylim(y_low, y_high)
+    ax.set_xticks(ticks_between(x_low, x_high, x_step))
+    ax.set_yticks(ticks_between(y_low, y_high, y_step))
+    ax.xaxis.set_minor_locator(MultipleLocator(x_step / 2.0))
+    ax.yaxis.set_minor_locator(MultipleLocator(y_step / 2.0))
 
 
 def rounded_limits(values: list[float], *, min_pad: float, frac_pad: float = 0.12, step: float = 5.0) -> tuple[float, float]:
@@ -513,7 +595,10 @@ def plot_privacy_prompt_query_behavior(rows: list[dict[str, Any]], path: Path, *
             *(live.as_float(row.get(prompt_key)) or 0.0 for row in rows),
         ]
         group_y_max[group] = max(group_y_max.get(group, 1.0), *vals, 1.0)
-    group_y_max = {group: value * 1.32 for group, value in group_y_max.items()}
+    group_y_max = {
+        group: nice_upper(value * (1.28 if annotate else 1.14), target_ticks=5)[0]
+        for group, value in group_y_max.items()
+    }
     for ax, (ylabel, baseline_key, prompt_key, group) in zip(axes.flat, metrics):
         baseline_vals = [row.get(baseline_key) or 0 for row in rows]
         prompt_vals = [row.get(prompt_key) or 0 for row in rows]
@@ -547,9 +632,7 @@ def plot_privacy_prompt_query_behavior(rows: list[dict[str, Any]], path: Path, *
         ax.set_xlabel("Model")
         ax.set_xticks(x)
         ax.set_xticklabels(labels, rotation=25, ha="right")
-        ax.set_ylim(0, y_max)
-        ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
-        add_minor_grid(ax, axis="y")
+        set_nice_count_y_axis(ax, y_max, target_ticks=5)
     handles, legend_labels = axes.flat[0].get_legend_handles_labels()
     fig.legend(handles, legend_labels, loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.05))
     save_figure(fig, path)
@@ -630,15 +713,8 @@ def plot_training_effect(rows: list[dict[str, Any]], path: Path) -> list[dict[st
         ax.set_title(condition)
         ax.set_xlabel("Strict Chain Success (%)")
         ax.grid(True, alpha=0.25)
-    y_values = all_y or [0, 100]
-    x_values = all_x or [0, 100]
-    x_pad = max(4.0, 0.12 * (max(x_values) - min(x_values) or 1.0))
-    y_pad = max(4.0, 0.12 * (max(y_values) - min(y_values) or 1.0))
     for ax in axes:
-        ax.set_xlim(max(0, min(x_values) - x_pad), min(100, max(x_values) + x_pad))
-        ax.set_ylim(max(0, min(y_values) - y_pad), min(100, max(y_values) + y_pad))
-        ax.xaxis.set_major_locator(MaxNLocator(nbins=5))
-        ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
+        set_nice_percent_limits(ax, all_x, all_y, x_pad=4.0, y_pad=4.0, target_ticks=5)
     axes[0].set_ylabel("Privacy Leakage (%)")
     handles, labels = axes[0].get_legend_handles_labels()
     by_label = dict(zip(labels, handles))
@@ -730,12 +806,12 @@ def plot_retrieval_behavior(rows: list[dict[str, Any]], path: Path, *, annotate:
     width = 0.18
     offsets = [-1.5 * width, -0.5 * width, 0.5 * width, 1.5 * width]
     fig, ax = plt.subplots(figsize=(11.4, 5.1))
-    y_max = 1.0
+    raw_y_max = 1.0
     for offset, (label, key, color) in zip(offsets, series):
         vals = [row.get(key) or 0 for row in rows]
-        y_max = max(y_max, *vals)
+        raw_y_max = max(raw_y_max, *vals)
         ax.bar([item + offset for item in x], vals, width=width, color=color, label=label, yerr=count_yerr(rows, key), error_kw={"elinewidth": 1.0, "ecolor": "#303633", "capsize": 2.5})
-    y_max *= 1.34
+    y_max = nice_upper(raw_y_max * (1.28 if annotate else 1.14), target_ticks=5)[0]
     if annotate:
         for xi, row in zip(x, rows):
             ax.text(xi, y_max * 0.95, f"n={int(row.get('n') or 0)}", ha="center", va="bottom", fontsize=9)
@@ -744,8 +820,7 @@ def plot_retrieval_behavior(rows: list[dict[str, Any]], path: Path, *, annotate:
     ax.set_xticks(x)
     ax.set_xticklabels(labels, rotation=25, ha="right")
     ax.xaxis.set_minor_locator(NullLocator())
-    ax.set_ylim(0, y_max)
-    ax.yaxis.set_major_locator(MaxNLocator(nbins=6))
+    set_nice_count_y_axis(ax, y_max, target_ticks=5)
     ax.legend(loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.25))
     save_figure(fig, path)
 
@@ -922,18 +997,19 @@ def plot_leakage_relationships(rows: list[dict[str, Any]], path: Path, *, annota
             capsize=3,
         )
         if annotate:
-            axes[0].text(value, min(96, center + 5), f"n={len(subset)}", ha="center", va="bottom", fontsize=8)
+            axes[0].text(value, min(48, center + 2), f"n={len(subset)}", ha="center", va="bottom", fontsize=8)
     add_logistic_line(axes[0], chain_x, chain_fit, scale=1.0, x_min=min(chain_x), x_max=max(chain_x))
     axes[0].set_xlabel("Chain Length (Hops)")
     axes[0].set_ylabel("Privacy Leakage Rate (%)")
+    axes[0].set_xlim(min(chain_values), max(chain_values))
     axes[0].set_xticks(chain_values)
-    set_percent_y_axis(axes[0])
+    set_labeled_percent_y_axis(axes[0], 10.0, 50.0)
     axes[0].legend(loc="upper center", frameon=False, bbox_to_anchor=(0.5, 1.13))
 
     bins = [(0.0, 0.2), (0.2, 0.4), (0.4, 0.6), (0.6, 0.8), (0.8, 1.000001)]
     centers = [10, 30, 50, 70, 90]
-    labels = ["0-20", "20-40", "40-60", "60-80", "80-100"]
-    for (low_edge, high_edge), center_x, label in zip(bins, centers, labels):
+    bin_labels = ["0-20", "20-40", "40-60", "60-80", "80-100"]
+    for (low_edge, high_edge), center_x, label in zip(bins, centers, bin_labels):
         subset = [
             int(row["privacy_leaked"])
             for row in rows
@@ -953,13 +1029,12 @@ def plot_leakage_relationships(rows: list[dict[str, Any]], path: Path, *, annota
             capsize=3,
         )
         if annotate:
-            axes[1].text(center_x, min(96, center + 5), f"n={len(subset)}", ha="center", va="bottom", fontsize=8)
+            axes[1].text(center_x, min(48, center + 2), f"n={len(subset)}", ha="center", va="bottom", fontsize=8)
     add_logistic_line(axes[1], acc_x, acc_fit, scale=0.1, x_min=0, x_max=100)
     axes[1].set_xlabel("Chain Progress Accuracy (%)")
     axes[1].set_ylabel("Privacy Leakage Rate (%)")
     axes[1].set_xlim(0, 100)
-    axes[1].set_xticks(centers)
-    axes[1].set_xticklabels(labels)
+    axes[1].set_xticks([0, 20, 40, 60, 80, 100])
     add_minor_grid(axes[1])
     axes[1].legend(loc="upper center", frameon=False, bbox_to_anchor=(0.5, 1.13))
     save_figure(fig, path)
@@ -1785,7 +1860,8 @@ def plot_final_refresh_progress(rows: list[dict[str, Any]], path: Path) -> None:
         ax.set_xlim(0, 100)
         ax.set_title(title)
         ax.set_xlabel("Complete (%)")
-        ax.xaxis.set_major_locator(MaxNLocator(5))
+        ax.set_xticks([0, 25, 50, 75, 100])
+        ax.xaxis.set_minor_locator(MultipleLocator(12.5))
         add_minor_grid(ax, axis="x")
         ax.grid(False, axis="y")
         for y, rate in zip(y_pos, rates):
@@ -1829,6 +1905,8 @@ def plot_final_situational_training_effect(
             ax.text(0.5, 0.55, "pending rollouts and privacy judgments", ha="center", va="center", transform=ax.transAxes)
             ax.set_xlim(0, 100)
             ax.set_ylim(0, 100)
+            ax.set_xticks([0, 25, 50, 75, 100])
+            ax.set_yticks([0, 25, 50, 75, 100])
             ax.set_title(title)
             ax.set_xlabel("Strict Chain Success (%)")
             ax.grid(True, alpha=0.25)
@@ -1882,13 +1960,8 @@ def plot_final_situational_training_effect(
         ax.grid(True, alpha=0.25)
     axes[0].set_ylabel("Privacy Leakage (%)")
     if plotted_x and plotted_y:
-        x_min = max(0, min(plotted_x) - 6)
-        x_max = min(100, max(plotted_x) + 10)
-        y_min = max(0, min(plotted_y) - 8)
-        y_max = min(100, max(plotted_y) + 12)
         for ax in axes:
-            ax.set_xlim(x_min, x_max)
-            ax.set_ylim(y_min, y_max)
+            set_nice_percent_limits(ax, plotted_x, plotted_y, x_pad=6.0, y_pad=8.0, target_ticks=5)
     save_figure(fig, path)
 
 
@@ -2137,20 +2210,13 @@ def plot_training_prompt_trajectories(
 
     ax.set_xlabel("Strict Chain Success (%)")
     ax.set_ylabel("Privacy Leakage (%)")
-    x_low, x_high = (45.0, 65.0)
-    if plotted_x:
-        min_x = min(plotted_x)
-        max_x = max(plotted_x)
-        if min_x < x_low:
-            x_low = max(0.0, math.floor(min_x * 2.0) / 2.0)
-        if max_x > x_high:
-            x_high = min(100.0, math.ceil(max_x + 0.5))
-    y_low, y_high = rounded_limits(plotted_y, min_pad=5.0)
+    x_low, x_high = (40.0, 65.0)
+    y_low, y_high = (10.0, 60.0)
     ax.set_xlim(x_low, x_high)
     ax.set_ylim(y_low, y_high)
-    ax.set_xticks([x_low, *[tick for tick in [50, 55, 60] if x_low < tick < x_high], x_high])
+    ax.set_xticks([40, 45, 50, 55, 60, 65])
     ax.xaxis.set_minor_locator(MultipleLocator(2.5))
-    ax.yaxis.set_major_locator(MultipleLocator(10))
+    ax.set_yticks([10, 20, 30, 40, 50, 60])
     ax.yaxis.set_minor_locator(MultipleLocator(5))
     add_minor_grid(ax)
     legend_handles = [
