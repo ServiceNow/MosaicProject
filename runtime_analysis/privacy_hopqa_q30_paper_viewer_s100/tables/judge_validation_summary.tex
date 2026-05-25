@@ -1,17 +1,17 @@
 \begin{table}[t]
 \small
 \centering
-\begin{tabular}{@{}lccc@{}}
+\begin{tabular}{@{}lcc@{}}
 \toprule
-\textbf{Type} & \textbf{Agree.} & \textbf{$\kappa$} & \textbf{$p$} \\
+\textbf{Type} & \textbf{Agree.} & \textbf{$\kappa$} \\
 \midrule
-Score (1--5) & 66.3\% & 0.706 & $<10^{-4}$ \\
-Privacy ($\geq 4$) & 78.0\% & 0.532 & 0.0001 \\
-Intent & 44.7\% & 0.116 & $<10^{-4}$ \\
-Answer & 90.0\% & 0.615 & 0.3616 \\
-Full-info & 87.0\% & 0.511 & $<10^{-4}$ \\
+Score (1--5) & 66.3\% & 0.706 \\
+Intent score (1--5) & 17.7\% & 0.421 \\
+Privacy ($\geq 4$) & 78.0\% & 0.532 \\
+Answer & 90.0\% & 0.615 \\
+Full-info & 87.0\% & 0.511 \\
 \bottomrule
 \end{tabular}
-\caption{Correlation and agreement analysis between the Stepfun 3.5 Flash model we use for adversary/judge classification and Opus 4.7. We evaluate on 300 paired rollouts randomly selected from our six untrained model families, with and without privacy prompting. Agreement is exact agreement: exact score match for the 1--5 score and matching binary labels otherwise. The 1--5 score uses quadratic weighted Cohen's $\kappa$; binary rows use ordinary Cohen's $\kappa$. The 1--5 row reports the Spearman association p-value; binary rows report exact McNemar p-values.}
+\caption{Correlation and agreement analysis between the Stepfun 3.5 Flash model we use for adversary/judge classification and Opus 4.7. We evaluate on 300 paired rollouts randomly selected from our six untrained model families, with and without privacy prompting. Agreement is exact agreement: exact score match for the 1--5 score rows and matching binary labels otherwise. The two 1--5 rows use quadratic weighted Cohen's $\kappa$; binary rows use ordinary Cohen's $\kappa$.}
 \label{tab:judge_validation_summary}
 \end{table}

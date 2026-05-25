@@ -58,6 +58,11 @@ def score(row: dict[str, Any]) -> int:
     return int(row.get("overall_privacy_score_1_to_5") or 0)
 
 
+def intent_score(row: dict[str, Any]) -> int:
+    judge = row.get("intent_judge_output") if isinstance(row.get("intent_judge_output"), dict) else {}
+    return int(judge.get("intent_subquestion_score_1_to_5") or 1)
+
+
 def binary(row: dict[str, Any], field: str) -> bool:
     if field == "privacy":
         return bool(row.get("overall_leaked_for_reward"))
@@ -236,8 +241,18 @@ def main() -> None:
         "opus_distribution": dict(Counter(cand_scores)),
         "confusion": confusion.tolist(),
     }
+    intent_score_pairs = [(intent_score(ref_rows[k]), intent_score(cand_rows[k])) for k in keys]
+    intent_score_summary = {
+        "n": len(keys),
+        "exact_agreement": sum(a == b for a, b in intent_score_pairs) / len(keys),
+        "within_one": sum(abs(a - b) <= 1 for a, b in intent_score_pairs) / len(keys),
+        "weighted_kappa_linear": weighted_kappa(intent_score_pairs, "linear"),
+        "weighted_kappa_quadratic": weighted_kappa(intent_score_pairs, "quadratic"),
+        "stepfun_distribution": dict(Counter(a for a, _ in intent_score_pairs)),
+        "opus_distribution": dict(Counter(b for _, b in intent_score_pairs)),
+    }
 
-    table_json = {"score_summary": score_summary, "binary_rows": binary_rows}
+    table_json = {"score_summary": score_summary, "intent_score_summary": intent_score_summary, "binary_rows": binary_rows}
     (VIEWER / "tables" / "judge_validation_summary.json").write_text(
         json.dumps(table_json, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
@@ -247,21 +262,27 @@ def main() -> None:
         "\\begin{table}[t]",
         "\\small",
         "\\centering",
-        "\\begin{tabular}{@{}lccc@{}}",
+        "\\begin{tabular}{@{}lcc@{}}",
         "\\toprule",
-        "\\textbf{Type} & \\textbf{Agree.} & \\textbf{$\\kappa$} & \\textbf{$p$} \\\\",
+        "\\textbf{Type} & \\textbf{Agree.} & \\textbf{$\\kappa$} \\\\",
         "\\midrule",
         (
             "Score (1--5) & "
             f"{fmt_pct(score_summary['exact_agreement'])} & "
-            f"{fmt_float(score_summary['weighted_kappa_quadratic'])} & "
-            f"{pvalue_text(score_summary['spearman_p'])} \\\\"
+            f"{fmt_float(score_summary['weighted_kappa_quadratic'])} \\\\"
+        ),
+        (
+            "Intent score (1--5) & "
+            f"{fmt_pct(intent_score_summary['exact_agreement'])} & "
+            f"{fmt_float(intent_score_summary['weighted_kappa_quadratic'])} \\\\"
         ),
     ]
     for row in binary_rows:
+        if row["field"] == "intent":
+            continue
         latex_lines.append(
             f"{LATEX_TYPE_LABELS[str(row['field'])]} & {fmt_pct(row['agreement'])} & "
-            f"{fmt_float(row['kappa'])} & {pvalue_text(row['mcnemar_p'])} \\\\"
+            f"{fmt_float(row['kappa'])} \\\\"
         )
     latex_lines.extend(
         [
@@ -272,10 +293,9 @@ def main() -> None:
                 "we use for adversary/judge classification and Opus 4.7. We evaluate on "
                 f"{len(keys)} paired rollouts randomly selected from our six untrained model families, "
                 "with and without privacy prompting. Agreement is exact agreement: exact score match "
-                "for the 1--5 score and matching binary labels otherwise. The 1--5 score uses "
-                "quadratic weighted Cohen's $\\kappa$; binary rows use ordinary Cohen's $\\kappa$. "
-                "The 1--5 row reports the Spearman association p-value; binary rows report exact "
-                "McNemar p-values.}"
+                "for the 1--5 score rows and matching binary labels otherwise. The two 1--5 rows "
+                "use quadratic weighted Cohen's $\\kappa$; binary rows use ordinary Cohen's "
+                "$\\kappa$.}"
             ),
             "\\label{tab:judge_validation_summary}",
             "\\end{table}",

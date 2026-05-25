@@ -176,26 +176,26 @@ PA-DR step100 + privacy prompt &amp; 59.3\% +/- 0.7 pp &amp; 68.1\% +/- 1.0 pp &
     </section>
     <section id="judge-validation">
       <h2>Judge Validation: Opus 4.7 Vs StepFun</h2>
-      <div class="note">Correlation and agreement analysis between the Stepfun 3.5 Flash model we use for adversary/judge classification and Opus 4.7. We evaluate on 300 paired rollouts randomly selected from our six untrained model families, with and without privacy prompting. Agreement is exact agreement; the 1-5 score uses quadratic weighted Cohen's kappa, and binary rows use ordinary Cohen's kappa.</div>
+      <div class="note">Correlation and agreement analysis between the Stepfun 3.5 Flash model we use for adversary/judge classification and Opus 4.7. We evaluate on 300 paired rollouts randomly selected from our six untrained model families, with and without privacy prompting. Agreement is exact agreement; the two 1-5 score rows use quadratic weighted Cohen's kappa, and binary rows use ordinary Cohen's kappa.</div>
       <div class="links"><a href="plots/judge_validation_binary_agreement.svg">Binary SVG</a><a href="plots/judge_validation_binary_agreement.pdf">Binary PDF</a><a href="plots/judge_validation_score_confusion.svg">Score SVG</a><a href="plots/judge_validation_score_confusion.pdf">Score PDF</a><a href="tables/judge_validation_summary.tex">LaTeX table</a><a href="tables/judge_validation_summary.json">JSON table</a><a href="../privacy_hopqa_q30_stepfun_judge_validation_cross_model_200_20260525/openrouter_smoke_anthropic_claude-opus-4.7_full300_combined_20260525_report.html">Full raw report</a></div>
       <img src="plots/judge_validation_binary_agreement.svg" alt="Binary privacy-label agreement between Opus 4.7 and StepFun">
       <img src="plots/judge_validation_score_confusion.svg" alt="Score confusion matrix between Opus 4.7 and StepFun privacy scores">
-      <table><thead><tr><th>Type</th><th>Agree.</th><th>Kappa</th><th>p</th></tr></thead><tbody><tr><td>Score (1-5)</td><td>66.3%</td><td>0.706</td><td>&lt; 1e-4</td></tr><tr><td>Privacy (&gt;=4)</td><td>78.0%</td><td>0.532</td><td>0.0001</td></tr><tr><td>Intent</td><td>44.7%</td><td>0.116</td><td>&lt; 1e-4</td></tr><tr><td>Answer</td><td>90.0%</td><td>0.615</td><td>0.3616</td></tr><tr><td>Full-info</td><td>87.0%</td><td>0.511</td><td>&lt; 1e-4</td></tr></tbody></table>
+      <table><thead><tr><th>Type</th><th>Agree.</th><th>Kappa</th></tr></thead><tbody><tr><td>Score (1-5)</td><td>66.3%</td><td>0.706</td></tr><tr><td>Intent score (1-5)</td><td>17.7%</td><td>0.421</td></tr><tr><td>Privacy (&gt;=4)</td><td>78.0%</td><td>0.532</td></tr><tr><td>Answer</td><td>90.0%</td><td>0.615</td></tr><tr><td>Full-info</td><td>87.0%</td><td>0.511</td></tr></tbody></table>
       <details class="latex-block"><summary>Copy LaTeX: Judge Validation Summary</summary><pre><code>\begin{table}[t]
 \small
 \centering
-\begin{tabular}{@{}lccc@{}}
+\begin{tabular}{@{}lcc@{}}
 \toprule
-\textbf{Type} &amp; \textbf{Agree.} &amp; \textbf{$\kappa$} &amp; \textbf{$p$} \\
+\textbf{Type} &amp; \textbf{Agree.} &amp; \textbf{$\kappa$} \\
 \midrule
-Score (1--5) &amp; 66.3\% &amp; 0.706 &amp; $&lt;10^{-4}$ \\
-Privacy ($\geq 4$) &amp; 78.0\% &amp; 0.532 &amp; 0.0001 \\
-Intent &amp; 44.7\% &amp; 0.116 &amp; $&lt;10^{-4}$ \\
-Answer &amp; 90.0\% &amp; 0.615 &amp; 0.3616 \\
-Full-info &amp; 87.0\% &amp; 0.511 &amp; $&lt;10^{-4}$ \\
+Score (1--5) &amp; 66.3\% &amp; 0.706 \\
+Intent score (1--5) &amp; 17.7\% &amp; 0.421 \\
+Privacy ($\geq 4$) &amp; 78.0\% &amp; 0.532 \\
+Answer &amp; 90.0\% &amp; 0.615 \\
+Full-info &amp; 87.0\% &amp; 0.511 \\
 \bottomrule
 \end{tabular}
-\caption{Correlation and agreement analysis between the Stepfun 3.5 Flash model we use for adversary/judge classification and Opus 4.7. We evaluate on 300 paired rollouts randomly selected from our six untrained model families, with and without privacy prompting. Agreement is exact agreement: exact score match for the 1--5 score and matching binary labels otherwise. The 1--5 score uses quadratic weighted Cohen's $\kappa$; binary rows use ordinary Cohen's $\kappa$. The 1--5 row reports the Spearman association p-value; binary rows report exact McNemar p-values.}
+\caption{Correlation and agreement analysis between the Stepfun 3.5 Flash model we use for adversary/judge classification and Opus 4.7. We evaluate on 300 paired rollouts randomly selected from our six untrained model families, with and without privacy prompting. Agreement is exact agreement: exact score match for the 1--5 score rows and matching binary labels otherwise. The two 1--5 rows use quadratic weighted Cohen's $\kappa$; binary rows use ordinary Cohen's $\kappa$.}
 \label{tab:judge_validation_summary}
 \end{table}
 </code></pre></details>
