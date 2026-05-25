@@ -150,7 +150,7 @@ def spread_sample(items: list[Path], limit: int) -> list[Path]:
 
 def append_jsonl(path: Path, row: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    line = json.dumps(row, ensure_ascii=False) + "\n"
+    line = json.dumps(json_safe(row), ensure_ascii=False) + "\n"
     with path.open("a", encoding="utf-8") as handle:
         fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
         try:
@@ -158,6 +158,30 @@ def append_jsonl(path: Path, row: dict[str, Any]) -> None:
             handle.flush()
         finally:
             fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+
+
+def json_safe(value: Any) -> Any:
+    if value is None or isinstance(value, (str, int, float, bool)):
+        return value
+    if isinstance(value, Path):
+        return str(value)
+    if isinstance(value, dict):
+        return {str(k): json_safe(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple, set)):
+        return [json_safe(v) for v in value]
+    model_dump = getattr(value, "model_dump", None)
+    if callable(model_dump):
+        try:
+            return json_safe(model_dump(mode="json"))
+        except TypeError:
+            return json_safe(model_dump())
+    as_dict = getattr(value, "dict", None)
+    if callable(as_dict):
+        try:
+            return json_safe(as_dict())
+        except TypeError:
+            pass
+    return str(value)
 
 
 def fingerprint(obj: Any) -> str:
