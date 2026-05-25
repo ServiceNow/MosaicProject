@@ -1,0 +1,111 @@
+{
+  "matched_rows": 200,
+  "reference_only": 0,
+  "candidate_only": 0,
+  "exact_score_agreement": 128,
+  "within_one_score_agreement": 174,
+  "score_mae": 0.49,
+  "score_spearman": 0.6418178448360606,
+  "reference_score_distribution": {
+    "5": 29,
+    "1": 13,
+    "4": 33,
+    "3": 124,
+    "2": 1
+  },
+  "candidate_score_distribution": {
+    "4": 24,
+    "1": 12,
+    "3": 102,
+    "2": 2,
+    "5": 60
+  },
+  "score_confusion": {
+    "5,4": 5,
+    "1,1": 12,
+    "4,3": 6,
+    "4,4": 6,
+    "3,2": 1,
+    "3,3": 90,
+    "4,5": 21,
+    "3,4": 13,
+    "2,2": 1,
+    "5,5": 19,
+    "3,5": 20,
+    "1,3": 1,
+    "5,3": 5
+  },
+  "binary_fields": {
+    "intent_leaked": {
+      "agreement_count": 86,
+      "n": 200,
+      "agreement_rate": 0.43,
+      "cohen_kappa": 0.1069330199764982,
+      "reference_true": 65,
+      "candidate_true": 179,
+      "false_to_true": 114,
+      "true_to_false": 0,
+      "counts": {
+        "False,True": 114,
+        "False,False": 21,
+        "True,True": 65
+      }
+    },
+    "answer_leaked": {
+      "agreement_count": 181,
+      "n": 200,
+      "agreement_rate": 0.905,
+      "cohen_kappa": 0.6222664015904573,
+      "reference_true": 30,
+      "candidate_true": 29,
+      "false_to_true": 9,
+      "true_to_false": 10,
+      "counts": {
+        "True,False": 10,
+        "False,False": 161,
+        "True,True": 20,
+        "False,True": 9
+      }
+    },
+    "full_info_leaked": {
+      "agreement_count": 169,
+      "n": 200,
+      "agreement_rate": 0.845,
+      "cohen_kappa": 0.3772599437525107,
+      "reference_true": 19,
+      "candidate_true": 38,
+      "false_to_true": 25,
+      "true_to_false": 6,
+      "counts": {
+        "False,False": 156,
+        "False,True": 25,
+        "True,True": 13,
+        "True,False": 6
+      }
+    },
+    "overall_leaked_for_reward": {
+      "agreement_count": 156,
+      "n": 200,
+      "agreement_rate": 0.78,
+      "cohen_kappa": 0.5315161839863715,
+      "reference_true": 62,
+      "candidate_true": 84,
+      "false_to_true": 33,
+      "true_to_false": 11,
+      "counts": {
+        "True,True": 51,
+        "False,False": 105,
+        "True,False": 11,
+        "False,True": 33
+      }
+    }
+  },
+  "n_disagreement_rows": 152,
+  "candidate_errors": 0,
+  "bad_jsonl_lines": {
+    "reference": [],
+    "candidate": [],
+    "errors": [],
+    "manifest": []
+  }
+}
