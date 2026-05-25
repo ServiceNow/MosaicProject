@@ -12,6 +12,11 @@ from typing import Any
 import matplotlib.pyplot as plt
 import numpy as np
 
+try:
+    from scipy import stats as scipy_stats
+except Exception:  # pragma: no cover - optional analysis dependency
+    scipy_stats = None
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SAMPLE_DIR = ROOT / "runtime_analysis" / "privacy_hopqa_q30_stepfun_judge_validation_cross_model_200_20260525"
@@ -24,6 +29,12 @@ LABELS = {
     "intent": "Intent Leakage",
     "answer": "Answer Leakage",
     "full_info": "Full-Information Leakage",
+}
+LATEX_TYPE_LABELS = {
+    "privacy": "Privacy ($\\geq 4$)",
+    "intent": "Intent",
+    "answer": "Answer",
+    "full_info": "Full-info",
 }
 COLORS = {
     "blue": "#3c6e91",
@@ -148,8 +159,20 @@ def pvalue_text(value: float | None) -> str:
     return f"{value:.4f}"
 
 
-def tp_fp_fn_text(row: dict[str, Any]) -> str:
-    return f"{row['tp']}/{row['fp']}/{row['fn']}"
+def spearman_pvalue(x: list[int], y: list[int]) -> float | None:
+    if len(x) < 3 or len(set(x)) < 2 or len(set(y)) < 2:
+        return None
+    rho = pearson(ranks(x), ranks(y))
+    if rho is None or abs(rho) >= 1:
+        return 0.0 if rho is not None else None
+    if scipy_stats is not None:
+        result = scipy_stats.spearmanr(x, y)
+        if result.pvalue is not None and not math.isnan(float(result.pvalue)):
+            return float(result.pvalue)
+    # Large-sample fallback. This is only used for display/significance when
+    # scipy is unavailable; at n=300 it is sufficient for thresholding here.
+    t_stat = abs(rho) * math.sqrt((len(x) - 2) / max(1e-12, 1 - rho * rho))
+    return math.erfc(t_stat / math.sqrt(2))
 
 
 def main() -> None:
@@ -182,6 +205,7 @@ def main() -> None:
         recall = None if tp + fn == 0 else tp / (tp + fn)
         binary_rows.append(
             {
+                "field": field,
                 "metric": LABELS[field],
                 "tn": tn,
                 "fp": fp,
@@ -205,6 +229,7 @@ def main() -> None:
         "mae": sum(abs(a - b) for a, b in score_pairs) / len(keys),
         "pearson": pearson([float(v) for v in ref_scores], [float(v) for v in cand_scores]),
         "spearman": pearson(ranks(ref_scores), ranks(cand_scores)),
+        "spearman_p": spearman_pvalue(ref_scores, cand_scores),
         "weighted_kappa_linear": weighted_kappa(score_pairs, "linear"),
         "weighted_kappa_quadratic": weighted_kappa(score_pairs, "quadratic"),
         "stepfun_distribution": dict(Counter(ref_scores)),
@@ -222,28 +247,36 @@ def main() -> None:
         "\\begin{table}[t]",
         "\\small",
         "\\centering",
-        "\\begin{tabular}{@{}llccc@{}}",
+        "\\begin{tabular}{@{}lccc@{}}",
         "\\toprule",
-        "\\textbf{Outcome} & \\textbf{Type} & \\textbf{Agreement} & \\textbf{$\\kappa$} & \\textbf{Secondary} \\\\",
+        "\\textbf{Type} & \\textbf{Agree.} & \\textbf{$\\kappa$} & \\textbf{$p$} \\\\",
         "\\midrule",
         (
-            "Overall Privacy Score & 1--5 ordinal & "
-            f"{fmt_pct(score_summary['exact_agreement'])} exact; {fmt_pct(score_summary['within_one'])} within-one & "
-            f"QWK {fmt_float(score_summary['weighted_kappa_quadratic'])} & "
-            f"Spearman {fmt_float(score_summary['spearman'])} \\\\"
+            "Score (1--5) & "
+            f"{fmt_pct(score_summary['exact_agreement'])} & "
+            f"{fmt_float(score_summary['weighted_kappa_quadratic'])} & "
+            f"{pvalue_text(score_summary['spearman_p'])} \\\\"
         ),
-        "\\midrule",
     ]
     for row in binary_rows:
         latex_lines.append(
-            f"{row['metric']} & binary & {fmt_pct(row['agreement'])} & "
-            f"{fmt_float(row['kappa'])} & TP/FP/FN {tp_fp_fn_text(row)} \\\\"
+            f"{LATEX_TYPE_LABELS[str(row['field'])]} & {fmt_pct(row['agreement'])} & "
+            f"{fmt_float(row['kappa'])} & {pvalue_text(row['mcnemar_p'])} \\\\"
         )
     latex_lines.extend(
         [
             "\\bottomrule",
             "\\end{tabular}",
-            f"\\caption{{OpenRouter Opus 4.7 versus StepFun privacy-judge validation on {len(keys)} paired held-out rollouts. For the ordinal 1--5 privacy score, $\\kappa$ is quadratic weighted Cohen's kappa. For binary labels, $\\kappa$ is ordinary Cohen's kappa. TP/FP/FN treat StepFun as the reference label. Spearman is reported as an ordinal association diagnostic rather than the primary agreement statistic.}}",
+            (
+                "\\caption{Correlation and agreement analysis between the Stepfun 3.5 Flash model "
+                "we use for adversary/judge classification and Opus 4.7. We evaluate on "
+                f"{len(keys)} paired rollouts randomly selected from our six untrained model families, "
+                "with and without privacy prompting. Agreement is exact agreement: exact score match "
+                "for the 1--5 score and matching binary labels otherwise. The 1--5 score uses "
+                "quadratic weighted Cohen's $\\kappa$; binary rows use ordinary Cohen's $\\kappa$. "
+                "The 1--5 row reports the Spearman association p-value; binary rows report exact "
+                "McNemar p-values.}"
+            ),
             "\\label{tab:judge_validation_summary}",
             "\\end{table}",
             "",

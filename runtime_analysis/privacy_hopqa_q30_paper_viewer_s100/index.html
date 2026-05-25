@@ -175,28 +175,26 @@ PA-DR step100 + privacy prompt &amp; 59.3\% +/- 0.7 pp &amp; 68.1\% +/- 1.0 pp &
     </section>
     <section id="judge-validation">
       <h2>Judge Validation: Opus 4.7 Vs StepFun</h2>
-      <div class="note">OpenRouter Opus 4.7 and StepFun are compared on the same 300 held-out rollout traces, balanced across the cross-model test conditions. This is a paired full-pipeline comparison: each model runs the adversary and judge calls, and StepFun is treated as the reference label for TP/FP/FN. For the ordinal 1-5 privacy score, quadratic weighted Cohen's kappa is the main agreement statistic; Spearman is included as a rank-association diagnostic.</div>
+      <div class="note">Correlation and agreement analysis between the Stepfun 3.5 Flash model we use for adversary/judge classification and Opus 4.7. We evaluate on 300 paired rollouts randomly selected from our six untrained model families, with and without privacy prompting. Agreement is exact agreement; the 1-5 score uses quadratic weighted Cohen's kappa, and binary rows use ordinary Cohen's kappa.</div>
       <div class="links"><a href="plots/judge_validation_binary_agreement.svg">Binary SVG</a><a href="plots/judge_validation_binary_agreement.pdf">Binary PDF</a><a href="plots/judge_validation_score_confusion.svg">Score SVG</a><a href="plots/judge_validation_score_confusion.pdf">Score PDF</a><a href="tables/judge_validation_summary.tex">LaTeX table</a><a href="tables/judge_validation_summary.json">JSON table</a><a href="../privacy_hopqa_q30_stepfun_judge_validation_cross_model_200_20260525/openrouter_smoke_anthropic_claude-opus-4.7_full300_combined_20260525_report.html">Full raw report</a></div>
       <img src="plots/judge_validation_binary_agreement.svg" alt="Binary privacy-label agreement between Opus 4.7 and StepFun">
       <img src="plots/judge_validation_score_confusion.svg" alt="Score confusion matrix between Opus 4.7 and StepFun privacy scores">
-      <table><thead><tr><th>Label</th><th>TP</th><th>FP</th><th>FN</th><th>TN</th><th>Agreement</th><th>MCC</th><th>Kappa</th><th>McNemar p</th></tr></thead><tbody><tr><td>Privacy Leakage</td><td>77</td><td>49</td><td>17</td><td>157</td><td>78.0%</td><td>0.546</td><td>0.532</td><td>0.0001</td></tr><tr><td>Intent Leakage</td><td>102</td><td>166</td><td>0</td><td>32</td><td>44.7%</td><td>0.248</td><td>0.116</td><td>&lt; 1e-4</td></tr><tr><td>Answer Leakage</td><td>31</td><td>12</td><td>18</td><td>239</td><td>90.0%</td><td>0.617</td><td>0.615</td><td>0.3616</td></tr><tr><td>Full-Information Leakage</td><td>27</td><td>33</td><td>6</td><td>234</td><td>87.0%</td><td>0.543</td><td>0.511</td><td>&lt; 1e-4</td></tr></tbody></table>
-      <table><thead><tr><th>Score Metric</th><th>Value</th></tr></thead><tbody><tr><td>Exact score agreement</td><td>199/300 = 66.3%</td></tr><tr><td>Within-one score agreement</td><td>269/300 = 89.7%</td></tr><tr><td>Mean absolute error</td><td>0.44</td></tr><tr><td>Spearman correlation</td><td>0.677</td></tr><tr><td>Quadratic weighted kappa</td><td>0.706</td></tr></tbody></table>
+      <table><thead><tr><th>Type</th><th>Agree.</th><th>Kappa</th><th>p</th></tr></thead><tbody><tr><td>Score (1-5)</td><td>66.3%</td><td>0.706</td><td>&lt; 1e-4</td></tr><tr><td>Privacy (&gt;=4)</td><td>78.0%</td><td>0.532</td><td>0.0001</td></tr><tr><td>Intent</td><td>44.7%</td><td>0.116</td><td>&lt; 1e-4</td></tr><tr><td>Answer</td><td>90.0%</td><td>0.615</td><td>0.3616</td></tr><tr><td>Full-info</td><td>87.0%</td><td>0.511</td><td>&lt; 1e-4</td></tr></tbody></table>
       <details class="latex-block"><summary>Copy LaTeX: Judge Validation Summary</summary><pre><code>\begin{table}[t]
 \small
 \centering
-\begin{tabular}{@{}llccc@{}}
+\begin{tabular}{@{}lccc@{}}
 \toprule
-\textbf{Outcome} &amp; \textbf{Type} &amp; \textbf{Agreement} &amp; \textbf{$\kappa$} &amp; \textbf{Secondary} \\
+\textbf{Type} &amp; \textbf{Agree.} &amp; \textbf{$\kappa$} &amp; \textbf{$p$} \\
 \midrule
-Overall Privacy Score &amp; 1--5 ordinal &amp; 66.3\% exact; 89.7\% within-one &amp; QWK 0.706 &amp; Spearman 0.677 \\
-\midrule
-Privacy Leakage &amp; binary &amp; 78.0\% &amp; 0.532 &amp; TP/FP/FN 77/49/17 \\
-Intent Leakage &amp; binary &amp; 44.7\% &amp; 0.116 &amp; TP/FP/FN 102/166/0 \\
-Answer Leakage &amp; binary &amp; 90.0\% &amp; 0.615 &amp; TP/FP/FN 31/12/18 \\
-Full-Information Leakage &amp; binary &amp; 87.0\% &amp; 0.511 &amp; TP/FP/FN 27/33/6 \\
+Score (1--5) &amp; 66.3\% &amp; 0.706 &amp; $&lt;10^{-4}$ \\
+Privacy ($\geq 4$) &amp; 78.0\% &amp; 0.532 &amp; 0.0001 \\
+Intent &amp; 44.7\% &amp; 0.116 &amp; $&lt;10^{-4}$ \\
+Answer &amp; 90.0\% &amp; 0.615 &amp; 0.3616 \\
+Full-info &amp; 87.0\% &amp; 0.511 &amp; $&lt;10^{-4}$ \\
 \bottomrule
 \end{tabular}
-\caption{OpenRouter Opus 4.7 versus StepFun privacy-judge validation on 300 paired held-out rollouts. For the ordinal 1--5 privacy score, $\kappa$ is quadratic weighted Cohen's kappa. For binary labels, $\kappa$ is ordinary Cohen's kappa. TP/FP/FN treat StepFun as the reference label. Spearman is reported as an ordinal association diagnostic rather than the primary agreement statistic.}
+\caption{Correlation and agreement analysis between the Stepfun 3.5 Flash model we use for adversary/judge classification and Opus 4.7. We evaluate on 300 paired rollouts randomly selected from our six untrained model families, with and without privacy prompting. Agreement is exact agreement: exact score match for the 1--5 score and matching binary labels otherwise. The 1--5 score uses quadratic weighted Cohen's $\kappa$; binary rows use ordinary Cohen's $\kappa$. The 1--5 row reports the Spearman association p-value; binary rows report exact McNemar p-values.}
 \label{tab:judge_validation_summary}
 \end{table}
 </code></pre></details>
