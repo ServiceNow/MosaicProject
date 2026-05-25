@@ -56,6 +56,7 @@
         <div class="asset-card"><h3>Query And Retrieval Behavior</h3><div class="links"><a href="plots/training_behavior_step100.svg">SVG</a><a href="plots/training_behavior_step100.pdf">PDF</a><a href="tables/training_behavior_s100.tex">LaTeX</a></div></div>
         <div class="asset-card"><h3>Step100 Query Examples</h3><div class="links"><a href="#query-examples">Viewer table</a><a href="tables/paired_leakage_examples_s100.tex">LaTeX</a><a href="tables/paired_leakage_examples_s100.json">JSON</a></div></div>
         <div class="asset-card"><h3>Token Usage</h3><div class="links"><a href="#token-usage">Viewer table</a><a href="tables/token_usage_summary_s100.md">Markdown</a><a href="tables/token_usage_summary_s100.json">JSON</a></div></div>
+        <div class="asset-card"><h3>Judge Validation</h3><div class="links"><a href="#judge-validation">Viewer table</a><a href="plots/judge_validation_binary_agreement.svg">Binary SVG</a><a href="plots/judge_validation_score_confusion.svg">Score SVG</a><a href="tables/judge_validation_summary.tex">LaTeX</a></div></div>
         <div class="asset-card"><h3>Checkpoint Choice</h3><div class="links"><a href="tables/checkpoint_choice_s50_s100.tex">LaTeX</a><a href="viewer_data.json">JSON data</a></div></div>
       </div>
       <details class="latex-block"><summary>Copy LaTeX: Training Effect Summary</summary><pre><code>\begin{table*}[t]
@@ -172,6 +173,32 @@ PA-DR step100 + privacy prompt &amp; 59.3\% +/- 0.7 pp &amp; 68.1\% +/- 1.0 pp &
       <div class="note">Agent columns are per successful rollout from rollout token accounting. Adversary + judging columns are per StepFun privacy judgment and include the full privacy-evaluation suite for that rollout: intent adversary/judge, answer adversary/judge when run, and claim adversary/judge when run. Total columns aggregate the complete six-condition step100 slice in this table.</div>
       <div class="links"><a href="tables/token_usage_summary_s100.md">Markdown summary</a><a href="tables/token_usage_summary_s100.json">JSON data</a></div>
       <table><thead><tr><th>Condition</th><th>Agent Rollouts</th><th>Agent Input / Rollout</th><th>Agent Output / Rollout</th><th>Agent Total / Rollout</th><th>Agent Total</th><th>Privacy Judgments</th><th>Adv+Judge Input / Judgment</th><th>Adv+Judge Output / Judgment</th><th>Adv+Judge Total / Judgment</th><th>Adv+Judge Total</th></tr></thead><tbody><tr><td>Base</td><td>1032</td><td>139.9k</td><td>6.5k</td><td>146.4k</td><td>151.1M</td><td>1032</td><td>6.6k</td><td>7.0k</td><td>13.6k</td><td>14.0M</td></tr><tr><td>Base + privacy prompt</td><td>1032</td><td>125.3k</td><td>6.0k</td><td>131.2k</td><td>135.4M</td><td>1032</td><td>6.1k</td><td>5.8k</td><td>11.9k</td><td>12.2M</td></tr><tr><td>Task s100</td><td>1032</td><td>174.1k</td><td>9.5k</td><td>183.5k</td><td>189.4M</td><td>1032</td><td>7.5k</td><td>7.9k</td><td>15.4k</td><td>15.9M</td></tr><tr><td>Task s100 + privacy prompt</td><td>1032</td><td>174.3k</td><td>9.5k</td><td>183.8k</td><td>189.7M</td><td>1032</td><td>7.5k</td><td>8.5k</td><td>15.9k</td><td>16.4M</td></tr><tr><td>PA-DR s100</td><td>1032</td><td>169.8k</td><td>8.8k</td><td>178.6k</td><td>184.3M</td><td>1032</td><td>5.4k</td><td>5.4k</td><td>10.8k</td><td>11.1M</td></tr><tr><td>PA-DR s100 + privacy prompt</td><td>1032</td><td>166.6k</td><td>8.7k</td><td>175.3k</td><td>180.9M</td><td>1032</td><td>5.2k</td><td>4.7k</td><td>10.0k</td><td>10.3M</td></tr><tr><td>All six step100 conditions</td><td>6192</td><td>158.3k</td><td>8.2k</td><td>166.5k</td><td>1030.9M</td><td>6192</td><td>6.4k</td><td>6.5k</td><td>12.9k</td><td>80.0M</td></tr></tbody></table>
+    </section>
+    <section id="judge-validation">
+      <h2>Judge Validation: Opus 4.7 Vs StepFun</h2>
+      <div class="note">OpenRouter Opus 4.7 and StepFun are compared on the same 200 held-out rollout traces. This is a paired full-pipeline comparison: each model runs the adversary and judge calls, and StepFun is treated as the reference label for TP/FP/FN. McNemar's exact test is the most justified test for the binary labels because the two judges score the same rollouts.</div>
+      <div class="links"><a href="plots/judge_validation_binary_agreement.svg">Binary SVG</a><a href="plots/judge_validation_binary_agreement.pdf">Binary PDF</a><a href="plots/judge_validation_score_confusion.svg">Score SVG</a><a href="plots/judge_validation_score_confusion.pdf">Score PDF</a><a href="tables/judge_validation_summary.tex">LaTeX table</a><a href="tables/judge_validation_summary.json">JSON table</a><a href="../privacy_hopqa_q30_stepfun_judge_validation_cross_model_200_20260525/openrouter_smoke_anthropic_claude-opus-4.7_full200_combined_20260525_report.html">Full raw report</a></div>
+      <img src="plots/judge_validation_binary_agreement.svg" alt="Binary privacy-label agreement between Opus 4.7 and StepFun">
+      <img src="plots/judge_validation_score_confusion.svg" alt="Score confusion matrix between Opus 4.7 and StepFun privacy scores">
+      <table><thead><tr><th>Label</th><th>TP</th><th>FP</th><th>FN</th><th>TN</th><th>Agreement</th><th>MCC</th><th>Kappa</th><th>McNemar p</th></tr></thead><tbody><tr><td>Privacy Leakage</td><td>51</td><td>33</td><td>11</td><td>105</td><td>78.0%</td><td>0.547</td><td>0.532</td><td>0.0013</td></tr><tr><td>Intent Leakage</td><td>65</td><td>114</td><td>0</td><td>21</td><td>43.0%</td><td>0.238</td><td>0.107</td><td>&lt; 1e-4</td></tr><tr><td>Answer Leakage</td><td>20</td><td>9</td><td>10</td><td>161</td><td>90.5%</td><td>0.622</td><td>0.622</td><td>1.0000</td></tr><tr><td>Full-Information Leakage</td><td>13</td><td>25</td><td>6</td><td>156</td><td>84.5%</td><td>0.408</td><td>0.377</td><td>0.0009</td></tr></tbody></table>
+      <table><thead><tr><th>Score Metric</th><th>Value</th></tr></thead><tbody><tr><td>Exact score agreement</td><td>128/200 = 64.0%</td></tr><tr><td>Within-one score agreement</td><td>174/200 = 87.0%</td></tr><tr><td>Mean absolute error</td><td>0.49</td></tr><tr><td>Spearman correlation</td><td>0.642</td></tr><tr><td>Quadratic weighted kappa</td><td>0.659</td></tr></tbody></table>
+      <details class="latex-block"><summary>Copy LaTeX: Judge Validation Summary</summary><pre><code>\begin{table}[t]
+\small
+\centering
+\begin{tabular}{lrrrrrrr}
+\toprule
+\textbf{Label} &amp; \textbf{TP} &amp; \textbf{FP} &amp; \textbf{FN} &amp; \textbf{Agree} &amp; \textbf{MCC} &amp; \textbf{$\kappa$} &amp; \textbf{McNemar $p$} \\
+\midrule
+Privacy Leakage &amp; 51 &amp; 33 &amp; 11 &amp; 78.0\% &amp; 0.547 &amp; 0.532 &amp; 0.0013 \\
+Intent Leakage &amp; 65 &amp; 114 &amp; 0 &amp; 43.0\% &amp; 0.238 &amp; 0.107 &amp; $&lt;10^{-4}$ \\
+Answer Leakage &amp; 20 &amp; 9 &amp; 10 &amp; 90.5\% &amp; 0.622 &amp; 0.622 &amp; 1.0000 \\
+Full-Information Leakage &amp; 13 &amp; 25 &amp; 6 &amp; 84.5\% &amp; 0.408 &amp; 0.377 &amp; 0.0009 \\
+\bottomrule
+\end{tabular}
+\caption{OpenRouter Opus 4.7 versus StepFun privacy-judge validation on 200 paired held-out rollouts. TP/FP/FN treat StepFun as the reference label. MCC and $\kappa$ summarize paired agreement; McNemar's exact test evaluates whether discordant positive/negative calls are symmetric between judges.}
+\label{tab:judge_validation_summary}
+\end{table}
+</code></pre></details>
     </section>
     <section id="query-examples">
       <h2>Step100 Query Leakage Examples</h2>
