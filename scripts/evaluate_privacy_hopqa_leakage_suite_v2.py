@@ -27,6 +27,7 @@ from collections import defaultdict
 from datetime import datetime, timezone
 import hashlib
 import json
+import os
 from pathlib import Path, PurePosixPath
 import re
 import sys
@@ -70,6 +71,57 @@ def read_jsonl(path: Path) -> list[dict[str, Any]]:
                 flush=True,
             )
     return rows
+
+
+def read_trace_manifest(path: Path) -> list[Path]:
+    lines = [line.strip() for line in path.read_text(encoding="utf-8").splitlines() if line.strip() and not line.strip().startswith("#")]
+    if not lines:
+        return []
+    if not any(line.startswith("{") for line in lines):
+        return [Path(line) for line in lines]
+    traces: list[Path] = []
+    for line in lines:
+        try:
+            row = json.loads(line)
+        except json.JSONDecodeError:
+            traces.append(Path(line))
+            continue
+        if not isinstance(row, dict):
+            continue
+        trace_path = row.get("trace_path")
+        if trace_path:
+            traces.append(Path(str(trace_path)))
+    return traces
+
+
+def api_key_from_env_file(path: Path, key_name: str) -> str:
+    text = path.read_text(encoding="utf-8").strip()
+    if "=" not in text and "\n" not in text:
+        return text
+    pattern = re.compile(rf"^\s*(?:export\s+)?{re.escape(key_name)}\s*=\s*(.*)\s*$")
+    for line in text.splitlines():
+        match = pattern.match(line)
+        if not match:
+            continue
+        value = match.group(1).strip()
+        if (value.startswith('"') and value.endswith('"')) or (value.startswith("'") and value.endswith("'")):
+            value = value[1:-1]
+        return value
+    return ""
+
+
+def resolve_api_key(args: argparse.Namespace) -> str:
+    if args.api_key and args.api_key != "not-needed":
+        return args.api_key
+    if args.api_key_env:
+        value = os.environ.get(args.api_key_env)
+        if value:
+            return value
+    if args.api_key_env_file:
+        value = api_key_from_env_file(Path(args.api_key_env_file).expanduser(), args.api_key_env or "OPENROUTER_API_KEY")
+        if value:
+            return value
+    return args.api_key
 
 
 def spread_sample(items: list[Path], limit: int) -> list[Path]:
@@ -1498,14 +1550,16 @@ async def call_json(
                 finish_reason = response.choices[0].finish_reason
                 usage = dict(response.usage) if getattr(response, "usage", None) else {}
             else:
-                response = await client.chat.completions.create(
-                    model=args.model,
-                    messages=[{"role": "system", "content": SYSTEM}, {"role": "user", "content": prompt}],
-                    temperature=args.temperature,
-                    max_tokens=args.max_tokens,
-                    response_format={"type": "json_object"},
-                    timeout=args.timeout,
-                )
+                kwargs: dict[str, Any] = {
+                    "model": args.model,
+                    "messages": [{"role": "system", "content": SYSTEM}, {"role": "user", "content": prompt}],
+                    "temperature": args.temperature,
+                    "max_tokens": args.max_tokens,
+                    "timeout": args.timeout,
+                }
+                if not args.disable_response_format:
+                    kwargs["response_format"] = {"type": "json_object"}
+                response = await client.chat.completions.create(**kwargs)
                 msg = response.choices[0].message
                 content = msg.content or getattr(msg, "reasoning", None) or ""
                 finish_reason = response.choices[0].finish_reason
@@ -2000,7 +2054,10 @@ async def run_all(args: argparse.Namespace) -> None:
     err = Path(args.errors) if args.errors else artifact / "tables" / "privacy_leakage_suite_v2_full_errors.jsonl"
     dataset = base.load_dataset_index(Path(args.dataset_root))
     qa_index = load_private_qa_index(Path(args.private_qa))
-    traces = base.trace_paths_from_artifact(artifact)
+    if args.trace_manifest:
+        traces = read_trace_manifest(Path(args.trace_manifest))
+    else:
+        traces = base.trace_paths_from_artifact(artifact)
     if args.split:
         traces = [p for p in traces if p.relative_to(artifact).parts[2] == args.split]
     if args.offset:
@@ -2024,7 +2081,7 @@ async def run_all(args: argparse.Namespace) -> None:
         flush=True,
     )
     print("leakage_v2 note: runner does not set vLLM max-num-seqs; endpoint concurrency is controlled server-side.", flush=True)
-    client = AsyncOpenAI(base_url=base_url, api_key=args.api_key)
+    client = AsyncOpenAI(base_url=base_url, api_key=resolve_api_key(args))
     sem = asyncio.Semaphore(args.concurrency)
     lock = asyncio.Lock()
     queue: asyncio.Queue[Path] = asyncio.Queue()
@@ -2064,9 +2121,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--errors", default=None)
     parser.add_argument("--base-url", default=DEFAULT_STEPFUN)
     parser.add_argument("--api-key", default="not-needed")
+    parser.add_argument("--api-key-env", default="OPENROUTER_API_KEY")
+    parser.add_argument("--api-key-env-file", default=None)
     parser.add_argument("--model", default="step-3.5-flash")
     parser.add_argument("--api-mode", choices=["completion_template", "chat"], default="completion_template")
+    parser.add_argument("--disable-response-format", action="store_true")
     parser.add_argument("--split", choices=["train", "val", "test"], default=None)
+    parser.add_argument("--trace-manifest", default=None, help="JSONL or text file containing trace_path values to evaluate.")
     parser.add_argument("--private-qa-doc-scope", choices=["read", "search_results", "both"], default="read")
     parser.add_argument("--max-private-questions", type=int, default=200)
     parser.add_argument("--concurrency", type=int, default=64)
