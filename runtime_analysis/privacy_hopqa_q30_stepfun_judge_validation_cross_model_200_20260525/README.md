@@ -39,7 +39,7 @@ bash scripts/run_privacy_hopqa_openrouter_judge_smoke.sh
 The smoke script:
 
 - Uses `/home/toolkit/my_code/openkey.env` for `OPENROUTER_API_KEY`; it does not print the key.
-- Defaults to `LIMIT=3`, `SAMPLE_MODE=spread`, `CONCURRENCY=1`, `MAX_TOKENS=16384`, and refuses `LIMIT>5` unless `ALLOW_LARGE_SMOKE=1`.
+- Defaults to `LIMIT=3`, `SAMPLE_MODE=spread`, `RANDOM_SEED=20260525`, `CONCURRENCY=1`, `MAX_TOKENS=16384`, and refuses `LIMIT>5` unless `ALLOW_LARGE_SMOKE=1`.
 - Checks OpenRouter account/key status before and after the model calls.
 - Writes candidate rows, errors, a JSON summary, disagreement JSONL, and an HTML report into this sample directory.
 - Prints a Rich table with score agreement, binary agreement, score confusion, row-level labels, errors, and raw candidate output snippets for disagreements.
@@ -64,6 +64,7 @@ Manual equivalent:
   --api-mode chat \
   --limit 3 \
   --sample-mode spread \
+  --random-seed 20260525 \
   --concurrency 1 \
   --max-tokens 16384 \
   --disable-response-format \

@@ -11,6 +11,7 @@ OPENROUTER_MODEL="${OPENROUTER_MODEL:-anthropic/claude-opus-4.7}"
 LIMIT="${LIMIT:-3}"
 CONCURRENCY="${CONCURRENCY:-1}"
 SAMPLE_MODE="${SAMPLE_MODE:-spread}"
+RANDOM_SEED="${RANDOM_SEED:-20260525}"
 MAX_TOKENS="${MAX_TOKENS:-16384}"
 TEMPERATURE="${TEMPERATURE:-0}"
 DISABLE_RESPONSE_FORMAT="${DISABLE_RESPONSE_FORMAT:-1}"
@@ -63,7 +64,7 @@ fi
 
 echo "Running OpenRouter judge smoke:"
 echo "  model=$OPENROUTER_MODEL"
-echo "  limit=$LIMIT sample_mode=$SAMPLE_MODE concurrency=$CONCURRENCY max_tokens=$MAX_TOKENS"
+echo "  limit=$LIMIT sample_mode=$SAMPLE_MODE random_seed=$RANDOM_SEED concurrency=$CONCURRENCY max_tokens=$MAX_TOKENS"
 echo "  output=$OUTPUT"
 
 "$PYTHON" scripts/evaluate_privacy_hopqa_leakage_suite_v2.py \
@@ -77,6 +78,7 @@ echo "  output=$OUTPUT"
   --api-mode chat \
   --limit "$LIMIT" \
   --sample-mode "$SAMPLE_MODE" \
+  --random-seed "$RANDOM_SEED" \
   --concurrency "$CONCURRENCY" \
   --max-tokens "$MAX_TOKENS" \
   --temperature "$TEMPERATURE" \

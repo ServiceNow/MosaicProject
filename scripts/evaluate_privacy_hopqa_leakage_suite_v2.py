@@ -30,6 +30,7 @@ import hashlib
 import json
 import os
 from pathlib import Path, PurePosixPath
+import random
 import re
 import sys
 import time
@@ -146,6 +147,13 @@ def spread_sample(items: list[Path], limit: int) -> list[Path]:
             seen.add(item)
         cursor += 1
     return chosen
+
+
+def random_sample(items: list[Path], limit: int, seed: int) -> list[Path]:
+    if limit <= 0 or len(items) <= limit:
+        return items
+    rng = random.Random(seed)
+    return rng.sample(items, limit)
 
 
 def append_jsonl(path: Path, row: dict[str, Any]) -> None:
@@ -2096,6 +2104,8 @@ async def run_all(args: argparse.Namespace) -> None:
     total_candidates = len(traces)
     if args.limit and args.sample_mode == "spread":
         traces = spread_sample(traces, args.limit)
+    elif args.limit and args.sample_mode == "random":
+        traces = random_sample(traces, args.limit, args.random_seed)
     elif args.limit:
         traces = traces[: args.limit]
     terminal_errors = terminal_model_error_fingerprints(err) if args.skip_terminal_model_errors else set()
@@ -2106,6 +2116,7 @@ async def run_all(args: argparse.Namespace) -> None:
         base_url += "/v1"
     print(
         f"leakage_v2 traces={len(traces)} candidates={total_candidates} sample_mode={args.sample_mode} "
+        f"random_seed={args.random_seed if args.sample_mode == 'random' else 'n/a'} "
         f"completed={len(done)} terminal_model_errors={len(terminal_errors)} model={args.model} "
         f"api_mode={args.api_mode} concurrency={args.concurrency} max_tokens={args.max_tokens} "
         f"private_qa_docs={len(qa_index)} output={out}",
@@ -2171,10 +2182,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--offset", type=int, default=0)
     parser.add_argument(
         "--sample-mode",
-        choices=["sorted", "spread"],
+        choices=["sorted", "spread", "random"],
         default="sorted",
-        help="Trace selection before --limit: sorted takes the first rows; spread selects evenly across the candidate trace list.",
+        help=(
+            "Trace selection before --limit: sorted takes the first rows; "
+            "spread selects evenly across the candidate trace list; random samples with --random-seed."
+        ),
     )
+    parser.add_argument("--random-seed", type=int, default=20260525, help="Seed used when --sample-mode=random.")
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--continue-on-error", action="store_true")
     parser.add_argument(
