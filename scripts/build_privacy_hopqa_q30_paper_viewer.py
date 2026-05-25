@@ -444,7 +444,7 @@ def plot_privacy_prompt_accuracy_leakage(rows: list[dict[str, Any]], path: Path,
             "prompt_stepfun",
         ),
     ]
-    fig, axes = plt.subplots(1, 2, figsize=(12.8, 4.85), sharey=True)
+    fig, axes = plt.subplots(2, 1, figsize=(7.6, 8.4), sharex=True, sharey=True)
     x = list(range(len(rows)))
     width = 0.36
     error_kw = {"elinewidth": 1.2, "ecolor": "#303633", "capsize": 3.5, "capthick": 1.1}
@@ -502,12 +502,15 @@ def plot_privacy_prompt_accuracy_leakage(rows: list[dict[str, Any]], path: Path,
             annotate_ns(ax, baseline_pos, baseline_vals, baseline_counts, percent=True, y_max=y_upper)
             annotate_ns(ax, prompt_pos, prompt_vals, prompt_counts, percent=True, y_max=y_upper)
         ax.set_ylabel(ylabel)
-        ax.set_xlabel("Model")
         ax.set_xticks(x)
-        ax.set_xticklabels(labels, rotation=25, ha="right")
+        if ax is axes[-1]:
+            ax.set_xlabel("Model")
+            ax.set_xticklabels(labels, rotation=25, ha="right")
+        else:
+            ax.tick_params(axis="x", labelbottom=False)
         set_percent_y_axis(ax, y_upper)
     handles, legend_labels = axes[0].get_legend_handles_labels()
-    fig.legend(handles, legend_labels, loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.16))
+    fig.legend(handles, legend_labels, loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.02))
     save_figure(fig, path)
 
 
