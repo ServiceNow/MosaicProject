@@ -1,0 +1,29 @@
+\begin{table*}[t]
+\small
+\centering
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+\textbf{Model} & \textbf{\shortstack{Strict Chain\\Success ($\uparrow$)}} & \textbf{\shortstack{Hop-Level\\Accuracy ($\uparrow$)}} & \textbf{\shortstack{Privacy\\Leakage ($\downarrow$)}} & \textbf{\shortstack{Intent\\Leakage ($\downarrow$)}} & \textbf{\shortstack{Answer\\Leakage ($\downarrow$)}} & \textbf{\shortstack{Full-Information\\Leakage ($\downarrow$)}} \\
+\midrule
+\qwenthreeb & 48.7\% {\scriptsize $\pm$ 1.1} & 73.1\% {\scriptsize $\pm$ 1.3} & 34.0\% {\scriptsize $\pm$ 0.4} & 51.1\% {\scriptsize $\pm$ 1.7} & 18.7\% {\scriptsize $\pm$ 0.3} & 11.7\% {\scriptsize $\pm$ 1.4} \\
+\quad + privacy prompt & 44.5\% {\scriptsize $\pm$ 0.8} & 71.3\% {\scriptsize $\pm$ 0.3} & 25.5\% {\scriptsize $\pm$ 1.1} & 39.2\% {\scriptsize $\pm$ 0.8} & 14.4\% {\scriptsize $\pm$ 0.5} & 7.9\% {\scriptsize $\pm$ 0.7} \\
+\midrule
+Qwen3 8B & 48.4\% {\scriptsize $\pm$ 1.4} & 69.7\% {\scriptsize $\pm$ 1.0} & 33.4\% {\scriptsize $\pm$ 1.8} & 45.8\% {\scriptsize $\pm$ 1.1} & 15.4\% {\scriptsize $\pm$ 1.3} & 10.4\% {\scriptsize $\pm$ 0.8} \\
+\quad + privacy prompt & 50.1\% {\scriptsize $\pm$ 0.6} & 70.8\% {\scriptsize $\pm$ 1.2} & 27.2\% {\scriptsize $\pm$ 1.0} & 36.6\% {\scriptsize $\pm$ 1.6} & 12.4\% {\scriptsize $\pm$ 0.8} & 7.8\% {\scriptsize $\pm$ 0.8} \\
+\midrule
+Step-3.5 Flash & 51.4\% {\scriptsize $\pm$ 0.7} & 74.8\% {\scriptsize $\pm$ 0.9} & 39.6\% {\scriptsize $\pm$ 0.7} & 53.8\% {\scriptsize $\pm$ 2.1} & 17.5\% {\scriptsize $\pm$ 0.4} & 14.1\% {\scriptsize $\pm$ 1.4} \\
+\quad + privacy prompt & 51.6\% {\scriptsize $\pm$ 1.2} & 75.2\% {\scriptsize $\pm$ 0.6} & 39.9\% {\scriptsize $\pm$ 0.7} & 54.6\% {\scriptsize $\pm$ 0.5} & 17.7\% {\scriptsize $\pm$ 1.7} & 14.0\% {\scriptsize $\pm$ 0.9} \\
+\midrule
+GPT-OSS 20B & 52.4\% {\scriptsize $\pm$ 0.8} & 73.1\% {\scriptsize $\pm$ 0.9} & 42.9\% {\scriptsize $\pm$ 1.3} & 42.2\% {\scriptsize $\pm$ 0.3} & 21.8\% {\scriptsize $\pm$ 0.6} & 14.6\% {\scriptsize $\pm$ 0.9} \\
+\quad + privacy prompt & 58.3\% {\scriptsize $\pm$ 0.4} & 78.3\% {\scriptsize $\pm$ 0.3} & 34.8\% {\scriptsize $\pm$ 0.3} & 35.9\% {\scriptsize $\pm$ 0.6} & 18.3\% {\scriptsize $\pm$ 1.1} & 10.2\% {\scriptsize $\pm$ 0.8} \\
+\midrule
+Chroma Context-1 & 15.2\% {\scriptsize $\pm$ 0.8} & 36.7\% {\scriptsize $\pm$ 1.0} & 19.1\% {\scriptsize $\pm$ 1.2} & 25.3\% {\scriptsize $\pm$ 0.8} & 5.7\% {\scriptsize $\pm$ 0.7} & 3.3\% {\scriptsize $\pm$ 0.1} \\
+\quad + privacy prompt & 25.6\% {\scriptsize $\pm$ 0.6} & 51.1\% {\scriptsize $\pm$ 1.8} & 17.9\% {\scriptsize $\pm$ 1.7} & 23.5\% {\scriptsize $\pm$ 1.3} & 5.6\% {\scriptsize $\pm$ 1.2} & 3.2\% {\scriptsize $\pm$ 0.5} \\
+\midrule
+Gemma 4 31B IT & {\bfseries 63.6\% {\scriptsize $\pm$ 0.7}} & {\bfseries 82.0\% {\scriptsize $\pm$ 0.5}} & 9.7\% {\scriptsize $\pm$ 0.2} & 25.8\% {\scriptsize $\pm$ 0.1} & 6.2\% {\scriptsize $\pm$ 0.1} & 2.3\% {\scriptsize $\pm$ 0.5} \\
+\quad + privacy prompt & 60.8\% {\scriptsize $\pm$ 0.6} & 80.9\% {\scriptsize $\pm$ 0.1} & {\bfseries 1.9\% {\scriptsize $\pm$ 0.1}} & {\bfseries 14.9\% {\scriptsize $\pm$ 1.6}} & {\bfseries 1.3\% {\scriptsize $\pm$ 0.3}} & {\bfseries 0.4\% {\scriptsize $\pm$ 0.3}} \\
+\bottomrule
+\end{tabular}
+\caption{Comparison of untrained models on the held-out Privacy HopQA test set, evaluated with and without the privacy-aware prompt. Values after $\pm$ are SEMs in percentage points. Chroma Context-1 uses the medium OpenRouter configuration.}
+\label{tab:untrained_model_summary}
+\end{table*}

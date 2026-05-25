@@ -60,6 +60,38 @@ SUMMARY_METRICS = {
     "lenient": "lenient_full_info_rate",
 }
 BEHAVIOR_METRICS = ["web_queries", "web_reads", "local_searches", "local_reads"]
+UNTRAINED_MODEL_ORDER = [
+    BASE_LABEL,
+    "qwen3_8b",
+    "step35_flash",
+    "gpt_oss_20b",
+    "chroma_context_1",
+    "gemma4_31b_it",
+]
+UNTRAINED_MODEL_LATEX_LABELS = {
+    BASE_LABEL: r"\qwenthreeb",
+    "qwen3_8b": "Qwen3 8B",
+    "step35_flash": "Step-3.5 Flash",
+    "gpt_oss_20b": "GPT-OSS 20B",
+    "chroma_context_1": "Chroma Context-1",
+    "gemma4_31b_it": "Gemma 4 31B IT",
+}
+UNTRAINED_MODEL_HTML_LABELS = {
+    BASE_LABEL: "Qwen3 4B",
+    "qwen3_8b": "Qwen3 8B",
+    "step35_flash": "Step-3.5 Flash",
+    "gpt_oss_20b": "GPT-OSS 20B",
+    "chroma_context_1": "Chroma Context-1",
+    "gemma4_31b_it": "Gemma 4 31B IT",
+}
+UNTRAINED_METRICS = [
+    ("strict_chain", "max", "strict_chain_success_rate"),
+    ("per_hop_accuracy", "max", "hop_accuracy"),
+    ("privacy_leakage", "min", "reward_rate"),
+    ("intent", "min", "intent4_rate"),
+    ("answer", "min", "answer_rate"),
+    ("full", "min", "full_info_rate"),
+]
 
 
 def collect_metric_row(root: Path, model_label: str, condition: str, display: str) -> dict[str, Any]:
@@ -272,6 +304,85 @@ def latex_training_summary(rows: list[dict[str, Any]]) -> str:
 \label{{tab:training_effect_summary_s100}}
 \end{{table*}}
 """
+
+
+def untrained_model_summary_rows(current_viewer_data_path: Path) -> list[dict[str, Any]]:
+    data = json.loads(current_viewer_data_path.read_text(encoding="utf-8"))
+    by_model = {row.get("model_label"): row for row in data.get("privacy_prompt_summary", [])}
+    out: list[dict[str, Any]] = []
+    for model_label in UNTRAINED_MODEL_ORDER:
+        row = by_model.get(model_label)
+        if not row:
+            continue
+        for prefix, latex_label, html_label in [
+            (
+                "baseline",
+                UNTRAINED_MODEL_LATEX_LABELS[model_label],
+                UNTRAINED_MODEL_HTML_LABELS[model_label],
+            ),
+            ("prompt", r"\quad + privacy prompt", "+ privacy prompt"),
+        ]:
+            item: dict[str, Any] = {
+                "model_label": model_label,
+                "condition": prefix,
+                "latex_label": latex_label,
+                "html_label": html_label,
+            }
+            for output_key, _direction, source_key in UNTRAINED_METRICS:
+                item[f"{output_key}_value"] = row.get(f"{prefix}_{source_key}")
+                item[f"{output_key}_sem"] = row.get(f"{prefix}_{source_key}_sem")
+            out.append(item)
+    return out
+
+
+def latex_untrained_model_summary(rows: list[dict[str, Any]]) -> str:
+    best: dict[str, float] = {}
+    for key, direction, _source in UNTRAINED_METRICS:
+        values = [value for row in rows if (value := base.live.as_float(row.get(f"{key}_value"))) is not None]
+        if values:
+            best[key] = max(values) if direction == "max" else min(values)
+    body: list[str] = []
+    for index, row in enumerate(rows):
+        if index and row.get("condition") == "baseline":
+            body.append(r"\midrule")
+        cells = [str(row.get("latex_label") or "")]
+        for key, _direction, _source in UNTRAINED_METRICS:
+            value = base.live.as_float(row.get(f"{key}_value"))
+            is_best = value is not None and key in best and math.isclose(value, best[key], abs_tol=1e-12)
+            cells.append(base.latex_pct_pm_cell(row, key, bold=is_best))
+        body.append(" & ".join(cells) + r" \\")
+    body_text = "\n".join(body)
+    return rf"""\begin{{table*}}[t]
+\small
+\centering
+\begin{{tabular}}{{@{{}}lcccccc@{{}}}}
+\toprule
+\textbf{{Model}} & \textbf{{\shortstack{{Strict Chain\\Success ($\uparrow$)}}}} & \textbf{{\shortstack{{Hop-Level\\Accuracy ($\uparrow$)}}}} & \textbf{{\shortstack{{Privacy\\Leakage ($\downarrow$)}}}} & \textbf{{\shortstack{{Intent\\Leakage ($\downarrow$)}}}} & \textbf{{\shortstack{{Answer\\Leakage ($\downarrow$)}}}} & \textbf{{\shortstack{{Full-Information\\Leakage ($\downarrow$)}}}} \\
+\midrule
+{body_text}
+\bottomrule
+\end{{tabular}}
+\caption{{Comparison of untrained models on the held-out Privacy HopQA test set, evaluated with and without the privacy-aware prompt. Values after $\pm$ are SEMs in percentage points. Chroma Context-1 uses the medium OpenRouter configuration.}}
+\label{{tab:untrained_model_summary}}
+\end{{table*}}
+"""
+
+
+def untrained_model_rows_for_html(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    for row in rows:
+        out.append(
+            {
+                "model": row.get("html_label"),
+                "strict_chain": base.pct_pm_text(row, "strict_chain"),
+                "per_hop_accuracy": base.pct_pm_text(row, "per_hop_accuracy"),
+                "privacy_leakage": base.pct_pm_text(row, "privacy_leakage"),
+                "intent": base.pct_pm_text(row, "intent"),
+                "answer": base.pct_pm_text(row, "answer"),
+                "full": base.pct_pm_text(row, "full"),
+            }
+        )
+    return out
 
 
 def latex_behavior_summary(rows: list[dict[str, Any]]) -> str:
@@ -1032,12 +1143,15 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
     status = status_rows(rows)
     query_examples = step100_query_example_rows(limit=3)
     token_rows, token_combined = token_usage_rows()
+    current_viewer_data_path = output_dir.parent / "privacy_hopqa_q30_paper_viewer" / "viewer_data.json"
+    untrained_rows = untrained_model_summary_rows(current_viewer_data_path)
 
     plot_training_effect(rows, plots_dir / "training_effect_step100.svg")
     plot_core_leakage_types(summary, plots_dir / "core_leakage_types_step100.svg")
     plot_behavior(behavior, plots_dir / "training_behavior_step100.svg")
 
     training_effect_latex = latex_training_summary(summary)
+    untrained_latex = latex_untrained_model_summary(untrained_rows)
     behavior_latex = latex_behavior_summary(behavior)
     query_examples_latex = latex_step100_query_examples(query_examples)
     checkpoint_latex = base.latex_table(
@@ -1058,6 +1172,11 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
         "tab:checkpoint_choice_s50_s100",
     )
     write_text(tables_dir / "training_effect_summary_s100.tex", training_effect_latex)
+    write_text(tables_dir / "untrained_model_summary.tex", untrained_latex)
+    write_text(
+        tables_dir / "untrained_model_summary.json",
+        json.dumps({"source": str(current_viewer_data_path), "rows": untrained_rows}, indent=2) + "\n",
+    )
     write_text(tables_dir / "training_behavior_s100.tex", behavior_latex)
     write_text(tables_dir / "paired_leakage_examples_s100.tex", query_examples_latex)
     write_text(tables_dir / "paired_leakage_examples_s100.json", json.dumps(query_examples, indent=2) + "\n")
@@ -1075,6 +1194,7 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
                 "summary_rows": summary,
                 "checkpoint_rows": checkpoints,
                 "behavior_rows": behavior,
+                "untrained_model_rows": untrained_rows,
                 "token_usage_rows": token_rows,
                 "token_usage_combined": token_combined,
                 "paired_leakage_example_rows": query_examples,
@@ -1114,6 +1234,18 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
             ("full", "Full-Information Leakage"),
         ],
         table_rows_for_html(summary),
+    )
+    untrained_table = base.table(
+        [
+            ("model", "Model"),
+            ("strict_chain", "Strict Chain Success"),
+            ("per_hop_accuracy", "Hop-Level Accuracy"),
+            ("privacy_leakage", "Privacy Leakage"),
+            ("intent", "Intent Leakage"),
+            ("answer", "Answer Leakage"),
+            ("full", "Full-Information Leakage"),
+        ],
+        untrained_model_rows_for_html(untrained_rows),
     )
     checkpoint_table = base.table(
         [
@@ -1157,6 +1289,7 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
         token_usage_rows_for_html([*token_rows, token_combined]),
     )
     training_effect_latex_block = latex_details("Copy LaTeX: Training Effect Summary", training_effect_latex)
+    untrained_latex_block = latex_details("Copy LaTeX: Untrained Model Comparison", untrained_latex)
     behavior_latex_block = latex_details("Copy LaTeX: Query And Retrieval Behavior", behavior_latex)
     query_examples_latex_block = latex_details("Copy LaTeX: Step100 Query Examples", query_examples_latex)
     checkpoint_latex_block = latex_details("Copy LaTeX: Checkpoint Choice Diagnostic", checkpoint_latex)
@@ -1244,6 +1377,7 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
       <div class="note">One-place index for the step100 plots, LaTeX tables, and source data generated by this viewer.</div>
       <div class="asset-grid">
         <div class="asset-card"><h3>Training Effect</h3><div class="links"><a href="plots/training_effect_step100.svg">SVG</a><a href="plots/training_effect_step100.pdf">PDF</a><a href="tables/training_effect_summary_s100.tex">LaTeX</a></div></div>
+        <div class="asset-card"><h3>Untrained Models</h3><div class="links"><a href="#untrained-models">Viewer table</a><a href="tables/untrained_model_summary.tex">LaTeX</a><a href="tables/untrained_model_summary.json">JSON</a></div></div>
         <div class="asset-card"><h3>Training Trajectory</h3><div class="links"><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_accuracy_privacy_arrows.svg">SVG</a><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_accuracy_privacy_arrows.pdf">PDF</a><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_metrics.csv">CSV</a><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_metrics.json">JSON</a></div></div>
         <div class="asset-card"><h3>Core Leakage Types</h3><div class="links"><a href="plots/core_leakage_types_step100.svg">SVG</a><a href="plots/core_leakage_types_step100.pdf">PDF</a></div></div>
         <div class="asset-card"><h3>Query And Retrieval Behavior</h3><div class="links"><a href="plots/training_behavior_step100.svg">SVG</a><a href="plots/training_behavior_step100.pdf">PDF</a><a href="tables/training_behavior_s100.tex">LaTeX</a></div></div>
@@ -1252,6 +1386,7 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
         <div class="asset-card"><h3>Checkpoint Choice</h3><div class="links"><a href="tables/checkpoint_choice_s50_s100.tex">LaTeX</a><a href="viewer_data.json">JSON data</a></div></div>
       </div>
       {training_effect_latex_block}
+      {untrained_latex_block}
       {behavior_latex_block}
       {query_examples_latex_block}
       {checkpoint_latex_block}
@@ -1262,6 +1397,12 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
       <img src="plots/training_effect_step100.svg" alt="Step100 training effect on strict chain success and privacy leakage">
       <div class="links"><a href="plots/training_effect_step100.svg">SVG</a><a href="plots/training_effect_step100.pdf">PDF</a><a href="tables/training_effect_summary_s100.tex">LaTeX table</a></div>
       {summary_table}
+    </section>
+    <section id="untrained-models">
+      <h2>Untrained Model Comparison</h2>
+      <div class="note">Held-out test comparison for the untrained model families, evaluated with and without the privacy-aware prompt. Values are SEM over repeat means where available; Chroma Context-1 uses the medium OpenRouter configuration.</div>
+      <div class="links"><a href="tables/untrained_model_summary.tex">LaTeX table</a><a href="tables/untrained_model_summary.json">JSON rows</a></div>
+      {untrained_table}
     </section>
     <section id="training-trajectory">
       <h2>Training Trajectory: Accuracy And Privacy</h2>
