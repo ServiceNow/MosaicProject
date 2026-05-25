@@ -462,7 +462,7 @@ def plot_privacy_prompt_accuracy_leakage(rows: list[dict[str, Any]], path: Path,
             for row, count in zip(rows, prompt_counts)
             if count and row.get(prompt_key) is not None
         )
-    y_upper = nice_percent_upper_from_values(all_percent_values, annotate=annotate)
+    y_upper = 100.0
     for ax, (ylabel, baseline_key, prompt_key, baseline_n_key, prompt_n_key) in zip(axes, metrics):
         baseline_counts = [int(row.get(baseline_n_key) or 0) for row in rows]
         prompt_counts = [int(row.get(prompt_n_key) or 0) for row in rows]
@@ -502,12 +502,9 @@ def plot_privacy_prompt_accuracy_leakage(rows: list[dict[str, Any]], path: Path,
             annotate_ns(ax, baseline_pos, baseline_vals, baseline_counts, percent=True, y_max=y_upper)
             annotate_ns(ax, prompt_pos, prompt_vals, prompt_counts, percent=True, y_max=y_upper)
         ax.set_ylabel(ylabel)
+        ax.set_xlabel("Model")
         ax.set_xticks(x)
-        if ax is axes[-1]:
-            ax.set_xlabel("Model")
-            ax.set_xticklabels(labels, rotation=25, ha="right")
-        else:
-            ax.tick_params(axis="x", labelbottom=False)
+        ax.set_xticklabels(labels, rotation=25, ha="right")
         set_percent_y_axis(ax, y_upper)
     handles, legend_labels = axes[0].get_legend_handles_labels()
     fig.legend(handles, legend_labels, loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.02))
