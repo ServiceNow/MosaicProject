@@ -1,17 +1,17 @@
 \begin{table}[t]
 \small
 \centering
-\begin{tabular}{@{}lcc@{}}
+\begin{tabular}{@{}lccc@{}}
 \toprule
-\textbf{Type} & \textbf{Agree.} & \textbf{$\kappa$} \\
+\textbf{Type} & \textbf{$\kappa$} & \textbf{StepFun} & \textbf{Opus} \\
 \midrule
-Score (1--5) & 66.3\% & 0.706 \\
-Intent score (1--5) & 17.7\% & 0.421 \\
-Privacy ($\geq 4$) & 78.0\% & 0.532 \\
-Answer & 90.0\% & 0.615 \\
-Full-info & 87.0\% & 0.511 \\
+Score (1--5) & 0.706 & 3.33 & 3.58 \\
+Intent score (1--5) & 0.421 & 3.24 & 4.34 \\
+Privacy ($\geq 4$) & 0.532 & 31.3\% & 42.0\% \\
+Answer & 0.615 & 16.3\% & 14.3\% \\
+Full-info & 0.511 & 11.0\% & 20.0\% \\
 \bottomrule
 \end{tabular}
-\caption{Correlation and agreement analysis between the Stepfun 3.5 Flash model we use for adversary/judge classification and Opus 4.7. We evaluate on 300 paired rollouts randomly selected from our six untrained model families, with and without privacy prompting. Agreement is exact agreement: exact score match for the 1--5 score rows and matching binary labels otherwise. The two 1--5 rows use quadratic weighted Cohen's $\kappa$; binary rows use ordinary Cohen's $\kappa$.}
+\caption{Correlation and agreement analysis between the Stepfun 3.5 Flash model we use for adversary/judge classification and Opus 4.7. We evaluate on 300 paired rollouts randomly selected from our six untrained model families, with and without privacy prompting. The two 1--5 rows use quadratic weighted Cohen's $\kappa$; binary rows use ordinary Cohen's $\kappa$. StepFun and Opus columns report mean score for 1--5 rows and positive rate for binary rows.}
 \label{tab:judge_validation_summary}
 \end{table}

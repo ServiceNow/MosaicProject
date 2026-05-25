@@ -156,6 +156,10 @@ def fmt_float(value: float | None, digits: int = 3) -> str:
     return "--" if value is None else f"{value:.{digits}f}"
 
 
+def fmt_mean(value: float | None) -> str:
+    return "--" if value is None else f"{value:.2f}"
+
+
 def pvalue_text(value: float | None) -> str:
     if value is None:
         return "--"
@@ -218,6 +222,8 @@ def main() -> None:
                 "tp": tp,
                 "stepfun_positive": tp + fn,
                 "opus_positive": tp + fp,
+                "stepfun_mean": (tp + fn) / len(keys),
+                "opus_mean": (tp + fp) / len(keys),
                 "agreement": (tn + tp) / len(keys),
                 "precision_vs_stepfun": precision,
                 "recall_vs_stepfun": recall,
@@ -232,6 +238,8 @@ def main() -> None:
         "exact_agreement": sum(a == b for a, b in score_pairs) / len(keys),
         "within_one": sum(abs(a - b) <= 1 for a, b in score_pairs) / len(keys),
         "mae": sum(abs(a - b) for a, b in score_pairs) / len(keys),
+        "stepfun_mean": sum(ref_scores) / len(ref_scores),
+        "opus_mean": sum(cand_scores) / len(cand_scores),
         "pearson": pearson([float(v) for v in ref_scores], [float(v) for v in cand_scores]),
         "spearman": pearson(ranks(ref_scores), ranks(cand_scores)),
         "spearman_p": spearman_pvalue(ref_scores, cand_scores),
@@ -246,6 +254,8 @@ def main() -> None:
         "n": len(keys),
         "exact_agreement": sum(a == b for a, b in intent_score_pairs) / len(keys),
         "within_one": sum(abs(a - b) <= 1 for a, b in intent_score_pairs) / len(keys),
+        "stepfun_mean": sum(a for a, _ in intent_score_pairs) / len(intent_score_pairs),
+        "opus_mean": sum(b for _, b in intent_score_pairs) / len(intent_score_pairs),
         "weighted_kappa_linear": weighted_kappa(intent_score_pairs, "linear"),
         "weighted_kappa_quadratic": weighted_kappa(intent_score_pairs, "quadratic"),
         "stepfun_distribution": dict(Counter(a for a, _ in intent_score_pairs)),
@@ -262,27 +272,27 @@ def main() -> None:
         "\\begin{table}[t]",
         "\\small",
         "\\centering",
-        "\\begin{tabular}{@{}lcc@{}}",
+        "\\begin{tabular}{@{}lccc@{}}",
         "\\toprule",
-        "\\textbf{Type} & \\textbf{Agree.} & \\textbf{$\\kappa$} \\\\",
+        "\\textbf{Type} & \\textbf{$\\kappa$} & \\textbf{StepFun} & \\textbf{Opus} \\\\",
         "\\midrule",
         (
             "Score (1--5) & "
-            f"{fmt_pct(score_summary['exact_agreement'])} & "
-            f"{fmt_float(score_summary['weighted_kappa_quadratic'])} \\\\"
+            f"{fmt_float(score_summary['weighted_kappa_quadratic'])} & "
+            f"{fmt_mean(score_summary['stepfun_mean'])} & {fmt_mean(score_summary['opus_mean'])} \\\\"
         ),
         (
             "Intent score (1--5) & "
-            f"{fmt_pct(intent_score_summary['exact_agreement'])} & "
-            f"{fmt_float(intent_score_summary['weighted_kappa_quadratic'])} \\\\"
+            f"{fmt_float(intent_score_summary['weighted_kappa_quadratic'])} & "
+            f"{fmt_mean(intent_score_summary['stepfun_mean'])} & {fmt_mean(intent_score_summary['opus_mean'])} \\\\"
         ),
     ]
     for row in binary_rows:
         if row["field"] == "intent":
             continue
         latex_lines.append(
-            f"{LATEX_TYPE_LABELS[str(row['field'])]} & {fmt_pct(row['agreement'])} & "
-            f"{fmt_float(row['kappa'])} \\\\"
+            f"{LATEX_TYPE_LABELS[str(row['field'])]} & {fmt_float(row['kappa'])} & "
+            f"{fmt_pct(row['stepfun_mean'])} & {fmt_pct(row['opus_mean'])} \\\\"
         )
     latex_lines.extend(
         [
@@ -292,10 +302,9 @@ def main() -> None:
                 "\\caption{Correlation and agreement analysis between the Stepfun 3.5 Flash model "
                 "we use for adversary/judge classification and Opus 4.7. We evaluate on "
                 f"{len(keys)} paired rollouts randomly selected from our six untrained model families, "
-                "with and without privacy prompting. Agreement is exact agreement: exact score match "
-                "for the 1--5 score rows and matching binary labels otherwise. The two 1--5 rows "
-                "use quadratic weighted Cohen's $\\kappa$; binary rows use ordinary Cohen's "
-                "$\\kappa$.}"
+                "with and without privacy prompting. The two 1--5 rows use quadratic weighted "
+                "Cohen's $\\kappa$; binary rows use ordinary Cohen's $\\kappa$. StepFun and Opus "
+                "columns report mean score for 1--5 rows and positive rate for binary rows.}"
             ),
             "\\label{tab:judge_validation_summary}",
             "\\end{table}",
