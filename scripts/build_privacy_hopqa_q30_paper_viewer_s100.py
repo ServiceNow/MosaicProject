@@ -793,6 +793,229 @@ def behavior_rows_for_html(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     ]
 
 
+TOKEN_USAGE_CONDITIONS = [
+    ("Base", base.DEFAULT_FINAL_EVAL_ARTIFACT_ROOT, BASE_LABEL),
+    ("Base + privacy prompt", base.DEFAULT_FINAL_PRIVACY_PROMPT_ARTIFACT_ROOT, BASE_LABEL),
+    ("Task s100", base.DEFAULT_FINAL_EVAL_ARTIFACT_ROOT, TASK_S100_LABEL),
+    ("Task s100 + privacy prompt", base.DEFAULT_FINAL_PRIVACY_PROMPT_ARTIFACT_ROOT, TASK_S100_LABEL),
+    ("PA-DR s100", PADR_S100_NORMAL_ROOT, PADR_S100_LABEL),
+    ("PA-DR s100 + privacy prompt", PADR_S100_PROMPT_ROOT, PADR_S100_LABEL),
+]
+
+
+def read_jsonl(path: Path) -> list[dict[str, Any]]:
+    if not path.exists():
+        return []
+    rows: list[dict[str, Any]] = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if line.strip():
+            rows.append(json.loads(line))
+    return rows
+
+
+def sum_stepfun_usage_once(row: dict[str, Any]) -> tuple[int, int]:
+    prompt_tokens = 0
+    completion_tokens = 0
+    seen_usage_ids: set[int] = set()
+
+    def add_usage(usage: dict[str, Any]) -> None:
+        nonlocal prompt_tokens, completion_tokens
+        usage_id = id(usage)
+        if usage_id in seen_usage_ids:
+            return
+        seen_usage_ids.add(usage_id)
+        prompt_tokens += int(usage.get("prompt_tokens") or 0)
+        completion_tokens += int(usage.get("completion_tokens") or 0)
+
+    def walk(obj: Any) -> None:
+        if isinstance(obj, dict):
+            stepfun_meta = obj.get("_stepfun") if isinstance(obj.get("_stepfun"), dict) else None
+            if stepfun_meta and isinstance(stepfun_meta.get("usage"), dict):
+                add_usage(stepfun_meta["usage"])
+                for key, child in obj.items():
+                    if key != "_stepfun":
+                        walk(child)
+                return
+            if isinstance(obj.get("usage"), dict):
+                add_usage(obj["usage"])
+            for child in obj.values():
+                walk(child)
+        elif isinstance(obj, list):
+            for child in obj:
+                walk(child)
+
+    walk(row)
+    return prompt_tokens, completion_tokens
+
+
+def mean_or_none(values: list[int]) -> float | None:
+    return sum(values) / len(values) if values else None
+
+
+def token_usage_rows() -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    all_agent_input: list[int] = []
+    all_agent_output: list[int] = []
+    all_eval_input: list[int] = []
+    all_eval_output: list[int] = []
+    for condition, artifact_root, model_label in TOKEN_USAGE_CONDITIONS:
+        model_root = artifact_root / "model_runs" / model_label
+        rollout_rows = read_jsonl(model_root / "tables" / "rollout_index.jsonl")
+        successful_rollouts = [
+            row
+            for row in rollout_rows
+            if row.get("ok") and (row.get("split") in (None, "test"))
+        ]
+        successful_ids = {
+            (row.get("split"), row.get("repeat"), row.get("chain_id"))
+            for row in successful_rollouts
+        }
+        agent_input = [int(row.get("prompt_tokens") or 0) for row in successful_rollouts]
+        agent_output = [int(row.get("output_tokens") or 0) for row in successful_rollouts]
+
+        raw_privacy_rows = read_jsonl(model_root / "tables" / "privacy_leakage_suite_v2_stepfun_full.jsonl")
+        privacy_rows = base.live.dedupe_rows_by_latest(
+            base.live.copy_rollout_identity_from_trace(raw_privacy_rows, rollout_rows),
+            "stepfun",
+        )
+        judged_rows = [
+            row
+            for row in privacy_rows
+            if (row.get("split"), row.get("repeat"), row.get("chain_id")) in successful_ids
+        ]
+        eval_input: list[int] = []
+        eval_output: list[int] = []
+        for row in judged_rows:
+            prompt_tokens, completion_tokens = sum_stepfun_usage_once(row)
+            eval_input.append(prompt_tokens)
+            eval_output.append(completion_tokens)
+
+        all_agent_input.extend(agent_input)
+        all_agent_output.extend(agent_output)
+        all_eval_input.extend(eval_input)
+        all_eval_output.extend(eval_output)
+        rows.append(
+            {
+                "condition": condition,
+                "agent_rollouts": len(agent_input),
+                "agent_input_mean": mean_or_none(agent_input),
+                "agent_output_mean": mean_or_none(agent_output),
+                "agent_total_mean": mean_or_none([x + y for x, y in zip(agent_input, agent_output)]),
+                "agent_input_total": sum(agent_input),
+                "agent_output_total": sum(agent_output),
+                "agent_total": sum(agent_input) + sum(agent_output),
+                "privacy_judgments": len(eval_input),
+                "eval_input_mean": mean_or_none(eval_input),
+                "eval_output_mean": mean_or_none(eval_output),
+                "eval_total_mean": mean_or_none([x + y for x, y in zip(eval_input, eval_output)]),
+                "eval_input_total": sum(eval_input),
+                "eval_output_total": sum(eval_output),
+                "eval_total": sum(eval_input) + sum(eval_output),
+            }
+        )
+
+    combined = {
+        "condition": "All six step100 conditions",
+        "agent_rollouts": len(all_agent_input),
+        "agent_input_mean": mean_or_none(all_agent_input),
+        "agent_output_mean": mean_or_none(all_agent_output),
+        "agent_total_mean": mean_or_none([x + y for x, y in zip(all_agent_input, all_agent_output)]),
+        "agent_input_total": sum(all_agent_input),
+        "agent_output_total": sum(all_agent_output),
+        "agent_total": sum(all_agent_input) + sum(all_agent_output),
+        "privacy_judgments": len(all_eval_input),
+        "eval_input_mean": mean_or_none(all_eval_input),
+        "eval_output_mean": mean_or_none(all_eval_output),
+        "eval_total_mean": mean_or_none([x + y for x, y in zip(all_eval_input, all_eval_output)]),
+        "eval_input_total": sum(all_eval_input),
+        "eval_output_total": sum(all_eval_output),
+        "eval_total": sum(all_eval_input) + sum(all_eval_output),
+    }
+    return rows, combined
+
+
+def format_token_mean(value: Any) -> str:
+    number = base.live.as_float(value)
+    if number is None:
+        return "n/a"
+    return f"{number / 1000:.1f}k"
+
+
+def format_token_total(value: Any) -> str:
+    number = base.live.as_float(value)
+    if number is None:
+        return "n/a"
+    if number >= 1_000_000:
+        return f"{number / 1_000_000:.1f}M"
+    return f"{number / 1000:.1f}k"
+
+
+def token_usage_rows_for_html(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [
+        {
+            "condition": row["condition"],
+            "agent_rollouts": row["agent_rollouts"],
+            "agent_input_mean": format_token_mean(row["agent_input_mean"]),
+            "agent_output_mean": format_token_mean(row["agent_output_mean"]),
+            "agent_total_mean": format_token_mean(row["agent_total_mean"]),
+            "agent_total": format_token_total(row["agent_total"]),
+            "privacy_judgments": row["privacy_judgments"],
+            "eval_input_mean": format_token_mean(row["eval_input_mean"]),
+            "eval_output_mean": format_token_mean(row["eval_output_mean"]),
+            "eval_total_mean": format_token_mean(row["eval_total_mean"]),
+            "eval_total": format_token_total(row["eval_total"]),
+        }
+        for row in rows
+    ]
+
+
+def token_usage_markdown(rows: list[dict[str, Any]], combined: dict[str, Any]) -> str:
+    table_rows = token_usage_rows_for_html([*rows, combined])
+    headers = [
+        "Condition",
+        "Agent rollouts",
+        "Agent input / rollout",
+        "Agent output / rollout",
+        "Agent total / rollout",
+        "Agent total",
+        "Privacy judgments",
+        "Adv+judge input / judgment",
+        "Adv+judge output / judgment",
+        "Adv+judge total / judgment",
+        "Adv+judge total",
+    ]
+    keys = [
+        "condition",
+        "agent_rollouts",
+        "agent_input_mean",
+        "agent_output_mean",
+        "agent_total_mean",
+        "agent_total",
+        "privacy_judgments",
+        "eval_input_mean",
+        "eval_output_mean",
+        "eval_total_mean",
+        "eval_total",
+    ]
+    lines = [
+        "# Step100 token usage summary",
+        "",
+        "Agent token counts come from rollout `prompt_tokens` and `output_tokens`.",
+        "Adversary + judging token counts sum the StepFun usage objects in each privacy-leakage judgment once, covering the full privacy evaluation suite for that rollout.",
+        "",
+        "| " + " | ".join(headers) + " |",
+        "| " + " | ".join(["---"] * len(headers)) + " |",
+    ]
+    for row in table_rows:
+        lines.append("| " + " | ".join(str(row.get(key, "")) for key in keys) + " |")
+    lines.append("")
+    lines.append(
+        "The adversary + judging columns are per privacy judgment. "
+        "The total columns aggregate the complete six-condition step100 slice shown here."
+    )
+    return "\n".join(lines) + "\n"
+
+
 def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
     base.paper_style()
     if output_dir.exists():
@@ -808,6 +1031,7 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
     behavior = behavior_rows(rows)
     status = status_rows(rows)
     query_examples = step100_query_example_rows(limit=3)
+    token_rows, token_combined = token_usage_rows()
 
     plot_training_effect(rows, plots_dir / "training_effect_step100.svg")
     plot_core_leakage_types(summary, plots_dir / "core_leakage_types_step100.svg")
@@ -838,6 +1062,11 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
     write_text(tables_dir / "paired_leakage_examples_s100.tex", query_examples_latex)
     write_text(tables_dir / "paired_leakage_examples_s100.json", json.dumps(query_examples, indent=2) + "\n")
     write_text(tables_dir / "checkpoint_choice_s50_s100.tex", checkpoint_latex)
+    write_text(tables_dir / "token_usage_summary_s100.md", token_usage_markdown(token_rows, token_combined))
+    write_text(
+        tables_dir / "token_usage_summary_s100.json",
+        json.dumps({"rows": token_rows, "combined": token_combined}, indent=2) + "\n",
+    )
     write_text(
         output_dir / "viewer_data.json",
         json.dumps(
@@ -846,6 +1075,8 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
                 "summary_rows": summary,
                 "checkpoint_rows": checkpoints,
                 "behavior_rows": behavior,
+                "token_usage_rows": token_rows,
+                "token_usage_combined": token_combined,
                 "paired_leakage_example_rows": query_examples,
                 "artifact_roots": {
                     "standard_normal": str(base.DEFAULT_FINAL_EVAL_ARTIFACT_ROOT),
@@ -908,6 +1139,22 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
             ("local_reads", "Mean Local Reads"),
         ],
         behavior_rows_for_html(behavior),
+    )
+    token_usage_table = base.table(
+        [
+            ("condition", "Condition"),
+            ("agent_rollouts", "Agent Rollouts"),
+            ("agent_input_mean", "Agent Input / Rollout"),
+            ("agent_output_mean", "Agent Output / Rollout"),
+            ("agent_total_mean", "Agent Total / Rollout"),
+            ("agent_total", "Agent Total"),
+            ("privacy_judgments", "Privacy Judgments"),
+            ("eval_input_mean", "Adv+Judge Input / Judgment"),
+            ("eval_output_mean", "Adv+Judge Output / Judgment"),
+            ("eval_total_mean", "Adv+Judge Total / Judgment"),
+            ("eval_total", "Adv+Judge Total"),
+        ],
+        token_usage_rows_for_html([*token_rows, token_combined]),
     )
     training_effect_latex_block = latex_details("Copy LaTeX: Training Effect Summary", training_effect_latex)
     behavior_latex_block = latex_details("Copy LaTeX: Query And Retrieval Behavior", behavior_latex)
@@ -1001,6 +1248,7 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
         <div class="asset-card"><h3>Core Leakage Types</h3><div class="links"><a href="plots/core_leakage_types_step100.svg">SVG</a><a href="plots/core_leakage_types_step100.pdf">PDF</a></div></div>
         <div class="asset-card"><h3>Query And Retrieval Behavior</h3><div class="links"><a href="plots/training_behavior_step100.svg">SVG</a><a href="plots/training_behavior_step100.pdf">PDF</a><a href="tables/training_behavior_s100.tex">LaTeX</a></div></div>
         <div class="asset-card"><h3>Step100 Query Examples</h3><div class="links"><a href="#query-examples">Viewer table</a><a href="tables/paired_leakage_examples_s100.tex">LaTeX</a><a href="tables/paired_leakage_examples_s100.json">JSON</a></div></div>
+        <div class="asset-card"><h3>Token Usage</h3><div class="links"><a href="#token-usage">Viewer table</a><a href="tables/token_usage_summary_s100.md">Markdown</a><a href="tables/token_usage_summary_s100.json">JSON</a></div></div>
         <div class="asset-card"><h3>Checkpoint Choice</h3><div class="links"><a href="tables/checkpoint_choice_s50_s100.tex">LaTeX</a><a href="viewer_data.json">JSON data</a></div></div>
       </div>
       {training_effect_latex_block}
@@ -1033,6 +1281,12 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
       <img src="plots/training_behavior_step100.svg" alt="Step100 training effect on query and retrieval behavior">
       <div class="links"><a href="plots/training_behavior_step100.svg">SVG</a><a href="plots/training_behavior_step100.pdf">PDF</a><a href="tables/training_behavior_s100.tex">LaTeX table</a></div>
       {behavior_table}
+    </section>
+    <section id="token-usage">
+      <h2>Token Usage</h2>
+      <div class="note">Agent columns are per successful rollout from rollout token accounting. Adversary + judging columns are per StepFun privacy judgment and include the full privacy-evaluation suite for that rollout: intent adversary/judge, answer adversary/judge when run, and claim adversary/judge when run. Total columns aggregate the complete six-condition step100 slice in this table.</div>
+      <div class="links"><a href="tables/token_usage_summary_s100.md">Markdown summary</a><a href="tables/token_usage_summary_s100.json">JSON data</a></div>
+      {token_usage_table}
     </section>
     <section id="query-examples">
       <h2>Step100 Query Leakage Examples</h2>
