@@ -1945,7 +1945,7 @@ def training_effect_summary_latex(rows: list[dict[str, Any]]) -> str:
 \centering
 \begin{{tabular}}{{@{{}}lcccccc@{{}}}}
 \toprule
-\textbf{{Model}} & \textbf{{\shortstack{{Strict Chain\\Success}}}} & \textbf{{\shortstack{{Per-Hop\\Accuracy}}}} & \textbf{{\shortstack{{Privacy\\Leakage}}}} & \textbf{{\shortstack{{Intent\\Leakage}}}} & \textbf{{\shortstack{{Answer\\Leakage}}}} & \textbf{{\shortstack{{Full-Information\\Leakage}}}} \\
+\textbf{{Model}} & \textbf{{\shortstack{{Strict Chain\\Success}}}} & \textbf{{\shortstack{{Hop-Level\\Accuracy}}}} & \textbf{{\shortstack{{Privacy\\Leakage}}}} & \textbf{{\shortstack{{Intent\\Leakage}}}} & \textbf{{\shortstack{{Answer\\Leakage}}}} & \textbf{{\shortstack{{Full-Information\\Leakage}}}} \\
 \midrule
 {body_text}
 \bottomrule
@@ -3652,7 +3652,7 @@ def build_viewer(args: argparse.Namespace) -> None:
         ("system_errors", "System Errors"),
         ("privacy_judged", "Privacy Judged"),
         ("strict_chain", "Strict Chain Success"),
-        ("per_hop_accuracy", "Per-Hop Accuracy"),
+        ("per_hop_accuracy", "Hop-Level Accuracy"),
         ("privacy_leakage", "Privacy Leakage"),
         ("strict_privacy", "Strict Privacy Binary"),
         ("status", "Status"),
@@ -3664,7 +3664,7 @@ def build_viewer(args: argparse.Namespace) -> None:
         ("attempts", "Attempts"),
         ("judged", "Privacy Judged"),
         ("strict_chain", "Strict Chain Success"),
-        ("per_hop_accuracy", "Per-Hop Accuracy"),
+        ("per_hop_accuracy", "Hop-Level Accuracy"),
         ("privacy_leakage", "Privacy Leakage"),
         ("strict_privacy", "Strict Privacy Binary"),
         ("intent", "Intent Leakage"),
@@ -3688,12 +3688,12 @@ def build_viewer(args: argparse.Namespace) -> None:
         ("checkpoint", "Checkpoint"),
         ("normal_attempts", "Normal Attempts"),
         ("normal_judged", "Normal Judged"),
-        ("normal_success", "Normal Strict Chain"),
+        ("normal_success", "Normal Strict Chain Success"),
         ("normal_leakage", "Normal Leakage"),
         ("normal_status", "Normal Status"),
         ("prompt_attempts", "Prompt Attempts"),
         ("prompt_judged", "Prompt Judged"),
-        ("prompt_success", "Prompt Strict Chain"),
+        ("prompt_success", "Prompt Strict Chain Success"),
         ("prompt_leakage", "Prompt Leakage"),
         ("prompt_status", "Prompt Status"),
     ]

@@ -1043,9 +1043,9 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
     checkpoint_latex = base.latex_table(
         [
             ("condition", "Condition"),
-            ("strict_chain", "Strict Chain"),
+            ("strict_chain", "Strict Chain Success"),
             ("final_accuracy", "Final Accuracy"),
-            ("per_hop_accuracy", "Per-Hop Accuracy"),
+            ("per_hop_accuracy", "Hop-Level Accuracy"),
             ("privacy_leakage", "Privacy Leakage"),
             ("intent", "Intent Leakage"),
             ("answer", "Answer Leakage"),
@@ -1106,7 +1106,7 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
     summary_table = base.table(
         [
             ("condition", "Condition"),
-            ("strict_chain", "Strict Chain"),
+            ("strict_chain", "Strict Chain Success"),
             ("per_hop_accuracy", "Hop-Level Accuracy"),
             ("privacy_leakage", "Privacy Leakage"),
             ("intent", "Intent Leakage"),
@@ -1118,9 +1118,9 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
     checkpoint_table = base.table(
         [
             ("condition", "Condition"),
-            ("strict_chain", "Strict Chain"),
+            ("strict_chain", "Strict Chain Success"),
             ("final_accuracy", "Final Accuracy"),
-            ("per_hop_accuracy", "Per-Hop Accuracy"),
+            ("per_hop_accuracy", "Hop-Level Accuracy"),
             ("privacy_leakage", "Privacy Leakage"),
             ("intent", "Intent Leakage"),
             ("answer", "Answer Leakage"),
