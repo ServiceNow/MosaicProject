@@ -12,6 +12,7 @@ Sampling seed: `20260525`
 - `trace_manifest.jsonl`: trace paths plus sample ids and StepFun labels.
 - `stepfun_reference_sample.jsonl`: selected original StepFun rows, usable as the reference file for comparison.
 - `summary.json`: sample counts and StepFun-like token estimate.
+- `openrouter_smoke_opus47.env`: smoke-test config. This does not contain the API key.
 
 ## Token Estimate
 
@@ -27,7 +28,29 @@ These are for adversary + judging only. They do not include agent rollouts.
 
 ## Smoke Run
 
-Run a tiny three-row smoke first:
+Run a tiny three-row smoke first. This calls OpenRouter, so inspect the config before running:
+
+```bash
+cd /home/toolkit/my_code/MosaicProject
+source runtime_analysis/privacy_hopqa_q30_stepfun_judge_validation_cross_model_200_20260525/openrouter_smoke_opus47.env
+bash scripts/run_privacy_hopqa_openrouter_judge_smoke.sh
+```
+
+The smoke script:
+
+- Uses `/home/toolkit/my_code/openkey.env` for `OPENROUTER_API_KEY`; it does not print the key.
+- Defaults to `LIMIT=3`, `CONCURRENCY=1`, `MAX_TOKENS=16384`, and refuses `LIMIT>5` unless `ALLOW_LARGE_SMOKE=1`.
+- Checks OpenRouter account/key status before and after the model calls.
+- Writes candidate rows, errors, a JSON summary, and disagreement JSONL into this sample directory.
+- Prints a Rich table with score agreement, binary agreement, score confusion, row-level labels, errors, and raw candidate output snippets for disagreements.
+
+Override the model if needed:
+
+```bash
+OPENROUTER_MODEL='<openrouter-model-id>' bash scripts/run_privacy_hopqa_openrouter_judge_smoke.sh
+```
+
+Manual equivalent:
 
 ```bash
 .venv/bin/python scripts/evaluate_privacy_hopqa_leakage_suite_v2.py \
@@ -41,7 +64,8 @@ Run a tiny three-row smoke first:
   --api-mode chat \
   --limit 3 \
   --concurrency 1 \
-  --max-tokens 12288 \
+  --max-tokens 16384 \
+  --disable-response-format \
   --continue-on-error
 ```
 
@@ -58,7 +82,7 @@ Run a tiny three-row smoke first:
   --model '<openrouter-model-id>' \
   --api-mode chat \
   --concurrency 2 \
-  --max-tokens 12288 \
+  --max-tokens 16384 \
   --continue-on-error
 ```
 
