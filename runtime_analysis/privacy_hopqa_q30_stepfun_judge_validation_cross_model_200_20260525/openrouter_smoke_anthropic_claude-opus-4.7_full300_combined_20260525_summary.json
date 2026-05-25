@@ -1,0 +1,111 @@
+{
+  "matched_rows": 300,
+  "reference_only": 0,
+  "candidate_only": 0,
+  "exact_score_agreement": 199,
+  "within_one_score_agreement": 269,
+  "score_mae": 0.44,
+  "score_spearman": 0.6765388453018718,
+  "reference_score_distribution": {
+    "5": 46,
+    "2": 2,
+    "1": 19,
+    "4": 48,
+    "3": 185
+  },
+  "candidate_score_distribution": {
+    "4": 38,
+    "5": 88,
+    "2": 4,
+    "1": 18,
+    "3": 152
+  },
+  "score_confusion": {
+    "5,4": 5,
+    "5,5": 36,
+    "2,2": 2,
+    "1,1": 18,
+    "4,3": 12,
+    "4,4": 9,
+    "3,2": 2,
+    "3,3": 134,
+    "4,5": 27,
+    "3,4": 24,
+    "3,5": 25,
+    "1,3": 1,
+    "5,3": 5
+  },
+  "binary_fields": {
+    "intent_leaked": {
+      "agreement_count": 134,
+      "n": 300,
+      "agreement_rate": 0.44666666666666666,
+      "cohen_kappa": 0.115892628887942,
+      "reference_true": 102,
+      "candidate_true": 268,
+      "false_to_true": 166,
+      "true_to_false": 0,
+      "counts": {
+        "False,True": 166,
+        "False,False": 32,
+        "True,True": 102
+      }
+    },
+    "answer_leaked": {
+      "agreement_count": 270,
+      "n": 300,
+      "agreement_rate": 0.9,
+      "cohen_kappa": 0.6151543658599161,
+      "reference_true": 49,
+      "candidate_true": 43,
+      "false_to_true": 12,
+      "true_to_false": 18,
+      "counts": {
+        "True,False": 18,
+        "False,False": 239,
+        "True,True": 31,
+        "False,True": 12
+      }
+    },
+    "full_info_leaked": {
+      "agreement_count": 261,
+      "n": 300,
+      "agreement_rate": 0.87,
+      "cohen_kappa": 0.5112781954887217,
+      "reference_true": 33,
+      "candidate_true": 60,
+      "false_to_true": 33,
+      "true_to_false": 6,
+      "counts": {
+        "False,False": 234,
+        "False,True": 33,
+        "True,True": 27,
+        "True,False": 6
+      }
+    },
+    "overall_leaked_for_reward": {
+      "agreement_count": 234,
+      "n": 300,
+      "agreement_rate": 0.78,
+      "cohen_kappa": 0.5320476460578559,
+      "reference_true": 94,
+      "candidate_true": 126,
+      "false_to_true": 49,
+      "true_to_false": 17,
+      "counts": {
+        "True,True": 77,
+        "False,False": 157,
+        "True,False": 17,
+        "False,True": 49
+      }
+    }
+  },
+  "n_disagreement_rows": 221,
+  "candidate_errors": 0,
+  "bad_jsonl_lines": {
+    "reference": [],
+    "candidate": [],
+    "errors": [],
+    "manifest": []
+  }
+}

@@ -1,125 +1,125 @@
 {
   "score_summary": {
-    "n": 200,
-    "exact_agreement": 0.64,
-    "within_one": 0.87,
-    "mae": 0.49,
-    "pearson": 0.6895903391156499,
-    "spearman": 0.6418178448360606,
-    "weighted_kappa_linear": 0.5441860465116279,
-    "weighted_kappa_quadratic": 0.6594624046494733,
+    "n": 300,
+    "exact_agreement": 0.6633333333333333,
+    "within_one": 0.8966666666666666,
+    "mae": 0.44,
+    "pearson": 0.7331342031624644,
+    "spearman": 0.6765388453018717,
+    "weighted_kappa_linear": 0.5909428972812164,
+    "weighted_kappa_quadratic": 0.706060606060606,
     "stepfun_distribution": {
-      "5": 29,
-      "1": 13,
-      "4": 33,
-      "3": 124,
-      "2": 1
+      "5": 46,
+      "2": 2,
+      "1": 19,
+      "4": 48,
+      "3": 185
     },
     "opus_distribution": {
-      "4": 24,
-      "1": 12,
-      "3": 102,
-      "2": 2,
-      "5": 60
+      "4": 38,
+      "5": 88,
+      "2": 4,
+      "1": 18,
+      "3": 152
     },
     "confusion": [
       [
+        18,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        2,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        2,
+        134,
+        24,
+        25
+      ],
+      [
+        0,
+        0,
         12,
-        0,
-        1,
-        0,
-        0
-      ],
-      [
-        0,
-        1,
-        0,
-        0,
-        0
-      ],
-      [
-        0,
-        1,
-        90,
-        13,
-        20
-      ],
-      [
-        0,
-        0,
-        6,
-        6,
-        21
+        9,
+        27
       ],
       [
         0,
         0,
         5,
         5,
-        19
+        36
       ]
     ]
   },
   "binary_rows": [
     {
       "metric": "Privacy Leakage",
-      "tn": 105,
-      "fp": 33,
-      "fn": 11,
-      "tp": 51,
-      "stepfun_positive": 62,
-      "opus_positive": 84,
+      "tn": 157,
+      "fp": 49,
+      "fn": 17,
+      "tp": 77,
+      "stepfun_positive": 94,
+      "opus_positive": 126,
       "agreement": 0.78,
-      "precision_vs_stepfun": 0.6071428571428571,
-      "recall_vs_stepfun": 0.8225806451612904,
-      "mcc": 0.5467270366533902,
-      "kappa": 0.5315161839863715,
-      "mcnemar_p": 0.0012600338162656044
+      "precision_vs_stepfun": 0.6111111111111112,
+      "recall_vs_stepfun": 0.8191489361702128,
+      "mcc": 0.5462942768611013,
+      "kappa": 0.5320476460578559,
+      "mcnemar_p": 0.0001014771231679886
     },
     {
       "metric": "Intent Leakage",
-      "tn": 21,
-      "fp": 114,
+      "tn": 32,
+      "fp": 166,
       "fn": 0,
-      "tp": 65,
-      "stepfun_positive": 65,
-      "opus_positive": 179,
-      "agreement": 0.43,
-      "precision_vs_stepfun": 0.36312849162011174,
+      "tp": 102,
+      "stepfun_positive": 102,
+      "opus_positive": 268,
+      "agreement": 0.44666666666666666,
+      "precision_vs_stepfun": 0.3805970149253731,
       "recall_vs_stepfun": 1.0,
-      "mcc": 0.23766921183026082,
-      "kappa": 0.1069330199764982,
-      "mcnemar_p": 9.62964972193618e-35
+      "mcc": 0.24801336390365694,
+      "kappa": 0.115892628887942,
+      "mcnemar_p": 2.1382117680737565e-50
     },
     {
       "metric": "Answer Leakage",
-      "tn": 161,
-      "fp": 9,
-      "fn": 10,
-      "tp": 20,
-      "stepfun_positive": 30,
-      "opus_positive": 29,
-      "agreement": 0.905,
-      "precision_vs_stepfun": 0.6896551724137931,
-      "recall_vs_stepfun": 0.6666666666666666,
-      "mcc": 0.6223894112308515,
-      "kappa": 0.6222664015904573,
-      "mcnemar_p": 1.0
+      "tn": 239,
+      "fp": 12,
+      "fn": 18,
+      "tp": 31,
+      "stepfun_positive": 49,
+      "opus_positive": 43,
+      "agreement": 0.9,
+      "precision_vs_stepfun": 0.7209302325581395,
+      "recall_vs_stepfun": 0.6326530612244898,
+      "mcc": 0.6169846652901552,
+      "kappa": 0.6151543658599161,
+      "mcnemar_p": 0.361594608053565
     },
     {
       "metric": "Full-Information Leakage",
-      "tn": 156,
-      "fp": 25,
+      "tn": 234,
+      "fp": 33,
       "fn": 6,
-      "tp": 13,
-      "stepfun_positive": 19,
-      "opus_positive": 38,
-      "agreement": 0.845,
-      "precision_vs_stepfun": 0.34210526315789475,
-      "recall_vs_stepfun": 0.6842105263157895,
-      "mcc": 0.4081597680269527,
-      "kappa": 0.3772599437525107,
-      "mcnemar_p": 0.0008779102936387062
+      "tp": 27,
+      "stepfun_positive": 33,
+      "opus_positive": 60,
+      "agreement": 0.87,
+      "precision_vs_stepfun": 0.45,
+      "recall_vs_stepfun": 0.8181818181818182,
+      "mcc": 0.5433223562855042,
+      "kappa": 0.5112781954887217,
+      "mcnemar_p": 1.429926123819314e-05
     }
   ]
 }

@@ -1,0 +1,87 @@
+{
+  "n": 300,
+  "score": {
+    "exact": 199,
+    "exact_rate": 0.6633333333333333,
+    "within_one": 269,
+    "within_one_rate": 0.8966666666666666,
+    "mae": 0.44,
+    "pearson": 0.7331342031624644,
+    "spearman": 0.6765388453018718,
+    "weighted_kappa_linear": 0.5909428972812164,
+    "weighted_kappa_quadratic": 0.706060606060606,
+    "stepfun_distribution": {
+      "5": 46,
+      "2": 2,
+      "1": 19,
+      "4": 48,
+      "3": 185
+    },
+    "opus_distribution": {
+      "4": 38,
+      "5": 88,
+      "2": 4,
+      "1": 18,
+      "3": 152
+    }
+  },
+  "binary": {
+    "privacy": {
+      "n": 300,
+      "tn": 157,
+      "fp": 49,
+      "fn": 17,
+      "tp": 77,
+      "agreement": 0.78,
+      "stepfun_positive": 94,
+      "opus_positive": 126,
+      "phi_mcc": 0.5462942768611013,
+      "cohen_kappa": 0.5320476460578559
+    },
+    "intent": {
+      "n": 300,
+      "tn": 32,
+      "fp": 166,
+      "fn": 0,
+      "tp": 102,
+      "agreement": 0.44666666666666666,
+      "stepfun_positive": 102,
+      "opus_positive": 268,
+      "phi_mcc": 0.24801336390365694,
+      "cohen_kappa": 0.115892628887942
+    },
+    "answer": {
+      "n": 300,
+      "tn": 239,
+      "fp": 12,
+      "fn": 18,
+      "tp": 31,
+      "agreement": 0.9,
+      "stepfun_positive": 49,
+      "opus_positive": 43,
+      "phi_mcc": 0.6169846652901552,
+      "cohen_kappa": 0.6151543658599161
+    },
+    "full_info": {
+      "n": 300,
+      "tn": 234,
+      "fp": 33,
+      "fn": 6,
+      "tp": 27,
+      "agreement": 0.87,
+      "stepfun_positive": 33,
+      "opus_positive": 60,
+      "phi_mcc": 0.5433223562855042,
+      "cohen_kappa": 0.5112781954887217
+    }
+  },
+  "cost": {
+    "api_calls_with_usage": 1496,
+    "prompt_tokens": 2873382,
+    "completion_tokens": 257321,
+    "total_tokens": 3130703,
+    "openrouter_reported_cost": 20.799935000000044,
+    "mean_cost_per_row": 0.06933311666666682,
+    "projected_200_row_cost": 13.866623333333363
+  }
+}

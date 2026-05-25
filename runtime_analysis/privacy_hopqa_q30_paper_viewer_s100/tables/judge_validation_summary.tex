@@ -1,16 +1,18 @@
 \begin{table}[t]
 \small
 \centering
-\begin{tabular}{lrrrrrrr}
+\begin{tabular}{@{}llccc@{}}
 \toprule
-\textbf{Label} & \textbf{TP} & \textbf{FP} & \textbf{FN} & \textbf{Agree} & \textbf{MCC} & \textbf{$\kappa$} & \textbf{McNemar $p$} \\
+\textbf{Outcome} & \textbf{Type} & \textbf{Agreement} & \textbf{$\kappa$} & \textbf{Secondary} \\
 \midrule
-Privacy Leakage & 51 & 33 & 11 & 78.0\% & 0.547 & 0.532 & 0.0013 \\
-Intent Leakage & 65 & 114 & 0 & 43.0\% & 0.238 & 0.107 & $<10^{-4}$ \\
-Answer Leakage & 20 & 9 & 10 & 90.5\% & 0.622 & 0.622 & 1.0000 \\
-Full-Information Leakage & 13 & 25 & 6 & 84.5\% & 0.408 & 0.377 & 0.0009 \\
+Overall Privacy Score & 1--5 ordinal & 66.3\% exact; 89.7\% within-one & QWK 0.706 & Spearman 0.677 \\
+\midrule
+Privacy Leakage & binary & 78.0\% & 0.532 & TP/FP/FN 77/49/17 \\
+Intent Leakage & binary & 44.7\% & 0.116 & TP/FP/FN 102/166/0 \\
+Answer Leakage & binary & 90.0\% & 0.615 & TP/FP/FN 31/12/18 \\
+Full-Information Leakage & binary & 87.0\% & 0.511 & TP/FP/FN 27/33/6 \\
 \bottomrule
 \end{tabular}
-\caption{OpenRouter Opus 4.7 versus StepFun privacy-judge validation on 200 paired held-out rollouts. TP/FP/FN treat StepFun as the reference label. MCC and $\kappa$ summarize paired agreement; McNemar's exact test evaluates whether discordant positive/negative calls are symmetric between judges.}
+\caption{OpenRouter Opus 4.7 versus StepFun privacy-judge validation on 300 paired held-out rollouts. For the ordinal 1--5 privacy score, $\kappa$ is quadratic weighted Cohen's kappa. For binary labels, $\kappa$ is ordinary Cohen's kappa. TP/FP/FN treat StepFun as the reference label. Spearman is reported as an ordinal association diagnostic rather than the primary agreement statistic.}
 \label{tab:judge_validation_summary}
 \end{table}

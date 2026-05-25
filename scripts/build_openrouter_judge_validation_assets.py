@@ -16,8 +16,8 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 SAMPLE_DIR = ROOT / "runtime_analysis" / "privacy_hopqa_q30_stepfun_judge_validation_cross_model_200_20260525"
 VIEWER = ROOT / "runtime_analysis" / "privacy_hopqa_q30_paper_viewer_s100"
-REFERENCE = SAMPLE_DIR / "stepfun_reference_sample.jsonl"
-CANDIDATE = SAMPLE_DIR / "openrouter_smoke_anthropic_claude-opus-4.7_full200_combined_20260525.jsonl"
+REFERENCE = SAMPLE_DIR / "stepfun_reference_sample_full300_20260525.jsonl"
+CANDIDATE = SAMPLE_DIR / "openrouter_smoke_anthropic_claude-opus-4.7_full300_combined_20260525.jsonl"
 
 LABELS = {
     "privacy": "Privacy Leakage",
@@ -148,6 +148,10 @@ def pvalue_text(value: float | None) -> str:
     return f"{value:.4f}"
 
 
+def tp_fp_fn_text(row: dict[str, Any]) -> str:
+    return f"{row['tp']}/{row['fp']}/{row['fn']}"
+
+
 def main() -> None:
     VIEWER.joinpath("plots").mkdir(parents=True, exist_ok=True)
     VIEWER.joinpath("tables").mkdir(parents=True, exist_ok=True)
@@ -155,8 +159,8 @@ def main() -> None:
     ref_rows = {key(row): row for row in read_jsonl(REFERENCE) if row.get("ok")}
     cand_rows = {key(row): row for row in read_jsonl(CANDIDATE) if row.get("ok")}
     keys = sorted(set(ref_rows) & set(cand_rows))
-    if len(keys) != 200:
-        raise RuntimeError(f"expected 200 matched rows, found {len(keys)}")
+    if not keys:
+        raise RuntimeError("no matched validation rows found")
 
     ref_scores = [score(ref_rows[k]) for k in keys]
     cand_scores = [score(cand_rows[k]) for k in keys]
@@ -218,21 +222,28 @@ def main() -> None:
         "\\begin{table}[t]",
         "\\small",
         "\\centering",
-        "\\begin{tabular}{lrrrrrrr}",
+        "\\begin{tabular}{@{}llccc@{}}",
         "\\toprule",
-        "\\textbf{Label} & \\textbf{TP} & \\textbf{FP} & \\textbf{FN} & \\textbf{Agree} & \\textbf{MCC} & \\textbf{$\\kappa$} & \\textbf{McNemar $p$} \\\\",
+        "\\textbf{Outcome} & \\textbf{Type} & \\textbf{Agreement} & \\textbf{$\\kappa$} & \\textbf{Secondary} \\\\",
+        "\\midrule",
+        (
+            "Overall Privacy Score & 1--5 ordinal & "
+            f"{fmt_pct(score_summary['exact_agreement'])} exact; {fmt_pct(score_summary['within_one'])} within-one & "
+            f"QWK {fmt_float(score_summary['weighted_kappa_quadratic'])} & "
+            f"Spearman {fmt_float(score_summary['spearman'])} \\\\"
+        ),
         "\\midrule",
     ]
     for row in binary_rows:
         latex_lines.append(
-            f"{row['metric']} & {row['tp']} & {row['fp']} & {row['fn']} & "
-            f"{fmt_pct(row['agreement'])} & {fmt_float(row['mcc'])} & {fmt_float(row['kappa'])} & {pvalue_text(row['mcnemar_p'])} \\\\"
+            f"{row['metric']} & binary & {fmt_pct(row['agreement'])} & "
+            f"{fmt_float(row['kappa'])} & TP/FP/FN {tp_fp_fn_text(row)} \\\\"
         )
     latex_lines.extend(
         [
             "\\bottomrule",
             "\\end{tabular}",
-            "\\caption{OpenRouter Opus 4.7 versus StepFun privacy-judge validation on 200 paired held-out rollouts. TP/FP/FN treat StepFun as the reference label. MCC and $\\kappa$ summarize paired agreement; McNemar's exact test evaluates whether discordant positive/negative calls are symmetric between judges.}",
+            f"\\caption{{OpenRouter Opus 4.7 versus StepFun privacy-judge validation on {len(keys)} paired held-out rollouts. For the ordinal 1--5 privacy score, $\\kappa$ is quadratic weighted Cohen's kappa. For binary labels, $\\kappa$ is ordinary Cohen's kappa. TP/FP/FN treat StepFun as the reference label. Spearman is reported as an ordinal association diagnostic rather than the primary agreement statistic.}}",
             "\\label{tab:judge_validation_summary}",
             "\\end{table}",
             "",
