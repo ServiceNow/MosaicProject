@@ -10,6 +10,7 @@ OPENROUTER_ENV_FILE="${OPENROUTER_ENV_FILE:-/home/toolkit/my_code/openkey.env}"
 OPENROUTER_MODEL="${OPENROUTER_MODEL:-anthropic/claude-opus-4.7}"
 LIMIT="${LIMIT:-3}"
 CONCURRENCY="${CONCURRENCY:-1}"
+SAMPLE_MODE="${SAMPLE_MODE:-spread}"
 MAX_TOKENS="${MAX_TOKENS:-16384}"
 TEMPERATURE="${TEMPERATURE:-0}"
 DISABLE_RESPONSE_FORMAT="${DISABLE_RESPONSE_FORMAT:-1}"
@@ -42,6 +43,7 @@ OUTPUT="${OUTPUT:-$SAMPLE_DIR/openrouter_smoke_${SLUG}_limit${LIMIT}_${RUN_ID}.j
 ERRORS="${ERRORS:-$SAMPLE_DIR/openrouter_smoke_${SLUG}_limit${LIMIT}_${RUN_ID}_errors.jsonl}"
 SUMMARY="${SUMMARY:-$SAMPLE_DIR/openrouter_smoke_${SLUG}_limit${LIMIT}_${RUN_ID}_summary.json}"
 DISAGREEMENTS="${DISAGREEMENTS:-$SAMPLE_DIR/openrouter_smoke_${SLUG}_limit${LIMIT}_${RUN_ID}_disagreements.jsonl}"
+HTML="${HTML:-$SAMPLE_DIR/openrouter_smoke_${SLUG}_limit${LIMIT}_${RUN_ID}_report.html}"
 
 "$PYTHON" - <<'PY'
 import importlib
@@ -61,7 +63,7 @@ fi
 
 echo "Running OpenRouter judge smoke:"
 echo "  model=$OPENROUTER_MODEL"
-echo "  limit=$LIMIT concurrency=$CONCURRENCY max_tokens=$MAX_TOKENS"
+echo "  limit=$LIMIT sample_mode=$SAMPLE_MODE concurrency=$CONCURRENCY max_tokens=$MAX_TOKENS"
 echo "  output=$OUTPUT"
 
 "$PYTHON" scripts/evaluate_privacy_hopqa_leakage_suite_v2.py \
@@ -74,6 +76,7 @@ echo "  output=$OUTPUT"
   --model "$OPENROUTER_MODEL" \
   --api-mode chat \
   --limit "$LIMIT" \
+  --sample-mode "$SAMPLE_MODE" \
   --concurrency "$CONCURRENCY" \
   --max-tokens "$MAX_TOKENS" \
   --temperature "$TEMPERATURE" \
@@ -86,7 +89,8 @@ echo "  output=$OUTPUT"
   --candidate "$OUTPUT" \
   --errors "$ERRORS" \
   --output-summary "$SUMMARY" \
-  --output-disagreements "$DISAGREEMENTS"
+  --output-disagreements "$DISAGREEMENTS" \
+  --output-html "$HTML"
 
 if [[ "$CHECK_CREDITS" == "1" ]]; then
   "$PYTHON" scripts/check_openrouter_key_usage.py --env-file "$OPENROUTER_ENV_FILE"
@@ -98,3 +102,4 @@ echo "Output:        $OUTPUT"
 echo "Errors:        $ERRORS"
 echo "Summary:       $SUMMARY"
 echo "Disagreements: $DISAGREEMENTS"
+echo "HTML report:   $HTML"

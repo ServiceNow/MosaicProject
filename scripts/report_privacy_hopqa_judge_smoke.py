@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 from collections import Counter
+import html
 import json
 import math
 from pathlib import Path
@@ -23,6 +24,12 @@ DEFAULT_SAMPLE_DIR = Path(
     "runtime_analysis/privacy_hopqa_q30_stepfun_judge_validation_cross_model_200_20260525"
 )
 FIELDS = ["intent_leaked", "answer_leaked", "full_info_leaked", "overall_leaked_for_reward"]
+LABELS = {
+    "intent_leaked": "Intent Leakage",
+    "answer_leaked": "Answer Leakage",
+    "full_info_leaked": "Full-Information Leakage",
+    "overall_leaked_for_reward": "Privacy Leakage",
+}
 STAGES = [
     "intent_adversary_output",
     "intent_judge_output",
@@ -259,17 +266,11 @@ def render_binary(console: Console, summaries: dict[str, Any]) -> None:
     table.add_column("Candidate True", justify="right")
     table.add_column("False->True", justify="right")
     table.add_column("True->False", justify="right")
-    labels = {
-        "intent_leaked": "Intent Leakage",
-        "answer_leaked": "Answer Leakage",
-        "full_info_leaked": "Full-Information Leakage",
-        "overall_leaked_for_reward": "Privacy Leakage",
-    }
     for field, item in summaries.items():
         n = int(item["n"] or 0)
         agree = int(item["agreement_count"] or 0)
         table.add_row(
-            labels.get(field, field),
+            LABELS.get(field, field),
             f"{agree}/{n} ({pct(agree, n)})",
             fmt_float(item["cohen_kappa"]),
             str(item["reference_true"]),
@@ -278,6 +279,173 @@ def render_binary(console: Console, summaries: dict[str, Any]) -> None:
             str(item["true_to_false"]),
         )
     console.print(table)
+
+
+def stage_usage(cand_rows: dict[tuple[str, str, str], dict[str, Any]]) -> dict[str, Any]:
+    calls = 0
+    prompt_tokens = 0
+    completion_tokens = 0
+    total_tokens = 0
+    cost = 0.0
+    for row in cand_rows.values():
+        for stage in STAGES:
+            obj = row.get(stage)
+            if not isinstance(obj, dict):
+                continue
+            meta = obj.get("_stepfun") if isinstance(obj.get("_stepfun"), dict) else {}
+            usage = meta.get("usage") if isinstance(meta.get("usage"), dict) else {}
+            if not usage:
+                continue
+            calls += 1
+            prompt_tokens += int(usage.get("prompt_tokens") or 0)
+            completion_tokens += int(usage.get("completion_tokens") or 0)
+            total_tokens += int(usage.get("total_tokens") or 0)
+            cost += float(usage.get("cost") or 0)
+    n_rows = max(1, len(cand_rows))
+    return {
+        "api_calls_with_usage": calls,
+        "prompt_tokens": prompt_tokens,
+        "completion_tokens": completion_tokens,
+        "total_tokens": total_tokens,
+        "openrouter_reported_cost": cost,
+        "mean_cost_per_row": cost / n_rows,
+        "projected_200_row_cost": cost / n_rows * 200,
+    }
+
+
+def html_escape(value: Any) -> str:
+    return html.escape(str(value), quote=True)
+
+
+def bool_pair_html(ref: bool, cand: bool) -> str:
+    cls = "ok" if ref == cand else "warn"
+    return f'<span class="{cls}">{short_bool(ref)}/{short_bool(cand)}</span>'
+
+
+def html_table(headers: list[str], rows: list[list[Any]]) -> str:
+    head = "".join(f"<th>{html_escape(item)}</th>" for item in headers)
+    body = "\n".join(
+        "<tr>" + "".join(f"<td>{html_escape(item)}</td>" for item in row) + "</tr>" for row in rows
+    )
+    return f"<table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>"
+
+
+def write_html_report(
+    path: Path,
+    summary: dict[str, Any],
+    binaries: dict[str, Any],
+    errors: list[dict[str, Any]],
+    bad_files: dict[str, list[dict[str, Any]]],
+    ref_rows: dict[tuple[str, str, str], dict[str, Any]],
+    cand_rows: dict[tuple[str, str, str], dict[str, Any]],
+    manifest_rows: dict[tuple[str, str, str], dict[str, Any]],
+    disagreements: list[dict[str, Any]],
+    max_detail: int,
+    raw_chars: int,
+) -> None:
+    usage = stage_usage(cand_rows)
+    keys = sorted(set(ref_rows) & set(cand_rows))
+    binary_rows = []
+    for field, item in binaries.items():
+        n = int(item["n"] or 0)
+        agree = int(item["agreement_count"] or 0)
+        binary_rows.append(
+            [
+                LABELS.get(field, field),
+                f"{agree}/{n} ({pct(agree, n)})",
+                fmt_float(item["cohen_kappa"]),
+                item["reference_true"],
+                item["candidate_true"],
+                item["false_to_true"],
+                item["true_to_false"],
+            ]
+        )
+    row_table = []
+    for k in keys:
+        ref = ref_rows[k]
+        cand = cand_rows[k]
+        manifest = manifest_rows.get(k, {})
+        row_table.append(
+            [
+                manifest.get("sample_id") or "",
+                manifest.get("source_condition") or ref.get("source_condition") or "",
+                f"{k[0]}/{k[1]}",
+                score(ref),
+                score(cand),
+                f"{short_bool(bool_field(ref, 'overall_leaked_for_reward'))}/{short_bool(bool_field(cand, 'overall_leaked_for_reward'))}",
+                f"{short_bool(bool_field(ref, 'intent_leaked'))}/{short_bool(bool_field(cand, 'intent_leaked'))}",
+                f"{short_bool(bool_field(ref, 'answer_leaked'))}/{short_bool(bool_field(cand, 'answer_leaked'))}",
+                f"{short_bool(bool_field(ref, 'full_info_leaked'))}/{short_bool(bool_field(cand, 'full_info_leaked'))}",
+                len(web_queries(ref)),
+            ]
+        )
+
+    detail_html: list[str] = []
+    detail_keys = [(str(item["task_id"]), str(item["chain_id"]), str(item["rollout_id"])) for item in disagreements[:max_detail]]
+    for k in detail_keys:
+        ref = ref_rows[k]
+        cand = cand_rows[k]
+        manifest = manifest_rows.get(k, {})
+        queries = "".join(f"<li>{html_escape(query)}</li>" for query in web_queries(ref))
+        stage_blocks = []
+        for stage in STAGES:
+            raw = raw_output(cand, stage)
+            if raw:
+                stage_blocks.append(
+                    f"<details><summary>{html_escape(stage)}</summary><pre>{html_escape(truncate(raw, raw_chars))}</pre></details>"
+                )
+        detail_html.append(
+            "<section class='detail'>"
+            f"<h3>{html_escape(manifest.get('sample_id') or '')}: {html_escape(k[0])}/{html_escape(k[1])}</h3>"
+            f"<p>Score StepFun={score(ref)} Candidate={score(cand)}; "
+            f"Privacy {bool_pair_html(bool_field(ref, 'overall_leaked_for_reward'), bool_field(cand, 'overall_leaked_for_reward'))}; "
+            f"Intent {bool_pair_html(bool_field(ref, 'intent_leaked'), bool_field(cand, 'intent_leaked'))}; "
+            f"Answer {bool_pair_html(bool_field(ref, 'answer_leaked'), bool_field(cand, 'answer_leaked'))}; "
+            f"Full-Information {bool_pair_html(bool_field(ref, 'full_info_leaked'), bool_field(cand, 'full_info_leaked'))}</p>"
+            f"<h4>Visible Web Queries</h4><ol>{queries}</ol>"
+            + "".join(stage_blocks)
+            + "</section>"
+        )
+
+    summary_rows = [
+        ["matched rows", summary["matched_rows"]],
+        ["reference only", summary["reference_only"]],
+        ["candidate only", summary["candidate_only"]],
+        ["candidate error rows", len(errors)],
+        ["score exact agreement", f"{summary['exact_score_agreement']}/{summary['matched_rows']} ({pct(summary['exact_score_agreement'], int(summary['matched_rows'] or 0))})"],
+        ["score within 1", f"{summary['within_one_score_agreement']}/{summary['matched_rows']} ({pct(summary['within_one_score_agreement'], int(summary['matched_rows'] or 0))})"],
+        ["score MAE", fmt_float(summary["score_mae"])],
+        ["score Spearman", fmt_float(summary["score_spearman"])],
+        ["OpenRouter reported cost", f"${usage['openrouter_reported_cost']:.4f}"],
+        ["projected 200-row cost from smoke", f"${usage['projected_200_row_cost']:.2f}"],
+        ["prompt/completion tokens", f"{usage['prompt_tokens']:,} / {usage['completion_tokens']:,}"],
+    ]
+    for label, bad in bad_files.items():
+        if bad:
+            summary_rows.append([f"malformed {label} lines", len(bad)])
+
+    css = """
+body{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;margin:28px;color:#1f2933;background:#fbfbf8}
+h1{font-size:24px;margin:0 0 6px} h2{font-size:18px;margin-top:28px} h3{font-size:15px;margin-bottom:4px}
+.subtitle{color:#52606d;margin:0 0 20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px}
+table{border-collapse:collapse;width:100%;background:white;border:1px solid #d9e2ec}th,td{padding:7px 9px;border-bottom:1px solid #e4e7eb;text-align:left;font-size:13px;vertical-align:top}
+th{background:#eef2f6;font-weight:650}.detail{background:white;border:1px solid #d9e2ec;padding:12px 14px;margin:14px 0}
+details{margin:8px 0}summary{cursor:pointer;font-weight:650}pre{white-space:pre-wrap;background:#111827;color:#e5e7eb;padding:10px;overflow:auto;font-size:12px}
+.ok{color:#0b6b3a;font-weight:650}.warn{color:#a15c00;font-weight:650}.note{color:#52606d;font-size:13px}
+"""
+    document = f"""<!doctype html>
+<html><head><meta charset="utf-8"><title>OpenRouter Judge Smoke Report</title><style>{css}</style></head>
+<body>
+<h1>OpenRouter Judge Smoke Report</h1>
+<p class="subtitle">Candidate compared against StepFun reference labels. This is a smoke run, not the full 200-row validation.</p>
+<div class="grid"><section><h2>Summary</h2>{html_table(['Metric','Value'], summary_rows)}</section>
+<section><h2>Binary Agreement</h2>{html_table(['Label','Agree','Kappa','StepFun True','Candidate True','False->True','True->False'], binary_rows)}</section></div>
+<h2>Rows</h2>{html_table(['Sample','Condition','Task','Ref Score','Cand Score','Privacy','Intent','Answer','Full Info','Web Queries'], row_table)}
+<h2>Disagreements</h2><p class="note">Showing up to {max_detail} disagreement rows with candidate raw outputs truncated to {raw_chars} characters per stage.</p>
+{''.join(detail_html) if detail_html else '<p>No disagreements.</p>'}
+</body></html>"""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(document, encoding="utf-8")
 
 
 def render_confusion(console: Console, confusion: dict[str, int]) -> None:
@@ -399,6 +567,7 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path, default=None)
     parser.add_argument("--output-summary", type=Path, default=None)
     parser.add_argument("--output-disagreements", type=Path, default=None)
+    parser.add_argument("--output-html", type=Path, default=None)
     parser.add_argument("--max-detail", type=int, default=3)
     parser.add_argument("--max-rows", type=int, default=40, help="Maximum row-level entries to print; use 0 for all.")
     parser.add_argument("--raw-chars", type=int, default=1800)
@@ -438,6 +607,20 @@ def main() -> None:
         with args.output_disagreements.open("w", encoding="utf-8") as handle:
             for item in disagreements:
                 handle.write(json.dumps(item, ensure_ascii=False) + "\n")
+    if args.output_html:
+        write_html_report(
+            args.output_html,
+            summary,
+            binaries,
+            errors,
+            {"reference": ref_bad, "candidate": cand_bad, "errors": err_bad, "manifest": manifest_bad},
+            ref_rows,
+            cand_rows,
+            manifest_rows,
+            disagreements,
+            args.max_detail,
+            args.raw_chars,
+        )
 
     console = Console()
     render_summary(console, summary, errors, {"reference": ref_bad, "candidate": cand_bad, "errors": err_bad, "manifest": manifest_bad})
@@ -450,6 +633,8 @@ def main() -> None:
         console.print(f"[green]wrote summary[/green] {args.output_summary}")
     if args.output_disagreements:
         console.print(f"[green]wrote disagreements[/green] {args.output_disagreements}")
+    if args.output_html:
+        console.print(f"[green]wrote html[/green] {args.output_html}")
 
 
 if __name__ == "__main__":
