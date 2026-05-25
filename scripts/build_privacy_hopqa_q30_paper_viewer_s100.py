@@ -594,7 +594,7 @@ def plot_training_effect(rows: dict[str, dict[str, Any]], path: Path) -> None:
             xy=xy,
             xytext=label_offset,
             textcoords="offset points",
-            fontsize=8.5,
+            fontsize=9.2,
             color=color,
             ha=label_ha,
             va=label_va,
@@ -655,6 +655,14 @@ def plot_core_leakage_types(rows: list[dict[str, Any]], path: Path) -> None:
     normal_rows = [rows[0], rows[2], rows[4]]
     prompt_rows = [rows[1], rows[3], rows[5]]
     labels = ["Base", "Task", "PA-DR"]
+    all_percent_values: list[float] = []
+    for _title, key in metrics:
+        for row in [*normal_rows, *prompt_rows]:
+            value = base.live.as_float(row.get(f"{key}_value"))
+            sem = base.live.as_float(row.get(f"{key}_sem")) or 0.0
+            if value is not None:
+                all_percent_values.append(100 * (value + sem))
+    y_upper = base.nice_percent_upper_from_values(all_percent_values)
     fig, axes = plt.subplots(1, 3, figsize=(15.2, 4.7), sharey=True)
     x = list(range(len(labels)))
     width = 0.36
@@ -689,7 +697,7 @@ def plot_core_leakage_types(rows: list[dict[str, Any]], path: Path) -> None:
         ax.set_xticks(x)
         ax.set_xticklabels(labels)
         ax.xaxis.set_minor_locator(NullLocator())
-        base.set_percent_y_axis(ax)
+        base.set_percent_y_axis(ax, y_upper)
     axes[0].set_ylabel("% Occurrence")
     handles, legend_labels = axes[0].get_legend_handles_labels()
     fig.legend(handles, legend_labels, loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.10))

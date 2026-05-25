@@ -220,13 +220,13 @@ def ensure_clean_dir(path: Path) -> None:
 def paper_style() -> None:
     plt.rcParams.update(
         {
-            "font.size": 11,
-            "axes.labelsize": 12,
-            "axes.titlesize": 12,
-            "xtick.labelsize": 10,
-            "ytick.labelsize": 10,
-            "legend.fontsize": 10,
-            "legend.title_fontsize": 10,
+            "font.size": 12,
+            "axes.labelsize": 13,
+            "axes.titlesize": 13,
+            "xtick.labelsize": 11,
+            "ytick.labelsize": 11,
+            "legend.fontsize": 11,
+            "legend.title_fontsize": 11,
             "axes.spines.top": False,
             "axes.spines.right": False,
             "axes.grid": True,
@@ -255,8 +255,32 @@ def add_minor_grid(ax: Any, *, axis: str = "both") -> None:
     ax.grid(True, which="minor", axis=axis, alpha=0.12, linestyle="--")
 
 
-def set_percent_y_axis(ax: Any) -> None:
-    ax.set_ylim(0, 100)
+def nice_percent_upper_from_values(
+    values: list[float],
+    *,
+    annotate: bool = False,
+    floor: float = 10.0,
+    ceiling: float = 100.0,
+) -> float:
+    finite: list[float] = []
+    for value in values:
+        try:
+            number = float(value)
+        except (TypeError, ValueError):
+            continue
+        if math.isfinite(number):
+            finite.append(number)
+    if not finite:
+        return ceiling
+    pad = 8.0 if annotate else 0.6
+    upper = 10.0 * math.ceil((max(finite) + pad) / 10.0)
+    return max(floor, min(ceiling, upper))
+
+
+def set_percent_y_axis(ax: Any, upper: float = 100.0) -> None:
+    upper = max(10.0, min(100.0, float(upper)))
+    ax.set_ylim(0, upper)
+    ax.set_yticks(ticks_between(0.0, upper, 10.0))
     ax.yaxis.set_major_locator(MultipleLocator(10))
     ax.yaxis.set_minor_locator(MultipleLocator(5))
     add_minor_grid(ax, axis="y")
@@ -370,13 +394,13 @@ def count_yerr(rows: list[dict[str, Any]], key: str) -> list[list[float]]:
 def annotate_ns(ax: Any, positions: list[float], values: list[float], counts: list[int], percent: bool, y_max: float) -> None:
     for x_pos, value, count in zip(positions, values, counts):
         if not math.isfinite(value):
-            ax.text(x_pos, y_max * 0.04, f"n={count}", ha="center", va="bottom", fontsize=8, color="#5d6964")
+            ax.text(x_pos, y_max * 0.04, f"n={count}", ha="center", va="bottom", fontsize=8.5, color="#5d6964")
             continue
         if percent:
             label = f"{value:.0f}%\nn={count}"
         else:
             label = f"{value:.1f}\nn={count}"
-        ax.text(x_pos, min(y_max * 0.96, value + y_max * 0.025), label, ha="center", va="bottom", fontsize=8)
+        ax.text(x_pos, min(y_max * 0.96, value + y_max * 0.025), label, ha="center", va="bottom", fontsize=8.5)
 
 
 def model_rows_for_plot(rows: list[dict[str, Any]], require_prompt: bool = False) -> list[dict[str, Any]]:
@@ -424,6 +448,21 @@ def plot_privacy_prompt_accuracy_leakage(rows: list[dict[str, Any]], path: Path,
     x = list(range(len(rows)))
     width = 0.36
     error_kw = {"elinewidth": 1.2, "ecolor": "#303633", "capsize": 3.5, "capthick": 1.1}
+    all_percent_values: list[float] = []
+    for _ylabel, baseline_key, prompt_key, baseline_n_key, prompt_n_key in metrics:
+        baseline_counts = [int(row.get(baseline_n_key) or 0) for row in rows]
+        prompt_counts = [int(row.get(prompt_n_key) or 0) for row in rows]
+        all_percent_values.extend(
+            100 * float(row.get(baseline_key))
+            for row, count in zip(rows, baseline_counts)
+            if count and row.get(baseline_key) is not None
+        )
+        all_percent_values.extend(
+            100 * float(row.get(prompt_key))
+            for row, count in zip(rows, prompt_counts)
+            if count and row.get(prompt_key) is not None
+        )
+    y_upper = nice_percent_upper_from_values(all_percent_values, annotate=annotate)
     for ax, (ylabel, baseline_key, prompt_key, baseline_n_key, prompt_n_key) in zip(axes, metrics):
         baseline_counts = [int(row.get(baseline_n_key) or 0) for row in rows]
         prompt_counts = [int(row.get(prompt_n_key) or 0) for row in rows]
@@ -460,13 +499,13 @@ def plot_privacy_prompt_accuracy_leakage(rows: list[dict[str, Any]], path: Path,
             error_kw=error_kw,
         )
         if annotate:
-            annotate_ns(ax, baseline_pos, baseline_vals, baseline_counts, percent=True, y_max=100)
-            annotate_ns(ax, prompt_pos, prompt_vals, prompt_counts, percent=True, y_max=100)
+            annotate_ns(ax, baseline_pos, baseline_vals, baseline_counts, percent=True, y_max=y_upper)
+            annotate_ns(ax, prompt_pos, prompt_vals, prompt_counts, percent=True, y_max=y_upper)
         ax.set_ylabel(ylabel)
         ax.set_xlabel("Model")
         ax.set_xticks(x)
         ax.set_xticklabels(labels, rotation=25, ha="right")
-        set_percent_y_axis(ax)
+        set_percent_y_axis(ax, y_upper)
     handles, legend_labels = axes[0].get_legend_handles_labels()
     fig.legend(handles, legend_labels, loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.16))
     save_figure(fig, path)
@@ -491,6 +530,19 @@ def plot_privacy_prompt_leakage_types(rows: list[dict[str, Any]], path: Path, *,
     baseline_pos = [item - width / 2 for item in x]
     prompt_pos = [item + width / 2 for item in x]
     error_kw = {"elinewidth": 1.1, "ecolor": "#303633", "capsize": 3, "capthick": 1.0}
+    all_percent_values: list[float] = []
+    for _title, baseline_key, prompt_key in metrics:
+        all_percent_values.extend(
+            100 * float(row.get(baseline_key))
+            for row, count in zip(rows, baseline_counts)
+            if row.get(baseline_key) is not None and count
+        )
+        all_percent_values.extend(
+            100 * float(row.get(prompt_key))
+            for row, count in zip(rows, prompt_counts)
+            if row.get(prompt_key) is not None and count
+        )
+    y_upper = nice_percent_upper_from_values(all_percent_values, annotate=annotate)
     for ax, (title, baseline_key, prompt_key) in zip(axes.flat, metrics):
         baseline_vals = [
             100 * float(row.get(baseline_key))
@@ -523,14 +575,14 @@ def plot_privacy_prompt_leakage_types(rows: list[dict[str, Any]], path: Path, *,
             error_kw=error_kw,
         )
         if annotate:
-            annotate_ns(ax, baseline_pos, baseline_vals, baseline_counts, percent=True, y_max=100)
-            annotate_ns(ax, prompt_pos, prompt_vals, prompt_counts, percent=True, y_max=100)
+            annotate_ns(ax, baseline_pos, baseline_vals, baseline_counts, percent=True, y_max=y_upper)
+            annotate_ns(ax, prompt_pos, prompt_vals, prompt_counts, percent=True, y_max=y_upper)
         ax.set_title(title)
         ax.set_ylabel("% Occurrence")
         ax.set_xlabel("Model")
         ax.set_xticks(x)
         ax.set_xticklabels(labels, rotation=25, ha="right")
-        set_percent_y_axis(ax)
+        set_percent_y_axis(ax, y_upper)
     handles, legend_labels = axes.flat[0].get_legend_handles_labels()
     fig.legend(handles, legend_labels, loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.04))
     save_figure(fig, path)
@@ -554,6 +606,19 @@ def plot_privacy_prompt_core_leakage_types(rows: list[dict[str, Any]], path: Pat
     baseline_pos = [item - width / 2 for item in x]
     prompt_pos = [item + width / 2 for item in x]
     error_kw = {"elinewidth": 1.1, "ecolor": "#303633", "capsize": 3, "capthick": 1.0}
+    all_percent_values: list[float] = []
+    for _title, baseline_key, prompt_key in metrics:
+        all_percent_values.extend(
+            100 * float(row.get(baseline_key))
+            for row, count in zip(rows, baseline_counts)
+            if row.get(baseline_key) is not None and count
+        )
+        all_percent_values.extend(
+            100 * float(row.get(prompt_key))
+            for row, count in zip(rows, prompt_counts)
+            if row.get(prompt_key) is not None and count
+        )
+    y_upper = nice_percent_upper_from_values(all_percent_values, annotate=annotate)
     for ax, (title, baseline_key, prompt_key) in zip(axes, metrics):
         baseline_vals = [
             100 * float(row.get(baseline_key))
@@ -586,13 +651,13 @@ def plot_privacy_prompt_core_leakage_types(rows: list[dict[str, Any]], path: Pat
             error_kw=error_kw,
         )
         if annotate:
-            annotate_ns(ax, baseline_pos, baseline_vals, baseline_counts, percent=True, y_max=100)
-            annotate_ns(ax, prompt_pos, prompt_vals, prompt_counts, percent=True, y_max=100)
+            annotate_ns(ax, baseline_pos, baseline_vals, baseline_counts, percent=True, y_max=y_upper)
+            annotate_ns(ax, prompt_pos, prompt_vals, prompt_counts, percent=True, y_max=y_upper)
         ax.set_title(title)
         ax.set_xlabel("Model")
         ax.set_xticks(x)
         ax.set_xticklabels(labels, rotation=25, ha="right")
-        set_percent_y_axis(ax)
+        set_percent_y_axis(ax, y_upper)
     axes[0].set_ylabel("% Occurrence")
     handles, legend_labels = axes[0].get_legend_handles_labels()
     fig.legend(handles, legend_labels, loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.10))
@@ -717,7 +782,7 @@ def plot_training_effect(rows: list[dict[str, Any]], path: Path) -> list[dict[st
                 label=label,
                 zorder=3,
             )
-            ax.text(x + 0.8, y + 0.8, label.replace("Qwen3 4B ", ""), fontsize=9, color=color)
+            ax.text(x + 0.8, y + 0.8, label.replace("Qwen3 4B ", ""), fontsize=9.5, color=color)
             if model_label != BASE_MODEL_LABEL:
                 ax.annotate(
                     "",
@@ -779,14 +844,15 @@ def plot_task_performance(rows: list[dict[str, Any]], path: Path, *, annotate: b
     error_kw = {"elinewidth": 1.2, "ecolor": "#303633", "capsize": 3.5, "capthick": 1.1}
     ax.bar(hop_pos, hop_vals, width=width, color=HOP_COLOR, label="Mean Hop Performance", yerr=percent_yerr(rows, "mean_hop_performance"), error_kw=error_kw)
     ax.bar(chain_pos, chain_vals, width=width, color=CHAIN_COLOR, label="All-Chain Correct", yerr=percent_yerr(rows, "all_chain_correct"), error_kw=error_kw)
+    y_upper = nice_percent_upper_from_values([*hop_vals, *chain_vals], annotate=annotate)
     if annotate:
-        annotate_ns(ax, hop_pos, hop_vals, ns, percent=True, y_max=100)
-        annotate_ns(ax, chain_pos, chain_vals, ns, percent=True, y_max=100)
+        annotate_ns(ax, hop_pos, hop_vals, ns, percent=True, y_max=y_upper)
+        annotate_ns(ax, chain_pos, chain_vals, ns, percent=True, y_max=y_upper)
     ax.set_ylabel("% of Rollouts")
     ax.set_xlabel("Model")
     ax.set_xticks(x)
     ax.set_xticklabels(labels, rotation=25, ha="right")
-    set_percent_y_axis(ax)
+    set_percent_y_axis(ax, y_upper)
     ax.legend(loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.20))
     save_figure(fig, path)
 
@@ -840,7 +906,7 @@ def plot_retrieval_behavior(rows: list[dict[str, Any]], path: Path, *, annotate:
     y_max = nice_upper(raw_y_max * (1.28 if annotate else 1.14), target_ticks=5)[0]
     if annotate:
         for xi, row in zip(x, rows):
-            ax.text(xi, y_max * 0.95, f"n={int(row.get('n') or 0)}", ha="center", va="bottom", fontsize=9)
+            ax.text(xi, y_max * 0.95, f"n={int(row.get('n') or 0)}", ha="center", va="bottom", fontsize=9.5)
     ax.set_ylabel("Mean Count per Rollout")
     ax.set_xlabel("Model")
     ax.set_xticks(x)
@@ -1023,7 +1089,7 @@ def plot_leakage_relationships(rows: list[dict[str, Any]], path: Path, *, annota
             capsize=3,
         )
         if annotate:
-            axes[0].text(value, min(48, center + 2), f"n={len(subset)}", ha="center", va="bottom", fontsize=8)
+            axes[0].text(value, min(48, center + 2), f"n={len(subset)}", ha="center", va="bottom", fontsize=8.5)
     add_logistic_line(axes[0], chain_x, chain_fit, scale=1.0, x_min=min(chain_x), x_max=max(chain_x))
     axes[0].set_xlabel("Chain Length (Hops)")
     axes[0].set_ylabel("Privacy Leakage Rate (%)")
@@ -1055,7 +1121,7 @@ def plot_leakage_relationships(rows: list[dict[str, Any]], path: Path, *, annota
             capsize=3,
         )
         if annotate:
-            axes[1].text(center_x, min(48, center + 2), f"n={len(subset)}", ha="center", va="bottom", fontsize=8)
+            axes[1].text(center_x, min(48, center + 2), f"n={len(subset)}", ha="center", va="bottom", fontsize=8.5)
     add_logistic_line(axes[1], acc_x, acc_fit, scale=0.1, x_min=0, x_max=100)
     axes[1].set_xlabel("Chain Progress Accuracy (%)")
     axes[1].set_ylabel("Privacy Leakage Rate (%)")
@@ -2855,7 +2921,7 @@ def plot_final_refresh_progress(rows: list[dict[str, Any]], path: Path) -> None:
                 f"{100 * rate:.0f}%",
                 va="center",
                 ha="left",
-                fontsize=8,
+                fontsize=8.5,
                 color="#17201d",
             )
     axes[0].set_yticks(y_pos, labels)
@@ -2930,7 +2996,7 @@ def plot_final_situational_training_effect(
             label = str(row.get("model") or model_label).replace("Qwen3 4B ", "")
             if not row.get("complete"):
                 label += " (partial)"
-            ax.text(x + 0.7, y + 0.7, label, fontsize=9, color=color)
+            ax.text(x + 0.7, y + 0.7, label, fontsize=9.5, color=color)
             if base_xy and model_label != "qwen3_4b_instruct_2507":
                 ax.annotate(
                     "",
@@ -3043,7 +3109,7 @@ def plot_training_prompt_trajectories(
                 min(98, xy[0] + 1.0),
                 min(98, xy[1] + 1.0),
                 f"{label}\n{xy[0]:.1f}%, {xy[1]:.1f}%\nn={attempts}/{judged}",
-                fontsize=8,
+                fontsize=8.5,
                 color=color,
             )
         else:
@@ -3052,7 +3118,7 @@ def plot_training_prompt_trajectories(
                 xy=xy,
                 xytext=label_offset,
                 textcoords="offset points",
-                fontsize=8.5,
+                fontsize=9.2,
                 color=color,
                 ha="left" if label_offset[0] >= 0 else "right",
                 va="bottom" if label_offset[1] >= 0 else "top",
