@@ -25,6 +25,7 @@ import argparse
 import asyncio
 from collections import defaultdict
 from datetime import datetime, timezone
+import fcntl
 import hashlib
 import json
 import os
@@ -149,8 +150,14 @@ def spread_sample(items: list[Path], limit: int) -> list[Path]:
 
 def append_jsonl(path: Path, row: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
+    line = json.dumps(row, ensure_ascii=False) + "\n"
     with path.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+        fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
+        try:
+            handle.write(line)
+            handle.flush()
+        finally:
+            fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
 
 
 def fingerprint(obj: Any) -> str:
