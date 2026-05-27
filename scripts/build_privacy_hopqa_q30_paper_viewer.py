@@ -520,14 +520,14 @@ def plot_privacy_prompt_accuracy_leakage_horizontal(rows: list[dict[str, Any]], 
     labels = [paper_model_display(str(row["model_label"])) for row in rows]
     metrics = [
         (
-            "Strict Chain Success",
+            "Strict Chain Success (%)",
             "baseline_strict_chain_success_rate",
             "prompt_strict_chain_success_rate",
             "baseline_attempts",
             "prompt_attempts",
         ),
         (
-            "Privacy Leakage",
+            "Privacy Leakage (%)",
             "baseline_reward_rate",
             "prompt_reward_rate",
             "baseline_stepfun",
@@ -577,11 +577,10 @@ def plot_privacy_prompt_accuracy_leakage_horizontal(rows: list[dict[str, Any]], 
         if annotate:
             annotate_ns(ax, baseline_pos, baseline_vals, baseline_counts, percent=True, y_max=y_upper)
             annotate_ns(ax, prompt_pos, prompt_vals, prompt_counts, percent=True, y_max=y_upper)
-        ax.set_title(title)
+        ax.set_ylabel(title)
         ax.set_xticks(x)
         ax.set_xticklabels(labels, rotation=25, ha="right")
         ax.set_xlabel("Model")
-        ax.set_ylabel("% of Rollouts")
         ax.tick_params(axis="y", labelleft=True)
         set_percent_y_axis(ax, y_upper)
     handles, legend_labels = axes[0].get_legend_handles_labels()
