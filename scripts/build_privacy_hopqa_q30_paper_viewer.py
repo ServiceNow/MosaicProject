@@ -513,6 +513,81 @@ def plot_privacy_prompt_accuracy_leakage(rows: list[dict[str, Any]], path: Path,
     save_figure(fig, path)
 
 
+def plot_privacy_prompt_accuracy_leakage_horizontal(rows: list[dict[str, Any]], path: Path, *, annotate: bool = False) -> None:
+    rows = model_rows_for_plot(rows, require_prompt=True)
+    if not rows:
+        return
+    labels = [paper_model_display(str(row["model_label"])) for row in rows]
+    metrics = [
+        (
+            "Strict Chain Success",
+            "baseline_strict_chain_success_rate",
+            "prompt_strict_chain_success_rate",
+            "baseline_attempts",
+            "prompt_attempts",
+        ),
+        (
+            "Privacy Leakage",
+            "baseline_reward_rate",
+            "prompt_reward_rate",
+            "baseline_stepfun",
+            "prompt_stepfun",
+        ),
+    ]
+    fig, axes = plt.subplots(1, 2, figsize=(12.2, 4.3), sharey=True)
+    x = list(range(len(rows)))
+    width = 0.36
+    y_upper = 100.0
+    error_kw = {"elinewidth": 1.2, "ecolor": "#303633", "capsize": 3.5, "capthick": 1.1}
+    for ax, (title, baseline_key, prompt_key, baseline_n_key, prompt_n_key) in zip(axes, metrics):
+        baseline_counts = [int(row.get(baseline_n_key) or 0) for row in rows]
+        prompt_counts = [int(row.get(prompt_n_key) or 0) for row in rows]
+        baseline_vals = [
+            100 * float(row.get(baseline_key))
+            if count and row.get(baseline_key) is not None
+            else math.nan
+            for row, count in zip(rows, baseline_counts)
+        ]
+        prompt_vals = [
+            100 * float(row.get(prompt_key))
+            if count and row.get(prompt_key) is not None
+            else math.nan
+            for row, count in zip(rows, prompt_counts)
+        ]
+        baseline_pos = [item - width / 2 for item in x]
+        prompt_pos = [item + width / 2 for item in x]
+        ax.bar(
+            baseline_pos,
+            baseline_vals,
+            width=width,
+            color=BASELINE_COLOR,
+            label="Baseline",
+            yerr=percent_yerr(rows, baseline_key),
+            error_kw=error_kw,
+        )
+        ax.bar(
+            prompt_pos,
+            prompt_vals,
+            width=width,
+            color=PROMPT_COLOR,
+            label="Privacy Prompt",
+            yerr=percent_yerr(rows, prompt_key),
+            error_kw=error_kw,
+        )
+        if annotate:
+            annotate_ns(ax, baseline_pos, baseline_vals, baseline_counts, percent=True, y_max=y_upper)
+            annotate_ns(ax, prompt_pos, prompt_vals, prompt_counts, percent=True, y_max=y_upper)
+        ax.set_title(title)
+        ax.set_xticks(x)
+        ax.set_xticklabels(labels, rotation=25, ha="right")
+        ax.set_xlabel("Model")
+        set_percent_y_axis(ax, y_upper)
+    axes[0].set_ylabel("%")
+    handles, legend_labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, legend_labels, loc="upper center", ncols=2, frameon=False, bbox_to_anchor=(0.5, 1.05))
+    save_figure(fig, path)
+
+
 def plot_privacy_prompt_leakage_types(rows: list[dict[str, Any]], path: Path, *, annotate: bool = False) -> None:
     rows = [row for row in rows if row.get("baseline_stepfun") or row.get("prompt_stepfun")]
     if not rows:
@@ -3388,6 +3463,8 @@ def build_viewer(args: argparse.Namespace) -> None:
 
     plot_privacy_prompt_accuracy_leakage(prompt_rows_main, plots_dir / "privacy_prompt_accuracy_leakage.svg")
     plot_privacy_prompt_accuracy_leakage(prompt_rows_main, plots_dir / "privacy_prompt_accuracy_leakage_annotated.svg", annotate=True)
+    plot_privacy_prompt_accuracy_leakage_horizontal(prompt_rows_main, plots_dir / "privacy_prompt_accuracy_leakage_horizontal.svg")
+    plot_privacy_prompt_accuracy_leakage_horizontal(prompt_rows_main, plots_dir / "privacy_prompt_accuracy_leakage_horizontal_annotated.svg", annotate=True)
     plot_privacy_prompt_core_leakage_types(prompt_rows_main, plots_dir / "privacy_prompt_core_leakage_types.svg")
     plot_privacy_prompt_core_leakage_types(prompt_rows_main, plots_dir / "privacy_prompt_core_leakage_types_annotated.svg", annotate=True)
     plot_privacy_prompt_leakage_types(prompt_rows_main, plots_dir / "privacy_prompt_leakage_types.svg")
@@ -4123,7 +4200,7 @@ def build_viewer(args: argparse.Namespace) -> None:
       <h2>Privacy Prompt Effect: Accuracy And Leakage</h2>
       <div class="note">Paper-ready final 16k held-out test refresh, excluding trained checkpoints. Strict Chain Success is over scored rollout attempts: agent-induced failures are zero, while infrastructure/system failures are excluded. Privacy Leakage is over StepFun-judged successful rollouts and uses the binary StepFun leakage label: answer leakage, full-information leakage, or multiple answer leaks. Chroma Context-1 uses the medium OpenRouter configuration.</div>
       <img src="plots/privacy_prompt_accuracy_leakage.svg" alt="Privacy prompt accuracy and leakage">
-      <div class="links"><a href="plots/privacy_prompt_accuracy_leakage.svg">SVG</a><a href="plots/privacy_prompt_accuracy_leakage.pdf">PDF</a><a href="plots/privacy_prompt_accuracy_leakage_annotated.svg">Annotated SVG</a><a href="tables/privacy_prompt_accuracy_leakage.tex">LaTeX table</a></div>
+      <div class="links"><a href="plots/privacy_prompt_accuracy_leakage.svg">SVG</a><a href="plots/privacy_prompt_accuracy_leakage.pdf">PDF</a><a href="plots/privacy_prompt_accuracy_leakage_annotated.svg">Annotated SVG</a><a href="plots/privacy_prompt_accuracy_leakage_horizontal.svg">Horizontal SVG</a><a href="plots/privacy_prompt_accuracy_leakage_horizontal.pdf">Horizontal PDF</a><a href="plots/privacy_prompt_accuracy_leakage_horizontal_annotated.svg">Horizontal annotated SVG</a><a href="tables/privacy_prompt_accuracy_leakage.tex">LaTeX table</a></div>
       {prompt_table}
     </section>
     <section id="prompt-leakage-types" class="figure">
