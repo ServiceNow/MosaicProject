@@ -22,11 +22,13 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts import build_privacy_hopqa_q30_paper_viewer as base
+from scripts import plot_privacy_hopqa_q30_training_efficiency as efficiency
 
 
 DEFAULT_OUTPUT_DIR = Path("/home/toolkit/my_code/MosaicProject/runtime_analysis/privacy_hopqa_q30_paper_viewer_s100")
 DEFAULT_LATEST_OUTPUT = Path("/home/toolkit/my_code/MosaicProject/runtime_analysis/latest_privacy_hopqa_q30_paper_viewer_s100.html")
 TRAJECTORY_DIR = Path("../privacy_hopqa_q30_training_trajectory_20260524")
+EFFICIENCY_DIR = Path("../privacy_hopqa_q30_training_efficiency_20260527")
 PADR_S100_NORMAL_ROOT = Path(
     "/mnt/llmd/results/exps/alexg/reason/"
     "privacy_hopqa_q30_final_eval_missing_ckpts_16kgen_32kctx_helperfe_20260524"
@@ -1149,6 +1151,8 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
     plot_training_effect(rows, plots_dir / "training_effect_step100.svg")
     plot_core_leakage_types(summary, plots_dir / "core_leakage_types_step100.svg")
     plot_behavior(behavior, plots_dir / "training_behavior_step100.svg")
+    efficiency_output_dir = output_dir.parent / "privacy_hopqa_q30_training_efficiency_20260527"
+    efficiency_payload = efficiency.build(efficiency_output_dir)
 
     training_effect_latex = latex_training_summary(summary)
     untrained_latex = latex_untrained_model_summary(untrained_rows)
@@ -1198,6 +1202,11 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
                 "token_usage_rows": token_rows,
                 "token_usage_combined": token_combined,
                 "paired_leakage_example_rows": query_examples,
+                "training_efficiency": {
+                    "output_dir": str(efficiency_output_dir),
+                    "summary_rows": efficiency_payload["summary_rows"],
+                    "filter_bin_rows": efficiency_payload["filter_bin_rows"],
+                },
                 "artifact_roots": {
                     "standard_normal": str(base.DEFAULT_FINAL_EVAL_ARTIFACT_ROOT),
                     "standard_privacy_prompt": str(base.DEFAULT_FINAL_PRIVACY_PROMPT_ARTIFACT_ROOT),
@@ -1379,6 +1388,7 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
         <div class="asset-card"><h3>Training Effect</h3><div class="links"><a href="plots/training_effect_step100.svg">SVG</a><a href="plots/training_effect_step100.pdf">PDF</a><a href="tables/training_effect_summary_s100.tex">LaTeX</a></div></div>
         <div class="asset-card"><h3>Untrained Models</h3><div class="links"><a href="#untrained-models">Viewer table</a><a href="tables/untrained_model_summary.tex">LaTeX</a><a href="tables/untrained_model_summary.json">JSON</a></div></div>
         <div class="asset-card"><h3>Training Trajectory</h3><div class="links"><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_accuracy_privacy_arrows.svg">SVG</a><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_accuracy_privacy_arrows.pdf">PDF</a><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_metrics.csv">CSV</a><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_metrics.json">JSON</a></div></div>
+        <div class="asset-card"><h3>Training Efficiency</h3><div class="links"><a href="{EFFICIENCY_DIR.as_posix()}/training_sample_efficiency_metrics.svg">Metrics SVG</a><a href="{EFFICIENCY_DIR.as_posix()}/training_quality_threshold_samples.svg">Threshold SVG</a><a href="{EFFICIENCY_DIR.as_posix()}/training_efficiency_summary.json">JSON</a></div></div>
         <div class="asset-card"><h3>Core Leakage Types</h3><div class="links"><a href="plots/core_leakage_types_step100.svg">SVG</a><a href="plots/core_leakage_types_step100.pdf">PDF</a></div></div>
         <div class="asset-card"><h3>Query And Retrieval Behavior</h3><div class="links"><a href="plots/training_behavior_step100.svg">SVG</a><a href="plots/training_behavior_step100.pdf">PDF</a><a href="tables/training_behavior_s100.tex">LaTeX</a></div></div>
         <div class="asset-card"><h3>Step100 Query Examples</h3><div class="links"><a href="#query-examples">Viewer table</a><a href="tables/paired_leakage_examples_s100.tex">LaTeX</a><a href="tables/paired_leakage_examples_s100.json">JSON</a></div></div>
@@ -1409,6 +1419,20 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
       <div class="note">Normal-prompt checkpoint trajectory on held-out test rollouts. Error bars are SEM over repeat means; color gradient encodes checkpoint step.</div>
       <img src="{TRAJECTORY_DIR.as_posix()}/training_trajectory_accuracy_privacy_arrows.svg" alt="Checkpoint training trajectory for strict chain success and privacy leakage">
       <div class="links"><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_accuracy_privacy_arrows.svg">SVG</a><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_accuracy_privacy_arrows.pdf">PDF</a><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_metrics.csv">CSV</a><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_metrics.json">JSON</a></div>
+    </section>
+    <section id="training-efficiency">
+      <h2>Training Efficiency: Samples And Filtering</h2>
+      <div class="note">Normal-prompt checkpoint trajectories indexed by effective generated train samples, so the comparison focuses on sample/filtering efficiency rather than node count, queue state, or restart wall-clock effects.</div>
+      <img src="{EFFICIENCY_DIR.as_posix()}/training_sample_efficiency_metrics.svg" alt="Checkpoint task and privacy metrics against effective generated train samples">
+      <div class="links"><a href="{EFFICIENCY_DIR.as_posix()}/training_sample_efficiency_metrics.svg">SVG</a><a href="{EFFICIENCY_DIR.as_posix()}/training_sample_efficiency_metrics.pdf">PDF</a><a href="{EFFICIENCY_DIR.as_posix()}/training_efficiency_checkpoint_metrics.csv">CSV</a></div>
+      <img src="{EFFICIENCY_DIR.as_posix()}/training_quality_threshold_samples.svg" alt="Generated samples needed to reach strict chain success targets">
+      <div class="links"><a href="{EFFICIENCY_DIR.as_posix()}/training_quality_threshold_samples.svg">SVG</a><a href="{EFFICIENCY_DIR.as_posix()}/training_quality_threshold_samples.pdf">PDF</a></div>
+      <img src="{EFFICIENCY_DIR.as_posix()}/training_optimizer_progress_vs_generation.svg" alt="Optimizer step against effective generated train samples">
+      <div class="links"><a href="{EFFICIENCY_DIR.as_posix()}/training_optimizer_progress_vs_generation.svg">SVG</a><a href="{EFFICIENCY_DIR.as_posix()}/training_optimizer_progress_vs_generation.pdf">PDF</a></div>
+      <img src="{EFFICIENCY_DIR.as_posix()}/training_filter_fraction_by_step.svg" alt="Filtered fraction over optimizer-step windows">
+      <div class="links"><a href="{EFFICIENCY_DIR.as_posix()}/training_filter_fraction_by_step.svg">SVG</a><a href="{EFFICIENCY_DIR.as_posix()}/training_filter_fraction_by_step.pdf">PDF</a><a href="{EFFICIENCY_DIR.as_posix()}/training_efficiency_filter_bins.csv">CSV</a></div>
+      <img src="{EFFICIENCY_DIR.as_posix()}/training_generation_accounting_step100.svg" alt="Step100 generated train sample accounting">
+      <div class="links"><a href="{EFFICIENCY_DIR.as_posix()}/training_generation_accounting_step100.svg">SVG</a><a href="{EFFICIENCY_DIR.as_posix()}/training_generation_accounting_step100.pdf">PDF</a><a href="{EFFICIENCY_DIR.as_posix()}/training_efficiency_summary.json">JSON</a></div>
     </section>
     <section id="core-leakage-types">
       <h2>Core Leakage Types</h2>

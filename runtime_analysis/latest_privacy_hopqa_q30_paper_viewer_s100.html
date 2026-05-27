@@ -53,13 +53,34 @@
         <div class="asset-card"><h3>Training Effect</h3><div class="links"><a href="plots/training_effect_step100.svg">SVG</a><a href="plots/training_effect_step100.pdf">PDF</a><a href="tables/training_effect_summary_s100.tex">LaTeX</a></div></div>
         <div class="asset-card"><h3>Untrained Models</h3><div class="links"><a href="#untrained-models">Viewer table</a><a href="tables/untrained_model_summary.tex">LaTeX</a><a href="tables/untrained_model_summary.json">JSON</a></div></div>
         <div class="asset-card"><h3>Training Trajectory</h3><div class="links"><a href="../privacy_hopqa_q30_training_trajectory_20260524/training_trajectory_accuracy_privacy_arrows.svg">SVG</a><a href="../privacy_hopqa_q30_training_trajectory_20260524/training_trajectory_accuracy_privacy_arrows.pdf">PDF</a><a href="../privacy_hopqa_q30_training_trajectory_20260524/training_trajectory_metrics.csv">CSV</a><a href="../privacy_hopqa_q30_training_trajectory_20260524/training_trajectory_metrics.json">JSON</a></div></div>
+        <div class="asset-card"><h3>Training Efficiency</h3><div class="links"><a href="../privacy_hopqa_q30_training_efficiency_20260527/training_sample_efficiency_metrics.svg">Metrics SVG</a><a href="../privacy_hopqa_q30_training_efficiency_20260527/training_quality_threshold_samples.svg">Threshold SVG</a><a href="../privacy_hopqa_q30_training_efficiency_20260527/training_efficiency_summary.json">JSON</a></div></div>
         <div class="asset-card"><h3>Core Leakage Types</h3><div class="links"><a href="plots/core_leakage_types_step100.svg">SVG</a><a href="plots/core_leakage_types_step100.pdf">PDF</a></div></div>
         <div class="asset-card"><h3>Query And Retrieval Behavior</h3><div class="links"><a href="plots/training_behavior_step100.svg">SVG</a><a href="plots/training_behavior_step100.pdf">PDF</a><a href="tables/training_behavior_s100.tex">LaTeX</a></div></div>
         <div class="asset-card"><h3>Step100 Query Examples</h3><div class="links"><a href="#query-examples">Viewer table</a><a href="tables/paired_leakage_examples_s100.tex">LaTeX</a><a href="tables/paired_leakage_examples_s100.json">JSON</a></div></div>
         <div class="asset-card"><h3>Token Usage</h3><div class="links"><a href="#token-usage">Viewer table</a><a href="tables/token_usage_summary_s100.md">Markdown</a><a href="tables/token_usage_summary_s100.json">JSON</a></div></div>
-        <div class="asset-card"><h3>Judge Validation</h3><div class="links"><a href="#judge-validation">Viewer table</a><a href="plots/judge_validation_binary_agreement.svg">Binary SVG</a><a href="plots/judge_validation_score_confusion.svg">Score SVG</a><a href="tables/judge_validation_summary.tex">LaTeX</a></div></div>
         <div class="asset-card"><h3>Checkpoint Choice</h3><div class="links"><a href="tables/checkpoint_choice_s50_s100.tex">LaTeX</a><a href="viewer_data.json">JSON data</a></div></div>
       </div>
+      <details class="latex-block"><summary>Copy LaTeX: Training Effect Summary</summary><pre><code>\begin{table*}[t]
+\small
+\centering
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+\textbf{Model} &amp; \textbf{\shortstack{Strict Chain\\Success ($\uparrow$)}} &amp; \textbf{\shortstack{Hop-Level\\Accuracy ($\uparrow$)}} &amp; \textbf{\shortstack{Privacy\\Leakage ($\downarrow$)}} &amp; \textbf{\shortstack{Intent\\Leakage ($\downarrow$)}} &amp; \textbf{\shortstack{Answer\\Leakage ($\downarrow$)}} &amp; \textbf{\shortstack{Full-Information\\Leakage ($\downarrow$)}} \\
+\midrule
+\qwenthreeb &amp; 48.7\% {\scriptsize $\pm$ 1.1} &amp; 73.1\% {\scriptsize $\pm$ 1.3} &amp; 34.0\% {\scriptsize $\pm$ 0.4} &amp; 51.1\% {\scriptsize $\pm$ 1.7} &amp; 18.7\% {\scriptsize $\pm$ 0.3} &amp; 11.7\% {\scriptsize $\pm$ 1.4} \\
+\quad + privacy prompt &amp; 44.5\% {\scriptsize $\pm$ 0.8} &amp; 71.3\% {\scriptsize $\pm$ 0.3} &amp; 25.5\% {\scriptsize $\pm$ 1.1} &amp; 39.2\% {\scriptsize $\pm$ 0.8} &amp; 14.4\% {\scriptsize $\pm$ 0.5} &amp; 7.9\% {\scriptsize $\pm$ 0.7} \\
+\midrule
+Task Training &amp; {\bfseries 59.3\% {\scriptsize $\pm$ 0.2}} &amp; 79.0\% {\scriptsize $\pm$ 0.5} &amp; 51.7\% {\scriptsize $\pm$ 1.3} &amp; 63.5\% {\scriptsize $\pm$ 0.3} &amp; 28.5\% {\scriptsize $\pm$ 0.6} &amp; 17.1\% {\scriptsize $\pm$ 1.7} \\
+\quad + privacy prompt &amp; 58.9\% {\scriptsize $\pm$ 0.2} &amp; 78.5\% {\scriptsize $\pm$ 0.1} &amp; 52.0\% {\scriptsize $\pm$ 1.2} &amp; 62.8\% {\scriptsize $\pm$ 0.5} &amp; 29.0\% {\scriptsize $\pm$ 0.7} &amp; 19.1\% {\scriptsize $\pm$ 1.2} \\
+\midrule
+Task+PA-DR Training &amp; 58.7\% {\scriptsize $\pm$ 0.9} &amp; {\bfseries 79.4\% {\scriptsize $\pm$ 0.6}} &amp; 9.9\% {\scriptsize $\pm$ 0.3} &amp; 29.8\% {\scriptsize $\pm$ 0.3} &amp; {\bfseries 3.3\% {\scriptsize $\pm$ 0.3}} &amp; 1.7\% {\scriptsize $\pm$ 0.3} \\
+\quad + privacy prompt &amp; {\bfseries 59.3\% {\scriptsize $\pm$ 0.7}} &amp; 78.8\% {\scriptsize $\pm$ 0.2} &amp; {\bfseries 7.6\% {\scriptsize $\pm$ 0.8}} &amp; {\bfseries 23.4\% {\scriptsize $\pm$ 0.7}} &amp; 4.0\% {\scriptsize $\pm$ 0.2} &amp; {\bfseries 1.1\% {\scriptsize $\pm$ 0.5}} \\
+\bottomrule
+\end{tabular}
+\caption{Effect of RL training on \qwenthreeb, evaluated with and without the privacy-aware prompt, using checkpoint 100 for both training runs. We train one model purely on task performance and one with our Privacy Aware-Deep Research (PA-DR) method that also penalizes privacy leakage. Values after $\pm$ are SEMs in percentage points.}
+\label{tab:training_effect_summary_s100}
+\end{table*}
+</code></pre></details>
       <details class="latex-block"><summary>Copy LaTeX: Untrained Model Comparison</summary><pre><code>\begin{table*}[t]
 \small
 \centering
@@ -88,27 +109,6 @@ Gemma 4 31B IT &amp; {\bfseries 63.6\% {\scriptsize $\pm$ 0.7}} &amp; {\bfseries
 \end{tabular}
 \caption{Comparison of untrained models on the held-out Privacy HopQA test set, evaluated with and without the privacy-aware prompt. Values after $\pm$ are SEMs in percentage points. Chroma Context-1 uses the medium OpenRouter configuration.}
 \label{tab:untrained_model_summary}
-\end{table*}
-</code></pre></details>
-      <details class="latex-block"><summary>Copy LaTeX: Training Effect Summary</summary><pre><code>\begin{table*}[t]
-\small
-\centering
-\begin{tabular}{@{}lcccccc@{}}
-\toprule
-\textbf{Model} &amp; \textbf{\shortstack{Strict Chain\\Success ($\uparrow$)}} &amp; \textbf{\shortstack{Hop-Level\\Accuracy ($\uparrow$)}} &amp; \textbf{\shortstack{Privacy\\Leakage ($\downarrow$)}} &amp; \textbf{\shortstack{Intent\\Leakage ($\downarrow$)}} &amp; \textbf{\shortstack{Answer\\Leakage ($\downarrow$)}} &amp; \textbf{\shortstack{Full-Information\\Leakage ($\downarrow$)}} \\
-\midrule
-\qwenthreeb &amp; 48.7\% {\scriptsize $\pm$ 1.1} &amp; 73.1\% {\scriptsize $\pm$ 1.3} &amp; 34.0\% {\scriptsize $\pm$ 0.4} &amp; 51.1\% {\scriptsize $\pm$ 1.7} &amp; 18.7\% {\scriptsize $\pm$ 0.3} &amp; 11.7\% {\scriptsize $\pm$ 1.4} \\
-\quad + privacy prompt &amp; 44.5\% {\scriptsize $\pm$ 0.8} &amp; 71.3\% {\scriptsize $\pm$ 0.3} &amp; 25.5\% {\scriptsize $\pm$ 1.1} &amp; 39.2\% {\scriptsize $\pm$ 0.8} &amp; 14.4\% {\scriptsize $\pm$ 0.5} &amp; 7.9\% {\scriptsize $\pm$ 0.7} \\
-\midrule
-Task Training &amp; {\bfseries 59.3\% {\scriptsize $\pm$ 0.2}} &amp; 79.0\% {\scriptsize $\pm$ 0.5} &amp; 51.7\% {\scriptsize $\pm$ 1.3} &amp; 63.5\% {\scriptsize $\pm$ 0.3} &amp; 28.5\% {\scriptsize $\pm$ 0.6} &amp; 17.1\% {\scriptsize $\pm$ 1.7} \\
-\quad + privacy prompt &amp; 58.9\% {\scriptsize $\pm$ 0.2} &amp; 78.5\% {\scriptsize $\pm$ 0.1} &amp; 52.0\% {\scriptsize $\pm$ 1.2} &amp; 62.8\% {\scriptsize $\pm$ 0.5} &amp; 29.0\% {\scriptsize $\pm$ 0.7} &amp; 19.1\% {\scriptsize $\pm$ 1.2} \\
-\midrule
-Task+PA-DR Training &amp; 58.7\% {\scriptsize $\pm$ 0.9} &amp; {\bfseries 79.4\% {\scriptsize $\pm$ 0.6}} &amp; 9.9\% {\scriptsize $\pm$ 0.3} &amp; 29.8\% {\scriptsize $\pm$ 0.3} &amp; {\bfseries 3.3\% {\scriptsize $\pm$ 0.3}} &amp; 1.7\% {\scriptsize $\pm$ 0.3} \\
-\quad + privacy prompt &amp; {\bfseries 59.3\% {\scriptsize $\pm$ 0.7}} &amp; 78.8\% {\scriptsize $\pm$ 0.2} &amp; {\bfseries 7.6\% {\scriptsize $\pm$ 0.8}} &amp; {\bfseries 23.4\% {\scriptsize $\pm$ 0.7}} &amp; 4.0\% {\scriptsize $\pm$ 0.2} &amp; {\bfseries 1.1\% {\scriptsize $\pm$ 0.5}} \\
-\bottomrule
-\end{tabular}
-\caption{Effect of RL training on \qwenthreeb, evaluated with and without the privacy-aware prompt, using checkpoint 100 for both training runs. We train one model purely on task performance and one with our Privacy Aware-Deep Research (PA-DR) method that also penalizes privacy leakage. Values after $\pm$ are SEMs in percentage points.}
-\label{tab:training_effect_summary_s100}
 \end{table*}
 </code></pre></details>
       <details class="latex-block"><summary>Copy LaTeX: Query And Retrieval Behavior</summary><pre><code>\begin{table*}[t]
@@ -184,13 +184,27 @@ PA-DR step100 + privacy prompt &amp; 59.3\% +/- 0.7 pp &amp; 68.1\% +/- 1.0 pp &
       <h2>Untrained Model Comparison</h2>
       <div class="note">Held-out test comparison for the untrained model families, evaluated with and without the privacy-aware prompt. Values are SEM over repeat means where available; Chroma Context-1 uses the medium OpenRouter configuration.</div>
       <div class="links"><a href="tables/untrained_model_summary.tex">LaTeX table</a><a href="tables/untrained_model_summary.json">JSON rows</a></div>
-      <table><thead><tr><th>Model</th><th>Strict Chain Success</th><th>Hop-Level Accuracy</th><th>Privacy Leakage</th><th>Intent Leakage</th><th>Answer Leakage</th><th>Full-Information Leakage</th></tr></thead><tbody><tr><td>Qwen3 4B</td><td>48.7% +/- 1.1 pp</td><td>73.1% +/- 1.3 pp</td><td>34.0% +/- 0.4 pp</td><td>51.1% +/- 1.7 pp</td><td>18.7% +/- 0.3 pp</td><td>11.7% +/- 1.4 pp</td></tr><tr><td>+ privacy prompt</td><td>44.5% +/- 0.8 pp</td><td>71.3% +/- 0.3 pp</td><td>25.5% +/- 1.1 pp</td><td>39.2% +/- 0.8 pp</td><td>14.4% +/- 0.5 pp</td><td>7.9% +/- 0.7 pp</td></tr><tr><td>Qwen3 8B</td><td>48.4% +/- 1.4 pp</td><td>69.7% +/- 1.0 pp</td><td>33.4% +/- 1.8 pp</td><td>45.8% +/- 1.1 pp</td><td>15.4% +/- 1.3 pp</td><td>10.4% +/- 0.8 pp</td></tr><tr><td>+ privacy prompt</td><td>50.1% +/- 0.6 pp</td><td>70.8% +/- 1.2 pp</td><td>27.2% +/- 1.0 pp</td><td>36.6% +/- 1.6 pp</td><td>12.4% +/- 0.8 pp</td><td>7.8% +/- 0.8 pp</td></tr><tr><td>Step-3.5 Flash</td><td>51.4% +/- 0.7 pp</td><td>74.8% +/- 0.9 pp</td><td>39.6% +/- 0.7 pp</td><td>53.8% +/- 2.1 pp</td><td>17.5% +/- 0.4 pp</td><td>14.1% +/- 1.4 pp</td></tr><tr><td>+ privacy prompt</td><td>51.6% +/- 1.2 pp</td><td>75.2% +/- 0.6 pp</td><td>39.9% +/- 0.7 pp</td><td>54.6% +/- 0.5 pp</td><td>17.7% +/- 1.7 pp</td><td>14.0% +/- 0.9 pp</td></tr><tr><td>GPT-OSS 20B</td><td>52.4% +/- 0.8 pp</td><td>73.1% +/- 0.9 pp</td><td>42.9% +/- 1.3 pp</td><td>42.2% +/- 0.3 pp</td><td>21.8% +/- 0.6 pp</td><td>14.6% +/- 0.9 pp</td></tr><tr><td>+ privacy prompt</td><td>58.3% +/- 0.4 pp</td><td>78.3% +/- 0.3 pp</td><td>34.8% +/- 0.3 pp</td><td>35.9% +/- 0.6 pp</td><td>18.3% +/- 1.1 pp</td><td>10.2% +/- 0.8 pp</td></tr><tr><td>Chroma Context-1</td><td>15.2% +/- 0.8 pp</td><td>36.7% +/- 1.0 pp</td><td>19.1% +/- 1.2 pp</td><td>25.3% +/- 0.8 pp</td><td>5.7% +/- 0.7 pp</td><td>3.3% +/- 0.1 pp</td></tr><tr><td>+ privacy prompt</td><td>25.6% +/- 0.6 pp</td><td>51.1% +/- 1.8 pp</td><td>17.9% +/- 1.7 pp</td><td>23.5% +/- 1.3 pp</td><td>5.6% +/- 1.2 pp</td><td>3.2% +/- 0.5 pp</td></tr><tr><td>Gemma 4 31B IT</td><td>63.6% +/- 0.7 pp</td><td>82.0% +/- 0.5 pp</td><td>9.7% +/- 0.2 pp</td><td>25.8% +/- 0.1 pp</td><td>6.2% +/- 0.1 pp</td><td>2.3% +/- 0.5 pp</td></tr><tr><td>+ privacy prompt</td><td>60.8% +/- 0.6 pp</td><td>80.9% +/- 0.1 pp</td><td>1.9% +/- 0.1 pp</td><td>14.9% +/- 1.6 pp</td><td>1.3% +/- 0.3 pp</td><td>0.4% +/- 0.3 pp</td></tr></tbody></table>
+      <table><thead><tr><th>Model</th><th>Strict Chain Success</th><th>Hop-Level Accuracy</th><th>Privacy Leakage</th><th>Intent Leakage</th><th>Answer Leakage</th><th>Full-Information Leakage</th></tr></thead><tbody><tr><td>Qwen3 4B</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td></tr><tr><td>+ privacy prompt</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td></tr><tr><td>Qwen3 8B</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td></tr><tr><td>+ privacy prompt</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td></tr><tr><td>Step-3.5 Flash</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td></tr><tr><td>+ privacy prompt</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td></tr><tr><td>GPT-OSS 20B</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td></tr><tr><td>+ privacy prompt</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td></tr><tr><td>Chroma Context-1</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td></tr><tr><td>+ privacy prompt</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td></tr><tr><td>Gemma 4 31B IT</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td></tr><tr><td>+ privacy prompt</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td></tr></tbody></table>
     </section>
     <section id="training-trajectory">
       <h2>Training Trajectory: Accuracy And Privacy</h2>
       <div class="note">Normal-prompt checkpoint trajectory on held-out test rollouts. Error bars are SEM over repeat means; color gradient encodes checkpoint step.</div>
       <img src="../privacy_hopqa_q30_training_trajectory_20260524/training_trajectory_accuracy_privacy_arrows.svg" alt="Checkpoint training trajectory for strict chain success and privacy leakage">
       <div class="links"><a href="../privacy_hopqa_q30_training_trajectory_20260524/training_trajectory_accuracy_privacy_arrows.svg">SVG</a><a href="../privacy_hopqa_q30_training_trajectory_20260524/training_trajectory_accuracy_privacy_arrows.pdf">PDF</a><a href="../privacy_hopqa_q30_training_trajectory_20260524/training_trajectory_metrics.csv">CSV</a><a href="../privacy_hopqa_q30_training_trajectory_20260524/training_trajectory_metrics.json">JSON</a></div>
+    </section>
+    <section id="training-efficiency">
+      <h2>Training Efficiency: Samples And Filtering</h2>
+      <div class="note">Normal-prompt checkpoint trajectories indexed by effective generated train samples, so the comparison focuses on sample/filtering efficiency rather than node count, queue state, or restart wall-clock effects.</div>
+      <img src="../privacy_hopqa_q30_training_efficiency_20260527/training_sample_efficiency_metrics.svg" alt="Checkpoint task and privacy metrics against effective generated train samples">
+      <div class="links"><a href="../privacy_hopqa_q30_training_efficiency_20260527/training_sample_efficiency_metrics.svg">SVG</a><a href="../privacy_hopqa_q30_training_efficiency_20260527/training_sample_efficiency_metrics.pdf">PDF</a><a href="../privacy_hopqa_q30_training_efficiency_20260527/training_efficiency_checkpoint_metrics.csv">CSV</a></div>
+      <img src="../privacy_hopqa_q30_training_efficiency_20260527/training_quality_threshold_samples.svg" alt="Generated samples needed to reach strict chain success targets">
+      <div class="links"><a href="../privacy_hopqa_q30_training_efficiency_20260527/training_quality_threshold_samples.svg">SVG</a><a href="../privacy_hopqa_q30_training_efficiency_20260527/training_quality_threshold_samples.pdf">PDF</a></div>
+      <img src="../privacy_hopqa_q30_training_efficiency_20260527/training_optimizer_progress_vs_generation.svg" alt="Optimizer step against effective generated train samples">
+      <div class="links"><a href="../privacy_hopqa_q30_training_efficiency_20260527/training_optimizer_progress_vs_generation.svg">SVG</a><a href="../privacy_hopqa_q30_training_efficiency_20260527/training_optimizer_progress_vs_generation.pdf">PDF</a></div>
+      <img src="../privacy_hopqa_q30_training_efficiency_20260527/training_filter_fraction_by_step.svg" alt="Filtered fraction over optimizer-step windows">
+      <div class="links"><a href="../privacy_hopqa_q30_training_efficiency_20260527/training_filter_fraction_by_step.svg">SVG</a><a href="../privacy_hopqa_q30_training_efficiency_20260527/training_filter_fraction_by_step.pdf">PDF</a><a href="../privacy_hopqa_q30_training_efficiency_20260527/training_efficiency_filter_bins.csv">CSV</a></div>
+      <img src="../privacy_hopqa_q30_training_efficiency_20260527/training_generation_accounting_step100.svg" alt="Step100 generated train sample accounting">
+      <div class="links"><a href="../privacy_hopqa_q30_training_efficiency_20260527/training_generation_accounting_step100.svg">SVG</a><a href="../privacy_hopqa_q30_training_efficiency_20260527/training_generation_accounting_step100.pdf">PDF</a><a href="../privacy_hopqa_q30_training_efficiency_20260527/training_efficiency_summary.json">JSON</a></div>
     </section>
     <section id="core-leakage-types">
       <h2>Core Leakage Types</h2>
@@ -210,32 +224,6 @@ PA-DR step100 + privacy prompt &amp; 59.3\% +/- 0.7 pp &amp; 68.1\% +/- 1.0 pp &
       <div class="note">Agent columns are per successful rollout from rollout token accounting. Adversary + judging columns are per StepFun privacy judgment and include the full privacy-evaluation suite for that rollout: intent adversary/judge, answer adversary/judge when run, and claim adversary/judge when run. Total columns aggregate the complete six-condition step100 slice in this table.</div>
       <div class="links"><a href="tables/token_usage_summary_s100.md">Markdown summary</a><a href="tables/token_usage_summary_s100.json">JSON data</a></div>
       <table><thead><tr><th>Condition</th><th>Agent Rollouts</th><th>Agent Input / Rollout</th><th>Agent Output / Rollout</th><th>Agent Total / Rollout</th><th>Agent Total</th><th>Privacy Judgments</th><th>Adv+Judge Input / Judgment</th><th>Adv+Judge Output / Judgment</th><th>Adv+Judge Total / Judgment</th><th>Adv+Judge Total</th></tr></thead><tbody><tr><td>Base</td><td>1032</td><td>139.9k</td><td>6.5k</td><td>146.4k</td><td>151.1M</td><td>1032</td><td>6.6k</td><td>7.0k</td><td>13.6k</td><td>14.0M</td></tr><tr><td>Base + privacy prompt</td><td>1032</td><td>125.3k</td><td>6.0k</td><td>131.2k</td><td>135.4M</td><td>1032</td><td>6.1k</td><td>5.8k</td><td>11.9k</td><td>12.2M</td></tr><tr><td>Task s100</td><td>1032</td><td>174.1k</td><td>9.5k</td><td>183.5k</td><td>189.4M</td><td>1032</td><td>7.5k</td><td>7.9k</td><td>15.4k</td><td>15.9M</td></tr><tr><td>Task s100 + privacy prompt</td><td>1032</td><td>174.3k</td><td>9.5k</td><td>183.8k</td><td>189.7M</td><td>1032</td><td>7.5k</td><td>8.5k</td><td>15.9k</td><td>16.4M</td></tr><tr><td>PA-DR s100</td><td>1032</td><td>169.8k</td><td>8.8k</td><td>178.6k</td><td>184.3M</td><td>1032</td><td>5.4k</td><td>5.4k</td><td>10.8k</td><td>11.1M</td></tr><tr><td>PA-DR s100 + privacy prompt</td><td>1032</td><td>166.6k</td><td>8.7k</td><td>175.3k</td><td>180.9M</td><td>1032</td><td>5.2k</td><td>4.7k</td><td>10.0k</td><td>10.3M</td></tr><tr><td>All six step100 conditions</td><td>6192</td><td>158.3k</td><td>8.2k</td><td>166.5k</td><td>1030.9M</td><td>6192</td><td>6.4k</td><td>6.5k</td><td>12.9k</td><td>80.0M</td></tr></tbody></table>
-    </section>
-    <section id="judge-validation">
-      <h2>Judge Validation: Opus 4.7 Vs StepFun</h2>
-      <div class="note">Correlation and agreement analysis between the Stepfun 3.5 Flash model we use for adversary/judge classification and Opus 4.7. We evaluate on 300 paired rollouts randomly selected from our six untrained model families, with and without privacy prompting. The two 1-5 score rows use quadratic weighted Cohen's kappa; binary rows use ordinary Cohen's kappa. StepFun and Opus columns report mean score for 1-5 rows and positive rate for binary rows.</div>
-      <div class="links"><a href="plots/judge_validation_binary_agreement.svg">Binary SVG</a><a href="plots/judge_validation_binary_agreement.pdf">Binary PDF</a><a href="plots/judge_validation_score_confusion.svg">Score SVG</a><a href="plots/judge_validation_score_confusion.pdf">Score PDF</a><a href="tables/judge_validation_summary.tex">LaTeX table</a><a href="tables/judge_validation_summary.json">JSON table</a><a href="../privacy_hopqa_q30_stepfun_judge_validation_cross_model_200_20260525/openrouter_smoke_anthropic_claude-opus-4.7_full300_combined_20260525_report.html">Full raw report</a></div>
-      <img src="plots/judge_validation_binary_agreement.svg" alt="Binary privacy-label agreement between Opus 4.7 and StepFun">
-      <img src="plots/judge_validation_score_confusion.svg" alt="Score confusion matrix between Opus 4.7 and StepFun privacy scores">
-      <table><thead><tr><th>Type</th><th>Kappa</th><th>StepFun</th><th>Opus</th></tr></thead><tbody><tr><td>Score (1-5)</td><td>0.706</td><td>3.33</td><td>3.58</td></tr><tr><td>Intent score (1-5)</td><td>0.421</td><td>3.24</td><td>4.34</td></tr><tr><td>Privacy (&gt;=4)</td><td>0.532</td><td>31.3%</td><td>42.0%</td></tr><tr><td>Answer</td><td>0.615</td><td>16.3%</td><td>14.3%</td></tr><tr><td>Full-info</td><td>0.511</td><td>11.0%</td><td>20.0%</td></tr></tbody></table>
-      <details class="latex-block"><summary>Copy LaTeX: Judge Validation Summary</summary><pre><code>\begin{table}[t]
-\small
-\centering
-\begin{tabular}{@{}lccc@{}}
-\toprule
-\textbf{Type} &amp; \textbf{$\kappa$} &amp; \textbf{StepFun} &amp; \textbf{Opus} \\
-\midrule
-Score (1--5) &amp; 0.706 &amp; 3.33 &amp; 3.58 \\
-Intent score (1--5) &amp; 0.421 &amp; 3.24 &amp; 4.34 \\
-Privacy ($\geq 4$) &amp; 0.532 &amp; 31.3\% &amp; 42.0\% \\
-Answer &amp; 0.615 &amp; 16.3\% &amp; 14.3\% \\
-Full-info &amp; 0.511 &amp; 11.0\% &amp; 20.0\% \\
-\bottomrule
-\end{tabular}
-\caption{Correlation and agreement analysis between the Stepfun 3.5 Flash model we use for adversary/judge classification and Opus 4.7. We evaluate on 300 paired rollouts randomly selected from our six untrained model families, with and without privacy prompting. The two 1--5 rows use quadratic weighted Cohen's $\kappa$; binary rows use ordinary Cohen's $\kappa$. StepFun and Opus columns report mean score for 1--5 rows and positive rate for binary rows.}
-\label{tab:judge_validation_summary}
-\end{table}
-</code></pre></details>
     </section>
     <section id="query-examples">
       <h2>Step100 Query Leakage Examples</h2>
