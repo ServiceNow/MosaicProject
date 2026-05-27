@@ -182,7 +182,7 @@ def parse_preprocessor_rows(root: Path, cutoff: datetime) -> list[dict[str, Any]
     return rows
 
 
-def allocate_effective_steps(
+def allocate_surviving_path_steps(
     rows: list[dict[str, Any]],
     restart_start_samples: list[int],
     target_samples: int,
@@ -241,7 +241,7 @@ def training_efficiency(series: dict[str, Any]) -> dict[str, Any]:
     root = Path(series["train_root"])
     timing = parse_finetune_timing(root)
     rows = parse_preprocessor_rows(root, timing["step100_saved_at"])
-    step_stats, segment_stats = allocate_effective_steps(
+    step_stats, segment_stats = allocate_surviving_path_steps(
         rows,
         timing["restart_start_samples"],
         timing["step100_samples"],
@@ -252,7 +252,7 @@ def training_efficiency(series: dict[str, Any]) -> dict[str, Any]:
         "filtered": sum(float(row["filtered"]) for row in rows),
         "seen": sum(float(row["seen"]) for row in rows),
     }
-    effective = {
+    surviving_path = {
         "accepted": sum(step_stats[step]["accepted"] for step in step_stats),
         "filtered": sum(step_stats[step]["filtered"] for step in step_stats),
         "seen": sum(step_stats[step]["seen"] for step in step_stats),
@@ -261,7 +261,7 @@ def training_efficiency(series: dict[str, Any]) -> dict[str, Any]:
         "root": str(root),
         "timing": timing,
         "physical": physical,
-        "effective": effective,
+        "surviving_path": surviving_path,
         "step_stats": step_stats,
         "segment_stats": segment_stats,
     }
@@ -425,10 +425,10 @@ def with_efficiency_rows() -> tuple[list[dict[str, Any]], list[dict[str, Any]], 
                 continue
             row = {
                 **metrics,
-                "effective_accepted_train_samples": by_step[step]["accepted"],
-                "effective_filtered_train_samples": by_step[step]["filtered"],
-                "effective_generated_train_samples": by_step[step]["seen"],
-                "effective_generated_per_accepted": (
+                "accepted_train_samples": by_step[step]["accepted"],
+                "filtered_train_samples": by_step[step]["filtered"],
+                "generated_train_samples": by_step[step]["seen"],
+                "generated_per_accepted": (
                     by_step[step]["seen"] / by_step[step]["accepted"] if by_step[step]["accepted"] else 0.0
                 ),
             }
@@ -453,20 +453,20 @@ def with_efficiency_rows() -> tuple[list[dict[str, Any]], list[dict[str, Any]], 
             )
 
         physical = efficiency["physical"]
-        effective = efficiency["effective"]
+        surviving_path = efficiency["surviving_path"]
         summaries.append(
             {
                 "family": series["family"],
                 "family_display": series["display"],
                 "train_root": str(series["train_root"]),
-                "step100_accepted_train_samples": effective["accepted"],
-                "step100_effective_filtered_train_samples": effective["filtered"],
-                "step100_effective_generated_train_samples": effective["seen"],
+                "step100_accepted_train_samples": surviving_path["accepted"],
+                "step100_filtered_train_samples": surviving_path["filtered"],
+                "step100_generated_train_samples": surviving_path["seen"],
                 "step100_physical_generated_train_samples": physical["seen"],
-                "step100_restart_or_ahead_waste_train_samples": physical["seen"] - effective["seen"],
-                "step100_effective_generated_per_accepted": effective["seen"] / effective["accepted"],
-                "step100_physical_generated_per_accepted": physical["seen"] / effective["accepted"],
-                "step100_effective_filtered_fraction": effective["filtered"] / effective["seen"],
+                "step100_restart_prefetch_waste_train_samples": physical["seen"] - surviving_path["seen"],
+                "step100_generated_per_accepted": surviving_path["seen"] / surviving_path["accepted"],
+                "step100_physical_generated_per_accepted": physical["seen"] / surviving_path["accepted"],
+                "step100_filtered_fraction": surviving_path["filtered"] / surviving_path["seen"],
                 "step100_physical_filtered_fraction": physical["filtered"] / physical["seen"],
                 "samples_per_step": efficiency["timing"]["samples_per_step"],
                 "restart_start_samples": efficiency["timing"]["restart_start_samples"],
@@ -507,7 +507,7 @@ def plot_metric_progress(rows: list[dict[str, Any]], path: Path) -> None:
                 [row for row in rows if row["family"] == series["family"]],
                 key=lambda row: int(row["step"]),
             )
-            xs = [row["effective_generated_train_samples"] / 1000.0 for row in data]
+            xs = [row["generated_train_samples"] / 1000.0 for row in data]
             ys = [pct(row[metric]) for row in data]
             yerr = [pct(row.get(f"{metric}_sem")) for row in data]
             ax.errorbar(
@@ -523,7 +523,7 @@ def plot_metric_progress(rows: list[dict[str, Any]], path: Path) -> None:
             )
             if data:
                 annotate_final(ax, xs[-1], ys[-1], series["short_display"], series["color"])
-        ax.set_xlabel("Effective generated train samples (thousands)")
+        ax.set_xlabel("Generated train samples (thousands)")
         ax.set_ylabel(ylabel)
         ax.xaxis.set_major_locator(MultipleLocator(200))
         ax.xaxis.set_minor_locator(MultipleLocator(100))
@@ -543,7 +543,7 @@ def plot_optimizer_progress(rows: list[dict[str, Any]], path: Path) -> None:
             [row for row in rows if row["family"] == series["family"]],
             key=lambda row: int(row["step"]),
         )
-        xs = [row["effective_generated_train_samples"] / 1000.0 for row in data]
+        xs = [row["generated_train_samples"] / 1000.0 for row in data]
         ys = [int(row["step"]) for row in data]
         ax.plot(
             xs,
@@ -556,7 +556,7 @@ def plot_optimizer_progress(rows: list[dict[str, Any]], path: Path) -> None:
         )
         if data:
             annotate_final(ax, xs[-1], ys[-1], f"{series['short_display']} 100", series["color"])
-    ax.set_xlabel("Effective generated train samples (thousands)")
+    ax.set_xlabel("Generated train samples (thousands)")
     ax.set_ylabel("Optimizer step")
     ax.set_ylim(-2, 105)
     ax.set_xlim(0, 1030)
@@ -603,8 +603,8 @@ def plot_step100_accounting(summaries: list[dict[str, Any]], path: Path) -> None
     fig, ax = plt.subplots(figsize=(7.6, 4.9))
     labels = [row["family_display"] for row in summaries]
     accepted = [row["step100_accepted_train_samples"] / 1000.0 for row in summaries]
-    filtered = [row["step100_effective_filtered_train_samples"] / 1000.0 for row in summaries]
-    waste = [row["step100_restart_or_ahead_waste_train_samples"] / 1000.0 for row in summaries]
+    filtered = [row["step100_filtered_train_samples"] / 1000.0 for row in summaries]
+    waste = [row["step100_restart_prefetch_waste_train_samples"] / 1000.0 for row in summaries]
     xs = list(range(len(labels)))
     ax.bar(xs, accepted, color="#5F6F7A", label="Accepted by trainer")
     ax.bar(xs, filtered, bottom=accepted, color="#D55E00", label="Filtered zero-advantage")
@@ -613,14 +613,14 @@ def plot_step100_accounting(summaries: list[dict[str, Any]], path: Path) -> None
         waste,
         bottom=[a + f for a, f in zip(accepted, filtered)],
         color="#CC79A7",
-        label="Restart/ahead waste",
+        label="Restart/prefetch waste",
     )
     for idx, row in enumerate(summaries):
         total = row["step100_physical_generated_train_samples"] / 1000.0
         ax.text(idx, total + 18, f"{total:.0f}k", ha="center", va="bottom", fontsize=9)
     ax.set_xticks(xs)
     ax.set_xticklabels(labels, rotation=12, ha="right")
-    ax.set_ylabel("Generated train samples to checkpoint 100 (thousands)")
+    ax.set_ylabel("Train samples generated by checkpoint 100 (thousands)")
     ax.set_ylim(0, 1060)
     ax.yaxis.set_major_locator(MultipleLocator(200))
     ax.yaxis.set_minor_locator(MultipleLocator(100))
@@ -632,7 +632,7 @@ def plot_step100_accounting(summaries: list[dict[str, Any]], path: Path) -> None
 def samples_to_target(data: list[dict[str, Any]], target: float) -> float | None:
     points = sorted(
         [
-            (float(row["effective_generated_train_samples"]), float(row["strict_chain_success"]))
+            (float(row["generated_train_samples"]), float(row["strict_chain_success"]))
             for row in data
         ],
         key=lambda item: item[0],
@@ -663,9 +663,9 @@ def plot_quality_thresholds(rows: list[dict[str, Any]], path: Path) -> None:
     for series in SERIES:
         data = sorted(
             [row for row in rows if row["family"] == series["family"]],
-            key=lambda row: float(row["effective_generated_train_samples"]),
+            key=lambda row: float(row["generated_train_samples"]),
         )
-        xs = [float(row["effective_generated_train_samples"]) / 1000.0 for row in data]
+        xs = [float(row["generated_train_samples"]) / 1000.0 for row in data]
         ys = [pct(row["strict_chain_success"]) for row in data]
         best = []
         current_best = -math.inf
@@ -687,7 +687,7 @@ def plot_quality_thresholds(rows: list[dict[str, Any]], path: Path) -> None:
         if xs:
             annotate_final(ax_curve, xs[-1], best[-1], series["short_display"], series["color"])
 
-    ax_curve.set_xlabel("Effective generated train samples (thousands)")
+    ax_curve.set_xlabel("Generated train samples (thousands)")
     ax_curve.set_ylabel("Best strict chain success so far (%)")
     ax_curve.set_ylim(47, 62)
     ax_curve.set_xlim(0, 1030)
@@ -741,7 +741,7 @@ def plot_quality_thresholds(rows: list[dict[str, Any]], path: Path) -> None:
                 color=series["color"],
             )
 
-    ax_bar.set_xlabel("Effective generated train samples to target (thousands)")
+    ax_bar.set_xlabel("Generated train samples to target (thousands)")
     ax_bar.set_yticks(y_centers)
     ax_bar.set_yticklabels([f"{100 * target:.0f}% strict chain" for target in targets])
     ax_bar.set_xlim(0, 1030)

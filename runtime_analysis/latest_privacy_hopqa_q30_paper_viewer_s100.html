@@ -194,12 +194,12 @@ PA-DR step100 + privacy prompt &amp; 59.3\% +/- 0.7 pp &amp; 68.1\% +/- 1.0 pp &
     </section>
     <section id="training-efficiency">
       <h2>Training Efficiency: Samples And Filtering</h2>
-      <div class="note">Normal-prompt checkpoint trajectories indexed by effective generated train samples, so the comparison focuses on sample/filtering efficiency rather than node count, queue state, or restart wall-clock effects.</div>
-      <img src="../privacy_hopqa_q30_training_efficiency_20260527/training_sample_efficiency_metrics.svg" alt="Checkpoint task and privacy metrics against effective generated train samples">
+      <div class="note">Normal-prompt checkpoint trajectories indexed by generated train samples on the surviving checkpoint path. These counts include filtered samples and exclude restart/prefetch waste, so the comparison focuses on sample/filtering efficiency rather than node count, queue state, or wall-clock effects.</div>
+      <img src="../privacy_hopqa_q30_training_efficiency_20260527/training_sample_efficiency_metrics.svg" alt="Checkpoint task and privacy metrics against generated train samples">
       <div class="links"><a href="../privacy_hopqa_q30_training_efficiency_20260527/training_sample_efficiency_metrics.svg">SVG</a><a href="../privacy_hopqa_q30_training_efficiency_20260527/training_sample_efficiency_metrics.pdf">PDF</a><a href="../privacy_hopqa_q30_training_efficiency_20260527/training_efficiency_checkpoint_metrics.csv">CSV</a></div>
       <img src="../privacy_hopqa_q30_training_efficiency_20260527/training_quality_threshold_samples.svg" alt="Generated samples needed to reach strict chain success targets">
       <div class="links"><a href="../privacy_hopqa_q30_training_efficiency_20260527/training_quality_threshold_samples.svg">SVG</a><a href="../privacy_hopqa_q30_training_efficiency_20260527/training_quality_threshold_samples.pdf">PDF</a></div>
-      <img src="../privacy_hopqa_q30_training_efficiency_20260527/training_optimizer_progress_vs_generation.svg" alt="Optimizer step against effective generated train samples">
+      <img src="../privacy_hopqa_q30_training_efficiency_20260527/training_optimizer_progress_vs_generation.svg" alt="Optimizer step against generated train samples">
       <div class="links"><a href="../privacy_hopqa_q30_training_efficiency_20260527/training_optimizer_progress_vs_generation.svg">SVG</a><a href="../privacy_hopqa_q30_training_efficiency_20260527/training_optimizer_progress_vs_generation.pdf">PDF</a></div>
       <img src="../privacy_hopqa_q30_training_efficiency_20260527/training_filter_fraction_by_step.svg" alt="Filtered fraction over optimizer-step windows">
       <div class="links"><a href="../privacy_hopqa_q30_training_efficiency_20260527/training_filter_fraction_by_step.svg">SVG</a><a href="../privacy_hopqa_q30_training_efficiency_20260527/training_filter_fraction_by_step.pdf">PDF</a><a href="../privacy_hopqa_q30_training_efficiency_20260527/training_efficiency_filter_bins.csv">CSV</a></div>
