@@ -1,9 +1,10 @@
 \begin{table}[t]
-\small
+\footnotesize
 \centering
-\begin{tabular}{lllllllll}
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{lcccccccc}
 \toprule
-\textbf{Reward} & \textbf{Generated to s100} & \textbf{Accepted} & \textbf{Filtered} & \textbf{Strict chain} & \textbf{Hop acc.} & \textbf{Leakage} & \textbf{Generated to outcome strict} & \textbf{Savings} \\
+\textbf{\shortstack{Training\\Reward}} & \textbf{\shortstack{\# Generated\\Samples}} & \textbf{\shortstack{\# Accepted\\Samples}} & \textbf{\shortstack{Filtered\\Fraction}} & \textbf{\shortstack{Strict Chain\\Success ($\uparrow$)}} & \textbf{\shortstack{Hop-Level\\Accuracy ($\uparrow$)}} & \textbf{\shortstack{Privacy\\Leakage ($\downarrow$)}} & \textbf{\shortstack{\# Samples to\\55.4\% Strict Chain}} & \textbf{\shortstack{Sample\\Savings ($\uparrow$)}} \\
 \midrule
 Outcome reward & 963k & 413k & 54.0\% & 55.4\% & 75.7\% & 49.0\% & 963k & 1.0x \\
 Task reward & 842k & 410k & 49.0\% & 59.3\% & 79.0\% & 51.7\% & 146k & 6.6x fewer \\

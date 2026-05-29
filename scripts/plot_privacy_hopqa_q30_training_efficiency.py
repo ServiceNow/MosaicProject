@@ -529,56 +529,6 @@ def samples_to_target(data: list[dict[str, Any]], target: float, metric: str = "
     return None
 
 
-def annotate_sample_savings(ax: Any, rows: list[dict[str, Any]]) -> None:
-    outcome_rows = [row for row in rows if row["family"] == "outcome_hop_accuracy"]
-    if not outcome_rows:
-        return
-    outcome_final = max(outcome_rows, key=lambda row: int(row["step"]))
-    target = float(outcome_final["strict_chain_success"])
-    outcome_x = float(outcome_final["generated_train_samples"]) / 1000.0
-    target_y = pct(target)
-
-    annotations = [
-        ("task_reward", 65.5),
-        ("privacy_aware_tau05", 62.8),
-    ]
-    ax.axhline(target_y, color="#6F6F6F", linewidth=0.8, linestyle=":", alpha=0.55)
-    ax.text(
-        20,
-        target_y + 0.45,
-        "Outcome step100 strict-chain success",
-        fontsize=8.0,
-        color="#555555",
-        ha="left",
-        va="bottom",
-    )
-    for family, y_pos in annotations:
-        series = next(item for item in SERIES if item["family"] == family)
-        data = [row for row in rows if row["family"] == family]
-        reached = samples_to_target(data, target, "strict_chain_success")
-        if reached is None or reached <= 0:
-            continue
-        reached_x = reached / 1000.0
-        ratio = outcome_x / reached_x
-        ax.vlines([reached_x, outcome_x], ymin=target_y, ymax=y_pos, color=series["color"], alpha=0.25, linewidth=0.9)
-        ax.annotate(
-            "",
-            xy=(reached_x, y_pos),
-            xytext=(outcome_x, y_pos),
-            arrowprops={"arrowstyle": "<->", "color": series["color"], "lw": 1.2, "shrinkA": 0, "shrinkB": 0},
-        )
-        ax.text(
-            (reached_x + outcome_x) / 2.0,
-            y_pos + 0.35,
-            f"{series['short_display']}: {ratio:.1f}x fewer generated samples",
-            fontsize=8.0,
-            color=series["color"],
-            ha="center",
-            va="bottom",
-            bbox={"boxstyle": "round,pad=0.16", "fc": "white", "ec": "none", "alpha": 0.90},
-        )
-
-
 def plot_metric_progress(rows: list[dict[str, Any]], path: Path) -> None:
     paper.paper_style()
     fig, axes = plt.subplots(1, 2, figsize=(9.2, 3.8), sharex=True)
@@ -617,7 +567,6 @@ def plot_metric_progress(rows: list[dict[str, Any]], path: Path) -> None:
         paper.add_minor_grid(ax)
     axes[0].set_ylim(35, 70)
     axes[1].set_ylim(0, 65)
-    annotate_sample_savings(axes[0], rows)
     axes[0].legend(loc="upper left", ncols=1, frameon=False)
     save_figure(fig, path)
 
@@ -900,6 +849,58 @@ def step100_summary_display_rows(rows: list[dict[str, Any]]) -> list[dict[str, s
     return out
 
 
+def latex_step100_efficiency_table(display_rows: list[dict[str, str]], threshold_text: str) -> str:
+    threshold_tex = paper.latex_escape(threshold_text)
+    threshold_tex = threshold_tex.replace(r"\%", r"\%")
+    headers = [
+        r"\textbf{\shortstack{Training\\Reward}}",
+        r"\textbf{\shortstack{\# Generated\\Samples}}",
+        r"\textbf{\shortstack{\# Accepted\\Samples}}",
+        r"\textbf{\shortstack{Filtered\\Fraction}}",
+        r"\textbf{\shortstack{Strict Chain\\Success ($\uparrow$)}}",
+        r"\textbf{\shortstack{Hop-Level\\Accuracy ($\uparrow$)}}",
+        r"\textbf{\shortstack{Privacy\\Leakage ($\downarrow$)}}",
+        rf"\textbf{{\shortstack{{\# Samples to\\{threshold_tex} Strict Chain}}}}",
+        r"\textbf{\shortstack{Sample\\Savings ($\uparrow$)}}",
+    ]
+    row_keys = [
+        "reward",
+        "generated",
+        "accepted",
+        "filtered_fraction",
+        "strict_chain",
+        "hop_accuracy",
+        "privacy_leakage",
+        "match_outcome",
+        "savings",
+    ]
+    body = "\n".join(
+        " & ".join(paper.latex_escape(row.get(key, "")) for key in row_keys) + r" \\"
+        for row in display_rows
+    )
+    caption = (
+        "Step100 training-efficiency summary. Generated samples are counted on the surviving "
+        "checkpoint path, include filtered samples, and exclude restart/prefetch waste. "
+        "The final two columns report how many generated samples were needed, using the best-so-far "
+        "strict-chain curve, to match outcome-reward step100 strict-chain success."
+    )
+    return rf"""\begin{{table}}[t]
+\footnotesize
+\centering
+\setlength{{\tabcolsep}}{{3.5pt}}
+\begin{{tabular}}{{lcccccccc}}
+\toprule
+{" & ".join(headers)} \\
+\midrule
+{body}
+\bottomrule
+\end{{tabular}}
+\caption{{{paper.latex_escape(caption)}}}
+\label{{tab:privacy_hopqa_training_efficiency_step100}}
+\end{{table}}
+"""
+
+
 def write_tables(
     rows: list[dict[str, Any]],
     summaries: list[dict[str, Any]],
@@ -924,15 +925,21 @@ def write_tables(
         writer = csv.DictWriter(handle, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
         writer.writerows(step100_rows)
+    threshold_text = pct_text(step100_rows[0]["strict_chain_success"]) if step100_rows else "outcome"
+    threshold_header = (
+        f"Samples to {threshold_text} strict chain"
+        if step100_rows
+        else "Samples to outcome strict chain"
+    )
     summary_headers = [
-        ("reward", "Reward"),
-        ("generated", "Generated to s100"),
-        ("accepted", "Accepted"),
+        ("reward", "Training reward"),
+        ("generated", "# generated samples"),
+        ("accepted", "# accepted samples"),
         ("filtered_fraction", "Filtered"),
         ("strict_chain", "Strict chain"),
         ("hop_accuracy", "Hop acc."),
         ("privacy_leakage", "Leakage"),
-        ("match_outcome", "Generated to outcome strict"),
+        ("match_outcome", threshold_header),
         ("savings", "Savings"),
     ]
     (output_dir / "training_efficiency_step100_summary.html").write_text(
@@ -940,17 +947,7 @@ def write_tables(
         encoding="utf-8",
     )
     (output_dir / "training_efficiency_step100_summary.tex").write_text(
-        paper.latex_table(
-            summary_headers,
-            step100_display,
-            (
-                "Step100 training-efficiency summary. Generated samples are counted on the surviving "
-                "checkpoint path, include filtered samples, and exclude restart/prefetch waste. "
-                "The final two columns report how many generated samples were needed, using the best-so-far "
-                "strict-chain curve, to match outcome-reward step100 strict-chain success."
-            ),
-            "tab:privacy_hopqa_training_efficiency_step100",
-        ),
+        latex_step100_efficiency_table(step100_display, threshold_text),
         encoding="utf-8",
     )
     (output_dir / "training_efficiency_summary.json").write_text(
