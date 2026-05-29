@@ -480,23 +480,108 @@ def save_figure(fig: Any, path: Path) -> None:
     paper.save_figure(fig, path)
 
 
-def annotate_final(ax: Any, x: float, y: float, label: str, color: str, *, dy: float = 0.0) -> None:
+def annotate_final(
+    ax: Any,
+    x: float,
+    y: float,
+    label: str,
+    color: str,
+    *,
+    dx: float = 6.0,
+    dy: float = 0.0,
+    ha: str = "left",
+) -> None:
     ax.annotate(
         label,
         xy=(x, y),
-        xytext=(6, dy),
+        xytext=(dx, dy),
         textcoords="offset points",
         fontsize=8.5,
         color=color,
-        ha="left",
+        ha=ha,
         va="center",
         bbox={"boxstyle": "round,pad=0.14", "fc": "white", "ec": "none", "alpha": 0.90},
     )
 
 
+def samples_to_target(data: list[dict[str, Any]], target: float, metric: str = "strict_chain_success") -> float | None:
+    points = sorted(
+        [
+            (float(row["generated_train_samples"]), float(row[metric]))
+            for row in data
+        ],
+        key=lambda item: item[0],
+    )
+    best_so_far: list[tuple[float, float]] = []
+    current_best = -math.inf
+    for x_value, y_value in points:
+        current_best = max(current_best, y_value)
+        best_so_far.append((x_value, current_best))
+    for (x0, y0), (x1, y1) in zip(best_so_far, best_so_far[1:]):
+        if y0 >= target:
+            return x0
+        if y0 < target <= y1:
+            if y1 == y0:
+                return x1
+            return x0 + (target - y0) * (x1 - x0) / (y1 - y0)
+    if best_so_far and best_so_far[-1][1] >= target:
+        return best_so_far[-1][0]
+    return None
+
+
+def annotate_sample_savings(ax: Any, rows: list[dict[str, Any]]) -> None:
+    outcome_rows = [row for row in rows if row["family"] == "outcome_hop_accuracy"]
+    if not outcome_rows:
+        return
+    outcome_final = max(outcome_rows, key=lambda row: int(row["step"]))
+    target = float(outcome_final["strict_chain_success"])
+    outcome_x = float(outcome_final["generated_train_samples"]) / 1000.0
+    target_y = pct(target)
+
+    annotations = [
+        ("task_reward", 65.5),
+        ("privacy_aware_tau05", 62.8),
+    ]
+    ax.axhline(target_y, color="#6F6F6F", linewidth=0.8, linestyle=":", alpha=0.55)
+    ax.text(
+        20,
+        target_y + 0.45,
+        "Outcome step100 strict-chain success",
+        fontsize=8.0,
+        color="#555555",
+        ha="left",
+        va="bottom",
+    )
+    for family, y_pos in annotations:
+        series = next(item for item in SERIES if item["family"] == family)
+        data = [row for row in rows if row["family"] == family]
+        reached = samples_to_target(data, target, "strict_chain_success")
+        if reached is None or reached <= 0:
+            continue
+        reached_x = reached / 1000.0
+        ratio = outcome_x / reached_x
+        ax.vlines([reached_x, outcome_x], ymin=target_y, ymax=y_pos, color=series["color"], alpha=0.25, linewidth=0.9)
+        ax.annotate(
+            "",
+            xy=(reached_x, y_pos),
+            xytext=(outcome_x, y_pos),
+            arrowprops={"arrowstyle": "<->", "color": series["color"], "lw": 1.2, "shrinkA": 0, "shrinkB": 0},
+        )
+        ax.text(
+            (reached_x + outcome_x) / 2.0,
+            y_pos + 0.35,
+            f"{series['short_display']}: {ratio:.1f}x fewer generated samples",
+            fontsize=8.0,
+            color=series["color"],
+            ha="center",
+            va="bottom",
+            bbox={"boxstyle": "round,pad=0.16", "fc": "white", "ec": "none", "alpha": 0.90},
+        )
+
+
 def plot_metric_progress(rows: list[dict[str, Any]], path: Path) -> None:
     paper.paper_style()
-    fig, axes = plt.subplots(1, 2, figsize=(11.8, 4.4), sharex=True)
+    fig, axes = plt.subplots(1, 2, figsize=(9.2, 3.8), sharex=True)
     metrics = [
         ("strict_chain_success", "Strict Chain Success (%)"),
         ("privacy_leakage_rate", "Privacy Leakage (%)"),
@@ -522,16 +607,18 @@ def plot_metric_progress(rows: list[dict[str, Any]], path: Path) -> None:
                 label=series["display"],
             )
             if data:
-                annotate_final(ax, xs[-1], ys[-1], series["short_display"], series["color"])
+                annotate_final(ax, xs[-1], ys[-1], series["short_display"], series["color"], dx=-5, ha="right")
         ax.set_xlabel("Generated train samples (thousands)")
         ax.set_ylabel(ylabel)
+        ax.set_xlim(0, 1030)
         ax.xaxis.set_major_locator(MultipleLocator(200))
         ax.xaxis.set_minor_locator(MultipleLocator(100))
         ax.yaxis.set_minor_locator(MultipleLocator(5))
         paper.add_minor_grid(ax)
     axes[0].set_ylim(35, 70)
     axes[1].set_ylim(0, 65)
-    axes[0].legend(loc="lower center", bbox_to_anchor=(1.05, 1.02), ncols=3, frameon=False)
+    annotate_sample_savings(axes[0], rows)
+    axes[0].legend(loc="upper left", ncols=1, frameon=False)
     save_figure(fig, path)
 
 
@@ -627,31 +714,6 @@ def plot_step100_accounting(summaries: list[dict[str, Any]], path: Path) -> None
     paper.add_minor_grid(ax, axis="y")
     ax.legend(loc="upper center", bbox_to_anchor=(0.5, 1.04), ncols=3, frameon=False)
     save_figure(fig, path)
-
-
-def samples_to_target(data: list[dict[str, Any]], target: float) -> float | None:
-    points = sorted(
-        [
-            (float(row["generated_train_samples"]), float(row["strict_chain_success"]))
-            for row in data
-        ],
-        key=lambda item: item[0],
-    )
-    best_so_far: list[tuple[float, float]] = []
-    current_best = -math.inf
-    for x_value, y_value in points:
-        current_best = max(current_best, y_value)
-        best_so_far.append((x_value, current_best))
-    for (x0, y0), (x1, y1) in zip(best_so_far, best_so_far[1:]):
-        if y0 >= target:
-            return x0
-        if y0 < target <= y1:
-            if y1 == y0:
-                return x1
-            return x0 + (target - y0) * (x1 - x0) / (y1 - y0)
-    if best_so_far and best_so_far[-1][1] >= target:
-        return best_so_far[-1][0]
-    return None
 
 
 def plot_quality_thresholds(rows: list[dict[str, Any]], path: Path) -> None:
@@ -756,8 +818,97 @@ def plot_quality_thresholds(rows: list[dict[str, Any]], path: Path) -> None:
     save_figure(fig, path)
 
 
-def write_tables(rows: list[dict[str, Any]], summaries: list[dict[str, Any]], bin_rows: list[dict[str, Any]], output_dir: Path) -> None:
+def samples_k(value: Any) -> str:
+    number = live.as_float(value)
+    if number is None:
+        return "n/a"
+    return f"{number / 1000.0:.0f}k"
+
+
+def pct_text(value: Any) -> str:
+    number = live.as_float(value)
+    if number is None:
+        return "n/a"
+    return f"{100.0 * number:.1f}%"
+
+
+def ratio_text(value: Any) -> str:
+    number = live.as_float(value)
+    if number is None:
+        return "n/a"
+    if abs(number - 1.0) < 0.05:
+        return "1.0x"
+    return f"{number:.1f}x fewer"
+
+
+def step100_summary_rows(rows: list[dict[str, Any]], summaries: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    metrics_by_family = {
+        row["family"]: row
+        for row in rows
+        if int(row["step"]) == 100
+    }
+    summary_by_family = {row["family"]: row for row in summaries}
+    outcome_final = metrics_by_family["outcome_hop_accuracy"]
+    outcome_generated = float(outcome_final["generated_train_samples"])
+    outcome_strict = float(outcome_final["strict_chain_success"])
+
+    out = []
+    for series in SERIES:
+        family = series["family"]
+        metrics = metrics_by_family[family]
+        summary = summary_by_family[family]
+        samples_to_match = (
+            outcome_generated
+            if family == "outcome_hop_accuracy"
+            else samples_to_target([row for row in rows if row["family"] == family], outcome_strict)
+        )
+        savings = outcome_generated / samples_to_match if samples_to_match else None
+        out.append(
+            {
+                "family": family,
+                "reward": series["display"],
+                "generated_train_samples": float(summary["step100_generated_train_samples"]),
+                "accepted_train_samples": float(summary["step100_accepted_train_samples"]),
+                "filtered_train_samples": float(summary["step100_filtered_train_samples"]),
+                "filtered_fraction": float(summary["step100_filtered_fraction"]),
+                "strict_chain_success": float(metrics["strict_chain_success"]),
+                "hop_accuracy": float(metrics["accuracy"]),
+                "privacy_leakage_rate": float(metrics["privacy_leakage_rate"]),
+                "generated_samples_to_match_outcome_strict": samples_to_match,
+                "sample_savings_vs_outcome": savings,
+            }
+        )
+    return out
+
+
+def step100_summary_display_rows(rows: list[dict[str, Any]]) -> list[dict[str, str]]:
+    out = []
+    for row in rows:
+        out.append(
+            {
+                "reward": row["reward"],
+                "generated": samples_k(row["generated_train_samples"]),
+                "accepted": samples_k(row["accepted_train_samples"]),
+                "filtered_fraction": pct_text(row["filtered_fraction"]),
+                "strict_chain": pct_text(row["strict_chain_success"]),
+                "hop_accuracy": pct_text(row["hop_accuracy"]),
+                "privacy_leakage": pct_text(row["privacy_leakage_rate"]),
+                "match_outcome": samples_k(row["generated_samples_to_match_outcome_strict"]),
+                "savings": ratio_text(row["sample_savings_vs_outcome"]),
+            }
+        )
+    return out
+
+
+def write_tables(
+    rows: list[dict[str, Any]],
+    summaries: list[dict[str, Any]],
+    bin_rows: list[dict[str, Any]],
+    output_dir: Path,
+) -> list[dict[str, Any]]:
     rows_sorted = sorted(rows, key=lambda row: (row["family"], int(row["step"])))
+    step100_rows = step100_summary_rows(rows_sorted, summaries)
+    step100_display = step100_summary_display_rows(step100_rows)
     with (output_dir / "training_efficiency_checkpoint_metrics.csv").open("w", encoding="utf-8", newline="") as handle:
         fieldnames = list(rows_sorted[0].keys()) if rows_sorted else []
         writer = csv.DictWriter(handle, fieldnames=fieldnames, lineterminator="\n")
@@ -768,23 +919,71 @@ def write_tables(rows: list[dict[str, Any]], summaries: list[dict[str, Any]], bi
         writer = csv.DictWriter(handle, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
         writer.writerows(bin_rows)
+    with (output_dir / "training_efficiency_step100_summary.csv").open("w", encoding="utf-8", newline="") as handle:
+        fieldnames = list(step100_rows[0].keys()) if step100_rows else []
+        writer = csv.DictWriter(handle, fieldnames=fieldnames, lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(step100_rows)
+    summary_headers = [
+        ("reward", "Reward"),
+        ("generated", "Generated to s100"),
+        ("accepted", "Accepted"),
+        ("filtered_fraction", "Filtered"),
+        ("strict_chain", "Strict chain"),
+        ("hop_accuracy", "Hop acc."),
+        ("privacy_leakage", "Leakage"),
+        ("match_outcome", "Generated to outcome strict"),
+        ("savings", "Savings"),
+    ]
+    (output_dir / "training_efficiency_step100_summary.html").write_text(
+        paper.table(summary_headers, step100_display) + "\n",
+        encoding="utf-8",
+    )
+    (output_dir / "training_efficiency_step100_summary.tex").write_text(
+        paper.latex_table(
+            summary_headers,
+            step100_display,
+            (
+                "Step100 training-efficiency summary. Generated samples are counted on the surviving "
+                "checkpoint path, include filtered samples, and exclude restart/prefetch waste. "
+                "The final two columns report how many generated samples were needed, using the best-so-far "
+                "strict-chain curve, to match outcome-reward step100 strict-chain success."
+            ),
+            "tab:privacy_hopqa_training_efficiency_step100",
+        ),
+        encoding="utf-8",
+    )
     (output_dir / "training_efficiency_summary.json").write_text(
-        json.dumps({"checkpoint_rows": rows_sorted, "summary_rows": summaries, "filter_bin_rows": bin_rows}, indent=2)
+        json.dumps(
+            {
+                "checkpoint_rows": rows_sorted,
+                "summary_rows": summaries,
+                "filter_bin_rows": bin_rows,
+                "step100_table_rows": step100_rows,
+            },
+            indent=2,
+        )
         + "\n",
         encoding="utf-8",
     )
+    return step100_rows
 
 
 def build(output_dir: Path = DEFAULT_OUTPUT_DIR) -> dict[str, Any]:
     output_dir.mkdir(parents=True, exist_ok=True)
     rows, summaries, bin_rows = with_efficiency_rows()
-    write_tables(rows, summaries, bin_rows, output_dir)
+    step100_rows = write_tables(rows, summaries, bin_rows, output_dir)
     plot_metric_progress(rows, output_dir / "training_sample_efficiency_metrics.svg")
     plot_optimizer_progress(rows, output_dir / "training_optimizer_progress_vs_generation.svg")
     plot_filter_fraction(bin_rows, output_dir / "training_filter_fraction_by_step.svg")
     plot_step100_accounting(summaries, output_dir / "training_generation_accounting_step100.svg")
     plot_quality_thresholds(rows, output_dir / "training_quality_threshold_samples.svg")
-    return {"checkpoint_rows": rows, "summary_rows": summaries, "filter_bin_rows": bin_rows}
+    return {
+        "checkpoint_rows": rows,
+        "summary_rows": summaries,
+        "filter_bin_rows": bin_rows,
+        "step100_table_rows": step100_rows,
+    }
 
 
 def main() -> None:

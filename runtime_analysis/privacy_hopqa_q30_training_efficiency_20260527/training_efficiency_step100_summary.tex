@@ -1,0 +1,15 @@
+\begin{table}[t]
+\small
+\centering
+\begin{tabular}{lllllllll}
+\toprule
+\textbf{Reward} & \textbf{Generated to s100} & \textbf{Accepted} & \textbf{Filtered} & \textbf{Strict chain} & \textbf{Hop acc.} & \textbf{Leakage} & \textbf{Generated to outcome strict} & \textbf{Savings} \\
+\midrule
+Outcome reward & 963k & 413k & 54.0\% & 55.4\% & 75.7\% & 49.0\% & 963k & 1.0x \\
+Task reward & 842k & 410k & 49.0\% & 59.3\% & 79.0\% & 51.7\% & 146k & 6.6x fewer \\
+Task+PA-DR reward & 706k & 413k & 37.5\% & 58.7\% & 79.4\% & 9.9\% & 183k & 5.2x fewer \\
+\bottomrule
+\end{tabular}
+\caption{Step100 training-efficiency summary. Generated samples are counted on the surviving checkpoint path, include filtered samples, and exclude restart/prefetch waste. The final two columns report how many generated samples were needed, using the best-so-far strict-chain curve, to match outcome-reward step100 strict-chain success.}
+\label{tab:privacy_hopqa_training_efficiency_step100}
+\end{table}

@@ -1153,6 +1153,9 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
     plot_behavior(behavior, plots_dir / "training_behavior_step100.svg")
     efficiency_output_dir = output_dir.parent / "privacy_hopqa_q30_training_efficiency_20260527"
     efficiency_payload = efficiency.build(efficiency_output_dir)
+    efficiency_step100_table_html = (efficiency_output_dir / "training_efficiency_step100_summary.html").read_text(
+        encoding="utf-8"
+    )
 
     training_effect_latex = latex_training_summary(summary)
     untrained_latex = latex_untrained_model_summary(untrained_rows)
@@ -1206,6 +1209,7 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
                     "output_dir": str(efficiency_output_dir),
                     "summary_rows": efficiency_payload["summary_rows"],
                     "filter_bin_rows": efficiency_payload["filter_bin_rows"],
+                    "step100_table_rows": efficiency_payload["step100_table_rows"],
                 },
                 "artifact_roots": {
                     "standard_normal": str(base.DEFAULT_FINAL_EVAL_ARTIFACT_ROOT),
@@ -1388,7 +1392,7 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
         <div class="asset-card"><h3>Training Effect</h3><div class="links"><a href="plots/training_effect_step100.svg">SVG</a><a href="plots/training_effect_step100.pdf">PDF</a><a href="tables/training_effect_summary_s100.tex">LaTeX</a></div></div>
         <div class="asset-card"><h3>Untrained Models</h3><div class="links"><a href="#untrained-models">Viewer table</a><a href="tables/untrained_model_summary.tex">LaTeX</a><a href="tables/untrained_model_summary.json">JSON</a></div></div>
         <div class="asset-card"><h3>Training Trajectory</h3><div class="links"><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_accuracy_privacy_arrows.svg">SVG</a><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_accuracy_privacy_arrows.pdf">PDF</a><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_metrics.csv">CSV</a><a href="{TRAJECTORY_DIR.as_posix()}/training_trajectory_metrics.json">JSON</a></div></div>
-        <div class="asset-card"><h3>Training Efficiency</h3><div class="links"><a href="{EFFICIENCY_DIR.as_posix()}/training_sample_efficiency_metrics.svg">Metrics SVG</a><a href="{EFFICIENCY_DIR.as_posix()}/training_quality_threshold_samples.svg">Threshold SVG</a><a href="{EFFICIENCY_DIR.as_posix()}/training_efficiency_summary.json">JSON</a></div></div>
+        <div class="asset-card"><h3>Training Efficiency</h3><div class="links"><a href="{EFFICIENCY_DIR.as_posix()}/training_sample_efficiency_metrics.svg">Metrics SVG</a><a href="{EFFICIENCY_DIR.as_posix()}/training_quality_threshold_samples.svg">Threshold SVG</a><a href="{EFFICIENCY_DIR.as_posix()}/training_efficiency_step100_summary.tex">LaTeX table</a><a href="{EFFICIENCY_DIR.as_posix()}/training_efficiency_summary.json">JSON</a></div></div>
         <div class="asset-card"><h3>Core Leakage Types</h3><div class="links"><a href="plots/core_leakage_types_step100.svg">SVG</a><a href="plots/core_leakage_types_step100.pdf">PDF</a></div></div>
         <div class="asset-card"><h3>Query And Retrieval Behavior</h3><div class="links"><a href="plots/training_behavior_step100.svg">SVG</a><a href="plots/training_behavior_step100.pdf">PDF</a><a href="tables/training_behavior_s100.tex">LaTeX</a></div></div>
         <div class="asset-card"><h3>Step100 Query Examples</h3><div class="links"><a href="#query-examples">Viewer table</a><a href="tables/paired_leakage_examples_s100.tex">LaTeX</a><a href="tables/paired_leakage_examples_s100.json">JSON</a></div></div>
@@ -1425,6 +1429,9 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
       <div class="note">Normal-prompt checkpoint trajectories indexed by generated train samples on the surviving checkpoint path. These counts include filtered samples and exclude restart/prefetch waste, so the comparison focuses on sample/filtering efficiency rather than node count, queue state, or wall-clock effects.</div>
       <img src="{EFFICIENCY_DIR.as_posix()}/training_sample_efficiency_metrics.svg" alt="Checkpoint task and privacy metrics against generated train samples">
       <div class="links"><a href="{EFFICIENCY_DIR.as_posix()}/training_sample_efficiency_metrics.svg">SVG</a><a href="{EFFICIENCY_DIR.as_posix()}/training_sample_efficiency_metrics.pdf">PDF</a><a href="{EFFICIENCY_DIR.as_posix()}/training_efficiency_checkpoint_metrics.csv">CSV</a></div>
+      <h3>Step100 Sample Efficiency Summary</h3>
+      {efficiency_step100_table_html}
+      <div class="links"><a href="{EFFICIENCY_DIR.as_posix()}/training_efficiency_step100_summary.csv">CSV</a><a href="{EFFICIENCY_DIR.as_posix()}/training_efficiency_step100_summary.tex">LaTeX table</a><a href="{EFFICIENCY_DIR.as_posix()}/training_efficiency_step100_summary.html">HTML table</a></div>
       <img src="{EFFICIENCY_DIR.as_posix()}/training_quality_threshold_samples.svg" alt="Generated samples needed to reach strict chain success targets">
       <div class="links"><a href="{EFFICIENCY_DIR.as_posix()}/training_quality_threshold_samples.svg">SVG</a><a href="{EFFICIENCY_DIR.as_posix()}/training_quality_threshold_samples.pdf">PDF</a></div>
       <img src="{EFFICIENCY_DIR.as_posix()}/training_optimizer_progress_vs_generation.svg" alt="Optimizer step against generated train samples">
