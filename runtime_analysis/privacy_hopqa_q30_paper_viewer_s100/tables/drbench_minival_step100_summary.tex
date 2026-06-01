@@ -1,0 +1,14 @@
+\begin{table}[t]
+\small
+\centering
+\begin{tabular}{lccccc}
+\toprule
+Model & Aggregate & Insight Recall & Factuality & Distractor Avoidance & Report Quality \\
+\midrule
+Qwen3 4B & 0.412 {\scriptsize $\pm$ 0.010} & 0.227 {\scriptsize $\pm$ 0.008} & 0.379 {\scriptsize $\pm$ 0.022} & 0.992 {\scriptsize $\pm$ 0.008} & 0.636 {\scriptsize $\pm$ 0.002} \\
+PA-DR step100 & 0.390 {\scriptsize $\pm$ 0.001} & 0.225 {\scriptsize $\pm$ 0.008} & 0.380 {\scriptsize $\pm$ 0.017} & 0.987 {\scriptsize $\pm$ 0.006} & 0.630 {\scriptsize $\pm$ 0.017} \\
+\bottomrule
+\end{tabular}
+\caption{Original DRBench minival results for base \qwenthreeb and PA-DR step100. Scores average three stochastic repeats of the same 15-task minival slice; values after $\pm$ are SEM over repeat means. The aggregate is the DRBench harmonic score.}
+\label{tab:drbench_minival_step100}
+\end{table}

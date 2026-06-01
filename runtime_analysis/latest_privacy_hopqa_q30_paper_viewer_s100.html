@@ -57,6 +57,7 @@
         <div class="asset-card"><h3>Core Leakage Types</h3><div class="links"><a href="plots/core_leakage_types_step100.svg">SVG</a><a href="plots/core_leakage_types_step100.pdf">PDF</a></div></div>
         <div class="asset-card"><h3>Query And Retrieval Behavior</h3><div class="links"><a href="plots/training_behavior_step100.svg">SVG</a><a href="plots/training_behavior_step100.pdf">PDF</a><a href="tables/training_behavior_s100.tex">LaTeX</a></div></div>
         <div class="asset-card"><h3>Step100 Query Examples</h3><div class="links"><a href="#query-examples">Viewer table</a><a href="tables/paired_leakage_examples_s100.tex">LaTeX</a><a href="tables/paired_leakage_examples_s100.json">JSON</a></div></div>
+        <div class="asset-card"><h3>Original DRBench Minival</h3><div class="links"><a href="#drbench-minival">Viewer table</a><a href="tables/drbench_minival_step100_summary.tex">LaTeX</a><a href="tables/drbench_minival_step100_summary.json">JSON</a></div></div>
         <div class="asset-card"><h3>Token Usage</h3><div class="links"><a href="#token-usage">Viewer table</a><a href="tables/token_usage_summary_s100.md">Markdown</a><a href="tables/token_usage_summary_s100.json">JSON</a></div></div>
         <div class="asset-card"><h3>Checkpoint Choice</h3><div class="links"><a href="tables/checkpoint_choice_s50_s100.tex">LaTeX</a><a href="viewer_data.json">JSON data</a></div></div>
       </div>
@@ -151,6 +152,21 @@ H1 L: With which Canadian organization is MediConn Solutions aligning its APIs f
 \label{tab:paired_query_leakage_examples_s100}
 \end{table*}
 </code></pre></details>
+      <details class="latex-block"><summary>Copy LaTeX: Original DRBench Minival</summary><pre><code>\begin{table}[t]
+\small
+\centering
+\begin{tabular}{lccccc}
+\toprule
+Model &amp; Aggregate &amp; Insight Recall &amp; Factuality &amp; Distractor Avoidance &amp; Report Quality \\
+\midrule
+Qwen3 4B &amp; 0.412 {\scriptsize $\pm$ 0.010} &amp; 0.227 {\scriptsize $\pm$ 0.008} &amp; 0.379 {\scriptsize $\pm$ 0.022} &amp; 0.992 {\scriptsize $\pm$ 0.008} &amp; 0.636 {\scriptsize $\pm$ 0.002} \\
+PA-DR step100 &amp; 0.390 {\scriptsize $\pm$ 0.001} &amp; 0.225 {\scriptsize $\pm$ 0.008} &amp; 0.380 {\scriptsize $\pm$ 0.017} &amp; 0.987 {\scriptsize $\pm$ 0.006} &amp; 0.630 {\scriptsize $\pm$ 0.017} \\
+\bottomrule
+\end{tabular}
+\caption{Original DRBench minival results for base \qwenthreeb and PA-DR step100. Scores average three stochastic repeats of the same 15-task minival slice; values after $\pm$ are SEM over repeat means. The aggregate is the DRBench harmonic score.}
+\label{tab:drbench_minival_step100}
+\end{table}
+</code></pre></details>
       <details class="latex-block"><summary>Copy LaTeX: Checkpoint Choice Diagnostic</summary><pre><code>\begin{table}[t]
 \small
 \centering
@@ -172,6 +188,17 @@ PA-DR step100 + privacy prompt &amp; 59.3\% +/- 0.7 pp &amp; 68.1\% +/- 1.0 pp &
 \label{tab:checkpoint_choice_s50_s100}
 \end{table}
 </code></pre></details>
+    </section>
+    <section id="drbench-minival">
+      <h2>Original DRBench Minival Sanity Check</h2>
+      <div class="note">Original ServiceNow DRBench minival evaluation on 15 tasks with three stochastic repeats per model. Values after +/- are SEM over run means. Aggregate score is the top-level DRBench harmonic score, stored as <code>score</code> / <code>scores.harmonic_mean</code>.</div>
+      <div class="links"><a href="tables/drbench_minival_step100_summary.tex">LaTeX table</a><a href="tables/drbench_minival_step100_summary.json">JSON data</a></div>
+      <table><thead><tr><th>Model</th><th>Runs</th><th>Tasks / Run</th><th>Errors</th><th>Aggregate Score</th><th>Insight Recall</th><th>Factuality</th><th>Distractor Avoidance</th><th>Report Quality</th></tr></thead><tbody><tr><td>Qwen3 4B</td><td>3</td><td>15</td><td>0</td><td>0.412 +/- 0.010</td><td>0.227 +/- 0.008</td><td>0.379 +/- 0.022</td><td>0.992 +/- 0.008</td><td>0.636 +/- 0.002</td></tr><tr><td>PA-DR step100</td><td>3</td><td>15</td><td>0</td><td>0.390 +/- 0.001</td><td>0.225 +/- 0.008</td><td>0.380 +/- 0.017</td><td>0.987 +/- 0.006</td><td>0.630 +/- 0.017</td></tr></tbody></table>
+      <h3>Where PA-DR Step100 Loses Points</h3>
+      <div class="note">The gap is not mostly distractor avoidance. Sub-scores are very close: PA-DR is slightly lower on report quality, distractor avoidance, and insight recall, and slightly higher on factuality. The aggregate gap is larger than any single sub-score delta because DRBench uses a nonlinear harmonic aggregate.</div>
+      <table><thead><tr><th>Metric</th><th>Qwen3 4B</th><th>PA-DR Step100</th><th>PA-DR - Base</th></tr></thead><tbody><tr><td>Aggregate Score</td><td>0.412</td><td>0.390</td><td>-0.0216</td></tr><tr><td>Insight Recall</td><td>0.227</td><td>0.225</td><td>-0.0019</td></tr><tr><td>Factuality</td><td>0.379</td><td>0.380</td><td>+0.0012</td></tr><tr><td>Distractor Avoidance</td><td>0.992</td><td>0.987</td><td>-0.0044</td></tr><tr><td>Report Quality</td><td>0.636</td><td>0.630</td><td>-0.0058</td></tr></tbody></table>
+      <h3>Repeat-Level Scores</h3>
+      <table><thead><tr><th>Model</th><th>Repeat</th><th>Tasks</th><th>Errors</th><th>Aggregate Score</th><th>Insight Recall</th><th>Factuality</th><th>Distractor Avoidance</th><th>Report Quality</th></tr></thead><tbody><tr><td>Qwen3 4B</td><td>r1</td><td>15</td><td>0</td><td>0.393</td><td>0.231</td><td>0.337</td><td>0.976</td><td>0.632</td></tr><tr><td>Qwen3 4B</td><td>r2</td><td>15</td><td>0</td><td>0.423</td><td>0.211</td><td>0.388</td><td>1.000</td><td>0.636</td></tr><tr><td>Qwen3 4B</td><td>r3</td><td>15</td><td>0</td><td>0.421</td><td>0.240</td><td>0.411</td><td>1.000</td><td>0.640</td></tr><tr><td>PA-DR step100</td><td>r1</td><td>15</td><td>0</td><td>0.389</td><td>0.242</td><td>0.349</td><td>0.976</td><td>0.628</td></tr><tr><td>PA-DR step100</td><td>r2</td><td>15</td><td>0</td><td>0.390</td><td>0.214</td><td>0.406</td><td>0.993</td><td>0.660</td></tr><tr><td>PA-DR step100</td><td>r3</td><td>15</td><td>0</td><td>0.392</td><td>0.221</td><td>0.386</td><td>0.993</td><td>0.603</td></tr></tbody></table>
     </section>
     <section id="training-effect">
       <h2>Effect Of Training: Accuracy And Privacy</h2>

@@ -37,6 +37,7 @@ PADR_S100_PROMPT_ROOT = Path(
     "/mnt/llmd/results/exps/alexg/reason/"
     "privacy_hopqa_q30_final_eval_privreward_tau05_s100_privacy_prompt_16kgen_32kctx_helperfe_20260524"
 )
+DRBENCH_EVAL_ROOT = Path("/mnt/llmd/results/exps/alexg/reason/drbench_step100_eval")
 
 BASE_LABEL = "qwen3_4b_instruct_2507"
 TASK_S50_LABEL = "qwen3_4b_situational_reward_s50"
@@ -93,6 +94,21 @@ UNTRAINED_METRICS = [
     ("intent", "min", "intent4_rate"),
     ("answer", "min", "answer_rate"),
     ("full", "min", "full_info_rate"),
+]
+DRBENCH_RUN_SPECS = [
+    ("base", "Qwen3 4B", "r1", "minival_qwen3_4b_base_fewshot_20260528"),
+    ("base", "Qwen3 4B", "r2", "minival_qwen3_4b_base_fewshot_rep2_20260529"),
+    ("base", "Qwen3 4B", "r3", "minival_qwen3_4b_base_fewshot_rep3_20260529"),
+    ("privacy", "PA-DR step100", "r1", "minival_privreward_tau05_s100_fewshot_rep1_20260529"),
+    ("privacy", "PA-DR step100", "r2", "minival_privreward_tau05_s100_fewshot_rep2_20260529"),
+    ("privacy", "PA-DR step100", "r3", "minival_privreward_tau05_s100_fewshot_rep3_20260529"),
+]
+DRBENCH_METRICS = [
+    ("score", "Aggregate Score"),
+    ("insights_recall", "Insight Recall"),
+    ("factuality", "Factuality"),
+    ("distractor_avoidance", "Distractor Avoidance"),
+    ("report_quality", "Report Quality"),
 ]
 
 
@@ -1129,6 +1145,211 @@ def token_usage_markdown(rows: list[dict[str, Any]], combined: dict[str, Any]) -
     return "\n".join(lines) + "\n"
 
 
+def drbench_score(row: dict[str, Any], metric: str) -> float | None:
+    if metric == "score":
+        return base.live.as_float(row.get("score"))
+    scores = row.get("scores")
+    if not isinstance(scores, dict):
+        return None
+    return base.live.as_float(scores.get(metric))
+
+
+def mean(values: list[float]) -> float | None:
+    return sum(values) / len(values) if values else None
+
+
+def sample_std(values: list[float]) -> float | None:
+    if len(values) < 2:
+        return None
+    avg = sum(values) / len(values)
+    variance = sum((value - avg) ** 2 for value in values) / (len(values) - 1)
+    return math.sqrt(variance)
+
+
+def sem(values: list[float]) -> float | None:
+    std = sample_std(values)
+    if std is None:
+        return None
+    return std / math.sqrt(len(values))
+
+
+def drbench_run_rows() -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for model_key, model_label, repeat, run_dir_name in DRBENCH_RUN_SPECS:
+        results_path = DRBENCH_EVAL_ROOT / run_dir_name / "results.json"
+        results = json.loads(results_path.read_text(encoding="utf-8"))
+        successful = [
+            item
+            for item in results
+            if item.get("status") == "success" and not item.get("error")
+        ]
+        run_row: dict[str, Any] = {
+            "model_key": model_key,
+            "model": model_label,
+            "repeat": repeat,
+            "run_dir": str(DRBENCH_EVAL_ROOT / run_dir_name),
+            "n_tasks": len(results),
+            "errors": len(results) - len(successful),
+        }
+        for metric, _label in DRBENCH_METRICS:
+            values = [
+                value
+                for item in successful
+                if (value := drbench_score(item, metric)) is not None
+            ]
+            run_row[metric] = mean(values)
+        rows.append(run_row)
+    return rows
+
+
+def drbench_model_summary_rows(run_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    for model_key, model_label in [("base", "Qwen3 4B"), ("privacy", "PA-DR step100")]:
+        model_runs = [row for row in run_rows if row["model_key"] == model_key]
+        item: dict[str, Any] = {
+            "model_key": model_key,
+            "model": model_label,
+            "n_runs": len(model_runs),
+            "n_tasks_per_run": model_runs[0]["n_tasks"] if model_runs else 0,
+            "errors": sum(int(row.get("errors") or 0) for row in model_runs),
+        }
+        for metric, _label in DRBENCH_METRICS:
+            values = [
+                value
+                for row in model_runs
+                if (value := base.live.as_float(row.get(metric))) is not None
+            ]
+            item[f"{metric}_mean"] = mean(values)
+            item[f"{metric}_sem"] = sem(values)
+            item[f"{metric}_run_std"] = sample_std(values)
+        out.append(item)
+    return out
+
+
+def drbench_delta_rows(model_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    by_key = {row["model_key"]: row for row in model_rows}
+    base_row = by_key["base"]
+    privacy_row = by_key["privacy"]
+    rows: list[dict[str, Any]] = []
+    for metric, label in DRBENCH_METRICS:
+        base_value = base.live.as_float(base_row.get(f"{metric}_mean"))
+        privacy_value = base.live.as_float(privacy_row.get(f"{metric}_mean"))
+        delta = None if base_value is None or privacy_value is None else privacy_value - base_value
+        rows.append(
+            {
+                "metric": label,
+                "base": base_value,
+                "privacy": privacy_value,
+                "delta": delta,
+            }
+        )
+    return rows
+
+
+def format_score(value: Any) -> str:
+    number = base.live.as_float(value)
+    return "n/a" if number is None else f"{number:.3f}"
+
+
+def format_delta(value: Any) -> str:
+    number = base.live.as_float(value)
+    if number is None:
+        return "n/a"
+    return f"{number:+.4f}"
+
+
+def format_score_pm(mean_value: Any, sem_value: Any) -> str:
+    score = base.live.as_float(mean_value)
+    error = base.live.as_float(sem_value)
+    if score is None:
+        return "n/a"
+    if error is None:
+        return f"{score:.3f}"
+    return f"{score:.3f} +/- {error:.3f}"
+
+
+def drbench_summary_rows_for_html(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    for row in rows:
+        item = {
+            "model": row["model"],
+            "runs": row["n_runs"],
+            "tasks_per_run": row["n_tasks_per_run"],
+            "errors": row["errors"],
+        }
+        for metric, _label in DRBENCH_METRICS:
+            item[metric] = format_score_pm(row.get(f"{metric}_mean"), row.get(f"{metric}_sem"))
+        out.append(item)
+    return out
+
+
+def drbench_run_rows_for_html(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    for row in rows:
+        item = {
+            "model": row["model"],
+            "repeat": row["repeat"],
+            "tasks": row["n_tasks"],
+            "errors": row["errors"],
+        }
+        for metric, _label in DRBENCH_METRICS:
+            item[metric] = format_score(row.get(metric))
+        out.append(item)
+    return out
+
+
+def drbench_delta_rows_for_html(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [
+        {
+            "metric": row["metric"],
+            "base": format_score(row.get("base")),
+            "privacy": format_score(row.get("privacy")),
+            "delta": format_delta(row.get("delta")),
+        }
+        for row in rows
+    ]
+
+
+def drbench_latex_summary(rows: list[dict[str, Any]]) -> str:
+    def cell(row: dict[str, Any], metric: str) -> str:
+        value = base.live.as_float(row.get(f"{metric}_mean"))
+        error = base.live.as_float(row.get(f"{metric}_sem"))
+        if value is None:
+            return "--"
+        if error is None:
+            return f"{value:.3f}"
+        return rf"{value:.3f} {{\scriptsize $\pm$ {error:.3f}}}"
+
+    body = "\n".join(
+        " & ".join(
+            [
+                row["model"],
+                cell(row, "score"),
+                cell(row, "insights_recall"),
+                cell(row, "factuality"),
+                cell(row, "distractor_avoidance"),
+                cell(row, "report_quality"),
+            ]
+        )
+        + r" \\"
+        for row in rows
+    )
+    return rf"""\begin{{table}}[t]
+\small
+\centering
+\begin{{tabular}}{{lccccc}}
+\toprule
+Model & Aggregate & Insight Recall & Factuality & Distractor Avoidance & Report Quality \\
+\midrule
+{body}
+\bottomrule
+\end{{tabular}}
+\caption{{Original DRBench minival results for base \qwenthreeb and PA-DR step100. Scores average three stochastic repeats of the same 15-task minival slice; values after $\pm$ are SEM over repeat means. The aggregate is the DRBench harmonic score.}}
+\label{{tab:drbench_minival_step100}}
+\end{{table}}
+"""
+
+
 def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
     base.paper_style()
     if output_dir.exists():
@@ -1145,6 +1366,9 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
     status = status_rows(rows)
     query_examples = step100_query_example_rows(limit=3)
     token_rows, token_combined = token_usage_rows()
+    drbench_runs = drbench_run_rows()
+    drbench_summary = drbench_model_summary_rows(drbench_runs)
+    drbench_delta = drbench_delta_rows(drbench_summary)
     current_viewer_data_path = output_dir.parent / "privacy_hopqa_q30_paper_viewer" / "viewer_data.json"
     untrained_rows = untrained_model_summary_rows(current_viewer_data_path)
 
@@ -1161,6 +1385,7 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
     untrained_latex = latex_untrained_model_summary(untrained_rows)
     behavior_latex = latex_behavior_summary(behavior)
     query_examples_latex = latex_step100_query_examples(query_examples)
+    drbench_latex = drbench_latex_summary(drbench_summary)
     checkpoint_latex = base.latex_table(
         [
             ("condition", "Condition"),
@@ -1187,6 +1412,21 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
     write_text(tables_dir / "training_behavior_s100.tex", behavior_latex)
     write_text(tables_dir / "paired_leakage_examples_s100.tex", query_examples_latex)
     write_text(tables_dir / "paired_leakage_examples_s100.json", json.dumps(query_examples, indent=2) + "\n")
+    write_text(tables_dir / "drbench_minival_step100_summary.tex", drbench_latex)
+    write_text(
+        tables_dir / "drbench_minival_step100_summary.json",
+        json.dumps(
+            {
+                "source_root": str(DRBENCH_EVAL_ROOT),
+                "metrics": DRBENCH_METRICS,
+                "run_rows": drbench_runs,
+                "model_summary_rows": drbench_summary,
+                "delta_rows": drbench_delta,
+            },
+            indent=2,
+        )
+        + "\n",
+    )
     write_text(tables_dir / "checkpoint_choice_s50_s100.tex", checkpoint_latex)
     write_text(tables_dir / "token_usage_summary_s100.md", token_usage_markdown(token_rows, token_combined))
     write_text(
@@ -1204,6 +1444,12 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
                 "untrained_model_rows": untrained_rows,
                 "token_usage_rows": token_rows,
                 "token_usage_combined": token_combined,
+                "drbench_minival": {
+                    "source_root": str(DRBENCH_EVAL_ROOT),
+                    "run_rows": drbench_runs,
+                    "model_summary_rows": drbench_summary,
+                    "delta_rows": drbench_delta,
+                },
                 "paired_leakage_example_rows": query_examples,
                 "training_efficiency": {
                     "output_dir": str(efficiency_output_dir),
@@ -1301,10 +1547,48 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
         ],
         token_usage_rows_for_html([*token_rows, token_combined]),
     )
+    drbench_summary_table = base.table(
+        [
+            ("model", "Model"),
+            ("runs", "Runs"),
+            ("tasks_per_run", "Tasks / Run"),
+            ("errors", "Errors"),
+            ("score", "Aggregate Score"),
+            ("insights_recall", "Insight Recall"),
+            ("factuality", "Factuality"),
+            ("distractor_avoidance", "Distractor Avoidance"),
+            ("report_quality", "Report Quality"),
+        ],
+        drbench_summary_rows_for_html(drbench_summary),
+    )
+    drbench_delta_table = base.table(
+        [
+            ("metric", "Metric"),
+            ("base", "Qwen3 4B"),
+            ("privacy", "PA-DR Step100"),
+            ("delta", "PA-DR - Base"),
+        ],
+        drbench_delta_rows_for_html(drbench_delta),
+    )
+    drbench_run_table = base.table(
+        [
+            ("model", "Model"),
+            ("repeat", "Repeat"),
+            ("tasks", "Tasks"),
+            ("errors", "Errors"),
+            ("score", "Aggregate Score"),
+            ("insights_recall", "Insight Recall"),
+            ("factuality", "Factuality"),
+            ("distractor_avoidance", "Distractor Avoidance"),
+            ("report_quality", "Report Quality"),
+        ],
+        drbench_run_rows_for_html(drbench_runs),
+    )
     training_effect_latex_block = latex_details("Copy LaTeX: Training Effect Summary", training_effect_latex)
     untrained_latex_block = latex_details("Copy LaTeX: Untrained Model Comparison", untrained_latex)
     behavior_latex_block = latex_details("Copy LaTeX: Query And Retrieval Behavior", behavior_latex)
     query_examples_latex_block = latex_details("Copy LaTeX: Step100 Query Examples", query_examples_latex)
+    drbench_latex_block = latex_details("Copy LaTeX: Original DRBench Minival", drbench_latex)
     checkpoint_latex_block = latex_details("Copy LaTeX: Checkpoint Choice Diagnostic", checkpoint_latex)
     query_examples_table = step100_query_examples_html(query_examples)
     missing_by_condition = {
@@ -1396,6 +1680,7 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
         <div class="asset-card"><h3>Core Leakage Types</h3><div class="links"><a href="plots/core_leakage_types_step100.svg">SVG</a><a href="plots/core_leakage_types_step100.pdf">PDF</a></div></div>
         <div class="asset-card"><h3>Query And Retrieval Behavior</h3><div class="links"><a href="plots/training_behavior_step100.svg">SVG</a><a href="plots/training_behavior_step100.pdf">PDF</a><a href="tables/training_behavior_s100.tex">LaTeX</a></div></div>
         <div class="asset-card"><h3>Step100 Query Examples</h3><div class="links"><a href="#query-examples">Viewer table</a><a href="tables/paired_leakage_examples_s100.tex">LaTeX</a><a href="tables/paired_leakage_examples_s100.json">JSON</a></div></div>
+        <div class="asset-card"><h3>Original DRBench Minival</h3><div class="links"><a href="#drbench-minival">Viewer table</a><a href="tables/drbench_minival_step100_summary.tex">LaTeX</a><a href="tables/drbench_minival_step100_summary.json">JSON</a></div></div>
         <div class="asset-card"><h3>Token Usage</h3><div class="links"><a href="#token-usage">Viewer table</a><a href="tables/token_usage_summary_s100.md">Markdown</a><a href="tables/token_usage_summary_s100.json">JSON</a></div></div>
         <div class="asset-card"><h3>Checkpoint Choice</h3><div class="links"><a href="tables/checkpoint_choice_s50_s100.tex">LaTeX</a><a href="viewer_data.json">JSON data</a></div></div>
       </div>
@@ -1403,7 +1688,19 @@ def build_viewer(output_dir: Path, latest_outputs: list[Path]) -> None:
       {untrained_latex_block}
       {behavior_latex_block}
       {query_examples_latex_block}
+      {drbench_latex_block}
       {checkpoint_latex_block}
+    </section>
+    <section id="drbench-minival">
+      <h2>Original DRBench Minival Sanity Check</h2>
+      <div class="note">Original ServiceNow DRBench minival evaluation on 15 tasks with three stochastic repeats per model. Values after +/- are SEM over run means. Aggregate score is the top-level DRBench harmonic score, stored as <code>score</code> / <code>scores.harmonic_mean</code>.</div>
+      <div class="links"><a href="tables/drbench_minival_step100_summary.tex">LaTeX table</a><a href="tables/drbench_minival_step100_summary.json">JSON data</a></div>
+      {drbench_summary_table}
+      <h3>Where PA-DR Step100 Loses Points</h3>
+      <div class="note">The gap is not mostly distractor avoidance. Sub-scores are very close: PA-DR is slightly lower on report quality, distractor avoidance, and insight recall, and slightly higher on factuality. The aggregate gap is larger than any single sub-score delta because DRBench uses a nonlinear harmonic aggregate.</div>
+      {drbench_delta_table}
+      <h3>Repeat-Level Scores</h3>
+      {drbench_run_table}
     </section>
     <section id="training-effect">
       <h2>Effect Of Training: Accuracy And Privacy</h2>

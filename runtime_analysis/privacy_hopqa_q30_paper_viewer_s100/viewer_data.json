@@ -940,6 +940,167 @@
     "eval_output_total": 40506307,
     "eval_total": 79964471
   },
+  "drbench_minival": {
+    "source_root": "/mnt/llmd/results/exps/alexg/reason/drbench_step100_eval",
+    "run_rows": [
+      {
+        "model_key": "base",
+        "model": "Qwen3 4B",
+        "repeat": "r1",
+        "run_dir": "/mnt/llmd/results/exps/alexg/reason/drbench_step100_eval/minival_qwen3_4b_base_fewshot_20260528",
+        "n_tasks": 15,
+        "errors": 0,
+        "score": 0.3928230701519532,
+        "insights_recall": 0.23124477861319964,
+        "factuality": 0.3374160807264256,
+        "distractor_avoidance": 0.9757936507936509,
+        "report_quality": 0.632
+      },
+      {
+        "model_key": "base",
+        "model": "Qwen3 4B",
+        "repeat": "r2",
+        "run_dir": "/mnt/llmd/results/exps/alexg/reason/drbench_step100_eval/minival_qwen3_4b_base_fewshot_rep2_20260529",
+        "n_tasks": 15,
+        "errors": 0,
+        "score": 0.42273727003630024,
+        "insights_recall": 0.21135059871901976,
+        "factuality": 0.38845328956750413,
+        "distractor_avoidance": 1.0,
+        "report_quality": 0.6359999999999999
+      },
+      {
+        "model_key": "base",
+        "model": "Qwen3 4B",
+        "repeat": "r3",
+        "run_dir": "/mnt/llmd/results/exps/alexg/reason/drbench_step100_eval/minival_qwen3_4b_base_fewshot_rep3_20260529",
+        "n_tasks": 15,
+        "errors": 0,
+        "score": 0.42057164089850385,
+        "insights_recall": 0.23958785853522696,
+        "factuality": 0.4106100767706658,
+        "distractor_avoidance": 1.0,
+        "report_quality": 0.64
+      },
+      {
+        "model_key": "privacy",
+        "model": "PA-DR step100",
+        "repeat": "r1",
+        "run_dir": "/mnt/llmd/results/exps/alexg/reason/drbench_step100_eval/minival_privreward_tau05_s100_fewshot_rep1_20260529",
+        "n_tasks": 15,
+        "errors": 0,
+        "score": 0.38917939946488556,
+        "insights_recall": 0.24161514898357,
+        "factuality": 0.34871326464308916,
+        "distractor_avoidance": 0.9757936507936509,
+        "report_quality": 0.628
+      },
+      {
+        "model_key": "privacy",
+        "model": "PA-DR step100",
+        "repeat": "r2",
+        "run_dir": "/mnt/llmd/results/exps/alexg/reason/drbench_step100_eval/minival_privreward_tau05_s100_fewshot_rep2_20260529",
+        "n_tasks": 15,
+        "errors": 0,
+        "score": 0.3900055718890234,
+        "insights_recall": 0.21429685324422165,
+        "factuality": 0.4055700563053504,
+        "distractor_avoidance": 0.9933333333333334,
+        "report_quality": 0.6599999999999999
+      },
+      {
+        "model_key": "privacy",
+        "model": "PA-DR step100",
+        "repeat": "r3",
+        "run_dir": "/mnt/llmd/results/exps/alexg/reason/drbench_step100_eval/minival_privreward_tau05_s100_fewshot_rep3_20260529",
+        "n_tasks": 15,
+        "errors": 0,
+        "score": 0.3922867711238235,
+        "insights_recall": 0.22052353104984684,
+        "factuality": 0.38583396606683723,
+        "distractor_avoidance": 0.9933333333333334,
+        "report_quality": 0.6026666666666666
+      }
+    ],
+    "model_summary_rows": [
+      {
+        "model_key": "base",
+        "model": "Qwen3 4B",
+        "n_runs": 3,
+        "n_tasks_per_run": 15,
+        "errors": 0,
+        "score_mean": 0.41204399369558575,
+        "score_sem": 0.009630773831720276,
+        "score_run_std": 0.016680989592744316,
+        "insights_recall_mean": 0.22739441195581545,
+        "insights_recall_sem": 0.008375653268635616,
+        "insights_recall_run_std": 0.014507057007857224,
+        "factuality_mean": 0.3788264823548652,
+        "factuality_sem": 0.02167061625845045,
+        "factuality_run_std": 0.03753460839096434,
+        "distractor_avoidance_mean": 0.991931216931217,
+        "distractor_avoidance_sem": 0.00806878306878304,
+        "distractor_avoidance_run_std": 0.013975542230383747,
+        "report_quality_mean": 0.636,
+        "report_quality_sem": 0.0023094010767585054,
+        "report_quality_run_std": 0.0040000000000000036
+      },
+      {
+        "model_key": "privacy",
+        "model": "PA-DR step100",
+        "n_runs": 3,
+        "n_tasks_per_run": 15,
+        "errors": 0,
+        "score_mean": 0.39049058082591087,
+        "score_sem": 0.0009292227770809606,
+        "score_run_std": 0.0016094610614544726,
+        "insights_recall_mean": 0.22547851109254616,
+        "insights_recall_sem": 0.008266119422947426,
+        "insights_recall_run_std": 0.014317338821976871,
+        "factuality_mean": 0.380039095671759,
+        "factuality_sem": 0.016666924148377046,
+        "factuality_run_std": 0.028867959430885683,
+        "distractor_avoidance_mean": 0.9874867724867725,
+        "distractor_avoidance_sem": 0.005846560846560841,
+        "distractor_avoidance_run_std": 0.010126540435786284,
+        "report_quality_mean": 0.6302222222222221,
+        "report_quality_sem": 0.016587962316908022,
+        "report_quality_run_std": 0.028731193526922643
+      }
+    ],
+    "delta_rows": [
+      {
+        "metric": "Aggregate Score",
+        "base": 0.41204399369558575,
+        "privacy": 0.39049058082591087,
+        "delta": -0.02155341286967488
+      },
+      {
+        "metric": "Insight Recall",
+        "base": 0.22739441195581545,
+        "privacy": 0.22547851109254616,
+        "delta": -0.0019159008632692875
+      },
+      {
+        "metric": "Factuality",
+        "base": 0.3788264823548652,
+        "privacy": 0.380039095671759,
+        "delta": 0.0012126133168937625
+      },
+      {
+        "metric": "Distractor Avoidance",
+        "base": 0.991931216931217,
+        "privacy": 0.9874867724867725,
+        "delta": -0.004444444444444473
+      },
+      {
+        "metric": "Report Quality",
+        "base": 0.636,
+        "privacy": 0.6302222222222221,
+        "delta": -0.005777777777777882
+      }
+    ]
+  },
   "paired_leakage_example_rows": [
     {
       "score": 110.9,
