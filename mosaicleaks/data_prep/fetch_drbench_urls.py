@@ -142,7 +142,7 @@ def _select_content_root(soup: BeautifulSoup) -> Any:
 
 
 def _extract_structured_text(html: str) -> tuple[str, str]:
-    soup = BeautifulSoup(html, "lxml")
+    soup = BeautifulSoup(html, "html.parser")
     for tag in soup([
         "script",
         "style",
@@ -305,7 +305,7 @@ def _load_best_existing_records(docs_path: Path) -> dict[str, dict[str, Any]]:
 
 def _relative_to_repo(path: Path) -> str:
     try:
-        return str(path.relative_to(REPO_ROOT))
+        return str(path.relative_to(config.REPO_ROOT))
     except ValueError:
         return str(path)
 

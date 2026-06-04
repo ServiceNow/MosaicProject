@@ -1,7 +1,7 @@
 # External Dependencies
 
-MosaicLeaks does not vendor DRBench or BrowseComp-Plus. It consumes their task
-and corpus artifacts through explicit paths.
+MosaicLeaks expects DRBench-style task files and BrowseComp-Plus corpus
+artifacts as external inputs.
 
 ## DRBench-Style Tasks
 
@@ -28,8 +28,16 @@ The local chunker emits records with:
 
 ## BrowseComp-Plus
 
-BrowseComp-Plus is the primary public-web corpus. MosaicLeaks can use it in two
-ways:
+BrowseComp-Plus is the primary public-web corpus. Dataset generation uses
+prepared web chunks for bridge discovery:
+
+```text
+chunks_web.jsonl
+```
+
+Each chunk row should include `chunk_id`, `doc_id`, `text`, `offsets`, and
+optional metadata. The retrieval helper can additionally use the full corpus in
+two ways:
 
 - `--browsecomp-corpus Tevatron/browsecomp-plus-corpus`, loaded through the
   `datasets` package.
@@ -46,8 +54,7 @@ corpus.shard00001_of_000NN.pkl
 ```
 
 Each shard stores the dense vectors and lookup IDs used to map search results
-back to BrowseComp document IDs. The clean repo documents this artifact format
-instead of assuming a local BrowseComp-Plus checkout.
+back to BrowseComp document IDs.
 
 ## Curated Task URLs
 

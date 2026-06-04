@@ -150,7 +150,7 @@ def load_eval_seeds(
         if task_id and tid != task_id:
             continue
 
-        context_path = eval_path.parent / "context.json"
+        context_path = eval_path.parent.parent / "context.json"
         company_name = ""
         if context_path.exists():
             ctx = json.loads(context_path.read_text())

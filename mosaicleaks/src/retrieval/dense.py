@@ -114,7 +114,7 @@ class DenseIndex:
 
     @classmethod
     def load_npz(cls, path: Path) -> "DenseIndex":
-        data = np.load(str(path), allow_pickle=True)
+        data = np.load(str(path), allow_pickle=False)
         embeddings = data["embeddings"]
         chunk_ids = [str(x) for x in data["chunk_ids"].tolist()]
         doc_ids = [str(x) for x in data["doc_ids"].tolist()]

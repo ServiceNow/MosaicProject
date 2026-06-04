@@ -174,7 +174,11 @@ class EntityIndex:
         obj = cls.__new__(cls)
         obj._nlp = nlp
         obj._lazy_lock = threading.Lock()
-        obj._doc_entities = data["doc_entities"]
+        obj._doc_entities = {
+            doc_id: entities
+            for doc_id, entities in data["doc_entities"].items()
+            if doc_id in docs
+        }
         obj._cache_version = data.get("version", 1)
         obj._stale_docs = set(docs.keys()) if (obj._cache_version < _ENTITY_INDEX_VERSION and nlp is not None) else set()
         obj._doc_texts = {}

@@ -1,11 +1,11 @@
-# MosaicLeaks
+# MosaicLeaks: Privacy Risks in Querying-in-the-Open for Deep Research Agents
 
-MosaicLeaks contains the dataset-generation and retrieval-helper code for
+This repository contains the dataset-generation pipeline, retrieval helper, and
+training-launch interface used in
 [MosaicLeaks: Privacy Risks in Querying-in-the-Open for Deep Research
-Agents](https://arxiv.org/abs/2605.30727). The repository is intended to be
-reproducible without hidden machine paths: all large corpora, DRBench-style task
-files, BrowseComp-Plus indexes, and model endpoints are passed through CLI flags
-or `MOSAICLEAKS_*` environment variables.
+Agents](https://arxiv.org/abs/2605.30727). It is organized so a developer can
+reproduce the MosaicLeaks build or adapt the same local-document plus public-web
+generation pattern to another task collection.
 
 The code uses OpenAI-compatible chat and embedding endpoints. The default model
 name is `step-3.5-flash`, but StepFun is not a code dependency; any compatible
@@ -34,8 +34,8 @@ MosaicLeaks expects two external data sources:
   dataset name `Tevatron/browsecomp-plus-corpus` or a local JSONL corpus plus
   embedding index shards.
 
-See [External Dependencies](docs/external_dependencies.md) for the exact
-input format.
+See [External Dependencies](docs/external_dependencies.md) for the required
+input files.
 
 ## Dataset Generation
 
@@ -73,8 +73,13 @@ The reusable helper service exposes:
 It can run locally against an OpenAI-compatible embedding endpoint:
 
 ```bash
+python3 -m mosaicleaks.data_prep.build_local_indices \
+  --chunks-local mosaicleaks/data/chunks_local.jsonl \
+  --output-root mosaicleaks/data/local_indices \
+  --embedding-base-url http://127.0.0.1:8000
+
 ./scripts/start_retrieval_helper.sh \
-  --local-index-root /path/to/local_indices \
+  --local-index-root mosaicleaks/data/local_indices \
   --embedding-base-url http://127.0.0.1:8000 \
   --browsecomp-index-glob "/path/to/corpus.shard*_of_*.pkl" \
   --browsecomp-corpus Tevatron/browsecomp-plus-corpus
@@ -85,8 +90,9 @@ details.
 
 ## Training Runs
 
-MosaicLeaks does not vendor a trainer. The clean interface is a published
-dataset bundle, a retrieval-helper URL, and explicit trainer overrides:
+MosaicLeaks does not include a trainer. Training runs consume a published
+dataset bundle, an optional retrieval-helper URL, and explicit trainer
+overrides:
 
 ```bash
 cp configs/training.example.env configs/training.local.env

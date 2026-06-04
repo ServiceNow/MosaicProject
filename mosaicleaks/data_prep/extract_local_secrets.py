@@ -7,6 +7,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 from mosaicleaks import config
+from mosaicleaks.normalization import canonical_match
 from mosaicleaks.src.data_loading import build_doc_lookup, load_chunks_local
 from mosaicleaks.src.llm import LLMClient
 
@@ -142,6 +143,7 @@ def _passes_filters(doc_meta: dict, task: str | None, company: str | None) -> bo
 def _verify_secret(
     llm: LLMClient,
     question: str,
+    expected_answer: str,
     doc_text: str,
     check_max_tokens: int,
 ) -> dict[str, str] | None:
@@ -158,6 +160,8 @@ def _verify_secret(
         use_min_max_tokens=False,
     ).strip()
     if not with_doc or with_doc == "NOT_ANSWERABLE":
+        return None
+    if not canonical_match(with_doc, expected_answer):
         return None
     if without_doc != "NOT_ANSWERABLE":
         return None
@@ -211,6 +215,7 @@ def main() -> int:
                 doc_only_check = _verify_secret(
                     llm,
                     question=candidate["question"],
+                    expected_answer=candidate["answer"],
                     doc_text=doc.text[: args.max_doc_chars],
                     check_max_tokens=args.check_max_tokens,
                 )

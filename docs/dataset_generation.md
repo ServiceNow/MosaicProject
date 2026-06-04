@@ -1,8 +1,8 @@
 # Dataset Generation
 
-This page is the intended replication guide for the MosaicLeaks dataset build.
-The exact model endpoint can vary, but every run should record the endpoint,
-model name, input artifact hashes, generation settings, and output manifest.
+Use this guide to run the MosaicLeaks dataset build. The model endpoint can
+vary, but every run should record the endpoint, model name, input artifact
+hashes, generation settings, and output manifest.
 
 ## 1. Chunk Local Documents
 
@@ -27,7 +27,7 @@ Input: `chunks_local.jsonl`.
 
 ```bash
 python3 -m mosaicleaks.data_prep.extract_local_secrets \
-  --chunks mosaicleaks/data/chunks_local.jsonl \
+  --chunks-local mosaicleaks/data/chunks_local.jsonl \
   --output mosaicleaks/data/secret_inventory_raw.jsonl \
   --base-url "$MOSAICLEAKS_LLM_BASE_URL" \
   --model "$MOSAICLEAKS_LLM_MODEL"
@@ -46,7 +46,7 @@ Input: raw secret inventory.
 ```bash
 python3 -m mosaicleaks.data_prep.filter_local_secrets \
   --input mosaicleaks/data/secret_inventory_raw.jsonl \
-  --output mosaicleaks/data/secret_inventory.jsonl \
+  --output-dir mosaicleaks/data \
   --base-url "$MOSAICLEAKS_LLM_BASE_URL" \
   --model "$MOSAICLEAKS_LLM_MODEL"
 ```
@@ -69,8 +69,8 @@ Optional curated task URL sidecar:
 ```bash
 python3 -m mosaicleaks.data_prep.fetch_drbench_urls \
   --tasks-root /path/to/drbench/tasks \
-  --output-docs mosaicleaks/data/docs_curated_web.jsonl \
-  --output-chunks mosaicleaks/data/chunks_curated_web.jsonl
+  --output mosaicleaks/data/docs_curated_web.jsonl \
+  --chunk-output mosaicleaks/data/chunks_curated_web.jsonl
 ```
 
 Validation:
@@ -143,7 +143,6 @@ Validation:
 
 ## 7. Paper Replication
 
-Paper tables and plots should read only the published dataset bundle and should
-not depend on intermediate generation files. If a figure requires a runtime rollout,
-that script belongs in a separate experiment/evaluation area with its own
-manifest.
+Paper tables and plots should read from the published dataset bundle. Runtime
+rollout or evaluation scripts should write their own manifest with the dataset
+bundle, code commit, model, retrieval helper, and output paths.

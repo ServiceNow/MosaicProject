@@ -24,7 +24,8 @@ TRAIN_EXTRA_OVERRIDES_FILE=${TRAIN_EXTRA_OVERRIDES_FILE:-}
 DRY_RUN=${DRY_RUN:-0}
 
 if [[ -z "$DATASET_BUNDLE" ]]; then
-    echo "Set MOSAICLEAKS_DATASET_BUNDLE or DATASET_BUNDLE to a published dataset bundle directory." >&2
+    echo "Set MOSAICLEAKS_DATASET_BUNDLE or DATASET_BUNDLE to a published dataset bundle directory." \
+        >&2
     exit 1
 fi
 if [[ -z "$MODEL_PATH" ]]; then
@@ -32,18 +33,22 @@ if [[ -z "$MODEL_PATH" ]]; then
     exit 1
 fi
 if [[ "$REQUIRE_RETRIEVAL_HELPER" == "1" && -z "$RETRIEVAL_HELPER_URL" ]]; then
-    echo "Set MOSAICLEAKS_RETRIEVAL_HELPER_URL, or set REQUIRE_RETRIEVAL_HELPER=0 for offline trainers." >&2
+    echo "Set MOSAICLEAKS_RETRIEVAL_HELPER_URL, or set REQUIRE_RETRIEVAL_HELPER=0 for offline trainers." \
+        >&2
     exit 1
 fi
 
-DATASET_BUNDLE="$(python3 -c 'from pathlib import Path; import sys; print(Path(sys.argv[1]).expanduser().resolve())' "$DATASET_BUNDLE")"
+DATASET_BUNDLE="$(
+    python3 -c 'from pathlib import Path; import sys; print(Path(sys.argv[1]).expanduser().resolve())' \
+        "$DATASET_BUNDLE"
+)"
 TRAIN_PATH="$DATASET_BUNDLE/train.jsonl"
 VAL_PATH="$DATASET_BUNDLE/val.jsonl"
 TEST_PATH="$DATASET_BUNDLE/test.jsonl"
 MANIFEST_PATH="$DATASET_BUNDLE/manifest.json"
 
 for path in "$TRAIN_PATH" "$VAL_PATH" "$TEST_PATH" "$MANIFEST_PATH"; do
-    if [[ ! -f "$path" ]]; then
+    if [[ "$DRY_RUN" != "1" && ! -f "$path" ]]; then
         echo "Dataset bundle is missing required file: $path" >&2
         exit 1
     fi

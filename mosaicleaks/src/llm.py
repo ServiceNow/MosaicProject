@@ -51,7 +51,6 @@ class LLMClient:
         temperature: float = 0.3,
         max_tokens: int = 800,
         top_p: float | None = None,
-        top_k: int | None = None,
         use_min_max_tokens: bool = True,
     ) -> str:
         """Send chat completion, return assistant text."""
@@ -69,7 +68,6 @@ class LLMClient:
         }
         if top_p is not None:
             kwargs["top_p"] = top_p
-        # top_k is vLLM-specific; OpenAI API doesn't support it, so we skip it
         t0 = time.time()
         resp = self._get_client().chat.completions.create(**kwargs)
         elapsed = time.time() - t0
@@ -86,7 +84,6 @@ class LLMClient:
         temperature: float = 0.3,
         max_tokens: int = 800,
         top_p: float | None = None,
-        top_k: int | None = None,
         batch_size: int = 16,
         use_min_max_tokens: bool = True,
     ) -> list[str]:
@@ -106,7 +103,6 @@ class LLMClient:
                         temperature=temperature,
                         max_tokens=max_tokens,
                         top_p=top_p,
-                        top_k=top_k,
                         use_min_max_tokens=use_min_max_tokens,
                     )
                     for messages in chunk

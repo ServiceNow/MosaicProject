@@ -11,9 +11,10 @@ logger = logging.getLogger(__name__)
 class FilteredSearcher:
     """Restrict an underlying searcher to an allowlist of document IDs."""
 
-    def __init__(self, base_searcher: Any, allowed_doc_ids: set[str]) -> None:
+    def __init__(self, base_searcher: Any, allowed_doc_ids: set[str], overfetch_factor: int = 20) -> None:
         self.base_searcher = base_searcher
         self.allowed_doc_ids = set(allowed_doc_ids)
+        self.overfetch_factor = max(1, int(overfetch_factor))
 
     @property
     def size(self) -> int:
@@ -22,7 +23,8 @@ class FilteredSearcher:
     def search(self, query: str, k: int = 10, **kwargs) -> list[RetrievalHit]:
         if not self.allowed_doc_ids or k <= 0:
             return []
-        search_k = max(k, getattr(self.base_searcher, "size", k))
+        base_size = int(getattr(self.base_searcher, "size", k))
+        search_k = min(base_size, max(k, k * self.overfetch_factor))
         hits = self.base_searcher.search(query, k=search_k, **kwargs)
         filtered = [hit for hit in hits if hit.doc_id in self.allowed_doc_ids]
         return filtered[:k]

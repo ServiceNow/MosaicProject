@@ -1,6 +1,9 @@
 import json
+import subprocess
 
+from mosaicleaks import config
 from mosaicleaks.publish_dataset import main
+from mosaicleaks.publish_dataset import current_commit
 
 
 def write_jsonl(path, rows):
@@ -81,3 +84,15 @@ def test_publish_dataset_bundle(tmp_path, monkeypatch):
         for line in (output / "test.jsonl").read_text(encoding="utf-8").splitlines()
     ]
     assert {row["company"] for row in test_rows} == {"A"}
+
+
+def test_current_commit_runs_from_repo_root(monkeypatch):
+    calls = []
+
+    def fake_run(*args, **kwargs):
+        calls.append((args, kwargs))
+        return subprocess.CompletedProcess(args[0], 0, stdout="abc123\n", stderr="")
+
+    monkeypatch.setattr(subprocess, "run", fake_run)
+    assert current_commit() == "abc123"
+    assert calls[0][1]["cwd"] == config.REPO_ROOT

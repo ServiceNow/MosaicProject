@@ -2,8 +2,7 @@
 
 The defaults are intentionally local and portable. Large corpora, task files,
 embedding indexes, and generated outputs should be supplied through CLI flags or
-``MOSAICLEAKS_*`` environment variables rather than hidden machine-specific
-paths.
+``MOSAICLEAKS_*`` environment variables.
 """
 
 import os
@@ -38,14 +37,6 @@ BROWSECOMP_EMBEDDING_MODEL = os.getenv("MOSAICLEAKS_BROWSECOMP_MODEL", "Qwen/Qwe
 BROWSECOMP_DATASET_NAME = os.getenv("MOSAICLEAKS_BROWSECOMP_DATASET", "Tevatron/browsecomp-plus-corpus")
 BROWSECOMP_BM25_RECALL_K = int(os.getenv("MOSAICLEAKS_BROWSECOMP_BM25_RECALL_K", "100"))
 BROWSECOMP_DENSE_RECALL_K = int(os.getenv("MOSAICLEAKS_BROWSECOMP_DENSE_RECALL_K", "100"))
-BROWSECOMP_SEARCH_URL = (
-    os.getenv("MOSAICLEAKS_BROWSECOMP_SEARCH_URL")
-)
-BROWSECOMP_SEARCH_TIMEOUT = float(
-    os.getenv("MOSAICLEAKS_BROWSECOMP_SEARCH_TIMEOUT")
-    or "120"
-)
-
 # Default OpenAI-compatible endpoint for chain generation. The model string is
 # just an endpoint setting; MosaicLeaks does not import provider-specific code.
 DEFAULT_MODEL = os.getenv("MOSAICLEAKS_LLM_MODEL", "step-3.5-flash")
@@ -113,4 +104,3 @@ PROMPT_REASONING_MODE = "step_by_step"
 # LLM sampling: normal temps for generative tasks.
 DEFAULT_TEMPERATURE = 0.7
 DEFAULT_TOP_P = 0.8
-DEFAULT_TOP_K = 20

@@ -136,7 +136,6 @@ def generate_question_constrained(
         temperature=config.DEFAULT_TEMPERATURE,
         max_tokens=config.DEFAULT_MAX_TOKENS,
         top_p=config.DEFAULT_TOP_P,
-        top_k=config.DEFAULT_TOP_K,
     )
     duration = round(time.time() - t0, 2)
 
@@ -177,7 +176,6 @@ def generate_question_pick(
         temperature=config.DEFAULT_TEMPERATURE,
         max_tokens=config.DEFAULT_MAX_TOKENS,
         top_p=config.DEFAULT_TOP_P,
-        top_k=config.DEFAULT_TOP_K,
     )
     duration = round(time.time() - t0, 2)
 
@@ -221,10 +219,11 @@ def generate_question_constrained_batch(
         temperature=config.DEFAULT_TEMPERATURE,
         max_tokens=config.DEFAULT_MAX_TOKENS,
         top_p=config.DEFAULT_TOP_P,
-        top_k=config.DEFAULT_TOP_K,
         batch_size=batch_size,
     )
     duration = round(time.time() - t0, 2)
+    if len(raws) != len(jobs):
+        raise RuntimeError(f"LLM batch returned {len(raws)} outputs for {len(jobs)} jobs")
 
     outputs: list[tuple[str, str, dict] | Exception] = []
     for job, prompt, raw in zip(jobs, prompts, raws):
@@ -274,10 +273,11 @@ def generate_question_pick_batch(
         temperature=config.DEFAULT_TEMPERATURE,
         max_tokens=config.DEFAULT_MAX_TOKENS,
         top_p=config.DEFAULT_TOP_P,
-        top_k=config.DEFAULT_TOP_K,
         batch_size=batch_size,
     )
     duration = round(time.time() - t0, 2)
+    if len(raws) != len(jobs):
+        raise RuntimeError(f"LLM batch returned {len(raws)} outputs for {len(jobs)} jobs")
 
     outputs: list[tuple[str, str, dict] | Exception] = []
     for job, prompt, raw in zip(jobs, prompts, raws):
@@ -334,7 +334,6 @@ def rank_questions(
         temperature=0.0,
         max_tokens=config.SHORT_CALL_MAX_TOKENS,
         top_p=config.DEFAULT_TOP_P,
-        top_k=config.DEFAULT_TOP_K,
         use_min_max_tokens=False,
     )
 

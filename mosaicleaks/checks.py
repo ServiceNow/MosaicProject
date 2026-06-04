@@ -122,7 +122,7 @@ def check_answer_needs_backref(question: str, prev_answer: str, llm) -> BackrefC
     placeholder = "an unknown entity"
     blanked = question.replace(prev_answer, placeholder)
     if blanked == question:
-        return BackrefCheckResult(independent=False, answer=None, justification="prev_answer not in question")
+        return BackrefCheckResult(independent=True, answer=None, justification="previous answer is missing from question")
 
     raw = llm.chat(
         [{"role": "user", "content": BACKREF_CHECK_PROMPT.format(

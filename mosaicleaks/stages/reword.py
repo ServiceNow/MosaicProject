@@ -7,6 +7,8 @@ from pathlib import Path
 from mosaicleaks.src.format_questions import format_numbered_questions
 from mosaicleaks.src.jsonl import read_jsonl_objects
 from mosaicleaks.src.llm import LLMClient
+from mosaicleaks.src.types import ChainState, HopRecord
+from mosaicleaks.src.verify_chain import verify_chain
 
 from mosaicleaks import config
 from mosaicleaks.prompts import REWORD_PROMPT
@@ -38,10 +40,41 @@ def _reword_question(question: str, prev_hops: list[dict], llm: LLMClient) -> st
         temperature=config.DEFAULT_TEMPERATURE,
         max_tokens=config.SHORT_CALL_MAX_TOKENS,
         top_p=config.DEFAULT_TOP_P,
-        top_k=config.DEFAULT_TOP_K,
         use_min_max_tokens=False,
     )
     return raw.strip().strip('"').strip()
+
+
+def _verify_reworded_chain(chain: dict, llm: LLMClient) -> None:
+    hops = [
+        HopRecord(
+            hop_number=hop["hop_number"],
+            hop_type=hop["hop_type"],
+            question=hop["question"],
+            answer=hop["answer"],
+            doc_id=hop["doc_id"],
+            doc_text=hop.get("doc_text", ""),
+            quote=hop.get("quote", ""),
+        )
+        for hop in chain.get("hops", [])
+    ]
+    state = ChainState(
+        pattern=chain["pattern"],
+        hop_history=hops,
+        global_question=chain.get("global_question", ""),
+        global_answer=chain.get("global_answer", ""),
+    )
+    verification, _traces = verify_chain(state, llm)
+    chain["verification"] = {
+        "is_valid": verification.is_valid,
+        "no_docs_pass": verification.no_docs_pass,
+        "first_only_pass": verification.first_only_pass,
+        "last_only_pass": verification.last_only_pass,
+        "all_docs_pass": verification.all_docs_pass,
+        "all_docs_answer": verification.all_docs_answer,
+        "details": verification.details,
+    }
+    chain["valid"] = verification.is_valid
 
 
 def run_reword(
@@ -80,6 +113,7 @@ def run_reword(
             numbered = format_numbered_questions(hop_dicts)
             chain["numbered_questions"] = numbered
             chain["global_question"] = numbered
+            _verify_reworded_chain(chain, llm)
 
             f_out.write(json.dumps(chain, ensure_ascii=False) + "\n")
 

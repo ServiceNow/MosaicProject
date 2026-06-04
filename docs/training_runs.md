@@ -1,14 +1,14 @@
 # Training Runs
 
-MosaicLeaks does not vendor a training framework. The clean interface is:
+MosaicLeaks does not include a training framework. A training run needs:
 
 1. publish a dataset bundle,
 2. start the retrieval helper when the trainer needs live document lookup,
 3. launch an external trainer with explicit dataset, model, helper, and output
    paths.
 
-This keeps the repository useful for another developer building a similar
-dataset without inheriting machine-specific scheduler files.
+The launcher in this repository prepares those inputs for a PipelineRL-style
+trainer or another trainer with a similar command-line override interface.
 
 ## 1. Publish A Dataset Bundle
 
@@ -92,8 +92,7 @@ launcher are:
 - `mosaicleaks.final_test_dataset_path=<bundle>/test.jsonl`
 - `mosaicleaks.retrieval_helper_url=<helper-url>`
 
-Keep scheduler-specific wrappers outside this repo, or commit only templates
-with placeholders. A clean run record should include:
+A complete run record should include:
 
 - dataset bundle path and `manifest.json` hash
 - code commit

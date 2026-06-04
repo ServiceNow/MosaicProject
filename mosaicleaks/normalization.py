@@ -87,7 +87,6 @@ def canonical_tokens(text: str) -> list[str]:
     normalized = _normalize_percent_text(normalized)
     normalized = normalized.replace("/", " ")
     normalized = normalized.replace("-", " ")
-    normalized = normalized.replace("-", " ")
     normalized = normalized.replace(",", " ")
     normalized = _SPACE_RE.sub(" ", normalized).strip()
 

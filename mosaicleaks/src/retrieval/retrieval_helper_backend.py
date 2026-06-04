@@ -367,7 +367,8 @@ class CuratedWebRepository:
                     existing_paths,
                     doc_ids=self.allowed_doc_ids,
                 )
-            except ValueError:
+            except ValueError as exc:
+                logger.warning("Curated web searcher disabled: %s", exc)
                 self.searcher = None
 
     @property

@@ -31,7 +31,18 @@ latency metrics.
 
 ## Local Index Format
 
-`--local-index-root` points to a directory with one subdirectory per task:
+Build local indices from `chunks_local.jsonl` before starting the helper:
+
+```bash
+python3 -m mosaicleaks.data_prep.build_local_indices \
+  --chunks-local mosaicleaks/data/chunks_local.jsonl \
+  --output-root mosaicleaks/data/local_indices \
+  --embedding-base-url http://127.0.0.1:8000 \
+  --embedding-model Qwen/Qwen3-Embedding-4B
+```
+
+`--local-index-root` points to the output directory, which has one subdirectory
+per task:
 
 ```text
 local_indices/
@@ -39,6 +50,7 @@ local_indices/
     documents.json
     index.json
     embeddings.npy
+  manifest.json
 ```
 
 `documents.json` maps document IDs to content and metadata. `index.json`
@@ -69,7 +81,3 @@ pure dense ranking when queries contain rare identifiers.
   --browsecomp-rank-mode rrf \
   --local-rank-mode rrf
 ```
-
-Cluster-specific launch files should live outside the clean repo or under a
-clearly marked `deploy/` directory with placeholders instead of internal account
-names and mount paths.

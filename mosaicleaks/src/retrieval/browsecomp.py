@@ -75,6 +75,16 @@ def _load_dataset(dataset_name: str) -> tuple[Any, dict[str, int], dict[str, str
     return dataset, docid_to_idx, docid_to_url
 
 
+def _iter_dataset_docs(dataset: Any):
+    for idx, row in enumerate(dataset):
+        if not isinstance(row, dict):
+            continue
+        docid = row.get("docid")
+        if docid is None:
+            continue
+        yield str(docid), idx, row
+
+
 def _resolve_cache_dir(index_glob: str | None) -> Path | None:
     if not index_glob:
         return None
@@ -331,10 +341,11 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
         texts: list[str] = []
         idx_to_lookup: dict[int, int] = {}
 
-        for docid, ds_idx in self.docid_to_idx.items():
-            row = self.dataset[int(ds_idx)]
+        for docid, _ds_idx, row in _iter_dataset_docs(self.dataset):
             text = (row.get("text") or "").strip()
             lookup_i = lookup_idx_by_docid.get(docid)
+            if lookup_i is None:
+                lookup_i = lookup_idx_by_docid.get(self._normalize_docid(docid))
             if not text or lookup_i is None:
                 continue
             bm25_i = len(texts)
@@ -482,8 +493,7 @@ class BrowseCompBM25Searcher(_BrowseCompBase):
 
         texts: list[str] = []
         docids: list[str] = []
-        for docid, ds_idx in self.docid_to_idx.items():
-            row = self.dataset[int(ds_idx)]
+        for docid, _ds_idx, row in _iter_dataset_docs(self.dataset):
             text = (row.get("text") or "").strip()
             if not text:
                 continue

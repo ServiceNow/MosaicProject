@@ -11,6 +11,7 @@ import random
 import subprocess
 from typing import Any
 
+from mosaicleaks import config
 from mosaicleaks.src.jsonl import read_jsonl_objects, write_jsonl_objects
 
 
@@ -66,6 +67,7 @@ def current_commit() -> str | None:
         result = subprocess.run(
             ["git", "rev-parse", "HEAD"],
             check=False,
+            cwd=config.REPO_ROOT,
             stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL,
             text=True,

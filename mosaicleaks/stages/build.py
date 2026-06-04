@@ -1,10 +1,11 @@
 """Build chains for the MosaicLeaks dataset generation pipeline.
 
 Accepts patterns, max_chains/per_task, and optional seeds_from file.
-Output: chains.jsonl, append-only with resume by chain index.
+Output: chains.jsonl, append-only with resume by seed fingerprint.
 """
 
 import gc
+import hashlib
 import json
 import logging
 import random
@@ -14,8 +15,6 @@ from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any
-
-import spacy
 
 from mosaicleaks.src.data_loading import (
     build_doc_lookup,
@@ -29,7 +28,6 @@ from mosaicleaks.src.retrieval.browsecomp import (
 )
 from mosaicleaks.src.retrieval.composite import FilteredSearcher, WeightedRRFSearcher
 from mosaicleaks.src.retrieval.dense import OpenAICompatibleBackend
-from mosaicleaks.src.retrieval.search_client import SearchClient
 from mosaicleaks.src.retrieval.hybrid import HybridSearcher
 from mosaicleaks.src.format_questions import format_numbered_questions
 from mosaicleaks.src.jsonl import iter_jsonl_objects
@@ -75,6 +73,7 @@ def _build_seed_result(
     pattern: str,
     task_id: str,
     task_seed: int,
+    seed_fingerprint: str,
     forced_hop: dict | None,
     chain_local_ids: set[str],
     chain_web_doc_ids: set[str],
@@ -157,6 +156,7 @@ def _build_seed_result(
     d["metadata"]["seed_idx"] = idx
     d["metadata"]["seed_pattern"] = pattern
     d["metadata"]["seed_task_id"] = task_id
+    d["metadata"]["seed_fingerprint"] = seed_fingerprint
     d["metadata"]["generator_variant"] = "mosaicleaks"
     d["metadata"]["pick_prompt_variant"] = "current_best_of_10"
 
@@ -285,6 +285,18 @@ def _load_seeds_from_file(path: Path, max_chains: int | None) -> list[dict]:
         if max_chains and len(records) >= max_chains:
             break
     return records
+
+
+def _seed_fingerprint(seed_record: dict) -> str:
+    payload = {
+        "idx": seed_record.get("idx"),
+        "pattern": seed_record.get("pattern"),
+        "task_id": seed_record.get("task_id"),
+        "seed": seed_record.get("seed", 0),
+        "forced_hop": seed_record.get("forced_hop"),
+    }
+    encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
 
 
 def _apply_seed_schedule(records: list[dict], schedule: str) -> list[dict]:
@@ -530,9 +542,8 @@ def run_build(
         len(curated_web_doc_ids),
     )
 
-    # Retrieval backends are tried in preference order. A configured shared
-    # service can fall back to local hybrid search, then corpus BM25, then
-    # chunk BM25 if a dependency or artifact is missing.
+    # Retrieval backends are tried in preference order: local hybrid search,
+    # corpus BM25, then chunk BM25 if a dependency or artifact is missing.
     local_searcher = None
     browsecomp_searcher = None
     curated_searcher = None
@@ -542,25 +553,6 @@ def run_build(
 
     existing_browsecomp = [p for p in chunks_web_paths if p.exists()]
     if existing_browsecomp:
-        if config.BROWSECOMP_SEARCH_URL:
-            try:
-                browsecomp_searcher = SearchClient(
-                    config.BROWSECOMP_SEARCH_URL,
-                    pool="web",
-                    timeout=config.BROWSECOMP_SEARCH_TIMEOUT,
-                )
-                logger.info(
-                    "BrowseComp shared hybrid searcher: %d docs via %s",
-                    browsecomp_searcher.size,
-                    config.BROWSECOMP_SEARCH_URL,
-                )
-            except Exception as exc:
-                # Missing shared services should fall through to the next
-                # explicitly configured retrieval backend.
-                logger.warning(
-                    "BrowseComp shared retrieval unavailable (%s); falling back to local hybrid",
-                    exc,
-                )
         if browsecomp_searcher is None:
             try:
                 browsecomp_embedder = OpenAICompatibleBackend(
@@ -581,7 +573,7 @@ def run_build(
                 )
             except Exception as exc:
                 # Local hybrid search depends on dense index artifacts and an
-                # embedding endpoint; BM25 is the intended lighter fallback.
+                # embedding endpoint; BM25 keeps generation usable without them.
                 logger.warning(
                     "BrowseComp local hybrid retrieval unavailable (%s); falling back to BM25",
                     exc,
@@ -624,6 +616,8 @@ def run_build(
             logger.info("Curated web searcher: no direct-fetch chunks available")
 
     # Build or load entity index for NER-based bridge finding
+    import spacy
+
     nlp = spacy.load(spacy_model)
     cache_path = entity_index_dir / f"entity_index_{spacy_model}.json"
     if cache_path.exists():
@@ -652,13 +646,13 @@ def run_build(
     output_path = run_dir / "chains.jsonl"
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    done_indices: set[int] = set()
+    done_fingerprints: set[str] = set()
     if resume and output_path.exists():
         for record in iter_jsonl_objects(output_path):
-            idx = record.get("metadata", {}).get("seed_idx")
-            if idx is not None:
-                done_indices.add(idx)
-        logger.info("Resume: %d chains already built", len(done_indices))
+            fingerprint = record.get("metadata", {}).get("seed_fingerprint")
+            if fingerprint:
+                done_fingerprints.add(str(fingerprint))
+        logger.info("Resume: %d chains already built", len(done_fingerprints))
 
     logger.info(
         "Build plan: %d seeds (schedule=%s, shard=%d/%d, workers=%d)",
@@ -675,7 +669,8 @@ def run_build(
 
     for seed_rec in seeds:
         idx = seed_rec.get("idx", -1)
-        if idx in done_indices:
+        seed_fingerprint = _seed_fingerprint(seed_rec)
+        if seed_fingerprint in done_fingerprints:
             continue
 
         pattern = seed_rec["pattern"]
@@ -709,6 +704,7 @@ def run_build(
             "pattern": pattern,
             "task_id": task_id,
             "task_seed": task_seed,
+            "seed_fingerprint": seed_fingerprint,
             "forced_hop": forced_hop,
             "chain_local_ids": chain_local_ids,
             "chain_web_doc_ids": chain_web_doc_ids,
@@ -727,6 +723,7 @@ def run_build(
                     pattern=payload["pattern"],
                     task_id=payload["task_id"],
                     task_seed=payload["task_seed"],
+                    seed_fingerprint=payload["seed_fingerprint"],
                     forced_hop=payload["forced_hop"],
                     chain_local_ids=payload["chain_local_ids"],
                     chain_web_doc_ids=payload["chain_web_doc_ids"],
@@ -765,6 +762,7 @@ def run_build(
                     pattern=payload["pattern"],
                     task_id=payload["task_id"],
                     task_seed=payload["task_seed"],
+                    seed_fingerprint=payload["seed_fingerprint"],
                     forced_hop=payload["forced_hop"],
                     chain_local_ids=payload["chain_local_ids"],
                     chain_web_doc_ids=payload["chain_web_doc_ids"],

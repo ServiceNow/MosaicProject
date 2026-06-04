@@ -56,7 +56,6 @@ def main() -> int:
     p.add_argument("--curated-web-chunks", nargs="+", type=Path, default=[config.CURATED_WEB_CHUNKS])
     p.add_argument("--secrets", type=Path, default=config.SECRET_INVENTORY)
     p.add_argument("--curated-web-docs", type=Path, default=config.CURATED_WEB_DOCS)
-    p.add_argument("--browsecomp-search-url", default=config.BROWSECOMP_SEARCH_URL, help="Optional shared web retriever endpoint.")
     p.add_argument("--task", default=None, help="Only run one task ID.")
     p.add_argument("--company", default=None, help="Only run tasks that match this company name.")
 
@@ -95,14 +94,17 @@ def main() -> int:
     config.DEFAULT_MAX_TOKENS = args.max_tokens
     config.SHORT_CALL_MAX_TOKENS = args.short_max_tokens
     config.SEMANTIC_JUDGE_MAX_TOKENS = args.short_max_tokens
-    config.BROWSECOMP_SEARCH_URL = args.browsecomp_search_url
     config.PROMPT_REASONING_MODE = args.prompt_reasoning_mode
 
     run_dir = args.output_dir
     if run_dir is None:
+        if args.from_stage > 0:
+            p.error("--output-dir is required when --from-stage is greater than 0")
         ts = time.strftime("%Y%m%d_%H%M%S")
         run_dir = config.LOG_ROOT / f"run_{ts}"
     run_dir = Path(run_dir)
+    if args.from_stage > 0 and not run_dir.exists():
+        p.error(f"--output-dir does not exist: {run_dir}")
 
     setup_logging(run_dir, args.verbose)
     logger = logging.getLogger(__name__)
