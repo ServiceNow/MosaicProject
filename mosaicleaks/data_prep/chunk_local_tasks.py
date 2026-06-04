@@ -13,6 +13,10 @@ import pypdf
 
 logger = logging.getLogger(__name__)
 
+# Source task folders can contain corrupt office/PDF files. The individual
+# readers return None for unreadable files so one bad attachment does not stop
+# chunking the rest of the task.
+
 
 @dataclass(frozen=True)
 class ChunkConfig:
@@ -62,8 +66,8 @@ def _load_company_info(task_dir: Path) -> dict[str, str]:
         return {}
     try:
         context = json.loads(context_path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError:
-        return {}
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"{context_path}: invalid JSON: {exc}") from exc
     company_name = ((context.get("company_info") or {}).get("name") or "").strip()
     if not company_name:
         return {}
@@ -85,6 +89,7 @@ def _read_pdf(path: Path) -> str | None:
     try:
         reader = pypdf.PdfReader(str(path))
     except Exception as exc:
+        # pypdf uses several exception types for corrupt source files.
         logger.warning("Failed to open PDF %s: %s", path, exc)
         return None
     parts: list[str] = []
@@ -94,6 +99,7 @@ def _read_pdf(path: Path) -> str | None:
         try:
             text = page.extract_text() or ""
         except Exception as exc:
+            # Keep the rest of the PDF when pypdf fails on an individual page.
             if first_error is None:
                 first_error = exc
             page_failures.append(page_number)
@@ -115,6 +121,8 @@ def _read_docx(path: Path) -> str | None:
     try:
         document = docx.Document(str(path))
     except Exception as exc:
+        # python-docx wraps many invalid archive/XML errors; treat them as
+        # unreadable source files and keep processing the task.
         logger.warning("Failed to open DOCX %s: %s", path, exc)
         return None
     return "\n".join(p.text for p in document.paragraphs if p.text.strip()).strip()
@@ -124,6 +132,7 @@ def _read_xlsx(path: Path) -> str | None:
     try:
         workbook = openpyxl.load_workbook(path, read_only=True, data_only=True)
     except Exception as exc:
+        # openpyxl can raise different errors for corrupt workbooks.
         logger.warning("Failed to open spreadsheet %s: %s", path, exc)
         return None
     lines: list[str] = []
@@ -155,6 +164,7 @@ def _read_jsonl(path: Path) -> str | None:
         try:
             row = json.loads(raw)
         except json.JSONDecodeError:
+            # Some task-local JSONL exports contain plain-text fallback lines.
             lines.append(raw)
             continue
         if isinstance(row, dict) and "user" in row and "message" in row:
@@ -214,30 +224,33 @@ def _split_markdown_sections(text: str) -> list[tuple[str, str]]:
     current_lines: list[str] = []
     sections: list[tuple[str, str]] = []
 
-    def flush() -> None:
-        nonlocal current_lines
-        content = "\n".join(current_lines).strip()
-        if content:
-            prefix_parts = [part for part in (title, h2, h3) if part]
-            sections.append((" > ".join(prefix_parts), content))
-        current_lines = []
-
     for line in text.splitlines():
+        if line.startswith(("# ", "## ", "### ")):
+            content = "\n".join(current_lines).strip()
+            if content:
+                prefix_parts = [part for part in (title, h2, h3) if part]
+                sections.append((" > ".join(prefix_parts), content))
+            current_lines = []
+
         if line.startswith("# "):
-            flush()
             title = line[2:].strip()
+            h2 = None
+            h3 = None
             continue
         if line.startswith("## "):
-            flush()
             h2 = line[3:].strip()
             h3 = None
             continue
         if line.startswith("### "):
-            flush()
             h3 = line[4:].strip()
             continue
         current_lines.append(line)
-    flush()
+
+    if current_lines:
+        content = "\n".join(current_lines).strip()
+        if content:
+            prefix_parts = [part for part in (title, h2, h3) if part]
+            sections.append((" > ".join(prefix_parts), content))
     return sections
 
 
@@ -296,11 +309,6 @@ def _file_title(text: str, fallback: str) -> str:
     return fallback
 
 
-def _introduction(text: str) -> str:
-    paragraphs = _paragraphs(text)
-    return paragraphs[0][:800] if paragraphs else ""
-
-
 def _doc_id(task_id: str, relative_path: Path) -> str:
     return f"local/{task_id}/{relative_path.as_posix()}"
 
@@ -316,6 +324,7 @@ def _emit_doc_chunks(
     extension = relative_path.suffix.lower()
     doc_id = _doc_id(task_id, relative_path)
     chunks = _chunk_text(text, extension, cfg)
+    paragraphs = _paragraphs(text)
     subdir = relative_path.parts[0] if len(relative_path.parts) > 1 else ""
     meta = {
         "task_id": task_id,
@@ -327,7 +336,7 @@ def _emit_doc_chunks(
         "company": company_info.get("company", ""),
         "file_title": _file_title(text, Path(relative_path.name).stem),
         "file_name": Path(relative_path.name).stem,
-        "introduction": _introduction(text),
+        "introduction": paragraphs[0][:800] if paragraphs else "",
     }
 
     rows: list[dict] = []

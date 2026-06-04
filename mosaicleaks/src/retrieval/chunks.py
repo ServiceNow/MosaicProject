@@ -1,17 +1,13 @@
 """Load and index chunked document JSONL files."""
 
-import json
 from pathlib import Path
 from typing import Any, Iterator
 
+from mosaicleaks.src.jsonl import iter_jsonl_objects
+
 
 def iter_chunks(path: Path) -> Iterator[dict[str, Any]]:
-    with path.open("r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            yield json.loads(line)
+    yield from iter_jsonl_objects(path)
 
 
 def load_chunks(path: Path) -> list[dict[str, Any]]:

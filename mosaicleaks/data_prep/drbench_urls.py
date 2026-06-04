@@ -28,8 +28,8 @@ def _read_context_url_record(context_path: Path) -> dict[str, Any] | None:
     """Read one task context.json and return its normalized URL record."""
     try:
         ctx = json.loads(context_path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError:
-        return None
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"{context_path}: invalid JSON: {exc}") from exc
 
     url_block = ctx.get("url")
     if isinstance(url_block, dict):

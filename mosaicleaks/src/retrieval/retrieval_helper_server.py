@@ -320,6 +320,8 @@ def create_app(config_obj: RetrievalHelperConfig) -> FastAPI:
         try:
             return helper.health()
         except Exception as exc:
+            # HTTP boundary: log unexpected backend failures and surface them
+            # as 500 responses while keeping the service process alive.
             ok = False
             logger.exception("health failed")
             raise HTTPException(status_code=500, detail=str(exc)) from exc
@@ -339,6 +341,8 @@ def create_app(config_obj: RetrievalHelperConfig) -> FastAPI:
             ok = False
             raise HTTPException(status_code=400, detail=str(exc)) from exc
         except Exception as exc:
+            # HTTP boundary: request handlers translate backend failures into
+            # status codes; generation code should still fail loudly.
             ok = False
             logger.exception("embed failed")
             raise HTTPException(status_code=500, detail=str(exc)) from exc
@@ -366,6 +370,7 @@ def create_app(config_obj: RetrievalHelperConfig) -> FastAPI:
             ok = False
             raise HTTPException(status_code=400, detail=str(exc)) from exc
         except Exception as exc:
+            # HTTP boundary: log context for operators and return a 500.
             ok = False
             logger.exception("local search failed")
             raise HTTPException(status_code=500, detail=str(exc)) from exc
@@ -390,6 +395,7 @@ def create_app(config_obj: RetrievalHelperConfig) -> FastAPI:
             ok = False
             raise HTTPException(status_code=400, detail=str(exc)) from exc
         except Exception as exc:
+            # HTTP boundary: log context for operators and return a 500.
             ok = False
             logger.exception("browsecomp search failed")
             raise HTTPException(status_code=500, detail=str(exc)) from exc

@@ -1,10 +1,11 @@
 # MosaicLeaks
 
-MosaicLeaks contains the dataset-generation and retrieval-helper code for the
-MosaicLeaks paper. The repository is intended to be reproducible without hidden
-machine paths: all large corpora, DRBench-style task files, BrowseComp-Plus
-indexes, and model endpoints are passed through CLI flags or `MOSAICLEAKS_*`
-environment variables.
+MosaicLeaks contains the dataset-generation and retrieval-helper code for
+[MosaicLeaks: Privacy Risks in Querying-in-the-Open for Deep Research
+Agents](https://arxiv.org/abs/2605.30727). The repository is intended to be
+reproducible without hidden machine paths: all large corpora, DRBench-style task
+files, BrowseComp-Plus indexes, and model endpoints are passed through CLI flags
+or `MOSAICLEAKS_*` environment variables.
 
 The code uses OpenAI-compatible chat and embedding endpoints. The default model
 name is `step-3.5-flash`, but StepFun is not a code dependency; any compatible
@@ -34,7 +35,7 @@ MosaicLeaks expects two external data sources:
   embedding index shards.
 
 See [External Dependencies](docs/external_dependencies.md) for the exact
-contract.
+input format.
 
 ## Dataset Generation
 
@@ -48,8 +49,8 @@ The high-level pipeline is:
 6. Verify, filter, and lightly reword chains.
 7. Publish a versioned dataset bundle with deterministic splits and manifests.
 
-See [Dataset Generation](docs/dataset_generation.md) for the full validation
-checklist.
+See [Dataset Generation](docs/dataset_generation.md) for more details and the
+full validation checklist.
 
 Publish final chains as a versioned bundle before training:
 
@@ -80,7 +81,7 @@ It can run locally against an OpenAI-compatible embedding endpoint:
 ```
 
 See [Retrieval Helper](docs/retrieval_helper.md) for the index format and API
-contract.
+details.
 
 ## Training Runs
 
@@ -95,4 +96,17 @@ set +a
 DRY_RUN=1 ./scripts/launch_training.sh
 ```
 
-See [Training Runs](docs/training_runs.md) for the launch contract.
+See [Training Runs](docs/training_runs.md) for the launch interface.
+
+## Citation
+
+```bibtex
+@misc{gurung2026mosaicleaks,
+  title  = {MosaicLeaks: Privacy Risks in Querying-in-the-Open for Deep Research Agents},
+  author = {Alexander Gurung and Spandana Gella and Alexandre Drouin and Issam H. Laradji and Perouz Taslakian and Rafael Pardinas},
+  year   = {2026},
+  eprint = {2605.30727},
+  archivePrefix = {arXiv},
+  url    = {https://arxiv.org/abs/2605.30727}
+}
+```

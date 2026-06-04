@@ -8,6 +8,7 @@ from .types import RetrievalHit
 
 logger = logging.getLogger(__name__)
 
+
 @dataclass(frozen=True)
 class _RankedHit:
     hit: RetrievalHit
@@ -104,6 +105,8 @@ class WeightedRRFSearcher:
             try:
                 hits = searcher.search(query, k=k, **kwargs)
             except Exception as exc:
+                # Fusion should tolerate one optional source being offline; a
+                # warning keeps the failed source visible in the run logs.
                 logger.warning("Skipping failing searcher %s: %s", type(searcher).__name__, exc)
                 continue
             for rank, hit in enumerate(hits, start=1):

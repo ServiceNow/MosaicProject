@@ -93,6 +93,8 @@ def wait_for_http_ok(url: str, timeout_seconds: float) -> None:
                 if response.status == 200:
                     return
         except Exception:
+            # The helper process is expected to reject connections while it is
+            # still loading indices.
             time.sleep(0.2)
     raise RuntimeError(f"Timed out waiting for {url}")
 

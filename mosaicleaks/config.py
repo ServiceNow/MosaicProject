@@ -47,7 +47,7 @@ BROWSECOMP_SEARCH_TIMEOUT = float(
 )
 
 # Default OpenAI-compatible endpoint for chain generation. The model string is
-# only an endpoint contract; MosaicLeaks does not import provider-specific code.
+# just an endpoint setting; MosaicLeaks does not import provider-specific code.
 DEFAULT_MODEL = os.getenv("MOSAICLEAKS_LLM_MODEL", "step-3.5-flash")
 DEFAULT_BASE_URL = os.getenv("MOSAICLEAKS_LLM_BASE_URL", "http://127.0.0.1:8000/v1")
 BROWSECOMP_EMBEDDING_BASE_URL = (

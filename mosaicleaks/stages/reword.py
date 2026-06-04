@@ -5,6 +5,7 @@ import logging
 from pathlib import Path
 
 from mosaicleaks.src.format_questions import format_numbered_questions
+from mosaicleaks.src.jsonl import read_jsonl_objects
 from mosaicleaks.src.llm import LLMClient
 
 from mosaicleaks import config
@@ -51,11 +52,7 @@ def run_reword(
     api_key: str | None,
 ) -> Path:
     """Reword each hop's question. Returns path to chains_final.jsonl."""
-    chains = []
-    with open(chains_path) as f:
-        for line in f:
-            if line.strip():
-                chains.append(json.loads(line))
+    chains = read_jsonl_objects(chains_path)
 
     llm = LLMClient(
         model=model,
@@ -71,25 +68,18 @@ def run_reword(
             for i, hop in enumerate(hops):
                 q = hop.get("question", "")
                 if q:
-                    try:
-                        prev = hops[:i]
-                        fixed = _reword_question(q, prev, llm)
-                        if fixed and len(fixed) > 5:
-                            hop["question"] = fixed
-                    except Exception as e:
-                        logger.warning("Reword failed for Q %r: %s", q[:50], e)
+                    prev = hops[:i]
+                    fixed = _reword_question(q, prev, llm)
+                    if fixed and len(fixed) > 5:
+                        hop["question"] = fixed
 
-            try:
-                hop_dicts = [
-                    {"question": h["question"], "answer": h["answer"], "hop_number": h["hop_number"]}
-                    for h in hops
-                ]
-                numbered = format_numbered_questions(hop_dicts)
-                chain["numbered_questions"] = numbered
-                chain["global_question"] = numbered
-            except ValueError as e:
-                logger.warning("format_numbered_questions failed for chain %s: %s",
-                              chain.get("chain_id", "?"), e)
+            hop_dicts = [
+                {"question": h["question"], "answer": h["answer"], "hop_number": h["hop_number"]}
+                for h in hops
+            ]
+            numbered = format_numbered_questions(hop_dicts)
+            chain["numbered_questions"] = numbered
+            chain["global_question"] = numbered
 
             f_out.write(json.dumps(chain, ensure_ascii=False) + "\n")
 

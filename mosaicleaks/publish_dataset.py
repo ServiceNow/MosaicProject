@@ -12,6 +12,8 @@ import subprocess
 import sys
 from typing import Any
 
+from mosaicleaks.src.jsonl import read_jsonl_objects, write_jsonl_objects
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -41,26 +43,11 @@ def parse_args() -> argparse.Namespace:
 
 
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
-    rows: list[dict[str, Any]] = []
-    with path.open("r", encoding="utf-8") as handle:
-        for line_no, line in enumerate(handle, start=1):
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                row = json.loads(line)
-            except json.JSONDecodeError as exc:
-                raise ValueError(f"{path}:{line_no}: invalid JSON: {exc}") from exc
-            if not isinstance(row, dict):
-                raise ValueError(f"{path}:{line_no}: expected a JSON object")
-            rows.append(row)
-    return rows
+    return read_jsonl_objects(path)
 
 
 def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
-    with path.open("w", encoding="utf-8") as handle:
-        for row in rows:
-            handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+    write_jsonl_objects(path, rows, sort_keys=True)
 
 
 def write_json(path: Path, payload: dict[str, Any]) -> None:
@@ -76,13 +63,16 @@ def file_sha256(path: Path) -> str:
 
 
 def current_commit() -> str | None:
-    result = subprocess.run(
-        ["git", "rev-parse", "HEAD"],
-        check=False,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.DEVNULL,
-        text=True,
-    )
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            text=True,
+        )
+    except FileNotFoundError:
+        return None
     commit = result.stdout.strip()
     return commit or None
 
@@ -172,6 +162,8 @@ def assign_splits(
     for row in rows:
         grouped[group_value(row, split_key)].append(row)
 
+    # Split by groups, not rows, to avoid leaking related company/task context
+    # across train, validation, and test files.
     explicit_test = set(test_groups)
     all_groups = sorted(grouped)
     rng = random.Random(seed)

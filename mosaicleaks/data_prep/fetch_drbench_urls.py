@@ -26,6 +26,7 @@ from mosaicleaks.data_prep.drbench_urls import (
     docid_for_url,
     iter_urls_from_tasks,
 )
+from mosaicleaks.src.jsonl import iter_jsonl_objects
 
 logger = logging.getLogger(__name__)
 
@@ -267,6 +268,8 @@ def fetch_url(session: requests.Session, url: str, timeout: float) -> FetchResul
         else:
             text = resp.text
     except Exception as exc:  # pragma: no cover - defensive
+        # HTML extraction is best effort; keep the raw response text so the
+        # URL refresh still records a usable artifact for manual review.
         logger.warning("Extraction failed for %s: %s", url, exc)
         text = resp.text
 
@@ -286,23 +289,15 @@ def _load_best_existing_records(docs_path: Path) -> dict[str, dict[str, Any]]:
         return {}
 
     best: dict[str, dict[str, Any]] = {}
-    with docs_path.open("r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                rec = json.loads(line)
-            except json.JSONDecodeError:
-                continue
-            url = rec.get("url")
-            if not isinstance(url, str) or not url:
-                continue
-            prev = best.get(url)
-            is_success = _is_reusable_success(rec)
-            prev_success = _is_reusable_success(prev)
-            if prev is None or is_success or not prev_success:
-                best[url] = rec
+    for rec in iter_jsonl_objects(docs_path):
+        url = rec.get("url")
+        if not isinstance(url, str) or not url:
+            continue
+        prev = best.get(url)
+        is_success = _is_reusable_success(rec)
+        prev_success = _is_reusable_success(prev)
+        if prev is None or is_success or not prev_success:
+            best[url] = rec
     return best
 
 

@@ -46,7 +46,7 @@ corpus.shard00001_of_000NN.pkl
 ```
 
 Each shard stores the dense vectors and lookup IDs used to map search results
-back to BrowseComp document IDs. The clean repo documents this artifact contract
+back to BrowseComp document IDs. The clean repo documents this artifact format
 instead of assuming a local BrowseComp-Plus checkout.
 
 ## Curated Task URLs

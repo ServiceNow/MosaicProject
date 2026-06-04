@@ -110,16 +110,12 @@ def select_web_seed(
         context = doc_text[:8000]
 
         prompt = PROMPT_WEB_SEED.format(entity=entity, doc_text=context)
-        try:
-            raw = llm.chat(
-                [{"role": "user", "content": prompt}],
-                temperature=0.7,
-                max_tokens=config.SHORT_CALL_MAX_TOKENS,
-                use_min_max_tokens=False,
-            )
-        except Exception as e:
-            logger.debug("Web seed LLM call failed: %s", e)
-            continue
+        raw = llm.chat(
+            [{"role": "user", "content": prompt}],
+            temperature=0.7,
+            max_tokens=config.SHORT_CALL_MAX_TOKENS,
+            use_min_max_tokens=False,
+        )
 
         result = parse_qa_with_quote(raw)
         if result is None:

@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from mosaicleaks.config import TASKS_DIR
+from mosaicleaks.src.jsonl import iter_jsonl_objects
 
 
 @dataclass
@@ -39,22 +40,20 @@ def load_secrets(path: Path | None = None) -> list[Secret]:
         from mosaicleaks.config import SECRET_INVENTORY
         path = SECRET_INVENTORY
     secrets: list[Secret] = []
-    with open(path) as f:
-        for line in f:
-            row = json.loads(line)
-            chunk_id = row["chunk_id"]
-            doc_id = row["doc_id"]
-            for s in row.get("secrets", []):
-                secrets.append(Secret(
-                    chunk_id=chunk_id,
-                    doc_id=doc_id,
-                    question=s["question"],
-                    answer=s["answer"],
-                    secret_type=s.get("secret_type", ""),
-                    justification=s.get("justification", ""),
-                    quote=s.get("quote", ""),
-                    doc_only_check=s.get("doc_only_check", {}),
-                ))
+    for row in iter_jsonl_objects(path):
+        chunk_id = row["chunk_id"]
+        doc_id = row["doc_id"]
+        for s in row.get("secrets", []):
+            secrets.append(Secret(
+                chunk_id=chunk_id,
+                doc_id=doc_id,
+                question=s["question"],
+                answer=s["answer"],
+                secret_type=s.get("secret_type", ""),
+                justification=s.get("justification", ""),
+                quote=s.get("quote", ""),
+                doc_only_check=s.get("doc_only_check", {}),
+            ))
     return secrets
 
 
@@ -63,11 +62,7 @@ def load_chunks_local(path: Path | None = None) -> list[dict[str, Any]]:
     if path is None:
         from mosaicleaks.config import CHUNKS_LOCAL
         path = CHUNKS_LOCAL
-    chunks: list[dict[str, Any]] = []
-    with open(path) as f:
-        for line in f:
-            chunks.append(json.loads(line))
-    return chunks
+    return list(iter_jsonl_objects(path))
 
 
 def build_doc_lookup(chunks: list[dict[str, Any]]) -> dict[str, LocalDoc]:

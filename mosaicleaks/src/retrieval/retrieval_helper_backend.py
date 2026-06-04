@@ -22,6 +22,7 @@ from mosaicleaks.src.retrieval.composite import (
 )
 from mosaicleaks.src.retrieval.dense import OpenAICompatibleBackend
 from mosaicleaks.src.retrieval.hybrid import HybridSearcher
+from mosaicleaks.src.jsonl import iter_jsonl_objects
 
 
 def _maybe_v1_url(base_url: str) -> str:
@@ -123,6 +124,8 @@ class EmbeddingService:
             response = self._health_client.get(self.health_url)
             return response.status_code == 200
         except Exception:
+            # Health checks should report dependency status, not raise from the
+            # helper's own /health endpoint.
             return False
 
 
@@ -317,24 +320,16 @@ def _load_curated_doc_metadata(docs_path: Path) -> tuple[set[str], dict[str, set
     if not docs_path.exists():
         return allowed_doc_ids, by_task
 
-    with docs_path.open("r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                row = json.loads(line)
-            except json.JSONDecodeError:
-                continue
-            doc_id = row.get("doc_id")
-            if not isinstance(doc_id, str) or not doc_id:
-                continue
-            if not _is_direct_curated_doc_record(row):
-                continue
-            allowed_doc_ids.add(doc_id)
-            for task_id in row.get("task_ids") or []:
-                if isinstance(task_id, str) and task_id:
-                    by_task[task_id].add(doc_id)
+    for row in iter_jsonl_objects(docs_path):
+        doc_id = row.get("doc_id")
+        if not isinstance(doc_id, str) or not doc_id:
+            continue
+        if not _is_direct_curated_doc_record(row):
+            continue
+        allowed_doc_ids.add(doc_id)
+        for task_id in row.get("task_ids") or []:
+            if isinstance(task_id, str) and task_id:
+                by_task[task_id].add(doc_id)
     return allowed_doc_ids, by_task
 
 

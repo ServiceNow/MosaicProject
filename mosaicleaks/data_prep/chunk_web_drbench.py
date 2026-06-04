@@ -12,9 +12,10 @@ import argparse
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
-from mosaicleaks.data_prep.drbench_urls import DOC_ID_PREFIX, WEB_POOL
+from mosaicleaks.data_prep.drbench_urls import WEB_POOL
+from mosaicleaks.src.jsonl import iter_jsonl_objects
 
 
 @dataclass(frozen=True)
@@ -25,6 +26,23 @@ class ParaBlock:
     title: str = ""
     h2: str = ""
     h3: str = ""
+
+
+def _finish_paragraph(
+    *,
+    lines: list[str],
+    start: int | None,
+    end: int,
+    title: str,
+    h2: str,
+    h3: str,
+) -> ParaBlock | None:
+    if not lines or start is None:
+        return None
+    para_text = "\n".join(lines).strip()
+    if not para_text:
+        return None
+    return ParaBlock(text=para_text, start=start, end=end, title=title, h2=h2, h3=h3)
 
 
 def _normalize_text(text: str) -> str:
@@ -44,31 +62,39 @@ def parse_paragraph_blocks(text: str) -> list[ParaBlock]:
     h3 = ""
     pos = 0
     current_lines: list[str] = []
-    para_start: Optional[int] = None
-
-    def flush_para(end_pos: int) -> None:
-        nonlocal current_lines, para_start
-        if not current_lines or para_start is None:
-            current_lines = []
-            para_start = None
-            return
-        para_text = "\n".join(current_lines).strip()
-        if para_text:
-            blocks.append(
-                ParaBlock(text=para_text, start=para_start, end=end_pos, title=title, h2=h2, h3=h3)
-            )
-        current_lines = []
-        para_start = None
+    para_start: int | None = None
 
     for line in text.splitlines(keepends=True):
         line_start = pos
         pos += len(line)
         s = line.strip()
         if not s:
-            flush_para(pos)
+            block = _finish_paragraph(
+                lines=current_lines,
+                start=para_start,
+                end=pos,
+                title=title,
+                h2=h2,
+                h3=h3,
+            )
+            if block is not None:
+                blocks.append(block)
+            current_lines = []
+            para_start = None
             continue
         if s.startswith("#"):
-            flush_para(line_start)
+            block = _finish_paragraph(
+                lines=current_lines,
+                start=para_start,
+                end=line_start,
+                title=title,
+                h2=h2,
+                h3=h3,
+            )
+            if block is not None:
+                blocks.append(block)
+            current_lines = []
+            para_start = None
             level = len(s) - len(s.lstrip("#"))
             if level in {1, 2, 3} and len(s) > level and s[level] == " ":
                 heading_text = s[level + 1 :].strip()
@@ -83,7 +109,16 @@ def parse_paragraph_blocks(text: str) -> list[ParaBlock]:
             para_start = line_start
         current_lines.append(s)
 
-    flush_para(pos)
+    block = _finish_paragraph(
+        lines=current_lines,
+        start=para_start,
+        end=pos,
+        title=title,
+        h2=h2,
+        h3=h3,
+    )
+    if block is not None:
+        blocks.append(block)
     return blocks
 
 
@@ -201,22 +236,14 @@ def load_docs_jsonl(path: Path) -> list[dict[str, Any]]:
     """Load docs JSONL, keeping latest success per doc_id."""
     by_id: dict[str, dict[str, Any]] = {}
     order: list[str] = []
-    with path.open("r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                obj = json.loads(line)
-            except json.JSONDecodeError:
-                continue
-            doc_id = obj.get("doc_id")
-            if not doc_id:
-                continue
-            if doc_id not in by_id:
-                order.append(doc_id)
-            if _is_chunkable_doc(obj):
-                by_id[doc_id] = obj
+    for obj in iter_jsonl_objects(path):
+        doc_id = obj.get("doc_id")
+        if not doc_id:
+            continue
+        if doc_id not in by_id:
+            order.append(doc_id)
+        if _is_chunkable_doc(obj):
+            by_id[doc_id] = obj
     return [by_id[d] for d in order if d in by_id]
 
 

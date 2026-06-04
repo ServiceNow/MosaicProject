@@ -32,6 +32,7 @@ from mosaicleaks.src.retrieval.dense import OpenAICompatibleBackend
 from mosaicleaks.src.retrieval.search_client import SearchClient
 from mosaicleaks.src.retrieval.hybrid import HybridSearcher
 from mosaicleaks.src.format_questions import format_numbered_questions
+from mosaicleaks.src.jsonl import iter_jsonl_objects
 from mosaicleaks.src.llm import LLMClient
 from mosaicleaks.src.entity_index import EntityIndex
 from mosaicleaks.src.seed import select_seed, select_web_seed
@@ -139,9 +140,6 @@ def _build_seed_result(
     except ValueError as e:
         logger.warning("Seed failed for %s #%d: %s", pattern, idx, e)
         return None
-    except Exception as e:
-        logger.exception("Unexpected error building seed %s #%d: %s", pattern, idx, e)
-        return None
 
     chain = build_one_chain(
         state=state,
@@ -182,11 +180,7 @@ def _chain_to_dict(chain) -> dict:
         {"question": h.question, "answer": h.answer, "hop_number": h.hop_number}
         for h in chain.hop_history
     ]
-    try:
-        numbered = format_numbered_questions(hops_for_format)
-    except ValueError as e:
-        logger.warning("format_numbered_questions failed: %s", e)
-        numbered = chain.hop_history[0].question if chain.hop_history else ""
+    numbered = format_numbered_questions(hops_for_format)
 
     return {
         "chain_id": chain.chain_id,
@@ -287,19 +281,11 @@ def _build_chain_plan(
 def _load_seeds_from_file(path: Path, max_chains: int | None) -> list[dict]:
     """Load chain specs from JSONL (e.g. from extract_bad_seeds for smoke test)."""
     records = []
-    with open(path) as f:
-        for i, line in enumerate(f):
-            if not line.strip():
-                continue
-            try:
-                rec = json.loads(line)
-            except json.JSONDecodeError as e:
-                logger.warning("Invalid JSON in %s line %d: %s", path, i + 1, e)
-                continue
-            rec["idx"] = rec.get("idx", i)
-            records.append(rec)
-            if max_chains and len(records) >= max_chains:
-                break
+    for i, rec in enumerate(iter_jsonl_objects(path)):
+        rec["idx"] = rec.get("idx", i)
+        records.append(rec)
+        if max_chains and len(records) >= max_chains:
+            break
     return records
 
 
@@ -350,24 +336,16 @@ def _load_curated_doc_metadata(docs_path: Path) -> tuple[set[str], dict[str, set
     if not docs_path.exists():
         return allowed_doc_ids, by_task
 
-    with docs_path.open("r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                row = json.loads(line)
-            except json.JSONDecodeError:
-                continue
-            doc_id = row.get("doc_id")
-            if not isinstance(doc_id, str) or not doc_id:
-                continue
-            if not _is_direct_curated_doc_record(row):
-                continue
-            allowed_doc_ids.add(doc_id)
-            for task_id in row.get("task_ids") or []:
-                if isinstance(task_id, str) and task_id:
-                    by_task[task_id].add(doc_id)
+    for row in iter_jsonl_objects(docs_path):
+        doc_id = row.get("doc_id")
+        if not isinstance(doc_id, str) or not doc_id:
+            continue
+        if not _is_direct_curated_doc_record(row):
+            continue
+        allowed_doc_ids.add(doc_id)
+        for task_id in row.get("task_ids") or []:
+            if isinstance(task_id, str) and task_id:
+                by_task[task_id].add(doc_id)
     return allowed_doc_ids, by_task
 
 
@@ -418,18 +396,18 @@ def _build_local_doc_family_map(doc_lookup: dict[str, Any]) -> dict[str, str]:
             parent[ra] = rb
 
     for doc_id, doc in doc_lookup.items():
-        if not isinstance(doc_id, str) or not doc_id.startswith('local/'):
+        if not isinstance(doc_id, str) or not doc_id.startswith("local/"):
             continue
         parent[doc_id] = doc_id
-        task_id = doc.meta.get('task_id', '') if doc else ''
+        task_id = doc.meta.get("task_id", "") if doc else ""
         if not task_id:
-            parts = doc_id.split('/')
-            task_id = parts[1] if len(parts) > 1 else ''
+            parts = doc_id.split("/")
+            task_id = parts[1] if len(parts) > 1 else ""
         docs_by_task[task_id].append((
             doc_id,
             _local_name_stem(doc_id),
             _local_name_tokens(doc_id),
-            _normalized_text_prefix(doc.text if doc else ''),
+            _normalized_text_prefix(doc.text if doc else ""),
         ))
 
     for task_docs in docs_by_task.values():
@@ -443,6 +421,8 @@ def _build_local_doc_family_map(doc_lookup: dict[str, Any]) -> dict[str, str]:
             for other in members[1:]:
                 union(first, other)
 
+        # Same-stem files catch obvious exports; the conservative text check
+        # catches near-duplicate variants without merging unrelated documents.
         for idx, (doc_a, _stem_a, toks_a, text_a) in enumerate(task_docs):
             for doc_b, _stem_b, toks_b, text_b in task_docs[idx + 1:]:
                 if find(doc_a) == find(doc_b):
@@ -464,7 +444,7 @@ def _build_local_doc_family_map(doc_lookup: dict[str, Any]) -> dict[str, str]:
 
     merged_groups = sum(1 for members in groups.values() if len(members) > 1)
     logger.info(
-        'Local doc family map: %d docs -> %d families (%d merged groups)',
+        "Local doc family map: %d docs -> %d families (%d merged groups)",
         len(parent),
         len(groups),
         merged_groups,
@@ -552,7 +532,9 @@ def run_build(
         len(curated_web_doc_ids),
     )
 
-    # Retrieval searchers for bridge finding.
+    # Retrieval backends are tried in preference order. A configured shared
+    # service can fall back to local hybrid search, then corpus BM25, then
+    # chunk BM25 if a dependency or artifact is missing.
     local_searcher = None
     browsecomp_searcher = None
     curated_searcher = None
@@ -574,10 +556,12 @@ def run_build(
                     browsecomp_searcher.size,
                     config.BROWSECOMP_SEARCH_URL,
                 )
-            except Exception as e:
+            except Exception as exc:
+                # Missing shared services should fall through to the next
+                # explicitly configured retrieval backend.
                 logger.warning(
                     "BrowseComp shared retrieval unavailable (%s); falling back to local hybrid",
-                    e,
+                    exc,
                 )
         if browsecomp_searcher is None:
             try:
@@ -597,10 +581,12 @@ def run_build(
                     browsecomp_searcher.size,
                     config.BROWSECOMP_EMBEDDING_BASE_URL,
                 )
-            except Exception as e:
+            except Exception as exc:
+                # Local hybrid search depends on dense index artifacts and an
+                # embedding endpoint; BM25 is the intended lighter fallback.
                 logger.warning(
                     "BrowseComp local hybrid retrieval unavailable (%s); falling back to BM25",
-                    e,
+                    exc,
                 )
         if browsecomp_searcher is None:
             try:
@@ -612,10 +598,12 @@ def run_build(
                     "BrowseComp BM25 fallback searcher: %d docs via internal corpus index",
                     browsecomp_searcher.size,
                 )
-            except Exception as e:
+            except Exception as exc:
+                # Corpus-level BM25 may be unavailable for local-only setups;
+                # chunk BM25 keeps the generator usable with prepared chunks.
                 logger.warning(
                     "BrowseComp internal BM25 unavailable (%s); falling back to chunk BM25",
-                    e,
+                    exc,
                 )
         if browsecomp_searcher is None:
             browsecomp_searcher = HybridSearcher.from_paths(existing_browsecomp)
@@ -668,15 +656,10 @@ def run_build(
 
     done_indices: set[int] = set()
     if resume and output_path.exists():
-        with open(output_path) as f:
-            for line in f:
-                try:
-                    d = json.loads(line)
-                    idx = d.get("metadata", {}).get("seed_idx")
-                    if idx is not None:
-                        done_indices.add(idx)
-                except json.JSONDecodeError:
-                    pass
+        for record in iter_jsonl_objects(output_path):
+            idx = record.get("metadata", {}).get("seed_idx")
+            if idx is not None:
+                done_indices.add(idx)
         logger.info("Resume: %d chains already built", len(done_indices))
 
     logger.info(
@@ -800,16 +783,7 @@ def run_build(
                 for payload in task_payloads
             }
             for future in as_completed(future_to_payload):
-                payload = future_to_payload[future]
-                try:
-                    result = future.result()
-                except Exception:
-                    logger.exception(
-                        "Unhandled worker error for %s #%d",
-                        payload["pattern"],
-                        payload["seed_idx"],
-                    )
-                    continue
+                result = future.result()
                 if result is None:
                     continue
                 out_f.write(json.dumps(result["record"], ensure_ascii=False) + "\n")
@@ -836,19 +810,17 @@ def _load_web_docs(
     for p in paths:
         if not p.exists():
             continue
-        with open(p) as f:
-            for line in f:
-                row = json.loads(line)
-                doc_id = row.get("doc_id", row.get("chunk_id", ""))
-                text = row.get("text", "")
-                offset = (row.get("offsets") or {}).get("start", 0)
-                if (
-                    allowed_doc_ids is not None
-                    and doc_id not in allowed_doc_ids
-                ):
-                    continue
-                if doc_id and text:
-                    docs.setdefault(doc_id, []).append((offset, text))
+        for row in iter_jsonl_objects(p):
+            doc_id = row.get("doc_id", row.get("chunk_id", ""))
+            text = row.get("text", "")
+            offset = (row.get("offsets") or {}).get("start", 0)
+            if (
+                allowed_doc_ids is not None
+                and doc_id not in allowed_doc_ids
+            ):
+                continue
+            if doc_id and text:
+                docs.setdefault(doc_id, []).append((offset, text))
 
     result = {}
     for doc_id, chunks in docs.items():

@@ -3,11 +3,11 @@
 import json
 import logging
 import re
-import threading
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from mosaicleaks.src.llm import LLMClient
+from mosaicleaks.src.jsonl import read_jsonl_objects
 
 from mosaicleaks import config
 
@@ -90,15 +90,7 @@ def run_filter(
     """Score and filter chains. Returns path to filtered output."""
     threshold = threshold if threshold is not None else config.FILTER_SCORE_THRESHOLD
     workers = workers if workers is not None else config.FILTER_MAX_WORKERS
-    chains = []
-    with open(chains_path) as f:
-        for i, line in enumerate(f):
-            if not line.strip():
-                continue
-            try:
-                chains.append(json.loads(line))
-            except json.JSONDecodeError as e:
-                logger.warning("Invalid JSON in %s line %d: %s", chains_path, i + 1, e)
+    chains = read_jsonl_objects(chains_path)
 
     to_score = [(i, c) for i, c in enumerate(chains) if _is_valid_chain(c)]
     llm = LLMClient(
@@ -109,34 +101,28 @@ def run_filter(
     )
 
     results: dict[int, dict] = {}
-    lock = threading.Lock()
 
-    def _score_one(idx: int, chain: dict) -> None:
-        try:
-            msgs = [
-                {"role": "system", "content": JUDGE_PROMPT},
-                {"role": "user", "content": _build_user_message(chain)},
-            ]
-            raw = llm.chat(
-                msgs,
-                temperature=config.DEFAULT_TEMPERATURE,
-                max_tokens=config.SHORT_CALL_MAX_TOKENS,
-                top_p=config.DEFAULT_TOP_P,
-                top_k=config.DEFAULT_TOP_K,
-                use_min_max_tokens=False,
-            )
-            score, justification = _parse_score(raw)
-            with lock:
-                results[idx] = {"score": score, "justification": justification}
-        except Exception as e:
-            logger.error("Score failed for chain %s: %s", chain.get("chain_id"), e)
-            with lock:
-                results[idx] = {"score": 0, "justification": str(e)}
+    def _score_one(idx: int, chain: dict) -> tuple[int, dict]:
+        msgs = [
+            {"role": "system", "content": JUDGE_PROMPT},
+            {"role": "user", "content": _build_user_message(chain)},
+        ]
+        raw = llm.chat(
+            msgs,
+            temperature=config.DEFAULT_TEMPERATURE,
+            max_tokens=config.SHORT_CALL_MAX_TOKENS,
+            top_p=config.DEFAULT_TOP_P,
+            top_k=config.DEFAULT_TOP_K,
+            use_min_max_tokens=False,
+        )
+        score, justification = _parse_score(raw)
+        return idx, {"score": score, "justification": justification}
 
     with ThreadPoolExecutor(max_workers=workers) as pool:
         futures = [pool.submit(_score_one, idx, chain) for idx, chain in to_score]
         for f in futures:
-            f.result()
+            idx, score_record = f.result()
+            results[idx] = score_record
 
     filtered_path = output_dir / "chains_filtered.jsonl"
     scored_path = output_dir / "chains_scored.jsonl"

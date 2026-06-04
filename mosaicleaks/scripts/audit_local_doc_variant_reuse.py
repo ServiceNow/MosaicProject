@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+"""Audit chains for reuse of local document export variants."""
+
 import argparse
 import json
 from pathlib import Path

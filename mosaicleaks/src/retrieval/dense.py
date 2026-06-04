@@ -53,7 +53,7 @@ class SentenceTransformerBackend:
     def __init__(self, model_name_or_path: str, *, batch_size: int = 16) -> None:
         try:
             from sentence_transformers import SentenceTransformer
-        except Exception as exc:
+        except ImportError as exc:
             raise RuntimeError(
                 "sentence-transformers is not installed. Install it or use --backend hash."
             ) from exc
@@ -103,7 +103,7 @@ class OpenAICompatibleBackend:
     ) -> None:
         try:
             from openai import OpenAI
-        except Exception as exc:
+        except ImportError as exc:
             raise RuntimeError("openai python package is required for this backend.") from exc
 
         if api_key is None:

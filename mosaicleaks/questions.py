@@ -249,7 +249,7 @@ def generate_question_constrained_batch(
                     "duration": duration,
                 },
             ))
-        except Exception as exc:
+        except ValueError as exc:
             outputs.append(exc)
     return outputs
 
@@ -306,7 +306,7 @@ def generate_question_pick_batch(
                     "duration": duration,
                 },
             ))
-        except Exception as exc:
+        except ValueError as exc:
             outputs.append(exc)
     return outputs
 

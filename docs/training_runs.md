@@ -1,6 +1,6 @@
 # Training Runs
 
-MosaicLeaks does not vendor a training framework. The clean contract is:
+MosaicLeaks does not vendor a training framework. The clean interface is:
 
 1. publish a dataset bundle,
 2. start the retrieval helper when the trainer needs live document lookup,
@@ -43,7 +43,7 @@ task context across splits.
 ## 2. Start Retrieval
 
 Training runs that read documents during rollout should use the same retrieval
-contract as generation:
+format as generation:
 
 ```bash
 ./scripts/start_retrieval_helper.sh \

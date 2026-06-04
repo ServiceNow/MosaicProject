@@ -6,7 +6,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = REPO_ROOT / "mosaicleaks" / "data"
 
 
-def test_data_directory_contains_only_contract_readme() -> None:
+def test_data_directory_contains_only_readme() -> None:
     data_files = sorted(path.relative_to(DATA_DIR).as_posix() for path in DATA_DIR.rglob("*") if path.is_file())
     assert data_files == ["README"]
 

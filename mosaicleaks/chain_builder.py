@@ -573,10 +573,7 @@ def build_one_chain(
         {"question": hop.question, "answer": hop.answer, "hop_number": hop.hop_number}
         for hop in state.hop_history
     ]
-    try:
-        numbered_q = format_numbered_questions(hops_for_format)
-    except ValueError:
-        numbered_q = state.hop_history[0].question if state.hop_history else ""
+    numbered_q = format_numbered_questions(hops_for_format)
     state.global_question = numbered_q
 
     verification = None

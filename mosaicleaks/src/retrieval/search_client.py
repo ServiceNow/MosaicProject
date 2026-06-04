@@ -24,6 +24,8 @@ class SearchClient:
             try:
                 self._size = int(self.health().get("size", 0))
             except Exception:
+                # Size is advisory; failed health probes should not block
+                # callers that only need to issue search requests.
                 self._size = 0
         return self._size
 
@@ -65,4 +67,5 @@ class SearchClient:
         try:
             self._client.close()
         except Exception:
+            # Finalizers must not raise during interpreter shutdown.
             pass
