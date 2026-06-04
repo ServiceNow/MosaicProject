@@ -21,6 +21,11 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from mosaicleaks import config
+from mosaicleaks.data_prep.chunk_web_drbench import (
+    emit_chunk_records,
+    load_docs_jsonl,
+    parse_paragraph_blocks,
+)
 from mosaicleaks.data_prep.drbench_urls import (
     doc_id_for_url,
     docid_for_url,
@@ -233,6 +238,8 @@ def _guess_raw_suffix(content_type: str | None) -> str:
 
 
 def fetch_url(session: requests.Session, url: str, timeout: float) -> FetchResult:
+    # Network failures are recorded as corpus rows; HTML parsing errors fail
+    # normally so broken extraction code is visible during refresh.
     try:
         resp = session.get(url, timeout=timeout, allow_redirects=True)
     except requests.RequestException as exc:
@@ -262,17 +269,10 @@ def fetch_url(session: requests.Session, url: str, timeout: float) -> FetchResul
             error=f"HTTP {status}",
         )
 
-    text = ""
-    title = ""
-    try:
-        if "html" in content_type.lower() or resp.text.lstrip().startswith("<"):
-            title, text = _extract_structured_text(resp.text)
-        else:
-            text = resp.text
-    except Exception as exc:  # pragma: no cover - defensive
-        # HTML extraction is best effort; keep the raw response text so the
-        # URL refresh still records a usable artifact for manual review.
-        logger.warning("Extraction failed for %s: %s", url, exc)
+    if "html" in content_type.lower() or resp.text.lstrip().startswith("<"):
+        title, text = _extract_structured_text(resp.text)
+    else:
+        title = ""
         text = resp.text
 
     return FetchResult(
@@ -457,12 +457,6 @@ def main() -> int:
     logger.info("Wrote %d URL docs to %s", len(rows), args.output)
 
     if args.chunk_output is not None:
-        from mosaicleaks.data_prep.chunk_web_drbench import (
-            emit_chunk_records,
-            load_docs_jsonl,
-            parse_paragraph_blocks,
-        )
-
         docs = load_docs_jsonl(args.output)
         total = 0
         args.chunk_output.parent.mkdir(parents=True, exist_ok=True)

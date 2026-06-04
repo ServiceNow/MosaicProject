@@ -8,6 +8,9 @@ import json
 import logging
 from pathlib import Path
 
+from mosaicleaks.src.types import ChainState, HopRecord
+from mosaicleaks.src.verify_chain import verify_chain
+
 logger = logging.getLogger(__name__)
 
 
@@ -27,8 +30,6 @@ def run_verify(
                 continue
             chain = json.loads(line)
             if reverify and llm:
-                from mosaicleaks.src.verify_chain import verify_chain
-                from mosaicleaks.src.types import ChainState, HopRecord
                 hops = [
                     HopRecord(
                         hop_number=h["hop_number"],

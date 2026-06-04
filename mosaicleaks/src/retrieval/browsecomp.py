@@ -12,7 +12,9 @@ import pickle
 from pathlib import Path
 from typing import Any
 
+import faiss
 import numpy as np
+import torch
 from datasets import load_dataset
 
 from mosaicleaks.src.retrieval.bm25 import BM25Index, BM25State
@@ -225,8 +227,6 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
         return self._faiss_index is not None
 
     def _load_torch_dense_backend(self, embeddings: np.ndarray) -> None:
-        import torch
-
         device = torch.device(self.index_device)
         self._torch_device = device
         with torch.no_grad():
@@ -234,16 +234,12 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
         self._dense_backend = f"torch:{device}"
 
     def _torch_query(self, query_vector: np.ndarray):
-        import torch
-
         if self._torch_device is None:
             raise RuntimeError("Torch dense backend requested before initialization")
         return torch.as_tensor(query_vector, device=self._torch_device, dtype=torch.float32)
 
     def _search_dense(self, query_vector: np.ndarray, dense_k: int) -> list[int]:
         if self._dense_backend.startswith("torch:"):
-            import torch
-
             if self._torch_embeddings is None:
                 raise RuntimeError("Torch dense backend is not initialized")
             with torch.no_grad():
@@ -257,8 +253,6 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
 
     def _rerank_scores(self, candidate_list: list[int], query_vector: np.ndarray) -> np.ndarray:
         if self._dense_backend.startswith("torch:"):
-            import torch
-
             if self._torch_embeddings is None:
                 raise RuntimeError("Torch dense backend is not initialized")
             with torch.no_grad():
@@ -272,8 +266,6 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
         return candidate_embs @ query_vector
 
     def _load_faiss_index(self) -> None:
-        import faiss
-
         shard_embeddings: list[np.ndarray] = []
         shard_docids: list[str] = []
 
@@ -460,79 +452,6 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
                         "url": doc.get("url") or "",
                         "raw_docid": raw_docid,
                         "source": source,
-                    },
-                )
-            )
-        return hits
-
-
-class BrowseCompBM25Searcher(_BrowseCompBase):
-    """Dependency-light BrowseComp BM25 searcher built from the fixed corpus."""
-
-    def __init__(
-        self,
-        dataset_name: str,
-        index_glob: str | None = None,
-        max_chars: int = 8_000,
-    ) -> None:
-        self.dataset_name = dataset_name
-        self.index_glob = index_glob
-        self.max_chars = int(max_chars)
-
-        self.dataset, self.docid_to_idx, self.docid_to_url = _load_dataset(dataset_name)
-        self.bm25, self._docids = self._build_bm25()
-
-    def _build_bm25(self) -> tuple[BM25Index, list[str]]:
-        cache_dir = _resolve_cache_dir(self.index_glob)
-        cache_path = cache_dir / "bm25_dataset_cache.pkl" if cache_dir is not None else None
-        if cache_path is not None:
-            cached = _load_cached_bm25(cache_path)
-            if cached is not None:
-                bm25, docids = cached
-                return bm25, list(docids)
-
-        texts: list[str] = []
-        docids: list[str] = []
-        for docid, _ds_idx, row in _iter_dataset_docs(self.dataset):
-            text = (row.get("text") or "").strip()
-            if not text:
-                continue
-            texts.append(text)
-            docids.append(docid)
-
-        bm25 = BM25Index(texts)
-        if cache_path is not None:
-            _save_cached_bm25(cache_path, bm25, docids)
-        return bm25, docids
-
-    @property
-    def size(self) -> int:
-        return len(self._docids)
-
-    def search(
-        self,
-        query: str,
-        k: int = 10,
-        mode: str = "bm25",
-        max_chars: int | None = None,
-    ) -> list[RetrievalHit]:
-        if mode != "bm25":
-            raise ValueError("BrowseCompBM25Searcher only supports mode='bm25'")
-
-        hits: list[RetrievalHit] = []
-        for bm25_idx, score in self.bm25.search(query, k=k):
-            raw_docid = self._docids[int(bm25_idx)]
-            doc = self._get_doc(raw_docid)
-            hits.append(
-                RetrievalHit(
-                    chunk_id=self._normalize_docid(raw_docid),
-                    doc_id=self._normalize_docid(raw_docid),
-                    score=float(score),
-                    text=self._truncate(doc.get("text") or "", max_chars=max_chars),
-                    meta={
-                        "url": doc.get("url") or "",
-                        "raw_docid": raw_docid,
-                        "source": "browsecomp_bm25",
                     },
                 )
             )

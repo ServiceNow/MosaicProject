@@ -222,7 +222,7 @@ def emit_chunk_records(
 
 
 def _is_chunkable_doc(obj: dict[str, Any]) -> bool:
-    """Keep only successful direct-fetch docs in the curated retrieval sidecar."""
+    """Keep only successful direct-fetch docs for curated web retrieval."""
     if obj.get("extractor") == "insights_fallback":
         return False
     text = (obj.get("text") or "").strip()

@@ -225,6 +225,8 @@ def generate_question_constrained_batch(
     if len(raws) != len(jobs):
         raise RuntimeError(f"LLM batch returned {len(raws)} outputs for {len(jobs)} jobs")
 
+    # Keep per-job parse failures with the batch results so successful rows can
+    # still be used and failed rows can be inspected or retried.
     outputs: list[tuple[str, str, dict] | Exception] = []
     for job, prompt, raw in zip(jobs, prompts, raws):
         try:
@@ -279,6 +281,8 @@ def generate_question_pick_batch(
     if len(raws) != len(jobs):
         raise RuntimeError(f"LLM batch returned {len(raws)} outputs for {len(jobs)} jobs")
 
+    # Keep per-job parse failures with the batch results so successful rows can
+    # still be used and failed rows can be inspected or retried.
     outputs: list[tuple[str, str, dict] | Exception] = []
     for job, prompt, raw in zip(jobs, prompts, raws):
         try:

@@ -80,9 +80,8 @@ STRICT_VERIFY_ANSWER_MATCH = True
 # this budget on internal reasoning before returning structured output.
 DEFAULT_MAX_TOKENS = 16384
 
-# Short structured calls use a separate explicit cap so the visible values are
-# honest instead of tiny placeholders like 150 or 300 that later get inflated
-# by the client floor.
+# Short structured calls use a separate explicit cap because some compatible
+# endpoints need room for internal reasoning before returning the final JSON.
 SHORT_CALL_MAX_TOKENS = 8192
 
 # Semantic transition judge.

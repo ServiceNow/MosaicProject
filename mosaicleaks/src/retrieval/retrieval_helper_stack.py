@@ -10,6 +10,7 @@ import subprocess
 import sys
 import threading
 import time
+import urllib.error
 import urllib.request
 
 from mosaicleaks.src.retrieval.retrieval_helper_server import add_helper_arguments
@@ -120,7 +121,7 @@ def wait_for_http_ok(url: str, timeout_seconds: float) -> None:
             with urllib.request.urlopen(url, timeout=2) as response:
                 if response.status == 200:
                     return
-        except Exception:
+        except (OSError, TimeoutError, urllib.error.URLError):
             # Startup polling expects connection failures until the child
             # server finishes loading.
             time.sleep(1)

@@ -13,14 +13,10 @@ import pypdf
 
 logger = logging.getLogger(__name__)
 
-# Source task folders can contain corrupt office/PDF files. The individual
-# readers return None for unreadable files so one bad attachment does not stop
-# chunking the rest of the task.
-
 
 @dataclass(frozen=True)
 class ChunkConfig:
-    """Chunk sizing knobs for local private documents."""
+    """Word-count settings for local private-document chunks."""
 
     target_words: int = 450
     overlap_words: int = 50
@@ -44,7 +40,7 @@ def _parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def _slugify(value: str) -> str:
+def slugify_company(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", "_", value.lower()).strip("_")
 
 
@@ -75,7 +71,7 @@ def _load_company_info(task_dir: Path) -> dict[str, str]:
         return {}
     return {
         "company_name": company_name,
-        "company": _slugify(company_name),
+        "company": slugify_company(company_name),
     }
 
 
@@ -88,55 +84,22 @@ def _prefer_markdown(path: Path) -> bool:
 
 
 def _read_pdf(path: Path) -> str | None:
-    try:
-        reader = pypdf.PdfReader(str(path))
-    except Exception as exc:
-        # pypdf uses several exception types for corrupt source files.
-        logger.warning("Failed to open PDF %s: %s", path, exc)
-        return None
+    reader = pypdf.PdfReader(str(path))
     parts: list[str] = []
-    page_failures: list[int] = []
-    first_error: Exception | None = None
-    for page_number, page in enumerate(reader.pages, start=1):
-        try:
-            text = page.extract_text() or ""
-        except Exception as exc:
-            # Keep the rest of the PDF when pypdf fails on an individual page.
-            if first_error is None:
-                first_error = exc
-            page_failures.append(page_number)
-            text = ""
+    for page in reader.pages:
+        text = page.extract_text() or ""
         if text.strip():
             parts.append(text)
-    if page_failures:
-        logger.warning(
-            "Failed to extract text from %d page(s) in %s; first failure on page %d: %s",
-            len(page_failures),
-            path,
-            page_failures[0],
-            first_error,
-        )
     return "\n\n".join(parts).strip()
 
 
 def _read_docx(path: Path) -> str | None:
-    try:
-        document = docx.Document(str(path))
-    except Exception as exc:
-        # python-docx wraps many invalid archive/XML errors; treat them as
-        # unreadable source files and keep processing the task.
-        logger.warning("Failed to open DOCX %s: %s", path, exc)
-        return None
+    document = docx.Document(str(path))
     return "\n".join(p.text for p in document.paragraphs if p.text.strip()).strip()
 
 
 def _read_xlsx(path: Path) -> str | None:
-    try:
-        workbook = openpyxl.load_workbook(path, read_only=True, data_only=True)
-    except Exception as exc:
-        # openpyxl can raise different errors for corrupt workbooks.
-        logger.warning("Failed to open spreadsheet %s: %s", path, exc)
-        return None
+    workbook = openpyxl.load_workbook(path, read_only=True, data_only=True)
     lines: list[str] = []
     try:
         for sheet in workbook.worksheets:
@@ -184,6 +147,8 @@ def _read_jsonl(path: Path) -> str | None:
 
 
 def _read_text_file(path: Path) -> str | None:
+    # Most task-local plain text is UTF-8, but some exports use latin-1.
+    # Other decoding failures are logged so the file can be inspected directly.
     try:
         return path.read_text(encoding="utf-8").strip()
     except UnicodeDecodeError:
@@ -200,7 +165,7 @@ def _read_text_file(path: Path) -> str | None:
         return None
 
 
-def _read_file(path: Path) -> str | None:
+def read_local_file(path: Path) -> str | None:
     ext = path.suffix.lower()
     if ext in {".md", ".txt", ".csv"}:
         return _read_text_file(path)
@@ -208,9 +173,9 @@ def _read_file(path: Path) -> str | None:
         return _read_jsonl(path)
     if ext == ".pdf":
         return _read_pdf(path)
-    if ext in {".doc", ".docx"}:
+    if ext == ".docx":
         return _read_docx(path)
-    if ext in {".xls", ".xlsx"}:
+    if ext == ".xlsx":
         return _read_xlsx(path)
     return _read_text_file(path)
 
@@ -315,7 +280,7 @@ def _doc_id(task_id: str, relative_path: Path) -> str:
     return f"local/{task_id}/{relative_path.as_posix()}"
 
 
-def _emit_doc_chunks(
+def emit_local_doc_chunks(
     task_id: str,
     relative_path: Path,
     text: str,
@@ -379,13 +344,13 @@ def main() -> int:
                     continue
                 if args.prefer_md and _prefer_markdown(file_path):
                     continue
-                text = _read_file(file_path)
+                text = read_local_file(file_path)
                 if text is None:
                     continue
                 if len(text.strip()) < 50:
                     continue
                 relative_path = file_path.relative_to(files_dir)
-                rows = _emit_doc_chunks(
+                rows = emit_local_doc_chunks(
                     task_id=task_id,
                     relative_path=relative_path,
                     text=text,

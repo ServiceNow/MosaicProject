@@ -2,7 +2,10 @@
 """HTTP service for MosaicLeaks retrieval helper."""
 
 import argparse
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 from dataclasses import asdict
+from functools import partial
 import json
 import logging
 import os
@@ -67,34 +70,16 @@ class BrowseCompSearchResponse(BaseModel):
     hits: list[dict[str, Any]]
 
 
-class HelperAppLifecycle:
-    """FastAPI lifespan object that loads the backend once per worker."""
-
-    def __init__(self, app: FastAPI, config_obj: RetrievalHelperConfig) -> None:
-        self.app = app
-        self.config_obj = config_obj
-
-    async def __aenter__(self) -> None:
-        anyio.to_thread.current_default_thread_limiter().total_tokens = max(
-            1,
-            int(self.config_obj.threadpool_tokens),
-        )
-        logger.info("Loading retrieval helper backend...")
-        self.app.state.backend = RetrievalHelperBackend(self.config_obj)
-        logger.info("Retrieval helper backend ready")
-
-    async def __aexit__(self, exc_type, exc, tb) -> None:
-        return None
-
-
-class HelperLifespan:
-    """Factory used by FastAPI to create the helper lifecycle."""
-
-    def __init__(self, config_obj: RetrievalHelperConfig) -> None:
-        self.config_obj = config_obj
-
-    def __call__(self, app: FastAPI) -> HelperAppLifecycle:
-        return HelperAppLifecycle(app, self.config_obj)
+@asynccontextmanager
+async def helper_lifespan(app: FastAPI, config_obj: RetrievalHelperConfig) -> AsyncIterator[None]:
+    anyio.to_thread.current_default_thread_limiter().total_tokens = max(
+        1,
+        int(config_obj.threadpool_tokens),
+    )
+    logger.info("Loading retrieval helper backend...")
+    app.state.backend = RetrievalHelperBackend(config_obj)
+    logger.info("Retrieval helper backend ready")
+    yield
 
 
 def add_helper_arguments(
@@ -317,25 +302,20 @@ def create_app(config_obj: RetrievalHelperConfig) -> FastAPI:
     app = FastAPI(
         title="mosaicleaks-retrieval-helper",
         version="0.1.0",
-        lifespan=HelperLifespan(config_obj),
+        lifespan=partial(helper_lifespan, config_obj=config_obj),
         docs_url=None,
         redoc_url=None,
         openapi_url=None,
     )
 
-    def backend() -> RetrievalHelperBackend:
-        return app.state.backend
-
     @app.get("/health")
     def health() -> dict[str, Any]:
-        helper = backend()
+        helper: RetrievalHelperBackend = app.state.backend
         started = helper.metrics.start("/health")
         ok = True
         try:
             return helper.health()
-        except Exception as exc:
-            # HTTP boundary: log unexpected backend failures and surface them
-            # as 500 responses while keeping the service process alive.
+        except (OSError, RuntimeError) as exc:
             ok = False
             logger.exception("health failed")
             raise HTTPException(status_code=500, detail=str(exc)) from exc
@@ -344,7 +324,7 @@ def create_app(config_obj: RetrievalHelperConfig) -> FastAPI:
 
     @app.post("/embed", response_model=EmbedResponse)
     def embed(request: EmbedRequest) -> EmbedResponse:
-        helper = backend()
+        helper: RetrievalHelperBackend = app.state.backend
         started = helper.metrics.start("/embed")
         ok = True
         try:
@@ -354,9 +334,7 @@ def create_app(config_obj: RetrievalHelperConfig) -> FastAPI:
         except ValueError as exc:
             ok = False
             raise HTTPException(status_code=400, detail=str(exc)) from exc
-        except Exception as exc:
-            # HTTP boundary: request handlers translate backend failures into
-            # status codes; generation code should still fail loudly.
+        except (OSError, RuntimeError) as exc:
             ok = False
             logger.exception("embed failed")
             raise HTTPException(status_code=500, detail=str(exc)) from exc
@@ -365,7 +343,7 @@ def create_app(config_obj: RetrievalHelperConfig) -> FastAPI:
 
     @app.post("/local/search", response_model=LocalSearchResponse)
     def search_local(request: LocalSearchRequest) -> LocalSearchResponse:
-        helper = backend()
+        helper: RetrievalHelperBackend = app.state.backend
         started = helper.metrics.start("/local/search")
         ok = True
         try:
@@ -383,8 +361,7 @@ def create_app(config_obj: RetrievalHelperConfig) -> FastAPI:
         except ValueError as exc:
             ok = False
             raise HTTPException(status_code=400, detail=str(exc)) from exc
-        except Exception as exc:
-            # HTTP boundary: log context for operators and return a 500.
+        except (OSError, RuntimeError) as exc:
             ok = False
             logger.exception("local search failed")
             raise HTTPException(status_code=500, detail=str(exc)) from exc
@@ -393,7 +370,7 @@ def create_app(config_obj: RetrievalHelperConfig) -> FastAPI:
 
     @app.post("/browsecomp/search", response_model=BrowseCompSearchResponse)
     def search_browsecomp(request: BrowseCompSearchRequest) -> BrowseCompSearchResponse:
-        helper = backend()
+        helper: RetrievalHelperBackend = app.state.backend
         started = helper.metrics.start("/browsecomp/search")
         ok = True
         try:
@@ -408,8 +385,7 @@ def create_app(config_obj: RetrievalHelperConfig) -> FastAPI:
         except ValueError as exc:
             ok = False
             raise HTTPException(status_code=400, detail=str(exc)) from exc
-        except Exception as exc:
-            # HTTP boundary: log context for operators and return a 500.
+        except (OSError, RuntimeError) as exc:
             ok = False
             logger.exception("browsecomp search failed")
             raise HTTPException(status_code=500, detail=str(exc)) from exc

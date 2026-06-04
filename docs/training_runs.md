@@ -12,47 +12,16 @@ trainer or another trainer with a similar command-line override interface.
 
 ## 1. Publish A Dataset Bundle
 
-After generation, verification, filtering, and rewording, publish the final
-chain JSONL:
-
-```bash
-python3 -m mosaicleaks.publish_dataset \
-  --input runs/example_generation/chains_final.jsonl \
-  --output-dir datasets/mosaicleaks_example \
-  --dataset-name mosaicleaks_example \
-  --split-key company \
-  --test-group "Example Heldout Company"
-```
-
-The bundle contains:
-
-```text
-dataset.jsonl
-train.jsonl
-val.jsonl
-test.jsonl
-manifest.json
-dataset_stats.json
-schema.json
-```
-
-Use `--split-key task_id` when company-level holdout is not appropriate. Use
-`--split-key chain_id` only for debugging because it can leak near-duplicate
-task context across splits.
+Publish final chains with `mosaicleaks.publish_dataset` before training. See
+[Dataset Generation](dataset_generation.md#6-publish-a-versioned-dataset) for
+the command, bundle files, and split validation checklist.
 
 ## 2. Start Retrieval
 
 Training runs that read documents during rollout should use the same retrieval
-format as generation:
-
-```bash
-./scripts/start_retrieval_helper.sh \
-  --local-index-root /path/to/local_indices \
-  --embedding-base-url http://127.0.0.1:8000 \
-  --embedding-model Qwen/Qwen3-Embedding-4B \
-  --browsecomp-index-glob "/path/to/corpus.shard*_of_*.pkl" \
-  --browsecomp-corpus Tevatron/browsecomp-plus-corpus
-```
+helper and index format as generation. See
+[Retrieval Helper](retrieval_helper.md) for the API, index files, and launch
+command.
 
 Record the helper URL in the training run manifest or experiment tracker:
 

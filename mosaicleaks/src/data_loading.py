@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from mosaicleaks.config import TASKS_DIR
+from mosaicleaks.config import CHUNKS_LOCAL, SECRET_INVENTORY, TASKS_DIR
 from mosaicleaks.src.jsonl import iter_jsonl_objects
 
 
@@ -37,7 +37,6 @@ class LocalDoc:
 def load_secrets(path: Path | None = None) -> list[Secret]:
     """Load all secrets from secret_inventory.jsonl."""
     if path is None:
-        from mosaicleaks.config import SECRET_INVENTORY
         path = SECRET_INVENTORY
     secrets: list[Secret] = []
     for row in iter_jsonl_objects(path):
@@ -60,7 +59,6 @@ def load_secrets(path: Path | None = None) -> list[Secret]:
 def load_chunks_local(path: Path | None = None) -> list[dict[str, Any]]:
     """Load all local chunks as raw dicts."""
     if path is None:
-        from mosaicleaks.config import CHUNKS_LOCAL
         path = CHUNKS_LOCAL
     return list(iter_jsonl_objects(path))
 

@@ -3,6 +3,8 @@ import os
 from pathlib import Path
 import subprocess
 
+from mosaicleaks import config as mosaicleaks_config
+
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = REPO_ROOT / "mosaicleaks" / "data"
@@ -22,9 +24,7 @@ def test_portable_config_defaults(monkeypatch) -> None:
     ]:
         monkeypatch.delenv(name, raising=False)
 
-    from mosaicleaks import config
-
-    config = importlib.reload(config)
+    config = importlib.reload(mosaicleaks_config)
     assert config.LOG_ROOT == Path.home() / "mosaicleaks_runs"
     assert config.BROWSECOMP_EMBEDDING_INDEX_GLOB == ""
     assert config.DEFAULT_MODEL == "step-3.5-flash"

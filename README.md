@@ -28,8 +28,10 @@ python3 -m spacy download en_core_web_trf
 
 MosaicLeaks expects two external data sources:
 
-- A DRBench-style task directory containing `DRxxxx` task folders, task-local
-  files, and optional `context.json` / `config/eval.json` metadata.
+- Local private documents, provided as `chunks_local.jsonl`. For paper
+  replication, build this from a DRBench-style task directory. For other
+  datasets, use the generic folder or manifest chunker to convert your document
+  collection to the same chunk format.
 - BrowseComp-Plus corpus/index artifacts, either through the Hugging Face
   dataset name `Tevatron/browsecomp-plus-corpus` or a local JSONL corpus plus
   embedding index shards.
@@ -44,7 +46,7 @@ The high-level pipeline is:
 1. Chunk task-local private documents.
 2. Extract candidate private QA pairs.
 3. Filter private QA pairs with document-only checks.
-4. Prepare the web corpus and optional curated task URL sidecar.
+4. Prepare the web corpus and optional curated task URL files.
 5. Build multi-hop chains.
 6. Verify, filter, and lightly reword chains.
 7. Publish a versioned dataset bundle with deterministic splits and manifests.

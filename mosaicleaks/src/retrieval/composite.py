@@ -97,7 +97,7 @@ class WeightedRRFSearcher:
         for searcher, weight in self._searchers:
             try:
                 hits = searcher.search(query, k=k, **kwargs)
-            except Exception as exc:
+            except (OSError, RuntimeError, ValueError) as exc:
                 # Fusion should tolerate one optional source being offline; a
                 # warning keeps the failed source visible in the run logs.
                 logger.warning("Skipping failing searcher %s: %s", type(searcher).__name__, exc)

@@ -6,7 +6,7 @@ hashes, generation settings, and output manifest.
 
 ## 1. Chunk Local Documents
 
-Input: a DRBench-style task root.
+For paper replication, chunk a DRBench-style task root:
 
 ```bash
 python3 -m mosaicleaks.data_prep.chunk_local_tasks \
@@ -14,12 +14,44 @@ python3 -m mosaicleaks.data_prep.chunk_local_tasks \
   --output mosaicleaks/data/chunks_local.jsonl
 ```
 
+For other local document collections, chunk a folder as one task:
+
+```bash
+python3 -m mosaicleaks.data_prep.chunk_local_folder \
+  --input-root /path/to/private_docs \
+  --task-id example_task \
+  --company-name "Example Company" \
+  --output mosaicleaks/data/chunks_local.jsonl
+```
+
+Or pass a JSONL manifest with one file per row. This is the best format when a
+collection has multiple tasks or groups:
+
+```json
+{"path": "/path/to/file.pdf", "task_id": "task_001", "company_name": "Example Company"}
+```
+
+```bash
+python3 -m mosaicleaks.data_prep.chunk_local_folder \
+  --manifest local_docs.jsonl \
+  --output mosaicleaks/data/chunks_local.jsonl
+```
+
+Manifest fields:
+
+- `path`: required file path, absolute or relative to the manifest file
+- `task_id`: required group ID used for chain construction and local retrieval
+- `company_name`: optional label used for split grouping and metadata
+- `relative_path`: optional stable path to use inside generated `doc_id` values
+
+Supported file types are Markdown, text, CSV, JSONL, PDF, DOCX, and XLSX.
+
 Validation:
 
 - every included task has at least one chunk
 - chunk offsets are monotonic within each document
-- document metadata includes task ID and company name when available
-- unsupported or unreadable files are logged, not silently ignored
+- document metadata includes task ID and company name when provided
+- unsupported files are skipped; parse errors in included files fail the run
 
 ## 2. Extract Private QA Candidates
 
@@ -38,6 +70,20 @@ Validation:
 - generated questions are answerable from the local document chunk
 - each candidate records source chunk, answer, quote, and secret type
 - malformed model outputs are preserved in logs for review
+
+If you already have private QA seeds, import them instead of running extraction.
+JSONL is the recommended format:
+
+```json
+{"doc_id": "local/task_001/file.pdf", "question": "What was the internal launch date?", "answer": "Q3 2026", "secret_type": "dates"}
+```
+
+```bash
+python3 -m mosaicleaks.data_prep.import_seeds \
+  --input private_seeds.jsonl \
+  --chunks-local mosaicleaks/data/chunks_local.jsonl \
+  --output mosaicleaks/data/secret_inventory.jsonl
+```
 
 ## 3. Filter Private QA Candidates
 
@@ -64,7 +110,7 @@ Primary web corpus:
 - use BrowseComp-Plus through `Tevatron/browsecomp-plus-corpus`, or
 - pass a local JSONL corpus with `docid`, `url`, and `text`
 
-Optional curated task URL sidecar:
+Optional curated task URL files:
 
 ```bash
 python3 -m mosaicleaks.data_prep.fetch_drbench_urls \
@@ -76,7 +122,7 @@ python3 -m mosaicleaks.data_prep.fetch_drbench_urls \
 Validation:
 
 - fetched URL rows record HTTP status, extraction method, and task IDs
-- only successful direct-fetch rows enter the curated retrieval sidecar
+- only successful direct-fetch rows enter curated web retrieval
 - curated chunks preserve source URL and task allowlist metadata
 
 ## 5. Build Chains

@@ -5,6 +5,7 @@ Output: chains.jsonl, append-only with resume by seed fingerprint.
 """
 
 import gc
+import glob
 import hashlib
 import json
 import logging
@@ -16,16 +17,15 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any
 
+import spacy
+
 from mosaicleaks.src.data_loading import (
     build_doc_lookup,
     filter_seed_secrets,
     load_chunks_local,
     load_secrets,
 )
-from mosaicleaks.src.retrieval.browsecomp import (
-    BrowseCompBM25Searcher,
-    BrowseCompHybridSearcher,
-)
+from mosaicleaks.src.retrieval.browsecomp import BrowseCompHybridSearcher
 from mosaicleaks.src.retrieval.composite import FilteredSearcher, WeightedRRFSearcher
 from mosaicleaks.src.retrieval.dense import OpenAICompatibleBackend
 from mosaicleaks.src.retrieval.hybrid import HybridSearcher
@@ -89,6 +89,8 @@ def _build_seed_result(
 ) -> dict | None:
     task_rng = random.Random(task_seed)
 
+    # Some seed/pattern combinations are unusable for a specific task. Those
+    # jobs are skipped while the rest of the deterministic plan continues.
     try:
         if forced_hop:
             doc_id = forced_hop["doc_id"]
@@ -542,8 +544,8 @@ def run_build(
         len(curated_web_doc_ids),
     )
 
-    # Retrieval backends are tried in preference order: local hybrid search,
-    # corpus BM25, then chunk BM25 if a dependency or artifact is missing.
+    # Use dense BrowseComp retrieval only when shards are explicitly configured.
+    # Otherwise, search the prepared web chunks with BM25.
     local_searcher = None
     browsecomp_searcher = None
     curated_searcher = None
@@ -553,54 +555,32 @@ def run_build(
 
     existing_browsecomp = [p for p in chunks_web_paths if p.exists()]
     if existing_browsecomp:
-        if browsecomp_searcher is None:
-            try:
-                browsecomp_embedder = OpenAICompatibleBackend(
-                    model=config.BROWSECOMP_EMBEDDING_MODEL,
-                    base_url=config.BROWSECOMP_EMBEDDING_BASE_URL,
-                )
-                browsecomp_searcher = BrowseCompHybridSearcher(
-                    index_glob=config.BROWSECOMP_EMBEDDING_INDEX_GLOB,
-                    dataset_name=config.BROWSECOMP_DATASET_NAME,
-                    embedder=browsecomp_embedder,
-                    bm25_recall_k=config.BROWSECOMP_BM25_RECALL_K,
-                    dense_recall_k=config.BROWSECOMP_DENSE_RECALL_K,
-                )
-                logger.info(
-                    "BrowseComp local hybrid searcher: %d docs via %s",
-                    browsecomp_searcher.size,
-                    config.BROWSECOMP_EMBEDDING_BASE_URL,
-                )
-            except Exception as exc:
-                # Local hybrid search depends on dense index artifacts and an
-                # embedding endpoint; BM25 keeps generation usable without them.
-                logger.warning(
-                    "BrowseComp local hybrid retrieval unavailable (%s); falling back to BM25",
-                    exc,
-                )
-        if browsecomp_searcher is None:
-            try:
-                browsecomp_searcher = BrowseCompBM25Searcher(
-                    index_glob=config.BROWSECOMP_EMBEDDING_INDEX_GLOB,
-                    dataset_name=config.BROWSECOMP_DATASET_NAME,
-                )
-                logger.info(
-                    "BrowseComp BM25 fallback searcher: %d docs via internal corpus index",
-                    browsecomp_searcher.size,
-                )
-            except Exception as exc:
-                # Corpus-level BM25 may be unavailable for local-only setups;
-                # chunk BM25 keeps the generator usable with prepared chunks.
-                logger.warning(
-                    "BrowseComp internal BM25 unavailable (%s); falling back to chunk BM25",
-                    exc,
-                )
-        if browsecomp_searcher is None:
+        browsecomp_index_files = sorted(glob.glob(config.BROWSECOMP_EMBEDDING_INDEX_GLOB))
+        if browsecomp_index_files:
+            browsecomp_embedder = OpenAICompatibleBackend(
+                model=config.BROWSECOMP_EMBEDDING_MODEL,
+                base_url=config.BROWSECOMP_EMBEDDING_BASE_URL,
+            )
+            browsecomp_searcher = BrowseCompHybridSearcher(
+                index_glob=config.BROWSECOMP_EMBEDDING_INDEX_GLOB,
+                dataset_name=config.BROWSECOMP_DATASET_NAME,
+                embedder=browsecomp_embedder,
+                bm25_recall_k=config.BROWSECOMP_BM25_RECALL_K,
+                dense_recall_k=config.BROWSECOMP_DENSE_RECALL_K,
+            )
+            logger.info(
+                "BrowseComp local hybrid searcher: %d docs via %s",
+                browsecomp_searcher.size,
+                config.BROWSECOMP_EMBEDDING_BASE_URL,
+            )
+        else:
             browsecomp_searcher = HybridSearcher.from_paths(existing_browsecomp)
-            logger.info("BrowseComp chunk-BM25 fallback searcher: %d chunks", browsecomp_searcher.size)
+            logger.info("BrowseComp chunk-BM25 searcher: %d chunks", browsecomp_searcher.size)
 
     existing_curated = [p for p in curated_web_chunk_paths if p.exists()]
     if existing_curated and allowed_curated_doc_ids:
+        # Curated web files are optional. If the configured files exist but do
+        # not contain usable chunks, generation continues with BrowseComp only.
         try:
             curated_searcher = HybridSearcher.from_paths(
                 existing_curated,
@@ -616,8 +596,6 @@ def run_build(
             logger.info("Curated web searcher: no direct-fetch chunks available")
 
     # Build or load entity index for NER-based bridge finding
-    import spacy
-
     nlp = spacy.load(spacy_model)
     cache_path = entity_index_dir / f"entity_index_{spacy_model}.json"
     if cache_path.exists():

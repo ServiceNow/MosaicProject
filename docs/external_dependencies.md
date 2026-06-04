@@ -1,21 +1,13 @@
 # External Dependencies
 
-MosaicLeaks expects DRBench-style task files and BrowseComp-Plus corpus
-artifacts as external inputs.
+MosaicLeaks does not include private task files, BrowseComp-Plus corpora, dense
+embedding shards, model weights, or API credentials. The pipeline expects those
+artifacts to be supplied by path, dataset name, or environment variable.
 
-## DRBench-Style Tasks
+## Local Private Documents
 
-The local-document side of the dataset is built from a task root with folders
-named like `DR0001`, `DR0002`, and so on. Each task may contain:
-
-- task-local files to chunk: Markdown, text, CSV, JSONL, PDF, DOCX, XLSX
-- `context.json` with `company_info.name`
-- `config/eval.json` with optional enterprise-fact seed QA pairs
-
-Core generation code does not import DRBench Python modules. The task directory
-is treated as an input data format.
-
-The local chunker emits records with:
+The generation pipeline consumes local private documents as `chunks_local.jsonl`.
+Each chunk row must include:
 
 - `chunk_id`
 - `doc_id`
@@ -23,8 +15,41 @@ The local chunker emits records with:
 - `text`
 - `offsets`
 - `meta.task_id`
+
+Recommended metadata:
+
 - `meta.company_name`
 - `meta.file_name`
+- `meta.relative_path`
+- `meta.extension`
+
+For paper replication, build this file from a DRBench-style task root with
+folders named like `DR0001`, `DR0002`, and so on. Each task may contain:
+
+- task-local files to chunk: Markdown, text, CSV, JSONL, PDF, DOCX, XLSX
+- `context.json` with `company_info.name`
+- `config/eval.json` with optional enterprise-fact seed QA pairs
+
+For other local corpora, use `mosaicleaks.data_prep.chunk_local_folder`. The
+manifest form is recommended when you have more than one task:
+
+```json
+{"path": "/path/to/file.pdf", "task_id": "task_001", "company_name": "Example Company"}
+```
+
+Manifest fields:
+
+- `path`: required file path, absolute or relative to the manifest file
+- `task_id`: required group ID used for chain construction and local retrieval
+- `company_name`: optional label used for metadata and split grouping
+- `relative_path`: optional stable path for generated `doc_id` values
+
+Manual private QA seeds can also be supplied as JSONL and imported into
+`secret_inventory.jsonl`:
+
+```json
+{"doc_id": "local/task_001/file.pdf", "question": "What was the internal launch date?", "answer": "Q3 2026", "secret_type": "dates"}
+```
 
 ## BrowseComp-Plus
 
@@ -54,12 +79,16 @@ corpus.shard00001_of_000NN.pkl
 ```
 
 Each shard stores the dense vectors and lookup IDs used to map search results
-back to BrowseComp document IDs.
+back to BrowseComp document IDs. The pickle payload must be a two-item tuple:
+`(embeddings, lookup)`, where `embeddings` is a 2D float array and `lookup`
+contains the corresponding BrowseComp document IDs in row order. The query
+embedding endpoint should serve the same embedding model used to create those
+shards.
 
 ## Curated Task URLs
 
-The generation pipeline can supplement BrowseComp-Plus with a small curated web
-sidecar derived from task URLs. The sidecar has two files:
+The generation pipeline can supplement BrowseComp-Plus with small curated web
+files derived from task URLs:
 
 - `docs_curated_web.jsonl`: fetched URL metadata and full text
 - `chunks_curated_web.jsonl`: paragraph/heading-aware chunks

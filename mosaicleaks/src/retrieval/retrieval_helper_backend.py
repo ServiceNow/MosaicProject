@@ -122,7 +122,7 @@ class EmbeddingService:
         try:
             response = self._health_client.get(self.health_url)
             return response.status_code == 200
-        except Exception:
+        except httpx.HTTPError:
             # Health checks should report dependency status, not raise from the
             # helper's own /health endpoint.
             return False
@@ -352,7 +352,7 @@ def _load_doc_id_file(path: str | Path | None) -> set[str]:
 
 
 class CuratedWebRepository:
-    """Optional direct-fetch web sidecar keyed by task id."""
+    """Optional direct-fetch web index keyed by task id."""
 
     def __init__(self, docs_path: str | Path, chunk_paths: list[str | Path]) -> None:
         self.docs_path = Path(docs_path).expanduser()
@@ -362,6 +362,8 @@ class CuratedWebRepository:
         self.curated_web_doc_ids = set(self.allowed_doc_ids)
         self.searcher = None
         if existing_paths and self.allowed_doc_ids:
+            # Curated web retrieval is an optional supplement. Empty configured
+            # files disable it without affecting local or BrowseComp search.
             try:
                 self.searcher = HybridSearcher.from_paths(
                     existing_paths,

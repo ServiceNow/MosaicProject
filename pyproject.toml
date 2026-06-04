@@ -23,6 +23,7 @@ dependencies = [
     "python-docx>=1.1.0",
     "requests>=2.31.0",
     "spacy>=3.7.0",
+    "typing-extensions>=4.9.0",
 ]
 
 [project.urls]
@@ -37,7 +38,11 @@ browsecomp = [
     "transformers>=4.41.0",
 ]
 server = [
+    "datasets>=2.18.0",
+    "faiss-cpu>=1.8.0",
     "fastapi>=0.110.0",
+    "torch>=2.1.0",
+    "transformers>=4.41.0",
     "uvicorn>=0.29.0",
 ]
 dev = [
@@ -51,9 +56,11 @@ mosaicleaks-retrieval-helper = "mosaicleaks.src.retrieval.retrieval_helper_serve
 mosaicleaks-retrieval-helper-stack = "mosaicleaks.src.retrieval.retrieval_helper_stack:main"
 mosaicleaks-fetch-curated-urls = "mosaicleaks.data_prep.fetch_drbench_urls:main"
 mosaicleaks-chunk-local = "mosaicleaks.data_prep.chunk_local_tasks:main"
+mosaicleaks-chunk-local-folder = "mosaicleaks.data_prep.chunk_local_folder:main"
 mosaicleaks-build-local-indices = "mosaicleaks.data_prep.build_local_indices:main"
 mosaicleaks-extract-secrets = "mosaicleaks.data_prep.extract_local_secrets:main"
 mosaicleaks-filter-secrets = "mosaicleaks.data_prep.filter_local_secrets:main"
+mosaicleaks-import-seeds = "mosaicleaks.data_prep.import_seeds:main"
 
 [tool.setuptools.packages.find]
 include = ["mosaicleaks*"]
