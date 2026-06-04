@@ -2,15 +2,12 @@
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any
 
 from .bm25 import BM25Index
 from .chunks import iter_chunks
-from .dense import DenseIndex, EmbeddingBackend
+from .dense import DenseIndex
 from .types import RetrievalHit
-
-Mode = Literal["bm25", "dense", "hybrid"]
-
 
 @dataclass(frozen=True)
 class Candidate:
@@ -67,10 +64,12 @@ class HybridSearcher:
         cls,
         paths: list[Path],
         doc_ids: set[str] | None = None,
-        **kwargs,
+        dense_index_path: Path | None = None,
     ) -> "HybridSearcher":
         if len(paths) == 1:
-            return cls(chunks_path=paths[0], doc_ids=doc_ids, **kwargs)
+            return cls(chunks_path=paths[0], dense_index_path=dense_index_path, doc_ids=doc_ids)
+        if dense_index_path is not None:
+            raise ValueError("dense_index_path is only supported when loading one chunk file")
         obj = cls.__new__(cls)
         obj._chunk_ids = []
         obj._doc_ids = []
@@ -111,12 +110,18 @@ class HybridSearcher:
             meta=self._metas[idx],
         )
 
-    def _hit(self, cand: Candidate, score: float) -> RetrievalHit:
+    @staticmethod
+    def _truncate(text: str, max_chars: int | None) -> str:
+        if max_chars is None or max_chars <= 0 or len(text) <= max_chars:
+            return text
+        return text[:max_chars] + "\n\n[truncated]"
+
+    def _hit(self, cand: Candidate, score: float, max_chars: int | None = None) -> RetrievalHit:
         return RetrievalHit(
             chunk_id=cand.chunk_id,
             doc_id=cand.doc_id,
             score=float(score),
-            text=cand.text,
+            text=self._truncate(cand.text, max_chars),
             meta=cand.meta,
         )
 
@@ -124,16 +129,16 @@ class HybridSearcher:
         self,
         query: str,
         k: int = 10,
-        mode: Mode = "hybrid",
-        embedder: EmbeddingBackend | None = None,
+        mode: str = "hybrid",
+        embedder: Any | None = None,
         bm25_k: int = 200,
         dense_k: int = 200,
-        **_kwargs: Any,
+        max_chars: int | None = None,
     ) -> list[RetrievalHit]:
         if k <= 0:
             return []
 
-        mode = mode.lower()  # type: ignore[assignment]
+        mode = mode.lower()
         if mode not in {"bm25", "dense", "hybrid"}:
             raise ValueError(f"Invalid mode: {mode}")
 
@@ -145,20 +150,23 @@ class HybridSearcher:
 
         if mode == "bm25" or self.dense is None:
             hits = self.bm25.search(query, k=k)
-            return [self._hit(self._candidate(h.doc_idx), h.score) for h in hits]
+            return [self._hit(self._candidate(idx), score, max_chars) for idx, score in hits]
 
         assert self.dense is not None
         assert embedder is not None
+        # The dense branch is used only when the caller supplies the embedding
+        # client for its environment, usually OpenAICompatibleBackend locally
+        # or EmbeddingService inside the retrieval helper.
         query_emb = embedder.embed_query(query)
 
         cand_idxs: set[int] = set()
         if mode == "hybrid":
             bm25_hits = self.bm25.search(query, k=int(bm25_k))
-            cand_idxs.update(h.doc_idx for h in bm25_hits)
+            cand_idxs.update(idx for idx, _score in bm25_hits)
 
         dense_hits = self.dense.search(query_emb, k=int(dense_k))
-        for dh in dense_hits:
-            cid = self.dense.chunk_ids[dh.idx]
+        for dense_idx, _score in dense_hits:
+            cid = self.dense.chunk_ids[dense_idx]
             idx = self._idx_by_chunk_id.get(cid)
             if idx is not None:
                 cand_idxs.add(idx)
@@ -171,4 +179,4 @@ class HybridSearcher:
                 scored.append((float(s), c))
 
         scored.sort(key=lambda kv: kv[0], reverse=True)
-        return [self._hit(c, s) for s, c in scored[:k]]
+        return [self._hit(c, s, max_chars) for s, c in scored[:k]]

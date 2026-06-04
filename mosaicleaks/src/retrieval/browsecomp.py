@@ -10,7 +10,7 @@ import glob
 import logging
 import pickle
 from pathlib import Path
-from typing import Any, Protocol
+from typing import Any
 
 import numpy as np
 from datasets import load_dataset
@@ -24,13 +24,6 @@ TASK_PREFIX = (
     "Instruct: Given a web search query, retrieve relevant passages that answer the query\n"
     "Query:"
 )
-
-
-class QueryEmbedder(Protocol):
-    """Minimal query-embedding interface used by BrowseComp search."""
-
-    def embed_query(self, query: str) -> np.ndarray:
-        ...
 
 
 def _load_dataset(dataset_name: str) -> tuple[Any, dict[str, int], dict[str, str]]:
@@ -176,7 +169,7 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
         self,
         index_glob: str,
         dataset_name: str,
-        embedder: QueryEmbedder,
+        embedder: Any,
         bm25_recall_k: int = 200,
         dense_recall_k: int = 200,
         max_chars: int = 8_000,
@@ -184,6 +177,8 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
     ) -> None:
         self.index_glob = index_glob
         self.dataset_name = dataset_name
+        # The generator and helper pass different embedding clients, but both
+        # expose the same small embed_query method.
         self.embedder = embedder
         self.bm25_recall_k = int(bm25_recall_k)
         self.dense_recall_k = int(dense_recall_k)
@@ -362,7 +357,6 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
         mode: str = "bm25",
         max_chars: int | None = None,
         rrf_k: int = 20,
-        **_kwargs,
     ) -> list[RetrievalHit]:
         if not query or k <= 0:
             return []
@@ -376,11 +370,11 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
 
         if self.bm25 is not None and self._bm25_idx_to_lookup_idx is not None:
             bm25_k = k if mode == "bm25" else self.bm25_recall_k
-            for rank, bm25_hit in enumerate(self.bm25.search(query, k=bm25_k), start=1):
-                lookup_i = self._bm25_idx_to_lookup_idx.get(int(bm25_hit.doc_idx))
+            for rank, (bm25_idx, score) in enumerate(self.bm25.search(query, k=bm25_k), start=1):
+                lookup_i = self._bm25_idx_to_lookup_idx.get(int(bm25_idx))
                 if lookup_i is not None:
                     bm25_lookup_ranks.setdefault(int(lookup_i), rank)
-                    bm25_lookup_scores.setdefault(int(lookup_i), float(bm25_hit.score))
+                    bm25_lookup_scores.setdefault(int(lookup_i), float(score))
 
         if mode == "bm25":
             hits: list[RetrievalHit] = []
@@ -511,20 +505,19 @@ class BrowseCompBM25Searcher(_BrowseCompBase):
         k: int = 10,
         mode: str = "bm25",
         max_chars: int | None = None,
-        **_kwargs,
     ) -> list[RetrievalHit]:
         if mode != "bm25":
             raise ValueError("BrowseCompBM25Searcher only supports mode='bm25'")
 
         hits: list[RetrievalHit] = []
-        for bm25_hit in self.bm25.search(query, k=k):
-            raw_docid = self._docids[int(bm25_hit.doc_idx)]
+        for bm25_idx, score in self.bm25.search(query, k=k):
+            raw_docid = self._docids[int(bm25_idx)]
             doc = self._get_doc(raw_docid)
             hits.append(
                 RetrievalHit(
                     chunk_id=self._normalize_docid(raw_docid),
                     doc_id=self._normalize_docid(raw_docid),
-                    score=float(bm25_hit.score),
+                    score=float(score),
                     text=self._truncate(doc.get("text") or "", max_chars=max_chars),
                     meta={
                         "url": doc.get("url") or "",

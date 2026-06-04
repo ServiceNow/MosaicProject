@@ -35,11 +35,16 @@ class SearchClient:
         k: int = 10,
         mode: str = "bm25",
         doc_ids: list[str] | None = None,
-        **_kwargs,
+        max_chars: int | None = None,
+        rrf_k: int = 20,
     ) -> list[RetrievalHit]:
         body = {"query": query, "k": k, "mode": mode, "pool": self.pool}
         if doc_ids is not None:
             body["doc_ids"] = doc_ids
+        if max_chars is not None:
+            body["max_chars"] = int(max_chars)
+        if mode == "rrf":
+            body["rrf_k"] = int(rrf_k)
         resp = self._client.post("/search", json=body)
         resp.raise_for_status()
         data = resp.json()

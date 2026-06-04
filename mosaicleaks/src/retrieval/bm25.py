@@ -20,14 +20,6 @@ def tokenize(text: str) -> list[str]:
 
 
 @dataclass(frozen=True)
-class SearchHit:
-    """Internal BM25 hit using the index row number."""
-
-    doc_idx: int
-    score: float
-
-
-@dataclass(frozen=True)
 class BM25State:
     """Serializable BM25 index state for cache files."""
 
@@ -89,7 +81,7 @@ class BM25Index:
     def _idf(self, df: int) -> float:
         return math.log(1.0 + (self._N - df + 0.5) / (df + 0.5))
 
-    def search(self, query: str, k: int = 10) -> list[SearchHit]:
+    def search(self, query: str, k: int = 10) -> list[tuple[int, float]]:
         if k <= 0:
             return []
         qtf = Counter(tokenize(query))
@@ -110,7 +102,7 @@ class BM25Index:
         if not scores:
             return []
         top = heapq.nlargest(k, scores.items(), key=lambda kv: kv[1])
-        return [SearchHit(doc_idx=int(doc_idx), score=float(score)) for doc_idx, score in top]
+        return [(int(doc_idx), float(score)) for doc_idx, score in top]
 
     def doc_text(self, doc_idx: int) -> str:
         return self._docs[doc_idx]
@@ -167,13 +159,12 @@ class BM25Searcher:
     def search(self, query: str, k: int = 10) -> list[RetrievalHit]:
         hits = self.index.search(query, k=k)
         out: list[RetrievalHit] = []
-        for h in hits:
-            idx = h.doc_idx
+        for idx, score in hits:
             out.append(
                 RetrievalHit(
                     chunk_id=self._chunk_ids[idx],
                     doc_id=self._doc_ids[idx],
-                    score=float(h.score),
+                    score=float(score),
                     text=self._texts[idx],
                     meta=self._metas[idx],
                 )

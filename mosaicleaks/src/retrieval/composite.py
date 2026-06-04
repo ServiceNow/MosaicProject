@@ -1,21 +1,11 @@
 """Composable retrieval adapters for MosaicLeaks generation and evaluation."""
 
-from dataclasses import dataclass
 import logging
 from typing import Any, Iterable
 
 from .types import RetrievalHit
 
 logger = logging.getLogger(__name__)
-
-
-@dataclass(frozen=True)
-class _RankedHit:
-    """One source hit plus its source rank and fusion weight."""
-
-    hit: RetrievalHit
-    rank: int
-    weight: float
 
 
 class FilteredSearcher:
@@ -99,7 +89,7 @@ class WeightedRRFSearcher:
         if k <= 0 or not self._searchers:
             return []
 
-        ranked_by_doc: dict[str, list[_RankedHit]] = {}
+        ranked_by_doc: dict[str, list[tuple[int, float]]] = {}
         best_hit_by_doc: dict[str, RetrievalHit] = {}
 
         for searcher, weight in self._searchers:
@@ -111,14 +101,14 @@ class WeightedRRFSearcher:
                 logger.warning("Skipping failing searcher %s: %s", type(searcher).__name__, exc)
                 continue
             for rank, hit in enumerate(hits, start=1):
-                ranked_by_doc.setdefault(hit.doc_id, []).append(_RankedHit(hit=hit, rank=rank, weight=weight))
+                ranked_by_doc.setdefault(hit.doc_id, []).append((rank, weight))
                 prev = best_hit_by_doc.get(hit.doc_id)
                 if prev is None or hit.score > prev.score:
                     best_hit_by_doc[hit.doc_id] = hit
 
         fused: list[RetrievalHit] = []
         for doc_id, ranked_hits in ranked_by_doc.items():
-            fused_score = sum(rh.weight / (self.rrf_k + rh.rank) for rh in ranked_hits)
+            fused_score = sum(weight / (self.rrf_k + rank) for rank, weight in ranked_hits)
             best = best_hit_by_doc[doc_id]
             fused.append(RetrievalHit(
                 chunk_id=best.chunk_id,

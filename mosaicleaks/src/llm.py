@@ -6,6 +6,8 @@ import os
 import threading
 import time
 
+from openai import OpenAI
+
 logger = logging.getLogger(__name__)
 
 
@@ -19,17 +21,16 @@ class LLMClient:
         api_key: str | None = None,
         min_max_tokens: int | None = None,
     ) -> None:
-        from openai import OpenAI
-
         if api_key is None:
             api_key = os.getenv("OPENAI_API_KEY") or os.getenv("VLLM_API_KEY") or ""
         if not api_key:
             if base_url is None:
                 raise RuntimeError("No API key and no base_url provided.")
-            api_key = "DUMMY"
+            # Local OpenAI-compatible servers usually ignore the key, but the
+            # OpenAI client still requires a non-empty value.
+            api_key = "not-used"
 
         timeout = 600.0 if min_max_tokens and min_max_tokens >= 8000 else 120.0
-        self._OpenAI = OpenAI
         self._api_key = api_key
         self._base_url = base_url
         self._timeout = timeout
@@ -40,7 +41,7 @@ class LLMClient:
     def _get_client(self):
         client = getattr(self._local, "client", None)
         if client is None:
-            client = self._OpenAI(api_key=self._api_key, base_url=self._base_url, timeout=self._timeout)
+            client = OpenAI(api_key=self._api_key, base_url=self._base_url, timeout=self._timeout)
             self._local.client = client
         return client
 

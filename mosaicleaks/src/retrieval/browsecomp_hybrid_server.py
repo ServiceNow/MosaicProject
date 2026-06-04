@@ -60,8 +60,17 @@ class _Handler(BaseHTTPRequestHandler):
             query = str(data.get("query", "")).strip()
             k = int(data.get("k", 10))
             mode = str(data.get("mode", "bm25"))
+            max_chars = data.get("max_chars")
+            max_chars = int(max_chars) if max_chars is not None else None
+            rrf_k = int(data.get("rrf_k", 20))
             allowed_doc_ids = data.get("doc_ids")
-            hits = backend.search(query, k=max(k, 200 if allowed_doc_ids else k), mode=mode)
+            hits = backend.search(
+                query,
+                k=max(k, 200 if allowed_doc_ids else k),
+                mode=mode,
+                max_chars=max_chars,
+                rrf_k=rrf_k,
+            )
             if allowed_doc_ids:
                 allowed = set(str(x) for x in allowed_doc_ids)
                 hits = [h for h in hits if h.doc_id in allowed]

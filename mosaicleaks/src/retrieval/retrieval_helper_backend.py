@@ -199,14 +199,14 @@ class LocalTaskIndex:
             return []
 
         hits: list[dict[str, Any]] = []
-        for bm25_hit in self.bm25.search(query, k=k):
-            doc_id = self._bm25_doc_ids[int(bm25_hit.doc_idx)]
+        for bm25_idx, score in self.bm25.search(query, k=k):
+            doc_id = self._bm25_doc_ids[int(bm25_idx)]
             doc_info = self.documents[doc_id]
             hits.append(
                 {
                     "doc_id": doc_id,
-                    "similarity_score": float(bm25_hit.score),
-                    "bm25_score": float(bm25_hit.score),
+                    "similarity_score": float(score),
+                    "bm25_score": float(score),
                     "content": doc_info["content"],
                     "metadata": doc_info.get("metadata", {}),
                     "preview": doc_info.get("content_preview", doc_info["content"][:300]),
