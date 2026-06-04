@@ -25,15 +25,21 @@ _CONFIG_ENV_VAR = "MOSAICLEAKS_RETRIEVAL_HELPER_CONFIG_JSON"
 
 
 class EmbedRequest(BaseModel):
+    """Request body for embedding one or more texts."""
+
     texts: list[str] = Field(default_factory=list)
     model: str | None = None
 
 
 class EmbedResponse(BaseModel):
+    """Embedding vectors returned by /embed."""
+
     embeddings: list[list[float]]
 
 
 class LocalSearchRequest(BaseModel):
+    """Request body for searching task-local private documents."""
+
     task_id: str
     query: str
     k: int = 10
@@ -41,10 +47,14 @@ class LocalSearchRequest(BaseModel):
 
 
 class LocalSearchResponse(BaseModel):
+    """Task-local search hits returned by /local/search."""
+
     hits: list[dict[str, Any]]
 
 
 class BrowseCompSearchRequest(BaseModel):
+    """Request body for searching BrowseComp and optional curated web docs."""
+
     query: str
     task_id: str | None = None
     k: int = 5
@@ -52,10 +62,14 @@ class BrowseCompSearchRequest(BaseModel):
 
 
 class BrowseCompSearchResponse(BaseModel):
+    """Web search hits returned by /browsecomp/search."""
+
     hits: list[dict[str, Any]]
 
 
 class HelperAppLifecycle:
+    """FastAPI lifespan object that loads the backend once per worker."""
+
     def __init__(self, app: FastAPI, config_obj: RetrievalHelperConfig) -> None:
         self.app = app
         self.config_obj = config_obj
@@ -74,6 +88,8 @@ class HelperAppLifecycle:
 
 
 class HelperLifespan:
+    """Factory used by FastAPI to create the helper lifecycle."""
+
     def __init__(self, config_obj: RetrievalHelperConfig) -> None:
         self.config_obj = config_obj
 
@@ -83,7 +99,6 @@ class HelperLifespan:
 
 def add_helper_arguments(
     argument_target: Any,
-    *,
     default_host: str = "127.0.0.1",
     default_port: int = 8012,
     default_embedding_base_url: str | None = "http://127.0.0.1:8000",
@@ -241,7 +256,6 @@ def add_helper_arguments(
 
 
 def build_arg_parser(
-    *,
     default_host: str = "127.0.0.1",
     default_port: int = 8012,
     default_embedding_base_url: str | None = "http://127.0.0.1:8000",
@@ -437,4 +451,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()

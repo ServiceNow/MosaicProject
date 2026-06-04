@@ -9,7 +9,6 @@ import json
 from pathlib import Path
 import random
 import subprocess
-import sys
 from typing import Any
 
 from mosaicleaks.src.jsonl import read_jsonl_objects, write_jsonl_objects
@@ -92,7 +91,7 @@ def first_nonempty(*values: Any) -> str:
     return ""
 
 
-def normalize_example(row: dict[str, Any], *, allow_invalid: bool) -> dict[str, Any]:
+def normalize_example(row: dict[str, Any], allow_invalid: bool) -> dict[str, Any]:
     if row.get("valid") is False and not allow_invalid:
         raise ValueError(f"chain {row.get('chain_id', '<missing>')} is marked valid=false")
 
@@ -151,7 +150,6 @@ def group_value(row: dict[str, Any], split_key: str) -> str:
 
 def assign_splits(
     rows: list[dict[str, Any]],
-    *,
     split_key: str,
     test_groups: list[str],
     val_ratio: float,
@@ -283,4 +281,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

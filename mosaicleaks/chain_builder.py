@@ -102,7 +102,6 @@ def _limit_bridge_candidates(candidates: list) -> list:
 
 
 def _filter_allowed_answers(
-    *,
     target_entities: list[str],
     target_excerpt: str,
     bridge_value: str,
@@ -143,7 +142,6 @@ def _match_allowed_answer(answer: str, allowed_answers: list[str]) -> str | None
 
 
 def build_one_chain(
-    *,
     state: ChainState,
     llm: LLMClient,
     entity_index: EntityIndex,

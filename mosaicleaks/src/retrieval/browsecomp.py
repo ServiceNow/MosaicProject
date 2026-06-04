@@ -137,6 +137,8 @@ def _save_cached_bm25(cache_path: Path, bm25: BM25Index, mapping: Any) -> None:
 
 
 class _BrowseCompBase:
+    """Shared document lookup and truncation helpers for BrowseComp searchers."""
+
     dataset: Any
     docid_to_idx: dict[str, int]
     docid_to_url: dict[str, str]
@@ -172,7 +174,6 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
 
     def __init__(
         self,
-        *,
         index_glob: str,
         dataset_name: str,
         embedder: QueryEmbedder,
@@ -357,7 +358,6 @@ class BrowseCompHybridSearcher(_BrowseCompBase):
     def search(
         self,
         query: str,
-        *,
         k: int = 10,
         mode: str = "bm25",
         max_chars: int | None = None,
@@ -466,7 +466,6 @@ class BrowseCompBM25Searcher(_BrowseCompBase):
 
     def __init__(
         self,
-        *,
         dataset_name: str,
         index_glob: str | None = None,
         max_chars: int = 8_000,
@@ -509,7 +508,6 @@ class BrowseCompBM25Searcher(_BrowseCompBase):
     def search(
         self,
         query: str,
-        *,
         k: int = 10,
         mode: str = "bm25",
         max_chars: int | None = None,

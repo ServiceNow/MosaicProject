@@ -17,7 +17,6 @@ logger = logging.getLogger(__name__)
 def select_seed(
     secrets: Sequence[Secret],
     doc_lookup: dict[str, LocalDoc],
-    *,
     pattern: str = "LW",
     task_id: str | None = None,
     company: str | None = None,
@@ -77,7 +76,6 @@ def select_web_seed(
     web_doc_ids: set[str],
     next_pool: set[str],
     llm: LLMClient,
-    *,
     pattern: str = "WL",
     task_id: str | None = None,
     company: str | None = None,

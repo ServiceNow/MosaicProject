@@ -20,6 +20,8 @@ from mosaicleaks.src.jsonl import iter_jsonl_objects
 
 @dataclass(frozen=True)
 class ParaBlock:
+    """One paragraph plus the heading context active at that paragraph."""
+
     text: str
     start: int
     end: int
@@ -29,7 +31,6 @@ class ParaBlock:
 
 
 def _finish_paragraph(
-    *,
     lines: list[str],
     start: int | None,
     end: int,
@@ -128,7 +129,6 @@ def _count_words(text: str) -> int:
 
 def _chunk_blocks(
     blocks: list[ParaBlock],
-    *,
     target_words: int,
     overlap_words: int,
     min_words: int,
@@ -182,7 +182,6 @@ def _heading_prefix(block: ParaBlock) -> str:
 def emit_chunk_records(
     doc: dict[str, Any],
     blocks: list[ParaBlock],
-    *,
     target_words: int = 260,
     overlap_words: int = 50,
     min_words: int = 140,
@@ -289,4 +288,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()

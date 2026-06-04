@@ -79,7 +79,7 @@ def find_hits(root: Path, patterns: list[str]) -> list[tuple[Path, int, str]]:
     return hits
 
 
-def main() -> int:
+def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path.cwd())
     parser.add_argument("--pattern", action="append", default=None)
@@ -90,8 +90,9 @@ def main() -> int:
     hits = find_hits(root, patterns)
     for path, line_no, pattern in hits:
         print(f"{path.relative_to(root)}:{line_no}: {pattern}")
-    return 1 if hits else 0
+    if hits:
+        raise RuntimeError(f"found {len(hits)} blocked reference(s)")
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()

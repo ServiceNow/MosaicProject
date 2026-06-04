@@ -46,6 +46,8 @@ _UA = (
 
 @dataclass(frozen=True)
 class FetchResult:
+    """Network fetch output before it is converted into a JSONL row."""
+
     http_status: int | None
     content_type: str | None
     raw_suffix: str
@@ -328,7 +330,6 @@ def _hydrate_from_existing(
 
 
 def refresh_corpus(
-    *,
     tasks_root: Path,
     docs_path: Path,
     downloads_dir: Path,
@@ -479,4 +480,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()

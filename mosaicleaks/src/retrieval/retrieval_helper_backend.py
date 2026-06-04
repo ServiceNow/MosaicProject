@@ -89,7 +89,6 @@ class EmbeddingService:
 
     def __init__(
         self,
-        *,
         base_url: str,
         model_name: str,
         timeout_seconds: float,
@@ -221,7 +220,6 @@ class LocalTaskIndex:
         self,
         query_vector: np.ndarray,
         query: str,
-        *,
         k: int,
         threshold: float,
         dense_k: int,
@@ -384,6 +382,8 @@ class CuratedWebRepository:
 
 @dataclass(slots=True)
 class RetrievalHelperConfig:
+    """Configuration needed to start a retrieval-helper worker."""
+
     local_index_root: str
     local_index_mmap_mode: str
     embedding_base_url: str

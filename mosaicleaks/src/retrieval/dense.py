@@ -20,6 +20,8 @@ def _l2_normalize(x: np.ndarray) -> np.ndarray:
 
 
 class EmbeddingBackend(Protocol):
+    """Interface implemented by local and OpenAI-compatible embedders."""
+
     def embed_texts(self, texts: Sequence[str]) -> np.ndarray:  # shape (n, d)
         ...
 
@@ -30,7 +32,7 @@ class EmbeddingBackend(Protocol):
 class HashEmbeddingBackend:
     """Dependency-free hashing embeddings."""
 
-    def __init__(self, *, dim: int = 256) -> None:
+    def __init__(self, dim: int = 256) -> None:
         self.dim = int(dim)
 
     def _embed_one(self, text: str) -> np.ndarray:
@@ -50,7 +52,9 @@ class HashEmbeddingBackend:
 
 
 class SentenceTransformerBackend:
-    def __init__(self, model_name_or_path: str, *, batch_size: int = 16) -> None:
+    """Embedding backend backed by sentence-transformers."""
+
+    def __init__(self, model_name_or_path: str, batch_size: int = 16) -> None:
         try:
             from sentence_transformers import SentenceTransformer
         except ImportError as exc:
@@ -75,6 +79,8 @@ class SentenceTransformerBackend:
 
 
 class LocalQwen3Backend:
+    """Adapter for an already-loaded local Qwen3 embedding object."""
+
     def __init__(self, embedder: Any) -> None:
         self._embedder = embedder
 
@@ -91,9 +97,10 @@ class LocalQwen3Backend:
 
 
 class OpenAICompatibleBackend:
+    """Embedding backend for OpenAI-compatible /embeddings APIs."""
+
     def __init__(
         self,
-        *,
         model: str,
         api_key: str | None = None,
         base_url: str | None = None,
@@ -136,12 +143,16 @@ class OpenAICompatibleBackend:
 
 @dataclass(frozen=True)
 class DenseHit:
+    """Internal dense hit using the embedding row number."""
+
     idx: int
     score: float
 
 
 class DenseIndex:
-    def __init__(self, *, embeddings: np.ndarray, chunk_ids: list[str], doc_ids: list[str]) -> None:
+    """In-memory cosine-search index over precomputed chunk embeddings."""
+
+    def __init__(self, embeddings: np.ndarray, chunk_ids: list[str], doc_ids: list[str]) -> None:
         if embeddings.ndim != 2:
             raise ValueError("embeddings must be 2D")
         if embeddings.shape[0] != len(chunk_ids) or len(chunk_ids) != len(doc_ids):
@@ -169,7 +180,7 @@ class DenseIndex:
         q = _l2_normalize(query_emb)
         return float(self.embeddings[idx] @ q)
 
-    def search(self, query_emb: np.ndarray, *, k: int = 10) -> list[DenseHit]:
+    def search(self, query_emb: np.ndarray, k: int = 10) -> list[DenseHit]:
         if k <= 0:
             return []
         q = _l2_normalize(query_emb).astype(np.float32, copy=False)

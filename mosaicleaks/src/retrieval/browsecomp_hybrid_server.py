@@ -20,6 +20,8 @@ logger = logging.getLogger(__name__)
 
 
 class _Handler(BaseHTTPRequestHandler):
+    """HTTP handler for the standalone BrowseComp search service."""
+
     backend: BrowseCompHybridSearcher | None = None
 
     def log_message(self, format: str, *args: Any) -> None:
@@ -128,4 +130,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()

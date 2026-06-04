@@ -28,7 +28,6 @@ def read_jsonl_objects(path: Path) -> list[dict[str, Any]]:
 def write_jsonl_objects(
     path: Path,
     rows: Iterable[dict[str, Any]],
-    *,
     sort_keys: bool = False,
 ) -> None:
     with path.open("w", encoding="utf-8") as handle:

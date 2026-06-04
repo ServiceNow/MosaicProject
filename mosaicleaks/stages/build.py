@@ -48,7 +48,6 @@ DOC_TEXT_LIMIT_OUTPUT = 6000
 
 
 def _task_web_searcher_for_task(
-    *,
     task_id: str,
     curated_doc_ids_by_task: dict[str, set[str]],
     curated_web_doc_ids: set[str],
@@ -72,7 +71,6 @@ def _task_web_searcher_for_task(
 
 
 def _build_seed_result(
-    *,
     idx: int,
     pattern: str,
     task_id: str,
@@ -279,7 +277,7 @@ def _build_chain_plan(
 
 
 def _load_seeds_from_file(path: Path, max_chains: int | None) -> list[dict]:
-    """Load chain specs from JSONL (e.g. from extract_bad_seeds for smoke test)."""
+    """Load chain specs from JSONL for deterministic reruns."""
     records = []
     for i, rec in enumerate(iter_jsonl_objects(path)):
         rec["idx"] = rec.get("idx", i)
@@ -803,7 +801,6 @@ def run_build(
 
 def _load_web_docs(
     paths: list[Path],
-    *,
     allowed_doc_ids: set[str] | None = None,
 ) -> dict[str, str]:
     docs: dict[str, list[tuple[int, str]]] = {}

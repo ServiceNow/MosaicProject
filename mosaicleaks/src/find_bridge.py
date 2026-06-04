@@ -145,7 +145,6 @@ def _find_in_pool(
     current_answer: str,
     pool: set[str],
     used: set[str],
-    *,
     allow_fast_path: bool,
 ) -> tuple[list[BridgeCandidate], list[BridgeCandidate]]:
     answer_lower = current_answer.strip().lower()

@@ -21,12 +21,16 @@ def tokenize(text: str) -> list[str]:
 
 @dataclass(frozen=True)
 class SearchHit:
+    """Internal BM25 hit using the index row number."""
+
     doc_idx: int
     score: float
 
 
 @dataclass(frozen=True)
 class BM25State:
+    """Serializable BM25 index state for cache files."""
+
     k1: float
     b: float
     N: int
@@ -42,7 +46,6 @@ class BM25Index:
     def __init__(
         self,
         docs: list[str] | None = None,
-        *,
         k1: float = 1.5,
         b: float = 0.75,
         state: BM25State | None = None,
@@ -86,7 +89,7 @@ class BM25Index:
     def _idf(self, df: int) -> float:
         return math.log(1.0 + (self._N - df + 0.5) / (df + 0.5))
 
-    def search(self, query: str, *, k: int = 10) -> list[SearchHit]:
+    def search(self, query: str, k: int = 10) -> list[SearchHit]:
         if k <= 0:
             return []
         qtf = Counter(tokenize(query))
@@ -133,6 +136,8 @@ class BM25Index:
 
 
 class BM25Searcher:
+    """BM25 searcher over chunk JSONL records."""
+
     def __init__(self, chunks_path: Path) -> None:
         self.chunks_path = chunks_path
         self._chunk_ids: list[str] = []
@@ -159,7 +164,7 @@ class BM25Searcher:
 
         self.index = BM25Index(self._texts)
 
-    def search(self, query: str, *, k: int = 10) -> list[RetrievalHit]:
+    def search(self, query: str, k: int = 10) -> list[RetrievalHit]:
         hits = self.index.search(query, k=k)
         out: list[RetrievalHit] = []
         for h in hits:

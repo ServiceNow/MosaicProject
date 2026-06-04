@@ -86,7 +86,6 @@ def build_doc_lookup(chunks: list[dict[str, Any]]) -> dict[str, LocalDoc]:
 def filter_seed_secrets(
     secrets: list[Secret],
     doc_lookup: dict[str, LocalDoc],
-    *,
     task_id: str | None = None,
     company: str | None = None,
 ) -> list[Secret]:
@@ -139,7 +138,6 @@ def _build_stem_to_docid(doc_lookup: dict[str, LocalDoc]) -> dict[tuple[str, str
 
 def load_eval_seeds(
     doc_lookup: dict[str, LocalDoc],
-    *,
     task_id: str | None = None,
     company: str | None = None,
 ) -> list[Secret]:

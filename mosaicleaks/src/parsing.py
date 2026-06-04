@@ -103,6 +103,8 @@ def parse_qa_with_quote(text: str) -> tuple[str, str, str] | None:
 
 
 class VerificationOutput(NamedTuple):
+    """Parsed answerability response from a verification prompt."""
+
     answerable: bool
     content: str  # The answer if answerable, or the missing info if not
 

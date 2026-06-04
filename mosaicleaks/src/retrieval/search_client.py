@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 class SearchClient:
     """HTTP client that matches the HybridSearcher.search() interface."""
 
-    def __init__(self, base_url: str, *, pool: str = "web", timeout: float = 30.0) -> None:
+    def __init__(self, base_url: str, pool: str = "web", timeout: float = 30.0) -> None:
         self.base_url = base_url.rstrip("/")
         self.pool = pool
         self._client = httpx.Client(base_url=self.base_url, timeout=timeout)
@@ -32,7 +32,6 @@ class SearchClient:
     def search(
         self,
         query: str,
-        *,
         k: int = 10,
         mode: str = "bm25",
         doc_ids: list[str] | None = None,

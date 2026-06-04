@@ -11,6 +11,8 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class _RankedHit:
+    """One source hit plus its source rank and fusion weight."""
+
     hit: RetrievalHit
     rank: int
     weight: float
@@ -19,7 +21,7 @@ class _RankedHit:
 class FilteredSearcher:
     """Restrict an underlying searcher to an allowlist of document IDs."""
 
-    def __init__(self, base_searcher: Any, *, allowed_doc_ids: set[str]) -> None:
+    def __init__(self, base_searcher: Any, allowed_doc_ids: set[str]) -> None:
         self.base_searcher = base_searcher
         self.allowed_doc_ids = set(allowed_doc_ids)
 
@@ -27,7 +29,7 @@ class FilteredSearcher:
     def size(self) -> int:
         return len(self.allowed_doc_ids)
 
-    def search(self, query: str, *, k: int = 10, **kwargs) -> list[RetrievalHit]:
+    def search(self, query: str, k: int = 10, **kwargs) -> list[RetrievalHit]:
         if not self.allowed_doc_ids or k <= 0:
             return []
         search_k = max(k, getattr(self.base_searcher, "size", k))
@@ -39,7 +41,7 @@ class FilteredSearcher:
 class ExcludedSearcher:
     """Exclude selected document IDs from an underlying searcher."""
 
-    def __init__(self, base_searcher: Any, *, excluded_doc_ids: set[str], overfetch_factor: int = 20) -> None:
+    def __init__(self, base_searcher: Any, excluded_doc_ids: set[str], overfetch_factor: int = 20) -> None:
         self.base_searcher = base_searcher
         self.excluded_doc_ids = set(excluded_doc_ids)
         self.overfetch_factor = max(1, int(overfetch_factor))
@@ -49,7 +51,7 @@ class ExcludedSearcher:
         base_size = int(getattr(self.base_searcher, "size", 0))
         return max(0, base_size - len(self.excluded_doc_ids))
 
-    def search(self, query: str, *, k: int = 10, **kwargs) -> list[RetrievalHit]:
+    def search(self, query: str, k: int = 10, **kwargs) -> list[RetrievalHit]:
         if k <= 0:
             return []
         if not self.excluded_doc_ids:
@@ -72,7 +74,7 @@ class FixedKwargSearcher:
     def size(self) -> int:
         return int(getattr(self.base_searcher, "size", 0))
 
-    def search(self, query: str, *, k: int = 10, **kwargs) -> list[RetrievalHit]:
+    def search(self, query: str, k: int = 10, **kwargs) -> list[RetrievalHit]:
         merged_kwargs = dict(kwargs)
         merged_kwargs.update(self.fixed_kwargs)
         return self.base_searcher.search(query, k=k, **merged_kwargs)
@@ -84,7 +86,6 @@ class WeightedRRFSearcher:
     def __init__(
         self,
         searchers: Iterable[tuple[Any, float]],
-        *,
         rrf_k: int = 60,
     ) -> None:
         self._searchers = [(searcher, float(weight)) for searcher, weight in searchers if searcher is not None]
@@ -94,7 +95,7 @@ class WeightedRRFSearcher:
     def size(self) -> int:
         return sum(int(getattr(searcher, "size", 0)) for searcher, _ in self._searchers)
 
-    def search(self, query: str, *, k: int = 10, **kwargs) -> list[RetrievalHit]:
+    def search(self, query: str, k: int = 10, **kwargs) -> list[RetrievalHit]:
         if k <= 0 or not self._searchers:
             return []
 

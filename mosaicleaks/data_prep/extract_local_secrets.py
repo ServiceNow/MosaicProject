@@ -129,7 +129,7 @@ def _extract_quote(doc_text: str, answer: str) -> str:
     return " ".join(doc_text[start:end].split())
 
 
-def _passes_filters(doc_meta: dict, *, task: str | None, company: str | None) -> bool:
+def _passes_filters(doc_meta: dict, task: str | None, company: str | None) -> bool:
     if task and doc_meta.get("task_id") != task:
         return False
     if company:
@@ -141,7 +141,6 @@ def _passes_filters(doc_meta: dict, *, task: str | None, company: str | None) ->
 
 def _verify_secret(
     llm: LLMClient,
-    *,
     question: str,
     doc_text: str,
     check_max_tokens: int,
@@ -251,4 +250,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()

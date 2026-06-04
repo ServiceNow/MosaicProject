@@ -10,9 +10,10 @@ logger = logging.getLogger(__name__)
 
 
 class LLMClient:
+    """Small wrapper around an OpenAI-compatible chat completions endpoint."""
+
     def __init__(
         self,
-        *,
         model: str,
         base_url: str | None = None,
         api_key: str | None = None,
@@ -46,7 +47,6 @@ class LLMClient:
     def chat(
         self,
         messages: list[dict[str, str]],
-        *,
         temperature: float = 0.3,
         max_tokens: int = 800,
         top_p: float | None = None,
@@ -82,7 +82,6 @@ class LLMClient:
     def chat_batch(
         self,
         messages_batch: list[list[dict[str, str]]],
-        *,
         temperature: float = 0.3,
         max_tokens: int = 800,
         top_p: float | None = None,

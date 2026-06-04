@@ -14,6 +14,8 @@ Mode = Literal["bm25", "dense", "hybrid"]
 
 @dataclass(frozen=True)
 class Candidate:
+    """Internal candidate that keeps a chunk row with its retrieval metadata."""
+
     idx: int
     chunk_id: str
     doc_id: str
@@ -22,9 +24,10 @@ class Candidate:
 
 
 class HybridSearcher:
+    """BM25-first searcher over one or more prepared chunk JSONL files."""
+
     def __init__(
         self,
-        *,
         chunks_path: Path,
         dense_index_path: Path | None = None,
         doc_ids: set[str] | None = None,
@@ -63,7 +66,6 @@ class HybridSearcher:
     def from_paths(
         cls,
         paths: list[Path],
-        *,
         doc_ids: set[str] | None = None,
         **kwargs,
     ) -> "HybridSearcher":
@@ -121,7 +123,6 @@ class HybridSearcher:
     def search(
         self,
         query: str,
-        *,
         k: int = 10,
         mode: Mode = "hybrid",
         embedder: EmbeddingBackend | None = None,
@@ -171,17 +172,3 @@ class HybridSearcher:
 
         scored.sort(key=lambda kv: kv[0], reverse=True)
         return [self._hit(c, s) for s, c in scored[:k]]
-
-
-def merge_results(
-    *result_lists: list[RetrievalHit],
-    k: int = 10,
-) -> list[RetrievalHit]:
-    best_by_doc: dict[str, RetrievalHit] = {}
-    for results in result_lists:
-        for hit in results:
-            prev = best_by_doc.get(hit.doc_id)
-            if prev is None or hit.score > prev.score:
-                best_by_doc[hit.doc_id] = hit
-    merged = sorted(best_by_doc.values(), key=lambda h: h.score, reverse=True)
-    return merged[:k]

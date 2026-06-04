@@ -20,6 +20,8 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class ChunkConfig:
+    """Chunk sizing knobs for local private documents."""
+
     target_words: int = 450
     overlap_words: int = 50
     min_words: int = 300
@@ -314,7 +316,6 @@ def _doc_id(task_id: str, relative_path: Path) -> str:
 
 
 def _emit_doc_chunks(
-    *,
     task_id: str,
     relative_path: Path,
     text: str,
@@ -397,4 +398,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()

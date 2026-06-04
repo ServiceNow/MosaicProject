@@ -49,6 +49,8 @@ End your response with a numbered list of queries like this:
 
 @dataclass
 class TrivialCheckResult:
+    """Result of asking whether a question is answerable without documents."""
+
     trivial: bool
     answer: str | None
     justification: str
@@ -56,6 +58,8 @@ class TrivialCheckResult:
 
 @dataclass
 class BackrefCheckResult:
+    """Result of checking whether a hop depends on the previous answer."""
+
     independent: bool
     answer: str | None
     justification: str
@@ -63,6 +67,8 @@ class BackrefCheckResult:
 
 @dataclass
 class SearchLeakResult:
+    """Result of checking whether a web query would reveal the bridge value."""
+
     would_leak: bool
     queries: list[str]
     justification: str
@@ -88,7 +94,6 @@ def _parse_answer_justification(raw: str) -> tuple[str, str]:
 def check_answerable_without_doc(
     question: str,
     llm,
-    *,
     correct_answer: str | None = None,
 ) -> TrivialCheckResult:
     raw = llm.chat(
@@ -165,7 +170,6 @@ def check_search_leaks_bridge(question: str, bridge_value: str, llm) -> SearchLe
 def check_question(
     question: str,
     answer: str,
-    *,
     prev_answers: list[str] | None = None,
 ) -> str | None:
     """Minimal deterministic validation.

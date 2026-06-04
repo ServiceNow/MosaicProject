@@ -36,7 +36,6 @@ def _deliberation_instruction(kind: str) -> str:
 
 
 def _build_constrained_prompt(
-    *,
     doc_text: str,
     prev_question: str,
     prev_answer: str,
@@ -57,7 +56,6 @@ def _build_constrained_prompt(
 
 
 def _build_pick_prompt(
-    *,
     target_excerpt: str,
     prev_question: str,
     prev_answer: str,
@@ -89,7 +87,7 @@ def _is_no_valid_question(raw: str) -> bool:
     return "NO_VALID_QUESTION" in raw.upper()
 
 
-def _parse_constrained_raw(raw: str, *, target_answer: str) -> tuple[str, str, str]:
+def _parse_constrained_raw(raw: str, target_answer: str) -> tuple[str, str, str]:
     if _is_no_valid_question(raw):
         raise ValueError("Constrained question rejected by model: NO_VALID_QUESTION")
 
@@ -117,7 +115,6 @@ def _parse_pick_raw(raw: str) -> tuple[str, str, str]:
 
 
 def generate_question_constrained(
-    *,
     doc_text: str,
     prev_question: str,
     prev_answer: str,
@@ -157,7 +154,6 @@ def generate_question_constrained(
 
 
 def generate_question_pick(
-    *,
     target_excerpt: str,
     prev_question: str,
     prev_answer: str,
@@ -202,7 +198,6 @@ def generate_question_pick(
 
 
 def generate_question_constrained_batch(
-    *,
     jobs: list[dict],
     llm: LLMClient,
     batch_size: int = config.GENERATION_BATCH_SIZE,
@@ -255,7 +250,6 @@ def generate_question_constrained_batch(
 
 
 def generate_question_pick_batch(
-    *,
     jobs: list[dict],
     llm: LLMClient,
     batch_size: int = config.GENERATION_BATCH_SIZE,
@@ -312,7 +306,6 @@ def generate_question_pick_batch(
 
 
 def rank_questions(
-    *,
     candidates: list[dict],
     prev_question: str,
     prev_answer: str,
