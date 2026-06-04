@@ -17,7 +17,7 @@ has_flag() {
     return 1
 }
 
-cmd=(python -m trajectory_generation.run)
+cmd=("${PYTHON:-python3}" -m mosaicleaks.run)
 
 if ! has_flag --model "$@"; then
     cmd+=(--model "Qwen/Qwen3-30B-A3B-Instruct-2507")

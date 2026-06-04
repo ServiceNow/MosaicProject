@@ -19,12 +19,12 @@ has_flag() {
 
 if ! has_flag --base-url "$@"; then
     cat >&2 <<'EOF'
-run_generation_step.sh expects an explicit Step-compatible endpoint.
+run_generation_step.sh expects an explicit OpenAI-compatible endpoint.
 
 Example:
   ./scripts/run_generation_step.sh \
-    --base-url http://your-step-endpoint:8000/v1 \
-    --output-dir ~/trajectory_generation_runs/step_run \
+    --base-url http://your-endpoint:8000/v1 \
+    --output-dir ~/mosaicleaks_runs/step_run \
     --seeds-from /path/to/seed_plan.jsonl \
     --chunks-local /path/to/chunks_local.jsonl \
     --chunks-web /path/to/chunks_web.jsonl \
@@ -33,7 +33,7 @@ EOF
     exit 1
 fi
 
-cmd=(python -m trajectory_generation.run)
+cmd=("${PYTHON:-python3}" -m mosaicleaks.run)
 
 if ! has_flag --model "$@"; then
     cmd+=(--model "step-3.5-flash")
