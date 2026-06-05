@@ -1,0 +1,121 @@
+"""Stage 5: Reword questions to fix doc references and vague phrasing."""
+
+import json
+import logging
+from pathlib import Path
+
+from mosaicleaks.src.format_questions import format_numbered_questions
+from mosaicleaks.src.jsonl import read_jsonl_objects
+from mosaicleaks.src.llm import LLMClient
+from mosaicleaks.src.types import ChainState, HopRecord
+from mosaicleaks.src.verify_chain import verify_chain
+
+from mosaicleaks import config
+from mosaicleaks.prompts import REWORD_PROMPT
+
+logger = logging.getLogger(__name__)
+
+
+def _format_prev_hops(prev_hops: list[dict]) -> str:
+    """Format previous hops as Q/A/quote for context."""
+    if not prev_hops:
+        return "(none - this is the first question)"
+    lines = []
+    for j, h in enumerate(prev_hops, 1):
+        q = h.get("question", "")
+        a = h.get("answer", "")
+        quote = h.get("quote", "")
+        lines.append(f"Hop {j}: Q: {q}\n     A: {a}")
+        if quote:
+            lines.append(f"     Quote: {quote[:300]}{'...' if len(quote) > 300 else ''}")
+    return "\n".join(lines)
+
+
+def _reword_question(question: str, prev_hops: list[dict], llm: LLMClient) -> str:
+    """Rewrite a single question to fix doc refs, vague phrasing, and improve linearity."""
+    prev_context = _format_prev_hops(prev_hops)
+    prompt = REWORD_PROMPT.format(prev_hops=prev_context, question=question)
+    raw = llm.chat(
+        [{"role": "user", "content": prompt}],
+        temperature=config.DEFAULT_TEMPERATURE,
+        max_tokens=config.SHORT_CALL_MAX_TOKENS,
+        top_p=config.DEFAULT_TOP_P,
+        use_min_max_tokens=False,
+    )
+    return raw.strip().strip('"').strip()
+
+
+def _verify_reworded_chain(chain: dict, llm: LLMClient) -> None:
+    hops = [
+        HopRecord(
+            hop_number=hop["hop_number"],
+            hop_type=hop["hop_type"],
+            question=hop["question"],
+            answer=hop["answer"],
+            doc_id=hop["doc_id"],
+            doc_text=hop.get("doc_text", ""),
+            quote=hop.get("quote", ""),
+        )
+        for hop in chain.get("hops", [])
+    ]
+    state = ChainState(
+        pattern=chain["pattern"],
+        hop_history=hops,
+        global_question=chain.get("global_question", ""),
+        global_answer=chain.get("global_answer", ""),
+    )
+    verification, _traces = verify_chain(state, llm)
+    chain["verification"] = {
+        "is_valid": verification.is_valid,
+        "no_docs_pass": verification.no_docs_pass,
+        "first_only_pass": verification.first_only_pass,
+        "last_only_pass": verification.last_only_pass,
+        "all_docs_pass": verification.all_docs_pass,
+        "all_docs_answer": verification.all_docs_answer,
+        "details": verification.details,
+    }
+    chain["valid"] = verification.is_valid
+
+
+def run_reword(
+    chains_path: Path,
+    output_path: Path,
+    model: str,
+    base_url: str,
+    api_key: str | None,
+) -> Path:
+    """Reword each hop's question. Returns path to chains_final.jsonl."""
+    chains = read_jsonl_objects(chains_path)
+
+    llm = LLMClient(
+        model=model,
+        base_url=base_url,
+        api_key=api_key,
+        min_max_tokens=config.DEFAULT_MAX_TOKENS,
+    )
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(output_path, "w") as f_out:
+        for chain in chains:
+            hops = chain.get("hops", [])
+            for i, hop in enumerate(hops):
+                q = hop.get("question", "")
+                if q:
+                    prev = hops[:i]
+                    fixed = _reword_question(q, prev, llm)
+                    if fixed and len(fixed) > 5:
+                        hop["question"] = fixed
+
+            hop_dicts = [
+                {"question": h["question"], "answer": h["answer"], "hop_number": h["hop_number"]}
+                for h in hops
+            ]
+            numbered = format_numbered_questions(hop_dicts)
+            chain["numbered_questions"] = numbered
+            chain["global_question"] = numbered
+            _verify_reworded_chain(chain, llm)
+
+            f_out.write(json.dumps(chain, ensure_ascii=False) + "\n")
+
+    logger.info("Reworded %d chains -> %s", len(chains), output_path)
+    return output_path
