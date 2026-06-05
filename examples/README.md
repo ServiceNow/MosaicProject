@@ -33,7 +33,7 @@ python3 -m mosaicleaks.data_prep.chunk_local_folder \
 ## 2. Import Manual Private QA Seeds
 
 Manual seeds are useful when a developer already knows which private facts they
-want to protect. Each row needs `doc_id`, `question`, and `answer`.
+want to protect. Each row has `doc_id`, `question`, and `answer`.
 
 ```bash
 python3 -m mosaicleaks.data_prep.import_seeds \

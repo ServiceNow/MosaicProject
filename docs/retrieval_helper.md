@@ -1,8 +1,8 @@
 # Retrieval Helper
 
 The retrieval helper is a reusable HTTP service used by dataset generation and
-agent-style evaluation runs. It is provider-agnostic: embeddings come from an
-OpenAI-compatible embedding endpoint.
+agent-style evaluation runs. It gets embeddings from an OpenAI-compatible
+endpoint.
 
 ## API
 
@@ -58,10 +58,10 @@ contains a `doc_ids` list aligned with rows in `embeddings.npy`.
 
 ## BrowseComp Inputs
 
-The helper needs:
+The helper uses:
 
 - `--browsecomp-corpus`: Hugging Face dataset name or local corpus JSONL
-- `--browsecomp-index-glob`: dense embedding shard glob; this is required
+- `--browsecomp-index-glob`: dense embedding shard glob
 - `--embedding-base-url`: OpenAI-compatible embedding endpoint
 - `--embedding-model`: embedding model name served by that endpoint
 
@@ -69,10 +69,10 @@ The helper supports dense, BM25, and reciprocal-rank-fusion retrieval modes.
 RRF is the recommended default for replication because it is less brittle than
 pure dense ranking when queries contain rare identifiers.
 
-For training runs, the local index should cover every local gold document in the
-published dataset. If the dataset is regenerated, rebuild the local indices from
-the same `chunks_local.jsonl` that was used during generation rather than
-reusing an older index root.
+For training runs, build the local index so it covers every local gold document
+in the published dataset. If the dataset is regenerated, rebuild the local
+indices from the same `chunks_local.jsonl` that was used during generation
+rather than reusing an older index root.
 
 Long BrowseComp parents can make reader prompts exceed the model context. The
 helper can drop or cap those parents with `--browsecomp-max-doc-windows`,

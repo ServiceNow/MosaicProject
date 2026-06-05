@@ -1,8 +1,8 @@
 # Dataset Generation
 
 Use this guide to run the MosaicLeaks dataset build. The model endpoint can
-vary, but every run should record the endpoint, model name, input artifact
-hashes, generation settings, and output manifest.
+vary. For each run, record the endpoint, model name, input file hashes,
+generation settings, and output manifest.
 
 ## 1. Chunk Local Documents
 
@@ -39,8 +39,8 @@ python3 -m mosaicleaks.data_prep.chunk_local_folder \
 
 Manifest fields:
 
-- `path`: required file path, absolute or relative to the manifest file
-- `task_id`: required group ID used for chain construction and local retrieval
+- `path`: file path, absolute or relative to the manifest file
+- `task_id`: group ID used for chain construction and local retrieval
 - `company_name`: optional label used for split grouping and metadata
 - `relative_path`: optional stable path to use inside generated `doc_id` values
 
@@ -114,7 +114,7 @@ Primary web corpus:
 - use BrowseComp-Plus through `Tevatron/browsecomp-plus-corpus`, or
 - pass a local BrowseComp-style JSONL corpus with `docid`, `url`, and `text`
 
-BrowseComp/web chunks are required for any generation pattern containing `W`.
+Use BrowseComp/web chunks for any generation pattern containing `W`.
 
 Optional curated task URL files:
 
@@ -163,7 +163,7 @@ Validation:
 
 ## 6. Publish A Versioned Dataset
 
-Publishing should create a self-contained bundle:
+Publishing writes a dataset bundle:
 
 ```text
 dataset.jsonl
@@ -190,7 +190,7 @@ Validation:
 - held-out test grouping is documented
 - every final answer appears in its accepted-answer list
 - no empty questions, answers, hop lists, or document IDs
-- all artifact paths in the manifest are relative or release-stable
-- source code commit and input artifact hashes are recorded
+- all paths in the manifest are relative or portable
+- source code commit and input file hashes are recorded
 - training and evaluation runs record the dataset bundle, code commit, model,
   retrieval helper, and output paths

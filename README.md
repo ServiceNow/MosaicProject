@@ -26,19 +26,19 @@ python3 -m spacy download en_core_web_trf
 
 ## External Inputs
 
-MosaicLeaks expects two external data sources:
+The pipeline uses two external data sources:
 
 - Local private documents, provided as `chunks_local.jsonl`. For paper
   replication, build this from a DRBench-style task directory. For other
   datasets, use the generic folder or manifest chunker to convert your document
   collection to the same chunk format.
-- BrowseComp-Plus corpus/index artifacts, either through the Hugging Face
+- BrowseComp-Plus corpus and index files, either through the Hugging Face
   dataset name `Tevatron/browsecomp-plus-corpus` or a local JSONL corpus plus
-  embedding index shards. BrowseComp is required for the current generation and
+  embedding index shards. We use BrowseComp-Plus for the current generation and
   retrieval-helper flow.
 
-See [External Dependencies](docs/external_dependencies.md) for the required
-input files.
+See [External Dependencies](docs/external_dependencies.md) for input file
+details.
 
 ## Dataset Generation
 

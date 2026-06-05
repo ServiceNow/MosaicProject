@@ -27,7 +27,7 @@ debugging and ablations.
 
 ## 2. Inputs
 
-A training run needs:
+For training, prepare:
 
 - a published MosaicLeaks dataset bundle with `dataset.jsonl`, `train.jsonl`,
   `val.jsonl`, `test.jsonl`, and `manifest.json`
@@ -39,15 +39,15 @@ A training run needs:
 
 Use `train.jsonl` for RL training and `val.jsonl` for routine PipelineRL
 evaluation. Keep `test.jsonl` held out for final reporting. For paper-style
-replication, the split key should hold out a full company or similarly coherent
-group, not random individual chains.
+replication, hold out a full company or similarly coherent group, not random
+individual chains.
 
 ## 3. Start Retrieval
 
-Training should use the same retrieval helper as generation so the agent sees
-the same document universe during rollout. RRF is the recommended default for
-both local and BrowseComp retrieval. Before a serious run, check that the local
-index covers every local gold document in the published dataset.
+Use the same retrieval helper as generation so the agent sees the same document
+universe during rollout. RRF is the recommended default for both local and
+BrowseComp retrieval. Before a serious run, check that the local index covers
+every local gold document in the published dataset.
 
 ```bash
 ./scripts/start_retrieval_helper.sh \
@@ -92,9 +92,9 @@ The important settings are:
 - `PIPELINERL_DOMAIN`: override prefix, usually `privacy_hopqa`
 - `MODEL_PATH`: base model or checkpoint to train
 
-The `privacy_hopqa` PipelineRL config should point to the MosaicLeaks
-privacy-agent rollout and problem loader. The launcher passes the dataset paths
-as overrides, so the config should not hard-code local bundle paths.
+The `privacy_hopqa` PipelineRL config points to the MosaicLeaks privacy-agent
+rollout and problem loader. The launcher passes the dataset paths as overrides,
+so the config can stay free of local bundle paths.
 
 ## 5. Launch
 
@@ -151,10 +151,8 @@ names and experiment notes because they answer different questions.
 Outcome or output task reward:
 
 - use `TRAIN_REWARD_MODE=all_hops_correct` for a binary final-chain reward
-- use `TRAIN_REWARD_MODE=hop_accuracy` when partial hop correctness should
-  matter
-- keep `TRAINING_REWARD_MODE=outcome` when the reward should be assigned at the
-  rollout outcome level
+- use `TRAIN_REWARD_MODE=hop_accuracy` when partial hop correctness matters
+- keep `TRAINING_REWARD_MODE=outcome` for rollout-level outcome rewards
 
 Situational task rewards:
 
@@ -174,8 +172,8 @@ Privacy rewards:
 - use a learned privacy reward model served through an OpenAI-compatible helper
 - set `PRIVACY_REWARD_SERVICE_URL=http://<host>:<port>` and
   `PRIVACY_REWARD_MODEL=privacy_reward`
-- the privacy reward applies to `hop_plan` traces with web queries; it should
-  judge visible web-query text, not private documents or final answers
+- the privacy reward applies to `hop_plan` traces with web queries; it judges
+  visible web-query text, not private documents or final answers
 - combine answer and privacy objectives with PipelineRL overrides such as
   `finetune.rl.multi_objective_advantages=true`,
   `finetune.rl.reward_objective_weights.answer=0.5`, and
@@ -220,7 +218,7 @@ MosaicLeaks-trained agent.
 
 ## 8. Run Record
 
-Every training run should record:
+Every training run records:
 
 - dataset bundle path and `manifest.json` hash
 - MosaicLeaks code commit

@@ -1,13 +1,13 @@
 # External Dependencies
 
-MosaicLeaks does not include private task files, BrowseComp-Plus corpora, dense
-embedding shards, model weights, or API credentials. The pipeline expects those
-artifacts to be supplied by path, dataset name, or environment variable.
+MosaicLeaks keeps large local inputs out of the repo. Bring your private task
+files, BrowseComp-Plus corpus files, and dense embedding shards through paths,
+dataset names, or environment variables.
 
 ## Local Private Documents
 
-The generation pipeline consumes local private documents as `chunks_local.jsonl`.
-Each chunk row must include:
+The generation pipeline reads local private documents from `chunks_local.jsonl`.
+Each chunk row includes:
 
 - `chunk_id`
 - `doc_id`
@@ -40,8 +40,8 @@ manifest form is recommended when you have more than one task:
 
 Manifest fields:
 
-- `path`: required file path, absolute or relative to the manifest file
-- `task_id`: required group ID used for chain construction and local retrieval
+- `path`: file path, absolute or relative to the manifest file
+- `task_id`: group ID used for chain construction and local retrieval
 - `company_name`: optional label used for metadata and split grouping
 - `relative_path`: optional stable path for generated `doc_id` values
 
@@ -57,25 +57,25 @@ appears in the document text, unless `--no-require-answer-in-doc` is passed.
 
 ## BrowseComp-Plus
 
-BrowseComp-Plus is the required public-web corpus for generation patterns that
-include web hops. Dataset generation uses prepared web chunks for bridge
+We use BrowseComp-Plus as the public-web corpus for generation patterns that
+include web hops. Dataset generation reads prepared web chunks for bridge
 discovery:
 
 ```text
 chunks_web.jsonl
 ```
 
-Each chunk row should include `chunk_id`, `doc_id`, `text`, `offsets`, and
-optional metadata. The retrieval helper can additionally use the full corpus in
-two ways:
+Each chunk row includes `chunk_id`, `doc_id`, `text`, `offsets`, and optional
+metadata. The retrieval helper can additionally use the full corpus in two
+ways:
 
 - `--browsecomp-corpus Tevatron/browsecomp-plus-corpus`, loaded through the
   `datasets` package.
 - `--browsecomp-corpus /path/to/corpus.jsonl`, where each row has `docid`,
   `url`, and `text`.
 
-Dense BrowseComp retrieval, including the retrieval helper, additionally needs
-embedding shards compatible with the MosaicLeaks `BrowseCompHybridSearcher`:
+Dense BrowseComp retrieval, including the retrieval helper, uses embedding
+shards compatible with the MosaicLeaks `BrowseCompHybridSearcher`:
 
 ```text
 corpus.shard00000_of_000NN.pkl
@@ -84,11 +84,10 @@ corpus.shard00001_of_000NN.pkl
 ```
 
 Each shard stores the dense vectors and lookup IDs used to map search results
-back to BrowseComp document IDs. The pickle payload must be a two-item tuple:
+back to BrowseComp document IDs. The pickle payload is a two-item tuple:
 `(embeddings, lookup)`, where `embeddings` is a 2D float array and `lookup`
-contains the corresponding BrowseComp document IDs in row order. The query
-embedding endpoint should serve the same embedding model used to create those
-shards.
+contains the corresponding BrowseComp document IDs in row order. Use the same
+embedding model for search queries that was used to create those shards.
 
 ## Curated Task URLs
 
@@ -115,5 +114,5 @@ export MOSAICLEAKS_LLM_BASE_URL=http://your-endpoint:8000/v1
 export MOSAICLEAKS_LLM_MODEL=step-3.5-flash
 ```
 
-Equivalent local vLLM, OpenAI, OpenRouter, or other compatible endpoints should
-work when they implement the same API shape.
+Equivalent local vLLM, OpenAI, OpenRouter, or other compatible endpoints work
+when they implement the same API shape.
