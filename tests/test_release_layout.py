@@ -73,3 +73,6 @@ def test_training_dry_run_allows_placeholder_bundle(tmp_path) -> None:
     )
     assert result.returncode == 0, result.stderr
     assert "pipelinerl.launch" in result.stdout
+    assert "--config-name privacy_hopqa" in result.stdout
+    assert "privacy_hopqa.final_train_dataset_path" in result.stdout
+    assert "privacy_hopqa.helper_service_url" not in result.stdout

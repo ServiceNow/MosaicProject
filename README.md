@@ -93,9 +93,10 @@ details.
 
 ## Training Runs
 
-We train with PipelineRL using the MosaicLeaks privacy-agent configuration. The
-launcher passes the published dataset bundle, retrieval-helper URL, model path,
-and MosaicLeaks-specific overrides into `pipelinerl.launch`:
+We train with PipelineRL using the `privacy_hopqa` domain config, which is the
+MosaicLeaks privacy-agent rollout used for PA-DR experiments. The launcher
+passes the published dataset bundle, retrieval-helper URL, model path, capture
+mode, and reward settings into `pipelinerl.launch`:
 
 ```bash
 cp configs/training.example.env configs/training.local.env
@@ -105,8 +106,8 @@ set +a
 DRY_RUN=1 ./scripts/launch_training.sh
 ```
 
-See [Training Runs](docs/training_runs.md) for the PipelineRL launch interface
-and the MosaicLeaks-specific training choices.
+See [Training Runs](docs/training_runs.md) for the PipelineRL launch interface,
+capture modes, outcome/situational/privacy rewards, and leakage metrics.
 
 ## Citation
 

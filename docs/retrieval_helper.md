@@ -69,6 +69,16 @@ The helper supports dense, BM25, and reciprocal-rank-fusion retrieval modes.
 RRF is the recommended default for replication because it is less brittle than
 pure dense ranking when queries contain rare identifiers.
 
+For training runs, the local index should cover every local gold document in the
+published dataset. If the dataset is regenerated, rebuild the local indices from
+the same `chunks_local.jsonl` that was used during generation rather than
+reusing an older index root.
+
+Long BrowseComp parents can make reader prompts exceed the model context. The
+helper can drop or cap those parents with `--browsecomp-max-doc-windows`,
+`--browsecomp-reader-window-chars`, `--browsecomp-reader-window-overlap-chars`,
+and `--browsecomp-exclude-doc-ids-file`.
+
 ## Launch
 
 ```bash
@@ -78,6 +88,7 @@ pure dense ranking when queries contain rare identifiers.
   --embedding-model Qwen/Qwen3-Embedding-4B \
   --browsecomp-index-glob "/path/to/corpus.shard*_of_*.pkl" \
   --browsecomp-corpus Tevatron/browsecomp-plus-corpus \
+  --browsecomp-max-doc-windows 10 \
   --browsecomp-rank-mode rrf \
   --local-rank-mode rrf
 ```
