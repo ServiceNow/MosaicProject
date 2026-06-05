@@ -192,9 +192,5 @@ Validation:
 - no empty questions, answers, hop lists, or document IDs
 - all artifact paths in the manifest are relative or release-stable
 - source code commit and input artifact hashes are recorded
-
-## 7. Paper Replication
-
-Paper tables and plots should read from the published dataset bundle. Runtime
-rollout or evaluation scripts should write their own manifest with the dataset
-bundle, code commit, model, retrieval helper, and output paths.
+- training and evaluation runs record the dataset bundle, code commit, model,
+  retrieval helper, and output paths

@@ -93,9 +93,9 @@ details.
 
 ## Training Runs
 
-MosaicLeaks does not include a trainer. Training runs consume a published
-dataset bundle, an optional retrieval-helper URL, and explicit trainer
-overrides:
+We train with PipelineRL using the MosaicLeaks privacy-agent configuration. The
+launcher passes the published dataset bundle, retrieval-helper URL, model path,
+and MosaicLeaks-specific overrides into `pipelinerl.launch`:
 
 ```bash
 cp configs/training.example.env configs/training.local.env
@@ -105,7 +105,8 @@ set +a
 DRY_RUN=1 ./scripts/launch_training.sh
 ```
 
-See [Training Runs](docs/training_runs.md) for the launch interface.
+See [Training Runs](docs/training_runs.md) for the PipelineRL launch interface
+and the MosaicLeaks-specific training choices.
 
 ## Citation
 
