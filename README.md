@@ -3,9 +3,9 @@
 This repository contains the dataset-generation pipeline, retrieval helper, and
 training-launch interface used in
 [MosaicLeaks: Privacy Risks in Querying-in-the-Open for Deep Research
-Agents](https://arxiv.org/abs/2605.30727). It is organized so a developer can
-reproduce the MosaicLeaks build or adapt the same local-document plus public-web
-generation pattern to another task collection.
+Agents](https://arxiv.org/abs/2605.30727). You can either reproduce
+MosaicLeaks or create your own dataset interleaving your own local and web
+document sources.
 
 The code uses OpenAI-compatible chat and embedding endpoints. The default model
 name is `step-3.5-flash`, but StepFun is not a code dependency; any compatible
