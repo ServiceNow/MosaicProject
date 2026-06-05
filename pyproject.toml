@@ -46,9 +46,6 @@ server = [
     "transformers>=4.41.0",
     "uvicorn>=0.29.0",
 ]
-dev = [
-    "pytest>=8.0.0",
-]
 
 [project.scripts]
 mosaicleaks-generate = "mosaicleaks.run:main"
@@ -65,6 +62,3 @@ mosaicleaks-import-seeds = "mosaicleaks.data_prep.import_seeds:main"
 
 [tool.setuptools.packages.find]
 include = ["mosaicleaks*"]
-
-[tool.pytest.ini_options]
-addopts = "-q"

@@ -15,7 +15,7 @@ key environment variable.
 ## Install
 
 ```bash
-python3 -m pip install -e ".[browsecomp,server,dev]"
+python3 -m pip install -e ".[browsecomp,server]"
 ```
 
 Install a spaCy English NER model before running generation:
@@ -54,6 +54,10 @@ The high-level pipeline is:
 
 See [Dataset Generation](docs/dataset_generation.md) for more details and the
 full validation checklist.
+
+For a tiny synthetic walkthrough of chunking local documents, importing manual
+QA seeds, publishing a bundle, and inspecting the PipelineRL launch command, see
+[examples/README.md](examples/README.md).
 
 Publish final chains as a versioned bundle before training:
 
