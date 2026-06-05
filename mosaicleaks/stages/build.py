@@ -554,6 +554,11 @@ def run_build(
         logger.info("Local BM25 searcher: %d chunks", local_searcher.size)
 
     existing_browsecomp = [p for p in chunks_web_paths if p.exists()]
+    if any("W" in pattern for pattern in patterns) and not existing_browsecomp:
+        raise ValueError(
+            "BrowseComp/web chunks are required for patterns containing W. "
+            "Pass --chunks-web with at least one existing chunk JSONL file."
+        )
     if existing_browsecomp:
         browsecomp_index_files = sorted(glob.glob(config.BROWSECOMP_EMBEDDING_INDEX_GLOB))
         if browsecomp_index_files:

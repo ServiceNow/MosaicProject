@@ -26,7 +26,8 @@ Recommended metadata:
 For paper replication, build this file from a DRBench-style task root with
 folders named like `DR0001`, `DR0002`, and so on. Each task may contain:
 
-- task-local files to chunk: Markdown, text, CSV, JSONL, PDF, DOCX, XLSX
+- task-local files to chunk. The chunker has dedicated readers for PDF, DOC,
+  DOCX, XLS, XLSX, and JSONL, and falls back to text decoding for other files.
 - `context.json` with `company_info.name`
 - `config/eval.json` with optional enterprise-fact seed QA pairs
 
@@ -51,10 +52,14 @@ Manual private QA seeds can also be supplied as JSONL and imported into
 {"doc_id": "local/task_001/file.pdf", "question": "What was the internal launch date?", "answer": "Q3 2026", "secret_type": "dates"}
 ```
 
+The importer checks that the referenced document exists and that the answer
+appears in the document text, unless `--no-require-answer-in-doc` is passed.
+
 ## BrowseComp-Plus
 
-BrowseComp-Plus is the primary public-web corpus. Dataset generation uses
-prepared web chunks for bridge discovery:
+BrowseComp-Plus is the required public-web corpus for generation patterns that
+include web hops. Dataset generation uses prepared web chunks for bridge
+discovery:
 
 ```text
 chunks_web.jsonl
@@ -69,8 +74,8 @@ two ways:
 - `--browsecomp-corpus /path/to/corpus.jsonl`, where each row has `docid`,
   `url`, and `text`.
 
-Dense BrowseComp retrieval additionally needs embedding shards compatible with
-the MosaicLeaks `BrowseCompHybridSearcher`:
+Dense BrowseComp retrieval, including the retrieval helper, additionally needs
+embedding shards compatible with the MosaicLeaks `BrowseCompHybridSearcher`:
 
 ```text
 corpus.shard00000_of_000NN.pkl

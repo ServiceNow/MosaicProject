@@ -257,7 +257,10 @@ def build_arg_parser(
 
 def _parse_args() -> argparse.Namespace:
     parser = build_arg_parser()
-    return parser.parse_args()
+    args = parser.parse_args()
+    if not args.browsecomp_index_glob:
+        parser.error("--browsecomp-index-glob is required for the retrieval helper")
+    return args
 
 
 def config_from_args(args: argparse.Namespace) -> RetrievalHelperConfig:

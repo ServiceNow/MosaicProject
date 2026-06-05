@@ -61,7 +61,7 @@ contains a `doc_ids` list aligned with rows in `embeddings.npy`.
 The helper needs:
 
 - `--browsecomp-corpus`: Hugging Face dataset name or local corpus JSONL
-- `--browsecomp-index-glob`: dense embedding shard glob
+- `--browsecomp-index-glob`: dense embedding shard glob; this is required
 - `--embedding-base-url`: OpenAI-compatible embedding endpoint
 - `--embedding-model`: embedding model name served by that endpoint
 

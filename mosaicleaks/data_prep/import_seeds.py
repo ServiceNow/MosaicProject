@@ -20,6 +20,12 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--chunks-local", type=Path, default=config.CHUNKS_LOCAL, help="Local chunks JSONL.")
     parser.add_argument("--output", type=Path, default=config.SECRET_INVENTORY, help="Output secret inventory JSONL.")
     parser.add_argument("--strict", action=argparse.BooleanOptionalAction, default=True, help="Fail when a row references an unknown doc_id.")
+    parser.add_argument(
+        "--require-answer-in-doc",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Require the answer string to appear in the referenced document.",
+    )
     return parser.parse_args()
 
 
@@ -77,6 +83,11 @@ def main() -> None:
                 f"doc_id {row['doc_id']!r} task {doc_task_id!r}"
             )
         quote = row["quote"] or _extract_quote(doc.text, row["answer"])
+        if args.require_answer_in_doc and not quote:
+            raise ValueError(
+                f"seed row {line_number}: answer {row['answer']!r} was not found in "
+                f"doc_id {row['doc_id']!r}"
+            )
         grouped[row["doc_id"]].append(
             {
                 "question": row["question"],

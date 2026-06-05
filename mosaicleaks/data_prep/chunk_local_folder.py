@@ -16,16 +16,6 @@ from mosaicleaks.src.jsonl import iter_jsonl_objects
 
 logger = logging.getLogger(__name__)
 
-SUPPORTED_SUFFIXES = {
-    ".csv",
-    ".docx",
-    ".jsonl",
-    ".md",
-    ".pdf",
-    ".txt",
-    ".xlsx",
-}
-
 
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -73,8 +63,6 @@ def _should_read(path: Path, prefer_md: bool) -> bool:
     if not path.is_file():
         return False
     if path.name.startswith("."):
-        return False
-    if path.suffix.lower() not in SUPPORTED_SUFFIXES:
         return False
     if prefer_md and path.suffix.lower() == ".pdf" and path.with_suffix(".md").exists():
         return False

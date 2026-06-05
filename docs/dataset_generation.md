@@ -44,7 +44,8 @@ Manifest fields:
 - `company_name`: optional label used for split grouping and metadata
 - `relative_path`: optional stable path to use inside generated `doc_id` values
 
-Supported file types are Markdown, text, CSV, JSONL, PDF, DOCX, and XLSX.
+The chunker has dedicated readers for PDF, DOC, DOCX, XLS, XLSX, and JSONL,
+and falls back to text decoding for other files. Hidden files are skipped.
 
 Validation:
 
@@ -85,6 +86,9 @@ python3 -m mosaicleaks.data_prep.import_seeds \
   --output mosaicleaks/data/secret_inventory.jsonl
 ```
 
+The importer validates that each `doc_id` exists, optional `task_id` values
+match the referenced document, and the answer appears in the document text.
+
 ## 3. Filter Private QA Candidates
 
 Input: raw secret inventory.
@@ -108,7 +112,9 @@ Validation:
 Primary web corpus:
 
 - use BrowseComp-Plus through `Tevatron/browsecomp-plus-corpus`, or
-- pass a local JSONL corpus with `docid`, `url`, and `text`
+- pass a local BrowseComp-style JSONL corpus with `docid`, `url`, and `text`
+
+BrowseComp/web chunks are required for any generation pattern containing `W`.
 
 Optional curated task URL files:
 

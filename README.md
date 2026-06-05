@@ -34,7 +34,8 @@ MosaicLeaks expects two external data sources:
   collection to the same chunk format.
 - BrowseComp-Plus corpus/index artifacts, either through the Hugging Face
   dataset name `Tevatron/browsecomp-plus-corpus` or a local JSONL corpus plus
-  embedding index shards.
+  embedding index shards. BrowseComp is required for the current generation and
+  retrieval-helper flow.
 
 See [External Dependencies](docs/external_dependencies.md) for the required
 input files.

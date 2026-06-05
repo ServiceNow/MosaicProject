@@ -4,12 +4,15 @@ import argparse
 import json
 import logging
 import re
+import shutil
+import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 
 import docx
 import openpyxl
 import pypdf
+import xlrd
 
 logger = logging.getLogger(__name__)
 
@@ -112,6 +115,44 @@ def _read_xlsx(path: Path) -> str | None:
     return "\n".join(lines).strip()
 
 
+def _read_xls(path: Path) -> str | None:
+    workbook = xlrd.open_workbook(str(path))
+    lines: list[str] = []
+    for sheet in workbook.sheets():
+        for row_index in range(sheet.nrows):
+            values = sheet.row_values(row_index)
+            line = " | ".join("" if value == "" else str(value) for value in values).strip()
+            if line and line.replace("|", "").strip():
+                lines.append(line)
+    return "\n".join(lines).strip()
+
+
+def _read_legacy_doc(path: Path) -> str | None:
+    # Old Word .doc files are binary. Prefer standard system extractors when
+    # available, then fall back to best-effort text decoding.
+    for command in ("antiword", "catdoc"):
+        executable = shutil.which(command)
+        if executable is None:
+            continue
+        try:
+            result = subprocess.run(
+                [executable, str(path)],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+        except subprocess.CalledProcessError as exc:
+            logger.warning("%s failed for %s: %s", command, path, exc.stderr.strip())
+            continue
+        text = result.stdout.strip()
+        if text:
+            return text
+    return _read_text_file(path)
+
+
 def _read_jsonl(path: Path) -> str | None:
     lines: list[str] = []
     try:
@@ -175,8 +216,12 @@ def read_local_file(path: Path) -> str | None:
         return _read_pdf(path)
     if ext == ".docx":
         return _read_docx(path)
+    if ext == ".doc":
+        return _read_legacy_doc(path)
     if ext == ".xlsx":
         return _read_xlsx(path)
+    if ext == ".xls":
+        return _read_xls(path)
     return _read_text_file(path)
 
 
@@ -296,7 +341,7 @@ def emit_local_doc_chunks(
         "task_id": task_id,
         "subdir": subdir,
         "filename": relative_path.name,
-        "relative_path": f"{task_id}/files/{relative_path.as_posix()}",
+        "relative_path": relative_path.as_posix(),
         "extension": extension,
         "company_name": company_info.get("company_name", ""),
         "company": company_info.get("company", ""),

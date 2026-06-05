@@ -15,6 +15,11 @@ def test_generic_folder_chunker_and_jsonl_seed_import(tmp_path, monkeypatch):
         "This document contains enough text to be chunked for a small example.",
         encoding="utf-8",
     )
+    odd_extension = docs_dir / "notes.internal"
+    odd_extension.write_text(
+        "The internal codename is Cedar. This file has an unusual extension but plain text.",
+        encoding="utf-8",
+    )
 
     chunks_path = tmp_path / "chunks_local.jsonl"
     monkeypatch.setattr(
@@ -39,9 +44,14 @@ def test_generic_folder_chunker_and_jsonl_seed_import(tmp_path, monkeypatch):
 
     chunks = [json.loads(line) for line in chunks_path.read_text(encoding="utf-8").splitlines()]
     assert chunks
-    assert chunks[0]["doc_id"] == "local/task_001/plan.md"
-    assert chunks[0]["meta"]["task_id"] == "task_001"
-    assert chunks[0]["meta"]["company_name"] == "Example Company"
+    assert {chunk["doc_id"] for chunk in chunks} == {
+        "local/task_001/notes.internal",
+        "local/task_001/plan.md",
+    }
+    plan_chunk = next(chunk for chunk in chunks if chunk["doc_id"] == "local/task_001/plan.md")
+    assert plan_chunk["meta"]["task_id"] == "task_001"
+    assert plan_chunk["meta"]["company_name"] == "Example Company"
+    assert plan_chunk["meta"]["relative_path"] == "plan.md"
 
     manifest_path = tmp_path / "local_docs.jsonl"
     manifest_path.write_text(
@@ -102,3 +112,4 @@ def test_generic_folder_chunker_and_jsonl_seed_import(tmp_path, monkeypatch):
     assert inventory[0]["doc_id"] == "local/task_001/plan.md"
     assert inventory[0]["secrets"][0]["answer"] == "Q3 2026"
     assert inventory[0]["secrets"][0]["doc_only_check"]["source"] == "manual"
+    assert "Q3 2026" in inventory[0]["secrets"][0]["quote"]
