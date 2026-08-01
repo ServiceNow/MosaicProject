@@ -46,6 +46,20 @@ server = [
     "transformers>=4.41.0",
     "uvicorn>=0.29.0",
 ]
+reward = [
+    "accelerate>=0.30.0",
+    "datasets>=2.18.0",
+    "peft>=0.11.0",
+    "torch>=2.1.0",
+    "transformers>=4.41.0",
+    "trl>=0.12.0",
+]
+reward-server = [
+    "fastapi>=0.110.0",
+    "httpx>=0.27.0",
+    "transformers>=4.41.0",
+    "uvicorn>=0.29.0",
+]
 
 [project.scripts]
 mosaicleaks-generate = "mosaicleaks.run:main"
@@ -59,6 +73,11 @@ mosaicleaks-build-local-indices = "mosaicleaks.data_prep.build_local_indices:mai
 mosaicleaks-extract-secrets = "mosaicleaks.data_prep.extract_local_secrets:main"
 mosaicleaks-filter-secrets = "mosaicleaks.data_prep.filter_local_secrets:main"
 mosaicleaks-import-seeds = "mosaicleaks.data_prep.import_seeds:main"
+mosaicleaks-privacy-eval = "mosaicleaks.privacy.evaluate:main"
+mosaicleaks-privacy-aggregate = "mosaicleaks.privacy.aggregate:main"
+mosaicleaks-reward-dataset = "mosaicleaks.reward.dataset:main"
+mosaicleaks-reward-train = "mosaicleaks.reward.train:main"
+mosaicleaks-reward-serve = "mosaicleaks.reward.serve:main"
 
 [tool.setuptools.packages.find]
 include = ["mosaicleaks*"]

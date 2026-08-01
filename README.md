@@ -1,11 +1,23 @@
 # MosaicLeaks: Privacy Risks in Querying-in-the-Open for Deep Research Agents
 
-This repository contains the dataset-generation pipeline, retrieval helper, and
-training-launch interface used in
+This repository contains the dataset-generation pipeline, retrieval helper,
+privacy evaluation, reward model, and training-launch interface used in
 [MosaicLeaks: Privacy Risks in Querying-in-the-Open for Deep Research
 Agents](https://arxiv.org/abs/2605.30727). You can either reproduce
 MosaicLeaks or create your own dataset interleaving your own local and web
 document sources.
+
+Four pieces, in the order you would use them:
+
+1. **Dataset generation** builds multi-hop questions that interleave private local
+   documents with public web documents.
+2. **Retrieval helper** serves those documents to an agent at rollout time.
+3. **Privacy evaluation** scores a trajectory: could an outside observer
+   reconstruct a private fact from the agent's web queries alone?
+4. **Reward model** distils those scores into a one-token classifier, so RL can
+   price a rollout's queries without running the full judge pipeline in the loop.
+
+The RL trainer itself is not vendored; see [Training Runs](docs/training_runs.md).
 
 The code uses OpenAI-compatible chat and embedding endpoints. The default model
 name is `step-3.5-flash`, but StepFun is not a code dependency; any compatible
@@ -94,6 +106,37 @@ python3 -m mosaicleaks.data_prep.build_local_indices \
 
 See [Retrieval Helper](docs/retrieval_helper.md) for the index format and API
 details.
+
+## Privacy Evaluation
+
+Scores agent trajectories for leakage: an adversary sees only the visible web
+queries, a judge compares what it recovered against the gold private facts, and
+the result collapses to a 1-5 score.
+
+```bash
+mosaicleaks-privacy-eval --traces-root RUN_DIR --dataset BUNDLE_DIR \
+  --private-qa-inventory secrets.jsonl --output-dir scores/ \
+  --base-url http://127.0.0.1:8000/v1 --model MODEL
+mosaicleaks-privacy-aggregate scores/
+```
+
+Any OpenAI-compatible endpoint works, local vLLM or OpenRouter. See
+[Privacy Evaluation](docs/privacy_evaluation.md).
+
+## Reward Model
+
+Trains a one-token Yes/No classifier over those scores, so RL can price a
+rollout's queries without running the full judge pipeline in the loop.
+
+```bash
+pip install -e ".[reward]"
+mosaicleaks-reward-dataset scores/ --output-dir rm_data/
+mosaicleaks-reward-train --dataset-dir rm_data/private_fact_context \
+  --base-model BASE --output-dir runs/rm
+mosaicleaks-reward-serve --model privacy_rm --base-model BASE
+```
+
+See [Reward Model](docs/reward_model.md).
 
 ## Training Runs
 
