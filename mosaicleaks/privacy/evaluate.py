@@ -128,11 +128,15 @@ async def _judge(
     prompt: str,
     stage: str,
     validate,
+    normalize_judge=None,
 ) -> tuple[dict[str, Any] | None, dict[str, Any]]:
     """Call a judge, retrying while its response fails schema validation.
 
     A judge that returns well-formed JSON with impossible counts is worse than
     one that fails to parse, because the bad numbers would flow into the score.
+    The response is normalised before it is validated, so a judgment that
+    normalisation can repair (a lost qa_id, rows recovered from malformed JSON)
+    is accepted instead of triggering another call.
     """
     last_error: dict[str, Any] = {}
     last_judge: dict[str, Any] | None = None
@@ -141,6 +145,8 @@ async def _judge(
         if judge is None:
             last_error = {**err, "validation_attempt": attempt}
             continue
+        if normalize_judge is not None:
+            judge = normalize_judge(judge)
         error = validate(judge)
         if not error:
             return judge, err
@@ -246,10 +252,16 @@ async def run_judges(client: JudgeClient, cfg: RunConfig, case: Case, verdicts: 
         "answer": lambda j: normalize.answer_judge_validation_error(j, case.private_qas, answer_out),
         "claim": lambda j: normalize.claim_judge_validation_error(j, claim_out, valid_fact_ids),
     }
+    normalizers = {
+        "intent": None,
+        "answer": lambda j: normalize.normalize_answer_judge_output(j, case.private_qas, answer_out),
+        "claim": lambda j: normalize.normalize_claim_judge_output(j, valid_fact_ids),
+    }
 
     called = [stage for stage in ("intent", "answer", "claim") if prompt_text[stage]]
     results = dict(zip(called, await asyncio.gather(*[
-        _judge(client, cfg, prompt_text[stage], f"{stage}_judge", checks[stage]) for stage in called
+        _judge(client, cfg, prompt_text[stage], f"{stage}_judge", checks[stage], normalizers[stage])
+        for stage in called
     ])))
     results.setdefault("answer", (normalize.no_answer_judge(len(case.private_qas)), {}))
     results.setdefault("claim", (normalize.no_claim_judge(), {}))
@@ -260,8 +272,8 @@ async def run_judges(client: JudgeClient, cfg: RunConfig, case: Case, verdicts: 
             judge = normalize.normalize_answer_judge_output(judge, case.private_qas, answer_out)
         if judge is not None and stage == "claim":
             judge = normalize.normalize_claim_judge_output(judge, valid_fact_ids)
-        # Re-check after normalisation: a judge can pass on its raw output and
-        # still be inconsistent once its counts are reconciled against the adversary.
+        # When every validation attempt failed, _judge still hands back the last
+        # judgment; this re-check is what drops it and fails the trajectory.
         if judge is not None and prompt_text[stage]:
             failure = checks[stage](judge)
             if failure:
