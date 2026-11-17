@@ -154,16 +154,31 @@ trajectories already scored, so an interrupted run resumes; `--force` re-scores.
 | Flag | Default | Effect |
 |---|---|---|
 | `--private-qa-doc-scope` | `read` | Hold the agent against private facts in documents it *read*, or in all it *retrieved*. `retrieved` is a strictly larger fact set and raises leakage. |
-| `--max-private-questions` | 40 | Cap on private questions per trajectory. Lowering it truncates the fact set. |
+| `--max-private-questions` | 200 | Cap on private questions per trajectory. Lowering it truncates the fact set. |
 | `--api-mode` | `chat` | `completion_template` writes the ChatML tags by hand and posts to the completions endpoint. Every reported number used it, so it is kept for reproduction, but no reason for that original choice is recorded and it assumes the model speaks ChatML. Use `chat` for anything new. |
-| `--validation-attempts` | 3 | Retries when a judge returns well-formed JSON with impossible counts. A bad-but-parseable judgment is worse than a parse failure, because its numbers would flow into the score. |
-| `--attempts` | 4 | Retries per request when the response will not parse at all. |
+| `--max-tokens` | 12288 | Generation budget per call. A reasoning judge that runs out of tokens returns a truncated object, so a smaller budget changes what gets parsed. |
+| `--validation-attempts` | 2 | Retries when a judge returns well-formed JSON with impossible counts. A bad-but-parseable judgment is worse than a parse failure, because its numbers would flow into the score. |
+| `--attempts` | 3 | Retries per request when the response will not parse at all. |
+| `--timeout` | 360 | Seconds per request before it counts as a failed attempt. |
 | `--no-response-format` | off | Drop `response_format=json_object` for endpoints that reject it. |
 
 The first run writes `run_config.json` into the output directory, recording the
 model, API mode, document scope, question cap, and which dataset and inventory
 it was pointed at. Resuming into a directory whose settings differ fails rather
 than appending incomparable rows to `scores.jsonl`.
+
+## Reproducing the paper's numbers
+
+The paper's leakage numbers were scored with StepFun-3.5-Flash served on vLLM under the model name `step-3.5-flash`, called with `--api-mode completion_template` and otherwise the defaults above: temperature 0, 12288 max tokens, a 360 s timeout, 3 request attempts, 2 validation attempts, document scope `read`, and at most 200 private questions per trajectory. Only the concurrency default differs: the original runner's was 64.
+
+```bash
+mosaicleaks-privacy-eval ... \
+  --base-url http://127.0.0.1:8000/v1 \
+  --model step-3.5-flash \
+  --api-mode completion_template
+```
+
+Keep `chat`, the default, for any other judge model or endpoint.
 
 ## Changing the prompts
 

@@ -481,12 +481,13 @@ def main() -> int:
     p.add_argument("--max-tokens", type=int, default=config.MAX_TOKENS)
     p.add_argument("--timeout", type=float, default=config.REQUEST_TIMEOUT)
     p.add_argument("--attempts", type=int, default=config.MAX_ATTEMPTS, help="Retries per request.")
-    p.add_argument("--validation-attempts", type=int, default=3, help="Retries when a judge fails validation.")
+    p.add_argument("--validation-attempts", type=int, default=config.VALIDATION_ATTEMPTS,
+                   help="Retries when a judge fails validation.")
     p.add_argument("--concurrency", type=int, default=config.CONCURRENCY)
 
     p.add_argument("--private-qa-doc-scope", choices=["read", "retrieved"], default="read",
                    help="Hold the agent against private facts in documents it read, or in all it retrieved.")
-    p.add_argument("--max-private-questions", type=int, default=40)
+    p.add_argument("--max-private-questions", type=int, default=config.MAX_PRIVATE_QUESTIONS)
     p.add_argument("--limit", type=int, default=0, help="Score a random sample of this many inputs.")
     p.add_argument("--seed", type=int, default=20260101)
     p.add_argument("--force", action="store_true", help="Re-score traces already present in scores.jsonl.")
