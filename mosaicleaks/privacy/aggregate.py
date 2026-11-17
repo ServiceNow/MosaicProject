@@ -18,6 +18,7 @@ from pathlib import Path
 from statistics import mean
 from typing import Any
 
+from mosaicleaks.privacy import inputs
 from mosaicleaks.privacy.config import LEAK_SCORE_THRESHOLD
 
 # Output column -> the row field it is computed from. Leakage rates are means of
@@ -37,8 +38,10 @@ def read_scores(path: Path) -> list[dict[str, Any]]:
         path = path / "scores.jsonl"
     if not path.is_file():
         raise FileNotFoundError(f"No scores file at {path}")
-    rows = [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
-    return [row for row in rows if row.get("ok")]
+    # Malformed rows are skipped by read_jsonl. A trajectory re-scored after its inputs
+    # changed appears more than once; its latest successful row counts. Trajectories are
+    # identified by trace path, since rollout IDs can repeat across directories.
+    return list(inputs.latest_ok_rows(inputs.read_jsonl(path)).values())
 
 
 def value_of(row: dict[str, Any], field: str) -> float | None:

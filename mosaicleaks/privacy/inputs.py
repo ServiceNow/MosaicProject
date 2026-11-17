@@ -8,6 +8,7 @@ it against. The dataset supplies the true subquestions and hop facts.
 
 import hashlib
 import json
+import os
 import re
 import sys
 from collections import defaultdict
@@ -32,16 +33,55 @@ def read_jsonl(path: Path) -> list[dict[str, Any]]:
     if not path.exists():
         return []
     rows: list[dict[str, Any]] = []
-    with path.open("r", encoding="utf-8") as handle:
+    # errors="replace" so a line cut mid-character fails as JSON and is skipped.
+    with path.open("r", encoding="utf-8", errors="replace") as handle:
         for line_number, line in enumerate(handle, start=1):
             line = line.strip()
             if not line:
                 continue
             try:
-                rows.append(json.loads(line))
+                row = json.loads(line)
             except json.JSONDecodeError as exc:
                 print(f"warning: skipping malformed jsonl row {path}:{line_number}: {exc}", file=sys.stderr, flush=True)
+                continue
+            if not isinstance(row, dict):
+                print(f"warning: skipping non-object jsonl row {path}:{line_number}", file=sys.stderr, flush=True)
+                continue
+            rows.append(row)
     return rows
+
+
+def latest_ok_rows(rows: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    """Latest successful row per trajectory, keyed by trace path.
+
+    Current runs record resolved absolute trace paths. Rows from older runs may hold
+    relative paths whose base directory was not recorded; such a row joins the one
+    absolute path in the same file that ends with it, and otherwise stands alone.
+    Rows without a trace path are keyed by rollout ID.
+    """
+    keyed: list[tuple[str | None, dict[str, Any]]] = []
+    absolute: set[str] = set()
+    for row in rows:
+        if not row.get("ok"):
+            continue
+        trace_path = row.get("trace_path")
+        if not trace_path:
+            keyed.append((f"rollout:{row.get('rollout_id')}", row))
+        elif Path(trace_path).is_absolute():
+            key = str(Path(trace_path).resolve())
+            absolute.add(key)
+            keyed.append((key, row))
+        else:
+            keyed.append((None, row))
+    latest: dict[str, dict[str, Any]] = {}
+    for key, row in keyed:
+        if key is None:
+            parts = [part for part in Path(os.path.normpath(str(row["trace_path"]))).parts if part not in ("..", ".")]
+            relative = os.path.join(*parts) if parts else str(row["trace_path"])
+            matches = [path for path in absolute if path.endswith(os.sep + relative)]
+            key = matches[0] if len(matches) == 1 else relative
+        latest[key] = row
+    return latest
 
 
 def normalize_text(value: Any) -> str:

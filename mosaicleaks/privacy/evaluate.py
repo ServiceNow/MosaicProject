@@ -28,6 +28,7 @@ or route it through OpenRouter:
 import argparse
 import asyncio
 import fcntl
+import hashlib
 import json
 import os
 import random
@@ -82,6 +83,10 @@ class RunConfig:
     max_private_questions: int
     validation_attempts: int
     force: bool
+    temperature: float = config.TEMPERATURE
+    max_tokens: int = config.MAX_TOKENS
+    use_response_format: bool = True
+    base_url: str = config.JUDGE_BASE_URL
 
 
 def append_jsonl(path: Path, row: dict[str, Any]) -> None:
@@ -91,16 +96,71 @@ def append_jsonl(path: Path, row: dict[str, Any]) -> None:
     with path.open("a", encoding="utf-8") as handle:
         fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
         try:
+            # A run killed mid-write can leave a last line without a newline; start a
+            # fresh line so this row is not glued onto the fragment.
+            if path.stat().st_size:
+                with path.open("rb") as tail:
+                    tail.seek(-1, os.SEEK_END)
+                    if tail.read(1) != b"\n":
+                        line = "\n" + line
             handle.write(line)
             handle.flush()
         finally:
             fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
 
 
-def already_scored(path: Path) -> set[str]:
-    if not path.exists():
-        return set()
-    return {str(row["rollout_id"]) for row in inputs.read_jsonl(path) if row.get("ok")}
+_LABEL_SOURCE_MODULES = ("config", "client", "prompts", "parsing", "normalize", "scoring", "inputs", "evaluate")
+
+
+def evaluator_source_hash() -> str:
+    """Hash of the modules that prepare inputs, build requests and turn responses into
+    labels, so editing any of them re-scores on resume."""
+    digest = hashlib.sha256()
+    package_dir = Path(__file__).resolve().parent
+    for name in _LABEL_SOURCE_MODULES:
+        digest.update((package_dir / f"{name}.py").read_bytes())
+    return digest.hexdigest()[:20]
+
+
+def input_fingerprint(cfg: RunConfig, case: Case) -> str:
+    """Hash of everything the adversaries and judges see for one trajectory, so a resumed
+    run re-scores a trajectory whose queries, references or settings changed."""
+    payload = {
+        "evaluator_source": evaluator_source_hash(),
+        "model": cfg.model,
+        "base_url": cfg.base_url,
+        "api_mode": cfg.api_mode,
+        "trace_path": str(case.trace_path),
+        "task_id": case.ident.get("task_id"),
+        "chain_id": case.ident.get("chain_id"),
+        "queries": case.queries,
+        "true_subquestions": case.subquestions,
+        "local_facts": case.local_facts,
+        "private_qas": case.private_qas,
+        "private_qa_doc_scope": cfg.private_qa_doc_scope,
+        "max_private_questions": cfg.max_private_questions,
+        "max_items": case.max_items,
+        "temperature": cfg.temperature,
+        "max_tokens": cfg.max_tokens,
+        "use_response_format": cfg.use_response_format,
+        "validation_attempts": cfg.validation_attempts,
+    }
+    encoded = json.dumps(payload, sort_keys=True, ensure_ascii=False, default=str).encode()
+    return hashlib.sha256(encoded).hexdigest()[:20]
+
+
+def canonical_trace_path(path: Path) -> Path:
+    """One spelling per trace file, so relative and absolute paths to the same trace
+    share a fingerprint, a resume entry and an aggregation slot."""
+    return Path(path).resolve()
+
+
+def already_scored(path: Path) -> dict[str, str]:
+    """Input fingerprint of each trajectory's latest successful score row."""
+    return {
+        key: str(row.get("input_fingerprint") or "")
+        for key, row in inputs.latest_ok_rows(inputs.read_jsonl(path)).items()
+    }
 
 
 def check_manifest(output_dir: Path, run_config: dict[str, Any]) -> None:
@@ -179,7 +239,7 @@ def prepare(
         qa_index, docs, cfg.max_private_questions
     )
     return Case(
-        trace_path=trace_path,
+        trace_path=canonical_trace_path(trace_path),
         ident=ident,
         dataset_row=dataset_row,
         queries=inputs.query_rows(trace, "web"),
@@ -290,6 +350,7 @@ def score_row(cfg: RunConfig, case: Case, verdicts: Verdicts) -> dict[str, Any]:
     )
     return {
         **_common_fields(cfg, case),
+        "input_fingerprint": input_fingerprint(cfg, case),
         "ok": True,
         "model_input": {
             "visible_to_adversary": "web_search queries only",
@@ -351,7 +412,7 @@ async def score_trace(
     dataset_index: dict[tuple[str, str], dict[str, Any]],
     qa_index: dict[str, list[dict[str, Any]]],
     lock: asyncio.Lock,
-    done: set[str],
+    done: dict[str, str],
     scores_path: Path,
     errors_path: Path,
 ) -> bool:
@@ -367,7 +428,8 @@ async def score_trace(
             })
         return False
 
-    if case.ident["rollout_id"] in done and not cfg.force:
+    fingerprint = input_fingerprint(cfg, case)
+    if done.get(str(case.trace_path)) == fingerprint and not cfg.force:
         return True
 
     verdicts = await run_adversaries(client, case)
@@ -381,7 +443,7 @@ async def score_trace(
 
         row = score_row(cfg, case, verdicts)
         append_jsonl(scores_path, row)
-        done.add(case.ident["rollout_id"])
+        done[str(case.trace_path)] = fingerprint
         print(f"ok    {case.ident['rollout_id']} score={row['overall_privacy_score_1_to_5']} "
               f"intent={verdicts.judges['intent'].get('intent_subquestion_score_1_to_5')} "
               f"pqa={len(case.private_qas)}", flush=True)
@@ -425,6 +487,10 @@ async def run(args: argparse.Namespace) -> int:
         max_private_questions=args.max_private_questions,
         validation_attempts=args.validation_attempts,
         force=args.force,
+        temperature=args.temperature,
+        max_tokens=args.max_tokens,
+        use_response_format=not args.no_response_format,
+        base_url=args.base_url,
     )
     client = JudgeClient(
         model=args.model,

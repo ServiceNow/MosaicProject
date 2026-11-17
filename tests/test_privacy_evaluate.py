@@ -142,3 +142,105 @@ def test_judge_that_never_validates_fails_the_trajectory():
     assert calls["You are judging whether adversary answers"] == 2
     assert verdicts.judges["answer"] is None
     assert verdicts.errors["answer_judge"]["validation_error"] == f"missing_answer_judgments:{QA_ID}"
+
+
+def make_cfg() -> evaluate.RunConfig:
+    return evaluate.RunConfig(
+        model="judge", api_mode="chat", private_qa_doc_scope="read",
+        max_private_questions=200, validation_attempts=2, force=False,
+    )
+
+
+def test_fingerprint_changes_when_inputs_change():
+    cfg, case = make_cfg(), make_case()
+    same = make_case()
+    assert evaluate.input_fingerprint(cfg, case) == evaluate.input_fingerprint(cfg, same)
+    changed_query = make_case()
+    changed_query.queries = [{"index": 1, "query": "acme q3 confidential churn 4%"}]
+    changed_answer = make_case()
+    changed_answer.private_qas = [{**PRIVATE_QAS[0], "accepted_answers": ["5%"]}]
+    for other in (changed_query, changed_answer):
+        assert evaluate.input_fingerprint(cfg, other) != evaluate.input_fingerprint(cfg, case)
+
+
+def test_already_scored_keeps_each_trajectorys_latest_fingerprint(tmp_path):
+    scores = tmp_path / "scores.jsonl"
+    evaluate.append_jsonl(scores, {"ok": True, "trace_path": "/t1", "input_fingerprint": "A"})
+    evaluate.append_jsonl(scores, {"ok": False, "trace_path": "/t2", "input_fingerprint": "C"})
+    evaluate.append_jsonl(scores, {"ok": True, "trace_path": "/t1", "input_fingerprint": "B"})
+    done = evaluate.already_scored(scores)
+    assert done == {"/t1": "B"}
+    # Reverting t1's inputs to A must re-score it, because the latest row is B.
+    assert done.get("/t1") != "A"
+
+
+def test_fingerprint_covers_secret_type_and_generation_settings():
+    cfg, case = make_cfg(), make_case()
+    base = evaluate.input_fingerprint(cfg, case)
+    retyped = make_case()
+    retyped.private_qas = [{**PRIVATE_QAS[0], "secret_type": "dates"}]
+    assert evaluate.input_fingerprint(cfg, retyped) != base
+    longer = evaluate.RunConfig(**{**make_cfg().__dict__, "max_tokens": 4096})
+    assert evaluate.input_fingerprint(longer, case) != base
+
+
+def test_append_after_a_truncated_line_keeps_the_new_row(tmp_path):
+    scores = tmp_path / "scores.jsonl"
+    scores.write_text('{"ok": true, "trace_path": "/t0"}\n{"ok":tr')
+    evaluate.append_jsonl(scores, {"ok": True, "trace_path": "/t1", "input_fingerprint": "abc"})
+    rows = evaluate.inputs.read_jsonl(scores)
+    assert [row["trace_path"] for row in rows] == ["/t0", "/t1"]
+    assert evaluate.already_scored(scores) == {"/t0": "", "/t1": "abc"}
+
+
+def test_append_after_a_line_cut_mid_character(tmp_path):
+    scores = tmp_path / "scores.jsonl"
+    scores.write_bytes(b'{"ok": true, "trace_path": "t0"}\n{"ok": true, "note": "\xe2\x82')
+    evaluate.append_jsonl(scores, {"ok": True, "trace_path": "t1", "input_fingerprint": "abc"})
+    assert [row["trace_path"] for row in evaluate.inputs.read_jsonl(scores)] == ["t0", "t1"]
+
+
+def test_fingerprint_covers_response_format():
+    cfg, case = make_cfg(), make_case()
+    plain = evaluate.RunConfig(**{**make_cfg().__dict__, "use_response_format": False})
+    assert evaluate.input_fingerprint(plain, case) != evaluate.input_fingerprint(cfg, case)
+
+
+def test_relative_and_absolute_trace_paths_are_one_trajectory(tmp_path, monkeypatch):
+    trace = tmp_path / "run1" / "trace.json"
+    trace.parent.mkdir()
+    trace.write_text("{}")
+    monkeypatch.chdir(tmp_path)
+    relative = evaluate.canonical_trace_path(Path("run1/trace.json"))
+    absolute = evaluate.canonical_trace_path(trace)
+    assert relative == absolute
+    cfg = make_cfg()
+    one, two = make_case(), make_case()
+    one.trace_path, two.trace_path = relative, absolute
+    assert evaluate.input_fingerprint(cfg, one) == evaluate.input_fingerprint(cfg, two)
+
+
+def test_fingerprint_covers_evaluator_source_and_backend(monkeypatch):
+    cfg, case = make_cfg(), make_case()
+    base = evaluate.input_fingerprint(cfg, case)
+    other_server = evaluate.RunConfig(**{**make_cfg().__dict__, "base_url": "http://other:8000/v1"})
+    assert evaluate.input_fingerprint(other_server, case) != base
+    monkeypatch.setattr(evaluate, "evaluator_source_hash", lambda: "edited")
+    assert evaluate.input_fingerprint(cfg, case) != base
+
+
+def test_old_relative_rows_and_new_absolute_rows_are_one_trajectory(tmp_path, monkeypatch):
+    elsewhere = tmp_path / "elsewhere"
+    elsewhere.mkdir()
+    monkeypatch.chdir(elsewhere)
+    scores = tmp_path / "scores.jsonl"
+    absolute = str(tmp_path / "base" / "run1" / "trace.json")
+    evaluate.append_jsonl(scores, {"ok": True, "trace_path": "run1/trace.json", "input_fingerprint": "old"})
+    evaluate.append_jsonl(scores, {"ok": True, "trace_path": absolute, "input_fingerprint": "new"})
+    assert evaluate.already_scored(scores) == {absolute: "new"}
+
+
+def test_non_object_rows_are_skipped(tmp_path):
+    scores = tmp_path / "scores.jsonl"
+    scores.write_text('null\n[]\n42\n"oops"\n{"ok": true, "trace_path": "/t0"}\n')
+    assert [row["trace_path"] for row in evaluate.inputs.read_jsonl(scores)] == ["/t0"]

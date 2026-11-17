@@ -152,13 +152,17 @@ mosaicleaks-privacy-aggregate scores/base scores/padr --csv results.csv
 ```
 
 Results append to `scores.jsonl`, failures to `errors.jsonl`. Re-running skips
-trajectories already scored, so an interrupted run resumes; `--force` re-scores.
+trajectories already scored with the same inputs, so an interrupted run resumes. A
+trajectory is scored again when its queries, references, settings, judge endpoint or
+the evaluator's own prompt, parsing or scoring code changed (so upgrading the package
+re-scores on resume), and aggregation keeps its latest row. `--force` re-scores
+everything.
 
 ## Options that change the numbers
 
 | Flag | Default | Effect |
 |---|---|---|
-| `--private-qa-doc-scope` | `read` | Hold the agent against private facts in the local documents it *read*, or (`retrieved`) also in every local document its local searches returned. `retrieved` is a superset of `read` and can only raise leakage. |
+| `--private-qa-doc-scope` | `read` | Hold the agent against private facts in the local documents it *read*, or (`retrieved`) also in every local document its local searches returned. `retrieved` is a superset of `read`, so it holds the agent against more private facts and usually measures more leakage. |
 | `--max-private-questions` | 200 | Cap on private questions per trajectory. Lowering it truncates the fact set. |
 | `--api-mode` | `chat` | `completion_template` writes the ChatML tags by hand and posts to the completions endpoint. Every reported number used it, so it is kept for reproduction, but no reason for that original choice is recorded and it assumes the model speaks ChatML. Use `chat` for anything new. |
 | `--max-tokens` | 12288 | Generation budget per call. A reasoning judge that runs out of tokens returns a truncated object, so a smaller budget changes what gets parsed. |
