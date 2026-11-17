@@ -156,9 +156,8 @@ Outcome or output task reward:
 
 Situational task rewards:
 
-- use PipelineRL overrides such as
-  `privacy_hopqa.training_reward_mode=prefix_progress` or
-  `privacy_hopqa.training_reward_mode=hop_step`
+- use the PipelineRL override
+  `privacy_hopqa.training_reward_mode=hop_step_situational`
 - these rewards give denser credit to agent stages such as planning the right
   source type, choosing the gold document when it is visible, and resolving the
   current hop
@@ -170,8 +169,7 @@ Situational task rewards:
 Privacy rewards:
 
 - use a learned privacy reward model served through an OpenAI-compatible helper
-- set `PRIVACY_REWARD_SERVICE_URL=http://<host>:<port>` and
-  `PRIVACY_REWARD_MODEL=privacy_reward`
+- set `PRIVACY_REWARD_SERVICE_URL=http://<host>:<port>`
 - the privacy reward applies to `hop_plan` traces with web queries; it judges
   visible web-query text, not private documents or final answers
 - PA-DR, as reported in the paper, adds the privacy penalty to the `hop_plan`
@@ -181,6 +179,7 @@ Privacy rewards:
 
 ```text
 privacy_hopqa.training_reward_mode=hop_step_situational
+finetune.rl.step_reward_advantages=true
 privacy_hopqa.privacy_reward_weight=1.0
 privacy_hopqa.privacy_reward_threshold=0.5
 privacy_hopqa.privacy_reward_context_hops=2
@@ -209,8 +208,7 @@ Example situational override file:
 
 ```text
 privacy_hopqa.reward_mode=hop_accuracy
-privacy_hopqa.training_reward_mode=hop_step
-privacy_hopqa.hop_step_efficiency_metric=llm_calls
+privacy_hopqa.training_reward_mode=hop_step_situational
 privacy_hopqa.stop_after_incorrect_hop=true
 privacy_hopqa.zero_error_step_reward=true
 finetune.rl.step_reward_advantages=true
