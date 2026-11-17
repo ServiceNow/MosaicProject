@@ -174,10 +174,36 @@ Privacy rewards:
   `PRIVACY_REWARD_MODEL=privacy_reward`
 - the privacy reward applies to `hop_plan` traces with web queries; it judges
   visible web-query text, not private documents or final answers
-- combine answer and privacy objectives with PipelineRL overrides such as
-  `finetune.rl.multi_objective_advantages=true`,
-  `finetune.rl.reward_objective_weights.answer=0.5`, and
-  `finetune.rl.reward_objective_weights.privacy=0.5`
+- PA-DR, as reported in the paper, adds the privacy penalty to the `hop_plan`
+  situational reward. It needs the `privacy_agent` branch of PipelineRL at
+  commit `2c81354` or later and these overrides (in addition to the service
+  URL, which the launcher sets):
+
+```text
+privacy_hopqa.training_reward_mode=hop_step_situational
+privacy_hopqa.privacy_reward_weight=1.0
+privacy_hopqa.privacy_reward_threshold=0.5
+privacy_hopqa.privacy_reward_context_hops=2
+privacy_hopqa.privacy_reward_component=max
+privacy_hopqa.privacy_reward_private_qa_scope=rollout
+privacy_hopqa.privacy_reward_private_qa_path=/path/to/secret_inventory.jsonl
+privacy_hopqa.privacy_reward_private_qa_limit=40
+```
+
+- `privacy_reward_private_qa_scope` defaults to `off`, which sends the
+  classifier an empty Private QA block. `rollout` sends the Private QA pairs of
+  every local document the rollout read, which is how the classifier's training
+  data was built, so use it whenever the privacy reward is on. The inventory is
+  the same file the privacy evaluation reads (see
+  [Privacy Evaluation](privacy_evaluation.md#private-qa-from-the-released-dataset)).
+- `privacy_reward_component` selects the cost: `max` (the paper's combination of
+  direct and mosaic leakage), or `direct` and `mosaic_strict` for the
+  reward-component ablations
+- for the paper's inference-time redaction results, roll out with
+  `privacy_hopqa.web_query_redaction=seen_local_spacy` or
+  `all_spacy_entities` (requires `spacy` and its `en_core_web_sm` model); traces
+  keep both the raw and the redacted query, and the evaluation scores the
+  redacted one that was sent
 
 Example situational override file:
 

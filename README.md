@@ -3,7 +3,7 @@
 This repository contains the dataset-generation pipeline, retrieval helper,
 privacy evaluation, reward model, and training-launch interface used in
 [MosaicLeaks: Privacy Risks in Querying-in-the-Open for Deep Research
-Agents](https://arxiv.org/abs/2605.30727). You can either reproduce
+Agents](https://arxiv.org/abs/2605.30727) (EACL 2027). You can either reproduce
 MosaicLeaks or create your own dataset interleaving your own local and web
 document sources.
 
@@ -23,6 +23,16 @@ The code uses OpenAI-compatible chat and embedding endpoints. The default model
 name is `step-3.5-flash`, but StepFun is not a code dependency; any compatible
 endpoint can be used by changing `--model`, `--base-url`, and the relevant API
 key environment variable.
+
+## Released Data
+
+The chains and the Private QA Set used to score leakage are on Hugging Face as
+[`ServiceNow/mosaicleaks`](https://huggingface.co/datasets/ServiceNow/mosaicleaks)
+(`chains` and `private_qa` subsets). Document text is not included: local
+documents come from DRBench and web documents from BrowseComp-Plus.
+[Privacy Evaluation](docs/privacy_evaluation.md#private-qa-from-the-released-dataset)
+shows how to turn the `private_qa` subset into the Private QA inventory that the
+evaluation and the privacy reward read.
 
 ## Install
 
@@ -152,6 +162,11 @@ source configs/training.local.env
 set +a
 DRY_RUN=1 ./scripts/launch_training.sh
 ```
+
+The PA-DR models in the paper were trained with the `privacy_agent` branch of
+[ServiceNow/PipelineRL](https://github.com/ServiceNow/PipelineRL/tree/privacy_agent);
+[Training Runs](docs/training_runs.md#6-reward-families) lists the exact
+privacy-reward overrides.
 
 See [Training Runs](docs/training_runs.md) for the PipelineRL launch interface,
 capture modes, outcome/situational/privacy rewards, and leakage metrics.

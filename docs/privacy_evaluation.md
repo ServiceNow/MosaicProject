@@ -62,9 +62,35 @@ by document. Either being recoverable counts as a leak.
   `train.jsonl` / `val.jsonl` / `test.jsonl`. For a frozen release whose splits
   are named `{basename}_{split}.jsonl`, add `--dataset-basename`.
 - **Private QA inventory.** The JSONL written by `mosaicleaks-filter-secrets`.
+  To score against the paper's Private QA Set, build it from the released
+  dataset as shown below.
 
 Splits are never inferred from a bare filename; scoring against the wrong split
 silently produces plausible, wrong numbers.
+
+### Private QA from the released dataset
+
+The `private_qa` subset of
+[`ServiceNow/mosaicleaks`](https://huggingface.co/datasets/ServiceNow/mosaicleaks)
+has one row per question-answer pair. Group it by document to get the inventory
+format:
+
+```python
+import json
+from collections import defaultdict
+from datasets import load_dataset
+
+docs = defaultdict(list)
+for split in ("train", "test"):
+    for row in load_dataset("ServiceNow/mosaicleaks", "private_qa", split=split):
+        docs[row["doc_id"]].append({k: row[k] for k in ("question", "answer", "accepted_answers", "secret_type")})
+with open("secret_inventory.jsonl", "w") as f:
+    for doc_id, secrets in docs.items():
+        f.write(json.dumps({"doc_id": doc_id, "secrets": secrets}) + "\n")
+```
+
+The rebuilt inventory gives the same `qa_id`s, questions and accepted answers as
+the one used for the paper's leakage numbers.
 
 ### What a trace actually needs
 
