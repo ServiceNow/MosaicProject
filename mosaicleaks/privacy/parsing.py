@@ -381,10 +381,12 @@ def parse_adversary(text: str | None, key: str | None = None) -> dict[str, Any] 
     """Parse an adversary response.
 
     key names the expected list field (predicted_subquestions,
-    claims, or answers) and enables the matching narrow fallback.
+    claims, or answers) and enables the matching narrow fallback. An empty
+    object counts as no object: the fallback still gets to read the text, and
+    if it finds nothing the response is a parse failure and is retried.
     """
     parsed = best_object(text)
-    if parsed is not None:
+    if parsed:
         return parsed
     if not text:
         return None

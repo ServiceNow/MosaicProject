@@ -15,3 +15,16 @@ def test_malformed_answer_recovery_drops_abstentions():
 def test_malformed_answer_recovery_keeps_empty_list_when_everything_abstains():
     text = '{"answers": [{"qa_id": "PQA_aaaaaaaaaaaa", "answer": "Not enough information"}'
     assert parse_adversary(text, "answers") == {"answers": []}
+
+
+def test_empty_adversary_object_is_a_parse_failure():
+    assert parse_adversary("{}", "predicted_subquestions") is None
+    assert parse_adversary("{}", "answers") is None
+    assert parse_adversary("```json\n{}\n```", "claims") is None
+
+
+def test_empty_final_object_falls_back_to_quoted_items():
+    text = '<think>Candidates: "What was Acme\'s Q3 churn rate?"</think>\n{}'
+    assert parse_adversary(text, "predicted_subquestions") == {
+        "predicted_subquestions": ["What was Acme's Q3 churn rate?"]
+    }
