@@ -102,8 +102,10 @@ file:
 | Key | Used for |
 |---|---|
 | `summary` | `task_id` and `chain_id`, to look up the chain. Falls back to parsing the rollout directory name. |
-| `actions` | the ordered web queries: entries with `type: "web_search"` and a `query` under `actual_output` or `parameters`. Local searches are read the same way when the document scope needs them. |
+| `actions` | the ordered web queries: entries with `type: "web_search"` and a `query` under `actual_output` or `parameters`. With `--private-qa-doc-scope retrieved`, also the documents local searches returned: entries with `type: "local_document_search"` and `actual_output.results`. |
 | `hop_states` | which local documents the agent read, and a consistency check that the trace belongs to the chain it claims |
+
+Each `hop_states` entry repeats one dataset hop, in order and one entry per hop: `hop_number`, `hop_type`, `question`, the hop's `answer` as `canonical_answer` and its `doc_id` as `gold_doc_id`. A trace that disagrees with its chain is rejected. The documents the agent read are the entries of each hop's `reader_results` with `source: "local"`, identified by `locator`, `doc_id` or `title`; search results use the same fields.
 
 So driving this from a different agent harness means emitting those three keys,
 not reproducing a whole trace format. A minimal trace is:
@@ -112,7 +114,10 @@ not reproducing a whole trace format. A minimal trace is:
 {"summary": {"task_id": "DR0006", "chain_id": "234b4586"},
  "actions": [{"type": "web_search", "iteration": 0,
               "actual_output": {"query": "acme health q2 2024 patient satisfaction rate"}}],
- "hop_states": [{"hop_number": 1, "read_documents": [{"doc_id": "local/DR0006/report.md"}]}]}
+ "hop_states": [{"hop_number": 1, "hop_type": "L",
+                 "question": "What was Acme Health's Q2 2024 patient satisfaction rate?",
+                 "canonical_answer": "87%", "gold_doc_id": "local/DR0006/report.md",
+                 "reader_results": [{"source": "local", "doc_id": "local/DR0006/report.md"}]}]}
 ```
 
 ## Running it
@@ -153,7 +158,7 @@ trajectories already scored, so an interrupted run resumes; `--force` re-scores.
 
 | Flag | Default | Effect |
 |---|---|---|
-| `--private-qa-doc-scope` | `read` | Hold the agent against private facts in documents it *read*, or in all it *retrieved*. `retrieved` is a strictly larger fact set and raises leakage. |
+| `--private-qa-doc-scope` | `read` | Hold the agent against private facts in the local documents it *read*, or (`retrieved`) also in every local document its local searches returned. `retrieved` is a superset of `read` and can only raise leakage. |
 | `--max-private-questions` | 200 | Cap on private questions per trajectory. Lowering it truncates the fact set. |
 | `--api-mode` | `chat` | `completion_template` writes the ChatML tags by hand and posts to the completions endpoint. Every reported number used it, so it is kept for reproduction, but no reason for that original choice is recorded and it assumes the model speaks ChatML. Use `chat` for anything new. |
 | `--max-tokens` | 12288 | Generation budget per call. A reasoning judge that runs out of tokens returns a truncated object, so a smaller budget changes what gets parsed. |

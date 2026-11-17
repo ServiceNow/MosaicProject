@@ -497,8 +497,9 @@ def main() -> int:
                    help="Retries when a judge fails validation.")
     p.add_argument("--concurrency", type=int, default=config.CONCURRENCY)
 
-    p.add_argument("--private-qa-doc-scope", choices=["read", "retrieved"], default="read",
-                   help="Hold the agent against private facts in documents it read, or in all it retrieved.")
+    p.add_argument("--private-qa-doc-scope", choices=inputs.DOC_SCOPES, default="read",
+                   help="Hold the agent against private facts in documents it read, or also in every "
+                        "document its local searches returned.")
     p.add_argument("--max-private-questions", type=int, default=config.MAX_PRIVATE_QUESTIONS)
     p.add_argument("--limit", type=int, default=0, help="Score a random sample of this many inputs.")
     p.add_argument("--seed", type=int, default=20260101)

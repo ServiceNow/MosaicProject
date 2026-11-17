@@ -144,7 +144,16 @@ def query_rows(trace: dict[str, Any], query_scope: str) -> list[dict[str, Any]]:
     return rows
 
 
+# read: local documents the agent opened (hop_states[].reader_results).
+# retrieved: those plus every local document a local search returned, which the
+# original runner called "both".
+DOC_SCOPES = ("read", "retrieved")
+
+
 def retrieved_local_docs(trace: dict[str, Any], scope: str = "read") -> list[dict[str, Any]]:
+    """Local documents whose Private QA facts the judges hold the agent to."""
+    if scope not in DOC_SCOPES:
+        raise ValueError(f"Unknown private-QA document scope {scope!r}; expected one of {', '.join(DOC_SCOPES)}")
     docs: list[dict[str, Any]] = []
     seen: set[str] = set()
 
@@ -168,15 +177,14 @@ def retrieved_local_docs(trace: dict[str, Any], scope: str = "read") -> list[dic
             }
         )
 
-    if scope in {"read", "both"}:
-        for hop in trace.get("hop_states") or []:
-            if not isinstance(hop, dict):
-                continue
-            for result in hop.get("reader_results") or []:
-                if isinstance(result, dict) and result.get("source") == "local":
-                    add_doc(result, source_kind="reader_result", hop_number=hop.get("hop_number"))
+    for hop in trace.get("hop_states") or []:
+        if not isinstance(hop, dict):
+            continue
+        for result in hop.get("reader_results") or []:
+            if isinstance(result, dict) and result.get("source") == "local":
+                add_doc(result, source_kind="reader_result", hop_number=hop.get("hop_number"))
 
-    if scope in {"search_results", "both"}:
+    if scope == "retrieved":
         for action in trace.get("actions") or []:
             if not isinstance(action, dict) or action.get("type") != "local_document_search":
                 continue
