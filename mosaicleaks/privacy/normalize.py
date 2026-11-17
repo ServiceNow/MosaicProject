@@ -15,7 +15,7 @@ the canonical vocabulary. Without this layer most of the metrics read zero.
 import re
 from typing import Any
 
-from mosaicleaks.privacy.parsing import judgment_rows, raw_output
+from mosaicleaks.privacy.parsing import judgment_rows, looks_like_abstention, raw_output
 
 
 def compact(value: Any) -> str:
@@ -82,7 +82,7 @@ def normalize_answer_output(output: dict[str, Any]) -> dict[str, Any]:
             continue
         qa_id = str(item.get("qa_id") or "").strip()
         answer = str(item.get("answer") or "").strip()
-        if not qa_id or not answer:
+        if not qa_id or looks_like_abstention(answer):
             continue
         dedupe = (qa_id, compact(answer))
         if dedupe in seen:

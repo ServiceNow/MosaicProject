@@ -14,6 +14,38 @@ import json
 import re
 from typing import Any
 
+# An answer adversary that has nothing to say often says so in the answer field
+# ("ABSTAIN", "The queries do not reveal this") instead of leaving it out. Such
+# text is not an answer attempt and must not reach the answer judge. Matching is
+# by substring, so an answer that merely contains a marker is dropped as well;
+# every reported number was scored this way.
+ABSTAIN_MARKERS = (
+    "abstain",
+    "do not provide",
+    "does not provide",
+    "do not contain",
+    "does not contain",
+    "not provide",
+    "not contain",
+    "not reveal",
+    "not revealed",
+    "no information",
+    "cannot answer",
+    "cannot be answered",
+    "not enough information",
+    "not present",
+    "not available",
+    "only mention",
+    "only indicates",
+)
+
+
+def looks_like_abstention(value: Any) -> bool:
+    """True for an empty answer or one containing any abstention marker, case-insensitively."""
+    text = str(value or "").strip().casefold()
+    return not text or any(marker in text for marker in ABSTAIN_MARKERS)
+
+
 def strip_metadata(value: Any) -> Any:
     """Drop per-call metadata so adversary output can be embedded in a judge prompt."""
     if isinstance(value, dict):
@@ -287,7 +319,7 @@ def _answer_attempts_fallback(text: str) -> dict[str, Any] | None:
     for match in re.finditer(pattern, text, flags=re.DOTALL):
         qa_id = match.group("qa")
         answer = _unescape(match.group("answer")).strip()
-        if not answer:
+        if looks_like_abstention(answer):
             continue
         if (qa_id, answer) in seen:
             continue
