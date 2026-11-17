@@ -67,3 +67,19 @@ def test_documented_minimal_trace_is_accepted():
     assert inputs.trace_identity(Path("run/trace.json"), trace)["chain_id"] == "234b4586"
     assert [q["query"] for q in inputs.query_rows(trace, "web")] == ["acme health q2 2024 patient satisfaction rate"]
     assert [d["doc_key"] for d in inputs.retrieved_local_docs(trace, "read")] == ["DR0006/report"]
+
+
+def test_read_jsonl_skips_malformed_rows(tmp_path, capsys):
+    path = tmp_path / "rows.jsonl"
+    path.write_text('{"a": 1}\n\n{"a": 2\n{"a": 3}\n', encoding="utf-8")
+    assert inputs.read_jsonl(path) == [{"a": 1}, {"a": 3}]
+    assert f"skipping malformed jsonl row {path}:3" in capsys.readouterr().err
+
+
+def test_private_qa_index_survives_a_truncated_row(tmp_path):
+    secret = {"question": "What was Acme's Q3 churn rate?", "answer": "4%", "secret_type": "metric"}
+    good = json.dumps({"doc_id": "local/DR0001/report.md", "secrets": [secret]})
+    path = tmp_path / "inventory.jsonl"
+    path.write_text(good + "\n" + good[: len(good) // 2] + "\n", encoding="utf-8")
+    index = inputs.load_private_qa_index(path)
+    assert [qa["canonical_answer"] for qa in index["DR0001/report"]] == ["4%"]

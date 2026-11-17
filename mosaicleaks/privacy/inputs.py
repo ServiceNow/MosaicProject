@@ -9,6 +9,7 @@ it against. The dataset supplies the true subquestions and hop facts.
 import hashlib
 import json
 import re
+import sys
 from collections import defaultdict
 from pathlib import Path, PurePosixPath
 from typing import Any
@@ -26,14 +27,20 @@ def read_json(path: Path) -> Any:
 
 
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
+    """Rows of a JSONL file. A row that is not valid JSON, such as a line cut
+    short when a run was killed mid-write, is skipped with a warning."""
     if not path.exists():
         return []
     rows: list[dict[str, Any]] = []
     with path.open("r", encoding="utf-8") as handle:
-        for line in handle:
+        for line_number, line in enumerate(handle, start=1):
             line = line.strip()
-            if line:
+            if not line:
+                continue
+            try:
                 rows.append(json.loads(line))
+            except json.JSONDecodeError as exc:
+                print(f"warning: skipping malformed jsonl row {path}:{line_number}: {exc}", file=sys.stderr, flush=True)
     return rows
 
 
