@@ -8,7 +8,6 @@ it against. The dataset supplies the true subquestions and hop facts.
 
 import hashlib
 import json
-import os
 import re
 import sys
 from collections import defaultdict
@@ -28,12 +27,12 @@ def read_json(path: Path) -> Any:
 
 
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
-    """Rows of a JSONL file. A row that is not valid JSON, such as a line cut
+    """Rows of a JSONL file. A row that is not a JSON object, such as a line cut
     short when a run was killed mid-write, is skipped with a warning."""
     if not path.exists():
         return []
     rows: list[dict[str, Any]] = []
-    # errors="replace" so a line cut mid-character fails as JSON and is skipped.
+    # errors="replace": a line cut mid-character then fails as JSON instead of crashing.
     with path.open("r", encoding="utf-8", errors="replace") as handle:
         for line_number, line in enumerate(handle, start=1):
             line = line.strip()
@@ -41,47 +40,19 @@ def read_jsonl(path: Path) -> list[dict[str, Any]]:
                 continue
             try:
                 row = json.loads(line)
-            except json.JSONDecodeError as exc:
-                print(f"warning: skipping malformed jsonl row {path}:{line_number}: {exc}", file=sys.stderr, flush=True)
-                continue
-            if not isinstance(row, dict):
-                print(f"warning: skipping non-object jsonl row {path}:{line_number}", file=sys.stderr, flush=True)
-                continue
-            rows.append(row)
+            except json.JSONDecodeError:
+                row = None
+            if isinstance(row, dict):
+                rows.append(row)
+            else:
+                print(f"warning: skipping malformed row {path}:{line_number}", file=sys.stderr, flush=True)
     return rows
 
 
 def latest_ok_rows(rows: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
-    """Latest successful row per trajectory, keyed by trace path.
-
-    Current runs record resolved absolute trace paths. Rows from older runs may hold
-    relative paths whose base directory was not recorded; such a row joins the one
-    absolute path in the same file that ends with it, and otherwise stands alone.
-    Rows without a trace path are keyed by rollout ID.
-    """
-    keyed: list[tuple[str | None, dict[str, Any]]] = []
-    absolute: set[str] = set()
-    for row in rows:
-        if not row.get("ok"):
-            continue
-        trace_path = row.get("trace_path")
-        if not trace_path:
-            keyed.append((f"rollout:{row.get('rollout_id')}", row))
-        elif Path(trace_path).is_absolute():
-            key = str(Path(trace_path).resolve())
-            absolute.add(key)
-            keyed.append((key, row))
-        else:
-            keyed.append((None, row))
-    latest: dict[str, dict[str, Any]] = {}
-    for key, row in keyed:
-        if key is None:
-            parts = [part for part in Path(os.path.normpath(str(row["trace_path"]))).parts if part not in ("..", ".")]
-            relative = os.path.join(*parts) if parts else str(row["trace_path"])
-            matches = [path for path in absolute if path.endswith(os.sep + relative)]
-            key = matches[0] if len(matches) == 1 else relative
-        latest[key] = row
-    return latest
+    """Latest successful score row per trajectory, keyed by resolved trace path. A
+    trajectory re-scored after its inputs changed appears more than once."""
+    return {str(Path(row["trace_path"]).resolve()): row for row in rows if row.get("ok")}
 
 
 def normalize_text(value: Any) -> str:
@@ -192,8 +163,7 @@ def query_rows(trace: dict[str, Any], query_scope: str) -> list[dict[str, Any]]:
 
 
 # read: local documents the agent opened (hop_states[].reader_results).
-# retrieved: those plus every local document a local search returned, which the
-# original runner called "both".
+# retrieved: those plus every local document a local search returned.
 DOC_SCOPES = ("read", "retrieved")
 
 
@@ -397,6 +367,8 @@ def accepted_answers(secret: dict[str, Any]) -> list[str]:
 
 
 def load_private_qa_index(path: Path) -> dict[str, list[dict[str, Any]]]:
+    if not path.is_file():
+        raise FileNotFoundError(f"No Private QA inventory at {path}")
     index: dict[str, list[dict[str, Any]]] = defaultdict(list)
     seen: set[tuple[str, str, str]] = set()
     for row in read_jsonl(path):

@@ -130,7 +130,7 @@ vllm serve MODEL --port 8000            # any OpenAI-compatible server
 mosaicleaks-privacy-eval \
   --traces-root runs/qwen3_4b_instruct/ \
   --dataset datasets/mosaicleaks_example \
-  --private-qa-inventory data/secret_inventory.jsonl \
+  --private-qa-inventory secret_inventory.jsonl \
   --output-dir scores/base \
   --base-url http://127.0.0.1:8000/v1 \
   --model MODEL
@@ -153,10 +153,10 @@ mosaicleaks-privacy-aggregate scores/base scores/padr --csv results.csv
 
 Results append to `scores.jsonl`, failures to `errors.jsonl`. Re-running skips
 trajectories already scored with the same inputs, so an interrupted run resumes. A
-trajectory is scored again when its queries, references, settings, judge endpoint or
-the evaluator's own prompt, parsing or scoring code changed (so upgrading the package
-re-scores on resume), and aggregation keeps its latest row. `--force` re-scores
-everything.
+trajectory whose queries, references, generation settings or evaluator code changed
+is scored again, and aggregation keeps its latest row. Changing the model, API mode,
+document scope, question cap, dataset or inventory needs a new `--output-dir`.
+`--force` re-scores everything.
 
 ## Options that change the numbers
 
@@ -178,7 +178,7 @@ than appending incomparable rows to `scores.jsonl`.
 
 ## Reproducing the paper's numbers
 
-The paper's leakage numbers were scored with StepFun-3.5-Flash served on vLLM under the model name `step-3.5-flash`, called with `--api-mode completion_template` and otherwise the defaults above: temperature 0, 12288 max tokens, a 360 s timeout, 3 request attempts, 2 validation attempts, document scope `read`, and at most 200 private questions per trajectory. Only the concurrency default differs: the original runner's was 64.
+The paper's leakage numbers were scored with StepFun-3.5-Flash served on vLLM under the model name `step-3.5-flash`, called with `--api-mode completion_template` and otherwise the defaults above: temperature 0, 12288 max tokens, a 360 s timeout, 3 request attempts, 2 validation attempts, document scope `read`, and at most 200 private questions per trajectory. Only concurrency differs: the paper's runs used 64.
 
 ```bash
 mosaicleaks-privacy-eval ... \

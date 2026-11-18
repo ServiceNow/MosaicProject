@@ -38,9 +38,6 @@ def read_scores(path: Path) -> list[dict[str, Any]]:
         path = path / "scores.jsonl"
     if not path.is_file():
         raise FileNotFoundError(f"No scores file at {path}")
-    # Malformed rows are skipped by read_jsonl. A trajectory re-scored after its inputs
-    # changed appears more than once; its latest successful row counts. Trajectories are
-    # identified by trace path, since rollout IDs can repeat across directories.
     return list(inputs.latest_ok_rows(inputs.read_jsonl(path)).values())
 
 

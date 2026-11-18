@@ -60,9 +60,6 @@ reward-server = [
     "transformers>=4.41.0",
     "uvicorn>=0.29.0",
 ]
-dev = [
-    "pytest>=8.0.0",
-]
 
 [project.scripts]
 mosaicleaks-generate = "mosaicleaks.run:main"
@@ -84,7 +81,3 @@ mosaicleaks-reward-serve = "mosaicleaks.reward.serve:main"
 
 [tool.setuptools.packages.find]
 include = ["mosaicleaks*"]
-
-[tool.pytest.ini_options]
-addopts = "-q"
-testpaths = ["tests"]

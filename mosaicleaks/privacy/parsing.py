@@ -14,11 +14,10 @@ import json
 import re
 from typing import Any
 
-# An answer adversary that has nothing to say often says so in the answer field
-# ("ABSTAIN", "The queries do not reveal this") instead of leaving it out. Such
-# text is not an answer attempt and must not reach the answer judge. Matching is
-# by substring, so an answer that merely contains a marker is dropped as well;
-# every reported number was scored this way.
+# An answer adversary with nothing to say often says so in the answer field
+# ("ABSTAIN", "The queries do not reveal this"). Such text is not an answer attempt
+# and must not reach the answer judge. Matching is by substring, so an answer that
+# merely contains a marker is dropped as well.
 ABSTAIN_MARKERS = (
     "abstain",
     "do not provide",

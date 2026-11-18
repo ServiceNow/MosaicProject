@@ -28,6 +28,7 @@ or route it through OpenRouter:
 import argparse
 import asyncio
 import fcntl
+import functools
 import hashlib
 import json
 import os
@@ -83,10 +84,10 @@ class RunConfig:
     max_private_questions: int
     validation_attempts: int
     force: bool
-    temperature: float = config.TEMPERATURE
-    max_tokens: int = config.MAX_TOKENS
-    use_response_format: bool = True
-    base_url: str = config.JUDGE_BASE_URL
+    temperature: float
+    max_tokens: int
+    use_response_format: bool
+    base_url: str
 
 
 def append_jsonl(path: Path, row: dict[str, Any]) -> None:
@@ -96,8 +97,7 @@ def append_jsonl(path: Path, row: dict[str, Any]) -> None:
     with path.open("a", encoding="utf-8") as handle:
         fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
         try:
-            # A run killed mid-write can leave a last line without a newline; start a
-            # fresh line so this row is not glued onto the fragment.
+            # A run killed mid-write can leave a partial last line; start a new one.
             if path.stat().st_size:
                 with path.open("rb") as tail:
                     tail.seek(-1, os.SEEK_END)
@@ -109,22 +109,19 @@ def append_jsonl(path: Path, row: dict[str, Any]) -> None:
             fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
 
 
-_LABEL_SOURCE_MODULES = ("config", "client", "prompts", "parsing", "normalize", "scoring", "inputs", "evaluate")
-
-
+@functools.cache
 def evaluator_source_hash() -> str:
-    """Hash of the modules that prepare inputs, build requests and turn responses into
-    labels, so editing any of them re-scores on resume."""
+    """Hash of this package's evaluation code, so editing a prompt, the parsing or the
+    scoring re-scores on resume."""
     digest = hashlib.sha256()
-    package_dir = Path(__file__).resolve().parent
-    for name in _LABEL_SOURCE_MODULES:
-        digest.update((package_dir / f"{name}.py").read_bytes())
+    for name in ("config", "client", "prompts", "parsing", "normalize", "scoring", "inputs", "evaluate"):
+        digest.update((Path(__file__).parent / f"{name}.py").read_bytes())
     return digest.hexdigest()[:20]
 
 
 def input_fingerprint(cfg: RunConfig, case: Case) -> str:
-    """Hash of everything the adversaries and judges see for one trajectory, so a resumed
-    run re-scores a trajectory whose queries, references or settings changed."""
+    """Hash of everything that decides one trajectory's labels, so a resumed run
+    re-scores a trajectory whose queries, references or settings changed."""
     payload = {
         "evaluator_source": evaluator_source_hash(),
         "model": cfg.model,
@@ -147,12 +144,6 @@ def input_fingerprint(cfg: RunConfig, case: Case) -> str:
     }
     encoded = json.dumps(payload, sort_keys=True, ensure_ascii=False, default=str).encode()
     return hashlib.sha256(encoded).hexdigest()[:20]
-
-
-def canonical_trace_path(path: Path) -> Path:
-    """One spelling per trace file, so relative and absolute paths to the same trace
-    share a fingerprint, a resume entry and an aggregation slot."""
-    return Path(path).resolve()
 
 
 def already_scored(path: Path) -> dict[str, str]:
@@ -194,12 +185,10 @@ async def _judge(
 
     A judge that returns well-formed JSON with impossible counts is worse than
     one that fails to parse, because the bad numbers would flow into the score.
-    The response is normalised before it is validated, so a judgment that
-    normalisation can repair (a lost qa_id, rows recovered from malformed JSON)
-    is accepted instead of triggering another call.
+    Responses are normalised before validation, so output that normalisation can
+    repair (a lost qa_id, rows recovered from malformed JSON) needs no new call.
     """
     last_error: dict[str, Any] = {}
-    last_judge: dict[str, Any] | None = None
     for attempt in range(1, cfg.validation_attempts + 1):
         judge, err = await client.complete_json(prompt, lambda text: parse_judge(text, stage))
         if judge is None:
@@ -210,14 +199,13 @@ async def _judge(
         error = validate(judge)
         if not error:
             return judge, err
-        last_judge = judge
         last_error = {
             **err,
             "validation_attempt": attempt,
             "validation_error": error,
             "invalid_judge_output": strip_metadata(judge),
         }
-    return last_judge, last_error
+    return None, last_error
 
 
 def prepare(
@@ -239,7 +227,7 @@ def prepare(
         qa_index, docs, cfg.max_private_questions
     )
     return Case(
-        trace_path=canonical_trace_path(trace_path),
+        trace_path=trace_path.resolve(),
         ident=ident,
         dataset_row=dataset_row,
         queries=inputs.query_rows(trace, "web"),
@@ -328,16 +316,8 @@ async def run_judges(client: JudgeClient, cfg: RunConfig, case: Case, verdicts: 
 
     for stage in ("intent", "answer", "claim"):
         judge, error = results[stage]
-        if judge is not None and stage == "answer":
-            judge = normalize.normalize_answer_judge_output(judge, case.private_qas, answer_out)
-        if judge is not None and stage == "claim":
-            judge = normalize.normalize_claim_judge_output(judge, valid_fact_ids)
-        # When every validation attempt failed, _judge still hands back the last
-        # judgment; this re-check is what drops it and fails the trajectory.
-        if judge is not None and prompt_text[stage]:
-            failure = checks[stage](judge)
-            if failure:
-                judge, error = None, {**error, "validation_error": failure}
+        if stage not in called:
+            judge = normalizers[stage](judge)
         verdicts.judges[stage] = judge
         verdicts.errors[f"{stage}_judge"] = error
         verdicts.prompts[f"{stage}_judge"] = prompt_text[stage]
