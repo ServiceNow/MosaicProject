@@ -1,6 +1,7 @@
 """Backend state for the MosaicLeaks retrieval helper service."""
 
 import json
+import logging
 import threading
 import time
 from collections import defaultdict, deque
@@ -23,6 +24,8 @@ from mosaicleaks.src.retrieval.composite import (
 from mosaicleaks.src.retrieval.dense import OpenAICompatibleBackend
 from mosaicleaks.src.retrieval.hybrid import HybridSearcher
 from mosaicleaks.src.jsonl import iter_jsonl_objects
+
+logger = logging.getLogger(__name__)
 
 
 def _maybe_v1_url(base_url: str) -> str:
